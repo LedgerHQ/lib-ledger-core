@@ -39,6 +39,9 @@ namespace ledger {
 
     namespace core {
 
+        /**
+         * Helper class used to deal with really big integers.
+         */
         class BigInt {
 
         public:
@@ -95,6 +98,7 @@ namespace ledger {
              * @return
              */
             BigInt(int value);
+            BigInt(unsigned int value);;
 
             /**
              * Initializes a new BigInt with the given string representation.
@@ -129,23 +133,24 @@ namespace ledger {
              */
             std::string to_hex() const;
 
+            /**
+             * Serializes the BigInt into a Big Endian byte array.
+             * @return
+             */
+            uint8_t *to_array() const;
+
             BigInt operator+(const BigInt& rhs) const;
             BigInt operator-(const BigInt& rhs) const;
             BigInt operator*(const BigInt& rhs) const;
             BigInt operator/(const BigInt& rhs) const;
             BigInt operator%(const BigInt& rhs) const;
 
-            const BigInt& operator++();
-            const BigInt& operator--();
+            BigInt& operator++();
+            BigInt  operator++(int);
+            BigInt& operator--();
+            BigInt  operator--(int);
 
-            const BigInt& operator=(unsigned int);
-            const BigInt& operator=(unsigned long long);
-            const BigInt& operator=(int);
-            const BigInt& operator=(long long);
-            const BigInt& operator=(unsigned long);
-            const BigInt& operator=(long);
-
-            const BigInt& operator=(const BigInt&);
+            void operator=(const BigInt&);
 
             bool operator<(const BigInt&) const;
             bool operator<=(const BigInt&) const;
@@ -153,10 +158,12 @@ namespace ledger {
             bool operator>(const BigInt&) const;
             bool operator>=(const BigInt&) const;
 
+            BigInt pow(unsigned short p);
+
             unsigned long get_bit_size() const;
             bool is_negative() const;
             bool is_positive() const;
-
+            bool is_zero() const;
             BigInt negative() const;
             BigInt positive() const;
 

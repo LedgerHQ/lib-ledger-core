@@ -123,4 +123,38 @@ TEST(BigInt, Subtract) {
 
 TEST(BigInt, Multiply) {
     EXPECT_EQ(BigInt(12) * BigInt(10), BigInt(120));
+    EXPECT_EQ(BigInt(12) * BigInt(-10), BigInt(-120));
+    EXPECT_EQ(BigInt(-12) * BigInt(-10), BigInt(120));
+}
+
+TEST(BigInt, Divide) {
+    EXPECT_B_EQ(BigInt(12) / BigInt(10), BigInt(1));
+    EXPECT_B_EQ(BigInt(12) / BigInt(-10), BigInt(-1));
+    EXPECT_B_EQ(BigInt(-12) / BigInt(-10), BigInt(1));
+    EXPECT_B_EQ(BigInt(-12) / BigInt(10), BigInt(-1));
+}
+
+TEST(BigInt, Mod) {
+    EXPECT_B_EQ(BigInt(12) % BigInt(10), BigInt(2));
+    EXPECT_B_EQ(BigInt(12) % BigInt(-10), BigInt(2));
+    EXPECT_B_EQ(BigInt(-12) % BigInt(-10), BigInt(-2));
+    EXPECT_B_EQ(BigInt(-12) % BigInt(10), BigInt(-2));
+}
+
+TEST(BigInt, Increment) {
+    EXPECT_EQ(++BigInt(1), BigInt(2));
+    EXPECT_B_EQ(++BigInt(-1), BigInt(0));
+}
+
+TEST(BigInt, Decrement) {
+    EXPECT_EQ(--BigInt(1), BigInt(0));
+    EXPECT_B_EQ(--BigInt(-1), BigInt(-2));
+}
+
+TEST(BigInt, Power) {
+    EXPECT_EQ(BigInt(2).pow(2), BigInt(4));
+    EXPECT_EQ(BigInt(-2).pow(2), BigInt(4));
+    EXPECT_EQ(BigInt(1000000).pow(0), BigInt(1));
+    EXPECT_EQ(BigInt(-1000000).pow(0), BigInt(-1));
+    EXPECT_EQ(BigInt(-2).pow(3), BigInt(-8));
 }

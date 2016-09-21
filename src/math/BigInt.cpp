@@ -47,8 +47,6 @@ namespace ledger {
         const int BigInt::MIN_RADIX = 2;
         const int BigInt::MAX_RADIX = 36;
 
-
-
         BigInt::BigInt() {
             _bigd = bdNew();
             _negative = false;
@@ -71,6 +69,11 @@ namespace ledger {
             if (value < 0) {
                 _negative = true;
             }
+        }
+
+        BigInt::BigInt(unsigned int value) {
+            bdSetShort(_bigd, value);
+            _negative = false;
         }
 
         BigInt::BigInt(const std::string &str, int radix) : BigInt() {
@@ -101,7 +104,7 @@ namespace ledger {
             auto s = std::shared_ptr<char>(new char[nchars + 1]);
             bdConvToDecimal(_bigd, s.get(), nchars + 1);
             auto out = std::string(s.get());
-            if (_negative) {
+            if (this->is_negative()) {
                 out = "-" + out;
             }
             return out;
@@ -158,7 +161,7 @@ namespace ledger {
         BigInt BigInt::operator*(const BigInt &rhs) const {
             BigInt result;
             bdMultiply(result._bigd, this->_bigd, rhs._bigd);
-            result._negative = this->is_negative() || rhs.is_negative();
+            result._negative = this->is_negative() != rhs.is_negative();
             return result;
         }
 
@@ -166,8 +169,7 @@ namespace ledger {
             BigInt result;
             BigInt remainder;
             bdDivide(result._bigd, remainder._bigd, this->_bigd, rhs._bigd);
-            bdMultiply(result._bigd, this->_bigd, rhs._bigd);
-            result._negative = this->is_negative() || rhs.is_negative();
+            result._negative = this->is_negative() != rhs.is_negative();
             return result;
         }
 
@@ -175,53 +177,55 @@ namespace ledger {
             BigInt result;
             BigInt remainder;
             bdDivide(result._bigd, remainder._bigd, this->_bigd, rhs._bigd);
-            bdMultiply(result._bigd, this->_bigd, rhs._bigd);
             remainder._negative = this->is_negative();
             return remainder;
         }
 
-        const BigInt &BigInt::operator++() {
+        BigInt &BigInt::operator++() {
+            if (this->is_negative()) {
+                bdDecrement(_bigd);
+            } else {
+                bdIncrement(_bigd);
+            }
             return *this;
         }
 
-        const BigInt &BigInt::operator--() {
+        BigInt BigInt::operator++(int) {
+            BigInt temp = *this;
+            ++*this;
+            return temp;
+        }
+
+        BigInt &BigInt::operator--() {
+            if (this->is_positive()) {
+                bdDecrement(_bigd);
+            } else {
+                bdIncrement(_bigd);
+            }
             return *this;
         }
 
-        const BigInt &BigInt::operator=(unsigned int) {
-            return *this;
+        BigInt BigInt::operator--(int) {
+            BigInt temp = *this;
+            ++*this;
+            return temp;
         }
 
-        const BigInt &BigInt::operator=(unsigned long long) {
-            return *this;
-        }
-
-        const BigInt &BigInt::operator=(int) {
-            return *this;
-        }
-
-        const BigInt &BigInt::operator=(long long) {
-            return *this;
-        }
-
-        const BigInt &BigInt::operator=(unsigned long) {
-            return *this;
-        }
-
-        const BigInt &BigInt::operator=(long) {
-            return *this;
-        }
-
-        const BigInt &BigInt::operator=(const BigInt &) {
-            return *this;
+        void BigInt::operator=(const BigInt &a) {
+           bdSetEqual(_bigd, a._bigd);
+            _negative = a._negative;
         }
 
         bool BigInt::is_negative() const {
-            return _negative;
+            return _negative && !this->is_zero();
         }
 
         bool BigInt::is_positive() const {
-            return !_negative;
+            return !_negative || this->is_zero();
+        }
+
+        bool BigInt::is_zero() const {
+            return bdIsZero(_bigd);
         }
 
         BigInt BigInt::negative() const {
@@ -268,6 +272,20 @@ namespace ledger {
 
         bool BigInt::operator>=(const BigInt &) const {
             return false;
+        }
+
+        BigInt BigInt::pow(unsigned short p) {
+            BigInt result;
+            bdPower(result._bigd, _bigd, p);
+            result._negative = is_negative() && (p % 2 != 0 || p == 0);
+            return result;
+        }
+
+        uint8_t *BigInt::to_array() const {
+            size_t nchars = bdConvToOctets(_bigd, NULL, 0);
+            uint8_t *out = new uint8_t[nchars + 1];
+            bdConvToDecimal(_bigd, reinterpret_cast<char *>(out), nchars + 1);
+            return out;
         }
 
 
