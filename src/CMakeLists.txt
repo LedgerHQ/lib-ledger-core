@@ -1,7 +1,7 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found. Any number of sources could be listed here.
 
-add_library(ledger-core SHARED Foo.cpp bytes/BytesReader.cpp ../include/ledger-core.h math/BigInt.cpp utils/endian.cpp ../include/utils/endian.h)
+add_library(ledger-core SHARED bytes/BytesReader.cpp ../include/ledger-core.h math/BigInt.cpp utils/endian.cpp ../include/utils/endian.h utils/hex.cpp)
 target_link_libraries(ledger-core bigd)
 
 include_directories(ledger-core ../lib/bigd/)

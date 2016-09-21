@@ -19,10 +19,6 @@ add_subdirectory(lib/bigd)
 
 add_subdirectory(doc)
 add_subdirectory(src)
-add_subdirectory(test)
-
-##################################
-# Just make the test runnable with
-#   $ make test
 
 enable_testing()
+add_subdirectory(test)

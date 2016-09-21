@@ -10,3 +10,4 @@ add_executable(ledger-core-math-tests main.cpp bigint_tests.cpp)
 
 target_link_libraries(ledger-core-math-tests gtest gtest_main)
 target_link_libraries(ledger-core-math-tests ledger-core)
+add_test (NAME ledger-core-math-tests COMMAND ledger-core-math-tests)

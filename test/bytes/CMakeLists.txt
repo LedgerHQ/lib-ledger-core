@@ -6,7 +6,8 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-tests main.cpp)
+add_executable(ledger-core-bytes-tests main.cpp)
 
-target_link_libraries(ledger-core-tests gtest gtest_main)
-target_link_libraries(ledger-core-tests ledger-core)
+target_link_libraries(ledger-core-bytes-tests gtest gtest_main)
+target_link_libraries(ledger-core-bytes-tests ledger-core)
+add_test (NAME ledger-core-bytes-tests COMMAND ledger-core-bytes-tests)
