@@ -36,27 +36,27 @@ using namespace ledger::core;
 
 TEST(BigInt, InitializeWithIntValue) {
     auto value = BigInt(12);
-    EXPECT_EQ(value.to_int(), 12);
-    EXPECT_EQ(BigInt(-12).to_int(), -12);
+    EXPECT_EQ(value.toInt(), 12);
+    EXPECT_EQ(BigInt(-12).toInt(), -12);
 }
 
 TEST(BigInt, InitializeWithLowValueString) {
     auto value = BigInt::from_dec("12");
-    EXPECT_EQ(value->to_int(), 12);
+    EXPECT_EQ(value->toInt(), 12);
     delete value;
 }
 
 TEST(BigInt, ConvertToHexString) {
     auto hex = "0102030405060708090a0b0c0d0f11223344556677889900aabbccddeeff";
     auto value = BigInt::from_hex(hex);
-    EXPECT_EQ(value->to_hex(), hex);
+    EXPECT_EQ(value->toHexString(), hex);
     delete value;
 }
 
 TEST(BigInt, ConvertToDecString) {
     auto dec = "-1234567890123456789012345678901234567890123467890123457890";
     auto value = BigInt::from_dec(dec);
-    EXPECT_EQ(value->to_string(), dec);
+    EXPECT_EQ(value->toString(), dec);
     delete value;
 }
 

@@ -111,13 +111,13 @@ namespace ledger {
              * Converts the BigInt to int
              * @return
              */
-            int to_int() const;
+            int toInt() const;
 
             /**
              * Converts the BigInt to unsigned int
              * @return
              */
-            unsigned to_uint() const;
+            unsigned toUnsignedInt() const;
 
             /**
              * Serializes the BigInt into a decimal std::string.
@@ -125,19 +125,20 @@ namespace ledger {
              * @param radix
              * @return
              */
-            std::string to_string() const;
+            std::string toString() const;
+            std::string to_string() const {return toString();};
 
             /**
              * Serializes the BigInt into a hexadecimal std::string.
              * @return
              */
-            std::string to_hex() const;
+            std::string toHexString() const;
 
             /**
              * Serializes the BigInt into a Big Endian byte array.
              * @return
              */
-            uint8_t *to_array() const;
+            uint8_t *toByteArray() const;
 
             BigInt operator+(const BigInt& rhs) const;
             BigInt operator-(const BigInt& rhs) const;
@@ -160,10 +161,10 @@ namespace ledger {
 
             BigInt pow(unsigned short p);
 
-            unsigned long get_bit_size() const;
-            bool is_negative() const;
-            bool is_positive() const;
-            bool is_zero() const;
+            unsigned long getBitSize() const;
+            bool isNegative() const;
+            bool isPositive() const;
+            bool isZero() const;
             BigInt negative() const;
             BigInt positive() const;
 

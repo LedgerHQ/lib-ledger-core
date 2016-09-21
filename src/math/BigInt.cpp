@@ -91,26 +91,26 @@ namespace ledger {
             bdFree(&_bigd);
         }
 
-        int BigInt::to_int() const {
+        int BigInt::toInt() const {
             return bdToShort(_bigd) * (_negative ? -1 : 1);
         }
 
-        unsigned int BigInt::to_uint() const {
+        unsigned int BigInt::toUnsignedInt() const {
             return bdToShort(_bigd);
         }
 
-        std::string BigInt::to_string() const {
+        std::string BigInt::toString() const {
             size_t nchars = bdConvToDecimal(_bigd, NULL, 0);
             auto s = std::shared_ptr<char>(new char[nchars + 1]);
             bdConvToDecimal(_bigd, s.get(), nchars + 1);
             auto out = std::string(s.get());
-            if (this->is_negative()) {
+            if (this->isNegative()) {
                 out = "-" + out;
             }
             return out;
         }
 
-        std::string BigInt::to_hex() const {
+        std::string BigInt::toHexString() const {
             size_t nchars = bdConvToHex(_bigd, NULL, 0);
             auto s = std::shared_ptr<char>(new char[nchars + 1]);
             bdConvToHex(_bigd, s.get(), nchars + 1);
@@ -121,7 +121,7 @@ namespace ledger {
             return out;
         }
 
-        unsigned long BigInt::get_bit_size() const {
+        unsigned long BigInt::getBitSize() const {
             return bdSizeof(_bigd) * sizeof(SimpleInt) * 8;
         }
 
@@ -134,21 +134,21 @@ namespace ledger {
         }
 
         BigInt BigInt::operator+(const BigInt &rhs) const {
-            if (rhs.is_negative() && !this->is_negative()) {
+            if (rhs.isNegative() && !this->isNegative()) {
                 return *this - rhs.positive();
-            } else if (this->is_negative() && !rhs.is_negative()) {
+            } else if (this->isNegative() && !rhs.isNegative()) {
                 return rhs - this->positive();
             }
             BigInt result;
             bdAdd(result._bigd, this->_bigd, rhs._bigd);
-            result._negative = rhs.is_negative() && this->is_negative();
+            result._negative = rhs.isNegative() && this->isNegative();
             return result;
         }
 
         BigInt BigInt::operator-(const BigInt &rhs) const {
-            if (this->is_positive() && rhs.is_negative()) {
+            if (this->isPositive() && rhs.isNegative()) {
                 return *this + rhs.positive();
-            } else if (this->is_negative() && rhs.is_positive()) {
+            } else if (this->isNegative() && rhs.isPositive()) {
                 return *this + rhs.negative();
             } else if (rhs > *this) {
                 return (rhs - *this).negative();
@@ -161,7 +161,7 @@ namespace ledger {
         BigInt BigInt::operator*(const BigInt &rhs) const {
             BigInt result;
             bdMultiply(result._bigd, this->_bigd, rhs._bigd);
-            result._negative = this->is_negative() != rhs.is_negative();
+            result._negative = this->isNegative() != rhs.isNegative();
             return result;
         }
 
@@ -169,7 +169,7 @@ namespace ledger {
             BigInt result;
             BigInt remainder;
             bdDivide(result._bigd, remainder._bigd, this->_bigd, rhs._bigd);
-            result._negative = this->is_negative() != rhs.is_negative();
+            result._negative = this->isNegative() != rhs.isNegative();
             return result;
         }
 
@@ -177,12 +177,12 @@ namespace ledger {
             BigInt result;
             BigInt remainder;
             bdDivide(result._bigd, remainder._bigd, this->_bigd, rhs._bigd);
-            remainder._negative = this->is_negative();
+            remainder._negative = this->isNegative();
             return remainder;
         }
 
         BigInt &BigInt::operator++() {
-            if (this->is_negative()) {
+            if (this->isNegative()) {
                 bdDecrement(_bigd);
             } else {
                 bdIncrement(_bigd);
@@ -197,7 +197,7 @@ namespace ledger {
         }
 
         BigInt &BigInt::operator--() {
-            if (this->is_positive()) {
+            if (this->isPositive()) {
                 bdDecrement(_bigd);
             } else {
                 bdIncrement(_bigd);
@@ -216,15 +216,15 @@ namespace ledger {
             _negative = a._negative;
         }
 
-        bool BigInt::is_negative() const {
-            return _negative && !this->is_zero();
+        bool BigInt::isNegative() const {
+            return _negative && !this->isZero();
         }
 
-        bool BigInt::is_positive() const {
-            return !_negative || this->is_zero();
+        bool BigInt::isPositive() const {
+            return !_negative || this->isZero();
         }
 
-        bool BigInt::is_zero() const {
+        bool BigInt::isZero() const {
             return bdIsZero(_bigd);
         }
 
@@ -241,22 +241,22 @@ namespace ledger {
         }
 
         bool BigInt::operator<(const BigInt &rhs) const {
-            if (this->is_negative() && rhs.is_positive()) {
+            if (this->isNegative() && rhs.isPositive()) {
                 return true;
-            } else if (this->is_positive() && rhs.is_negative()) {
+            } else if (this->isPositive() && rhs.isNegative()) {
                 return false;
-            } else if (this->is_negative() && rhs.is_negative()) {
+            } else if (this->isNegative() && rhs.isNegative()) {
                 return bdCompare(this->_bigd, rhs._bigd) == 1;
             }
             return bdCompare(this->_bigd, rhs._bigd) == -1;
         }
 
         bool BigInt::operator<=(const BigInt &rhs) const {
-            if (this->is_negative() && rhs.is_positive()) {
+            if (this->isNegative() && rhs.isPositive()) {
                 return true;
-            } else if (this->is_positive() && rhs.is_negative()) {
+            } else if (this->isPositive() && rhs.isNegative()) {
                 return false;
-            } else if (this->is_negative() && rhs.is_negative()) {
+            } else if (this->isNegative() && rhs.isNegative()) {
                 return bdCompare(this->_bigd, rhs._bigd) >= 0;
             }
             return bdCompare(this->_bigd, rhs._bigd) <= 0;
@@ -277,11 +277,11 @@ namespace ledger {
         BigInt BigInt::pow(unsigned short p) {
             BigInt result;
             bdPower(result._bigd, _bigd, p);
-            result._negative = is_negative() && (p % 2 != 0 || p == 0);
+            result._negative = isNegative() && (p % 2 != 0 || p == 0);
             return result;
         }
 
-        uint8_t *BigInt::to_array() const {
+        uint8_t *BigInt::toByteArray() const {
             size_t nchars = bdConvToOctets(_bigd, NULL, 0);
             uint8_t *out = new uint8_t[nchars + 1];
             bdConvToDecimal(_bigd, reinterpret_cast<char *>(out), nchars + 1);
