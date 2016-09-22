@@ -119,6 +119,8 @@ namespace ledger {
              */
             unsigned toUnsignedInt() const;
 
+            uint64_t toUint64() const;
+
             /**
              * Serializes the BigInt into a decimal std::string.
              * @param str
@@ -138,7 +140,7 @@ namespace ledger {
              * Serializes the BigInt into a Big Endian byte array.
              * @return
              */
-            uint8_t *toByteArray() const;
+            std::vector<uint8_t> toByteArray() const;
 
             BigInt operator+(const BigInt& rhs) const;
             BigInt operator-(const BigInt& rhs) const;

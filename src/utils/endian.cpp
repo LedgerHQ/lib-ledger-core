@@ -39,15 +39,15 @@ namespace ledger {
             Endianness getSystemEndianness() {
                 short int number = 0x1;
                 char *numPtr = (char *) &number;
-                return ((numPtr[0] == 1) ? Endianness::LITTLE_ENDIAN : Endianness::BIG_ENDIAN);
+                return ((numPtr[0] == 1) ? Endianness::LITTLE : Endianness::BIG);
             }
 
             bool isSystemBigEndian() {
-                return getSystemEndianness() == Endianness::BIG_ENDIAN;
+                return getSystemEndianness() == Endianness::BIG;
             }
 
             bool isSystemLittleEndian() {
-                return getSystemEndianness() == Endianness::LITTLE_ENDIAN;
+                return getSystemEndianness() == Endianness::LITTLE;
             }
 
             static void reverseBytes(uint8_t *ptr, size_t size) {
@@ -60,14 +60,14 @@ namespace ledger {
             }
 
             void *swapToBigEndian(void *ptr, size_t size) {
-                if (getSystemEndianness() == Endianness::LITTLE_ENDIAN) {
+                if (getSystemEndianness() == Endianness::LITTLE) {
                     reverseBytes(static_cast<uint8_t *>(ptr), size);
                 }
                 return ptr;
             }
 
             void *swapToLittleEndian(void *ptr, size_t size) {
-                if (getSystemEndianness() == Endianness::BIG_ENDIAN) {
+                if (getSystemEndianness() == Endianness::BIG) {
                     reverseBytes(static_cast<uint8_t *>(ptr), size);
                 }
                 return ptr;

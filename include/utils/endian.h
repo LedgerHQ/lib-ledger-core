@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ENDIAN_H
-#define LEDGER_CORE_ENDIAN_H
 
 #undef BIG_ENDIAN
 #undef LITTLE_ENDIAN
+
+#ifndef LEDGER_CORE_ENDIAN_H
+#define LEDGER_CORE_ENDIAN_H
 
 #include <cstddef>
 
@@ -49,8 +50,8 @@ namespace ledger {
         namespace endianness {
 
             enum struct Endianness {
-                BIG_ENDIAN = 1,
-                LITTLE_ENDIAN
+                BIG = 1,
+                LITTLE
             };
 
             /**

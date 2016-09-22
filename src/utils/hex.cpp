@@ -76,7 +76,7 @@ namespace ledger {
             }
 
             char byteToDigit(uint8_t byte, bool uppercase) {
-                byte = 0xF < byte ? 0xF : byte;
+                byte = (uint8_t) (0xF < byte ? 0xF : byte);
                 if (byte < 0xA) {
                     return '0' + byte;
                 } else if (uppercase) {

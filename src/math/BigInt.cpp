@@ -58,7 +58,7 @@ namespace ledger {
             bdSetEqual(_bigd, cpy._bigd);
         }
 
-        BigInt::BigInt(const void *data, size_t length, bool negative) {
+        BigInt::BigInt(const void *data, size_t length, bool negative) : BigInt() {
             bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(data), length);
             _negative = negative;
         }
@@ -281,11 +281,20 @@ namespace ledger {
             return result;
         }
 
-        uint8_t *BigInt::toByteArray() const {
+        std::vector<uint8_t> BigInt::toByteArray() const {
             size_t nchars = bdConvToOctets(_bigd, NULL, 0);
-            uint8_t *out = new uint8_t[nchars + 1];
-            bdConvToDecimal(_bigd, reinterpret_cast<char *>(out), nchars + 1);
+            std::vector<uint8_t> out = std::vector<uint8_t >(nchars + 1);
+            bdConvToDecimal(_bigd, reinterpret_cast<char *>(out.data()), nchars + 1);
             return out;
+        }
+
+        uint64_t BigInt::toUint64() const {
+            std::vector<uint8_t> result(sizeof(uint64_t));
+            bdConvToOctets(_bigd, result.data(), sizeof(uint64_t));
+            if (ledger::core::endianness::isSystemLittleEndian()) {
+                std::reverse(result.begin(), result.end());
+            }
+            return reinterpret_cast<uint64_t *>(result.data())[0];
         }
 
 
