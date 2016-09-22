@@ -36,4 +36,13 @@ using namespace ledger::core;
 
 TEST(BytesWriter, WriteBeValues) {
     EXPECT_EQ(BytesWriter().writeBeValue(12U).toByteArray(), std::vector<uint8_t>({0x00, 0x00, 0x00, 12}));
+    EXPECT_EQ(BytesWriter().writeBeValue((uint8_t)12).toByteArray(), std::vector<uint8_t>({12}));
+    EXPECT_EQ(BytesWriter().writeBeValue(12UL).toByteArray(), std::vector<uint8_t>({0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 12}));
 }
+
+TEST(BytesWriter, WriteLeValues) {
+    EXPECT_EQ(BytesWriter().writeLeValue(12U).toByteArray(), std::vector<uint8_t>({12, 0x00, 0x00, 00}));
+    EXPECT_EQ(BytesWriter().writeLeValue((uint8_t)12).toByteArray(), std::vector<uint8_t>({12}));
+    EXPECT_EQ(BytesWriter().writeLeValue(12UL).toByteArray(), std::vector<uint8_t>({12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+}
+

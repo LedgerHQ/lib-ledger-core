@@ -42,5 +42,47 @@ namespace ledger {
             return _bytes;
         }
 
+        BytesWriter &BytesWriter::writeByteArray(const std::vector<uint8_t> &data) {
+            for (auto byte : data) {
+                writeByte(byte);
+            }
+            return *this;
+        }
+
+        BytesWriter &BytesWriter::writeBeBigInt(const BigInt &i) {
+            auto bytes = i.toByteArray();
+            return writeByteArray(bytes);
+        }
+
+        BytesWriter &BytesWriter::writeLeBigInt(const BigInt &i) {
+            auto bytes = i.toByteArray();
+            std::reverse(bytes.begin(), bytes.end());
+            return writeByteArray(bytes);
+        }
+
+        BytesWriter &BytesWriter::writeString(const std::string &str) {
+            for (auto c : str) {
+                writeByte(c);
+            }
+            return *this;
+        }
+
+        BytesWriter &BytesWriter::writeVarInt(uint64_t i) {
+            if (i < 0xFD) {
+                return writeByte((uint8_t)i);
+            } else if (i <= 0xFFFF) {
+                return writeByte(0xFD).writeLeValue((uint16_t)i);
+            } else if (i <= 0xFFFFFFFF) {
+                return writeByte(0xFE).writeLeValue((uint32_t)i);
+            } else {
+                return writeByte(0xFF).writeLeValue(i);
+            }
+        }
+
+        BytesWriter &BytesWriter::writeVarString(const std::string &str) {
+            return writeVarInt(str.length()).writeString(str);
+        }
+
+
     }
 }
