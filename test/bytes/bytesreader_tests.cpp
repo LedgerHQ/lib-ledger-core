@@ -101,3 +101,9 @@ TEST(BytesReader, ReadNextVarInt) {
     EXPECT_EQ(ledger::core::BytesReader({0xFE, 0x0D, 0x0C, 0x0B, 0x0A}).readNextVarInt(), 0x0A0B0C0D);
     EXPECT_EQ(ledger::core::BytesReader({0xFF, 0x12, 0x11, 0x10, 0x0F, 0x0D, 0x0C, 0x0B, 0x0A}).readNextVarInt(), 0x0A0B0C0D0F101112);
 }
+
+TEST(BytesReader, ReadNextVarString) {
+    std::vector<uint8_t> data({11, 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', 0});
+    ledger::core::BytesReader reader(data);
+    EXPECT_EQ(reader.readNextVarString(), "Hello world");
+}

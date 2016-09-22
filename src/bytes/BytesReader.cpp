@@ -193,7 +193,8 @@ namespace ledger {
         }
 
         std::string BytesReader::readNextVarString() {
-            return std::string();
+            uint64_t length = readNextVarInt();
+            return readString(length);
         }
 
         uint8_t BytesReader::peek() const {
