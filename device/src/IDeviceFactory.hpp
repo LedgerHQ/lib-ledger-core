@@ -1,9 +1,9 @@
 /*
  *
- * ExecutionContext
+ * IDeviceFactory
  * ledger-core
  *
- * Created by Pierre Pollastri on 23/09/2016.
+ * Created by Pierre Pollastri on 28/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_EXECUTIONCONTEXT_H
-#define LEDGER_CORE_EXECUTIONCONTEXT_H
+#ifndef LEDGER_CORE_IDEVICEFACTORY_HPP
+#define LEDGER_CORE_IDEVICEFACTORY_HPP
 
-
-#include <functional>
+#include "IDevice.hpp"
 
 namespace ledger {
+    namespace device {
 
-    namespace core {
-        class ExecutionContext {
+        class IDeviceFactory {
 
         public:
-            virtual void execute(const std::function<void ()>& closure) = 0;
-
-            virtual ~ExecutionContext() {};
-
+            virtual ledger::device::TransportType getTransportType() const = 0;
+            virtual void list(ledger::core::Callback<std::vector<IDevice>> callback) = 0;
         };
+
     }
 }
 
-#endif //LEDGER_CORE_EXECUTIONCONTEXT_H
+#endif //LEDGER_CORE_IDEVICEFACTORY_HPP

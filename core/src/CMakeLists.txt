@@ -1,6 +1,3 @@
-# Create a library called "Hello" which includes the source file "hello.cxx".
-# The extension is already found. Any number of sources could be listed here.
-
 add_library (
         ledger-core SHARED
         bytes/BytesReader.cpp
@@ -8,12 +5,20 @@ add_library (
         math/BigInt.cpp utils/endian.cpp
         utils/endian.h
         utils/hex.cpp
+        utils/json.hpp
         bytes/BytesWriter.cpp
         bytes/BytesWriter.h
-        async/ExecutionContext.h
-        async/Callback.hpp)
+        async/ExecutionContext.hpp
+        async/Callback.hpp
+        async/EventEmitter.hpp)
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
+
+file(GLOB_RECURSE LEDGER_CORE_HEADERS
+        "*.hpp"
+        )
+set_source_files_properties(${LEDGER_CORE_HEADERS} PROPERTIES LANGUAGE CXX)
+
 
 include_directories(ledger-core ../lib/bigd)
 

@@ -46,6 +46,7 @@ namespace ledger {
 
         /**
          * Endianness management functions
+         * @headerfile endian.h <ledger/core/utils/endian.h>
          */
         namespace endianness {
 
@@ -56,6 +57,7 @@ namespace ledger {
 
             /**
              * Checks if the current system uses big endian or little bytes order.
+             * @headerfile endian.h <ledger/core/utils/endian.h>
              * @return
              */
             Endianness getSystemEndianness();

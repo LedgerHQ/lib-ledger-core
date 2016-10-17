@@ -1,9 +1,9 @@
 /*
  *
- * Callback
+ * ExecutionContext
  * ledger-core
  *
- * Created by Pierre Pollastri on 27/09/2016.
+ * Created by Pierre Pollastri on 23/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,45 +28,24 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CALLBACK_H
-#define LEDGER_CORE_CALLBACK_H
+#ifndef LEDGER_CORE_EXECUTIONCONTEXT_H
+#define LEDGER_CORE_EXECUTIONCONTEXT_H
 
-#include <future>
-#include "ExecutionContext.hpp"
+
+#include <functional>
 
 namespace ledger {
+
     namespace core {
-
-        template<>
-        class CallbackResult {
-
-        };
-
-        template <typename T>
-        class Callback {
+        class ExecutionContext {
 
         public:
-            Callback(ExecutionContext *context, std::function<void (std::promise<T>)> function) : _function(function), _context(context) {};
-            Callback(const Callback<T>& callback) {
-                *this = callback;
-            };
+            virtual void execute(const std::function<void()>& closure) = 0;
+            virtual void reportError(std::exception exception) = 0;
+            virtual ~ExecutionContext() {};
 
-            void operator()(T param) {
-                _context->execute([=]() {
-                   _function(param);
-                });
-            };
-
-            void operator=(const Callback<T>& callback) {
-                this->_context = callback._context;
-                this->_function = callback._function;
-            };
-
-        private:
-            ExecutionContext *_context;
-            T _function;
         };
     }
 }
 
-#endif //LEDGER_CORE_CALLBACK_H
+#endif //LEDGER_CORE_EXECUTIONCONTEXT_H

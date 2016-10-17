@@ -1,9 +1,9 @@
 /*
  *
- * Device
+ * IDevice
  * ledger-core
  *
- * Created by Pierre Pollastri on 26/09/2016.
+ * Created by Pierre Pollastri on 28/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,20 +28,40 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DEVICE_H_H
-#define LEDGER_CORE_DEVICE_H_H
+#ifndef LEDGER_CORE_IDEVICE_H
+#define LEDGER_CORE_IDEVICE_H
+
+#include <vector>
+#include <ledger/core/async/Callback.hpp>
+#include <ledger/core/async/EventEmitter.hpp>
+#include <ledger/core/utils/json.hpp>
+
+using json = nlohmann::json;
 
 namespace ledger {
     namespace device {
 
+        enum TransportType {
+            HID = 1,
+            BLUETOOTH = 2,
+            TEE = 3,
+            LEGACY_USB = 4,
+            UNDEFINED
+        };
+
         class IDevice {
             public:
-
-            void exchange(const std::vector<uint8_t> data, const ledger::core::Callback<std::vector<uin8_T>>& callback);
-
+            virtual void exchange(std::vector<uint8_t> data, const ledger::core::Callback<void, void>& callback) = 0;
+            virtual void connect(const ledger::core::Callback<void, void>& callback) = 0;
+            virtual void disconnect(const ledger::core::Callback<void, void>& callback) = 0;
+            virtual long getIdentifier() const = 0;
+            virtual json getDeviceInformation() const = 0;
+            virtual TransportType getTransportType() const = 0;
+            virtual ledger::core::EventEmitter* getEventEmitter() = 0;
         };
 
     }
 }
 
-#endif //LEDGER_CORE_DEVICE_H_H
+
+#endif //LEDGER_CORE_IDEVICE_H

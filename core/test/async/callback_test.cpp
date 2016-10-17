@@ -1,9 +1,9 @@
 /*
  *
- * Callback
+ * callback_test
  * ledger-core
  *
- * Created by Pierre Pollastri on 27/09/2016.
+ * Created by Pierre Pollastri on 28/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,45 +28,45 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CALLBACK_H
-#define LEDGER_CORE_CALLBACK_H
+
+#include <gtest/gtest.h>
+#include <ledger/core/async/Callback.hpp>
 
 #include <future>
-#include "ExecutionContext.hpp"
 
-namespace ledger {
-    namespace core {
+class TestExecutionContext : public ledger::core::ExecutionContext {
 
-        template<>
-        class CallbackResult {
-
-        };
-
-        template <typename T>
-        class Callback {
-
-        public:
-            Callback(ExecutionContext *context, std::function<void (std::promise<T>)> function) : _function(function), _context(context) {};
-            Callback(const Callback<T>& callback) {
-                *this = callback;
-            };
-
-            void operator()(T param) {
-                _context->execute([=]() {
-                   _function(param);
-                });
-            };
-
-            void operator=(const Callback<T>& callback) {
-                this->_context = callback._context;
-                this->_function = callback._function;
-            };
-
-        private:
-            ExecutionContext *_context;
-            T _function;
-        };
+public:
+    virtual void execute(const std::function<void()> &closure) override {
+        std::async([closure]() {
+            closure();
+        });
     }
+
+    virtual void reportError(std::exception exception) override {
+
+    }
+
+};
+
+auto context = new TestExecutionContext();
+
+void call(ledger::core::Callback<int> cb, int result) {
+    cb(result);
 }
 
-#endif //LEDGER_CORE_CALLBACK_H
+TEST(Callback, PThreadTest) {
+    std::promise<int> p;
+
+    call({context, [](int result) {
+
+    }}, 12);
+//    auto cb = ledger::core::callback(context, [] () {
+//        std::cout << "Hello from thread" << std::endl;
+//        return;
+//    });
+
+
+
+    p.get_future().wait();
+}

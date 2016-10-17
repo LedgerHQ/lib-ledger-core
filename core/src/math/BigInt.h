@@ -41,6 +41,7 @@ namespace ledger {
 
         /**
          * Helper class used to deal with really big integers.
+         * @headerfile BigInt.h <ledger/core/math/BigInt.h>
          */
         class BigInt {
 
