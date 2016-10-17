@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(ledger-core)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(UseBackportedModules)
+
 # The project version number.
 set(VERSION_MAJOR   0   CACHE STRING "Project major version number.")
 set(VERSION_MINOR   0   CACHE STRING "Project minor version number.")

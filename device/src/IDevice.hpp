@@ -51,9 +51,9 @@ namespace ledger {
 
         class IDevice {
             public:
-            virtual void exchange(std::vector<uint8_t> data, const ledger::core::Callback<void, void>& callback) = 0;
-            virtual void connect(const ledger::core::Callback<void, void>& callback) = 0;
-            virtual void disconnect(const ledger::core::Callback<void, void>& callback) = 0;
+            virtual void exchange(std::vector<uint8_t> data, const ledger::core::Callback<void>& callback) = 0;
+            virtual void connect(const ledger::core::Callback<void>& callback) = 0;
+            virtual void disconnect(const ledger::core::Callback<void>& callback) = 0;
             virtual long getIdentifier() const = 0;
             virtual json getDeviceInformation() const = 0;
             virtual TransportType getTransportType() const = 0;

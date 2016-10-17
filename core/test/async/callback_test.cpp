@@ -52,15 +52,13 @@ public:
 auto context = new TestExecutionContext();
 
 void call(ledger::core::Callback<int> cb, int result) {
-    cb(result);
+    //cb(result);
 }
 
 TEST(Callback, PThreadTest) {
     std::promise<int> p;
 
-    call({context, [](int result) {
 
-    }}, 12);
 //    auto cb = ledger::core::callback(context, [] () {
 //        std::cout << "Hello from thread" << std::endl;
 //        return;

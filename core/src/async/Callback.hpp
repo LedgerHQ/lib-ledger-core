@@ -33,11 +33,12 @@
 
 #include <future>
 #include "ExecutionContext.hpp"
+#include <experimental/optional>
 
 namespace ledger {
     namespace core {
 
-        template<>
+        template <typename T>
         class CallbackResult {
 
         };
@@ -46,20 +47,9 @@ namespace ledger {
         class Callback {
 
         public:
-            Callback(ExecutionContext *context, std::function<void (std::promise<T>)> function) : _function(function), _context(context) {};
-            Callback(const Callback<T>& callback) {
-                *this = callback;
-            };
+            Callback(ExecutionContext *_context, const std::function<void (CallbackResult<T>)>& function) {};
+            void operator()(T result) {
 
-            void operator()(T param) {
-                _context->execute([=]() {
-                   _function(param);
-                });
-            };
-
-            void operator=(const Callback<T>& callback) {
-                this->_context = callback._context;
-                this->_function = callback._function;
             };
 
         private:
