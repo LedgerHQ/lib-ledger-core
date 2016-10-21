@@ -1,0 +1,10 @@
+
+# Execution context
+
+Runnable = interface +c {
+    run();
+}
+
+ExecutionContext = interface +j +o {
+ execute(runnable: Runnable);
+}

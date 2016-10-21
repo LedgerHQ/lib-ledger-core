@@ -1,0 +1,17 @@
+
+TransportType = enum {
+    USB;
+    BLUETOOTH;
+    BLUETOOTH_LE;
+    NFC;
+    TEE;
+    UNKNOWN;
+}
+
+Device = interface +o +j {
+    exchange(data: binary): binary;
+}
+
+DeviceFactory = interface +o +j {
+    listDevices();
+}

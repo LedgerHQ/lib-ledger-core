@@ -1,5 +1,5 @@
-add_library (
-        ledger-core SHARED
+
+list(APPEND ledger-core-sources
         bytes/BytesReader.cpp
         ledger-core.h
         math/BigInt.cpp utils/endian.cpp
@@ -10,7 +10,33 @@ add_library (
         bytes/BytesWriter.h
         async/ExecutionContext.hpp
         async/Callback.hpp
-        async/EventEmitter.hpp)
+        async/EventEmitter.hpp
+        )
+
+# Automaticall ADD djinni api files to the library
+
+file(GLOB ledger-core-djinni-api-sources
+        "api/*"
+        )
+list(APPEND ledger-core-sources ${ledger-core-djinni-api-sources})
+
+if (TARGET_JNI)
+    message(STATUS "Configure project for JNI")
+    find_package(JNI REQUIRED)
+    file(GLOB ledger-core-jni-sources
+            "jni/*.cpp"
+            "jni/*.hpp"
+            "jni/jni/*"
+            )
+    list(APPEND ledger-core-sources ${ledger-core-jni-sources})
+endif()
+
+add_library (
+        ledger-core SHARED
+        ${ledger-core-sources}
+)
+
+
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
 
@@ -21,6 +47,11 @@ set_source_files_properties(${LEDGER_CORE_HEADERS} PROPERTIES LANGUAGE CXX)
 
 
 include_directories(ledger-core ../lib/bigd)
+
+if (TARGET_JNI)
+    include_directories(ledger-core ${JNI_INCLUDE_DIRS})
+    target_link_libraries(ledger-core ${JNI_LIBRARIES})
+endif()
 
 file(GLOB ledger-core-header
         "*"
