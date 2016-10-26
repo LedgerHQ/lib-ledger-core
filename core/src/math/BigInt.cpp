@@ -33,6 +33,7 @@
 #include "../utils/endian.h"
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 #undef LITTLE_ENDIAN
 #undef BIG_ENDIAN
