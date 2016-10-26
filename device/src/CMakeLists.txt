@@ -5,7 +5,6 @@ add_library (
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
         )
-set_source_files_properties(${LEDGER_CORE_HEADERS} PROPERTIES LANGUAGE CXX)
 
 target_link_libraries(ledger-device ledger-core)
 
