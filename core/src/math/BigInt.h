@@ -34,6 +34,7 @@
 #include <string>
 #include <vector>
 #include <bigd.h>
+#include <memory>
 
 namespace ledger {
 
