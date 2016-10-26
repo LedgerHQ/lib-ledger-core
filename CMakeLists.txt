@@ -24,4 +24,5 @@ add_subdirectory(doc)
 add_subdirectory(core)
 add_subdirectory(device)
 
+enable_testing()
 

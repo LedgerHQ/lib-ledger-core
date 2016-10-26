@@ -42,7 +42,7 @@ target_link_libraries(ledger-core fmt)
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
         )
-set_source_files_properties(${LEDGER_CORE_HEADERS} PROPERTIES LANGUAGE CXX)
+#set_source_files_properties(${LEDGER_CORE_HEADERS} PROPERTIES LANGUAGE CXX)
 
 
 include_directories(ledger-core ../lib/bigd)
