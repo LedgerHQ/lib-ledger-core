@@ -33,7 +33,6 @@
 
 #include <future>
 #include "ExecutionContext.hpp"
-#include <experimental/optional>
 
 namespace ledger {
     namespace core {
