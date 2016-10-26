@@ -33,6 +33,7 @@
 #include "../utils/endian.h"
 #include <fmt/format.h>
 #include <sstream>
+#include <algorithm>
 
 
 namespace ledger {
