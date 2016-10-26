@@ -5,7 +5,6 @@ list(APPEND ledger-core-sources
         math/BigInt.cpp utils/endian.cpp
         utils/endian.h
         utils/hex.cpp
-        utils/json.hpp
         bytes/BytesWriter.cpp
         bytes/BytesWriter.h
         async/ExecutionContext.hpp
