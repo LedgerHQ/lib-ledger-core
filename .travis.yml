@@ -12,9 +12,9 @@ addons:
       - cmake-data
       - g++-5
       - gcc-5
-      - binutils-mingw-w64-x86-64
-      - g++-mingw-w64-x86-64
-      - gcc-mingw-w64-x86-64
+
+before_install:
+  - sudo apt-get install mingw-w64
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
