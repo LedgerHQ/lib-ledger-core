@@ -19,4 +19,4 @@ install:
 
 script:
   - mkdir build && cd build && cmake .. && make && make test && cd ..
-  - mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-Ubuntu-mingw64.cmake && make && cd ..
+  - mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-mingw64.cmake && make && cd ..
