@@ -6,5 +6,8 @@ addons:
     packages:
       - cmake
       - cmake-data
+      - g++-5
+      - gcc-5
+
 script:
   - mkdir build && cd build && cmake .. && make && make test
