@@ -13,7 +13,7 @@ list(APPEND ledger-core-sources
         )
 
 # Automaticall ADD djinni api files to the library
-
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)git
 file(GLOB ledger-core-djinni-api-sources
         "api/*"
         )
