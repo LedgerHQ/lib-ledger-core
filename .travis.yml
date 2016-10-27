@@ -7,4 +7,4 @@ addons:
       - cmake
       - cmake-data
 script:
-  - mkdir build && cd build && cmake ..
+  - mkdir build && cd build && cmake .. && make && make test
