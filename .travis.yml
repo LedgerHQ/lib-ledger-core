@@ -7,9 +7,6 @@ before_install:
  - sudo apt-get update
  - sudo apt-get -y install mingw-w64
 
-install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-
 script:
   - mkdir build && cd build && cmake .. && make && make test && cd ..
   - mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-mingw64.cmake && make && cd ..
