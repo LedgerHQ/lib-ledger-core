@@ -4,6 +4,7 @@ sudo: required
 
 before_install:
  - echo "deb http://ftp.debian.com/debian/ unstable main" | cat - /etc/apt/source.list | sudo tee /etc/apt/source.list
+ - sudo add-apt-repository "deb http://ftp.debian.com/debian/ unstable main"
  - sudo apt-get update
  - sudo apt-get -y install gcc-5 g++-5
  - sudo apt-get -y install mingw-w64
