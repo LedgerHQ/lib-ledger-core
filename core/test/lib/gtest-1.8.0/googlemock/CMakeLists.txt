@@ -69,7 +69,7 @@ include_directories("${gmock_SOURCE_DIR}/include"
 # <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.
 # VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10
 # VS 2013     12           1800            std::tr1::tuple
-if (msvc AND MSVC_VERSION EQUAL 1700)
+if (MSVC AND MSVC_VERSION EQUAL 1700)
   add_definitions(/D _VARIADIC_MAX=10)
 endif()
 
@@ -84,13 +84,13 @@ endif()
 cxx_library(gmock
             "${cxx_strict}"
             "${gtest_dir}/src/gtest-all.cc"
-        src/gmock-all.cc)
+            src/gmock-all.cc)
 
 cxx_library(gmock_main
             "${cxx_strict}"
             "${gtest_dir}/src/gtest-all.cc"
-        src/gmock-all.cc
-        src/gmock_main.cc)
+            src/gmock-all.cc
+            src/gmock_main.cc)
 
 # If the CMake version supports it, attach header directory information
 # to the targets for when we are part of a parent build (ie being pulled
@@ -160,7 +160,7 @@ if (gmock_build_tests)
   cxx_library(gmock_main_no_rtti "${cxx_no_rtti}"
     "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
 
-  if (NOT msvc OR MSVC_VERSION LESS 1600)  # 1600 is Visual Studio 2010.
+  if (NOT MSVC OR MSVC_VERSION LESS 1600)  # 1600 is Visual Studio 2010.
     # Visual Studio 2010, 2012, and 2013 define symbols in std::tr1 that
     # conflict with our own definitions. Therefore using our own tuple does not
     # work on those compilers.

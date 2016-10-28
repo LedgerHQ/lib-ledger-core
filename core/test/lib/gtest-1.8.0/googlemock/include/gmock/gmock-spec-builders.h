@@ -1778,7 +1778,7 @@ class FunctionMockerBase : public UntypedFunctionMockerBase {
   //   class MockFoo : public Foo {
   //    public:
   //     // Defines a copy constructor explicitly.
-  //     MockFoo(const MockFoo& core) {}
+  //     MockFoo(const MockFoo& src) {}
   //     ...
   //   };
   GTEST_DISALLOW_COPY_AND_ASSIGN_(FunctionMockerBase);

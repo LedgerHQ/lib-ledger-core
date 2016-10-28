@@ -80,7 +80,7 @@ INCLUDE_GMOCK_FILE_REGEX = re.compile(r'^\s*#\s*include\s*"(gmock/.+)"')
 
 # Where to find the source seed files.
 GMOCK_H_SEED = 'include/gmock/gmock.h'
-GMOCK_ALL_CC_SEED = 'core/gmock-all.cc'
+GMOCK_ALL_CC_SEED = 'src/gmock-all.cc'
 
 # Where to put the generated files.
 GTEST_H_OUTPUT = 'gtest/gtest.h'

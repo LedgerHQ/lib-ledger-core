@@ -73,13 +73,13 @@ DEFAULT_GTEST_ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
 # Regex for matching '#include "gtest/..."'.
 INCLUDE_GTEST_FILE_REGEX = re.compile(r'^\s*#\s*include\s*"(gtest/.+)"')
 
-# Regex for matching '#include "core/..."'.
-INCLUDE_SRC_FILE_REGEX = re.compile(r'^\s*#\s*include\s*"(core/.+)"')
+# Regex for matching '#include "src/..."'.
+INCLUDE_SRC_FILE_REGEX = re.compile(r'^\s*#\s*include\s*"(src/.+)"')
 
 # Where to find the source seed files.
 GTEST_H_SEED = 'include/gtest/gtest.h'
 GTEST_SPI_H_SEED = 'include/gtest/gtest-spi.h'
-GTEST_ALL_CC_SEED = 'core/gtest-all.cc'
+GTEST_ALL_CC_SEED = 'src/gtest-all.cc'
 
 # Where to put the generated files.
 GTEST_H_OUTPUT = 'gtest/gtest.h'
@@ -210,7 +210,7 @@ def FuseGTestAllCcToFile(gtest_root, output_file):
       else:
         m = INCLUDE_SRC_FILE_REGEX.match(line)
         if m:
-          # It's '#include "core/foo"' - let's process it recursively.
+          # It's '#include "src/foo"' - let's process it recursively.
           ProcessFile(m.group(1))
         else:
           output_file.write(line)
