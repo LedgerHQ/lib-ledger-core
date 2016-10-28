@@ -5,6 +5,9 @@ sudo: required
 before_install:
  - echo "deb http://archive.ubuntu.com/ubuntu/ xenial main restricted multiverse universe" | cat - /etc/apt/source.list | sudo tee /etc/apt/source.list
  - sudo apt-get update
+ - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+ - sudo apt-get update
+ - sudo apt-get install gcc-5 g++-5
  - sudo apt-get install gcc --reinstall
  - sudo apt-get install g++ --reinstall
  - sudo apt-get -y install mingw-w64
