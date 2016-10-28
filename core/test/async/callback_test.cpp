@@ -38,9 +38,7 @@ class TestExecutionContext : public ledger::core::ExecutionContext {
 
 public:
     virtual void execute(const std::function<void()> &closure) override {
-        std::async([closure]() {
-            closure();
-        });
+
     }
 
     virtual void reportError(std::exception exception) override {
@@ -56,15 +54,5 @@ void call(ledger::core::Callback<int> cb, int result) {
 }
 
 TEST(Callback, PThreadTest) {
-    std::promise<int> p;
 
-
-//    auto cb = ledger::core::callback(context, [] () {
-//        std::cout << "Hello from thread" << std::endl;
-//        return;
-//    });
-
-
-
-    p.get_future().wait();
 }
