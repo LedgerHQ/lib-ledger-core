@@ -7,10 +7,11 @@ before_install:
  - sudo apt-get update
  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
  - sudo apt-get update
- - sudo apt-get install gcc-5 g++-5
- - sudo apt-get install gcc --reinstall
- - sudo apt-get install g++ --reinstall
+ - sudo apt-get -y install gcc-5 g++-5
  - sudo apt-get -y install mingw-w64
+
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
   - mkdir build && cd build && cmake .. && make && make test && cd ..
