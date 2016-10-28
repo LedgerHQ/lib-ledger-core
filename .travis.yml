@@ -14,7 +14,9 @@ addons:
 
 before_install:
  - wget http://launchpadlibrarian.net/238043810/binutils-mingw-w64-x86-64_2.26-3ubuntu1+6.6_amd64.deb
- - sudo dpkg -i binutils-mingw-w64-x86-64_2.26-3ubuntu1+6.6_amd64.deb
+ - wget https://launchpad.net/ubuntu/+source/gcc-mingw-w64/17/+build/9004950/+files/g++-mingw-w64-x86-64_5.3.1-8ubuntu3+17_amd64.deb
+ - wget https://launchpad.net/ubuntu/+source/gcc-mingw-w64/17/+build/9004950/+files/gcc-mingw-w64-x86-64_5.3.1-8ubuntu3+17_amd64.deb
+ - sudo dpkg -i binutils-mingw-w64-x86-64_2.26-3ubuntu1+6.6_amd64.deb gcc-mingw-w64-x86-64_5.3.1-8ubuntu3+17_amd64.deb g++-mingw-w64-x86-64_5.3.1-8ubuntu3+17_amd64.deb
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
