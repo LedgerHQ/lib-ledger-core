@@ -3,7 +3,7 @@ dist: trusty
 sudo: required
 
 before_install:
- - echo "deb http://archive.ubuntu.com/ubuntu/ xenial main restricted multiverse universe" | cat - /etc/apt/source.list | sudo tee /etc/apt/source.list
+ - echo "deb http://archive.ubuntu.com/ubuntu/ yakkety main restricted multiverse universe" | cat - /etc/apt/source.list | sudo tee /etc/apt/source.list
  - sudo apt-get update
  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
  - sudo apt-get update
