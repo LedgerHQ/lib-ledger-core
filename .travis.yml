@@ -12,11 +12,8 @@ addons:
       - cmake-data
       - g++-5
       - gcc-5
-
-before_install:
-  - sudo apt-get install mingw-w64
-  - sudo add-apt-repository ppa:tobydox/mingw-w64 -y
-  - sudo apt-get update -y
+      - mingw-x-gcc
+      - mingw-x-binutils
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
