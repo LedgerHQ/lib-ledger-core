@@ -5,7 +5,7 @@ os:
   - linux
   - osx
 before_install:
-  - sh setup_travis_linux.sh
+  - bash setup_travis_linux.sh
 
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
