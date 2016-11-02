@@ -1,20 +1,18 @@
 language: cpp
 dist: trusty
 sudo: required
+os:
+  - linux
+  - osx
 before_install:
-- echo "deb http://ftp.debian.com/debian/ unstable main" | cat - /etc/apt/source.list
-  | sudo tee /etc/apt/source.list
-- sudo add-apt-repository "deb http://ftp.debian.com/debian/ unstable main"
-- sudo apt-get update
-- sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install gcc-5 g++-5
-- sudo cp /bin/true /usr/bin/dpkg-maintscript-helper
-- sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install mingw-w64
+  - sh setup_travis_linux.sh
+
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 script:
 - mkdir build && cd build && cmake .. && make && make test && cd ..
-- mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-mingw64.cmake
-  && make && cd ..
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-mingw64.cmake
+  && make && cd ..; fi
 deploy:
   provider: releases
   skip_cleanup: true
@@ -24,4 +22,4 @@ deploy:
     - build_win/bin/libledger-core.dll
     - build/bin/libledger-core.so
   on:
-    repo: LedgerHQ/lib-ledger-core
+    repo: tag

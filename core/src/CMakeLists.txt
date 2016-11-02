@@ -34,7 +34,10 @@ add_library (
         ledger-core SHARED
         ${ledger-core-sources}
 )
-
+add_library (
+        ledger-core-static SHARED
+        ${ledger-core-sources}
+)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
