@@ -40,6 +40,7 @@ target_link_libraries(ledger-core fmt)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
+        "*.h"
         )
 
 include_directories(ledger-core ../lib/bigd)
@@ -58,3 +59,6 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 target_include_directories (ledger-core PUBLIC ..)
 target_include_directories (ledger-core PUBLIC ../lib/bigd)
 target_include_directories (ledger-core PUBLIC ../lib/fmt-3.0.0)
+
+install(TARGETS ledger-core DESTINATION "lib")
+install(FILES ${LEDGER_CORE_HEADERS} DESTINATION "include/ledger-core")
