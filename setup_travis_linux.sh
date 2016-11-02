@@ -7,6 +7,7 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install gcc-5 g++-5
     sudo cp /bin/true /usr/bin/dpkg-maintscript-helper
     sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install mingw-w64
+    if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
    brew update
    brew upgrade cmake || true
