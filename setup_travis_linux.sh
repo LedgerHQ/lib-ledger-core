@@ -9,5 +9,5 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install mingw-w64
 elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
    brew update
-   brew upgrade cmake
+   brew upgrade cmake || true
 fi;
