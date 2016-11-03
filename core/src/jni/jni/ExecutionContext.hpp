@@ -39,8 +39,8 @@ private:
         friend ::djinni::JniInterface<::ExecutionContext, ::djinni_generated::ExecutionContext>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ExecutionContext") };
-    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(LRunnable;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ExecutionContext") };
+    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(Lco/ledger/core/Runnable;)V") };
 };
 
 }  // namespace djinni_generated

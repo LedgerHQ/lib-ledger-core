@@ -29,6 +29,7 @@
 #include <climits>
 #include <cstring>
 
+#include "fmt/printf.h"
 #include "fmt/format.h"
 #include "gtest-extra.h"
 #include "util.h"
@@ -295,12 +296,13 @@ void TestLength(const char *length_spec, U value) {
   fmt::LongLong signed_value = 0;
   fmt::ULongLong unsigned_value = 0;
   // Apply integer promotion to the argument.
-  fmt::ULongLong max = std::numeric_limits<U>::max();
-  using fmt::internal::check;
-  if (check(max <= static_cast<unsigned>(std::numeric_limits<int>::max()))) {
+  using std::numeric_limits;
+  fmt::ULongLong max = numeric_limits<U>::max();
+  using fmt::internal::const_check;
+  if (const_check(max <= static_cast<unsigned>(numeric_limits<int>::max()))) {
     signed_value = static_cast<int>(value);
     unsigned_value = static_cast<unsigned>(value);
-  } else if (check(max <= std::numeric_limits<unsigned>::max())) {
+  } else if (const_check(max <= numeric_limits<unsigned>::max())) {
     signed_value = static_cast<unsigned>(value);
     unsigned_value = static_cast<unsigned>(value);
   }
@@ -476,4 +478,15 @@ TEST(PrintfTest, PrintfError) {
 
 TEST(PrintfTest, WideString) {
   EXPECT_EQ(L"abc", fmt::sprintf(L"%s", L"abc"));
+}
+
+TEST(PrintfTest, PrintfCustom) {
+  EXPECT_EQ("abc", fmt::sprintf("%s", TestString("abc")));
+}
+
+TEST(PrintfTest, OStream) {
+  std::ostringstream os;
+  int ret = fmt::fprintf(os, "Don't %s!", "panic");
+  EXPECT_EQ("Don't panic!", os.str());
+  EXPECT_EQ(12, ret);
 }

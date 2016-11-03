@@ -62,7 +62,11 @@ system:
 
 * `Python <https://www.python.org/>`_ with pip and virtualenv
 * `Doxygen <http://www.stack.nl/~dimitri/doxygen/>`_
-* `Less <http://lesscss.org/>`_ with less-plugin-clean-css
+* `Less <http://lesscss.org/>`_ with ``less-plugin-clean-css``.
+  Ubuntu doesn't package the ``clean-css`` plugin so you should use ``npm``
+  instead of ``apt`` to install both ``less`` and the plugin::
+
+    sudo npm install -g less less-plugin-clean-css.
 
 First generate makefiles or project files using CMake as described in
 the previous section. Then compile the ``doc`` target/project, for example::
@@ -87,4 +91,4 @@ Homebrew
 
 fmt can be installed on OS X using `Homebrew <http://brew.sh/>`_::
 
-  brew install cppformat
+  brew install fmt

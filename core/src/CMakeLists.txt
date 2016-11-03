@@ -12,6 +12,8 @@ list(APPEND ledger-core-sources
         async/EventEmitter.hpp
         )
 
+set(ANDROID_CPP_FEATURES exceptions)
+
 # Automaticall ADD djinni api files to the library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB ledger-core-djinni-api-sources
@@ -21,7 +23,7 @@ list(APPEND ledger-core-sources ${ledger-core-djinni-api-sources})
 
 if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
-    find_package(JNI REQUIRED)
+    #find_package(JNI REQUIRED)
     file(GLOB ledger-core-jni-sources
             "jni/*.cpp"
             "jni/*.hpp"
@@ -33,7 +35,7 @@ endif()
 add_library (
         ledger-core SHARED
         ${ledger-core-sources}
-)
+        api_impl/LedgerCoreImpl.cpp api_impl/LedgerCoreImpl.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
@@ -43,11 +45,15 @@ file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.h"
         )
 
+file(GLOB LEDGER_CORE_API_HEADERS
+        "api/*.hpp"
+        )
+
 include_directories(ledger-core ../lib/bigd)
 
 if (TARGET_JNI)
-    include_directories(ledger-core ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core ${JNI_LIBRARIES})
+   # include_directories(ledger-core ${JNI_INCLUDE_DIRS})
+   # target_link_libraries(ledger-core ${JNI_LIBRARIES})
 endif()
 
 file(GLOB ledger-core-header
@@ -61,4 +67,4 @@ target_include_directories (ledger-core PUBLIC ../lib/bigd)
 target_include_directories (ledger-core PUBLIC ../lib/fmt-3.0.0)
 
 install(TARGETS ledger-core DESTINATION "lib")
-install(FILES ${LEDGER_CORE_HEADERS} DESTINATION "include/ledger-core")
+install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

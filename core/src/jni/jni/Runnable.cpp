@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-Runnable::Runnable() : ::djinni::JniInterface<::Runnable, Runnable>("Runnable$CppProxy") {}
+Runnable::Runnable() : ::djinni::JniInterface<::Runnable, Runnable>("co/ledger/core/Runnable$CppProxy") {}
 
 Runnable::~Runnable() = default;
 
 
-CJNIEXPORT void JNICALL Java_Runnable_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Runnable_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -18,7 +18,7 @@ CJNIEXPORT void JNICALL Java_Runnable_00024CppProxy_nativeDestroy(JNIEnv* jniEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Runnable_00024CppProxy_native_1run(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Runnable_00024CppProxy_native_1run(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

@@ -6,14 +6,13 @@ os:
   - linux
   - osx
 before_install:
-  - bash setup_travis_linux.sh
+  - bash setup_on_travis.sh
 
 install:
 - if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export CXX="g++-5" CC="gcc-5"; fi
 script:
-- mkdir build && cd build && cmake .. && make && make test && cd ..
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir build_win && cd build_win && cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-mingw64.cmake
-  && make && cd ..; fi
+- bash build_on_travis.sh
+
 deploy:
   provider: releases
   skip_cleanup: true

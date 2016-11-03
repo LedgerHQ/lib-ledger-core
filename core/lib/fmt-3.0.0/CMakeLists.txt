@@ -1,7 +1,7 @@
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 cmake_minimum_required(VERSION 2.8.12)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Determine if fmt is built as a subproject (using add_subdirectory)
 # or if it is the master project.
 set(MASTER_PROJECT OFF)
@@ -28,7 +28,7 @@ option(FMT_USE_CPP11 "Enable the addition of C++11 compiler flags." ON)
 project(FMT)
 
 # Starting with cmake 3.0 VERSION is part of the project command.
-set(FMT_VERSION 3.0.0)
+set(FMT_VERSION 3.1.0)
 if (NOT FMT_VERSION MATCHES "^([0-9]+).([0-9]+).([0-9]+)$")
   message(FATAL_ERROR "Invalid version format ${FMT_VERSION}.")
 endif ()

@@ -8,3 +8,7 @@ Runnable = interface +c {
 ExecutionContext = interface +j +o {
  execute(runnable: Runnable);
 }
+
+LedgerCore = interface +c {
+    static getStringVersion(): string;
+}
