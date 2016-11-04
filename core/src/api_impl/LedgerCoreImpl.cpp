@@ -31,6 +31,6 @@
 #include "LedgerCoreImpl.hpp"
 #include "../api/LedgerCore.hpp"
 
-std::string LedgerCore::getStringVersion() {
+std::string ledger::core::api::LedgerCore::getStringVersion() {
     return "1.0.0";
 }

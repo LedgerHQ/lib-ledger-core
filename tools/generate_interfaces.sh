@@ -6,8 +6,11 @@ echo "Generating core API"
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
 rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
-./djinni/src/run    --idl ./core/core.idl \
+./djinni/src/run    --idl ./core/core.djinni \
                     --cpp-out $CORE_CPP_API_DIRECTORY \
+                    --cpp-namespace ledger::core::api \
+                    --cpp-optional-template std::experimental::optional \
+                    --cpp-optional-header "../utils/optional.h" \
                     --jni-include-cpp-prefix "../../api/" \
                     --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
                     --java-out api/core/java \

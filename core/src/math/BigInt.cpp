@@ -275,7 +275,7 @@ namespace ledger {
             return false;
         }
 
-        BigInt BigInt::pow(unsigned short p) {
+        BigInt BigInt::pow(unsigned short p) const {
             BigInt result;
             bdPower(result._bigd, _bigd, p);
             result._negative = isNegative() && (p % 2 != 0 || p == 0);
@@ -296,6 +296,25 @@ namespace ledger {
                 std::reverse(result.begin(), result.end());
             }
             return reinterpret_cast<uint64_t *>(result.data())[0];
+        }
+
+        int BigInt::compare(const BigInt &rhs) const {
+            if (this->isNegative() && rhs.isPositive()) {
+                return -1;
+            } else if (this->isPositive() && rhs.isNegative()) {
+                return 1;
+            } else if (this->isNegative() && rhs.isNegative()) {
+                return -bdCompare(this->_bigd, rhs._bigd);
+            }
+            return bdCompare(this->_bigd, rhs._bigd);
+        }
+
+        BigInt BigInt::fromHex(const std::string &str) {
+            return BigInt(str, 16);
+        }
+
+        BigInt BigInt::fromDecimal(const std::string &str) {
+            return BigInt(str, 10);
         }
 
 

@@ -5,4 +5,5 @@
 #import "../objc/LGRunnable.h"
 #import "../objc/LGExecutionContext.h"
 #import "../objc/LGLedgerCore.h"
+#import "../objc/LGBigInt.h"
 #endif UMBRELLA_LEDGER_CORE_H

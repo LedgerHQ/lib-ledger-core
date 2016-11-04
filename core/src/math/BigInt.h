@@ -72,12 +72,22 @@ namespace ledger {
              */
             static BigInt* from_hex(const std::string& str);
             /**
+            * Creates a new BigInt from the given hexadecimal encoded string.
+            * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
+            */
+            static BigInt fromHex(const std::string& str);
+            /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
             static BigInt* from_dec(const std::string& str);
-
+            /**
+            * Creates a new BigInt from the given decimal encoded string.
+            * @param str The number encoded in decimal (e.g. "125")
+            * @return
+            */
+            static BigInt fromDecimal(const std::string& str);
         private:
             BigInt();
             BigInt(const std::string& str, int radix);
@@ -163,7 +173,9 @@ namespace ledger {
             bool operator>(const BigInt&) const;
             bool operator>=(const BigInt&) const;
 
-            BigInt pow(unsigned short p);
+            int compare(const BigInt&) const;
+
+            BigInt pow(unsigned short p) const;
 
             unsigned long getBitSize() const;
             bool isNegative() const;

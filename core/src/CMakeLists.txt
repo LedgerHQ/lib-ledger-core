@@ -2,14 +2,23 @@
 list(APPEND ledger-core-sources
         bytes/BytesReader.cpp
         ledger-core.h
-        math/BigInt.cpp utils/endian.cpp
+        math/BigInt.h
+        math/BigInt.cpp
+
+        utils/endian.cpp
         utils/endian.h
         utils/hex.cpp
+        utils/optional.hpp
+
         bytes/BytesWriter.cpp
         bytes/BytesWriter.h
         async/ExecutionContext.hpp
         async/Callback.hpp
         async/EventEmitter.hpp
+        api/BigInt.hpp
+
+        api_impl/LedgerCoreImpl.cpp
+        api_impl/LedgerCoreImpl.hpp
         )
 
 set(ANDROID_CPP_FEATURES exceptions)
@@ -35,7 +44,7 @@ endif()
 add_library (
         ledger-core SHARED
         ${ledger-core-sources}
-        api_impl/LedgerCoreImpl.cpp api_impl/LedgerCoreImpl.hpp)
+        api_impl/BigIntImpl.cpp api_impl/BigIntImpl.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

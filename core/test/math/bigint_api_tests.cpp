@@ -1,9 +1,9 @@
 /*
  *
- * IDeviceFactory
+ * bigint_api_tests
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/09/2016.
+ * Created by Pierre Pollastri on 04/11/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,43 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_IDEVICEFACTORY_HPP
-#define LEDGER_CORE_IDEVICEFACTORY_HPP
 
-#include "IDevice.hpp"
+#include <gtest/gtest.h>
+#include <ledger/core/api/BigInt.hpp>
 
-namespace ledger {
-    namespace device {
+using namespace ledger::core::api;
 
-        class IDeviceFactory {
+#define DEC(x) BigInt::fromIntegerString((x), 10)
 
-        public:
-            virtual ledger::device::TransportType getTransportType() const = 0;
-            virtual void list(ledger::core::Callback<std::vector<IDevice>> callback) = 0;
-        };
-
-    }
+TEST(BigIntApi, InitializeWithString) {
+    EXPECT_EQ("1000", BigInt::fromIntegerString("1000", 10)->toString(10));
 }
 
-#endif //LEDGER_CORE_IDEVICEFACTORY_HPP
+TEST(BigIntApi, InitializeWithHexString) {
+    EXPECT_EQ("10a851", BigInt::fromIntegerString("10a851", 16)->toString(16));
+}
+
+TEST(BigIntApi, AddTwoBigInt) {
+    EXPECT_EQ("1337", DEC("1030")->add(DEC("307"))->toString(10));
+}
+
+TEST(BigIntApi, SubtractTwoBigInt) {
+    EXPECT_EQ("1337", DEC("10000")->subtract(DEC("8663"))->toString(10));
+}
+
+TEST(BigIntApi, Pow) {
+    EXPECT_EQ("4", DEC("2")->pow(2)->toString(10));
+}
+
+TEST(BigIntApi, MultiplyTwoBigInt) {
+    EXPECT_EQ("1337", DEC("191")->multiply(DEC("7"))->toString(10));
+}
+
+TEST(BigIntApi, DivideTwoBigInt) {
+    EXPECT_EQ("1337", DEC("9359")->divide(DEC("7"))->toString(10));
+}
+
+TEST(BigIntApi, FromDecimalString) {
+    EXPECT_EQ("133713370000000000000000000000000000",
+            BigInt::fromDecimalString("1 337.1337", 32, ".")->toString(10));
+}
