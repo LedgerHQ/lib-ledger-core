@@ -1,0 +1,7 @@
+GetBitcoinLikeWalletCallback = interface +j +o +s +n {
+    onGetWallet(wallet: BitcoinLikeWallet, isCreated: bool);
+}
+
+BitcoinLikeWallet = interface +c {
+
+}

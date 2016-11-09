@@ -1,0 +1,7 @@
+GetEthreumLikeWalletCallback = interface +j +o +s +n {
+    onGetWallet(wallet: EthereumLikeWallet, isCreated: bool);
+}
+
+EthereumLikeWallet = interface +c {
+
+}

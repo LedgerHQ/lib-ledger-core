@@ -1,0 +1,24 @@
+@import "crypto_currency_description.djinni"
+@import "amount.djinni"
+@import "bitcoin/bitcoin_like_wallet.djinni"
+@import "ethereum/ethereum_like_wallet.djinni"
+
+WalletType = enum {
+    bitcoin_wallet;
+    ethereum_wallet;
+}
+
+WalletCommonInterface = interface +c {
+    getIdentifier(): string;
+    getWalletName(): string;
+    getCrypoCurrencyDescription(): CryptoCurrencyDescription;
+    getWalletType(): WalletType;
+    getTotalBalance(): Amount;
+    getAccountsCount(): i32;
+    getAccountBalances(): list<Amount>;
+    getOperationsCount(): i32;
+    getAccountOperationsCount(): list<i32>;
+
+    asInstanceOfBitcoinWallet(): BitcoinLikeWallet;
+    asInstanceOfEthereumWallet(): EthereumLikeWallet;
+}

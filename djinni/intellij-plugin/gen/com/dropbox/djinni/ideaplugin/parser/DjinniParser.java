@@ -397,6 +397,8 @@ public class DjinniParser implements PsiParser, LightPsiParser {
     r = generator_0(b, l + 1);
     if (!r) r = generator_1(b, l + 1);
     if (!r) r = generator_2(b, l + 1);
+    if (!r) r = generator_3(b, l + 1);
+    if (!r) r = generator_4(b, l + 1);
     exit_section_(b, m, GENERATOR, r);
     return r;
   }
@@ -430,6 +432,28 @@ public class DjinniParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, PLUS);
     r = r && consumeToken(b, "o");
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // PLUS 's'
+  private static boolean generator_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "generator_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PLUS);
+    r = r && consumeToken(b, "s");
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // PLUS 'n'
+  private static boolean generator_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "generator_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PLUS);
+    r = r && consumeToken(b, "n");
     exit_section_(b, m, null, r);
     return r;
   }

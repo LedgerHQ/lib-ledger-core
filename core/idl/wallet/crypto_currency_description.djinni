@@ -1,0 +1,13 @@
+CryptoCurrencyUnit = record {
+    name: string;
+    decimalPlace: i32;
+}
+
+CryptoCurrencyDescription = interface +c {
+    getIdentifier(): string;
+    getName(): string;
+    getUnits(): list<CryptoCurrencyUnit>;
+    getDecimalPlaceOfSmallestUnit(): i32;
+    getBolosApplicationName(): string;
+    getDerivationScheme(): string;
+}

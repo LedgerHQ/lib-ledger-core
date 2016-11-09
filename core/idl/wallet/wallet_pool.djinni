@@ -1,0 +1,35 @@
+@import "wallet_common_interface.djinni"
+@import "bitcoin/bitcoin_like_wallet.djinni"
+@import "../net/http_client.djinni"
+@import "../net/websocket_client.djinni"
+@import "../fs/path_resolver.djinni"
+@import "../debug/logger.djinni"
+
+WalletPool = interface +c {
+    getAllWallets(): list<WalletCommonInterface>;
+    getAllBitcoinLikeWallets(): list<BitcoinLikeWallet>;
+    getAllEthereumLikeWallets(): list<EthereumLikeWallet>;
+
+    getOrCreateBitcoinLikeWallet(publicKeyProvider: string, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
+    getOrCreateEthereumLikeWallet(publicKeyProvider: string, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
+
+    getAllSupportedCryptoCurrencies(): list<CryptoCurrencyDescription>;
+    getLogger(): Logger;
+}
+
+WalletPoolBuildCallback = interface +j +o +s +n {
+    onWalletPoolBuilt(pool: WalletPool);
+}
+
+WalletPoolBuilder = interface +c {
+    setHttpClient(client: HttpClient): WalletPoolBuilder;
+    setWebsocketClient(client: WebSocketClient): WalletPoolBuilder;
+    setPathResolver(pathResolver: PathResolver): WalletPoolBuilder;
+    setLogPrinter(printer: LogPrinter): WalletPoolBuilder;
+    setName(name: string): WalletPoolBuilder;
+
+    build(listener: WalletPoolBuildCallback);
+
+    static createInstance(): WalletPoolBuilder;
+}
+

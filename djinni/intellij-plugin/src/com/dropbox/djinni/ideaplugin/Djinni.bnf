@@ -66,7 +66,7 @@ typeDefinition ::= identifier EQ typeDescription {
 
 private typeDescription ::= enumDescription | recordDescription | interfaceDescription
 
-generator ::= (PLUS 'c') | (PLUS 'j') | (PLUS 'o')
+generator ::= (PLUS 'c') | (PLUS 'j') | (PLUS 'o') | (PLUS 's') | (PLUS 'n')
 
 // enum
 

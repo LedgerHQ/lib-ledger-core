@@ -1,0 +1,13 @@
+
+LogPrinter = interface +j +o +n {
+    printError(message: string);
+    printInfo(message: string);
+    printDebug(message: string);
+    printWarning(message: string);
+    printApdu(message: string);
+}
+
+Logger = interface +c {
+
+}
+

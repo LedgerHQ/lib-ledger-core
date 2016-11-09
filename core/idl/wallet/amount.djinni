@@ -1,0 +1,9 @@
+@import "../math/big_int.djinni"
+@import "crypto_currency_description.djinni"
+
+Amount = interface +c {
+    toBigInt(): BigInt;
+    getUnit(): CryptoCurrencyUnit;
+    getCryptoCurrencyDescription(): CryptoCurrencyDescription;
+    toString(): string;
+}
