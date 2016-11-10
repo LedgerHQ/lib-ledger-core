@@ -2,6 +2,7 @@
 @import "amount.djinni"
 @import "bitcoin/bitcoin_like_wallet.djinni"
 @import "ethereum/ethereum_like_wallet.djinni"
+@import "../preferences/preferences.djinni"
 
 WalletType = enum {
     bitcoin_wallet;
@@ -18,6 +19,9 @@ WalletCommonInterface = interface +c {
     getAccountBalances(): list<Amount>;
     getOperationsCount(): i32;
     getAccountOperationsCount(): list<i32>;
+
+    getPreferences(): Preferences;
+    getSynchronizedPreferences(): Preferences;
 
     asInstanceOfBitcoinWallet(): BitcoinLikeWallet;
     asInstanceOfEthereumWallet(): EthereumLikeWallet;

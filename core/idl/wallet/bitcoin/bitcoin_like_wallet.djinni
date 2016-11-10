@@ -1,5 +1,8 @@
+@import "../../errors.djinni"
+
 GetBitcoinLikeWalletCallback = interface +j +o +s +n {
-    onGetWallet(wallet: BitcoinLikeWallet, isCreated: bool);
+    onSuccess(wallet: BitcoinLikeWallet, isCreated: bool);
+    onError(error: Error);
 }
 
 BitcoinLikeWallet = interface +c {

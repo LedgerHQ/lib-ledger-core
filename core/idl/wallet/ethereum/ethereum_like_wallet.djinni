@@ -1,5 +1,8 @@
+@import "../../errors.djinni"
+
 GetEthreumLikeWalletCallback = interface +j +o +s +n {
-    onGetWallet(wallet: EthereumLikeWallet, isCreated: bool);
+    onSuccess(wallet: EthereumLikeWallet, isCreated: bool);
+    onError(error: Error);
 }
 
 EthereumLikeWallet = interface +c {

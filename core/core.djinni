@@ -1,20 +1,17 @@
 
+@import "idl/debug/logger.djinni"
+@import "idl/fs/path_resolver.djinni"
 @import "idl/math/big_int.djinni"
-
-# Execution context
-
-Runnable = interface +c {
-    run();
-}
-
-ExecutionContext = interface +j +o {
- execute(runnable: Runnable);
-}
+@import "idl/net/http_client.djinni"
+@import "idl/net/websocket_client.djinni"
+@import "idl/wallet/wallet_pool.djinni"
 
 LedgerCore = interface +c {
+    # Gets the version of the library as a human readable string.
+    # @return The version of the library (e.g. '1.0.1')
     static getStringVersion(): string;
+    # Get the integer version of the Library
+    # @return The integer version of the library
     static getIntVersion(): i32;
 }
-
-# Utils
 

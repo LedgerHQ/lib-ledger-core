@@ -1,0 +1,17 @@
+
+ErrorCode = enum {
+    # Device errors
+
+    # Wallet errors
+
+    # User land errors
+    cancelled_by_user;
+
+    # Others
+    unknown;
+}
+
+Error = record {
+    code: ErrorCode;
+    message: string;
+}

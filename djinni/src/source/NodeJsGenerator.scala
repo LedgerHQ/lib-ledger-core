@@ -34,9 +34,9 @@ import djinni.generatorTools.Spec
   *
   */
 class NodeJsGenerator(spec: Spec) extends Generator(spec) {
-  override def generateEnum(origin: String, ident: Ident, doc: Doc, e: Enum): Unit = ???
+  override def generateEnum(origin: String, ident: Ident, doc: Doc, e: Enum): Unit = {}
 
-  override def generateInterface(origin: String, ident: Ident, doc: Doc, typeParams: Seq[TypeParam], i: Interface): Unit = ???
+  override def generateInterface(origin: String, ident: Ident, doc: Doc, typeParams: Seq[TypeParam], i: Interface): Unit = {}
 
-  override def generateRecord(origin: String, ident: Ident, doc: Doc, params: Seq[TypeParam], r: Record): Unit = ???
+  override def generateRecord(origin: String, ident: Ident, doc: Doc, params: Seq[TypeParam], r: Record): Unit = {}
 }

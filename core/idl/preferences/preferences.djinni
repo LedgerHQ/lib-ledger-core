@@ -1,0 +1,22 @@
+
+Preferences = interface +c {
+    getString(key: string, fallbackValue: string): string;
+    getInt(key: string, fallbackValue: i32): i32;
+    getLong(key: string, fallbackValue: i64): i64;
+    getBoolean(key: string, fallbackValue: bool): bool;
+    getStringArray(key: string, fallbackValue: list<string>): list<string>;
+
+    contains(key: string): bool;
+
+    edit(): PreferencesEditor;
+}
+
+PreferencesEditor = interface +c {
+    putString(key: string, value: string): PreferencesEditor;
+    putInt(key: string, value: i32): PreferencesEditor;
+    putLong(key: string, value: i64): PreferencesEditor;
+    putBoolean(key: string, value: bool): PreferencesEditor;
+    putStringArray(key: string, value: list<string>): PreferencesEditor;
+
+    commit();
+}

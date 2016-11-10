@@ -1,0 +1,16 @@
+
+Runnable = interface +c {
+    run();
+}
+
+ExecutionContext = interface +j +o +n {
+    #
+    execute(runnable: Runnable);
+    delay(runnable: Runnable, millis: i64);
+}
+
+ThreadDispatcher = interface +j +o +n {
+    getSerialExecutionContext(name: string): ExecutionContext;
+    getThreadPoolExecutionContext(name: string): ExecutionContext;
+    getMainExecutionContext(): ExecutionContext;
+}

@@ -92,7 +92,7 @@ private object IdlParser extends RegexParsers {
           foundSwift = true
         }
         case "n" => {
-          if (foundSwift) return err("Found multiple \"s\" modifiers")
+          if (foundNode) return err("Found multiple \"n\" modifiers")
           foundNode = true
         }
         case _ => return err("Invalid modifier \"" + part.name + "\"")

@@ -1,20 +1,30 @@
 @import "wallet_common_interface.djinni"
 @import "bitcoin/bitcoin_like_wallet.djinni"
+@import "ethereum/ethereum_like_wallet.djinni"
 @import "../net/http_client.djinni"
 @import "../net/websocket_client.djinni"
 @import "../fs/path_resolver.djinni"
 @import "../debug/logger.djinni"
+@import "../async/thread_dispatcher.djinni"
+@import "bitcoin/bitcoin_public_key_provider.djinni"
+@import "ethereum/ethereum_public_key_provider.djinni"
+@import "../errors.djinni"
+@import "../preferences/preferences.djinni"
 
 WalletPool = interface +c {
     getAllWallets(): list<WalletCommonInterface>;
     getAllBitcoinLikeWallets(): list<BitcoinLikeWallet>;
     getAllEthereumLikeWallets(): list<EthereumLikeWallet>;
 
-    getOrCreateBitcoinLikeWallet(publicKeyProvider: string, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
-    getOrCreateEthereumLikeWallet(publicKeyProvider: string, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
+    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
+    getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback);
 
     getAllSupportedCryptoCurrencies(): list<CryptoCurrencyDescription>;
     getLogger(): Logger;
+
+    getPreferences(): Preferences;
+
+    close();
 }
 
 WalletPoolBuildCallback = interface +j +o +s +n {
@@ -26,6 +36,7 @@ WalletPoolBuilder = interface +c {
     setWebsocketClient(client: WebSocketClient): WalletPoolBuilder;
     setPathResolver(pathResolver: PathResolver): WalletPoolBuilder;
     setLogPrinter(printer: LogPrinter): WalletPoolBuilder;
+    setThreadDispatcher(dispatcher: ThreadDispatcher): WalletPoolBuilder;
     setName(name: string): WalletPoolBuilder;
 
     build(listener: WalletPoolBuildCallback);
