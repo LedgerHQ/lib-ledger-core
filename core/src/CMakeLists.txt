@@ -44,7 +44,11 @@ endif()
 add_library (
         ledger-core SHARED
         ${ledger-core-sources}
-        api_impl/BigIntImpl.cpp api_impl/BigIntImpl.hpp)
+        api_impl/BigIntImpl.cpp
+        api_impl/BigIntImpl.hpp
+        wallet/pool/WalletPool.cpp
+        wallet/pool/WalletPool.hpp
+        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
