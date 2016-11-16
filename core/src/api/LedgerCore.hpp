@@ -12,8 +12,16 @@ class LedgerCore {
 public:
     virtual ~LedgerCore() {}
 
+    /**
+     * Gets the version of the library as a human readable string.
+     * @return The version of the library (e.g. '1.0.1')
+     */
     static std::string getStringVersion();
 
+    /**
+     * Get the integer version of the Library
+     * @return The integer version of the library
+     */
     static int32_t getIntVersion();
 };
 

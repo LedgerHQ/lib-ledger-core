@@ -37,7 +37,7 @@
 namespace ledger {
 
     namespace core {
-        class WalletPoolBuilder : public api::WalletPoolBuilder {
+        class WalletPoolBuilder : public api::WalletPoolBuilder, public std::enable_shared_from_this<WalletPoolBuilder> {
 
         public:
             WalletPoolBuilder();
@@ -62,7 +62,6 @@ namespace ledger {
             virtual void build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) override;
 
         private:
-            std::shared_ptr<api::WalletPoolBuilder> _self;
             std::shared_ptr<api::HttpClient> _httpClient;
             std::shared_ptr<api::WebSocketClient> _webSocketClient;
             std::shared_ptr<api::PathResolver> _pathResolver;

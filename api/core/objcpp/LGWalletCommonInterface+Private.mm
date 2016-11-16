@@ -10,6 +10,7 @@
 #import "LGBitcoinLikeWallet+Private.h"
 #import "LGCryptoCurrencyDescription+Private.h"
 #import "LGEthereumLikeWallet+Private.h"
+#import "LGPreferences+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -95,6 +96,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getAccountOperationsCount();
         return ::djinni::List<::djinni::I32>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGPreferences *)getPreferences {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGPreferences *)getSynchronizedPreferences {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getSynchronizedPreferences();
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

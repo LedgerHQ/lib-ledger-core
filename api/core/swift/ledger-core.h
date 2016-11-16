@@ -7,6 +7,8 @@
 #import "../objc/LGRunnable.h"
 #import "../objc/LGExecutionContext.h"
 #import "../objc/LGThreadDispatcher.h"
+#import "../objc/LGPreferences.h"
+#import "../objc/LGPreferencesEditor.h"
 #import "../objc/LGGetEthreumLikeWalletCallback.h"
 #import "../objc/LGEthereumLikeWallet.h"
 #import "../objc/LGErrorCode.h"

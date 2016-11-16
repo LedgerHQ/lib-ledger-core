@@ -7,6 +7,7 @@
 @class LGBitcoinLikeWallet;
 @class LGCryptoCurrencyDescription;
 @class LGEthereumLikeWallet;
+@class LGPreferences;
 
 
 @interface LGWalletCommonInterface : NSObject
@@ -28,6 +29,10 @@
 - (int32_t)getOperationsCount;
 
 - (nonnull NSArray<NSNumber *> *)getAccountOperationsCount;
+
+- (nullable LGPreferences *)getPreferences;
+
+- (nullable LGPreferences *)getSynchronizedPreferences;
 
 - (nullable LGBitcoinLikeWallet *)asInstanceOfBitcoinWallet;
 

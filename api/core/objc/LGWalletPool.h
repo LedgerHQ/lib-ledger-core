@@ -6,6 +6,7 @@
 @class LGCryptoCurrencyDescription;
 @class LGEthereumLikeWallet;
 @class LGLogger;
+@class LGPreferences;
 @class LGWalletCommonInterface;
 @protocol LGBitcoinPublicKeyProvider;
 @protocol LGEthereumPublicKeyProvider;
@@ -32,6 +33,8 @@
 - (nonnull NSArray<LGCryptoCurrencyDescription *> *)getAllSupportedCryptoCurrencies;
 
 - (nullable LGLogger *)getLogger;
+
+- (nullable LGPreferences *)getPreferences;
 
 - (void)close;
 

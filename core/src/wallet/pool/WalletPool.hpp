@@ -39,10 +39,11 @@
 #include "../../api/ThreadDispatcher.hpp"
 #include "../../api/PathResolver.hpp"
 #include "../../api/LogPrinter.hpp"
+#include "../../api/ExecutionContext.hpp"
 
 namespace ledger {
     namespace core {
-        class WalletPool {
+        class WalletPool : public api::WalletPool {
         public:
             WalletPool(
                     const std::string &name,
@@ -52,8 +53,39 @@ namespace ledger {
                     const std::shared_ptr<api::LogPrinter> &logPrinter,
                     const std::shared_ptr<api::ThreadDispatcher> &dispatcher
             );
-            void open(const std::function<void(void)> &callback);
+            void open(const std::function<void(bool)> &callback);
+
+            virtual std::vector<std::shared_ptr<api::WalletCommonInterface>> getAllWallets() override;
+
+            virtual std::vector<std::shared_ptr<api::BitcoinLikeWallet>> getAllBitcoinLikeWallets() override;
+
+            virtual std::vector<std::shared_ptr<api::EthereumLikeWallet>> getAllEthereumLikeWallets() override;
+
+            virtual void
+            getOrCreateBitcoinLikeWallet(const std::shared_ptr<api::BitcoinPublicKeyProvider> &publicKeyProvider,
+                                         const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
+                                         const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
+
+            virtual void
+            getOrCreateEthereumLikeWallet(const std::shared_ptr<api::EthereumPublicKeyProvider> &publicKeyProvider,
+                                          const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
+                                          const std::shared_ptr<api::GetEthreumLikeWalletCallback> &callback) override;
+
+            virtual std::vector<std::shared_ptr<api::CryptoCurrencyDescription>>
+            getAllSupportedCryptoCurrencies() override;
+
+            virtual std::shared_ptr<api::Logger> getLogger() override;
+
+            virtual std::shared_ptr<api::Preferences> getPreferences() override;
+
+            virtual void close() override;
+
         private:
+            void runOnPoolQueue(std::function<void()> func);
+
+        private:
+            std::shared_ptr<api::ThreadDispatcher> _dispatcher;
+            std::shared_ptr<api::ExecutionContext> _queue;
         };
     }
 }

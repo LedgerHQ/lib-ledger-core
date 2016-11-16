@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include ../utils/optional.h
+#include "../utils/optional.hpp"
 #include <memory>
 #include <vector>
 
@@ -17,6 +17,7 @@ class EthereumPublicKeyProvider;
 class GetBitcoinLikeWalletCallback;
 class GetEthreumLikeWalletCallback;
 class Logger;
+class Preferences;
 class WalletCommonInterface;
 
 class WalletPool {
@@ -36,6 +37,8 @@ public:
     virtual std::vector<std::shared_ptr<CryptoCurrencyDescription>> getAllSupportedCryptoCurrencies() = 0;
 
     virtual std::shared_ptr<Logger> getLogger() = 0;
+
+    virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
     virtual void close() = 0;
 };

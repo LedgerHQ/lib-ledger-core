@@ -10,7 +10,7 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --cpp-out $CORE_CPP_API_DIRECTORY \
                     --cpp-namespace ledger::core::api \
                     --cpp-optional-template std::experimental::optional \
-                    --cpp-optional-header "../utils/optional.h" \
+                    --cpp-optional-header "\"../utils/optional.hpp\"" \
                     --jni-include-cpp-prefix "../../api/" \
                     --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
                     --java-out api/core/java \

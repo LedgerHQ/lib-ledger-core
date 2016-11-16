@@ -7,6 +7,7 @@
 #include "CryptoCurrencyDescription.hpp"
 #include "EthereumLikeWallet.hpp"
 #include "Marshal.hpp"
+#include "Preferences.hpp"
 #include "WalletType.hpp"
 
 namespace djinni_generated {
@@ -111,6 +112,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletCommonInterface_00024CppPro
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletCommonInterface>(nativeRef);
         auto r = ref->getAccountOperationsCount();
         return ::djinni::release(::djinni::List<::djinni::I32>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletCommonInterface_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletCommonInterface>(nativeRef);
+        auto r = ref->getPreferences();
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletCommonInterface_00024CppProxy_native_1getSynchronizedPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletCommonInterface>(nativeRef);
+        auto r = ref->getSynchronizedPreferences();
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

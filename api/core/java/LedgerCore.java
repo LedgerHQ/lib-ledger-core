@@ -6,8 +6,16 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class LedgerCore {
+    /**
+     * Gets the version of the library as a human readable string.
+     * @return The version of the library (e.g. '1.0.1')
+     */
     public static native String getStringVersion();
 
+    /**
+     * Get the integer version of the Library
+     * @return The integer version of the library
+     */
     public static native int getIntVersion();
 
     private static final class CppProxy extends LedgerCore

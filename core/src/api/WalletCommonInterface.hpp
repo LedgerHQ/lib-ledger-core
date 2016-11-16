@@ -14,6 +14,7 @@ class Amount;
 class BitcoinLikeWallet;
 class CryptoCurrencyDescription;
 class EthereumLikeWallet;
+class Preferences;
 enum class WalletType;
 
 class WalletCommonInterface {
@@ -37,6 +38,10 @@ public:
     virtual int32_t getOperationsCount() = 0;
 
     virtual std::vector<int32_t> getAccountOperationsCount() = 0;
+
+    virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual std::shared_ptr<Preferences> getSynchronizedPreferences() = 0;
 
     virtual std::shared_ptr<BitcoinLikeWallet> asInstanceOfBitcoinWallet() = 0;
 

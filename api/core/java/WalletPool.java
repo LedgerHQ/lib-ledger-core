@@ -21,6 +21,8 @@ public abstract class WalletPool {
 
     public abstract Logger getLogger();
 
+    public abstract Preferences getPreferences();
+
     public abstract void close();
 
     private static final class CppProxy extends WalletPool
@@ -101,6 +103,14 @@ public abstract class WalletPool {
             return native_getLogger(this.nativeRef);
         }
         private native Logger native_getLogger(long _nativeRef);
+
+        @Override
+        public Preferences getPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreferences(this.nativeRef);
+        }
+        private native Preferences native_getPreferences(long _nativeRef);
 
         @Override
         public void close()

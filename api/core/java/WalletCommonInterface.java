@@ -25,6 +25,10 @@ public abstract class WalletCommonInterface {
 
     public abstract ArrayList<Integer> getAccountOperationsCount();
 
+    public abstract Preferences getPreferences();
+
+    public abstract Preferences getSynchronizedPreferences();
+
     public abstract BitcoinLikeWallet asInstanceOfBitcoinWallet();
 
     public abstract EthereumLikeWallet asInstanceOfEthereumWallet();
@@ -123,6 +127,22 @@ public abstract class WalletCommonInterface {
             return native_getAccountOperationsCount(this.nativeRef);
         }
         private native ArrayList<Integer> native_getAccountOperationsCount(long _nativeRef);
+
+        @Override
+        public Preferences getPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreferences(this.nativeRef);
+        }
+        private native Preferences native_getPreferences(long _nativeRef);
+
+        @Override
+        public Preferences getSynchronizedPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getSynchronizedPreferences(this.nativeRef);
+        }
+        private native Preferences native_getSynchronizedPreferences(long _nativeRef);
 
         @Override
         public BitcoinLikeWallet asInstanceOfBitcoinWallet()

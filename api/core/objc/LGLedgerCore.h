@@ -6,8 +6,16 @@
 
 @interface LGLedgerCore : NSObject
 
+/**
+ * Gets the version of the library as a human readable string.
+ * @return The version of the library (e.g. '1.0.1')
+ */
 + (nonnull NSString *)getStringVersion;
 
+/**
+ * Get the integer version of the Library
+ * @return The integer version of the library
+ */
 + (int32_t)getIntVersion;
 
 @end

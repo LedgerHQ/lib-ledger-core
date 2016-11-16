@@ -48,7 +48,7 @@ add_library (
         api_impl/BigIntImpl.hpp
         wallet/pool/WalletPool.cpp
         wallet/pool/WalletPool.hpp
-        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp)
+        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp utils/LambdaRunnable.cpp utils/LambdaRunnable.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
@@ -78,6 +78,9 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 target_include_directories (ledger-core PUBLIC ..)
 target_include_directories (ledger-core PUBLIC ../lib/bigd)
 target_include_directories (ledger-core PUBLIC ../lib/fmt-3.0.0)
+target_include_directories (ledger-core PUBLIC ../lib/rapidjson/include)
+target_include_directories (ledger-core PUBLIC ../lib/sqlite)
+target_include_directories (ledger-core PUBLIC ../lib/cryptopp)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

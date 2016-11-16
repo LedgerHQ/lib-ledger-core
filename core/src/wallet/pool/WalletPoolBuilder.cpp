@@ -34,51 +34,60 @@
 namespace ledger { namespace core {
 
         WalletPoolBuilder::WalletPoolBuilder() {
-            _self = std::shared_ptr<api::WalletPoolBuilder>(this);
+
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setHttpClient(const std::shared_ptr<api::HttpClient> &client) {
             _httpClient = client;
-            return _self;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setWebsocketClient(const std::shared_ptr<api::WebSocketClient> &client) {
             _webSocketClient = client;
-            return _self;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setPathResolver(const std::shared_ptr<api::PathResolver> &pathResolver) {
             _pathResolver = pathResolver;
-            return _self;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setLogPrinter(const std::shared_ptr<api::LogPrinter> &printer) {
             _logPrinter = printer;
-            return _self;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setThreadDispatcher(const std::shared_ptr<api::ThreadDispatcher> &dispatcher) {
             _dispatcher = dispatcher;
-            return _self;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::WalletPoolBuilder> WalletPoolBuilder::setName(const std::string &name) {
             _name = name;
-            return _self;
+            return shared_from_this();
         }
 
         void WalletPoolBuilder::build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) {
-            _self = nullptr;
-            auto pool = std::make_shared<WalletPool>();
+            auto pool = std::make_shared<WalletPool>(
+                    _name,
+                    _httpClient,
+                    _webSocketClient,
+                    _pathResolver,
+                    _logPrinter,
+                    _dispatcher
+            );
+            pool->open([pool, listener] (bool isCreated) {
+                listener->onWalletPoolBuilt(pool);
+            });
         }
 
         std::shared_ptr<api::WalletPoolBuilder> api::WalletPoolBuilder::createInstance() {
-            return std::shared_ptr<api::WalletPoolBuilder>(new ledger::core::WalletPoolBuilder());
+            return std::make_shared<ledger::core::WalletPoolBuilder>();
         }
     }
 }
