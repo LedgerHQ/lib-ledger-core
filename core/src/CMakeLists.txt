@@ -81,6 +81,7 @@ target_include_directories (ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories (ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories (ledger-core PUBLIC ../lib/sqlite)
 target_include_directories (ledger-core PUBLIC ../lib/cryptopp)
+target_include_directories (ledger-core PUBLIC ../lib/spdlog/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
