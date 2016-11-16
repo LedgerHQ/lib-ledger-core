@@ -1,3 +1,16 @@
+# Module used to resolve file paths. libledger-core has its own iternal representation of the file system that may not
+# be adapted for the runtime platform. All path given to the PathResolver are absolute.
 PathResolver = interface +j +o +n {
-
+    # Resolves the path for a SQLite database file.
+    # @param path The path to resolve.
+    # @return The resolved path.
+    resolveDatabasePath(path: string): string;
+    # Resolves the path of a single log file.
+    # @param path The path to resolve.
+    # @return The resolved path.
+    resolveLogFilePath(path: string): string;
+    # Resolves the path for a json file.
+    # @param path The path to resolve.
+    # @return The resolved path.
+    resolvePreferencesPath(path: string): string;
 }
