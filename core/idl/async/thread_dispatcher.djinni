@@ -3,6 +3,12 @@ Runnable = interface +c {
     run();
 }
 
+Lock = interface +j +n +o {
+    lock();
+    tryLock(): bool;
+    unlock();
+}
+
 ExecutionContext = interface +j +o +n {
     #
     execute(runnable: Runnable);
@@ -13,4 +19,6 @@ ThreadDispatcher = interface +j +o +n {
     getSerialExecutionContext(name: string): ExecutionContext;
     getThreadPoolExecutionContext(name: string): ExecutionContext;
     getMainExecutionContext(): ExecutionContext;
+
+    newLock(): Lock;
 }

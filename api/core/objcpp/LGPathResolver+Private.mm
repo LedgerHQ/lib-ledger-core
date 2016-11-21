@@ -3,6 +3,7 @@
 
 #import "LGPathResolver+Private.h"
 #import "LGPathResolver.h"
+#import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
 #include <stdexcept>
 
@@ -16,6 +17,27 @@ class PathResolver::ObjcProxy final
 {
 public:
     using Handle::Handle;
+    std::string resolveDatabasePath(const std::string & c_path) override
+    {
+        @autoreleasepool {
+            auto objcpp_result_ = [Handle::get() resolveDatabasePath:(::djinni::String::fromCpp(c_path))];
+            return ::djinni::String::toCpp(objcpp_result_);
+        }
+    }
+    std::string resolveLogFilePath(const std::string & c_path) override
+    {
+        @autoreleasepool {
+            auto objcpp_result_ = [Handle::get() resolveLogFilePath:(::djinni::String::fromCpp(c_path))];
+            return ::djinni::String::toCpp(objcpp_result_);
+        }
+    }
+    std::string resolvePreferencesPath(const std::string & c_path) override
+    {
+        @autoreleasepool {
+            auto objcpp_result_ = [Handle::get() resolvePreferencesPath:(::djinni::String::fromCpp(c_path))];
+            return ::djinni::String::toCpp(objcpp_result_);
+        }
+    }
 };
 
 }  // namespace djinni_generated

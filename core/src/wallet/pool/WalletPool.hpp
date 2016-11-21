@@ -40,6 +40,7 @@
 #include "../../api/PathResolver.hpp"
 #include "../../api/LogPrinter.hpp"
 #include "../../api/ExecutionContext.hpp"
+#include "../../preferences/IPreferencesBackend.hpp"
 
 namespace ledger {
     namespace core {
@@ -86,6 +87,7 @@ namespace ledger {
         private:
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::shared_ptr<api::ExecutionContext> _queue;
+            std::shared_ptr<IPreferencesBackend> _preferencesBackend;
         };
     }
 }

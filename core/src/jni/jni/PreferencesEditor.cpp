@@ -74,6 +74,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1remove(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesEditor>(nativeRef);
+        auto r = ref->remove(::djinni::String::toCpp(jniEnv, j_key));
+        return ::djinni::release(::djinni_generated::PreferencesEditor::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1commit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

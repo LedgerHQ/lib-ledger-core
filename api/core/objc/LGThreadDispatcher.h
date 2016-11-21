@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 @protocol LGExecutionContext;
+@protocol LGLock;
 
 
 @protocol LGThreadDispatcher
@@ -12,5 +13,7 @@
 - (nullable id<LGExecutionContext>)getThreadPoolExecutionContext:(nonnull NSString *)name;
 
 - (nullable id<LGExecutionContext>)getMainExecutionContext;
+
+- (nullable id<LGLock>)newLock;
 
 @end

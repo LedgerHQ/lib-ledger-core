@@ -5,25 +5,59 @@
 @class LGPreferencesEditor;
 
 
+/**
+ * Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
+ * the filesystem. They can be local or stored with the Ledger API backend (encrypted by a user secret). This can be used to
+ * attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
+ * is highly inspired by Android SharedPreferences.
+ */
 @interface LGPreferences : NSObject
 
+/**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
 - (nonnull NSString *)getString:(nonnull NSString *)key
                   fallbackValue:(nonnull NSString *)fallbackValue;
 
+/**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
 - (int32_t)getInt:(nonnull NSString *)key
     fallbackValue:(int32_t)fallbackValue;
 
+/**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
 - (int64_t)getLong:(nonnull NSString *)key
      fallbackValue:(int64_t)fallbackValue;
 
+/**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
 - (BOOL)getBoolean:(nonnull NSString *)key
      fallbackValue:(BOOL)fallbackValue;
 
+/**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
 - (nonnull NSArray<NSString *> *)getStringArray:(nonnull NSString *)key
                                   fallbackValue:(nonnull NSArray<NSString *> *)fallbackValue;
 
+/**
+ * Checks whether the Preferences contains the given key.
+ * @return true the preferences contains the key, false otherwise.
+ */
 - (BOOL)contains:(nonnull NSString *)key;
 
+/**
+ * Get a preferences editor in order to add/modify/remove data.
+ * @return An interface for editting preferences.
+ */
 - (nullable LGPreferencesEditor *)edit;
 
 @end

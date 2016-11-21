@@ -6,6 +6,7 @@
 #import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
 #import "LGExecutionContext+Private.h"
+#import "LGLock+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -37,6 +38,13 @@ public:
         @autoreleasepool {
             auto objcpp_result_ = [Handle::get() getMainExecutionContext];
             return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
+        }
+    }
+    std::shared_ptr<::ledger::core::api::Lock> newLock() override
+    {
+        @autoreleasepool {
+            auto objcpp_result_ = [Handle::get() newLock];
+            return ::djinni_generated::Lock::toCpp(objcpp_result_);
         }
     }
 };

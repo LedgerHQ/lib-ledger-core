@@ -33,12 +33,18 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
+        std::string resolveDatabasePath(const std::string & path) override;
+        std::string resolveLogFilePath(const std::string & path) override;
+        std::string resolvePreferencesPath(const std::string & path) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::PathResolver, ::djinni_generated::PathResolver>;
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/PathResolver") };
+    const jmethodID method_resolveDatabasePath { ::djinni::jniGetMethodID(clazz.get(), "resolveDatabasePath", "(Ljava/lang/String;)Ljava/lang/String;") };
+    const jmethodID method_resolveLogFilePath { ::djinni::jniGetMethodID(clazz.get(), "resolveLogFilePath", "(Ljava/lang/String;)Ljava/lang/String;") };
+    const jmethodID method_resolvePreferencesPath { ::djinni::jniGetMethodID(clazz.get(), "resolvePreferencesPath", "(Ljava/lang/String;)Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated

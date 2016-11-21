@@ -353,6 +353,8 @@ endif()
 # Doxygen documentation
 #============================================================================
 
+set(BUILD_DOCUMENTATION OFF)
+
 if(BUILD_DOCUMENTATION)
 	find_package(Doxygen REQUIRED)
 

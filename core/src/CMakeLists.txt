@@ -48,7 +48,7 @@ add_library (
         api_impl/BigIntImpl.hpp
         wallet/pool/WalletPool.cpp
         wallet/pool/WalletPool.hpp
-        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp utils/LambdaRunnable.cpp utils/LambdaRunnable.hpp)
+        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp utils/LambdaRunnable.cpp utils/LambdaRunnable.hpp preferences/JsonPreferences.cpp preferences/JsonPreferences.hpp preferences/IPreferencesBackend.hpp preferences/AtomicPreferencesBackend.cpp preferences/AtomicPreferencesBackend.hpp async/LockedResource.cpp async/LockedResource.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

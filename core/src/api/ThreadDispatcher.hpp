@@ -9,6 +9,7 @@
 namespace ledger { namespace core { namespace api {
 
 class ExecutionContext;
+class Lock;
 
 class ThreadDispatcher {
 public:
@@ -19,6 +20,8 @@ public:
     virtual std::shared_ptr<ExecutionContext> getThreadPoolExecutionContext(const std::string & name) = 0;
 
     virtual std::shared_ptr<ExecutionContext> getMainExecutionContext() = 0;
+
+    virtual std::shared_ptr<Lock> newLock() = 0;
 };
 
 } } }  // namespace ledger::core::api

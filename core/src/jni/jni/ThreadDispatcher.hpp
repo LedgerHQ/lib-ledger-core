@@ -36,6 +36,7 @@ private:
         std::shared_ptr<::ledger::core::api::ExecutionContext> getSerialExecutionContext(const std::string & name) override;
         std::shared_ptr<::ledger::core::api::ExecutionContext> getThreadPoolExecutionContext(const std::string & name) override;
         std::shared_ptr<::ledger::core::api::ExecutionContext> getMainExecutionContext() override;
+        std::shared_ptr<::ledger::core::api::Lock> newLock() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::ThreadDispatcher, ::djinni_generated::ThreadDispatcher>;
@@ -45,6 +46,7 @@ private:
     const jmethodID method_getSerialExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getSerialExecutionContext", "(Ljava/lang/String;)Lco/ledger/core/ExecutionContext;") };
     const jmethodID method_getThreadPoolExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getThreadPoolExecutionContext", "(Ljava/lang/String;)Lco/ledger/core/ExecutionContext;") };
     const jmethodID method_getMainExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getMainExecutionContext", "()Lco/ledger/core/ExecutionContext;") };
+    const jmethodID method_newLock { ::djinni::jniGetMethodID(clazz.get(), "newLock", "()Lco/ledger/core/Lock;") };
 };
 
 }  // namespace djinni_generated

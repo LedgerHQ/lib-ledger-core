@@ -5,23 +5,62 @@
 @class LGPreferencesEditor;
 
 
+/** Interface for editting Preferences. All changes to the editor are persisted to the disk only when comitted. */
 @interface LGPreferencesEditor : NSObject
 
+/**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
 - (nullable LGPreferencesEditor *)putString:(nonnull NSString *)key
                                       value:(nonnull NSString *)value;
 
+/**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
 - (nullable LGPreferencesEditor *)putInt:(nonnull NSString *)key
                                    value:(int32_t)value;
 
+/**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
 - (nullable LGPreferencesEditor *)putLong:(nonnull NSString *)key
                                     value:(int64_t)value;
 
+/**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
 - (nullable LGPreferencesEditor *)putBoolean:(nonnull NSString *)key
                                        value:(BOOL)value;
 
+/**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
 - (nullable LGPreferencesEditor *)putStringArray:(nonnull NSString *)key
                                            value:(nonnull NSArray<NSString *> *)value;
 
+/**
+ * Removes the data associated with the given key.
+ * @param key The key to remove from the Preferences
+ * @return The reference of self in order to chain the call to the editor.
+ */
+- (nullable LGPreferencesEditor *)remove:(nonnull NSString *)key;
+
+/** Persists the changes to the Preferences. */
 - (void)commit;
 
 @end

@@ -6,17 +6,56 @@ package co.ledger.core;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/** Interface for editting Preferences. All changes to the editor are persisted to the disk only when comitted. */
 public abstract class PreferencesEditor {
+    /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
     public abstract PreferencesEditor putString(String key, String value);
 
+    /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
     public abstract PreferencesEditor putInt(String key, int value);
 
+    /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
     public abstract PreferencesEditor putLong(String key, long value);
 
+    /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
     public abstract PreferencesEditor putBoolean(String key, boolean value);
 
+    /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
     public abstract PreferencesEditor putStringArray(String key, ArrayList<String> value);
 
+    /**
+     * Removes the data associated with the given key.
+     * @param key The key to remove from the Preferences
+     * @return The reference of self in order to chain the call to the editor.
+     */
+    public abstract PreferencesEditor remove(String key);
+
+    /** Persists the changes to the Preferences. */
     public abstract void commit();
 
     private static final class CppProxy extends PreferencesEditor
@@ -81,6 +120,14 @@ public abstract class PreferencesEditor {
             return native_putStringArray(this.nativeRef, key, value);
         }
         private native PreferencesEditor native_putStringArray(long _nativeRef, String key, ArrayList<String> value);
+
+        @Override
+        public PreferencesEditor remove(String key)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_remove(this.nativeRef, key);
+        }
+        private native PreferencesEditor native_remove(long _nativeRef, String key);
 
         @Override
         public void commit()

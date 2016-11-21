@@ -5,6 +5,7 @@
 #import "../objc/LGEthereumPublicKeyProvider.h"
 #import "../objc/LGBitcoinPublicKeyProvider.h"
 #import "../objc/LGRunnable.h"
+#import "../objc/LGLock.h"
 #import "../objc/LGExecutionContext.h"
 #import "../objc/LGThreadDispatcher.h"
 #import "../objc/LGPreferences.h"

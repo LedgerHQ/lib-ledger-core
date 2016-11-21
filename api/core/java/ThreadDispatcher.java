@@ -9,4 +9,6 @@ public abstract class ThreadDispatcher {
     public abstract ExecutionContext getThreadPoolExecutionContext(String name);
 
     public abstract ExecutionContext getMainExecutionContext();
+
+    public abstract Lock newLock();
 }

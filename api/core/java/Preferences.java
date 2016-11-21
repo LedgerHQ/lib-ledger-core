@@ -6,19 +6,53 @@ package co.ledger.core;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
+ * the filesystem. They can be local or stored with the Ledger API backend (encrypted by a user secret). This can be used to
+ * attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
+ * is highly inspired by Android SharedPreferences.
+ */
 public abstract class Preferences {
+    /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
     public abstract String getString(String key, String fallbackValue);
 
+    /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
     public abstract int getInt(String key, int fallbackValue);
 
+    /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
     public abstract long getLong(String key, long fallbackValue);
 
+    /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
     public abstract boolean getBoolean(String key, boolean fallbackValue);
 
+    /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
     public abstract ArrayList<String> getStringArray(String key, ArrayList<String> fallbackValue);
 
+    /**
+     * Checks whether the Preferences contains the given key.
+     * @return true the preferences contains the key, false otherwise.
+     */
     public abstract boolean contains(String key);
 
+    /**
+     * Get a preferences editor in order to add/modify/remove data.
+     * @return An interface for editting preferences.
+     */
     public abstract PreferencesEditor edit();
 
     private static final class CppProxy extends Preferences

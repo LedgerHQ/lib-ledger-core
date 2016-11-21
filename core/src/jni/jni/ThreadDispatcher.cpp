@@ -3,6 +3,7 @@
 
 #include "ThreadDispatcher.hpp"  // my header
 #include "ExecutionContext.hpp"
+#include "Lock.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -40,6 +41,14 @@ std::shared_ptr<::ledger::core::api::ExecutionContext> ThreadDispatcher::JavaPro
     auto jret = jniEnv->CallObjectMethod(Handle::get().get(), data.method_getMainExecutionContext);
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni_generated::ExecutionContext::toCpp(jniEnv, jret);
+}
+std::shared_ptr<::ledger::core::api::Lock> ThreadDispatcher::JavaProxy::newLock() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::ThreadDispatcher>::get();
+    auto jret = jniEnv->CallObjectMethod(Handle::get().get(), data.method_newLock);
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni_generated::Lock::toCpp(jniEnv, jret);
 }
 
 }  // namespace djinni_generated
