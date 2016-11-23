@@ -72,7 +72,9 @@ ledger::core::AtomicPreferencesBackend::getObject(const std::string &name) {
     _lock->lock();
     if (_dom.GetObject().FindMember(name.c_str()) == _dom.MemberEnd()) {
         rapidjson::Value v(rapidjson::kObjectType);
-        _dom.AddMember(rapidjson::StringRef(name.c_str()), v, _dom.GetAllocator());
+        rapidjson::Value k(rapidjson::kStringType);
+        k.SetString(name.c_str(), name.size(), _dom.GetAllocator());
+        _dom.AddMember(k, v, _dom.GetAllocator());
     }
     auto object = _dom.GetObject().FindMember(name.c_str())->value.GetObject();
     _lock->unlock();
@@ -104,7 +106,9 @@ void ledger::core::AtomicPreferencesBackend::merge(const std::string &name,
     _lock->lock();
     if (_dom.GetObject().FindMember(name.c_str()) == _dom.MemberEnd()) {
         rapidjson::Value v(rapidjson::kObjectType);
-        _dom.AddMember(rapidjson::StringRef(name.c_str()), v, _dom.GetAllocator());
+        rapidjson::Value k(rapidjson::kStringType);
+        k.SetString(name.c_str(), name.size(), _dom.GetAllocator());
+        _dom.AddMember(k, v, _dom.GetAllocator());
     }
     auto object = _dom.GetObject().FindMember(name.c_str())->value.GetObject();
     for (auto change : changes) {
