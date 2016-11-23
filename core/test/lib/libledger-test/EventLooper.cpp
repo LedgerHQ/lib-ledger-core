@@ -31,6 +31,7 @@
 #include "EventLooper.hpp"
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 static const long RUN_LOOP_FREQUENCY_MS = 1000 / 30;
 using namespace std::chrono;
@@ -61,7 +62,7 @@ void EventLooper::run() {
         }
         _mutex.unlock();
         auto end = getTimeMillis();
-        ::usleep((RUN_LOOP_FREQUENCY_MS - (end - start)) * 1000);
+        std::this_thread::sleep_for(std::chrono::milliseconds((RUN_LOOP_FREQUENCY_MS - (end - start))));
     }
 }
 
