@@ -37,7 +37,7 @@
 
 namespace ledger {
     namespace core {
-        class AtomicPreferencesBackend : public IPreferencesBackend {
+        class AtomicPreferencesBackend : public IPreferencesBackend, public std::enable_shared_from_this<AtomicPreferencesBackend> {
         public:
             AtomicPreferencesBackend(const std::string &absolutePath,
                                      const std::shared_ptr<api::ExecutionContext> &ownerContext,
@@ -45,8 +45,12 @@ namespace ledger {
                                      const std::shared_ptr<api::Lock> &lock);
             virtual void load(std::function<void()> callback) override;
             virtual std::shared_ptr<api::Preferences> getPreferences(const std::string &name) override;
-            virtual void save(std::vector<PreferencesChanges> changes) override;
+            virtual void save(const std::string &name, std::vector<PreferencesChanges *> changes) override;
             virtual LockedResource<rapidjson::Value::Object> getObject(const std::string &name) override;
+
+        protected:
+            // Merge changes into the main DOM object
+            void merge(const std::string &name, std::vector<ledger::core::PreferencesChanges *> changes);
         };
     }
 }

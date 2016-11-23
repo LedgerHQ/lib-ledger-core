@@ -47,6 +47,8 @@ namespace ledger {
         private:
             std::function<void ()> _func;
         };
+
+        std::shared_ptr<api::Runnable> make_runnable(std::function<void()> func);
     }
 }
 

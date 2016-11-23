@@ -47,7 +47,7 @@ namespace ledger {
             JsonPreferences(
                     std::weak_ptr<IPreferencesBackend> backend,
                     std::string name,
-                    rapidjson::MemoryPoolAllocator<> allocator
+                    rapidjson::MemoryPoolAllocator<>& allocator
             );
         private:
         public:
@@ -69,7 +69,8 @@ namespace ledger {
             friend class IPreferencesBackend;
         private:
             std::weak_ptr<IPreferencesBackend> _backend;
-            rapidjson::MemoryPoolAllocator<> _allocator;
+            rapidjson::MemoryPoolAllocator<>& _allocator;
+            std::string _name;
         };
     }
 }

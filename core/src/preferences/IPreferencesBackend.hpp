@@ -49,6 +49,7 @@ namespace ledger {
 
         struct PreferencesChanges {
             PreferencesChangeType type;
+            std::string name;
             rapidjson::Value value;
         };
 
@@ -67,7 +68,7 @@ namespace ledger {
             };
             virtual void load(std::function<void()> callback) = 0;
             virtual std::shared_ptr<api::Preferences> getPreferences(const std::string& name) = 0;
-            virtual void save(std::vector<PreferencesChanges> changes) = 0;
+            virtual void save(const std::string& name, std::vector<PreferencesChanges *> changes) = 0;
             virtual LockedResource<rapidjson::Value::Object> getObject(const std::string& name) = 0;
         protected:
             std::string _path;

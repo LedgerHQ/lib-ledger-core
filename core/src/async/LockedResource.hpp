@@ -43,9 +43,9 @@ namespace ledger {
                     _isLocked = false;
                 }
 
-                T operator->() {
+                T* operator->() {
                     lock();
-                    return _resource;
+                    return &_resource;
                 }
 
                 void lock() {

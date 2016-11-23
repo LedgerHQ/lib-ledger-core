@@ -58,3 +58,9 @@ bool ledger::core::JsonPreferences::contains(const std::string &key) {
 std::shared_ptr<ledger::core::api::PreferencesEditor> ledger::core::JsonPreferences::edit() {
     return nullptr;
 }
+
+ledger::core::JsonPreferences::JsonPreferences(std::weak_ptr<ledger::core::IPreferencesBackend> backend,
+                                               std::string name, rapidjson::MemoryPoolAllocator<> &allocator) : _allocator(allocator) {
+    _name = name;
+    _backend = backend;
+}

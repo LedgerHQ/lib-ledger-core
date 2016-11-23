@@ -43,5 +43,10 @@ namespace ledger {
         std::shared_ptr<api::Runnable> LambdaRunnable::make(std::function<void()> func) {
             return std::make_shared<LambdaRunnable>(func);
         }
+
+        std::shared_ptr<api::Runnable> make_runnable(std::function<void()> func) {
+            return std::make_shared<LambdaRunnable>(func);
+        }
+
     }
 }

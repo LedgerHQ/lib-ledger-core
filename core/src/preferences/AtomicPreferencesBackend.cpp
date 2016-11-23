@@ -31,6 +31,13 @@
 #include <bigd.h>
 #include <functional>
 #include "AtomicPreferencesBackend.hpp"
+#include "../utils/LambdaRunnable.hpp"
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
+#include "JsonPreferences.hpp"
+#include <fstream>
+#include <rapidjson/writer.h>
+#include <iostream>
 
 ledger::core::AtomicPreferencesBackend::AtomicPreferencesBackend(const std::string &absolutePath,
                                                                  const std::shared_ptr<ledger::core::api::ExecutionContext> &ownerContext,
@@ -41,16 +48,23 @@ ledger::core::AtomicPreferencesBackend::AtomicPreferencesBackend(const std::stri
 }
 
 void ledger::core::AtomicPreferencesBackend::load(std::function<void()> callback) {
-
+    auto self = shared_from_this();
+    _context->execute(make_runnable([self, callback] () {
+        auto path = self->_pathResolver->resolvePreferencesPath(self->_path);
+        std::ifstream ifs(path);
+        if (ifs.is_open()) {
+            rapidjson::IStreamWrapper is(ifs);
+            self->_dom.ParseStream(is);
+        } else {
+            self->_dom.SetObject();
+        }
+        callback();
+    }));
 }
 
 std::shared_ptr<ledger::core::api::Preferences>
 ledger::core::AtomicPreferencesBackend::getPreferences(const std::string &name) {
-    return nullptr;
-}
-
-void ledger::core::AtomicPreferencesBackend::save(std::vector<ledger::core::PreferencesChanges> changes) {
-
+    return std::make_shared<JsonPreferences>(shared_from_this(), name, _dom.GetAllocator());
 }
 
 ledger::core::LockedResource<rapidjson::Value::Object>
@@ -62,5 +76,46 @@ ledger::core::AtomicPreferencesBackend::getObject(const std::string &name) {
     }
     _lock->unlock();
     return LockedResource<rapidjson::Value::Object>(_lock, object->value.GetObject());
+}
+
+void ledger::core::AtomicPreferencesBackend::save(const std::string &name,
+                                                  std::vector<ledger::core::PreferencesChanges *> changes) {
+    auto self = shared_from_this();
+    _context->execute(make_runnable([self, name, changes] () {
+        self->merge(name, changes);
+        auto finalPath = self->_pathResolver->resolvePreferencesPath(self->_path);
+        auto path = self->_pathResolver->resolvePreferencesPath(self->_path + ".tmp");
+        std::ofstream ofs(path);
+        if (ofs.is_open()) {
+            rapidjson::OStreamWrapper  os(ofs);
+            rapidjson::Writer<rapidjson::OStreamWrapper> writer(os);
+            self->_dom.Accept(writer);
+            std::rename(path.c_str(), finalPath.c_str());
+            ofs.close();
+        } else {
+            // TODO LOG ERROR
+        }
+    }));
+}
+
+void ledger::core::AtomicPreferencesBackend::merge(const std::string &name,
+                                                   std::vector<ledger::core::PreferencesChanges *> changes) {
+    _lock->lock();
+    if (_dom.GetObject().FindMember(name.c_str()) == _dom.MemberEnd()) {
+        rapidjson::Value v(rapidjson::kObjectType);
+        _dom.AddMember(rapidjson::StringRef(name.c_str()), v, _dom.GetAllocator());
+    }
+    auto object = _dom.GetObject().FindMember(name.c_str())->value.GetObject();
+    for (auto change : changes) {
+        if (change->type == ledger::core::PreferencesChangeType::SET) {
+            rapidjson::Value key(rapidjson::kStringType);
+            key.SetString(rapidjson::StringRef(change->name.c_str()), change->name.size(), _dom.GetAllocator());
+            object.AddMember(key, change->value, _dom.GetAllocator());
+        } else {
+            object.RemoveMember(change->name.c_str());
+        }
+        delete change;
+    }
+    _lock->unlock();
 }
 
