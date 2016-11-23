@@ -34,6 +34,8 @@
 #include "IPreferencesBackend.hpp"
 #include <rapidjson/document.h>
 #include <bigd.h>
+#include "../api/Preferences.hpp"
+#include "../api/PreferencesEditor.hpp"
 
 namespace ledger {
     namespace core {

@@ -70,12 +70,13 @@ ledger::core::AtomicPreferencesBackend::getPreferences(const std::string &name) 
 ledger::core::LockedResource<rapidjson::Value::Object>
 ledger::core::AtomicPreferencesBackend::getObject(const std::string &name) {
     _lock->lock();
-    auto object = _dom.GetObject().FindMember(name.c_str());
-    if (object->value.IsNull()) {
-        object->value.SetObject();
+    if (_dom.GetObject().FindMember(name.c_str()) == _dom.MemberEnd()) {
+        rapidjson::Value v(rapidjson::kObjectType);
+        _dom.AddMember(rapidjson::StringRef(name.c_str()), v, _dom.GetAllocator());
     }
+    auto object = _dom.GetObject().FindMember(name.c_str())->value.GetObject();
     _lock->unlock();
-    return LockedResource<rapidjson::Value::Object>(_lock, object->value.GetObject());
+    return LockedResource<rapidjson::Value::Object>(_lock, object);
 }
 
 void ledger::core::AtomicPreferencesBackend::save(const std::string &name,
@@ -110,7 +111,12 @@ void ledger::core::AtomicPreferencesBackend::merge(const std::string &name,
         if (change->type == ledger::core::PreferencesChangeType::SET) {
             rapidjson::Value key(rapidjson::kStringType);
             key.SetString(rapidjson::StringRef(change->name.c_str()), change->name.size(), _dom.GetAllocator());
-            object.AddMember(key, change->value, _dom.GetAllocator());
+            auto itr = object.FindMember(key);
+            if (itr == object.MemberEnd()) {
+                object.AddMember(key, change->value, _dom.GetAllocator());
+            } else {
+                itr->value.Swap(change->value);
+            }
         } else {
             object.RemoveMember(change->name.c_str());
         }

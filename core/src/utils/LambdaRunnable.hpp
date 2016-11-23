@@ -33,6 +33,7 @@
 
 #include <functional>
 #include "../api/Runnable.hpp"
+#include <memory>
 
 namespace ledger {
     namespace core {

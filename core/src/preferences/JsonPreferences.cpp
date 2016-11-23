@@ -29,34 +29,71 @@
  *
  */
 #include "JsonPreferences.hpp"
+#include "IPreferencesBackend.hpp"
+#include "JsonPreferencesEditor.hpp"
 
 std::string ledger::core::JsonPreferences::getString(const std::string &key, const std::string &fallbackValue) {
-   return "";
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    if (itr == object->MemberEnd() || !itr->value.IsString())
+        return fallbackValue;
+    return itr->value.GetString();
 }
 
 int32_t ledger::core::JsonPreferences::getInt(const std::string &key, int32_t fallbackValue) {
-    return 0;
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    if (itr == object->MemberEnd() || !itr->value.IsInt())
+        return fallbackValue;
+    return itr->value.GetInt();
 }
 
 int64_t ledger::core::JsonPreferences::getLong(const std::string &key, int64_t fallbackValue) {
-  return 0;
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    if (itr == object->MemberEnd() || !itr->value.IsInt64())
+        return fallbackValue;
+    return itr->value.GetInt64();
 }
 
 bool ledger::core::JsonPreferences::getBoolean(const std::string &key, bool fallbackValue) {
-  return false;
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    if (itr == object->MemberEnd() || !itr->value.IsBool())
+        return fallbackValue;
+    return itr->value.GetBool();
 }
 
 std::vector<std::string>
 ledger::core::JsonPreferences::getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) {
-   return std::vector<std::string>();
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    if (itr == object->MemberEnd() || !itr->value.IsArray())
+        return fallbackValue;
+    auto array = itr->value.GetArray();
+    std::vector<std::string> result;
+    for (auto& v : array) {
+        if (v.IsString()) {
+            result.push_back(v.GetString());
+        }
+    }
+    return result;
 }
 
 bool ledger::core::JsonPreferences::contains(const std::string &key) {
-   return false;
+    auto backend = _backend.lock();
+    auto object = backend->getObject(_name);
+    auto itr = object->FindMember(key.c_str());
+    return itr != object->MemberEnd();
 }
 
 std::shared_ptr<ledger::core::api::PreferencesEditor> ledger::core::JsonPreferences::edit() {
-    return nullptr;
+    return std::make_shared<JsonPreferencesEditor>(_backend, _name, _allocator);
 }
 
 ledger::core::JsonPreferences::JsonPreferences(std::weak_ptr<ledger::core::IPreferencesBackend> backend,
