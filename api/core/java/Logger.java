@@ -6,6 +6,15 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Logger {
+    public abstract void d(String tag, String message);
+
+    public abstract void i(String tag, String message);
+
+    public abstract void e(String tag, String message);
+
+    public abstract void w(String tag, String message);
+
+    public abstract void c(String tag, String message);
 
     private static final class CppProxy extends Logger
     {
@@ -29,5 +38,45 @@ public abstract class Logger {
             destroy();
             super.finalize();
         }
+
+        @Override
+        public void d(String tag, String message)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_d(this.nativeRef, tag, message);
+        }
+        private native void native_d(long _nativeRef, String tag, String message);
+
+        @Override
+        public void i(String tag, String message)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_i(this.nativeRef, tag, message);
+        }
+        private native void native_i(long _nativeRef, String tag, String message);
+
+        @Override
+        public void e(String tag, String message)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_e(this.nativeRef, tag, message);
+        }
+        private native void native_e(long _nativeRef, String tag, String message);
+
+        @Override
+        public void w(String tag, String message)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_w(this.nativeRef, tag, message);
+        }
+        private native void native_w(long _nativeRef, String tag, String message);
+
+        @Override
+        public void c(String tag, String message)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_c(this.nativeRef, tag, message);
+        }
+        private native void native_c(long _nativeRef, String tag, String message);
     }
 }

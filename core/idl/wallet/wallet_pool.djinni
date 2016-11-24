@@ -38,7 +38,7 @@ WalletPoolBuilder = interface +c {
     setLogPrinter(printer: LogPrinter): WalletPoolBuilder;
     setThreadDispatcher(dispatcher: ThreadDispatcher): WalletPoolBuilder;
     setName(name: string): WalletPoolBuilder;
-
+    setPassword(password: string): WalletPoolBuilder;
     build(listener: WalletPoolBuildCallback);
 
     static createInstance(): WalletPoolBuilder;

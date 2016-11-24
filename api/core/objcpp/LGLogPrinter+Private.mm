@@ -5,6 +5,7 @@
 #import "LGLogPrinter.h"
 #import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "LGExecutionContext+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -45,6 +46,19 @@ public:
     {
         @autoreleasepool {
             [Handle::get() printApdu:(::djinni::String::fromCpp(c_message))];
+        }
+    }
+    void printCriticalError(const std::string & c_message) override
+    {
+        @autoreleasepool {
+            [Handle::get() printCriticalError:(::djinni::String::fromCpp(c_message))];
+        }
+    }
+    std::shared_ptr<::ledger::core::api::ExecutionContext> getContext() override
+    {
+        @autoreleasepool {
+            auto objcpp_result_ = [Handle::get() getContext];
+            return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
         }
     }
 };

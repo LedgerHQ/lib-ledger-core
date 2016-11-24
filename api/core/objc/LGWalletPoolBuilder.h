@@ -25,6 +25,8 @@
 
 - (nullable LGWalletPoolBuilder *)setName:(nonnull NSString *)name;
 
+- (nullable LGWalletPoolBuilder *)setPassword:(nonnull NSString *)password;
+
 - (void)build:(nullable id<LGWalletPoolBuildCallback>)listener;
 
 + (nullable LGWalletPoolBuilder *)createInstance;

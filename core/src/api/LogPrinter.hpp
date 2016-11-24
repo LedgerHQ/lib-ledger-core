@@ -3,9 +3,12 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
+
+class ExecutionContext;
 
 class LogPrinter {
 public:
@@ -20,6 +23,10 @@ public:
     virtual void printWarning(const std::string & message) = 0;
 
     virtual void printApdu(const std::string & message) = 0;
+
+    virtual void printCriticalError(const std::string & message) = 0;
+
+    virtual std::shared_ptr<ExecutionContext> getContext() = 0;
 };
 
 } } }  // namespace ledger::core::api

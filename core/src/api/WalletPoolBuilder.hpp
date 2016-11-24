@@ -31,6 +31,8 @@ public:
 
     virtual std::shared_ptr<WalletPoolBuilder> setName(const std::string & name) = 0;
 
+    virtual std::shared_ptr<WalletPoolBuilder> setPassword(const std::string & password) = 0;
+
     virtual void build(const std::shared_ptr<WalletPoolBuildCallback> & listener) = 0;
 
     static std::shared_ptr<WalletPoolBuilder> createInstance();

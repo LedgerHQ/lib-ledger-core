@@ -5,6 +5,7 @@
 #import "LGLogger.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
+#import "DJIMarshal+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -27,6 +28,46 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.assign(cppRef);
     }
     return self;
+}
+
+- (void)d:(nonnull NSString *)tag
+  message:(nonnull NSString *)message {
+    try {
+        _cppRefHandle.get()->d(::djinni::String::toCpp(tag),
+                               ::djinni::String::toCpp(message));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)i:(nonnull NSString *)tag
+  message:(nonnull NSString *)message {
+    try {
+        _cppRefHandle.get()->i(::djinni::String::toCpp(tag),
+                               ::djinni::String::toCpp(message));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)e:(nonnull NSString *)tag
+  message:(nonnull NSString *)message {
+    try {
+        _cppRefHandle.get()->e(::djinni::String::toCpp(tag),
+                               ::djinni::String::toCpp(message));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)w:(nonnull NSString *)tag
+  message:(nonnull NSString *)message {
+    try {
+        _cppRefHandle.get()->w(::djinni::String::toCpp(tag),
+                               ::djinni::String::toCpp(message));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)c:(nonnull NSString *)tag
+  message:(nonnull NSString *)message {
+    try {
+        _cppRefHandle.get()->c(::djinni::String::toCpp(tag),
+                               ::djinni::String::toCpp(message));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 namespace djinni_generated {

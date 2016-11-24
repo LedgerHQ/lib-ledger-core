@@ -18,6 +18,8 @@ public abstract class WalletPoolBuilder {
 
     public abstract WalletPoolBuilder setName(String name);
 
+    public abstract WalletPoolBuilder setPassword(String password);
+
     public abstract void build(WalletPoolBuildCallback listener);
 
     public static native WalletPoolBuilder createInstance();
@@ -92,6 +94,14 @@ public abstract class WalletPoolBuilder {
             return native_setName(this.nativeRef, name);
         }
         private native WalletPoolBuilder native_setName(long _nativeRef, String name);
+
+        @Override
+        public WalletPoolBuilder setPassword(String password)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setPassword(this.nativeRef, password);
+        }
+        private native WalletPoolBuilder native_setPassword(long _nativeRef, String password);
 
         @Override
         public void build(WalletPoolBuildCallback listener)

@@ -41,6 +41,7 @@
 #include "../../api/LogPrinter.hpp"
 #include "../../api/ExecutionContext.hpp"
 #include "../../preferences/IPreferencesBackend.hpp"
+#include "../../utils/optional.hpp"
 
 namespace ledger {
     namespace core {
@@ -48,6 +49,7 @@ namespace ledger {
         public:
             WalletPool(
                     const std::string &name,
+                    const std::experimental::optional<std::string>& password,
                     const std::shared_ptr<api::HttpClient> &httpClient,
                     const std::shared_ptr<api::WebSocketClient> &webSocketClient,
                     const std::shared_ptr<api::PathResolver> &pathResolver,

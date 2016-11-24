@@ -3,11 +3,23 @@
 
 #pragma once
 
+#include <string>
+
 namespace ledger { namespace core { namespace api {
 
 class Logger {
 public:
     virtual ~Logger() {}
+
+    virtual void d(const std::string & tag, const std::string & message) = 0;
+
+    virtual void i(const std::string & tag, const std::string & message) = 0;
+
+    virtual void e(const std::string & tag, const std::string & message) = 0;
+
+    virtual void w(const std::string & tag, const std::string & message) = 0;
+
+    virtual void c(const std::string & tag, const std::string & message) = 0;
 };
 
 } } }  // namespace ledger::core::api

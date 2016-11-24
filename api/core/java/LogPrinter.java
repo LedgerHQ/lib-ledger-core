@@ -13,4 +13,8 @@ public abstract class LogPrinter {
     public abstract void printWarning(String message);
 
     public abstract void printApdu(String message);
+
+    public abstract void printCriticalError(String message);
+
+    public abstract ExecutionContext getContext();
 }

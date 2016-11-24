@@ -1,3 +1,4 @@
+@import "../async/thread_dispatcher.djinni"
 
 LogPrinter = interface +j +o +n {
     printError(message: string);
@@ -5,9 +6,15 @@ LogPrinter = interface +j +o +n {
     printDebug(message: string);
     printWarning(message: string);
     printApdu(message: string);
+    printCriticalError(message: string);
+    getContext(): ExecutionContext;
 }
 
 Logger = interface +c {
-
+    d(tag: string, message: string);
+    i(tag: string, message: string);
+    e(tag: string, message: string);
+    w(tag: string, message: string);
+    c(tag: string, message: string);
 }
 

@@ -78,6 +78,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGWalletPoolBuilder *)setPassword:(nonnull NSString *)password {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->setPassword(::djinni::String::toCpp(password));
+        return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (void)build:(nullable id<LGWalletPoolBuildCallback>)listener {
     try {
         _cppRefHandle.get()->build(::djinni_generated::WalletPoolBuildCallback::toCpp(listener));

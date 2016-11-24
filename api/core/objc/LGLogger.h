@@ -6,4 +6,19 @@
 
 @interface LGLogger : NSObject
 
+- (void)d:(nonnull NSString *)tag
+  message:(nonnull NSString *)message;
+
+- (void)i:(nonnull NSString *)tag
+  message:(nonnull NSString *)message;
+
+- (void)e:(nonnull NSString *)tag
+  message:(nonnull NSString *)message;
+
+- (void)w:(nonnull NSString *)tag
+  message:(nonnull NSString *)message;
+
+- (void)c:(nonnull NSString *)tag
+  message:(nonnull NSString *)message;
+
 @end

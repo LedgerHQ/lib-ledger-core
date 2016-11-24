@@ -33,6 +33,7 @@
 
 #include "../../api/WalletPoolBuilder.hpp"
 #include "../../api/WalletPoolBuildCallback.hpp"
+#include "../../utils/optional.hpp"
 
 namespace ledger {
 
@@ -40,6 +41,8 @@ namespace ledger {
         class WalletPoolBuilder : public api::WalletPoolBuilder, public std::enable_shared_from_this<WalletPoolBuilder> {
 
         public:
+            virtual std::shared_ptr<api::WalletPoolBuilder> setPassword(const std::string &password) override;
+
             WalletPoolBuilder();
 
             virtual std::shared_ptr<api::WalletPoolBuilder>
@@ -68,7 +71,7 @@ namespace ledger {
             std::shared_ptr<api::LogPrinter> _logPrinter;
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::string _name;
-
+            std::experimental::optional<std::string> _password;
         };
     }
 }
