@@ -31,10 +31,55 @@
 #ifndef LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 #define LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/sink.h>
+#include <spdlog/sinks/file_sinks.h>
+#include "../api/ExecutionContext.hpp"
+#include "../api/PathResolver.hpp"
+#include <memory>
+#include "../utils/optional.hpp"
 
-class RotatingEncryptableSink {
+namespace ledger {
+    namespace core {
+        /**
+         * Based on spdlog::sinks::rotating_file_sink
+         */
+        class RotatingEncryptableSink : public spdlog::sinks::sink {
+        public:
+            RotatingEncryptableSink(
+                    const std::shared_ptr<api::ExecutionContext> &context,
+                    const std::shared_ptr<api::PathResolver> &resolver,
+                    const std::string &name,
+                    std::experimental::optional<std::string> password,
+                    std::size_t maxSize,
+                    std::size_t maxFiles
+            );
+            virtual void log(const spdlog::details::log_msg &msg) override;
+            virtual void flush() override;
 
-};
+        protected:
+            void _sink_it(std::string msg, std::size_t size);
+
+        private:
+            static spdlog::filename_t calc_filename(
+                    std::shared_ptr<api::PathResolver> resolver,
+                    const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
+            void _rotate();
+
+        private:
+            std::weak_ptr<api::ExecutionContext> _context;
+            std::weak_ptr<api::PathResolver> _resolver;
+            std::string _name;
+            std::experimental::optional<std::string> _password;
+            spdlog::filename_t _base_filename;
+            spdlog::filename_t _extension;
+            std::size_t _max_size;
+            std::size_t _max_files;
+            std::size_t _current_size;
+            spdlog::details::file_helper _file_helper;
+        };
+    }
+}
 
 
 #endif //LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP

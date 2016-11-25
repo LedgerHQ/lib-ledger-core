@@ -92,6 +92,13 @@ public:
             throw spdlog_ex("Failed writing to file " + os::filename_to_str(_filename), errno);
     }
 
+    void write(const std::string& msg, std::size_t msg_size)
+    {
+        auto data = msg.data();
+        if (std::fwrite(data, 1, msg_size, _fd) != msg_size)
+            throw spdlog_ex("Failed writing to file " + os::filename_to_str(_filename), errno);
+    }
+
     size_t size()
     {
         if (!_fd)

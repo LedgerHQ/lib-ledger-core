@@ -1,6 +1,6 @@
 /*
  *
- * Logger
+ * CoutLogPrinter
  * ledger-core
  *
  * Created by Pierre Pollastri on 24/11/2016.
@@ -28,13 +28,32 @@
  * SOFTWARE.
  *
  */
-#include "Logger.hpp"
+#ifndef LEDGER_CORE_COUTLOGPRINTER_HPP
+#define LEDGER_CORE_COUTLOGPRINTER_HPP
+
+#include <ledger/core/api/LogPrinter.hpp>
+#include <memory>
+
+class CoutLogPrinter : public ledger::core::api::LogPrinter {
+public:
+    CoutLogPrinter(const std::shared_ptr<ledger::core::api::ExecutionContext>& context);
+    virtual void printError(const std::string &message) override;
+
+    virtual void printInfo(const std::string &message) override;
+
+    virtual void printDebug(const std::string &message) override;
+
+    virtual void printWarning(const std::string &message) override;
+
+    virtual void printApdu(const std::string &message) override;
+
+    virtual void printCriticalError(const std::string &message) override;
+
+    virtual std::shared_ptr<ledger::core::api::ExecutionContext> getContext() override;
+
+private:
+    std::shared_ptr<ledger::core::api::ExecutionContext> _context;
+};
 
 
-namespace ledger {
-    namespace core {
-
-
-
-    }
-}
+#endif //LEDGER_CORE_COUTLOGPRINTER_HPP

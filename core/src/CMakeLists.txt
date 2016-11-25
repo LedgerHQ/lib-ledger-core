@@ -39,16 +39,35 @@ if (TARGET_JNI)
             "jni/jni/*"
             )
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
-endif()
+endif ()
 
-add_library (
+add_library(
         ledger-core SHARED
         ${ledger-core-sources}
         api_impl/BigIntImpl.cpp
         api_impl/BigIntImpl.hpp
         wallet/pool/WalletPool.cpp
         wallet/pool/WalletPool.hpp
-        wallet/pool/WalletPoolBuilder.cpp wallet/pool/WalletPoolBuilder.hpp utils/LambdaRunnable.cpp utils/LambdaRunnable.hpp preferences/JsonPreferences.cpp preferences/JsonPreferences.hpp preferences/IPreferencesBackend.hpp preferences/AtomicPreferencesBackend.cpp preferences/AtomicPreferencesBackend.hpp async/LockedResource.cpp async/LockedResource.hpp preferences/JsonPreferencesEditor.cpp preferences/JsonPreferencesEditor.hpp debug/Logger.cpp debug/Logger.hpp debug/RotatingEncryptableSink.cpp debug/RotatingEncryptableSink.hpp debug/LogPrinterSink.cpp debug/LogPrinterSink.hpp)
+        wallet/pool/WalletPoolBuilder.cpp
+        wallet/pool/WalletPoolBuilder.hpp
+        utils/LambdaRunnable.cpp
+        utils/LambdaRunnable.hpp
+        preferences/JsonPreferences.cpp
+        preferences/JsonPreferences.hpp
+        preferences/IPreferencesBackend.hpp
+        preferences/AtomicPreferencesBackend.cpp
+        preferences/AtomicPreferencesBackend.hpp
+        async/LockedResource.cpp
+        async/LockedResource.hpp
+        preferences/JsonPreferencesEditor.cpp
+        preferences/JsonPreferencesEditor.hpp
+        debug/logger.cpp
+        debug/logger.hpp
+        debug/RotatingEncryptableSink.cpp
+        debug/RotatingEncryptableSink.hpp
+        debug/LogPrinterSink.cpp
+        debug/LogPrinterSink.hpp
+        debug/logger.hpp debug/logger.cpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
@@ -65,9 +84,9 @@ file(GLOB LEDGER_CORE_API_HEADERS
 include_directories(ledger-core ../lib/bigd)
 
 if (TARGET_JNI)
-   # include_directories(ledger-core ${JNI_INCLUDE_DIRS})
-   # target_link_libraries(ledger-core ${JNI_LIBRARIES})
-endif()
+    # include_directories(ledger-core ${JNI_INCLUDE_DIRS})
+    # target_link_libraries(ledger-core ${JNI_LIBRARIES})
+endif ()
 
 file(GLOB ledger-core-header
         "*"
@@ -75,13 +94,13 @@ file(GLOB ledger-core-header
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.h")
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
-target_include_directories (ledger-core PUBLIC ..)
-target_include_directories (ledger-core PUBLIC ../lib/bigd)
-target_include_directories (ledger-core PUBLIC ../lib/fmt-3.0.0)
-target_include_directories (ledger-core PUBLIC ../lib/rapidjson/include)
-target_include_directories (ledger-core PUBLIC ../lib/sqlite)
-target_include_directories (ledger-core PUBLIC ../lib/cryptopp)
-target_include_directories (ledger-core PUBLIC ../lib/spdlog/include)
+target_include_directories(ledger-core PUBLIC ..)
+target_include_directories(ledger-core PUBLIC ../lib/bigd)
+target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
+target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
+target_include_directories(ledger-core PUBLIC ../lib/sqlite)
+target_include_directories(ledger-core PUBLIC ../lib/cryptopp)
+target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

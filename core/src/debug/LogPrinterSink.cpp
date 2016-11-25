@@ -37,31 +37,34 @@ namespace ledger {
 
         LogPrinterSink::LogPrinterSink(const std::shared_ptr<api::LogPrinter> &printer) {
             _printer = printer;
+            set_level(spdlog::level::trace);
         }
 
         void LogPrinterSink::log(const spdlog::details::log_msg &msg) {
             auto printer = _printer.lock();
             if (!printer)
                 return;
-            printer->getContext()->execute(make_runnable([printer, &msg]() {
-                switch (msg.level) {
+            auto level = msg.level;
+            auto message = msg.formatted.str();
+            printer->getContext()->execute(make_runnable([printer, level, message]() {
+                switch (level) {
                     case spd::level::trace:
-                        printer->printApdu(msg.formatted.str());
+                        printer->printApdu(message);
                         break;
                     case spdlog::level::debug:
-                        printer->printDebug(msg.formatted.str());
+                        printer->printDebug(message);
                         break;
                     case spdlog::level::info:
-                        printer->printInfo(msg.formatted.str());
+                        printer->printInfo(message);
                         break;
                     case spdlog::level::warn:
-                        printer->printWarning(msg.formatted.str());
+                        printer->printWarning(message);
                         break;
                     case spdlog::level::err:
-                        printer->printError(msg.formatted.str());
+                        printer->printError(message);
                         break;
                     case spdlog::level::critical:
-                        printer->printCriticalError(msg.formatted.str());
+                        printer->printCriticalError(message);
                         break;
                     case spdlog::level::off:
                         break;

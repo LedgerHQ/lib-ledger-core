@@ -1,6 +1,6 @@
 /*
  *
- * Logger
+ * logger
  * ledger-core
  *
  * Created by Pierre Pollastri on 24/11/2016.
@@ -31,37 +31,31 @@
 #ifndef LEDGER_CORE_LOGGER_HPP
 #define LEDGER_CORE_LOGGER_HPP
 
-#include "../api/PathResolver.hpp"
+#include <spdlog/spdlog.h>
 #include "../api/ExecutionContext.hpp"
 #include "../api/LogPrinter.hpp"
-#include "../utils/optional.hpp"
-#include "../api/Logger.hpp"
+#include "../api/PathResolver.hpp"
 #include <memory>
-#include <spdlog/spdlog.h>
+#include <cstddef>
+#include "../utils/optional.hpp"
 
 namespace ledger {
-
- namespace core {
-     class Logger {
-     public:
-         Logger(const std::string& name,
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::shared_ptr<api::ExecutionContext>& loggerContext,
-                const std::shared_ptr<api::LogPrinter>& printer,
-                const std::experimental::optional<std::string> &password
-         );
-         void d();
-         std::shared_ptr<api::Logger> getApiLogger();
-     private:
-         std::string _name;
-         std::weak_ptr<api::PathResolver> _resolver;
-         std::weak_ptr<api::ExecutionContext> _context;
-         std::weak_ptr<api::LogPrinter> _printer;
-         std::experimental::optional<std::string> _password;
-         std::shared_ptr<spdlog::logger> _logger;
-     };
- }
+    namespace core {
+        class logger {
+        public:
+            static const std::size_t DEFAULT_MAX_SIZE = 5 * 1048576;
+            static std::shared_ptr<spdlog::logger> create(
+                    const std::string& name,
+                    std::experimental::optional<std::string> password,
+                    const std::shared_ptr<api::ExecutionContext>& context,
+                    const std::shared_ptr<api::PathResolver>& resolver,
+                    const std::shared_ptr<api::LogPrinter>& printer,
+                    std::size_t maxSize = DEFAULT_MAX_SIZE
+            );
+        private:
+            logger() = delete;
+        };
+    }
 }
-
 
 #endif //LEDGER_CORE_LOGGER_HPP

@@ -1,10 +1,54 @@
 @import "../../errors.djinni"
+@import "../../preferences/preferences.djinni"
 
 GetBitcoinLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: BitcoinLikeWallet, isCreated: bool);
     onError(error: Error);
 }
 
-BitcoinLikeWallet = interface +c {
+BitcoinLikeWalletSynchronizationListener = interface +j +o +s +n {
+    onProgress();
 
+}
+
+BitcoinLikeInput = record {
+
+}
+
+BitcoinLikeOutput = record {
+
+}
+
+BitcoinLikeBlock = record {
+
+}
+
+BitcoinLikeOperationCursor = interface +c {
+    getAccountIndex(): i32;
+}
+
+BitcoinLikeTransaction = record {
+    inputs: list<BitcoinLikeInput>;
+    outputs: list<BitcoinLikeOutput>;
+    block: optional<BitcoinLikeBlock>;
+
+}
+
+BitcoinLikeOperation = interface +c {
+    getPreferences(): Preferences;
+    getSynchronizedPreferences(): Preferences;
+    getTransaction(): BitcoinLikeTransaction;
+}
+
+BitcoinLikeAccount = interface +c {
+    getPreferences(): Preferences;
+    getSynchronizedPreferences(): Preferences;
+    openOperationsCursor(): BitcoinLikeOperationCursor;
+}
+
+
+BitcoinLikeWallet = interface +c {
+    getPreferences(): Preferences;
+    getSynchronizedPreferences(): Preferences;
+    openOperationCursor(): BitcoinLikeOperationCursor;
 }
