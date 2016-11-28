@@ -71,6 +71,7 @@ add_library(
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
+target_link_libraries(ledger-core crypto)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
@@ -101,6 +102,7 @@ target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories(ledger-core PUBLIC ../lib/sqlite)
 target_include_directories(ledger-core PUBLIC ../lib/cryptopp)
 target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
+target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
