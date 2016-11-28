@@ -13,7 +13,6 @@
 /Makefile.bak
 /Makefile
 /*.a
-/include
 /*.pc
 /rehash.time
 

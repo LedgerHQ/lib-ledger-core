@@ -219,6 +219,8 @@ add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.
 
 add_library( crypto ${LIBSRC} ${OBJECTS_SRC} )
 
+target_include_directories(crypto ../include)
+
 if( WIN32 AND NOT CYGWIN )
   target_link_libraries( crypto ws2_32 crypt32 )
 endif()
