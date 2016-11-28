@@ -1,4 +1,26 @@
 
-HttpClient = interface +j +o +n {
+HttpMethod = enum {
+    GET;
+    POST;
+    PUT;
+    DELETE;
+}
 
+HttpResponse = record {
+    statusCode: i32;
+    statusText: string;
+    headers: map<string, string>;
+    body: binary;
+}
+
+HttpRequest = interface +c {
+    getMethod(): HttpMethod;
+    getHeaders(): map<string, string>;
+    getBody(): binary;
+    getUrl(): string;
+    complete(response: HttpResponse);
+}
+
+HttpClient = interface +j +o +n {
+    execute(request: HttpRequest);
 }
