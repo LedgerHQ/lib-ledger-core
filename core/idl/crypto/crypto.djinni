@@ -1,0 +1,6 @@
+
+HashAlgorithmHelper = interface +j +n +o {
+    ripemd160(data: binary): binary;
+    sha256(data: binary): binary;
+    keccak256(data: binary): binary;
+}
