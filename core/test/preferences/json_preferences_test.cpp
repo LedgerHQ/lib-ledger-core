@@ -150,7 +150,7 @@ TEST(JsonPreferences, StoreAndGetWithPreferencesAPI) {
                     ->putString("my_string", "Hello World!")
                     ->putBoolean("my_bool", true)
                     ->putInt("my_int", 42)
-                    ->putLong("my_long", 42L << 42)
+                    ->putLong("my_long", 42LL << 42LL)
                     ->putStringArray("my_string_array", std::vector<std::string>({"Hello", "world", "!"}))
                     ->commit();
         }));
@@ -168,7 +168,7 @@ TEST(JsonPreferences, StoreAndGetWithPreferencesAPI) {
             EXPECT_EQ(preferences->getString("my_fake_string", "Not My String"), "Not My String");
             EXPECT_EQ(preferences->getString("my_string_to_remove", ""), "Remove this please!");
             EXPECT_EQ(preferences->getInt("my_int", -1), 42);
-            EXPECT_EQ(preferences->getLong("my_long", -1),  42L << 42);
+            EXPECT_EQ(preferences->getLong("my_long", -1),  42LL << 42LL);
             EXPECT_EQ(preferences->getBoolean("my_bool", false), true);
             EXPECT_EQ(preferences->getStringArray("my_string_array", {}), std::vector<std::string>({"Hello", "world", "!"}));
             preferences->edit()->remove("my_string_to_remove")->commit();
@@ -208,7 +208,7 @@ TEST(JsonPreferences, LoadAndGetWithPreferencesAPI) {
             EXPECT_EQ(preferences->getString("my_fake_string", "Not My String"), "Not My String");
             EXPECT_EQ(preferences->getString("my_string_to_remove", ""), "Remove this please!");
             EXPECT_EQ(preferences->getInt("my_int", -1), 42);
-            EXPECT_EQ(preferences->getLong("my_long", -1),  42L << 42);
+            EXPECT_EQ(preferences->getLong("my_long", -1),  42LL << 42LL);
             EXPECT_EQ(preferences->getBoolean("my_bool", false), true);
             EXPECT_EQ(preferences->getStringArray("my_string_array", {}), std::vector<std::string>({"Hello", "world", "!"}));
             dispatcher->stop();

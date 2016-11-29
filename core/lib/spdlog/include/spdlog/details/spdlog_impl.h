@@ -17,7 +17,9 @@
 #endif
 
 #ifdef _WIN32
-#include <spdlog/sinks/wincolor_sink.h>
+#define UNDEF_WIN_32 _WIN32
+#undef _WIN32
+#include <spdlog/sinks/ansicolor_sink.h>
 #else
 #include <spdlog/sinks/ansicolor_sink.h>
 #endif
@@ -243,3 +245,8 @@ inline void spdlog::drop_all()
 {
     details::registry::instance().drop_all();
 }
+
+#ifdef UNDEF_WIN_32
+#define _WIN32 UNDEF_WIN_32
+#undef UNDEF_WIN_32
+#endif
