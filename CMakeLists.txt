@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 project(ledger-core)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
