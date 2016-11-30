@@ -7,4 +7,4 @@ for file in *.xz; do
     tar xf ${file}
 done
 
-sudo rsync -lrK usr /git
+sudo rsync -lrK usr /
