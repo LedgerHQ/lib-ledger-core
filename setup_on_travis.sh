@@ -11,5 +11,5 @@ elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
    brew update
    brew upgrade cmake || true
    brew install wget || true
-   wget https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip && unzip android-ndk-r13b-darwin-x86_64.zip
+   wget https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip && unzip android-ndk-r13b-darwin-x86_64.zip > /dev/null
 fi;
