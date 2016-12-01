@@ -5,6 +5,8 @@
 #import "LGBitcoinLikeWallet.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
+#import "LGBitcoinLikeOperationCursor+Private.h"
+#import "LGPreferences+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -27,6 +29,27 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.assign(cppRef);
     }
     return self;
+}
+
+- (nullable LGPreferences *)getPreferences {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGPreferences *)getSynchronizedPreferences {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getSynchronizedPreferences();
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeOperationCursor *)openOperationCursor {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->openOperationCursor();
+        return ::djinni_generated::BitcoinLikeOperationCursor::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 namespace djinni_generated {

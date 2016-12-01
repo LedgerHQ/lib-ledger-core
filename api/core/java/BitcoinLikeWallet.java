@@ -6,6 +6,11 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeWallet {
+    public abstract Preferences getPreferences();
+
+    public abstract Preferences getSynchronizedPreferences();
+
+    public abstract BitcoinLikeOperationCursor openOperationCursor();
 
     private static final class CppProxy extends BitcoinLikeWallet
     {
@@ -29,5 +34,29 @@ public abstract class BitcoinLikeWallet {
             destroy();
             super.finalize();
         }
+
+        @Override
+        public Preferences getPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreferences(this.nativeRef);
+        }
+        private native Preferences native_getPreferences(long _nativeRef);
+
+        @Override
+        public Preferences getSynchronizedPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getSynchronizedPreferences(this.nativeRef);
+        }
+        private native Preferences native_getSynchronizedPreferences(long _nativeRef);
+
+        @Override
+        public BitcoinLikeOperationCursor openOperationCursor()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_openOperationCursor(this.nativeRef);
+        }
+        private native BitcoinLikeOperationCursor native_openOperationCursor(long _nativeRef);
     }
 }

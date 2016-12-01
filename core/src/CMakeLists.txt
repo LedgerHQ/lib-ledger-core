@@ -67,7 +67,10 @@ add_library(
         debug/RotatingEncryptableSink.hpp
         debug/LogPrinterSink.cpp
         debug/LogPrinterSink.hpp
-        debug/logger.hpp debug/logger.cpp)
+        debug/logger.hpp debug/logger.cpp
+        net/HttpClient.cpp
+        net/HttpClient.hpp
+        )
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

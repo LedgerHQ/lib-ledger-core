@@ -3,11 +3,17 @@
 
 #pragma once
 
+#include <memory>
+
 namespace ledger { namespace core { namespace api {
+
+class HttpRequest;
 
 class HttpClient {
 public:
     virtual ~HttpClient() {}
+
+    virtual void execute(const std::shared_ptr<HttpRequest> & request) = 0;
 };
 
 } } }  // namespace ledger::core::api

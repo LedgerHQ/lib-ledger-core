@@ -4,6 +4,7 @@
 #import "LGHttpClient+Private.h"
 #import "LGHttpClient.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "LGHttpRequest+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -16,6 +17,12 @@ class HttpClient::ObjcProxy final
 {
 public:
     using Handle::Handle;
+    void execute(const std::shared_ptr<::ledger::core::api::HttpRequest> & c_request) override
+    {
+        @autoreleasepool {
+            [Handle::get() execute:(::djinni_generated::HttpRequest::fromCpp(c_request))];
+        }
+    }
 };
 
 }  // namespace djinni_generated

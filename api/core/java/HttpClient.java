@@ -4,4 +4,5 @@
 package co.ledger.core;
 
 public abstract class HttpClient {
+    public abstract void execute(HttpRequest request);
 }

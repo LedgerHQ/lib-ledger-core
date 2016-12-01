@@ -3,11 +3,22 @@
 
 #pragma once
 
+#include <memory>
+
 namespace ledger { namespace core { namespace api {
+
+class BitcoinLikeOperationCursor;
+class Preferences;
 
 class BitcoinLikeWallet {
 public:
     virtual ~BitcoinLikeWallet() {}
+
+    virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual std::shared_ptr<Preferences> getSynchronizedPreferences() = 0;
+
+    virtual std::shared_ptr<BitcoinLikeOperationCursor> openOperationCursor() = 0;
 };
 
 } } }  // namespace ledger::core::api

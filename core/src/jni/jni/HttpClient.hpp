@@ -33,12 +33,14 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
+        void execute(const std::shared_ptr<::ledger::core::api::HttpRequest> & request) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::HttpClient, ::djinni_generated::HttpClient>;
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/HttpClient") };
+    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(Lco/ledger/core/HttpRequest;)V") };
 };
 
 }  // namespace djinni_generated
