@@ -105,9 +105,13 @@ void MongooseHttpClient::stop() {
 
 void MongooseHttpClient::poll() {
     if (_running) {
-        _context->delay(make_runnable([this]() {
-            mg_mgr_poll(&_mgr, 0);
-            poll();
+        std::weak_ptr<MongooseHttpClient> self = shared_from_this();
+        _context->delay(make_runnable([self]() {
+            auto s = self.lock();
+            if (s) {
+                mg_mgr_poll(&(s->_mgr), 0);
+                s->poll();
+            }
         }), 1000);
     }
 }
