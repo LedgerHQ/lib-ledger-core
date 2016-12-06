@@ -53,7 +53,7 @@ namespace ledger {
             return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 
-        HttpRequest HttpClient::DELETE(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
+        HttpRequest HttpClient::DEL(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
             return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 

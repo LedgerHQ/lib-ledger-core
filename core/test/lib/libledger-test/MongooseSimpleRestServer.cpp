@@ -65,9 +65,13 @@ void MongooseSimpleRestServer::ev_handler(struct mg_connection *c, int ev, void 
 
 void MongooseSimpleRestServer::poll() {
     if (_running) {
-        _context->execute(make_runnable([this]() {
-            mg_mgr_poll(&_mgr, 100);
-            poll();
+        std::weak_ptr<MongooseSimpleRestServer> self = shared_from_this();
+        _context->execute(make_runnable([self]() {
+            auto s = self.lock();
+            if (s) {
+                mg_mgr_poll(&(s->_mgr), 100);
+                s->poll();
+            }
         }));
     }
 }
@@ -113,7 +117,7 @@ void MongooseSimpleRestServer::POST(const std::string &path, const RestRequestHa
     endpoint("POST", path, handler);
 }
 
-void MongooseSimpleRestServer::DELETE(const std::string &path, const RestRequestHandler &handler) {
+void MongooseSimpleRestServer::DEL(const std::string &path, const RestRequestHandler &handler) {
     endpoint("DELETE", path, handler);
 }
 

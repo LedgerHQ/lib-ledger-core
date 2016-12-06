@@ -90,7 +90,7 @@ namespace ledger {
             );
             HttpRequest GET(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
-            HttpRequest DELETE(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
+            HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest POST(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             void addHeader(const std::string& key, const std::string& value);
             void removeHeader(const std::string& key);

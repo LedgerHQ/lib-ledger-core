@@ -40,33 +40,65 @@
 #include <ledger/core/net/HttpClient.hpp>
 
 TEST(HttpClient, GET) {
-
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
     auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
     auto worker = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://localhost:8000", client, worker);
     {
-        MongooseSimpleRestServer server(dispatcher->getSerialExecutionContext("server"));
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
 
-        server.GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
+        server->GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
             std::string result = "Hello ";
             result += request.match.get("to");
             return {200, "OK", result};
         });
 
-        server.start(8000);
+        server->start(8000);
 
-        worker->execute(make_runnable([&http, dispatcher] () {
-            http.GET("/say/hello/toto/please")([dispatcher] (const ledger::core::api::HttpResponse& response) {
+        worker->execute(make_runnable([&http, dispatcher, &server] () {
+            http.GET("/say/hello/toto/please")([dispatcher,  &server] (const ledger::core::api::HttpResponse& response) {
                 auto res = std::string((char *)response.body.data(), response.body.size());
                 EXPECT_EQ(200, response.statusCode);
                 EXPECT_EQ("Hello toto", res);
+                std::cout << res << std::endl;
+                server->stop();
                 dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
                     dispatcher->stop();
                 }), 0);
             });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000)
-        server.stop();
+    }
+}
+
+TEST(HttpClient, POST) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
+    {
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
+
+        server->GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
+            std::string result = "Hello ";
+            result += request.match.get("to");
+            return {200, "OK", result};
+        });
+
+        server->start(8000);
+
+        worker->execute(make_runnable([&http, dispatcher, &server] () {
+            http.GET("/say/hello/toto/please")([dispatcher,  &server] (const ledger::core::api::HttpResponse& response) {
+                auto res = std::string((char *)response.body.data(), response.body.size());
+                EXPECT_EQ(200, response.statusCode);
+                EXPECT_EQ("Hello toto", res);
+                std::cout << res << std::endl;
+                server->stop();
+                dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                    dispatcher->stop();
+                }), 0);
+            });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000)
     }
 }

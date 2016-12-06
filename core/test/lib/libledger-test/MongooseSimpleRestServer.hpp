@@ -38,6 +38,7 @@
 #include <unordered_map>
 #include <regex>
 #include "route.h"
+#include <memory>
 
 struct RestRequest {
     struct mg_connection *connection;
@@ -63,7 +64,7 @@ typedef std::function<RestResponse (const RestRequest&)> RestRequestHandler;
 
 
 
-class MongooseSimpleRestServer {
+class MongooseSimpleRestServer : public std::enable_shared_from_this<MongooseSimpleRestServer> {
 public:
     MongooseSimpleRestServer(const std::shared_ptr<ledger::core::api::ExecutionContext>& context);
     void start(short port);
@@ -72,7 +73,7 @@ public:
     void GET(const std::string &path, const RestRequestHandler &handler);
     void PUT(const std::string &path, const RestRequestHandler &handler);
     void POST(const std::string &path, const RestRequestHandler &handler);
-    void DELETE(const std::string &path, const RestRequestHandler &handler);
+    void DEL(const std::string &path, const RestRequestHandler &handler);
     ~MongooseSimpleRestServer();
 
     void ev_handler(struct mg_connection *c, int ev, void *p);
