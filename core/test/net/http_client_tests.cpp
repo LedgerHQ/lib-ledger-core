@@ -36,47 +36,42 @@
 #include <NativePathResolver.hpp>
 #include <fstream>
 #include <mongoose.h>
-
-#define REST_ENDPOINT(x) static inline void x(struct mg_connection *c, struct http_message *hm)
-
-static const char *s_http_port = "8000";
-
-static bool match_call(const std::string& method, const std::string& path, struct http_message *hm) {
-    return (method == std::string(hm->method.p, hm->method.len) && path.find(std::string(hm->uri.p, hm->uri.len)) == 0);
-}
-
-REST_ENDPOINT(get_an_awesome_test) {
-    mg_printf(c, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-    mg_printf_http_chunk(c, "{\"hello\": \"world\"}");
-    mg_send_http_chunk(c, "", 0); /* Send empty chunk, the end of response */
-}
-
-static void ev_handler(struct mg_connection *c, int ev, void *p) {
-    if (ev == MG_EV_HTTP_REQUEST) {
-        struct http_message *hm = (struct http_message *) p;
-
-        if (match_call("GET", "/an/awesome/test", hm)) {
-            get_an_awesome_test(c, hm);
-        } else if (match_call("POST", "/an/awesome/test", hm)) {
-
-        } else {
-            mg_printf(c, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-            mg_printf_http_chunk(c, "{\"error\": \"unknown call\"}");
-            mg_send_http_chunk(c, "", 0); /* Send empty chunk, the end of response */
-        }
-    }
-}
+#include <MongooseHttpClient.hpp>
+#include <MongooseSimpleRestServer.hpp>
 
 TEST(HttpClient, GET) {
-    struct mg_mgr mgr;
-    struct mg_connection *c;
 
-    mg_mgr_init(&mgr, NULL);
-    c = mg_bind(&mgr, s_http_port, ev_handler);
-    mg_set_protocol_http_websocket(c);
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
 
-    for (;;) {
-        mg_mgr_poll(&mgr, 1000);
+    {
+        MongooseSimpleRestServer server(dispatcher->getSerialExecutionContext("server"));
+
+        server.GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
+            std::string result = "Hello ";
+            result += request.match.get("to");
+            dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                dispatcher->stop();
+            }), 0);
+            return {200, "OK", result};
+        });
+
+        server.start(8000);
+        dispatcher->waitUntilStopped();
+
+        server.stop();
     }
-    mg_mgr_free(&mgr);
+    {
+        MongooseSimpleRestServer server(dispatcher->getSerialExecutionContext("server"));
+        server.GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
+            std::string result = "Not saying hello ";
+            result += request.match.get("to");
+            dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                //dispatcher->stop();
+            }), 0);
+            return {200, "OK", result};
+        });
+
+        server.start(8000);
+        dispatcher->waitUntilStopped();
+    }
 }
