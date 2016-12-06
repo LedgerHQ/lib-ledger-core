@@ -61,4 +61,10 @@ private:
 
 std::shared_ptr<ledger::core::api::Runnable> make_runnable(std::function<void()> func);
 
+#define WAIT_AND_TIMEOUT(dispatcher, time)  dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() { \
+        dispatcher->stop(); \
+        FAIL() << "Timeout"; \
+    }), time); \
+    dispatcher->waitUntilStopped();
+
 #endif //LEDGER_CORE_NATIVETHREADDISPATCHER_HPP

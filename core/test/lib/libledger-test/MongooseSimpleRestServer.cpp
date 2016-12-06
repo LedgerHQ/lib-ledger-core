@@ -124,6 +124,5 @@ MongooseSimpleRestServer::MongooseSimpleRestServer(const std::shared_ptr<ledger:
 }
 
 MongooseSimpleRestServer::~MongooseSimpleRestServer() {
-    stop();
-    //mg_mgr_free(&_mgr);
+
 }

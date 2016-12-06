@@ -31,58 +31,83 @@
 #include "MongooseHttpClient.hpp"
 #include "NativeThreadDispatcher.hpp"
 #include <ledger/core/api/HttpRequest.hpp>
-#include "mongoose.h"
-#include <unordered_map>
-
-static std::shared_ptr<ledger::core::api::ExecutionContext> sContext;
-static bool sExitFlag = false;
-static std::unordered_map<struct mg_connection *, std::shared_ptr<ledger::core::api::HttpRequest>> sRequests;
-static struct mg_mgr sMgr;
+#include <ledger/core/api/HttpResponse.hpp>
 
 static void ev_handler(struct mg_connection *c, int ev, void *p) {
-    if (ev == MG_EV_HTTP_REPLY) {
-
+    if (ev == MG_EV_CONNECT) {
+        int status = *(int *)p;
+        if (p != 0) {
+            auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
+            ledger::core::api::HttpResponse response(
+                    0,
+                   "Unable to connect",
+                    std::unordered_map<std::string, std::string>(),
+                    std::vector<uint8_t >()
+            );
+            //pair->first->complete(response);
+            //delete pair;
+        }
+    } else if (ev == MG_EV_HTTP_REPLY) {
+        c->flags |= MG_F_CLOSE_IMMEDIATELY;
+        struct http_message *hm = (struct http_message *) p;
+        auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
+        if (pair->second)
+            pair->second->ev_handler(c, ev, hm, pair->first);
+        delete pair;
     }
+}
+
+void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http_message *hm, const std::shared_ptr<ledger::core::api::HttpRequest>& request) {
+    ledger::core::api::HttpResponse response(
+            hm->resp_code,
+            std::string(hm->resp_status_msg.p, hm->resp_status_msg.len),
+            std::unordered_map<std::string, std::string>(),
+            std::vector<uint8_t >((uint8_t *)hm->body.p, (uint8_t *)(hm->body.p + hm->body.len))
+    );
+    request->complete(response);
 }
 
 void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) {
-    if (sContext) {
-        sContext->execute(make_runnable([request] () {
-            struct mg_mgr mgr;
-            struct mg_connection *nc;
+    start();
+    auto self = shared_from_this();
+    _context->execute(make_runnable([request, this, self] () {
+        struct mg_connection *nc;
+        mg_mgr_init(&_mgr, NULL);
+        nc = mg_connect_http(&_mgr, ::ev_handler, request->getUrl().c_str(), NULL, NULL);
+        nc->user_data = new std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>>(request, self);
+        mg_set_protocol_http_websocket(nc);
+    }));
+}
 
-            mg_mgr_init(&mgr, NULL);
-            nc = mg_connect_http(&mgr, ev_handler, request->getUrl().c_str(), NULL, NULL);
-            sRequests[nc] = request;
-            mg_set_protocol_http_websocket(nc);
-        }));
+MongooseHttpClient::MongooseHttpClient(const std::shared_ptr<ledger::core::api::ExecutionContext> &context) {
+    _context = context;
+    _running = false;
+}
+
+MongooseHttpClient::~MongooseHttpClient() {
+    stop();
+}
+
+void MongooseHttpClient::start() {
+    if (!_running) {
+        _running = true;
+        mg_mgr_init(&_mgr, NULL);
+        poll();
     }
 }
 
-static void schedulePoll() {
-    if (sContext) {
-        sContext->delay(make_runnable([]() {
-            mg_mgr_poll(&sMgr, 0);
-            if (!sExitFlag)
-                schedulePoll();
+void MongooseHttpClient::stop() {
+    if (_running) {
+        _running = false;
+        mg_mgr_free(&_mgr);
+    }
+}
+
+void MongooseHttpClient::poll() {
+    if (_running) {
+        _context->delay(make_runnable([this]() {
+            mg_mgr_poll(&_mgr, 0);
+            poll();
         }), 1000);
     }
 }
-
-void MongooseHttpClient::startService(const std::shared_ptr<ledger::core::api::ExecutionContext> &context) {
-    if (!sContext) {
-        sContext = context;
-        sExitFlag = false;
-        mg_mgr_init(&sMgr, NULL);
-        schedulePoll();
-    }
-}
-
-void MongooseHttpClient::stopService() {
-    if (sContext) {
-        sContext = nullptr;
-        sExitFlag = true;
-        mg_mgr_free(&sMgr);
-    }
-}
-

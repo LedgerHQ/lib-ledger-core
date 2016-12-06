@@ -32,46 +32,41 @@
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
-#include <ledger/core/preferences/AtomicPreferencesBackend.hpp>
 #include <NativePathResolver.hpp>
 #include <fstream>
 #include <mongoose.h>
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>
+#include <ledger/core/net/HttpClient.hpp>
 
 TEST(HttpClient, GET) {
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
     {
         MongooseSimpleRestServer server(dispatcher->getSerialExecutionContext("server"));
 
         server.GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
             std::string result = "Hello ";
             result += request.match.get("to");
-            dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
-                dispatcher->stop();
-            }), 0);
             return {200, "OK", result};
         });
 
         server.start(8000);
-        dispatcher->waitUntilStopped();
 
+        worker->execute(make_runnable([&http, dispatcher] () {
+            http.GET("/say/hello/toto/please")([dispatcher] (const ledger::core::api::HttpResponse& response) {
+                auto res = std::string((char *)response.body.data(), response.body.size());
+                EXPECT_EQ(200, response.statusCode);
+                EXPECT_EQ("Hello toto", res);
+                dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                    dispatcher->stop();
+                }), 0);
+            });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000)
         server.stop();
-    }
-    {
-        MongooseSimpleRestServer server(dispatcher->getSerialExecutionContext("server"));
-        server.GET("/say/hello/:to/please", [dispatcher](const RestRequest &request) -> RestResponse {
-            std::string result = "Not saying hello ";
-            result += request.match.get("to");
-            dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
-                //dispatcher->stop();
-            }), 0);
-            return {200, "OK", result};
-        });
-
-        server.start(8000);
-        dispatcher->waitUntilStopped();
     }
 }

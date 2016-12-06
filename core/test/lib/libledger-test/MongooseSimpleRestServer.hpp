@@ -44,6 +44,10 @@ struct RestRequest {
     struct http_message *message;
     route::Match match;
 
+    std::string getBody() const {
+        return std::string(message->message.p, message->message.len);
+    };
+
     RestRequest( struct mg_connection *c,  struct http_message *m, route::Match ma) : connection(c), message(m), match(ma)  {};
 };
 

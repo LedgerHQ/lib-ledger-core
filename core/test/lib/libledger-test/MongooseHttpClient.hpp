@@ -33,16 +33,26 @@
 
 #include <ledger/core/api/HttpClient.hpp>
 #include <ledger/core/api/ExecutionContext.hpp>
+#include "mongoose.h"
+#include <memory>
 
-class MongooseHttpClient : public ledger::core::api::HttpClient {
+class MongooseHttpClient : public ledger::core::api::HttpClient, public std::enable_shared_from_this<MongooseHttpClient> {
 
 public:
-    MongooseHttpClient() {};
+    MongooseHttpClient(const std::shared_ptr<ledger::core::api::ExecutionContext>& context);
     virtual void execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) override;
-    static void startService(const std::shared_ptr<ledger::core::api::ExecutionContext>& context);
-    static void stopService();
+    void ev_handler(struct mg_connection *c, int ev, struct http_message *hm, const std::shared_ptr<ledger::core::api::HttpRequest>& request);
+    ~MongooseHttpClient();
+
+private:
+    void start();
+    void stop();
+    void poll();
+
 private:
     std::shared_ptr<ledger::core::api::ExecutionContext> _context;
+    struct mg_mgr _mgr;
+    bool _running;
 };
 
 
