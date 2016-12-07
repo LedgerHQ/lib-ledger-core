@@ -50,16 +50,16 @@ namespace ledger {
 
         HttpRequest HttpClient::PUT(const std::string &path, const std::vector<uint8_t> &body,
                                     const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::PUT, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 
         HttpRequest HttpClient::DEL(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::DEL, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 
         HttpRequest HttpClient::POST(const std::string &path, const std::vector<uint8_t> &body,
                                      const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::POST, path, std::experimental::optional<std::vector<uint8_t>>(body), headers);
         }
 
         void HttpClient::addHeader(const std::string &key, const std::string &value) {

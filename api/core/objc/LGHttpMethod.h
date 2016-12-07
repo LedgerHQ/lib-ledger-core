@@ -8,5 +8,5 @@ typedef NS_ENUM(NSInteger, LGHttpMethod)
     LGHttpMethodGET,
     LGHttpMethodPOST,
     LGHttpMethodPUT,
-    LGHttpMethodDELETE,
+    LGHttpMethodDEL,
 };

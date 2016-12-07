@@ -7675,6 +7675,7 @@ struct mg_connection *mg_connect_http_base(
 struct mg_connection *mg_connect_http_opt(struct mg_mgr *mgr,
                                           mg_event_handler_t ev_handler,
                                           struct mg_connect_opts opts,
+                                          const char *method,
                                           const char *url,
                                           const char *extra_headers,
                                           const char *post_data) {
@@ -7711,12 +7712,13 @@ struct mg_connection *mg_connect_http_opt(struct mg_mgr *mgr,
 
 struct mg_connection *mg_connect_http(struct mg_mgr *mgr,
                                       mg_event_handler_t ev_handler,
+                                      const char *method,
                                       const char *url,
                                       const char *extra_headers,
                                       const char *post_data) {
   struct mg_connect_opts opts;
   memset(&opts, 0, sizeof(opts));
-  return mg_connect_http_opt(mgr, ev_handler, opts, url, extra_headers,
+  return mg_connect_http_opt(mgr, ev_handler, opts, method, url, extra_headers,
                              post_data);
 }
 

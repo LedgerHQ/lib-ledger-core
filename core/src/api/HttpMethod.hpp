@@ -11,7 +11,7 @@ enum class HttpMethod : int {
     GET,
     POST,
     PUT,
-    DELETE,
+    DEL,
 };
 
 } } }  // namespace ledger::core::api

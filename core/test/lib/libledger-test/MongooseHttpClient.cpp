@@ -30,8 +30,11 @@
  */
 #include "MongooseHttpClient.hpp"
 #include "NativeThreadDispatcher.hpp"
+#include "../../../src/api/HttpMethod.hpp"
 #include <ledger/core/api/HttpRequest.hpp>
 #include <ledger/core/api/HttpResponse.hpp>
+#include <sstream>
+#include <cstring>
 
 static void ev_handler(struct mg_connection *c, int ev, void *p) {
     if (ev == MG_EV_CONNECT) {
@@ -73,7 +76,40 @@ void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRe
     _context->execute(make_runnable([request, this, self] () {
         struct mg_connection *nc;
         mg_mgr_init(&_mgr, NULL);
-        nc = mg_connect_http(&_mgr, ::ev_handler, request->getUrl().c_str(), NULL, NULL);
+        // Compute method
+        std::string method;
+        switch (request->getMethod()) {
+            case ledger::core::api::HttpMethod::GET:
+                method = "GET";
+                break;
+            case ledger::core::api::HttpMethod::POST:
+                method = "POST";
+                break;
+            case ledger::core::api::HttpMethod::PUT:
+                method = "PUT";
+                break;
+            case ledger::core::api::HttpMethod::DEL:
+                method = "DELETE";
+                break;
+        }
+
+        // Compute headers string content
+        std::stringstream headers;
+        for (auto& header : request->getHeaders()) {
+            headers << header.first << ": " << header.second << "\r\n";
+        }
+
+        // Compute body string content
+        std::stringstream body;
+        const char *c_body = NULL;
+        if (request->getBody().size() > 0) {
+            for (auto byte : request->getBody()) {
+                body << (char )byte;
+            }
+            c_body = ::strdup(body.str().c_str());
+        }
+
+        nc = mg_connect_http(&_mgr, ::ev_handler, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
         nc->user_data = new std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>>(request, self);
         mg_set_protocol_http_websocket(nc);
     }));

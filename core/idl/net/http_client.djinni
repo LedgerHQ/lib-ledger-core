@@ -3,7 +3,7 @@ HttpMethod = enum {
     GET;
     POST;
     PUT;
-    DELETE;
+    DEL;
 }
 
 HttpResponse = record {
