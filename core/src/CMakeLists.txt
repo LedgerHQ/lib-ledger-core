@@ -70,7 +70,7 @@ add_library(
         debug/logger.hpp debug/logger.cpp
         net/HttpClient.cpp
         net/HttpClient.hpp
-        )
+        crypto/SHA256.cpp crypto/SHA256.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
