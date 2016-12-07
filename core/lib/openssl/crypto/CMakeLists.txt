@@ -217,6 +217,8 @@ add_submodule ( x509v3 v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_li
 add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.h
   ossl_typ.h )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_library( crypto ${LIBSRC} ${OBJECTS_SRC} )
 
 target_include_directories(crypto PUBLIC ../include)
