@@ -1,0 +1,8 @@
+
+
+RandomNumberGenerator = interface +j +o +n {
+    getRandomBytes(size: i32): binary;
+    getRandomInt(): i32;
+    getRandomLong(): i64;
+    getRandomByte(): i8;
+}

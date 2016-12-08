@@ -62,6 +62,9 @@ namespace ledger {
 
             virtual std::shared_ptr<api::WalletPoolBuilder> setName(const std::string &name) override;
 
+            virtual std::shared_ptr<api::WalletPoolBuilder>
+            setRandomNumberGenerator(const std::shared_ptr<api::RandomNumberGenerator> &rng) override;
+
             virtual void build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) override;
 
         private:
@@ -72,6 +75,7 @@ namespace ledger {
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::string _name;
             std::experimental::optional<std::string> _password;
+            std::shared_ptr<api::RandomNumberGenerator> _rng;
         };
     }
 }

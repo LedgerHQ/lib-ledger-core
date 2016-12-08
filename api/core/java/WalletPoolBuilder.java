@@ -20,6 +20,8 @@ public abstract class WalletPoolBuilder {
 
     public abstract WalletPoolBuilder setPassword(String password);
 
+    public abstract WalletPoolBuilder setRandomNumberGenerator(RandomNumberGenerator rng);
+
     public abstract void build(WalletPoolBuildCallback listener);
 
     public static native WalletPoolBuilder createInstance();
@@ -102,6 +104,14 @@ public abstract class WalletPoolBuilder {
             return native_setPassword(this.nativeRef, password);
         }
         private native WalletPoolBuilder native_setPassword(long _nativeRef, String password);
+
+        @Override
+        public WalletPoolBuilder setRandomNumberGenerator(RandomNumberGenerator rng)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setRandomNumberGenerator(this.nativeRef, rng);
+        }
+        private native WalletPoolBuilder native_setRandomNumberGenerator(long _nativeRef, RandomNumberGenerator rng);
 
         @Override
         public void build(WalletPoolBuildCallback listener)

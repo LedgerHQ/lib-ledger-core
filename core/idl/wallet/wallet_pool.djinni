@@ -10,6 +10,7 @@
 @import "ethereum/ethereum_public_key_provider.djinni"
 @import "../errors.djinni"
 @import "../preferences/preferences.djinni"
+@import "../math/random.djinni"
 
 WalletPool = interface +c {
     getAllWallets(): list<WalletCommonInterface>;
@@ -39,6 +40,7 @@ WalletPoolBuilder = interface +c {
     setThreadDispatcher(dispatcher: ThreadDispatcher): WalletPoolBuilder;
     setName(name: string): WalletPoolBuilder;
     setPassword(password: string): WalletPoolBuilder;
+    setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
     build(listener: WalletPoolBuildCallback);
 
     static createInstance(): WalletPoolBuilder;

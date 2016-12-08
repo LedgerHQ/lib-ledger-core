@@ -6,6 +6,7 @@
 @import "idl/net/websocket_client.djinni"
 @import "idl/wallet/wallet_pool.djinni"
 @import "idl/crypto/crypto.djinni"
+@import "idl/math/random.djinni"
 
 LedgerCore = interface +c {
     # Gets the version of the library as a human readable string.

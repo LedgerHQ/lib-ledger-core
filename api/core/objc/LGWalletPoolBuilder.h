@@ -6,6 +6,7 @@
 @protocol LGHttpClient;
 @protocol LGLogPrinter;
 @protocol LGPathResolver;
+@protocol LGRandomNumberGenerator;
 @protocol LGThreadDispatcher;
 @protocol LGWalletPoolBuildCallback;
 @protocol LGWebSocketClient;
@@ -26,6 +27,8 @@
 - (nullable LGWalletPoolBuilder *)setName:(nonnull NSString *)name;
 
 - (nullable LGWalletPoolBuilder *)setPassword:(nonnull NSString *)password;
+
+- (nullable LGWalletPoolBuilder *)setRandomNumberGenerator:(nullable id<LGRandomNumberGenerator>)rng;
 
 - (void)build:(nullable id<LGWalletPoolBuildCallback>)listener;
 

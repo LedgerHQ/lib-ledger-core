@@ -53,11 +53,7 @@
 
 #if defined(HEADER_BN_H) && !defined(CONFIG_HEADER_BN_H)
 # define CONFIG_HEADER_BN_H
-# if __option(longlong)
-#  define BN_LLONG
-# else
 #  undef BN_LLONG
-# endif
 
 /* Should we define BN_DIV2W here? */
 

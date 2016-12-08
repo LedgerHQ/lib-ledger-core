@@ -92,6 +92,13 @@ namespace ledger { namespace core {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setRandomNumberGenerator(const std::shared_ptr<api::RandomNumberGenerator> &rng) {
+            _rng = rng;
+            return shared_from_this();
+        }
+
+
         std::shared_ptr<api::WalletPoolBuilder> api::WalletPoolBuilder::createInstance() {
             return std::make_shared<ledger::core::WalletPoolBuilder>();
         }

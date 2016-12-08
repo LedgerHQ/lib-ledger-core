@@ -9,6 +9,7 @@
 #import "LGHttpClient+Private.h"
 #import "LGLogPrinter+Private.h"
 #import "LGPathResolver+Private.h"
+#import "LGRandomNumberGenerator+Private.h"
 #import "LGThreadDispatcher+Private.h"
 #import "LGWalletPoolBuildCallback+Private.h"
 #import "LGWebSocketClient+Private.h"
@@ -81,6 +82,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (nullable LGWalletPoolBuilder *)setPassword:(nonnull NSString *)password {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->setPassword(::djinni::String::toCpp(password));
+        return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGWalletPoolBuilder *)setRandomNumberGenerator:(nullable id<LGRandomNumberGenerator>)rng {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->setRandomNumberGenerator(::djinni_generated::RandomNumberGenerator::toCpp(rng));
         return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

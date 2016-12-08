@@ -3,6 +3,7 @@
 #ifndef UMBRELLA_LEDGER_CORE_H
 #define UMBRELLA_LEDGER_CORE_H
 #import "../objc/LGHashAlgorithmHelper.h"
+#import "../objc/LGRandomNumberGenerator.h"
 #import "../objc/LGEthereumPublicKeyProvider.h"
 #import "../objc/LGBitcoinPublicKeyProvider.h"
 #import "../objc/LGGetEthreumLikeWalletCallback.h"

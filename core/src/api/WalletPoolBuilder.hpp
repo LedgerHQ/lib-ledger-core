@@ -11,6 +11,7 @@ namespace ledger { namespace core { namespace api {
 class HttpClient;
 class LogPrinter;
 class PathResolver;
+class RandomNumberGenerator;
 class ThreadDispatcher;
 class WalletPoolBuildCallback;
 class WebSocketClient;
@@ -32,6 +33,8 @@ public:
     virtual std::shared_ptr<WalletPoolBuilder> setName(const std::string & name) = 0;
 
     virtual std::shared_ptr<WalletPoolBuilder> setPassword(const std::string & password) = 0;
+
+    virtual std::shared_ptr<WalletPoolBuilder> setRandomNumberGenerator(const std::shared_ptr<RandomNumberGenerator> & rng) = 0;
 
     virtual void build(const std::shared_ptr<WalletPoolBuildCallback> & listener) = 0;
 
