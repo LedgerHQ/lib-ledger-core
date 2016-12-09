@@ -32,6 +32,8 @@
 #define LEDGER_CORE_PBKDF2_HPP
 
 #include <vector>
+#include <cstdint>
+#include <cstddef>
 
 namespace ledger {
     namespace core {
