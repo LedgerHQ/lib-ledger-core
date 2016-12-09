@@ -80,7 +80,8 @@ namespace ledger { namespace core {
                     _webSocketClient,
                     _pathResolver,
                     _logPrinter,
-                    _dispatcher
+                    _dispatcher,
+                    _rng
             );
             pool->open([pool, listener] (bool isCreated) {
                 listener->onWalletPoolBuilt(pool);

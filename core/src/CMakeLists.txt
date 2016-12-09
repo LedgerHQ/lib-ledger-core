@@ -103,7 +103,7 @@ target_include_directories(ledger-core PUBLIC ../lib/bigd)
 target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories(ledger-core PUBLIC ../lib/soci/core)
-target_include_directories(ledger-core PUBLIC ../lib/spdloreg/include)
+target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 
 install(TARGETS ledger-core DESTINATION "lib")

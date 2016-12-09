@@ -35,13 +35,14 @@ namespace ledger {
     namespace core {
 
 
-        WalletPool::WalletPool(const std::string &name,
-                               const std::experimental::optional<std::string> &password,
-                               const std::shared_ptr<api::HttpClient> &httpClient,
-                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                               const std::shared_ptr<api::PathResolver> &pathResolver,
-                               const std::shared_ptr<api::LogPrinter> &logPrinter,
-                               const std::shared_ptr<api::ThreadDispatcher> &dispatcher) {
+        WalletPool::WalletPool( const std::string &name,
+                                const std::experimental::optional<std::string> &password,
+                                const std::shared_ptr<api::HttpClient> &httpClient,
+                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                                const std::shared_ptr<api::PathResolver> &pathResolver,
+                                const std::shared_ptr<api::LogPrinter> &logPrinter,
+                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                                const std::shared_ptr<api::RandomNumberGenerator>& rng) {
             _dispatcher = dispatcher;
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
         }
