@@ -92,6 +92,7 @@ namespace ledger {
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::shared_ptr<api::ExecutionContext> _queue;
             std::shared_ptr<IPreferencesBackend> _preferencesBackend;
+            std::shared_ptr<IPreferencesBackend> _localPreferencesBackend;
         };
     }
 }

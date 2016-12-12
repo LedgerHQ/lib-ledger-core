@@ -1,0 +1,32 @@
+@import "../wallet/crypto_currency_description.djinni"
+
+BitcoinLikeNetworkParameters = record {
+    identifier: string;
+    P2PKHVersion: i32;
+    P2SHVersion: i32;
+    XPUBVersion: i32;
+
+    usesFeePerBytePolicy: bool;
+
+    BIP44CoinType: i64;
+}
+
+BitcoinLikeAddress = interface +c {
+    getVersion(): i32;
+    getHash160(): binary;
+    getNetworkParameters(): BitcoinLikeNetworkParameters;
+    toBase58(): string;
+    toPaymentUri(): string;
+    isP2SH(): bool;
+    isP2PKH(): bool;
+    getDerivationPath(): optional<string>;
+
+    static fromBase58(params: BitcoinLikeNetworkParameters, address: string): BitcoinLikeAddress;
+}
+
+BitcoinLikeExtendedPublicKey = interface +c {
+    derive(path: string): BitcoinLikeAddress;
+    toBase58(): string;
+
+    static fromBase58(params: BitcoinLikeNetworkParameters, address: string): BitcoinLikeExtendedPublicKey;
+}

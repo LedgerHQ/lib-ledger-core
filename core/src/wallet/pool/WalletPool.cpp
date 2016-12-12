@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+#include "../../preferences/AtomicPreferencesBackend.hpp"
 #include "../../utils/LambdaRunnable.hpp"
 #include "WalletPool.hpp"
 
@@ -43,13 +44,23 @@ namespace ledger {
                                 const std::shared_ptr<api::LogPrinter> &logPrinter,
                                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                                 const std::shared_ptr<api::RandomNumberGenerator>& rng) {
+            // Initialize threading objects
             _dispatcher = dispatcher;
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
+
+            // Initialize preferences
+            //_localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>();
+
+            // Initialize logger
+
+            // Initialize network
+
+
         }
 
         void WalletPool::open(const std::function<void(bool)> &callback) {
             runOnPoolQueue([] () -> void {
-                
+
             });
         }
 
@@ -100,7 +111,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Preferences> WalletPool::getPreferences() {
-            return nullptr;
+            return _preferencesBackend->getPreferences("pool");
         }
     }
 }

@@ -70,7 +70,14 @@ add_library(
         debug/logger.hpp debug/logger.cpp
         net/HttpClient.cpp
         net/HttpClient.hpp
-        crypto/SHA256.cpp crypto/SHA256.hpp crypto/AES256.cpp crypto/AES256.hpp crypto/PBKDF2.cpp crypto/PBKDF2.hpp crypto/AESCipher.cpp crypto/AESCipher.hpp)
+        crypto/SHA256.cpp
+        crypto/SHA256.hpp
+        crypto/AES256.cpp
+        crypto/AES256.hpp
+        crypto/PBKDF2.cpp
+        crypto/PBKDF2.hpp
+        crypto/AESCipher.cpp
+        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
