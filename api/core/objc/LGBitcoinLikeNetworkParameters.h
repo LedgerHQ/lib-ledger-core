@@ -7,11 +7,15 @@
 - (nonnull instancetype)initWithIdentifier:(nonnull NSString *)identifier
                               P2PKHVersion:(int32_t)P2PKHVersion
                                P2SHVersion:(int32_t)P2SHVersion
-                               XPUBVersion:(int32_t)XPUBVersion;
+                               XPUBVersion:(int32_t)XPUBVersion
+                      usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                             BIP44CoinType:(int64_t)BIP44CoinType;
 + (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)identifier
                                                       P2PKHVersion:(int32_t)P2PKHVersion
                                                        P2SHVersion:(int32_t)P2SHVersion
-                                                       XPUBVersion:(int32_t)XPUBVersion;
+                                                       XPUBVersion:(int32_t)XPUBVersion
+                                              usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                                                     BIP44CoinType:(int64_t)BIP44CoinType;
 
 @property (nonatomic, readonly, nonnull) NSString * identifier;
 
@@ -20,5 +24,9 @@
 @property (nonatomic, readonly) int32_t P2SHVersion;
 
 @property (nonatomic, readonly) int32_t XPUBVersion;
+
+@property (nonatomic, readonly) BOOL usesFeePerBytePolicy;
+
+@property (nonatomic, readonly) int64_t BIP44CoinType;
 
 @end

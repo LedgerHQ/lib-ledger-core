@@ -77,7 +77,9 @@ add_library(
         crypto/PBKDF2.cpp
         crypto/PBKDF2.hpp
         crypto/AESCipher.cpp
-        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp)
+        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp utils/Try.cpp utils/Try.hpp utils/Exception.cpp utils/Exception.hpp)
+
+
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

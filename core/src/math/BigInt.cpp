@@ -72,8 +72,8 @@ namespace ledger {
             }
         }
 
-        BigInt::BigInt(unsigned int value) {
-            bdSetShort(_bigd, value);
+        BigInt::BigInt(unsigned int value) : BigInt() {
+            bdSetShort(_bigd, (bdigit_t)value);
             _negative = false;
         }
 
@@ -284,8 +284,8 @@ namespace ledger {
 
         std::vector<uint8_t> BigInt::toByteArray() const {
             size_t nchars = bdConvToOctets(_bigd, NULL, 0);
-            std::vector<uint8_t> out = std::vector<uint8_t >(nchars + 1);
-            bdConvToDecimal(_bigd, reinterpret_cast<char *>(out.data()), nchars + 1);
+            std::vector<uint8_t> out = std::vector<uint8_t >(nchars);
+            bdConvToOctets(_bigd, reinterpret_cast<unsigned char *>(out.data()), nchars);
             return out;
         }
 

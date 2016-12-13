@@ -12,5 +12,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
      */
     LGErrorCodeCancelledByUser,
     /** Others */
+    LGErrorCodeInvalidBase58Format,
+    LGErrorCodeInvalidChecksum,
     LGErrorCodeUnknown,
 };

@@ -1,9 +1,9 @@
 /*
  *
- * Base58
+ * Exception
  * ledger-core
  *
- * Created by Pierre Pollastri on 12/12/2016.
+ * Created by Pierre Pollastri on 13/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,34 +28,28 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BASE58_HPP
-#define LEDGER_CORE_BASE58_HPP
+#ifndef LEDGER_CORE_EXCEPTION_HPP
+#define LEDGER_CORE_EXCEPTION_HPP
 
-#include <vector>
+#include <exception>
 #include <string>
-#include "../utils/Try.hpp"
-#include "../utils/Exception.hpp"
-
+#include "../api/ErrorCode.hpp"
 namespace ledger {
     namespace core {
-        class Base58 {
+        class Exception : public std::exception {
         public:
-            Base58() = delete;
-            ~Base58() = delete;
+            Exception(api::ErrorCode code, const std::string& message);
+            api::ErrorCode getErrorCode() const;
+            virtual ~Exception() override;
 
-            static std::string encode(const std::vector<uint8_t>& bytes);
-            static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes);
+            virtual const char *what() const noexcept override;
 
-            static std::vector<uint8_t> decode(const std::string& str) throw(Exception);
-            static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str);
-
-
-            static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes);
+        private:
+            api::ErrorCode _code;
+            std::string _message;
         };
-
-
     }
 }
 
 
-#endif //LEDGER_CORE_BASE58_HPP
+#endif //LEDGER_CORE_EXCEPTION_HPP

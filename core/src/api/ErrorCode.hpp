@@ -15,6 +15,8 @@ enum class ErrorCode : int {
      */
     CANCELLED_BY_USER,
     /** Others */
+    INVALID_BASE58_FORMAT,
+    INVALID_CHECKSUM,
     UNKNOWN,
 };
 

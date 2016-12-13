@@ -13,7 +13,9 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
     return {::djinni::String::toCpp(obj.identifier),
             ::djinni::I32::toCpp(obj.P2PKHVersion),
             ::djinni::I32::toCpp(obj.P2SHVersion),
-            ::djinni::I32::toCpp(obj.XPUBVersion)};
+            ::djinni::I32::toCpp(obj.XPUBVersion),
+            ::djinni::Bool::toCpp(obj.usesFeePerBytePolicy),
+            ::djinni::I64::toCpp(obj.BIP44CoinType)};
 }
 
 auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
@@ -21,7 +23,9 @@ auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
     return [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:(::djinni::String::fromCpp(cpp.identifier))
                                                          P2PKHVersion:(::djinni::I32::fromCpp(cpp.P2PKHVersion))
                                                           P2SHVersion:(::djinni::I32::fromCpp(cpp.P2SHVersion))
-                                                          XPUBVersion:(::djinni::I32::fromCpp(cpp.XPUBVersion))];
+                                                          XPUBVersion:(::djinni::I32::fromCpp(cpp.XPUBVersion))
+                                                 usesFeePerBytePolicy:(::djinni::Bool::fromCpp(cpp.usesFeePerBytePolicy))
+                                                        BIP44CoinType:(::djinni::I64::fromCpp(cpp.BIP44CoinType))];
 }
 
 }  // namespace djinni_generated

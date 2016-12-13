@@ -48,19 +48,6 @@ static void _encode(const ledger::core::BigInt& v, std::stringstream& ss) {
 }
 
 std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes) {
-    /*
-     * var intData = BigInteger.ZERO
-    for (i <- 0 until b.length) {
-      intData = intData.multiply(BigInteger.valueOf(256)).add(BigInteger.valueOf(b(i) & 0xFF))
-    }
-    var result = ""
-    while (intData.compareTo(BigInteger.ZERO) > 0) {
-      val r = intData.mod(BigInteger.valueOf(58)).intValue()
-      intData = intData.divide(BigInteger.valueOf(58))
-      result = Digits(r).toString + result
-    }
-    "1" * b.takeWhile(_ == 0).length + result
-     */
     BigInt intData(bytes.data(), bytes.size(), false);
     std::stringstream ss;
 
@@ -75,8 +62,23 @@ std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> 
     return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes)));
 }
 
-std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) {
-    return std::vector<uint8_t>();
+std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(ledger::core::Exception) {
+    BigInt intData(0);
+    std::vector<uint8_t> prefix;
+
+    for (auto& c : str) {
+        if (c == '1' && intData == BigInt::ZERO) {
+            prefix.push_back(0);
+        } else {
+            auto digitIndex = DIGITS.find(c);
+            if (digitIndex != std::string::npos) {
+                intData = (intData * V_58) + BigInt((unsigned int)digitIndex);
+            } else {
+                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format");
+            }
+        }
+    }
+    return vector::concat(prefix, intData.toByteArray());
 }
 
 std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uint8_t> &bytes) {
@@ -84,65 +86,15 @@ std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uin
     return std::vector<uint8_t>(doubleHash.begin(), doubleHash.begin() + 4);
 }
 
-/*
- val Digits = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-
-  @throws(classOf[InvalidBase58FormatException])
-  def decode(s: String): Array[Byte] = {
-    var intData = BigInteger.ZERO
-    for (i <- 0 until s.length) {
-      val digit = Digits.indexOf(s(i))
-      if (digit < 0)
-        throw new InvalidBase58FormatException("Invalid character '" + digit + "'")
-      intData = intData.multiply(BigInteger.valueOf(58)).add(BigInteger.valueOf(digit))
-    }
-    Array.fill[Byte](s.takeWhile(_ == '1').length)(0) ++ intData.toByteArray.dropWhile(_ == 0)
-  }
-
-  def tryDecode(s: String): Try[Array[Byte]] = Try(decode(s))
-
-  def decodeWithChecksum(s: String): (Array[Byte], Array[Byte]) = {
-    val decoded = decode(s)
-    (decoded.slice(0, decoded.length - 4), decoded.slice(decoded.length - 4, decoded.length))
-  }
-
-  def checkAndDecode(s: String): Option[Array[Byte]] = {
-    val (data, checksum) = decodeWithChecksum(s)
-    val validChecksum = computeChecksum(data)
-    if (validChecksum.deep == checksum.deep)
-      Some(data)
-    else
-      None
-  }
-
-  def computeChecksum(b: Array[Byte]): Array[Byte] = {
-    val digest = new SHA256Digest
-    digest.update(b, 0, b.length)
-    val firstPass = new Array[Byte](32)
-    val secondPass = new Array[Byte](32)
-    digest.doFinal(firstPass, 0)
-    digest.reset()
-    digest.update(firstPass, 0, firstPass.length)
-    digest.doFinal(secondPass, 0)
-    secondPass.slice(0, 4)
-  }
-
-  def encode(b: Array[Byte]): String = {
-    var intData = BigInteger.ZERO
-    for (i <- 0 until b.length) {
-      intData = intData.multiply(BigInteger.valueOf(256)).add(BigInteger.valueOf(b(i) & 0xFF))
-    }
-    var result = ""
-    while (intData.compareTo(BigInteger.ZERO) > 0) {
-      val r = intData.mod(BigInteger.valueOf(58)).intValue()
-      intData = intData.divide(BigInteger.valueOf(58))
-      result = Digits(r).toString + result
-    }
-    "1" * b.takeWhile(_ == 0).length + result
-  }
-
-  def encodeWitchChecksum(b: Array[Byte]): String = encode(b ++ computeChecksum(b))
-  def verify(s: String): Boolean = checkAndDecode(s).isDefined
-
-  class InvalidBase58FormatException(reason: String) extends Exception(reason)
- */
+ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str) {
+    return Try<std::vector<uint8_t>>::tryAndCatch([&] () {
+        auto decoded = decode(str);
+        std::vector<uint8_t> data(decoded.begin(), decoded.end() - 4);
+        std::vector<uint8_t> checksum(decoded.end() - 4, decoded.end());
+        auto chks = computeChecksum(data);
+        if (checksum != chks) {
+            throw Exception(api::ErrorCode::INVALID_CHECKSUM, "Base 58 invalid checksum");
+        }
+        return data;
+    });
+}

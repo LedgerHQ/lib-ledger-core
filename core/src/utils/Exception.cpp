@@ -1,9 +1,9 @@
 /*
  *
- * Base58
+ * Exception
  * ledger-core
  *
- * Created by Pierre Pollastri on 12/12/2016.
+ * Created by Pierre Pollastri on 13/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,34 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BASE58_HPP
-#define LEDGER_CORE_BASE58_HPP
+#include "Exception.hpp"
 
-#include <vector>
-#include <string>
-#include "../utils/Try.hpp"
-#include "../utils/Exception.hpp"
-
-namespace ledger {
-    namespace core {
-        class Base58 {
-        public:
-            Base58() = delete;
-            ~Base58() = delete;
-
-            static std::string encode(const std::vector<uint8_t>& bytes);
-            static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes);
-
-            static std::vector<uint8_t> decode(const std::string& str) throw(Exception);
-            static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str);
-
-
-            static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes);
-        };
-
-
-    }
+ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
+    _code = code;
+    _message = message;
 }
 
+ledger::core::Exception::~Exception() {
 
-#endif //LEDGER_CORE_BASE58_HPP
+}
+
+const char *ledger::core::Exception::what() const noexcept {
+    return _message.c_str();
+}
+
+ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
+    return _code;
+}

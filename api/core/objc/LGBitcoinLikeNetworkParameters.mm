@@ -10,12 +10,16 @@
                               P2PKHVersion:(int32_t)P2PKHVersion
                                P2SHVersion:(int32_t)P2SHVersion
                                XPUBVersion:(int32_t)XPUBVersion
+                      usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                             BIP44CoinType:(int64_t)BIP44CoinType
 {
     if (self = [super init]) {
         _identifier = [identifier copy];
         _P2PKHVersion = P2PKHVersion;
         _P2SHVersion = P2SHVersion;
         _XPUBVersion = XPUBVersion;
+        _usesFeePerBytePolicy = usesFeePerBytePolicy;
+        _BIP44CoinType = BIP44CoinType;
     }
     return self;
 }
@@ -24,16 +28,20 @@
                                                       P2PKHVersion:(int32_t)P2PKHVersion
                                                        P2SHVersion:(int32_t)P2SHVersion
                                                        XPUBVersion:(int32_t)XPUBVersion
+                                              usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                                                     BIP44CoinType:(int64_t)BIP44CoinType
 {
     return [[self alloc] initWithIdentifier:identifier
                                P2PKHVersion:P2PKHVersion
                                 P2SHVersion:P2SHVersion
-                                XPUBVersion:XPUBVersion];
+                                XPUBVersion:XPUBVersion
+                       usesFeePerBytePolicy:usesFeePerBytePolicy
+                              BIP44CoinType:BIP44CoinType];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@>", self.class, (void *)self, self.identifier, @(self.P2PKHVersion), @(self.P2SHVersion), @(self.XPUBVersion)];
+    return [NSString stringWithFormat:@"<%@ %p identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ usesFeePerBytePolicy:%@ BIP44CoinType:%@>", self.class, (void *)self, self.identifier, @(self.P2PKHVersion), @(self.P2SHVersion), @(self.XPUBVersion), @(self.usesFeePerBytePolicy), @(self.BIP44CoinType)];
 }
 
 @end

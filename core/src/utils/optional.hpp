@@ -1036,6 +1036,13 @@ namespace std
     };
 }
 
+namespace ledger {
+    namespace core {
+        template <typename T>
+        using optional = std::experimental::optional<T>;
+    }
+}
+
 # undef TR2_OPTIONAL_REQUIRES
 # undef TR2_OPTIONAL_ASSERTED_EXPRESSION
 

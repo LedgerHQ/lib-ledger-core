@@ -14,15 +14,23 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final int XPUBVersion;
 
+    /*package*/ final boolean usesFeePerBytePolicy;
+
+    /*package*/ final long BIP44CoinType;
+
     public BitcoinLikeNetworkParameters(
             String identifier,
             int P2PKHVersion,
             int P2SHVersion,
-            int XPUBVersion) {
+            int XPUBVersion,
+            boolean usesFeePerBytePolicy,
+            long BIP44CoinType) {
         this.identifier = identifier;
         this.P2PKHVersion = P2PKHVersion;
         this.P2SHVersion = P2SHVersion;
         this.XPUBVersion = XPUBVersion;
+        this.usesFeePerBytePolicy = usesFeePerBytePolicy;
+        this.BIP44CoinType = BIP44CoinType;
     }
 
     public String getIdentifier() {
@@ -41,6 +49,14 @@ public final class BitcoinLikeNetworkParameters {
         return XPUBVersion;
     }
 
+    public boolean getUsesFeePerBytePolicy() {
+        return usesFeePerBytePolicy;
+    }
+
+    public long getBIP44CoinType() {
+        return BIP44CoinType;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeNetworkParameters{" +
@@ -48,6 +64,8 @@ public final class BitcoinLikeNetworkParameters {
                 "," + "P2PKHVersion=" + P2PKHVersion +
                 "," + "P2SHVersion=" + P2SHVersion +
                 "," + "XPUBVersion=" + XPUBVersion +
+                "," + "usesFeePerBytePolicy=" + usesFeePerBytePolicy +
+                "," + "BIP44CoinType=" + BIP44CoinType +
         "}";
     }
 

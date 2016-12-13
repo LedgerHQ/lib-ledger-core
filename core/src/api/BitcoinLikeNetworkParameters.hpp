@@ -14,15 +14,21 @@ struct BitcoinLikeNetworkParameters final {
     int32_t P2PKHVersion;
     int32_t P2SHVersion;
     int32_t XPUBVersion;
+    bool usesFeePerBytePolicy;
+    int64_t BIP44CoinType;
 
     BitcoinLikeNetworkParameters(std::string identifier_,
                                  int32_t P2PKHVersion_,
                                  int32_t P2SHVersion_,
-                                 int32_t XPUBVersion_)
+                                 int32_t XPUBVersion_,
+                                 bool usesFeePerBytePolicy_,
+                                 int64_t BIP44CoinType_)
     : identifier(std::move(identifier_))
     , P2PKHVersion(std::move(P2PKHVersion_))
     , P2SHVersion(std::move(P2SHVersion_))
     , XPUBVersion(std::move(XPUBVersion_))
+    , usesFeePerBytePolicy(std::move(usesFeePerBytePolicy_))
+    , BIP44CoinType(std::move(BIP44CoinType_))
     {}
 };
 
