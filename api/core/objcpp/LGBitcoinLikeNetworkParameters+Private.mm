@@ -11,21 +11,23 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
     return {::djinni::String::toCpp(obj.identifier),
-            ::djinni::I32::toCpp(obj.P2PKHVersion),
-            ::djinni::I32::toCpp(obj.P2SHVersion),
-            ::djinni::I32::toCpp(obj.XPUBVersion),
+            ::djinni::Binary::toCpp(obj.P2PKHVersion),
+            ::djinni::Binary::toCpp(obj.P2SHVersion),
+            ::djinni::Binary::toCpp(obj.XPUBVersion),
             ::djinni::Bool::toCpp(obj.usesFeePerBytePolicy),
-            ::djinni::I64::toCpp(obj.BIP44CoinType)};
+            ::djinni::I64::toCpp(obj.BIP44CoinType),
+            ::djinni::String::toCpp(obj.PaymentUriScheme)};
 }
 
 auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
 {
     return [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:(::djinni::String::fromCpp(cpp.identifier))
-                                                         P2PKHVersion:(::djinni::I32::fromCpp(cpp.P2PKHVersion))
-                                                          P2SHVersion:(::djinni::I32::fromCpp(cpp.P2SHVersion))
-                                                          XPUBVersion:(::djinni::I32::fromCpp(cpp.XPUBVersion))
+                                                         P2PKHVersion:(::djinni::Binary::fromCpp(cpp.P2PKHVersion))
+                                                          P2SHVersion:(::djinni::Binary::fromCpp(cpp.P2SHVersion))
+                                                          XPUBVersion:(::djinni::Binary::fromCpp(cpp.XPUBVersion))
                                                  usesFeePerBytePolicy:(::djinni::Bool::fromCpp(cpp.usesFeePerBytePolicy))
-                                                        BIP44CoinType:(::djinni::I64::fromCpp(cpp.BIP44CoinType))];
+                                                        BIP44CoinType:(::djinni::I64::fromCpp(cpp.BIP44CoinType))
+                                                     PaymentUriScheme:(::djinni::String::fromCpp(cpp.PaymentUriScheme))];
 }
 
 }  // namespace djinni_generated

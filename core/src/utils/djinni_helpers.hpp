@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * djinni_helpers
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 14/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
+#ifndef LEDGER_CORE_DJINNI_HELPERS_HPP
+#define LEDGER_CORE_DJINNI_HELPERS_HPP
 
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
-}
+#define CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(source, destination) \
+    destination( \
+      source.identifier, source.P2PKHVersion, source.P2SHVersion, source.XPUBVersion, source.usesFeePerBytePolicy, \
+      source.BIP44CoinType, source.PaymentUriScheme \
+    )
 
-ledger::core::Exception::~Exception() {
-
-}
-
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
-}
-
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
-}
+#endif //LEDGER_CORE_DJINNI_HELPERS_HPP

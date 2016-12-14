@@ -7,41 +7,45 @@
 @implementation LGBitcoinLikeNetworkParameters
 
 - (nonnull instancetype)initWithIdentifier:(nonnull NSString *)identifier
-                              P2PKHVersion:(int32_t)P2PKHVersion
-                               P2SHVersion:(int32_t)P2SHVersion
-                               XPUBVersion:(int32_t)XPUBVersion
+                              P2PKHVersion:(nonnull NSData *)P2PKHVersion
+                               P2SHVersion:(nonnull NSData *)P2SHVersion
+                               XPUBVersion:(nonnull NSData *)XPUBVersion
                       usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
                              BIP44CoinType:(int64_t)BIP44CoinType
+                          PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
 {
     if (self = [super init]) {
         _identifier = [identifier copy];
-        _P2PKHVersion = P2PKHVersion;
-        _P2SHVersion = P2SHVersion;
-        _XPUBVersion = XPUBVersion;
+        _P2PKHVersion = [P2PKHVersion copy];
+        _P2SHVersion = [P2SHVersion copy];
+        _XPUBVersion = [XPUBVersion copy];
         _usesFeePerBytePolicy = usesFeePerBytePolicy;
         _BIP44CoinType = BIP44CoinType;
+        _PaymentUriScheme = [PaymentUriScheme copy];
     }
     return self;
 }
 
 + (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)identifier
-                                                      P2PKHVersion:(int32_t)P2PKHVersion
-                                                       P2SHVersion:(int32_t)P2SHVersion
-                                                       XPUBVersion:(int32_t)XPUBVersion
+                                                      P2PKHVersion:(nonnull NSData *)P2PKHVersion
+                                                       P2SHVersion:(nonnull NSData *)P2SHVersion
+                                                       XPUBVersion:(nonnull NSData *)XPUBVersion
                                               usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
                                                      BIP44CoinType:(int64_t)BIP44CoinType
+                                                  PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
 {
     return [[self alloc] initWithIdentifier:identifier
                                P2PKHVersion:P2PKHVersion
                                 P2SHVersion:P2SHVersion
                                 XPUBVersion:XPUBVersion
                        usesFeePerBytePolicy:usesFeePerBytePolicy
-                              BIP44CoinType:BIP44CoinType];
+                              BIP44CoinType:BIP44CoinType
+                           PaymentUriScheme:PaymentUriScheme];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ usesFeePerBytePolicy:%@ BIP44CoinType:%@>", self.class, (void *)self, self.identifier, @(self.P2PKHVersion), @(self.P2SHVersion), @(self.XPUBVersion), @(self.usesFeePerBytePolicy), @(self.BIP44CoinType)];
+    return [NSString stringWithFormat:@"<%@ %p identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ usesFeePerBytePolicy:%@ BIP44CoinType:%@ PaymentUriScheme:%@>", self.class, (void *)self, self.identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.usesFeePerBytePolicy), @(self.BIP44CoinType), self.PaymentUriScheme];
 }
 
 @end

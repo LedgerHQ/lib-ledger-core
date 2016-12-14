@@ -31,10 +31,10 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (int32_t)getVersion {
+- (nonnull NSData *)getVersion {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getVersion();
-        return ::djinni::I32::fromCpp(objcpp_result_);
+        return ::djinni::Binary::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -93,6 +93,15 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         auto objcpp_result_ = ::ledger::core::api::BitcoinLikeAddress::fromBase58(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params),
                                                                                   ::djinni::String::toCpp(address));
         return ::djinni_generated::BitcoinLikeAddress::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
++ (BOOL)isAddressValid:(nonnull LGBitcoinLikeNetworkParameters *)params
+               address:(nonnull NSString *)address {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeAddress::isAddressValid(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params),
+                                                                                      ::djinni::String::toCpp(address));
+        return ::djinni::Bool::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

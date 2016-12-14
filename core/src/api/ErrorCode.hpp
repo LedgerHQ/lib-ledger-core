@@ -17,6 +17,7 @@ enum class ErrorCode : int {
     /** Others */
     INVALID_BASE58_FORMAT,
     INVALID_CHECKSUM,
+    INVALID_VERSION,
     UNKNOWN,
 };
 

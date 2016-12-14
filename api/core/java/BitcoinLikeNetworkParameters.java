@@ -8,44 +8,48 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final String identifier;
 
-    /*package*/ final int P2PKHVersion;
+    /*package*/ final byte[] P2PKHVersion;
 
-    /*package*/ final int P2SHVersion;
+    /*package*/ final byte[] P2SHVersion;
 
-    /*package*/ final int XPUBVersion;
+    /*package*/ final byte[] XPUBVersion;
 
     /*package*/ final boolean usesFeePerBytePolicy;
 
     /*package*/ final long BIP44CoinType;
 
+    /*package*/ final String PaymentUriScheme;
+
     public BitcoinLikeNetworkParameters(
             String identifier,
-            int P2PKHVersion,
-            int P2SHVersion,
-            int XPUBVersion,
+            byte[] P2PKHVersion,
+            byte[] P2SHVersion,
+            byte[] XPUBVersion,
             boolean usesFeePerBytePolicy,
-            long BIP44CoinType) {
+            long BIP44CoinType,
+            String PaymentUriScheme) {
         this.identifier = identifier;
         this.P2PKHVersion = P2PKHVersion;
         this.P2SHVersion = P2SHVersion;
         this.XPUBVersion = XPUBVersion;
         this.usesFeePerBytePolicy = usesFeePerBytePolicy;
         this.BIP44CoinType = BIP44CoinType;
+        this.PaymentUriScheme = PaymentUriScheme;
     }
 
     public String getIdentifier() {
         return identifier;
     }
 
-    public int getP2PKHVersion() {
+    public byte[] getP2PKHVersion() {
         return P2PKHVersion;
     }
 
-    public int getP2SHVersion() {
+    public byte[] getP2SHVersion() {
         return P2SHVersion;
     }
 
-    public int getXPUBVersion() {
+    public byte[] getXPUBVersion() {
         return XPUBVersion;
     }
 
@@ -57,6 +61,10 @@ public final class BitcoinLikeNetworkParameters {
         return BIP44CoinType;
     }
 
+    public String getPaymentUriScheme() {
+        return PaymentUriScheme;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeNetworkParameters{" +
@@ -66,6 +74,7 @@ public final class BitcoinLikeNetworkParameters {
                 "," + "XPUBVersion=" + XPUBVersion +
                 "," + "usesFeePerBytePolicy=" + usesFeePerBytePolicy +
                 "," + "BIP44CoinType=" + BIP44CoinType +
+                "," + "PaymentUriScheme=" + PaymentUriScheme +
         "}";
     }
 

@@ -31,12 +31,33 @@
 #ifndef LEDGER_CORE_BITCOINLIKEADDRESS_HPP
 #define LEDGER_CORE_BITCOINLIKEADDRESS_HPP
 
+#include "../api/BitcoinLikeAddress.hpp"
+#include "../api/BitcoinLikeNetworkParameters.hpp"
+#include "../utils/optional.hpp"
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAddress {
+        class BitcoinLikeAddress : public api::BitcoinLikeAddress {
+        public:
+            BitcoinLikeAddress(const api::BitcoinLikeNetworkParameters& params,
+                               const std::vector<uint8_t>& hash160,
+                               const std::vector<uint8_t>& version,
+                               optional<std::string> derivationPath = optional<std::string>());
 
+            virtual std::vector<uint8_t> getVersion() override;
+            virtual std::vector<uint8_t> getHash160() override;
+            virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
+            virtual std::string toBase58() override;
+            virtual std::string toPaymentUri() override;
+            virtual bool isP2SH() override;
+            virtual bool isP2PKH() override;
+            virtual optional<std::string> getDerivationPath() override;
 
+        private:
+            std::vector<uint8_t> _version;
+            std::vector<uint8_t> _hash160;
+            api::BitcoinLikeNetworkParameters _params;
+            optional<std::string> _derivationPath;
         };
     }
 }

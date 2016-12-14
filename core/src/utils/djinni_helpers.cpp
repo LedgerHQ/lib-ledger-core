@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * djinni_helpers
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 14/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,4 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
-
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
-}
-
-ledger::core::Exception::~Exception() {
-
-}
-
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
-}
-
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
-}
+#include "djinni_helpers.hpp"

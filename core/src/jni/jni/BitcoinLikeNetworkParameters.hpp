@@ -25,13 +25,14 @@ private:
     friend ::djinni::JniClass<BitcoinLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;IIIZJ)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[B[B[BZJLjava/lang/String;)V") };
     const jfieldID field_identifier { ::djinni::jniGetFieldID(clazz.get(), "identifier", "Ljava/lang/String;") };
-    const jfieldID field_P2PKHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2PKHVersion", "I") };
-    const jfieldID field_P2SHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2SHVersion", "I") };
-    const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "I") };
+    const jfieldID field_P2PKHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2PKHVersion", "[B") };
+    const jfieldID field_P2SHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2SHVersion", "[B") };
+    const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "[B") };
     const jfieldID field_usesFeePerBytePolicy { ::djinni::jniGetFieldID(clazz.get(), "usesFeePerBytePolicy", "Z") };
     const jfieldID field_BIP44CoinType { ::djinni::jniGetFieldID(clazz.get(), "BIP44CoinType", "J") };
+    const jfieldID field_PaymentUriScheme { ::djinni::jniGetFieldID(clazz.get(), "PaymentUriScheme", "Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated

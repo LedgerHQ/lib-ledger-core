@@ -5,24 +5,68 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/** Helper class for manipulating Bitcoin like addresses */
 public abstract class BitcoinLikeAddress {
-    public abstract int getVersion();
+    /**
+     * Gets the version of the address (P2SH or P2PKH)
+     * @return The version of the address
+     */
+    public abstract byte[] getVersion();
 
+    /**
+     * Gets the raw hash160 of the public key
+     * @return The 20 bytes of the public key hash160
+     */
     public abstract byte[] getHash160();
 
+    /**
+     * Gets the network parameters used for serializing the address
+     * @return The network parameters of the address
+     */
     public abstract BitcoinLikeNetworkParameters getNetworkParameters();
 
+    /**
+     * Serializes the hash160 into a Base58 encoded address (with checksum)
+     * @return The Base58 serialization
+     */
     public abstract String toBase58();
 
+    /**
+     * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
+     * @return A payment uri to this address
+     */
     public abstract String toPaymentUri();
 
+    /**
+     * Checks if the given address is a P2SH address
+     * @return True if the version byte matches the P2SH byte version of the address network parameters
+     */
     public abstract boolean isP2SH();
 
+    /**
+     * Checks if the given address is a P2PKH address
+     * @return True if the version byte matches the P2PKH byte version of the address network parameters
+     */
     public abstract boolean isP2PKH();
 
+    /**
+     * Gets an optional derivation path (if the address comes from an extended public key)
+     * @return The derivation path of the address
+     */
     public abstract String getDerivationPath();
 
+    /**
+     * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
+     * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
+     * @return A BitcoinLikeAddress
+     */
     public static native BitcoinLikeAddress fromBase58(BitcoinLikeNetworkParameters params, String address);
+
+    /**
+     * Check if the given address is valid
+     * @return true if the address is valid, false otherwise
+     */
+    public static native boolean isAddressValid(BitcoinLikeNetworkParameters params, String address);
 
     private static final class CppProxy extends BitcoinLikeAddress
     {
@@ -48,12 +92,12 @@ public abstract class BitcoinLikeAddress {
         }
 
         @Override
-        public int getVersion()
+        public byte[] getVersion()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getVersion(this.nativeRef);
         }
-        private native int native_getVersion(long _nativeRef);
+        private native byte[] native_getVersion(long _nativeRef);
 
         @Override
         public byte[] getHash160()

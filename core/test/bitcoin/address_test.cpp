@@ -30,7 +30,41 @@
  */
 
 #include <gtest/gtest.h>
+#include <ledger/core/api/BitcoinLikeAddress.hpp>
+#include <ledger/core/api/BitcoinLikeNetworkParameters.hpp>
+#include <ledger/core/utils/hex.h>
+
+std::vector<std::vector<std::string>> fixtures = {
+        {"010966776006953D5567439E5E39F86A0D273BEE", "16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM", "00"},
+        {"7b2f2061d66d57ffb9502a091ce236ed4c1ede2d", "1CELa15H4DMzHtHnuz7LCpSFgFWf61Ra6A", "00"},
+        {"89C907892A9D4F37B78D5F83F2FD6E008C4F795D", "1DZYQ3xEy8mkc7wToQZvKqeLrSLUMVVK41", "00"},
+        {"0000000000000000000000000000000000000000", "1111111111111111111114oLvT2", "00"},
+        {"0000000000000000000000000000000000000001", "11111111111111111111BZbvjr", "00"},
+        {"dd894dfc0f473c44cc983b5dd462bc1b393f7498", "3MtPk2kf61VepUfwgRjqjC5WeGgxE4rRPS", "05"}
+};
+
+using namespace ledger::core::api;
+using namespace ledger::core;
+
+const BitcoinLikeNetworkParameters params(
+        "bitcoin",
+        {0},
+        {5},
+        {0x04, 0x88, 0xB2, 0x1E},
+        true,
+        0,
+        "bitcoin"
+);
 
 TEST(Address, AddressFromBase58String) {
-
+     for (auto& item : fixtures) {
+         EXPECT_TRUE(BitcoinLikeAddress::isAddressValid(params, item[1]));
+         EXPECT_EQ(BitcoinLikeAddress::fromBase58(params, item[1])->getHash160(), hex::toByteArray(item[0]));
+         EXPECT_EQ(BitcoinLikeAddress::fromBase58(params, item[1])->getVersion(), hex::toByteArray(item[2]));
+         if (item[2] == "05") {
+             EXPECT_TRUE(BitcoinLikeAddress::fromBase58(params, item[1])->isP2SH());
+         } else {
+             EXPECT_TRUE(BitcoinLikeAddress::fromBase58(params, item[1])->isP2PKH());
+         }
+     }
 }

@@ -6,29 +6,33 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeNetworkParameters final {
     std::string identifier;
-    int32_t P2PKHVersion;
-    int32_t P2SHVersion;
-    int32_t XPUBVersion;
+    std::vector<uint8_t> P2PKHVersion;
+    std::vector<uint8_t> P2SHVersion;
+    std::vector<uint8_t> XPUBVersion;
     bool usesFeePerBytePolicy;
     int64_t BIP44CoinType;
+    std::string PaymentUriScheme;
 
     BitcoinLikeNetworkParameters(std::string identifier_,
-                                 int32_t P2PKHVersion_,
-                                 int32_t P2SHVersion_,
-                                 int32_t XPUBVersion_,
+                                 std::vector<uint8_t> P2PKHVersion_,
+                                 std::vector<uint8_t> P2SHVersion_,
+                                 std::vector<uint8_t> XPUBVersion_,
                                  bool usesFeePerBytePolicy_,
-                                 int64_t BIP44CoinType_)
+                                 int64_t BIP44CoinType_,
+                                 std::string PaymentUriScheme_)
     : identifier(std::move(identifier_))
     , P2PKHVersion(std::move(P2PKHVersion_))
     , P2SHVersion(std::move(P2SHVersion_))
     , XPUBVersion(std::move(XPUBVersion_))
     , usesFeePerBytePolicy(std::move(usesFeePerBytePolicy_))
     , BIP44CoinType(std::move(BIP44CoinType_))
+    , PaymentUriScheme(std::move(PaymentUriScheme_))
     {}
 };
 

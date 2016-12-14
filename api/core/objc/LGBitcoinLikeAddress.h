@@ -6,25 +6,70 @@
 @class LGBitcoinLikeAddress;
 
 
+/** Helper class for manipulating Bitcoin like addresses */
 @interface LGBitcoinLikeAddress : NSObject
 
-- (int32_t)getVersion;
+/**
+ * Gets the version of the address (P2SH or P2PKH)
+ * @return The version of the address
+ */
+- (nonnull NSData *)getVersion;
 
+/**
+ * Gets the raw hash160 of the public key
+ * @return The 20 bytes of the public key hash160
+ */
 - (nonnull NSData *)getHash160;
 
+/**
+ * Gets the network parameters used for serializing the address
+ * @return The network parameters of the address
+ */
 - (nonnull LGBitcoinLikeNetworkParameters *)getNetworkParameters;
 
+/**
+ * Serializes the hash160 into a Base58 encoded address (with checksum)
+ * @return The Base58 serialization
+ */
 - (nonnull NSString *)toBase58;
 
+/**
+ * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
+ * @return A payment uri to this address
+ */
 - (nonnull NSString *)toPaymentUri;
 
+/**
+ * Checks if the given address is a P2SH address
+ * @return True if the version byte matches the P2SH byte version of the address network parameters
+ */
 - (BOOL)isP2SH;
 
+/**
+ * Checks if the given address is a P2PKH address
+ * @return True if the version byte matches the P2PKH byte version of the address network parameters
+ */
 - (BOOL)isP2PKH;
 
+/**
+ * Gets an optional derivation path (if the address comes from an extended public key)
+ * @return The derivation path of the address
+ */
 - (nullable NSString *)getDerivationPath;
 
+/**
+ * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
+ * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
+ * @return A BitcoinLikeAddress
+ */
 + (nullable LGBitcoinLikeAddress *)fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
                                       address:(nonnull NSString *)address;
+
+/**
+ * Check if the given address is valid
+ * @return true if the address is valid, false otherwise
+ */
++ (BOOL)isAddressValid:(nonnull LGBitcoinLikeNetworkParameters *)params
+               address:(nonnull NSString *)address;
 
 @end
