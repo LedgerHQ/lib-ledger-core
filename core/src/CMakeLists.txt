@@ -77,7 +77,7 @@ add_library(
         crypto/PBKDF2.cpp
         crypto/PBKDF2.hpp
         crypto/AESCipher.cpp
-        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp utils/Try.cpp utils/Try.hpp utils/Exception.cpp utils/Exception.hpp utils/djinni_helpers.cpp utils/djinni_helpers.hpp)
+        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp utils/Try.cpp utils/Try.hpp utils/Exception.cpp utils/Exception.hpp utils/djinni_helpers.cpp utils/djinni_helpers.hpp bitcoin/BitcoinLikeExtendedPublicKey.cpp bitcoin/BitcoinLikeExtendedPublicKey.hpp crypto/DeterministicPublicKey.cpp crypto/DeterministicPublicKey.hpp crypto/SECP256k1Point.cpp crypto/SECP256k1Point.hpp crypto/RIPEMD160.cpp crypto/RIPEMD160.hpp)
 
 
 

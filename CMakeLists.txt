@@ -16,6 +16,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_MACOSX_RPATH 1)
 
 add_subdirectory(doc)
 add_subdirectory(core)

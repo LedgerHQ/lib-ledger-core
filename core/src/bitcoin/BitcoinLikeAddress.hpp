@@ -54,10 +54,10 @@ namespace ledger {
             virtual optional<std::string> getDerivationPath() override;
 
         private:
-            std::vector<uint8_t> _version;
-            std::vector<uint8_t> _hash160;
-            api::BitcoinLikeNetworkParameters _params;
-            optional<std::string> _derivationPath;
+            const std::vector<uint8_t> _version;
+            const std::vector<uint8_t> _hash160;
+            const api::BitcoinLikeNetworkParameters _params;
+            const optional<std::string> _derivationPath;
         };
     }
 }

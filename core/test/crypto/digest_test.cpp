@@ -31,6 +31,8 @@
 
 #include <gtest/gtest.h>
 #include <ledger/core/crypto/SHA256.hpp>
+#include <ledger/core/crypto/RIPEMD160.hpp>
+#include <ledger/core/utils/hex.h>
 
 using namespace ledger::core;
 
@@ -43,4 +45,16 @@ TEST(Digests, SHA256_bytes_to_String) {
                                       0xe2, 0x54, 0x79, 0xbe, 0xc9, 0x49, 0x8e, 0xd0, 0x0a, 0xa5, 0xa0, 0x4d, 0xe5, 0x84,
                                       0xbc, 0x25, 0x30, 0x1b}),
               "c21efda7db95c7c642cee4095df44b19a23cc43f72ee5cae87cbd0f32230d2ee");
+}
+
+TEST(Digests, RIPEMD160) {
+    std::vector<std::vector<std::string>> fixtures = {
+            {"", "9c1185a5c5e9fc54612808977ee8f548b2258d31"},
+            {"a", "0bdc9d2d256b3ee9daae347be6f4dc835a467ffe"},
+            {"abc", "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc"},
+            {"message digest", 	"5d0689ef49d2fae572b881b123a85ffa21595f36"}
+    };
+    for (auto& i : fixtures) {
+        EXPECT_EQ(RIPEMD160::hash(std::vector<uint8_t>(i[0].begin(), i[0].end())), hex::toByteArray(i[1]));
+    }
 }
