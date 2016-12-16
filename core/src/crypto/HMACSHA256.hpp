@@ -1,9 +1,9 @@
 /*
  *
- * DeterministicPublicKey
+ * HMACSHA256
  * ledger-core
  *
- * Created by Pierre Pollastri on 14/12/2016.
+ * Created by Pierre Pollastri on 15/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,39 +28,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
-#define LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
+#ifndef LEDGER_CORE_HMACSHA256_HPP
+#define LEDGER_CORE_HMACSHA256_HPP
 
 #include <vector>
+#include <cstdint>
 
 namespace ledger {
     namespace core {
-        class DeterministicPublicKey {
+        class HMACSHA256 {
         public:
-            DeterministicPublicKey( const std::vector<uint8_t>& publicKey,
-                                    const std::vector<uint8_t>& chainCode,
-                                    uint32_t childNum,
-                                    uint32_t depth,
-                                    uint32_t parentFingerprint);
-            uint32_t getFingerprint() const;
-            DeterministicPublicKey derive(uint32_t childIndex) const;
-
-            const std::vector<uint8_t>& getPublicKey() const;
-            std::vector<uint8_t> getUncompressedPublicKey() const;
-            std::vector<uint8_t> getPublicKeyHash160() const;
-
-        public:
-
-
-        private:
-            const std::vector<uint8_t> _key;
-            const std::vector<uint8_t> _chainCode;
-            const uint32_t _childNum;
-            const uint32_t _depth;
-            const uint32_t _parentFingerprint;
+            HMACSHA256() = delete;
+            ~HMACSHA256() = delete;
+            static std::vector<uint8_t> hash(const std::vector<uint8_t>& key,
+                                             const std::vector<uint8_t>& data);
         };
     }
 }
 
-
-#endif //LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
+#endif //LEDGER_CORE_HMACSHA256_HPP

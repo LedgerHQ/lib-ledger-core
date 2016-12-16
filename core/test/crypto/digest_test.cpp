@@ -33,6 +33,7 @@
 #include <ledger/core/crypto/SHA256.hpp>
 #include <ledger/core/crypto/RIPEMD160.hpp>
 #include <ledger/core/utils/hex.h>
+#include <ledger/core/crypto/HMACSHA256.hpp>
 
 using namespace ledger::core;
 
@@ -56,5 +57,20 @@ TEST(Digests, RIPEMD160) {
     };
     for (auto& i : fixtures) {
         EXPECT_EQ(RIPEMD160::hash(std::vector<uint8_t>(i[0].begin(), i[0].end())), hex::toByteArray(i[1]));
+    }
+}
+
+TEST(Digest, HMACSHA256) {
+    std::vector<std::vector<std::string>> fixtures = {
+            {"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", "4869205468657265", "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7"},
+            {"4a656665", "7768617420646f2079612077616e7420666f72206e6f7468696e673f", "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843"},
+            {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "773ea91e36800e46854db8ebd09181a72959098b3ef8c122d9635514ced565fe"},
+            {"0102030405060708090a0b0c0d0e0f10111213141516171819", "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b"}
+    };
+
+    for (auto& i : fixtures) {
+        auto hash = hex::toString(HMACSHA256::hash(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
+        auto expected = i[2];
+        EXPECT_EQ(hash, expected);
     }
 }

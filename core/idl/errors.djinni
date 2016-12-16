@@ -13,6 +13,9 @@ ErrorCode = enum {
     invalid_checksum;
     invalid_version;
 
+    # DeterministicPublicKey
+    private_derivation_not_supported;
+
     unknown;
 }
 
