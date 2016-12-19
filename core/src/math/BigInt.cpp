@@ -64,6 +64,11 @@ namespace ledger {
             _negative = negative;
         }
 
+        BigInt::BigInt(const std::vector<uint8_t> &data, bool negative)
+        : BigInt(data.data(), data.size(), negative){
+
+        }
+
         BigInt::BigInt(int value)
                 : BigInt() {
             bdSetShort(_bigd, (bdigit_t)std::abs(value));
@@ -316,7 +321,6 @@ namespace ledger {
         BigInt BigInt::fromDecimal(const std::string &str) {
             return BigInt(str, 10);
         }
-
 
     }
 }

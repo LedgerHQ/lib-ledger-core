@@ -15,5 +15,14 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeInvalidBase58Format,
     LGErrorCodeInvalidChecksum,
     LGErrorCodeInvalidVersion,
+    /** DeterministicPublicKey */
+    LGErrorCodePrivateDerivationNotSupported,
+    /** Generic */
+    LGErrorCodeRuntimeError,
+    LGErrorCodeOutOfRange,
+    LGErrorCodeIllegalArgument,
+    LGErrorCodeIllegalState,
+    LGErrorCodeNullPointer,
+    LGErrorCodeUnsupportedOperation,
     LGErrorCodeUnknown,
 };

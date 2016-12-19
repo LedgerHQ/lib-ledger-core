@@ -16,6 +16,13 @@ ErrorCode = enum {
     # DeterministicPublicKey
     private_derivation_not_supported;
 
+    # Generic
+    runtime_error;
+    out_of_range;
+    illegal_argument;
+    illegal_state;
+    null_pointer;
+    unsupported_operation;
     unknown;
 }
 

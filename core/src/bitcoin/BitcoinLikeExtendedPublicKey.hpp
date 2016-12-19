@@ -32,16 +32,32 @@
 #define LEDGER_CORE_BITCOINLIKEEXTENDEDPUBLICKEY_HPP
 
 #include "../api/BitcoinLikeExtendedPublicKey.hpp"
+#include "../crypto/DeterministicPublicKey.hpp"
+#include "../api/BitcoinLikeNetworkParameters.hpp"
+#include <memory>
+#include "../utils/optional.hpp"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeExtendedPublicKey : public api::BitcoinLikeExtendedPublicKey {
         public:
+            BitcoinLikeExtendedPublicKey(const api::BitcoinLikeNetworkParameters& params,
+                                         const DeterministicPublicKey& key, const std::string& path = "m/");
             virtual std::shared_ptr<api::BitcoinLikeAddress> derive(const std::string &path) override;
             virtual std::string toBase58() override;
 
         public:
+            static std::shared_ptr<api::BitcoinLikeExtendedPublicKey> fromPublicKeyCouple(
+                    const api::BitcoinLikeNetworkParameters& params,
+                    const optional<std::vector<uint8_t>>& parentPublicKey,
+                    const std::vector<uint8_t>& publicKey,
+                    const std::string& path
+            );
 
+        private:
+            const api::BitcoinLikeNetworkParameters _params;
+            const std::string _path;
+            const DeterministicPublicKey _key;
         };
     }
 }

@@ -43,7 +43,6 @@ namespace ledger {
                                const std::vector<uint8_t>& hash160,
                                const std::vector<uint8_t>& version,
                                optional<std::string> derivationPath = optional<std::string>());
-
             virtual std::vector<uint8_t> getVersion() override;
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;

@@ -57,4 +57,9 @@ static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
 TEST(Derivation, DeriveChildren_1) {
     auto k = createKeyFromXpub(XPUB_1);
     EXPECT_EQ(k.derive(0).getPublicKey(), hex::toByteArray("034526331989014305eeaaced584dcdb395f8498db0d621845869ce00cedaedf74"));
+    EXPECT_EQ(k.derive(1).getPublicKey(), hex::toByteArray("02c368bdec47a1b6faa76d624ead0cd2783234983c466767216ecdac8c472df3a6"));
+    EXPECT_EQ(k.derive(2).getPublicKey(), hex::toByteArray("03c18f32f132f9974e4896d0da817c3f4657cfe943c51c1ddd2bd98d6600330b1f"));
+    EXPECT_EQ(k.derive(3).getPublicKey(), hex::toByteArray("02998d8749dd8ed56dc4a2c746865020d45fa1b2f75766a73da4cb9334adcd4cb9"));
+    EXPECT_EQ(k.derive(4).getPublicKey(), hex::toByteArray("03fecae786e6a4542df1ae6b36694357dae2ba036eeb620fed5f6e8f1b445858d3"));
+    EXPECT_EQ(k.derive(5).getPublicKey(), hex::toByteArray("03e185d94291ae80671c59ac522347a500d673b1302edd0c4eb6634cc850003034"));
 }

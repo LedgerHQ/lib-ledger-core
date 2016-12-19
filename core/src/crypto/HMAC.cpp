@@ -1,6 +1,6 @@
 /*
  *
- * SECP256k1Point
+ * HMACSHA256
  * ledger-core
  *
  * Created by Pierre Pollastri on 15/12/2016.
@@ -28,38 +28,33 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SECP256K1POINT_HPP
-#define LEDGER_CORE_SECP256K1POINT_HPP
 
-#include <openssl/bn.h>
-#include <openssl/ec.h>
-#include <openssl/ecdsa.h>
-#include <openssl/evp.h>
-#include "../math/BigInt.h"
-#include <cstdint>
+#include "HMAC.hpp"
+#include <openssl/hmac.h>
+#include <openssl/sha.h>
 
-namespace ledger {
-    namespace core {
-        class SECP256k1Point {
-        public:
-            SECP256k1Point(const std::vector<uint8_t>& p);
-            SECP256k1Point operator+(const SECP256k1Point& p) const;
-            SECP256k1Point generatorMultiply(const std::vector<uint8_t>& n) const;
-            SECP256k1Point(const SECP256k1Point& p);
-            std::vector<uint8_t> toByteArray(bool compressed = true) const;
-            SECP256k1Point& operator=(const SECP256k1Point& p);
-            bool isAtInfinity() const;
-            ~SECP256k1Point();
-        protected:
-            SECP256k1Point();
-
-        private:
-            EC_GROUP* _group;
-            EC_POINT* _point;
-            BN_CTX*   _ctx;
-        };
-    }
+std::vector<uint8_t> ledger::core::HMAC::sha256(const std::vector<uint8_t>& key,
+                                                    const std::vector<uint8_t>& data) {
+    auto len = SHA256_DIGEST_LENGTH;
+    uint8_t hash[len];
+    HMAC_CTX hmac;
+    HMAC_CTX_init(&hmac);
+    HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha256(), NULL);
+    HMAC_Update(&hmac, data.data(), data.size());
+    HMAC_Final(&hmac, hash, (unsigned int *)(&len));
+    HMAC_cleanup(&hmac);
+    return std::vector<uint8_t>(hash, hash + SHA256_DIGEST_LENGTH);
 }
 
-
-#endif //LEDGER_CORE_SECP256K1POINT_HPP
+std::vector<uint8_t> ledger::core::HMAC::sha512(const std::vector<uint8_t>& key,
+                                                    const std::vector<uint8_t>& data) {
+    auto len = SHA512_DIGEST_LENGTH;
+    uint8_t hash[len];
+    HMAC_CTX hmac;
+    HMAC_CTX_init(&hmac);
+    HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha512(), NULL);
+    HMAC_Update(&hmac, data.data(), data.size());
+    HMAC_Final(&hmac, hash, (unsigned int *)(&len));
+    HMAC_cleanup(&hmac);
+    return std::vector<uint8_t>(hash, hash + SHA512_DIGEST_LENGTH);
+}

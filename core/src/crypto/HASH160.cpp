@@ -1,9 +1,9 @@
 /*
  *
- * HMACSHA256
+ * HASH160
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/12/2016.
+ * Created by Pierre Pollastri on 16/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HMACSHA256_HPP
-#define LEDGER_CORE_HMACSHA256_HPP
+#include "HASH160.hpp"
 
-#include <vector>
-#include <cstdint>
-
-namespace ledger {
-    namespace core {
-        class HMACSHA256 {
-        public:
-            HMACSHA256() = delete;
-            ~HMACSHA256() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& key,
-                                             const std::vector<uint8_t>& data);
-        };
-    }
+std::vector<uint8_t> ledger::core::HASH160::hash(const std::vector<uint8_t> &data) {
+    return RIPEMD160::hash(SHA256::bytesToBytesHash(data));
 }
-
-#endif //LEDGER_CORE_HMACSHA256_HPP

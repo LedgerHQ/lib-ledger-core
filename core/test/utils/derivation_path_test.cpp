@@ -1,9 +1,9 @@
 /*
  *
- * HMACSHA256
+ * derivation_path_test
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/12/2016.
+ * Created by Pierre Pollastri on 16/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,20 +28,26 @@
  * SOFTWARE.
  *
  */
+#include <gtest/gtest.h>
+#include <ledger/core/utils/DerivationPath.hpp>
 
-#include "HMACSHA256.hpp"
-#include <openssl/hmac.h>
-#include <openssl/sha.h>
+using namespace ledger::core;
 
-std::vector<uint8_t> ledger::core::HMACSHA256::hash(const std::vector<uint8_t>& key,
-                                                    const std::vector<uint8_t>& data) {
-    auto len = SHA256_DIGEST_LENGTH;
-    uint8_t hash[len];
-    HMAC_CTX hmac;
-    HMAC_CTX_init(&hmac);
-    HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha256(), NULL);
-    HMAC_Update(&hmac, data.data(), data.size());
-    HMAC_Final(&hmac, hash, (unsigned int *)(&len));
-    HMAC_cleanup(&hmac);
-    return std::vector<uint8_t>(hash, hash + SHA256_DIGEST_LENGTH);
+TEST(DerivationPath, ParseDerivationPath) {
+    EXPECT_EQ(DerivationPath("m/44'/0'/0'/0/0").toString(), "44'/0'/0'/0/0");
+}
+
+TEST(DerivationPath, ParseDerivationHexPath) {
+    EXPECT_EQ(DerivationPath("m/44'/0'/0'/0/0x42").toString(), "44'/0'/0'/0/66");
+}
+
+TEST(DerivationPath, ParseInvalidDerivationPath) {
+   EXPECT_THROW({
+                    DerivationPath("m/this/is/invalid");
+                }, Exception
+   );
+}
+
+TEST(DerivationPath, ParseRoot) {
+    EXPECT_TRUE(DerivationPath("m").isRoot());
 }

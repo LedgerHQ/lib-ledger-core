@@ -28,10 +28,21 @@
  * SOFTWARE.
  *
  */
+#include "../bytes/BytesWriter.h"
 #include "BitcoinLikeExtendedPublicKey.hpp"
+#include "../utils/djinni_helpers.hpp"
+#include "../crypto/HASH160.hpp"
 
 namespace ledger {
     namespace core {
+
+        BitcoinLikeExtendedPublicKey::BitcoinLikeExtendedPublicKey(const api::BitcoinLikeNetworkParameters &params,
+                                                                   const DeterministicPublicKey& key,
+                                                                   const std::string& path) :
+            CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(params, _params), _key(key), _path(path)
+        {
+
+        }
 
         std::shared_ptr<api::BitcoinLikeAddress> BitcoinLikeExtendedPublicKey::derive(const std::string &path) {
             return nullptr;
@@ -39,6 +50,33 @@ namespace ledger {
 
         std::string BitcoinLikeExtendedPublicKey::toBase58() {
             return nullptr;
+        }
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
+        BitcoinLikeExtendedPublicKey::fromPublicKeyCouple(const api::BitcoinLikeNetworkParameters &params,
+                                                          const optional<std::vector<uint8_t>> &parentPublicKey,
+                                                          const std::vector<uint8_t> &publicKey,
+                                                          const std::string &path) {
+            uint32_t parentFingerprint = 0;
+
+            if (parentPublicKey) {
+                auto hash160 = HASH160::hash(parentPublicKey.value());
+                parentFingerprint = ((hash160[0] & 0xFFU) << 24) |
+                                    ((hash160[1] & 0xFFU) << 16) |
+                                    ((hash160[2] & 0xFFU) << 8) |
+                                    (hash160[3] & 0xFFU);
+            }
+            BytesWriter writer;
+            writer.writeByteArray(params.XPUBVersion);
+            //writer.writeBeValue<uint32_t>();
+            return std::shared_ptr<api::BitcoinLikeExtendedPublicKey>();
+        }
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
+        api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
+                                                      const std::string &address) {
+
+            return std::shared_ptr<api::BitcoinLikeExtendedPublicKey>();
         }
     }
 }

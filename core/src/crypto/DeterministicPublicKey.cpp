@@ -28,12 +28,18 @@
  * SOFTWARE.
  *
  */
+#include "../bytes/BytesWriter.h"
 #include "DeterministicPublicKey.hpp"
 #include "RIPEMD160.hpp"
 #include "../utils/Exception.hpp"
+#include "HMAC.hpp"
+#include "../math/BigInt.h"
+#include "SECP256k1Point.hpp"
 
 namespace ledger {
     namespace core {
+
+        static auto N = BigInt::fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
 
         DeterministicPublicKey::DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
                                                        const std::vector<uint8_t> &chainCode, uint32_t childNum,
@@ -67,67 +73,29 @@ namespace ledger {
 
         DeterministicPublicKey DeterministicPublicKey::derive(uint32_t childIndex) const {
             if (childIndex & 0x80000000) {
+                throw Exception(api::ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED, "Private derivation is not supported by DeterministicPublicKey");
+            }
+            BytesWriter data;
+            data.writeByteArray(_key);
+            data.writeBeValue<uint32_t>(childIndex);
 
+            auto I = HMAC::sha512(_chainCode, data.toByteArray());
+            BigInt IL(std::vector<uint8_t >(I.begin(), I.begin() + 32), false);
+            std::vector<uint8_t> IR(I.begin() + 32, I.end());
+
+            if (IL >= N) {
+                throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Cannot derive key - IL >= N");
             }
 
-            /**
-             *  if (!valid_) throw InvalidHDKeychainException();
+            SECP256k1Point K = SECP256k1Point(_key).generatorMultiply(IL.toByteArray());
 
-    bool priv_derivation = 0x80000000 & i;
-    if (!isPrivate() && priv_derivation) {
-        throw std::runtime_error("Cannot do private key derivation on public key.");
-    }
-
-    HDKeychain child;
-    child.valid_ = false;
-
-    uchar_vector data;
-    data += priv_derivation ? key_ : pubkey_;
-    data.push_back(i >> 24);
-    data.push_back((i >> 16) & 0xff);
-    data.push_back((i >> 8) & 0xff);
-    data.push_back(i & 0xff);
-
-    bytes_t digest = hmac_sha512(chain_code_, data);
-    bytes_t left32(digest.begin(), digest.begin() + 32);
-    BigInt Il(left32);
-    if (Il >= CURVE_ORDER) throw InvalidHDKeychainException();
-
-    // The following line is used to test behavior for invalid indices
-    // if (rand() % 100 < 10) return child;
-
-    if (isPrivate()) {
-        BigInt k(key_);
-        k += Il;
-        k %= CURVE_ORDER;
-        if (k.isZero()) throw InvalidHDKeychainException();
-
-        bytes_t child_key = k.getBytes();
-        // pad with 0's to make it 33 bytes
-        uchar_vector padded_key(33 - child_key.size(), 0);
-        padded_key += child_key;
-        child.key_ = padded_key;
-        child.updatePubkey();
-    }
-    else {
-        secp256k1_point K;
-        K.bytes(pubkey_);
-        K.generator_mul(left32);
-        if (K.is_at_infinity()) throw InvalidHDKeychainException();
-
-        child.key_ = child.pubkey_ = K.bytes();
-    }
-
-    child.version_ = version_;
-    child.depth_ = depth_ + 1;
-    child.parent_fp_ = fp();
-    child.child_num_ = i;
-    child.chain_code_.assign(digest.begin() + 32, digest.end());
-
-    child.valid_ = true;
-    return child;
-             */
-            return *this;
+            return DeterministicPublicKey(
+                    K.toByteArray(),
+                    IR,
+                    childIndex,
+                    _depth + 1,
+                    getFingerprint()
+            );
         }
     }
 }

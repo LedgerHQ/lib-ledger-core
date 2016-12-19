@@ -14,6 +14,15 @@ public enum ErrorCode {
     INVALID_BASE58_FORMAT,
     INVALID_CHECKSUM,
     INVALID_VERSION,
+    /** DeterministicPublicKey */
+    PRIVATE_DERIVATION_NOT_SUPPORTED,
+    /** Generic */
+    RUNTIME_ERROR,
+    OUT_OF_RANGE,
+    ILLEGAL_ARGUMENT,
+    ILLEGAL_STATE,
+    NULL_POINTER,
+    UNSUPPORTED_OPERATION,
     UNKNOWN,
     ;
 }

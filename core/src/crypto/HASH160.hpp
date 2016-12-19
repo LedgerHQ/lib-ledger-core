@@ -1,9 +1,9 @@
 /*
  *
- * SECP256k1Point
+ * HASH160
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/12/2016.
+ * Created by Pierre Pollastri on 16/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,38 +28,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SECP256K1POINT_HPP
-#define LEDGER_CORE_SECP256K1POINT_HPP
+#ifndef LEDGER_CORE_HASH160_HPP
+#define LEDGER_CORE_HASH160_HPP
 
-#include <openssl/bn.h>
-#include <openssl/ec.h>
-#include <openssl/ecdsa.h>
-#include <openssl/evp.h>
-#include "../math/BigInt.h"
-#include <cstdint>
+#include "RIPEMD160.hpp"
+#include "SHA256.hpp"
 
 namespace ledger {
     namespace core {
-        class SECP256k1Point {
+        class HASH160 {
         public:
-            SECP256k1Point(const std::vector<uint8_t>& p);
-            SECP256k1Point operator+(const SECP256k1Point& p) const;
-            SECP256k1Point generatorMultiply(const std::vector<uint8_t>& n) const;
-            SECP256k1Point(const SECP256k1Point& p);
-            std::vector<uint8_t> toByteArray(bool compressed = true) const;
-            SECP256k1Point& operator=(const SECP256k1Point& p);
-            bool isAtInfinity() const;
-            ~SECP256k1Point();
-        protected:
-            SECP256k1Point();
-
-        private:
-            EC_GROUP* _group;
-            EC_POINT* _point;
-            BN_CTX*   _ctx;
+            HASH160() = delete;
+            ~HASH160() = delete;
+            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data);
         };
     }
 }
 
 
-#endif //LEDGER_CORE_SECP256K1POINT_HPP
+#endif //LEDGER_CORE_HASH160_HPP

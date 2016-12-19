@@ -33,7 +33,7 @@
 #include <ledger/core/crypto/SHA256.hpp>
 #include <ledger/core/crypto/RIPEMD160.hpp>
 #include <ledger/core/utils/hex.h>
-#include <ledger/core/crypto/HMACSHA256.hpp>
+#include <ledger/core/crypto/HMAC.hpp>
 
 using namespace ledger::core;
 
@@ -69,7 +69,7 @@ TEST(Digest, HMACSHA256) {
     };
 
     for (auto& i : fixtures) {
-        auto hash = hex::toString(HMACSHA256::hash(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
+        auto hash = hex::toString(HMAC::sha256(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
         auto expected = i[2];
         EXPECT_EQ(hash, expected);
     }

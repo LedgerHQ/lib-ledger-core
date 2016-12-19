@@ -102,6 +102,7 @@ namespace ledger {
              * @param negative true if the number is negative false otherwise
              */
             BigInt(const void *data, size_t length, bool negative);
+            BigInt(const std::vector<uint8_t>& data, bool negative);
 
             /**
              * Initializes a new BigInt with the runtime int.
