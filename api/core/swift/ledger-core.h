@@ -6,6 +6,7 @@
 #import "../objc/LGBitcoinLikeAddress.h"
 #import "../objc/LGBitcoinLikeExtendedPublicKey.h"
 #import "../objc/LGHashAlgorithmHelper.h"
+#import "../objc/LGDatabaseBackend.h"
 #import "../objc/LGRandomNumberGenerator.h"
 #import "../objc/LGEthereumPublicKeyProvider.h"
 #import "../objc/LGBitcoinPublicKeyProvider.h"

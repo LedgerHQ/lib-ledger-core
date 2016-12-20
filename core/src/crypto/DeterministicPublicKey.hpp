@@ -42,13 +42,14 @@ namespace ledger {
                                     uint32_t childNum,
                                     uint32_t depth,
                                     uint32_t parentFingerprint);
+            DeterministicPublicKey(const DeterministicPublicKey& key);
             uint32_t getFingerprint() const;
             DeterministicPublicKey derive(uint32_t childIndex) const;
 
             const std::vector<uint8_t>& getPublicKey() const;
             std::vector<uint8_t> getUncompressedPublicKey() const;
             std::vector<uint8_t> getPublicKeyHash160() const;
-
+            std::vector<uint8_t> toByteArray(const std::vector<uint8_t>& version = {}) const;
         public:
 
 

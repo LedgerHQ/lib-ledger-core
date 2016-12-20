@@ -22,6 +22,8 @@ public abstract class WalletPoolBuilder {
 
     public abstract WalletPoolBuilder setRandomNumberGenerator(RandomNumberGenerator rng);
 
+    public abstract WalletPoolBuilder setDatabaseBackend(DatabaseBackend backend);
+
     public abstract void build(WalletPoolBuildCallback listener);
 
     public static native WalletPoolBuilder createInstance();
@@ -112,6 +114,14 @@ public abstract class WalletPoolBuilder {
             return native_setRandomNumberGenerator(this.nativeRef, rng);
         }
         private native WalletPoolBuilder native_setRandomNumberGenerator(long _nativeRef, RandomNumberGenerator rng);
+
+        @Override
+        public WalletPoolBuilder setDatabaseBackend(DatabaseBackend backend)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setDatabaseBackend(this.nativeRef, backend);
+        }
+        private native WalletPoolBuilder native_setDatabaseBackend(long _nativeRef, DatabaseBackend backend);
 
         @Override
         public void build(WalletPoolBuildCallback listener)

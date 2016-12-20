@@ -202,6 +202,10 @@ namespace ledger {
             return _bytes[_cursor];
         }
 
+        std::vector<uint8_t> BytesReader::readUntilEnd() {
+            return read(available());
+        }
+
 
     }
 }

@@ -130,6 +130,8 @@ namespace ledger {
             uint64_t readNextVarInt();
             std::string readNextVarString();
 
+            std::vector<uint8_t> readUntilEnd();
+
             /**
              * Gets current cursor position
              * @return Current byte offset.

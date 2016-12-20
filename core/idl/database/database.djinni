@@ -1,0 +1,16 @@
+
+
+DatabaseBackend = interface +c {
+    setUsername(username: string): DatabaseBackend;
+    setPassword(pwd: string): DatabaseBackend;
+    setHost(host: string): DatabaseBackend;
+    setHostAddr(hostAddr: string): DatabaseBackend;
+    setPort(port: string): DatabaseBackend;
+    setOptions(opts: string): DatabaseBackend;
+    setSslMode(mode: string): DatabaseBackend;
+    setKerberosName(name: string): DatabaseBackend;
+    setService(service: string): DatabaseBackend;
+
+    static getSqlite3Backend(): DatabaseBackend;
+    static getPostgreSQLBackend(): DatabaseBackend;
+}

@@ -17,6 +17,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeInvalidVersion,
     /** DeterministicPublicKey */
     LGErrorCodePrivateDerivationNotSupported,
+    /** Bitcoin error */
+    LGErrorCodeInvalidNetworkAddressVersion,
     /** Generic */
     LGErrorCodeRuntimeError,
     LGErrorCodeOutOfRange,
@@ -25,4 +27,5 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeNullPointer,
     LGErrorCodeUnsupportedOperation,
     LGErrorCodeUnknown,
+    LGErrorCodeImplementationIsMissing,
 };

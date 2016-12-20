@@ -43,7 +43,11 @@ namespace ledger {
                                 const std::shared_ptr<api::PathResolver> &pathResolver,
                                 const std::shared_ptr<api::LogPrinter> &logPrinter,
                                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                const std::shared_ptr<api::RandomNumberGenerator>& rng) {
+                                const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                                const std::shared_ptr<api::DatabaseBackend> &backend) {
+            // Initialize database
+            _databaseBackend = std::dynamic_pointer_cast<DatabaseBackend>(backend);
+
             // Initialize threading objects
             _dispatcher = dispatcher;
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);

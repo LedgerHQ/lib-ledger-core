@@ -47,10 +47,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 }
 
 + (nullable LGBitcoinLikeExtendedPublicKey *)fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
-                                                address:(nonnull NSString *)address {
+                                                address:(nonnull NSString *)address
+                                                   path:(nullable NSString *)path {
     try {
         auto objcpp_result_ = ::ledger::core::api::BitcoinLikeExtendedPublicKey::fromBase58(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params),
-                                                                                            ::djinni::String::toCpp(address));
+                                                                                            ::djinni::String::toCpp(address),
+                                                                                            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(path));
         return ::djinni_generated::BitcoinLikeExtendedPublicKey::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

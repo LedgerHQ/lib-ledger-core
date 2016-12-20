@@ -16,6 +16,9 @@ ErrorCode = enum {
     # DeterministicPublicKey
     private_derivation_not_supported;
 
+    # Bitcoin error
+    invalid_network_address_version;
+
     # Generic
     runtime_error;
     out_of_range;
@@ -24,6 +27,7 @@ ErrorCode = enum {
     null_pointer;
     unsupported_operation;
     unknown;
+    implementation_is_missing;
 }
 
 Error = record {

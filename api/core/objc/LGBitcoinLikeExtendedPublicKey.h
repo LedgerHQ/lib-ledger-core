@@ -14,6 +14,7 @@
 - (nonnull NSString *)toBase58;
 
 + (nullable LGBitcoinLikeExtendedPublicKey *)fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
-                                                address:(nonnull NSString *)address;
+                                                address:(nonnull NSString *)address
+                                                   path:(nullable NSString *)path;
 
 @end

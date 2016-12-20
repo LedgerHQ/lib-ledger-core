@@ -8,6 +8,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class DatabaseBackend;
 class HttpClient;
 class LogPrinter;
 class PathResolver;
@@ -35,6 +36,8 @@ public:
     virtual std::shared_ptr<WalletPoolBuilder> setPassword(const std::string & password) = 0;
 
     virtual std::shared_ptr<WalletPoolBuilder> setRandomNumberGenerator(const std::shared_ptr<RandomNumberGenerator> & rng) = 0;
+
+    virtual std::shared_ptr<WalletPoolBuilder> setDatabaseBackend(const std::shared_ptr<DatabaseBackend> & backend) = 0;
 
     virtual void build(const std::shared_ptr<WalletPoolBuildCallback> & listener) = 0;
 

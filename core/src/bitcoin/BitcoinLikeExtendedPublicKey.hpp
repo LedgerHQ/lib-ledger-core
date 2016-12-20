@@ -36,13 +36,14 @@
 #include "../api/BitcoinLikeNetworkParameters.hpp"
 #include <memory>
 #include "../utils/optional.hpp"
+#include "../utils/DerivationPath.hpp"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeExtendedPublicKey : public api::BitcoinLikeExtendedPublicKey {
         public:
             BitcoinLikeExtendedPublicKey(const api::BitcoinLikeNetworkParameters& params,
-                                         const DeterministicPublicKey& key, const std::string& path = "m/");
+                                         const DeterministicPublicKey& key, const DerivationPath& path = DerivationPath("m/"));
             virtual std::shared_ptr<api::BitcoinLikeAddress> derive(const std::string &path) override;
             virtual std::string toBase58() override;
 
@@ -51,12 +52,13 @@ namespace ledger {
                     const api::BitcoinLikeNetworkParameters& params,
                     const optional<std::vector<uint8_t>>& parentPublicKey,
                     const std::vector<uint8_t>& publicKey,
+                    const std::vector<uint8_t> &chainCode,
                     const std::string& path
             );
 
         private:
             const api::BitcoinLikeNetworkParameters _params;
-            const std::string _path;
+            const DerivationPath _path;
             const DeterministicPublicKey _key;
         };
     }

@@ -30,11 +30,12 @@
  */
 #include "WalletPoolBuilder.hpp"
 #include "WalletPool.hpp"
+#include "../../api/DatabaseBackend.hpp"
 
 namespace ledger { namespace core {
 
         WalletPoolBuilder::WalletPoolBuilder() {
-
+            _backend = api::DatabaseBackend::getSqlite3Backend();
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
@@ -81,7 +82,8 @@ namespace ledger { namespace core {
                     _pathResolver,
                     _logPrinter,
                     _dispatcher,
-                    _rng
+                    _rng,
+                    _backend
             );
             pool->open([pool, listener] (bool isCreated) {
                 listener->onWalletPoolBuilt(pool);
@@ -96,6 +98,12 @@ namespace ledger { namespace core {
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setRandomNumberGenerator(const std::shared_ptr<api::RandomNumberGenerator> &rng) {
             _rng = rng;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setDatabaseBackend(const std::shared_ptr<api::DatabaseBackend> &backend) {
+            _backend = backend;
             return shared_from_this();
         }
 

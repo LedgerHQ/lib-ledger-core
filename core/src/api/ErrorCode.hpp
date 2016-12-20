@@ -20,6 +20,8 @@ enum class ErrorCode : int {
     INVALID_VERSION,
     /** DeterministicPublicKey */
     PRIVATE_DERIVATION_NOT_SUPPORTED,
+    /** Bitcoin error */
+    INVALID_NETWORK_ADDRESS_VERSION,
     /** Generic */
     RUNTIME_ERROR,
     OUT_OF_RANGE,
@@ -28,6 +30,7 @@ enum class ErrorCode : int {
     NULL_POINTER,
     UNSUPPORTED_OPERATION,
     UNKNOWN,
+    IMPLEMENTATION_IS_MISSING,
 };
 
 } } }  // namespace ledger::core::api

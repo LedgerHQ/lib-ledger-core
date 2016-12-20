@@ -10,7 +10,7 @@ public abstract class BitcoinLikeExtendedPublicKey {
 
     public abstract String toBase58();
 
-    public static native BitcoinLikeExtendedPublicKey fromBase58(BitcoinLikeNetworkParameters params, String address);
+    public static native BitcoinLikeExtendedPublicKey fromBase58(BitcoinLikeNetworkParameters params, String address, String path);
 
     private static final class CppProxy extends BitcoinLikeExtendedPublicKey
     {

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "../utils/optional.hpp"
 #include <memory>
 #include <string>
 
@@ -19,7 +20,7 @@ public:
 
     virtual std::string toBase58() = 0;
 
-    static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(const BitcoinLikeNetworkParameters & params, const std::string & address);
+    static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(const BitcoinLikeNetworkParameters & params, const std::string & address, const std::experimental::optional<std::string> & path);
 };
 
 } } }  // namespace ledger::core::api

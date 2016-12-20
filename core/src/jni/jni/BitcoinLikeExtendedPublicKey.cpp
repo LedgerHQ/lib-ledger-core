@@ -41,12 +41,13 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_fromBase58(JNIEnv* jniEnv, jobject /*this*/, jobject j_params, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_fromBase58(JNIEnv* jniEnv, jobject /*this*/, jobject j_params, jstring j_address, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::BitcoinLikeExtendedPublicKey::fromBase58(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_params),
-                                                                               ::djinni::String::toCpp(jniEnv, j_address));
+                                                                               ::djinni::String::toCpp(jniEnv, j_address),
+                                                                               ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, j_path));
         return ::djinni::release(::djinni_generated::BitcoinLikeExtendedPublicKey::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

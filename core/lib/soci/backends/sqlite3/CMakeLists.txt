@@ -16,4 +16,4 @@ soci_backend(SQLite3
   AUTHORS "Maciej Sobczak, Stephen Hutton, David Courtney"
   MAINTAINERS "Maciej Sobczak, Mateusz Loskot")
 
-add_subdirectory(test)
+#add_subdirectory(test)

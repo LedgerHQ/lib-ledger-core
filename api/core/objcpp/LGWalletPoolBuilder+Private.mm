@@ -6,6 +6,7 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGDatabaseBackend+Private.h"
 #import "LGHttpClient+Private.h"
 #import "LGLogPrinter+Private.h"
 #import "LGPathResolver+Private.h"
@@ -89,6 +90,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (nullable LGWalletPoolBuilder *)setRandomNumberGenerator:(nullable id<LGRandomNumberGenerator>)rng {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->setRandomNumberGenerator(::djinni_generated::RandomNumberGenerator::toCpp(rng));
+        return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGWalletPoolBuilder *)setDatabaseBackend:(nullable LGDatabaseBackend *)backend {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->setDatabaseBackend(::djinni_generated::DatabaseBackend::toCpp(backend));
         return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

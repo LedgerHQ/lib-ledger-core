@@ -43,6 +43,7 @@
 #include "../../preferences/IPreferencesBackend.hpp"
 #include "../../utils/optional.hpp"
 #include "../../api/RandomNumberGenerator.hpp"
+#include "../../database/DatabaseBackend.hpp"
 
 namespace ledger {
     namespace core {
@@ -56,7 +57,8 @@ namespace ledger {
                     const std::shared_ptr<api::PathResolver> &pathResolver,
                     const std::shared_ptr<api::LogPrinter> &logPrinter,
                     const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                    const std::shared_ptr<api::RandomNumberGenerator> &rng
+                    const std::shared_ptr<api::RandomNumberGenerator> &rng,
+                    const std::shared_ptr<api::DatabaseBackend> &backend
             );
             void open(const std::function<void(bool)> &callback);
 
@@ -93,6 +95,7 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _queue;
             std::shared_ptr<IPreferencesBackend> _preferencesBackend;
             std::shared_ptr<IPreferencesBackend> _localPreferencesBackend;
+            std::shared_ptr<DatabaseBackend> _databaseBackend;
         };
     }
 }

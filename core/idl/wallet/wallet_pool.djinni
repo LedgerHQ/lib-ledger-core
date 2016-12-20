@@ -11,6 +11,7 @@
 @import "../errors.djinni"
 @import "../preferences/preferences.djinni"
 @import "../math/random.djinni"
+@import "../database/database.djinni"
 
 WalletPool = interface +c {
     getAllWallets(): list<WalletCommonInterface>;
@@ -41,6 +42,7 @@ WalletPoolBuilder = interface +c {
     setName(name: string): WalletPoolBuilder;
     setPassword(password: string): WalletPoolBuilder;
     setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
+    setDatabaseBackend(backend: DatabaseBackend): WalletPoolBuilder;
     build(listener: WalletPoolBuildCallback);
 
     static createInstance(): WalletPoolBuilder;

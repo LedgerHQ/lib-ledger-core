@@ -35,6 +35,8 @@
 #include "HMAC.hpp"
 #include "../math/BigInt.h"
 #include "SECP256k1Point.hpp"
+#include "../bytes/BytesWriter.h"
+#include "HASH160.hpp"
 
 namespace ledger {
     namespace core {
@@ -60,11 +62,11 @@ namespace ledger {
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getUncompressedPublicKey() const {
-            return std::vector<uint8_t>();
+            throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "ledger::core::DeterministicPublicKey::getUncompressedPublicKey not implemented");
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyHash160() const {
-            return RIPEMD160::hash(_key);
+            return HASH160::hash(_key);
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {
@@ -97,5 +99,23 @@ namespace ledger {
                     getFingerprint()
             );
         }
+
+        std::vector<uint8_t> DeterministicPublicKey::toByteArray(const std::vector<uint8_t> &version) const {
+            BytesWriter writer;
+            writer.writeByteArray(version);
+            writer.writeBeValue<uint8_t>((uint8_t)_depth);
+            writer.writeBeValue<uint32_t>(_parentFingerprint);
+            writer.writeBeValue<uint32_t>(_childNum);
+            writer.writeByteArray(_chainCode);
+            writer.writeByteArray(_key);
+            return writer.toByteArray();
+        }
+
+        DeterministicPublicKey::DeterministicPublicKey(const DeterministicPublicKey &key) : DeterministicPublicKey(
+                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint
+        ) {
+
+        }
+
     }
 }
