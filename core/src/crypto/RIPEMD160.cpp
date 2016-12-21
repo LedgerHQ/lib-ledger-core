@@ -30,6 +30,7 @@
  */
 #include "RIPEMD160.hpp"
 #include <openssl/ripemd.h>
+#include <cstdint>
 
 std::vector<uint8_t> ledger::core::RIPEMD160::hash(const std::vector<uint8_t> &data) {
     std::vector<uint8_t> hash;

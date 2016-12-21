@@ -81,8 +81,6 @@ add_library(
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-MESSAGE( STATUS ${CMAKE_BINARY_DIR}/lib)
-
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
 target_link_libraries(ledger-core crypto)
