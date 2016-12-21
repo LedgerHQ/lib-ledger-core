@@ -54,7 +54,8 @@ namespace ledger {
          virtual std::shared_ptr<api::DatabaseBackend> setKerberosName(const std::string &name) override;
 
          virtual std::shared_ptr<api::DatabaseBackend> setService(const std::string &service) override;
-         virtual std::shared_ptr<soci::session> makeSession(const std::string &dbName) override;
+         virtual std::shared_ptr<soci::session> makeSession(
+                 const std::shared_ptr<api::PathResolver>& resolver, const std::string &dbName) override;
      };
  }
 }

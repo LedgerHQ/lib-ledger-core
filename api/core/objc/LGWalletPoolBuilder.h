@@ -12,6 +12,7 @@
 @protocol LGWalletPoolBuildCallback;
 @protocol LGWebSocketClient;
 
+extern NSString * __nonnull const LGWalletPoolBuilderAPIBASEURL;
 
 @interface LGWalletPoolBuilder : NSObject
 
@@ -32,6 +33,9 @@
 - (nullable LGWalletPoolBuilder *)setRandomNumberGenerator:(nullable id<LGRandomNumberGenerator>)rng;
 
 - (nullable LGWalletPoolBuilder *)setDatabaseBackend:(nullable LGDatabaseBackend *)backend;
+
+- (nullable LGWalletPoolBuilder *)setConfiguration:(nonnull NSString *)key
+                                             value:(nonnull NSString *)value;
 
 - (void)build:(nullable id<LGWalletPoolBuildCallback>)listener;
 

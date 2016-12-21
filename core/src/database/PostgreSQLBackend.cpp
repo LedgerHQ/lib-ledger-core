@@ -73,6 +73,6 @@ ledger::core::PostgreSQLBackend::setService(const std::string &service) {
     return nullptr;
 }
 
-std::shared_ptr<soci::session> ledger::core::PostgreSQLBackend::makeSession(const std::string &dbName) {
+std::shared_ptr<soci::session> ledger::core::PostgreSQLBackend::makeSession(const std::shared_ptr<api::PathResolver>& resolver, const std::string &dbName) {
     return nullptr;
 }

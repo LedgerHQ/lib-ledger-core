@@ -21,6 +21,8 @@ class WalletPoolBuilder {
 public:
     virtual ~WalletPoolBuilder() {}
 
+    static std::string const API_BASE_URL;
+
     virtual std::shared_ptr<WalletPoolBuilder> setHttpClient(const std::shared_ptr<HttpClient> & client) = 0;
 
     virtual std::shared_ptr<WalletPoolBuilder> setWebsocketClient(const std::shared_ptr<WebSocketClient> & client) = 0;
@@ -38,6 +40,8 @@ public:
     virtual std::shared_ptr<WalletPoolBuilder> setRandomNumberGenerator(const std::shared_ptr<RandomNumberGenerator> & rng) = 0;
 
     virtual std::shared_ptr<WalletPoolBuilder> setDatabaseBackend(const std::shared_ptr<DatabaseBackend> & backend) = 0;
+
+    virtual std::shared_ptr<WalletPoolBuilder> setConfiguration(const std::string & key, const std::string & value) = 0;
 
     virtual void build(const std::shared_ptr<WalletPoolBuildCallback> & listener) = 0;
 

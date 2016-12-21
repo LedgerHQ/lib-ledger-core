@@ -117,6 +117,17 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1setConfiguration(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
+        auto r = ref->setConfiguration(::djinni::String::toCpp(jniEnv, j_key),
+                                       ::djinni::String::toCpp(jniEnv, j_value));
+        return ::djinni::release(::djinni_generated::WalletPoolBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_listener)
 {
     try {

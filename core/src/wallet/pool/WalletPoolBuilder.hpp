@@ -34,6 +34,7 @@
 #include "../../api/WalletPoolBuilder.hpp"
 #include "../../api/WalletPoolBuildCallback.hpp"
 #include "../../utils/optional.hpp"
+#include <unordered_map>
 
 namespace ledger {
 
@@ -68,6 +69,8 @@ namespace ledger {
             virtual std::shared_ptr<api::WalletPoolBuilder>
             setDatabaseBackend(const std::shared_ptr<api::DatabaseBackend> &backend) override;
 
+            virtual std::shared_ptr<api::WalletPoolBuilder> setConfiguration(const std::string &key, const std::string &value) override;
+
             virtual void build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) override;
 
         private:
@@ -80,6 +83,7 @@ namespace ledger {
             std::experimental::optional<std::string> _password;
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::DatabaseBackend> _backend;
+            std::unordered_map<std::string, std::string> _configuration;
         };
     }
 }

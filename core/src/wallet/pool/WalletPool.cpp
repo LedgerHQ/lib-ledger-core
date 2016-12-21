@@ -31,6 +31,7 @@
 #include "../../preferences/AtomicPreferencesBackend.hpp"
 #include "../../utils/LambdaRunnable.hpp"
 #include "WalletPool.hpp"
+#include "WalletPoolBuilder.hpp"
 
 namespace ledger {
     namespace core {
@@ -44,7 +45,11 @@ namespace ledger {
                                 const std::shared_ptr<api::LogPrinter> &logPrinter,
                                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                                const std::shared_ptr<api::DatabaseBackend> &backend) {
+                                const std::shared_ptr<api::DatabaseBackend> &backend,
+                                const std::unordered_map<std::string, std::string>& configuration) {
+
+            _configuration = configuration;
+
             // Initialize database
             _databaseBackend = std::dynamic_pointer_cast<DatabaseBackend>(backend);
 
@@ -56,10 +61,12 @@ namespace ledger {
             //_localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>();
 
             // Initialize logger
+            _logger = logger::create(name + "-logs", password,
+                                     dispatcher->getSerialExecutionContext("logger_queue_" + name),
+                                     pathResolver, logPrinter);
 
             // Initialize network
-
-
+            _http = std::make_shared<HttpClient>(_configuration[api::WalletPoolBuilder::API_BASE_URL], httpClient, _queue);
         }
 
         void WalletPool::open(const std::function<void(bool)> &callback) {

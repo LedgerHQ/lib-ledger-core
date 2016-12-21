@@ -116,11 +116,3 @@ TEST(HttpClient, POST) {
         WAIT_AND_TIMEOUT(dispatcher, 10000)
     }
 }
-
-#include <ledger/core/database/SQLite3Backend.hpp>
-
-TEST(TO_DELETE, DELE) {
-    std::cout << "Hello " << std::endl;
-    auto backend = std::make_shared<ledger::core::SQLite3Backend>();
-    backend->makeSession("toto");
-}

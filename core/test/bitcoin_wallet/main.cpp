@@ -1,9 +1,9 @@
-/*
+/**
  *
- * DatabaseBackend
+ * main
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 15/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DATABASEBACKEND_HPP
-#define LEDGER_CORE_DATABASEBACKEND_HPP
 
-#include "../api/DatabaseBackend.hpp"
-#include <soci.h>
-#include <memory>
-#include "../api/PathResolver.hpp"
+#include <gtest/gtest.h>
 
-namespace ledger {
-    namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
-        public:
-            virtual std::shared_ptr<soci::session> makeSession(
-                    const std::shared_ptr<api::PathResolver>& resolver,
-                    const std::string& dbName
-            ) = 0;
-        };
-    }
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
-
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP

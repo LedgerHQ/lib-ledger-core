@@ -44,9 +44,12 @@
 #include "../../utils/optional.hpp"
 #include "../../api/RandomNumberGenerator.hpp"
 #include "../../database/DatabaseBackend.hpp"
+#include "../../net/HttpClient.hpp"
+#include "../../debug/logger.hpp"
 
 namespace ledger {
     namespace core {
+
         class WalletPool : public api::WalletPool {
         public:
             WalletPool(
@@ -58,7 +61,8 @@ namespace ledger {
                     const std::shared_ptr<api::LogPrinter> &logPrinter,
                     const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                     const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                    const std::shared_ptr<api::DatabaseBackend> &backend
+                    const std::shared_ptr<api::DatabaseBackend> &backend,
+                    const std::unordered_map<std::string, std::string>& configuration
             );
             void open(const std::function<void(bool)> &callback);
 
@@ -96,6 +100,9 @@ namespace ledger {
             std::shared_ptr<IPreferencesBackend> _preferencesBackend;
             std::shared_ptr<IPreferencesBackend> _localPreferencesBackend;
             std::shared_ptr<DatabaseBackend> _databaseBackend;
+            std::shared_ptr<HttpClient> _http;
+            std::unordered_map<std::string, std::string> _configuration;
+            std::shared_ptr<spdlog::logger> _logger;
         };
     }
 }

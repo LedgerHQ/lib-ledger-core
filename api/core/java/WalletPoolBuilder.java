@@ -6,6 +6,8 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WalletPoolBuilder {
+    public static final String API_BASE_URL = "API_BASE_URL";
+
     public abstract WalletPoolBuilder setHttpClient(HttpClient client);
 
     public abstract WalletPoolBuilder setWebsocketClient(WebSocketClient client);
@@ -23,6 +25,8 @@ public abstract class WalletPoolBuilder {
     public abstract WalletPoolBuilder setRandomNumberGenerator(RandomNumberGenerator rng);
 
     public abstract WalletPoolBuilder setDatabaseBackend(DatabaseBackend backend);
+
+    public abstract WalletPoolBuilder setConfiguration(String key, String value);
 
     public abstract void build(WalletPoolBuildCallback listener);
 
@@ -122,6 +126,14 @@ public abstract class WalletPoolBuilder {
             return native_setDatabaseBackend(this.nativeRef, backend);
         }
         private native WalletPoolBuilder native_setDatabaseBackend(long _nativeRef, DatabaseBackend backend);
+
+        @Override
+        public WalletPoolBuilder setConfiguration(String key, String value)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setConfiguration(this.nativeRef, key, value);
+        }
+        private native WalletPoolBuilder native_setConfiguration(long _nativeRef, String key, String value);
 
         @Override
         public void build(WalletPoolBuildCallback listener)

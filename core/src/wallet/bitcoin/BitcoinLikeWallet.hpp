@@ -34,14 +34,20 @@
 #include "../../api/BitcoinLikeWallet.hpp"
 #include "../pool/WalletPool.hpp"
 #include <memory>
-#include <sqlite3/soci-sqlite3.h>
-#include <soci.h>
+#include "../../database/DatabaseBackend.hpp"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeWallet : public api::BitcoinLikeWallet {
         public:
-            BitcoinLikeWallet(const std::shared_ptr<WalletPool>& pool, soci::backend_factory const &backend);
+            BitcoinLikeWallet(const std::shared_ptr<WalletPool>& pool, const std::string& identifier);
+            // void synchronize();
+            // void startNetworkObservation();
+            // void stopNetworkObservation();
+            // BitcoinLikeWalletDatabase& getDatabase();
+            // getPreferences();
+        public:
+            std::shared_ptr<BitcoinLikeWallet> open(const std::shared_ptr<WalletPool>& pool, const std::string& identifier);
 
         private:
         };

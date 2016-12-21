@@ -43,8 +43,11 @@ WalletPoolBuilder = interface +c {
     setPassword(password: string): WalletPoolBuilder;
     setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
     setDatabaseBackend(backend: DatabaseBackend): WalletPoolBuilder;
+    setConfiguration(key: string, value: string): WalletPoolBuilder;
     build(listener: WalletPoolBuildCallback);
 
     static createInstance(): WalletPoolBuilder;
+
+    const API_BASE_URL: string = "API_BASE_URL";
 }
 

@@ -1,9 +1,9 @@
 /*
  *
- * DatabaseBackend
+ * initialization_test
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 21/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,24 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DATABASEBACKEND_HPP
-#define LEDGER_CORE_DATABASEBACKEND_HPP
 
-#include "../api/DatabaseBackend.hpp"
-#include <soci.h>
-#include <memory>
-#include "../api/PathResolver.hpp"
+#include <gtest/gtest.h>
+#include <NativePathResolver.hpp>
+#include <NativeThreadDispatcher.hpp>
+#include <ledger/core/api/WalletPoolBuilder.hpp>
+#include <ledger/core/api/WalletPool.hpp>
+#include <ledger/core/api/WalletPoolBuildCallback.hpp>
+#include <CoutLogPrinter.hpp>
+#include <MongooseHttpClient.hpp>
+#include <PoolTestCaseBootstraper.hpp>
 
-namespace ledger {
-    namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
-        public:
-            virtual std::shared_ptr<soci::session> makeSession(
-                    const std::shared_ptr<api::PathResolver>& resolver,
-                    const std::string& dbName
-            ) = 0;
-        };
-    }
+using namespace ledger::core;
+
+TEST(BitcoinWalletInitialization, InitializeNewWallet) {
+    PoolTestCaseBootstraper bootstraper("default");
+    bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool) {
+
+    });
+    bootstraper.dispatcher->waitUntilStopped();
+    bootstraper.tearDown();
 }
-
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP

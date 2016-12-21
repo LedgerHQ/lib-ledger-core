@@ -70,36 +70,12 @@ ledger::core::SQLite3Backend::setService(const std::string &service) {
     return nullptr;
 }
 
-#include <soci.h>
 #include <sqlite3/soci-sqlite3.h>
-#include <iostream>
 
 using namespace soci;
 
-std::shared_ptr<soci::session> ledger::core::SQLite3Backend::makeSession(const std::string &dbName) {
-    backend_factory const &backEnd = *soci::factory_sqlite3();
-    soci::session sql(backEnd, "toto_is_back.db");
-    try { sql << "drop table test1"; }
-    catch (soci_error const &) {} // ignore if error
-
-    sql <<
-        "create table test1 ("
-                "    id integer,"
-                "    name varchar(100)"
-                ")";
-
-    sql << "insert into test1(id, name) values(7, \'John\')";
-
-    rowid rid(sql);
-    sql << "select oid from test1 where id = 7", into(rid);
-
-    int id;
-    std::string name;
-
-    sql << "select id, name from test1 where oid = :rid",
-            into(id), into(name), use(rid);
-
-    std::cout << "Got " << id << " " << name << std::endl;
-    sql << "drop table test1";
-    return nullptr;
+std::shared_ptr<soci::session> ledger::core::SQLite3Backend::makeSession(const std::shared_ptr<api::PathResolver>& resolver,
+                                                                         const std::string &dbName) {
+    // The SQLite3Backend is really simple since it only requires the database name
+    return std::make_shared<soci::session>(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
 }

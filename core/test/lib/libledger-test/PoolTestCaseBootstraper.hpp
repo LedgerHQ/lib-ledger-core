@@ -1,9 +1,9 @@
 /*
  *
- * DatabaseBackend
+ * PoolTestCaseBootstraper
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 21/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,31 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DATABASEBACKEND_HPP
-#define LEDGER_CORE_DATABASEBACKEND_HPP
+#ifndef LEDGER_CORE_POOLTESTCASEBOOTSTRAPER_HPP
+#define LEDGER_CORE_POOLTESTCASEBOOTSTRAPER_HPP
 
-#include "../api/DatabaseBackend.hpp"
-#include <soci.h>
+#include "NativeThreadDispatcher.hpp"
+#include "NativePathResolver.hpp"
+#include "CoutLogPrinter.hpp"
+#include "MongooseHttpClient.hpp"
+#include <ledger/core/api/WalletPool.hpp>
 #include <memory>
-#include "../api/PathResolver.hpp"
 
-namespace ledger {
-    namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
-        public:
-            virtual std::shared_ptr<soci::session> makeSession(
-                    const std::shared_ptr<api::PathResolver>& resolver,
-                    const std::string& dbName
-            ) = 0;
-        };
-    }
-}
+class PoolTestCaseBootstraper {
+public:
+    PoolTestCaseBootstraper(const std::string &poolName);
+    void setup(std::function<void (std::shared_ptr<ledger::core::api::WalletPool>)> callback);
+    void tearDown();
 
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP
+public:
+    std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    std::shared_ptr<NativePathResolver> resolver;
+    std::shared_ptr<CoutLogPrinter> printer;
+    std::shared_ptr<MongooseHttpClient> client;
+
+private:
+    std::string _poolName;
+};
+
+
+#endif //LEDGER_CORE_POOLTESTCASEBOOTSTRAPER_HPP

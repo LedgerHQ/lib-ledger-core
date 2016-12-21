@@ -32,9 +32,13 @@
 #include "WalletPool.hpp"
 #include "../../api/DatabaseBackend.hpp"
 
+static const std::unordered_map<std::string, std::string> DEFAULT_CONFIGURATION = {
+        {ledger::core::api::WalletPoolBuilder::API_BASE_URL, "https://api.ledgerwallet.com/blockchain/v2/"}
+};
+
 namespace ledger { namespace core {
 
-        WalletPoolBuilder::WalletPoolBuilder() {
+        WalletPoolBuilder::WalletPoolBuilder() : _configuration(DEFAULT_CONFIGURATION) {
             _backend = api::DatabaseBackend::getSqlite3Backend();
         }
 
@@ -83,7 +87,8 @@ namespace ledger { namespace core {
                     _logPrinter,
                     _dispatcher,
                     _rng,
-                    _backend
+                    _backend,
+                    _configuration
             );
             pool->open([pool, listener] (bool isCreated) {
                 listener->onWalletPoolBuilt(pool);
@@ -104,6 +109,11 @@ namespace ledger { namespace core {
         std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setDatabaseBackend(const std::shared_ptr<api::DatabaseBackend> &backend) {
             _backend = backend;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::WalletPoolBuilder> WalletPoolBuilder::setConfiguration(const std::string &key, const std::string &value) {
+            _configuration[key] = value;
             return shared_from_this();
         }
 
