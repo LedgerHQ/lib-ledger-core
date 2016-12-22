@@ -46,12 +46,15 @@
 #include "../../database/DatabaseBackend.hpp"
 #include "../../net/HttpClient.hpp"
 #include "../../debug/logger.hpp"
+#include "../../api/WalletPoolBuildCallback.hpp"
+#include "../../api/Logger.hpp"
+#include "../../debug/LoggerApi.hpp"
+#include "WalletPoolDatabase.hpp"
 
 namespace ledger {
     namespace core {
 
         class WalletPool : public api::WalletPool {
-        public:
             WalletPool(
                     const std::string &name,
                     const std::experimental::optional<std::string>& password,
@@ -64,7 +67,8 @@ namespace ledger {
                     const std::shared_ptr<api::DatabaseBackend> &backend,
                     const std::unordered_map<std::string, std::string>& configuration
             );
-            void open(const std::function<void(bool)> &callback);
+
+        public:
 
             virtual std::vector<std::shared_ptr<api::WalletCommonInterface>> getAllWallets() override;
 
@@ -103,6 +107,25 @@ namespace ledger {
             std::shared_ptr<HttpClient> _http;
             std::unordered_map<std::string, std::string> _configuration;
             std::shared_ptr<spdlog::logger> _logger;
+            std::shared_ptr<api::Logger> _loggerApi;
+            std::shared_ptr<api::PathResolver> _resolver;
+            std::shared_ptr<api::RandomNumberGenerator> _rng;
+            std::shared_ptr<api::WebSocketClient> _ws;
+            std::experimental::optional<std::string> _password;
+            std::shared_ptr<WalletPoolDatabase> _database;
+
+        public:
+            static void open( const std::string &name,
+                              const std::experimental::optional<std::string> &password,
+                              const std::shared_ptr<api::HttpClient> &httpClient,
+                              const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                              const std::shared_ptr<api::PathResolver> &pathResolver,
+                              const std::shared_ptr<api::LogPrinter> &logPrinter,
+                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                              const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                              const std::shared_ptr<api::DatabaseBackend> &backend,
+                              const std::unordered_map<std::string, std::string>& configuration,
+                              const std::shared_ptr<api::WalletPoolBuildCallback>& listener);
         };
     }
 }

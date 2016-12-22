@@ -32,10 +32,11 @@
 #include "../../utils/LambdaRunnable.hpp"
 #include "WalletPool.hpp"
 #include "WalletPoolBuilder.hpp"
+#include "../../debug/LoggerApi.hpp"
+#include "../../utils/Exception.hpp"
 
 namespace ledger {
     namespace core {
-
 
         WalletPool::WalletPool( const std::string &name,
                                 const std::experimental::optional<std::string> &password,
@@ -49,31 +50,34 @@ namespace ledger {
                                 const std::unordered_map<std::string, std::string>& configuration) {
 
             _configuration = configuration;
-
+            _resolver = pathResolver;
             // Initialize database
             _databaseBackend = std::dynamic_pointer_cast<DatabaseBackend>(backend);
+            _database = std::make_shared<WalletPoolDatabase>(name, _resolver, _databaseBackend);
 
             // Initialize threading objects
             _dispatcher = dispatcher;
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
 
             // Initialize preferences
-            //_localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>();
+            _localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>(
+                    std::string("/") + name + "/preferences.json",
+                    _queue,
+                    pathResolver,
+                    _dispatcher->newLock()
+            );
 
             // Initialize logger
             _logger = logger::create(name + "-logs", password,
                                      dispatcher->getSerialExecutionContext("logger_queue_" + name),
                                      pathResolver, logPrinter);
-
+            _loggerApi = std::make_shared<LoggerApi>(std::weak_ptr<spdlog::logger>(_logger));
             // Initialize network
             _http = std::make_shared<HttpClient>(_configuration[api::WalletPoolBuilder::API_BASE_URL], httpClient, _queue);
+
         }
 
-        void WalletPool::open(const std::function<void(bool)> &callback) {
-            runOnPoolQueue([] () -> void {
 
-            });
-        }
 
         std::vector<std::shared_ptr<api::WalletCommonInterface>> WalletPool::getAllWallets() {
             return std::vector<std::shared_ptr<api::WalletCommonInterface>>();
@@ -106,7 +110,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Logger> WalletPool::getLogger() {
-            return nullptr;
+            return _loggerApi;
         }
 
         void WalletPool::close() {
@@ -123,6 +127,35 @@ namespace ledger {
 
         std::shared_ptr<api::Preferences> WalletPool::getPreferences() {
             return _preferencesBackend->getPreferences("pool");
+        }
+
+        void WalletPool::open(const std::string &name, const std::experimental::optional<std::string> &password,
+                              const std::shared_ptr<api::HttpClient> &httpClient,
+                              const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                              const std::shared_ptr<api::PathResolver> &pathResolver,
+                              const std::shared_ptr<api::LogPrinter> &logPrinter,
+                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                              const std::shared_ptr<api::RandomNumberGenerator> &rng,
+                              const std::shared_ptr<api::DatabaseBackend> &backend,
+                              const std::unordered_map<std::string, std::string> &configuration,
+                              const std::shared_ptr<api::WalletPoolBuildCallback> &listener) {
+            auto queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
+            queue->execute(LambdaRunnable::make([=] () {
+                try {
+                    auto pool = new WalletPool(
+                            name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng,
+                            backend,
+                            configuration
+                    );
+                    if (listener) {
+                        listener->onWalletPoolBuilt(std::shared_ptr<WalletPool>(pool));
+                    }
+                } catch (std::exception& e) {
+                    if (listener) {
+                        listener->onWalletPoolBuildError(Exception(api::ErrorCode::RUNTIME_ERROR, e.what()).toApiError());
+                    }
+                }
+            }));
         }
     }
 }

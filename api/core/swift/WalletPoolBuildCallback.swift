@@ -4,13 +4,23 @@ import Foundation
 
 final class WalletPoolBuildCallback: NSObject, LGWalletPoolBuildCallback {
     private var onWalletPoolBuiltBlock: ((LGWalletPool) -> Void)?
+    private var onWalletPoolBuildErrorBlock: ((LGError) -> Void)?
 
     func setOnWalletPoolBuilt(_ block: @escaping (LGWalletPool) -> Void) -> WalletPoolBuildCallback {
         self.onWalletPoolBuiltBlock = block
         return self
     }
 
+    func setOnWalletPoolBuildError(_ block: @escaping (LGError) -> Void) -> WalletPoolBuildCallback {
+        self.onWalletPoolBuildErrorBlock = block
+        return self
+    }
+
     func onWalletPoolBuilt(_ pool: LGWalletPool) -> Void {
         self.onWalletPoolBuiltBlock?(pool)
+    }
+
+    func onWalletPoolBuildError(_ error: LGError) -> Void {
+        self.onWalletPoolBuildErrorBlock?(error)
     }
 }

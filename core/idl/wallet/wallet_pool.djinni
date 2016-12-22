@@ -31,6 +31,7 @@ WalletPool = interface +c {
 
 WalletPoolBuildCallback = interface +j +o +s +n {
     onWalletPoolBuilt(pool: WalletPool);
+    onWalletPoolBuildError(error: Error);
 }
 
 WalletPoolBuilder = interface +c {

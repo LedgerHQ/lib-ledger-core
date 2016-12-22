@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * WalletPoolDatabase
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 22/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,30 +28,31 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
+#include "WalletPoolDatabase.hpp"
 
-const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_ERROR;
+using namespace soci;
 
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
-}
-
-ledger::core::Exception::~Exception() {
+ledger::core::WalletPoolDatabase::WalletPoolDatabase(const std::string &poolName,
+                                                     const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
+                                                     const std::shared_ptr<ledger::core::DatabaseBackend> &backend) :
+ WalletPoolDatabase(backend->makeSession(resolver, poolName + ".db")) {
 
 }
 
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
+ledger::core::WalletPoolDatabase::WalletPoolDatabase(const std::shared_ptr<soci::session> &session) :
+    _writer(session), _reader(session)
+{
+    int structureVersion, libVersion;
+    *session << "SELECT structure_version, lib_version from configuration", into(structureVersion);
+
 }
 
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
+const ledger::core::WalletPoolDatabaseWriter &ledger::core::WalletPoolDatabase::getWriter() const {
+    return _writer;
 }
 
-ledger::core::api::Error ledger::core::Exception::toApiError() const {
-    return api::Error(_code, _message);
+const ledger::core::WalletPoolDatabaseReader &ledger::core::WalletPoolDatabase::getReader() const {
+    return _reader;
 }
+
+

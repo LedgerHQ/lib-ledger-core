@@ -38,13 +38,19 @@
 #include <CoutLogPrinter.hpp>
 #include <MongooseHttpClient.hpp>
 #include <PoolTestCaseBootstraper.hpp>
+#include <ledger/core/api/Logger.hpp>
 
 using namespace ledger::core;
 
 TEST(BitcoinWalletInitialization, InitializeNewWallet) {
     PoolTestCaseBootstraper bootstraper("default");
-    bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool) {
-
+    bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool, optional<api::Error> error) {
+        if (!error) {
+            pool->getLogger()->d("test", "Pool created");
+        } else {
+            std::cout << "Error: " << error.value().message << std::endl;
+        }
+        bootstraper.dispatcher->stop();
     });
     bootstraper.dispatcher->waitUntilStopped();
     bootstraper.tearDown();

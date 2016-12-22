@@ -5,4 +5,6 @@ package co.ledger.core;
 
 public abstract class WalletPoolBuildCallback {
     public abstract void onWalletPoolBuilt(WalletPool pool);
+
+    public abstract void onWalletPoolBuildError(Error error);
 }

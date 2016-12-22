@@ -34,14 +34,21 @@
 
 class PoolBuilderCallback : public ledger::core::api::WalletPoolBuildCallback {
 public:
-    PoolBuilderCallback(std::function<void(std::shared_ptr<ledger::core::api::WalletPool>)> callback) {
+    PoolBuilderCallback( std::function<void(std::shared_ptr<ledger::core::api::WalletPool>,
+                                            std::experimental::optional<ledger::core::api::Error>)> callback) {
         _callback = callback;
     }
     virtual void onWalletPoolBuilt(const std::shared_ptr<ledger::core::api::WalletPool> &pool) override {
-        _callback(pool);
+        _callback(pool, ledger::core::Exception::NO_ERROR);
     }
+
+    virtual void onWalletPoolBuildError(const ledger::core::api::Error &error) override {
+        _callback(nullptr, error);
+    }
+
 private:
-    std::function<void(std::shared_ptr<ledger::core::api::WalletPool>)> _callback;
+    std::function<void(std::shared_ptr<ledger::core::api::WalletPool>,
+                       std::experimental::optional<ledger::core::api::Error>)> _callback;
 };
 
 PoolTestCaseBootstraper::PoolTestCaseBootstraper(const std::string &poolName) {
@@ -52,13 +59,19 @@ PoolTestCaseBootstraper::PoolTestCaseBootstraper(const std::string &poolName) {
     client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("http"));
 }
 
-void PoolTestCaseBootstraper::setup(std::function<void(std::shared_ptr<ledger::core::api::WalletPool>)> callback) {
-    auto c = std::make_shared<PoolBuilderCallback>(callback);
-    ledger::core::api::WalletPoolBuilder::createInstance()
-            ->setThreadDispatcher(dispatcher)
-            ->build(c);
-}
 
 void PoolTestCaseBootstraper::tearDown() {
 
+}
+
+void PoolTestCaseBootstraper::setup(std::function<void(std::shared_ptr<ledger::core::api::WalletPool>,
+                                                       std::experimental::optional<ledger::core::api::Error>)> callback) {
+    auto c = std::make_shared<PoolBuilderCallback>(callback);
+    ledger::core::api::WalletPoolBuilder::createInstance()
+            ->setThreadDispatcher(dispatcher)
+            ->setPathResolver(resolver)
+            ->setLogPrinter(printer)
+            ->setHttpClient(client)
+            ->setName(_poolName)
+            ->build(c);
 }

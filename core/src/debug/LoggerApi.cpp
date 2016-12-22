@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * LoggerApi
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 22/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,30 +28,29 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
+#include "LoggerApi.hpp"
 
-const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_ERROR;
-
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
+void ledger::core::LoggerApi::d(const std::string &tag, const std::string &message) {
+    auto i = _logger.lock();
+    if (i) i->debug("[{}] {}", tag, message);
 }
 
-ledger::core::Exception::~Exception() {
-
+void ledger::core::LoggerApi::i(const std::string &tag, const std::string &message) {
+    auto i = _logger.lock();
+    if (i) i->info("[{}] {}", tag, message);
 }
 
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
+void ledger::core::LoggerApi::e(const std::string &tag, const std::string &message) {
+    auto i = _logger.lock();
+    if (i) i->error("[{}] {}", tag, message);
 }
 
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
+void ledger::core::LoggerApi::w(const std::string &tag, const std::string &message) {
+    auto i = _logger.lock();
+    if (i) i->warn("[{}] {}", tag, message);
 }
 
-ledger::core::api::Error ledger::core::Exception::toApiError() const {
-    return api::Error(_code, _message);
+void ledger::core::LoggerApi::c(const std::string &tag, const std::string &message) {
+    auto i = _logger.lock();
+    if (i) i->critical("[{}] {}", tag, message);
 }

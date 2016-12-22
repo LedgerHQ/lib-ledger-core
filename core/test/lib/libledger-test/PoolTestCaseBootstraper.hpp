@@ -37,11 +37,12 @@
 #include "MongooseHttpClient.hpp"
 #include <ledger/core/api/WalletPool.hpp>
 #include <memory>
+#include <ledger/core/utils/Exception.hpp>
 
 class PoolTestCaseBootstraper {
 public:
     PoolTestCaseBootstraper(const std::string &poolName);
-    void setup(std::function<void (std::shared_ptr<ledger::core::api::WalletPool>)> callback);
+    void setup(std::function<void (std::shared_ptr<ledger::core::api::WalletPool>, std::experimental::optional<ledger::core::api::Error>)> callback);
     void tearDown();
 
 public:

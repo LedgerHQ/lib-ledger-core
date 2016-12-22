@@ -34,6 +34,7 @@ private:
         ~JavaProxy();
 
         void onWalletPoolBuilt(const std::shared_ptr<::ledger::core::api::WalletPool> & pool) override;
+        void onWalletPoolBuildError(const ::ledger::core::api::Error & error) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::WalletPoolBuildCallback, ::djinni_generated::WalletPoolBuildCallback>;
@@ -41,6 +42,7 @@ private:
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/WalletPoolBuildCallback") };
     const jmethodID method_onWalletPoolBuilt { ::djinni::jniGetMethodID(clazz.get(), "onWalletPoolBuilt", "(Lco/ledger/core/WalletPool;)V") };
+    const jmethodID method_onWalletPoolBuildError { ::djinni::jniGetMethodID(clazz.get(), "onWalletPoolBuildError", "(Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

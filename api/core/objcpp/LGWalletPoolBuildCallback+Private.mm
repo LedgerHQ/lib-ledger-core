@@ -4,6 +4,7 @@
 #import "LGWalletPoolBuildCallback+Private.h"
 #import "LGWalletPoolBuildCallback.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "LGError+Private.h"
 #import "LGWalletPool+Private.h"
 #include <stdexcept>
 
@@ -21,6 +22,12 @@ public:
     {
         @autoreleasepool {
             [Handle::get() onWalletPoolBuilt:(::djinni_generated::WalletPool::fromCpp(c_pool))];
+        }
+    }
+    void onWalletPoolBuildError(const ::ledger::core::api::Error & c_error) override
+    {
+        @autoreleasepool {
+            [Handle::get() onWalletPoolBuildError:(::djinni_generated::Error::fromCpp(c_error))];
         }
     }
 };

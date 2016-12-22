@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * WalletPoolDatabase
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 22/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,30 +28,36 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
+#ifndef LEDGER_CORE_WALLETPOOLDATABASE_HPP
+#define LEDGER_CORE_WALLETPOOLDATABASE_HPP
 
-const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_ERROR;
+#include "WalletPoolDatabaseWriter.hpp"
+#include "WalletPoolDatabaseReader.hpp"
+#include "../../database/DatabaseBackend.hpp"
+#include "../../api/PathResolver.hpp"
+#include <string>
+#include <memory>
 
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
+namespace ledger {
+    namespace core {
+        class WalletPoolDatabase {
+        public:
+            WalletPoolDatabase( const std::string& poolName,
+                                const std::shared_ptr<api::PathResolver>& resolver,
+                                const std::shared_ptr<DatabaseBackend>& backend
+            );
+            const WalletPoolDatabaseWriter& getWriter() const;
+            const WalletPoolDatabaseReader& getReader() const;
+
+        protected:
+            WalletPoolDatabase(const std::shared_ptr<soci::session>& session);
+
+        private:
+            WalletPoolDatabaseWriter _writer;
+            WalletPoolDatabaseReader _reader;
+        };
+    }
 }
 
-ledger::core::Exception::~Exception() {
 
-}
-
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
-}
-
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
-}
-
-ledger::core::api::Error ledger::core::Exception::toApiError() const {
-    return api::Error(_code, _message);
-}
+#endif //LEDGER_CORE_WALLETPOOLDATABASE_HPP

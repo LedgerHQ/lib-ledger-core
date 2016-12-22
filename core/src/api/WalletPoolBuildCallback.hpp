@@ -8,12 +8,15 @@
 namespace ledger { namespace core { namespace api {
 
 class WalletPool;
+struct Error;
 
 class WalletPoolBuildCallback {
 public:
     virtual ~WalletPoolBuildCallback() {}
 
     virtual void onWalletPoolBuilt(const std::shared_ptr<WalletPool> & pool) = 0;
+
+    virtual void onWalletPoolBuildError(const Error & error) = 0;
 };
 
 } } }  // namespace ledger::core::api

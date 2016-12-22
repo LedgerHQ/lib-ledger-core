@@ -1,9 +1,9 @@
 /*
  *
- * Exception
+ * WalletPoolDatabaseReader
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/12/2016.
+ * Created by Pierre Pollastri on 22/12/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,30 +28,24 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
-#include <sstream>
+#ifndef LEDGER_CORE_WALLETPOOLDATABASEREADER_HPP
+#define LEDGER_CORE_WALLETPOOLDATABASEREADER_HPP
 
-const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_ERROR;
+#include "WalletPoolDatabaseReader.hpp"
+#include <string>
+#include <memory>
+#include "../../database/DatabaseBackend.hpp"
 
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
-    _code = code;
-    std::stringstream ss;
-    ss << message << "(Error " << (unsigned int)code << ")";
-    _message = ss.str();
+namespace ledger {
+    namespace core {
+        class WalletPoolDatabaseReader {
+        public:
+            WalletPoolDatabaseReader( std::shared_ptr<soci::session> session);
+        private:
+            std::shared_ptr<soci::session> _session;
+        };
+    }
 }
 
-ledger::core::Exception::~Exception() {
 
-}
-
-const char *ledger::core::Exception::what() const noexcept {
-    return _message.c_str();
-}
-
-ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
-    return _code;
-}
-
-ledger::core::api::Error ledger::core::Exception::toApiError() const {
-    return api::Error(_code, _message);
-}
+#endif //LEDGER_CORE_WALLETPOOLDATABASEREADER_HPP

@@ -78,7 +78,7 @@ namespace ledger { namespace core {
         }
 
         void WalletPoolBuilder::build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) {
-            auto pool = std::make_shared<WalletPool>(
+            WalletPool::open(
                     _name,
                     _password,
                     _httpClient,
@@ -88,11 +88,9 @@ namespace ledger { namespace core {
                     _dispatcher,
                     _rng,
                     _backend,
-                    _configuration
+                    _configuration,
+                    listener
             );
-            pool->open([pool, listener] (bool isCreated) {
-                listener->onWalletPoolBuilt(pool);
-            });
         }
 
         std::shared_ptr<api::WalletPoolBuilder> WalletPoolBuilder::setPassword(const std::string &password) {

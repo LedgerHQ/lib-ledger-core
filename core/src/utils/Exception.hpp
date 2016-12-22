@@ -34,15 +34,23 @@
 #include <exception>
 #include <string>
 #include "../api/ErrorCode.hpp"
+#include "../api/Error.hpp"
+#include "../utils/optional.hpp"
+
 namespace ledger {
     namespace core {
         class Exception : public std::exception {
         public:
             Exception(api::ErrorCode code, const std::string& message);
             api::ErrorCode getErrorCode() const;
+            api::Error toApiError() const;
+
             virtual ~Exception() override;
 
             virtual const char *what() const noexcept override;
+
+        public:
+            static const optional<api::Error> NO_ERROR;
 
         private:
             api::ErrorCode _code;
