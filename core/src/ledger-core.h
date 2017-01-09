@@ -41,6 +41,9 @@ namespace ledger {
      */
     namespace core {
 
+        const int LIB_VERSION = 1;
+        const std::string LIB_STRING_VERSION = "1.0.0";
+
     }
 
 }

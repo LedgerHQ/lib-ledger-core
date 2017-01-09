@@ -85,7 +85,7 @@ target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
 target_link_libraries(ledger-core crypto)
 target_link_libraries(ledger-core sqlite3)
-target_link_libraries(ledger-core soci_sqlite3_static)
+target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
@@ -115,7 +115,7 @@ target_include_directories(ledger-core PUBLIC ../lib/bigd)
 target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories(ledger-core PUBLIC ../lib/soci/core)
-target_include_directories(ledger-core PUBLIC ../lib/soci/backends)
+target_include_directories(ledger-core PUBLIC ../lib/soci_sqlite3)
 target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 

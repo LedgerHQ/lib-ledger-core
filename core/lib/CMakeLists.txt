@@ -8,9 +8,6 @@ add_subdirectory(openssl)
 
 set(SOCI_STATIC ON)
 set(SOCI_SHARED OFF)
-set(SOCI_EMPTY OFF)
-set(SQLITE3_LIBRARY $<TARGET_FILE:sqlite3>)
-set(SQLITE3_INCLUDE_DIR ../sqlite3)
-set(WITH_ODBC OFF)
 
 add_subdirectory(soci)
+add_subdirectory(soci_sqlite3)

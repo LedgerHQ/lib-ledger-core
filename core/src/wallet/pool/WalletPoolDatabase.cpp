@@ -29,8 +29,11 @@
  *
  */
 #include "WalletPoolDatabase.hpp"
+#include "../../ledger-core.h"
 
 using namespace soci;
+
+const int ledger::core::WalletPoolDatabase::DATABASE_VERSION = WALLET_POOL_DATABASE_VERSION;
 
 ledger::core::WalletPoolDatabase::WalletPoolDatabase(const std::string &poolName,
                                                      const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
@@ -42,9 +45,15 @@ ledger::core::WalletPoolDatabase::WalletPoolDatabase(const std::string &poolName
 ledger::core::WalletPoolDatabase::WalletPoolDatabase(const std::shared_ptr<soci::session> &session) :
     _writer(session), _reader(session)
 {
-    int structureVersion, libVersion;
-    *session << "SELECT structure_version, lib_version from configuration", into(structureVersion);
-
+    try {
+        int structureVersion, libVersion;
+        *session << "SELECT structure_version, lib_version from configuration", into(structureVersion), into(
+                libVersion);
+    } catch (soci::soci_error& e) {
+        // Table probably doesn't exist
+        *session << "CREATE TABLE configuration(structure_version INTEGER NOT NULL, lib_version INTEGER NOT NULL)";
+        *session << "INSERT INTO configuration(structure_version, lib_version) VALUES(:s, :l)", use(DATABASE_VERSION), use(LIB_VERSION);
+    }
 }
 
 const ledger::core::WalletPoolDatabaseWriter &ledger::core::WalletPoolDatabase::getWriter() const {

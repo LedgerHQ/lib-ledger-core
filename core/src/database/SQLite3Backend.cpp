@@ -70,7 +70,7 @@ ledger::core::SQLite3Backend::setService(const std::string &service) {
     return nullptr;
 }
 
-#include <sqlite3/soci-sqlite3.h>
+#include <soci-sqlite3.h>
 
 using namespace soci;
 

@@ -38,6 +38,8 @@
 #include <string>
 #include <memory>
 
+#define WALLET_POOL_DATABASE_VERSION 1
+
 namespace ledger {
     namespace core {
         class WalletPoolDatabase {
@@ -48,6 +50,8 @@ namespace ledger {
             );
             const WalletPoolDatabaseWriter& getWriter() const;
             const WalletPoolDatabaseReader& getReader() const;
+
+            static const int DATABASE_VERSION;
 
         protected:
             WalletPoolDatabase(const std::shared_ptr<soci::session>& session);

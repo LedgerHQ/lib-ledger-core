@@ -9,11 +9,9 @@
 #
 ###############################################################################
 
-soci_backend(SQLite3
-  DEPENDS SQLite3
-  HEADERS soci-sqlite3.h common.h
-  DESCRIPTION "SOCI backend for SQLite 3 database engine"
-  AUTHORS "Maciej Sobczak, Stephen Hutton, David Courtney"
-  MAINTAINERS "Maciej Sobczak, Mateusz Loskot")
+add_library(soci_sqlite3 STATIC
+        blob.cpp common.cpp common.h error.cpp factory.cpp row-id.cpp session.cpp soci-sqlite3.h standard-into-type.cpp
+        standard-use-type.cpp statement.cpp vector-into-type.cpp vector-use-type.cpp)
+target_include_directories(soci_sqlite3 PUBLIC ../soci/core ../sqlite3)
 
 #add_subdirectory(test)
