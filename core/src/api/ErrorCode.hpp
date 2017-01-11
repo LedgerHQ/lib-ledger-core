@@ -31,6 +31,8 @@ enum class ErrorCode : int {
     UNSUPPORTED_OPERATION,
     UNKNOWN,
     IMPLEMENTATION_IS_MISSING,
+    /** Preferences Error */
+    UNABLE_TO_OPEN_LEVELDB,
 };
 
 } } }  // namespace ledger::core::api

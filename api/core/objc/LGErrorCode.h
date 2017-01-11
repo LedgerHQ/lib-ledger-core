@@ -28,4 +28,6 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnsupportedOperation,
     LGErrorCodeUnknown,
     LGErrorCodeImplementationIsMissing,
+    /** Preferences Error */
+    LGErrorCodeUnableToOpenLeveldb,
 };

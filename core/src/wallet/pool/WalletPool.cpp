@@ -28,7 +28,6 @@
  * SOFTWARE.
  *
  */
-#include "../../preferences/AtomicPreferencesBackend.hpp"
 #include "../../utils/LambdaRunnable.hpp"
 #include "WalletPool.hpp"
 #include "WalletPoolBuilder.hpp"
@@ -53,20 +52,20 @@ namespace ledger {
             _resolver = pathResolver;
             // Initialize database
             _databaseBackend = std::dynamic_pointer_cast<DatabaseBackend>(backend);
-            _database = std::make_shared<WalletPoolDatabase>(name, _resolver, _databaseBackend);
 
             // Initialize threading objects
             _dispatcher = dispatcher;
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
 
             // Initialize preferences
+            /*
             _localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>(
                     std::string("/") + name + "/preferences.json",
                     _queue,
                     pathResolver,
                     _dispatcher->newLock()
             );
-
+            */
             // Initialize logger
             _logger = logger::create(name + "-logs", password,
                                      dispatcher->getSerialExecutionContext("logger_queue_" + name),
@@ -126,7 +125,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Preferences> WalletPool::getPreferences() {
-            return _preferencesBackend->getPreferences("pool");
+            return nullptr;//_preferencesBackend->getPreferences("pool");
         }
 
         void WalletPool::open(const std::string &name, const std::experimental::optional<std::string> &password,

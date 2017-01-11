@@ -40,7 +40,6 @@
 #include "../../api/PathResolver.hpp"
 #include "../../api/LogPrinter.hpp"
 #include "../../api/ExecutionContext.hpp"
-#include "../../preferences/IPreferencesBackend.hpp"
 #include "../../utils/optional.hpp"
 #include "../../api/RandomNumberGenerator.hpp"
 #include "../../database/DatabaseBackend.hpp"
@@ -49,7 +48,6 @@
 #include "../../api/WalletPoolBuildCallback.hpp"
 #include "../../api/Logger.hpp"
 #include "../../debug/LoggerApi.hpp"
-#include "WalletPoolDatabase.hpp"
 
 namespace ledger {
     namespace core {
@@ -101,8 +99,6 @@ namespace ledger {
         private:
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::shared_ptr<api::ExecutionContext> _queue;
-            std::shared_ptr<IPreferencesBackend> _preferencesBackend;
-            std::shared_ptr<IPreferencesBackend> _localPreferencesBackend;
             std::shared_ptr<DatabaseBackend> _databaseBackend;
             std::shared_ptr<HttpClient> _http;
             std::unordered_map<std::string, std::string> _configuration;
@@ -112,7 +108,6 @@ namespace ledger {
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::WebSocketClient> _ws;
             std::experimental::optional<std::string> _password;
-            std::shared_ptr<WalletPoolDatabase> _database;
 
         public:
             static void open( const std::string &name,

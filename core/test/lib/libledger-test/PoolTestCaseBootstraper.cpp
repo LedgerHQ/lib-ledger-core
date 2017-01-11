@@ -61,7 +61,7 @@ PoolTestCaseBootstraper::PoolTestCaseBootstraper(const std::string &poolName) {
 
 
 void PoolTestCaseBootstraper::tearDown() {
-
+    resolver->clean();
 }
 
 void PoolTestCaseBootstraper::setup(std::function<void(std::shared_ptr<ledger::core::api::WalletPool>,

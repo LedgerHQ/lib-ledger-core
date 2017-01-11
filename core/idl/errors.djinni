@@ -28,6 +28,9 @@ ErrorCode = enum {
     unsupported_operation;
     unknown;
     implementation_is_missing;
+
+    # Preferences Error
+    unable_to_open_leveldb;
 }
 
 Error = record {
