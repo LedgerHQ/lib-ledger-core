@@ -1,1 +1,1 @@
-# lib-ledger-core
+# Ledger Core
