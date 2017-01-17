@@ -40,7 +40,9 @@ TEST(Configuration, PutAndRetrieve) {
     conf->putData("my_data", {0x01B, 0x02B, 0x42, 0x42});
 
     EXPECT_EQ(conf->getBoolean("is_true", false), true);
-    EXPECT_EQ(conf->getString("my_string"), "a supa string!");
+    EXPECT_EQ(conf->getString("my_string", "not my string"), "a supa string!");
     EXPECT_EQ(conf->getInt("my_int", 0), 42);
-    EXPECT_EQ(conf->getData("my_data"), std::vector<uint8_t>({0x01B, 0x02B, 0x42, 0x42}));
+    EXPECT_EQ(conf->getData("my_data", {}), std::vector<uint8_t>({0x01B, 0x02B, 0x42, 0x42}));
+    EXPECT_EQ(conf->getString("my_int", "It was not an int"),  "It was not an int");
+    EXPECT_EQ(conf->getString("doesnt_exist", "nihil"),  "nihil");
 }

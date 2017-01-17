@@ -14,7 +14,7 @@ class Configuration {
 public:
     virtual ~Configuration() {}
 
-    virtual std::string getString(const std::string & key) = 0;
+    virtual std::string getString(const std::string & key, const std::string & fallback) = 0;
 
     virtual std::shared_ptr<Configuration> putString(const std::string & key, const std::string & value) = 0;
 
@@ -26,7 +26,7 @@ public:
 
     virtual std::shared_ptr<Configuration> putBoolean(const std::string & key, bool value) = 0;
 
-    virtual std::vector<uint8_t> getData(const std::string & key) = 0;
+    virtual std::vector<uint8_t> getData(const std::string & key, const std::vector<uint8_t> & fallback) = 0;
 
     virtual std::shared_ptr<Configuration> putData(const std::string & key, const std::vector<uint8_t> & data) = 0;
 

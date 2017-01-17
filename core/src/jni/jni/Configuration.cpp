@@ -19,12 +19,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Configuration_00024CppProxy_nativeDe
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_Configuration_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_Configuration_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_fallback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Configuration>(nativeRef);
-        auto r = ref->getString(::djinni::String::toCpp(jniEnv, j_key));
+        auto r = ref->getString(::djinni::String::toCpp(jniEnv, j_key),
+                                ::djinni::String::toCpp(jniEnv, j_fallback));
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
@@ -84,12 +85,13 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Configuration_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Configuration_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Configuration_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_fallback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Configuration>(nativeRef);
-        auto r = ref->getData(::djinni::String::toCpp(jniEnv, j_key));
+        auto r = ref->getData(::djinni::String::toCpp(jniEnv, j_key),
+                              ::djinni::Binary::toCpp(jniEnv, j_fallback));
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

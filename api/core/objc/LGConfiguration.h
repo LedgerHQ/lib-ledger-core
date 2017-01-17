@@ -7,7 +7,8 @@
 
 @interface LGConfiguration : NSObject
 
-- (nonnull NSString *)getString:(nonnull NSString *)key;
+- (nonnull NSString *)getString:(nonnull NSString *)key
+                       fallback:(nonnull NSString *)fallback;
 
 - (nullable LGConfiguration *)putString:(nonnull NSString *)key
                                   value:(nonnull NSString *)value;
@@ -24,7 +25,8 @@
 - (nullable LGConfiguration *)putBoolean:(nonnull NSString *)key
                                    value:(BOOL)value;
 
-- (nonnull NSData *)getData:(nonnull NSString *)key;
+- (nonnull NSData *)getData:(nonnull NSString *)key
+                   fallback:(nonnull NSData *)fallback;
 
 - (nullable LGConfiguration *)putData:(nonnull NSString *)key
                                  data:(nonnull NSData *)data;

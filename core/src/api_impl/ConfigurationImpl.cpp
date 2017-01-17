@@ -34,12 +34,6 @@ namespace ledger {
 
     namespace core {
 
-        std::string ConfigurationImpl::getString(const std::string &key) {
-            auto it = _values.find(key);
-            return (it == _values.end() || it->second.type != ConfigurationValueType::STRING) ? ""
-                                                                                              : it->second.variant.string;
-        }
-
         std::shared_ptr<api::Configuration>
         ConfigurationImpl::putString(const std::string &key, const std::string &value) {
             ConfigurationValue v;
@@ -79,12 +73,6 @@ namespace ledger {
             return shared_from_this();
         }
 
-        std::vector<uint8_t> ConfigurationImpl::getData(const std::string &key) {
-            auto it = _values.find(key);
-            return (it == _values.end() || it->second.type != ConfigurationValueType::BYTES) ? std::vector<uint8_t>()
-                                                                                             : it->second.variant.bytes;
-        }
-
         std::shared_ptr<api::Configuration>
         ConfigurationImpl::putData(const std::string &key, const std::vector<uint8_t> &data) {
             ConfigurationValue v;
@@ -92,6 +80,18 @@ namespace ledger {
             v.variant.bytes = data;
             _values[key] = v;
             return shared_from_this();
+        }
+
+        std::string ConfigurationImpl::getString(const std::string &key, const std::string &fallback) {
+            auto it = _values.find(key);
+            return (it == _values.end() || it->second.type != ConfigurationValueType::STRING) ? fallback
+                                                                                              : it->second.variant.string;
+        }
+
+        std::vector<uint8_t> ConfigurationImpl::getData(const std::string &key, const std::vector<uint8_t> &fallback) {
+            auto it = _values.find(key);
+            return (it == _values.end() || it->second.type != ConfigurationValueType::BYTES) ? fallback
+                                                                                             : it->second.variant.bytes;
         }
 
         std::shared_ptr<api::Configuration> api::Configuration::newInstance() {

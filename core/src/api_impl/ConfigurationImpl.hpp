@@ -57,15 +57,16 @@ namespace ledger {
 
         class ConfigurationImpl : public api::Configuration, public std::enable_shared_from_this<ConfigurationImpl> {
         public:
-            std::string getString(const std::string &key) override;
             std::shared_ptr<api::Configuration> putString(const std::string &key, const std::string &value) override;
             int32_t getInt(const std::string &key, int32_t fallback) override;
             std::shared_ptr<api::Configuration> putInt(const std::string &key, int32_t value) override;
             bool getBoolean(const std::string &key, bool fallback) override;
             std::shared_ptr<api::Configuration> putBoolean(const std::string &key, bool value) override;
-            std::vector<uint8_t> getData(const std::string &key) override;
             std::shared_ptr<api::Configuration>
             putData(const std::string &key, const std::vector<uint8_t> &data) override;
+            std::string getString(const std::string &key, const std::string &fallback) override;
+            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallback) override;
+
         private:
             std::unordered_map<std::string, ConfigurationValue> _values;
         };

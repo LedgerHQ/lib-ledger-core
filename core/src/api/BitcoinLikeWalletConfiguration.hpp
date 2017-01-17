@@ -7,9 +7,9 @@
 
 namespace ledger { namespace core { namespace api {
 
-class BitcoinLikeConfiguration {
+class BitcoinLikeWalletConfiguration {
 public:
-    virtual ~BitcoinLikeConfiguration() {}
+    virtual ~BitcoinLikeWalletConfiguration() {}
 
     static std::string const KEYCHAIN;
 

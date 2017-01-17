@@ -70,7 +70,31 @@ add_library(
         crypto/PBKDF2.cpp
         crypto/PBKDF2.hpp
         crypto/AESCipher.cpp
-        crypto/AESCipher.hpp bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp math/Base58.cpp math/Base58.hpp utils/vector.cpp utils/vector.hpp utils/Try.cpp utils/Try.hpp utils/Exception.cpp utils/Exception.hpp utils/djinni_helpers.cpp utils/djinni_helpers.hpp bitcoin/BitcoinLikeExtendedPublicKey.cpp bitcoin/BitcoinLikeExtendedPublicKey.hpp crypto/DeterministicPublicKey.cpp crypto/DeterministicPublicKey.hpp crypto/SECP256k1Point.cpp crypto/SECP256k1Point.hpp crypto/RIPEMD160.cpp crypto/RIPEMD160.hpp crypto/HMAC.cpp crypto/HMAC.hpp crypto/HASH160.cpp crypto/HASH160.hpp utils/DerivationPath.cpp utils/DerivationPath.hpp wallet/bitcoin/BitcoinLikeWallet.cpp wallet/bitcoin/BitcoinLikeWallet.hpp database/DatabaseBackend.cpp database/DatabaseBackend.hpp database/SQLite3Backend.cpp database/SQLite3Backend.hpp database/PostgreSQLBackend.cpp database/PostgreSQLBackend.hpp debug/LoggerApi.cpp debug/LoggerApi.hpp preferences/PreferencesBackend.cpp preferences/PreferencesBackend.hpp preferences/Preferences.cpp preferences/Preferences.hpp preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp wallet/bitcoin/BitcoinLikeKeyChain.cpp wallet/bitcoin/BitcoinLikeKeyChain.hpp wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp)
+        crypto/AESCipher.hpp
+        bitcoin/BitcoinLikeAddress.cpp bitcoin/BitcoinLikeAddress.hpp
+        math/Base58.cpp math/Base58.hpp
+        utils/vector.cpp utils/vector.hpp
+        utils/Try.cpp utils/Try.hpp
+        utils/Exception.cpp utils/Exception.hpp
+        utils/djinni_helpers.cpp utils/djinni_helpers.hpp
+        bitcoin/BitcoinLikeExtendedPublicKey.cpp bitcoin/BitcoinLikeExtendedPublicKey.hpp
+        crypto/DeterministicPublicKey.cpp crypto/DeterministicPublicKey.hpp
+        crypto/SECP256k1Point.cpp crypto/SECP256k1Point.hpp
+        crypto/RIPEMD160.cpp crypto/RIPEMD160.hpp
+        crypto/HMAC.cpp crypto/HMAC.hpp
+        crypto/HASH160.cpp crypto/HASH160.hpp
+        utils/DerivationPath.cpp utils/DerivationPath.hpp
+        wallet/bitcoin/BitcoinLikeWallet.cpp wallet/bitcoin/BitcoinLikeWallet.hpp
+        database/DatabaseBackend.cpp database/DatabaseBackend.hpp
+        database/SQLite3Backend.cpp database/SQLite3Backend.hpp
+        database/PostgreSQLBackend.cpp database/PostgreSQLBackend.hpp
+        debug/LoggerApi.cpp debug/LoggerApi.hpp
+        preferences/PreferencesBackend.cpp preferences/PreferencesBackend.hpp
+        preferences/Preferences.cpp preferences/Preferences.hpp
+        preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp
+        wallet/bitcoin/keychains/BitcoinLikeKeyChain.cpp wallet/bitcoin/keychains/BitcoinLikeKeyChain.hpp
+        wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
+        api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

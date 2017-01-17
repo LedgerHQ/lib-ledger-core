@@ -40,7 +40,9 @@ namespace ledger {
     namespace core {
         class BitcoinLikeWallet : public api::BitcoinLikeWallet {
         public:
-            BitcoinLikeWallet(const std::shared_ptr<WalletPool>& pool, const std::string& identifier);
+            BitcoinLikeWallet(
+                    std::shared_ptr<WalletPool>& pool,
+                    const std::string& identifier);
             // void synchronize();
             // void startNetworkObservation();
             // void stopNetworkObservation();

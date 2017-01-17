@@ -2,7 +2,15 @@
 @import "../../preferences/preferences.djinni"
 @import "../amount.djinni"
 
-BitcoinLikeConfiguration = interface +c {
+BitcoinLikeCurrencyDescription = record {
+    BIP44CoinType: i32;
+    P2PKHAddressVersion: binary;
+    P2SHAddressVersion: binary;
+    XPUBAddressVersion: binary;
+    shortName: string;
+}
+
+BitcoinLikeWalletConfiguration = interface +c {
     const KEYCHAIN: string = "keychain";
     const OBSERVER: string = "observer";
     const EXPLORER: string = "explorer";

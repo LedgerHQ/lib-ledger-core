@@ -6,7 +6,7 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Configuration {
-    public abstract String getString(String key);
+    public abstract String getString(String key, String fallback);
 
     public abstract Configuration putString(String key, String value);
 
@@ -18,7 +18,7 @@ public abstract class Configuration {
 
     public abstract Configuration putBoolean(String key, boolean value);
 
-    public abstract byte[] getData(String key);
+    public abstract byte[] getData(String key, byte[] fallback);
 
     public abstract Configuration putData(String key, byte[] data);
 
@@ -48,12 +48,12 @@ public abstract class Configuration {
         }
 
         @Override
-        public String getString(String key)
+        public String getString(String key, String fallback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getString(this.nativeRef, key);
+            return native_getString(this.nativeRef, key, fallback);
         }
-        private native String native_getString(long _nativeRef, String key);
+        private native String native_getString(long _nativeRef, String key, String fallback);
 
         @Override
         public Configuration putString(String key, String value)
@@ -96,12 +96,12 @@ public abstract class Configuration {
         private native Configuration native_putBoolean(long _nativeRef, String key, boolean value);
 
         @Override
-        public byte[] getData(String key)
+        public byte[] getData(String key, byte[] fallback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getData(this.nativeRef, key);
+            return native_getData(this.nativeRef, key, fallback);
         }
-        private native byte[] native_getData(long _nativeRef, String key);
+        private native byte[] native_getData(long _nativeRef, String key, byte[] fallback);
 
         @Override
         public Configuration putData(String key, byte[] data)

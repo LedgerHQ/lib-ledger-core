@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeKeyChain
+ * BitcoinLikeKeychain
  * ledger-core
  *
- * Created by Pierre Pollastri on 12/01/2017.
+ * Created by Pierre Pollastri on 17/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,36 +28,35 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
-#define LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
-
-#include <set>
-#include <string>
-#include <vector>
+#include "BitcoinLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
-        enum BitcoinLikeKeyPurpose {
-            SEND, RECEIVE
-        };
 
-        class BitcoinLikeKeyChain {
-        public:
-            /**
-             * Marks the given keys as used.
-             * @param keys The keys to mark as used
-             * @return true if at least one of the keys was previously unused.
-             */
-            virtual bool markAsUsed(const std::set<std::string>& keys) = 0;
-            virtual std::vector<std::string> getAllKeys() const = 0;
-            virtual std::vector<std::string> getNextUnusedKeys(BitcoinLikeKeyPurpose purpose, unsigned int numberOfKeys) const = 0;
-            virtual std::vector<std::string> getAllObservableKeys() const = 0;
+        BitcoinLikeKeychain::BitcoinLikeKeychain(const api::BitcoinLikeCurrencyDescription &description, int account,
+                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub) :
+            _description(description), _account(account), _xpub(xpub) {
 
+        }
 
-        private:
+        int BitcoinLikeKeychain::getAccountIndex() const {
+            return _account;
+        }
 
-        };
+        const api::BitcoinLikeCurrencyDescription &BitcoinLikeKeychain::getCurrencyDescription() const {
+            return _description;
+        }
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKey> BitcoinLikeKeychain::getExtendedPublicKey() const {
+            return _xpub;
+        }
+
+        bool BitcoinLikeKeychain::markAsUsed(const std::vector<std::string> &addresses) {
+            bool result = false;
+            for (auto& address : addresses) {
+                result = markAsUsed(address) || result;
+            }
+            return result;
+        }
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP

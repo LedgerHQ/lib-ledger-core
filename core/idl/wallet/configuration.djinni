@@ -1,6 +1,6 @@
 
 Configuration = interface +c {
-    getString(key: string): string;
+    getString(key: string, fallback: string): string;
     putString(key: string, value: string): Configuration;
 
     getInt(key: string, fallback: i32): i32;
@@ -9,7 +9,7 @@ Configuration = interface +c {
     getBoolean(key: string, fallback: bool): bool;
     putBoolean(key: string, value: bool): Configuration;
 
-    getData(key: string): binary;
+    getData(key: string, fallback: binary): binary;
     putData(key: string, data: binary): Configuration;
 
     static newInstance(): Configuration;

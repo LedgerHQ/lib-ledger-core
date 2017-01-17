@@ -30,9 +30,11 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nonnull NSString *)getString:(nonnull NSString *)key {
+- (nonnull NSString *)getString:(nonnull NSString *)key
+                       fallback:(nonnull NSString *)fallback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getString(::djinni::String::toCpp(key));
+        auto objcpp_result_ = _cppRefHandle.get()->getString(::djinni::String::toCpp(key),
+                                                             ::djinni::String::toCpp(fallback));
         return ::djinni::String::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
@@ -82,9 +84,11 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nonnull NSData *)getData:(nonnull NSString *)key {
+- (nonnull NSData *)getData:(nonnull NSString *)key
+                   fallback:(nonnull NSData *)fallback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getData(::djinni::String::toCpp(key));
+        auto objcpp_result_ = _cppRefHandle.get()->getData(::djinni::String::toCpp(key),
+                                                           ::djinni::Binary::toCpp(fallback));
         return ::djinni::Binary::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
