@@ -4,4 +4,5 @@
 package co.ledger.core;
 
 public abstract class BitcoinPublicKeyProvider {
+    public abstract void get(String path, BitcoinPublicKeyCallback callback);
 }

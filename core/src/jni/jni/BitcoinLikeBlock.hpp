@@ -25,7 +25,10 @@ private:
     friend ::djinni::JniClass<BitcoinLikeBlock>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeBlock") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "()V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;JJ)V") };
+    const jfieldID field_hash { ::djinni::jniGetFieldID(clazz.get(), "hash", "Ljava/lang/String;") };
+    const jfieldID field_height { ::djinni::jniGetFieldID(clazz.get(), "height", "J") };
+    const jfieldID field_time { ::djinni::jniGetFieldID(clazz.get(), "time", "J") };
 };
 
 }  // namespace djinni_generated

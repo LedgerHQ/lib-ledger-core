@@ -48,6 +48,11 @@
 #include "../../api/WalletPoolBuildCallback.hpp"
 #include "../../api/Logger.hpp"
 #include "../../debug/LoggerApi.hpp"
+#include "../../preferences/PreferencesBackend.hpp"
+#include "../../api/StringArrayCallback.hpp"
+#include "../../api/BitcoinLikeExtendedPublicKeyProvider.hpp"
+#include "../../api/BitcoinLikeExtendedPublicKey.hpp"
+#include "../../api/BitcoinLikeWallet.hpp"
 
 namespace ledger {
     namespace core {
@@ -68,21 +73,18 @@ namespace ledger {
 
         public:
 
-            virtual std::vector<std::shared_ptr<api::WalletCommonInterface>> getAllWallets() override;
+            void getOrCreateBitcoinLikeWallet(
+                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
+                    const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
+                    const std::shared_ptr<api::Configuration> &configuration,
+                    const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
 
-            virtual std::vector<std::shared_ptr<api::BitcoinLikeWallet>> getAllBitcoinLikeWallets() override;
+            void getWalletPreferences(const std::string &walletIdentifier) override;
 
-            virtual std::vector<std::shared_ptr<api::EthereumLikeWallet>> getAllEthereumLikeWallets() override;
+            void getAllBitcoinLikeWalletIdentifiers(const std::shared_ptr<api::StringArrayCallback> &callback) override;
 
-            virtual void
-            getOrCreateBitcoinLikeWallet(const std::shared_ptr<api::BitcoinPublicKeyProvider> &publicKeyProvider,
-                                         const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
-                                         const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
-
-            virtual void
-            getOrCreateEthereumLikeWallet(const std::shared_ptr<api::EthereumPublicKeyProvider> &publicKeyProvider,
-                                          const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
-                                          const std::shared_ptr<api::GetEthreumLikeWalletCallback> &callback) override;
+            void getBitcoinLikeWallet(const std::string &identifier,
+                                      const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
 
             virtual std::vector<std::shared_ptr<api::CryptoCurrencyDescription>>
             getAllSupportedCryptoCurrencies() override;
@@ -90,11 +92,12 @@ namespace ledger {
             virtual std::shared_ptr<api::Logger> getLogger() override;
 
             virtual std::shared_ptr<api::Preferences> getPreferences() override;
-
+            std::shared_ptr<api::Preferences> getInterfacePreferences();
             virtual void close() override;
 
         private:
             void runOnPoolQueue(std::function<void()> func);
+            void runOnMainQueue(std::function<void ()> func);
 
         private:
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
@@ -108,6 +111,11 @@ namespace ledger {
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::WebSocketClient> _ws;
             std::experimental::optional<std::string> _password;
+            std::shared_ptr<PreferencesBackend> _externalBackend;
+            std::shared_ptr<PreferencesBackend> _internalBackend;
+
+            // Bitcoin wallets
+            std::vector<std::shared_ptr<api::BitcoinLikeWallet>> _wallet;
 
         public:
             static void open( const std::string &name,

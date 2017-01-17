@@ -14,13 +14,21 @@ public final class BitcoinLikeTransaction {
 
     /*package*/ final BitcoinLikeBlock block;
 
+    /*package*/ final long lockTime;
+
+    /*package*/ final long time;
+
     public BitcoinLikeTransaction(
             ArrayList<BitcoinLikeInput> inputs,
             ArrayList<BitcoinLikeOutput> outputs,
-            BitcoinLikeBlock block) {
+            BitcoinLikeBlock block,
+            long lockTime,
+            long time) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.block = block;
+        this.lockTime = lockTime;
+        this.time = time;
     }
 
     public ArrayList<BitcoinLikeInput> getInputs() {
@@ -35,12 +43,23 @@ public final class BitcoinLikeTransaction {
         return block;
     }
 
+    public long getLockTime() {
+        return lockTime;
+    }
+
+    /**fee: Amount; */
+    public long getTime() {
+        return time;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeTransaction{" +
                 "inputs=" + inputs +
                 "," + "outputs=" + outputs +
                 "," + "block=" + block +
+                "," + "lockTime=" + lockTime +
+                "," + "time=" + time +
         "}";
     }
 

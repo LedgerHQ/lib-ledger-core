@@ -18,18 +18,22 @@ auto BitcoinLikeTransaction::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djin
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::List<::djinni_generated::BitcoinLikeInput>::fromCpp(jniEnv, c.inputs)),
                                                            ::djinni::get(::djinni::List<::djinni_generated::BitcoinLikeOutput>::fromCpp(jniEnv, c.outputs)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::fromCpp(jniEnv, c.block)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::fromCpp(jniEnv, c.block)),
+                                                           ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.lockTime)),
+                                                           ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.time)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto BitcoinLikeTransaction::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 4);
+    ::djinni::JniLocalScope jscope(jniEnv, 6);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<BitcoinLikeTransaction>::get();
     return {::djinni::List<::djinni_generated::BitcoinLikeInput>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_inputs)),
             ::djinni::List<::djinni_generated::BitcoinLikeOutput>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_outputs)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_block))};
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_block)),
+            ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_lockTime)),
+            ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_time))};
 }
 
 }  // namespace djinni_generated

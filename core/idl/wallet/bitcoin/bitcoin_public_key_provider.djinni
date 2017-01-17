@@ -1,3 +1,26 @@
-BitcoinPublicKeyProvider = interface +j +o +n {
 
+BitcoinPublicKey = record {
+    publicKey: binary;
+    chainCode: binary;
+}
+
+BitcoinLikePublicKeyCallback = interface +c {
+    onPublicKey(publicKey: BitcoinPublicKey);
+}
+
+BitcoinLikePublicKeyProvider = interface +j +o +n {
+    get(path: string, callback: BitcoinLikePublicKeyCallback);
+}
+
+BitcoinLikeBase58PublicKeyCallback = interface +c {
+    onBase58ExtendedPublicKey(xpub: string);
+}
+
+BitcoinLikeBase58ExtendedPublicKeyProvider = interface +j +o + n {
+    get(path: string, callback: BitcoinLikeBase58PublicKeyCallback);
+}
+
+BitcoinLikeExtendedPublicKeyProvider = interface +c {
+    static fromBitcoinLikeBase58ExtendedPublicKeyProvider(provider: BitcoinLikeBase58ExtendedPublicKeyProvider);
+    static fromBitcoinLikePublicKeyProvider(provider: BitcoinLikePublicKeyProvider);
 }

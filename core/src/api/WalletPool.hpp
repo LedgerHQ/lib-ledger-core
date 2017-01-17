@@ -5,40 +5,37 @@
 
 #include "../utils/optional.hpp"
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
 
-class BitcoinLikeWallet;
-class BitcoinPublicKeyProvider;
+class BitcoinLikeExtendedPublicKeyProvider;
+class Configuration;
 class CryptoCurrencyDescription;
-class EthereumLikeWallet;
-class EthereumPublicKeyProvider;
 class GetBitcoinLikeWalletCallback;
-class GetEthreumLikeWalletCallback;
 class Logger;
 class Preferences;
-class WalletCommonInterface;
+class StringArrayCallback;
 
 class WalletPool {
 public:
     virtual ~WalletPool() {}
 
-    virtual std::vector<std::shared_ptr<WalletCommonInterface>> getAllWallets() = 0;
+    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & publicKeyProvider, const std::shared_ptr<CryptoCurrencyDescription> & currency, const std::shared_ptr<Configuration> & configuration, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
 
-    virtual std::vector<std::shared_ptr<BitcoinLikeWallet>> getAllBitcoinLikeWallets() = 0;
+    virtual void getAllBitcoinLikeWalletIdentifiers(const std::shared_ptr<StringArrayCallback> & callback) = 0;
 
-    virtual std::vector<std::shared_ptr<EthereumLikeWallet>> getAllEthereumLikeWallets() = 0;
+    virtual void getBitcoinLikeWallet(const std::string & identifier, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
 
-    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinPublicKeyProvider> & publicKeyProvider, const std::shared_ptr<CryptoCurrencyDescription> & currency, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
-
-    virtual void getOrCreateEthereumLikeWallet(const std::shared_ptr<EthereumPublicKeyProvider> & publicKeyProvider, const std::shared_ptr<CryptoCurrencyDescription> & currency, const std::shared_ptr<GetEthreumLikeWalletCallback> & callback) = 0;
-
+    /**getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback); */
     virtual std::vector<std::shared_ptr<CryptoCurrencyDescription>> getAllSupportedCryptoCurrencies() = 0;
 
     virtual std::shared_ptr<Logger> getLogger() = 0;
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual void getWalletPreferences(const std::string & walletIdentifier) = 0;
 
     virtual void close() = 0;
 };

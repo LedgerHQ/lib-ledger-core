@@ -6,21 +6,30 @@
 
 @implementation LGBitcoinLikeBlock
 
-- (nonnull instancetype)init
+- (nonnull instancetype)initWithHash:(nonnull NSString *)hash
+                              height:(int64_t)height
+                                time:(int64_t)time
 {
     if (self = [super init]) {
+        _hash = [hash copy];
+        _height = height;
+        _time = time;
     }
     return self;
 }
 
-+ (nonnull instancetype)BitcoinLikeBlock
++ (nonnull instancetype)BitcoinLikeBlockWithHash:(nonnull NSString *)hash
+                                          height:(int64_t)height
+                                            time:(int64_t)time
 {
-    return [[self alloc] init];
+    return [[self alloc] initWithHash:hash
+                               height:height
+                                 time:time];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p>", self.class, (void *)self];
+    return [NSString stringWithFormat:@"<%@ %p hash:%@ height:%@ time:%@>", self.class, (void *)self, self.hash, @(self.height), @(self.time)];
 }
 
 @end

@@ -8,8 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BitcoinLikeAccount {
     public abstract Preferences getPreferences();
 
-    public abstract Preferences getSynchronizedPreferences();
-
     public abstract BitcoinLikeOperationCursor openOperationsCursor();
 
     private static final class CppProxy extends BitcoinLikeAccount
@@ -42,14 +40,6 @@ public abstract class BitcoinLikeAccount {
             return native_getPreferences(this.nativeRef);
         }
         private native Preferences native_getPreferences(long _nativeRef);
-
-        @Override
-        public Preferences getSynchronizedPreferences()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getSynchronizedPreferences(this.nativeRef);
-        }
-        private native Preferences native_getSynchronizedPreferences(long _nativeRef);
 
         @Override
         public BitcoinLikeOperationCursor openOperationsCursor()

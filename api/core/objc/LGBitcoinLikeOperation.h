@@ -3,6 +3,7 @@
 
 #import "LGBitcoinLikeTransaction.h"
 #import <Foundation/Foundation.h>
+@class LGAmount;
 @class LGPreferences;
 
 
@@ -10,8 +11,26 @@
 
 - (nullable LGPreferences *)getPreferences;
 
-- (nullable LGPreferences *)getSynchronizedPreferences;
-
 - (nonnull LGBitcoinLikeTransaction *)getTransaction;
+
+- (nullable LGAmount *)getAmount;
+
+- (BOOL)isSending;
+
+- (BOOL)isReception;
+
+- (nullable LGAmount *)getFees;
+
+- (nonnull NSArray<NSString *> *)getSenders;
+
+- (nonnull NSArray<NSString *> *)getRecipients;
+
+- (nonnull NSDate *)getTime;
+
+- (nullable NSDate *)getConfirmationTime;
+
+- (int64_t)getConfirmationCount;
+
+- (int32_t)getAccountIndex;
 
 @end

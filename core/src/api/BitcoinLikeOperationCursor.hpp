@@ -3,15 +3,11 @@
 
 #pragma once
 
-#include <cstdint>
-
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeOperationCursor {
 public:
     virtual ~BitcoinLikeOperationCursor() {}
-
-    virtual int32_t getAccountIndex() = 0;
 };
 
 } } }  // namespace ledger::core::api

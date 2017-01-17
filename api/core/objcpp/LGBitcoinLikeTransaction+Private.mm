@@ -15,14 +15,18 @@ auto BitcoinLikeTransaction::toCpp(ObjcType obj) -> CppType
     assert(obj);
     return {::djinni::List<::djinni_generated::BitcoinLikeInput>::toCpp(obj.inputs),
             ::djinni::List<::djinni_generated::BitcoinLikeOutput>::toCpp(obj.outputs),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::toCpp(obj.block)};
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::toCpp(obj.block),
+            ::djinni::I64::toCpp(obj.lockTime),
+            ::djinni::I64::toCpp(obj.time)};
 }
 
 auto BitcoinLikeTransaction::fromCpp(const CppType& cpp) -> ObjcType
 {
     return [[LGBitcoinLikeTransaction alloc] initWithInputs:(::djinni::List<::djinni_generated::BitcoinLikeInput>::fromCpp(cpp.inputs))
                                                     outputs:(::djinni::List<::djinni_generated::BitcoinLikeOutput>::fromCpp(cpp.outputs))
-                                                      block:(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::fromCpp(cpp.block))];
+                                                      block:(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeBlock>::fromCpp(cpp.block))
+                                                   lockTime:(::djinni::I64::fromCpp(cpp.lockTime))
+                                                       time:(::djinni::I64::fromCpp(cpp.time))];
 }
 
 }  // namespace djinni_generated

@@ -3,6 +3,7 @@
 
 #include "BitcoinLikeWallet.hpp"  // my header
 #include "BitcoinLikeOperationCursor.hpp"
+#include "BitcoinLikeWalletSynchronizationListener.hpp"
 #include "Preferences.hpp"
 
 namespace djinni_generated {
@@ -30,16 +31,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_native_1getSynchronizedPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeWallet>(nativeRef);
-        auto r = ref->getSynchronizedPreferences();
-        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_native_1openOperationCursor(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -48,6 +39,15 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_n
         auto r = ref->openOperationCursor();
         return ::djinni::release(::djinni_generated::BitcoinLikeOperationCursor::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_native_1synchronize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_listener)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeWallet>(nativeRef);
+        ref->synchronize(::djinni_generated::BitcoinLikeWalletSynchronizationListener::toCpp(jniEnv, j_listener));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

@@ -4,14 +4,15 @@
 #import <Foundation/Foundation.h>
 @class LGBitcoinLikeOperationCursor;
 @class LGPreferences;
+@protocol LGBitcoinLikeWalletSynchronizationListener;
 
 
 @interface LGBitcoinLikeWallet : NSObject
 
 - (nullable LGPreferences *)getPreferences;
 
-- (nullable LGPreferences *)getSynchronizedPreferences;
-
 - (nullable LGBitcoinLikeOperationCursor *)openOperationCursor;
+
+- (void)synchronize:(nullable id<LGBitcoinLikeWalletSynchronizationListener>)listener;
 
 @end

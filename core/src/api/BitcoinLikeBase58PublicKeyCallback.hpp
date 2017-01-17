@@ -3,11 +3,15 @@
 
 #pragma once
 
+#include <string>
+
 namespace ledger { namespace core { namespace api {
 
-class BitcoinPublicKeyProvider {
+class BitcoinLikeBase58PublicKeyCallback {
 public:
-    virtual ~BitcoinPublicKeyProvider() {}
+    virtual ~BitcoinLikeBase58PublicKeyCallback() {}
+
+    virtual void onBase58ExtendedPublicKey(const std::string & xpub) = 0;
 };
 
 } } }  // namespace ledger::core::api

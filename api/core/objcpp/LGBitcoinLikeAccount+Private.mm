@@ -38,13 +38,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGPreferences *)getSynchronizedPreferences {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getSynchronizedPreferences();
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGBitcoinLikeOperationCursor *)openOperationsCursor {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->openOperationsCursor();

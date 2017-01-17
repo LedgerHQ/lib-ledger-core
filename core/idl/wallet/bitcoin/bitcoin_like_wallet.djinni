@@ -1,5 +1,21 @@
 @import "../../errors.djinni"
 @import "../../preferences/preferences.djinni"
+@import "../amount.djinni"
+
+BitcoinLikeConfiguration = interface +c {
+    const KEYCHAIN: string = "keychain";
+    const OBSERVER: string = "observer";
+    const EXPLORER: string = "explorer";
+    const SYNCHRONIZER: string = "synchronizer";
+
+    const KEYCHAIN_P2PKH_BIP44: string = "p2pkh_bip44";
+
+    const OBSERVER_LEDGER_WEBSOCKET: string = "ledger_websocket";
+
+    const EXPLORER_LEDGER_API: string = "ledger_api";
+
+    const SYNCHRONIZER_DEFAULT: string = "default";
+}
 
 GetBitcoinLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: BitcoinLikeWallet, isCreated: bool);
@@ -12,43 +28,65 @@ BitcoinLikeWalletSynchronizationListener = interface +j +o +s +n {
 }
 
 BitcoinLikeInput = record {
-
+    path: string;
+    #value: Amount;
+    isCoinbase: bool;
+    previousTxHash: string;
+    indexInPreviousTx: i32;
 }
 
 BitcoinLikeOutput = record {
-
+    transactionHash: string;
+    index: i32;
+    path: string;
+    #value: Amount;
+    script: binary;
+    address: string;
 }
 
 BitcoinLikeBlock = record {
-
+    hash: string;
+    height: i64;
+    time: i64;
 }
 
 BitcoinLikeOperationCursor = interface +c {
-    getAccountIndex(): i32;
+
 }
+
 
 BitcoinLikeTransaction = record {
     inputs: list<BitcoinLikeInput>;
     outputs: list<BitcoinLikeOutput>;
     block: optional<BitcoinLikeBlock>;
-
+    lockTime: i64;
+    #fee: Amount;
+    time: i64;
 }
 
 BitcoinLikeOperation = interface +c {
     getPreferences(): Preferences;
-    getSynchronizedPreferences(): Preferences;
     getTransaction(): BitcoinLikeTransaction;
+    getAmount(): Amount;
+    isSending(): bool;
+    isReception(): bool;
+    getFees(): Amount;
+    getSenders(): list<string>;
+    getRecipients(): list<string>;
+    getTime(): date;
+    getConfirmationTime(): optional<date>;
+    getConfirmationCount(): i64;
+    getAccountIndex(): i32;
 }
 
 BitcoinLikeAccount = interface +c {
     getPreferences(): Preferences;
-    getSynchronizedPreferences(): Preferences;
     openOperationsCursor(): BitcoinLikeOperationCursor;
 }
 
 
 BitcoinLikeWallet = interface +c {
     getPreferences(): Preferences;
-    getSynchronizedPreferences(): Preferences;
     openOperationCursor(): BitcoinLikeOperationCursor;
+    synchronize(listener: BitcoinLikeWalletSynchronizationListener);
 }

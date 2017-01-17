@@ -16,8 +16,6 @@ public:
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
-    virtual std::shared_ptr<Preferences> getSynchronizedPreferences() = 0;
-
     virtual std::shared_ptr<BitcoinLikeOperationCursor> openOperationsCursor() = 0;
 };
 

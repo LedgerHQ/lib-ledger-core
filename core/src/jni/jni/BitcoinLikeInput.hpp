@@ -25,7 +25,11 @@ private:
     friend ::djinni::JniClass<BitcoinLikeInput>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeInput") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "()V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;ZLjava/lang/String;I)V") };
+    const jfieldID field_path { ::djinni::jniGetFieldID(clazz.get(), "path", "Ljava/lang/String;") };
+    const jfieldID field_isCoinbase { ::djinni::jniGetFieldID(clazz.get(), "isCoinbase", "Z") };
+    const jfieldID field_previousTxHash { ::djinni::jniGetFieldID(clazz.get(), "previousTxHash", "Ljava/lang/String;") };
+    const jfieldID field_indexInPreviousTx { ::djinni::jniGetFieldID(clazz.get(), "indexInPreviousTx", "I") };
 };
 
 }  // namespace djinni_generated

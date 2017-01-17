@@ -6,13 +6,39 @@ package co.ledger.core;
 public final class BitcoinLikeBlock {
 
 
+    /*package*/ final String hash;
+
+    /*package*/ final long height;
+
+    /*package*/ final long time;
+
     public BitcoinLikeBlock(
-            ) {
+            String hash,
+            long height,
+            long time) {
+        this.hash = hash;
+        this.height = height;
+        this.time = time;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public long getHeight() {
+        return height;
+    }
+
+    public long getTime() {
+        return time;
     }
 
     @Override
     public String toString() {
         return "BitcoinLikeBlock{" +
+                "hash=" + hash +
+                "," + "height=" + height +
+                "," + "time=" + time +
         "}";
     }
 

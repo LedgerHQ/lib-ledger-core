@@ -6,16 +6,13 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
-#import "LGBitcoinLikeWallet+Private.h"
-#import "LGBitcoinPublicKeyProvider+Private.h"
+#import "LGBitcoinLikeExtendedPublicKeyProvider+Private.h"
+#import "LGConfiguration+Private.h"
 #import "LGCryptoCurrencyDescription+Private.h"
-#import "LGEthereumLikeWallet+Private.h"
-#import "LGEthereumPublicKeyProvider+Private.h"
 #import "LGGetBitcoinLikeWalletCallback+Private.h"
-#import "LGGetEthreumLikeWalletCallback+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
-#import "LGWalletCommonInterface+Private.h"
+#import "LGStringArrayCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -40,44 +37,29 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nonnull NSArray<LGWalletCommonInterface *> *)getAllWallets {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAllWallets();
-        return ::djinni::List<::djinni_generated::WalletCommonInterface>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull NSArray<LGBitcoinLikeWallet *> *)getAllBitcoinLikeWallets {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAllBitcoinLikeWallets();
-        return ::djinni::List<::djinni_generated::BitcoinLikeWallet>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull NSArray<LGEthereumLikeWallet *> *)getAllEthereumLikeWallets {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAllEthereumLikeWallets();
-        return ::djinni::List<::djinni_generated::EthereumLikeWallet>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getOrCreateBitcoinLikeWallet:(nullable id<LGBitcoinPublicKeyProvider>)publicKeyProvider
+- (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
                             currency:(nullable LGCryptoCurrencyDescription *)currency
+                       configuration:(nullable LGConfiguration *)configuration
                             callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback {
     try {
-        _cppRefHandle.get()->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinPublicKeyProvider::toCpp(publicKeyProvider),
+        _cppRefHandle.get()->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(publicKeyProvider),
                                                           ::djinni::Optional<std::experimental::optional, ::djinni_generated::CryptoCurrencyDescription>::toCpp(currency),
+                                                          ::djinni_generated::Configuration::toCpp(configuration),
                                                           ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)getOrCreateEthereumLikeWallet:(nullable id<LGEthereumPublicKeyProvider>)publicKeyProvider
-                             currency:(nullable LGCryptoCurrencyDescription *)currency
-                             callback:(nullable id<LGGetEthreumLikeWalletCallback>)callback {
+- (void)getAllBitcoinLikeWalletIdentifiers:(nullable id<LGStringArrayCallback>)callback {
     try {
-        _cppRefHandle.get()->getOrCreateEthereumLikeWallet(::djinni_generated::EthereumPublicKeyProvider::toCpp(publicKeyProvider),
-                                                           ::djinni::Optional<std::experimental::optional, ::djinni_generated::CryptoCurrencyDescription>::toCpp(currency),
-                                                           ::djinni_generated::GetEthreumLikeWalletCallback::toCpp(callback));
+        _cppRefHandle.get()->getAllBitcoinLikeWalletIdentifiers(::djinni_generated::StringArrayCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getBitcoinLikeWallet:(nonnull NSString *)identifier
+                    callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback {
+    try {
+        _cppRefHandle.get()->getBitcoinLikeWallet(::djinni::String::toCpp(identifier),
+                                                  ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -99,6 +81,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getWalletPreferences:(nonnull NSString *)walletIdentifier {
+    try {
+        _cppRefHandle.get()->getWalletPreferences(::djinni::String::toCpp(walletIdentifier));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

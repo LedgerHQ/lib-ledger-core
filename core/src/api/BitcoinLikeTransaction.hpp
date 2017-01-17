@@ -7,6 +7,7 @@
 #include "BitcoinLikeBlock.hpp"
 #include "BitcoinLikeInput.hpp"
 #include "BitcoinLikeOutput.hpp"
+#include <cstdint>
 #include <utility>
 #include <vector>
 
@@ -16,13 +17,20 @@ struct BitcoinLikeTransaction final {
     std::vector<BitcoinLikeInput> inputs;
     std::vector<BitcoinLikeOutput> outputs;
     std::experimental::optional<BitcoinLikeBlock> block;
+    int64_t lockTime;
+    /**fee: Amount; */
+    int64_t time;
 
     BitcoinLikeTransaction(std::vector<BitcoinLikeInput> inputs_,
                            std::vector<BitcoinLikeOutput> outputs_,
-                           std::experimental::optional<BitcoinLikeBlock> block_)
+                           std::experimental::optional<BitcoinLikeBlock> block_,
+                           int64_t lockTime_,
+                           int64_t time_)
     : inputs(std::move(inputs_))
     , outputs(std::move(outputs_))
     , block(std::move(block_))
+    , lockTime(std::move(lockTime_))
+    , time(std::move(time_))
     {}
 };
 

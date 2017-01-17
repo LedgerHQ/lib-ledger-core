@@ -6,21 +6,38 @@
 
 @implementation LGBitcoinLikeOutput
 
-- (nonnull instancetype)init
+- (nonnull instancetype)initWithTransactionHash:(nonnull NSString *)transactionHash
+                                          index:(int32_t)index
+                                           path:(nonnull NSString *)path
+                                         script:(nonnull NSData *)script
+                                        address:(nonnull NSString *)address
 {
     if (self = [super init]) {
+        _transactionHash = [transactionHash copy];
+        _index = index;
+        _path = [path copy];
+        _script = [script copy];
+        _address = [address copy];
     }
     return self;
 }
 
-+ (nonnull instancetype)BitcoinLikeOutput
++ (nonnull instancetype)BitcoinLikeOutputWithTransactionHash:(nonnull NSString *)transactionHash
+                                                       index:(int32_t)index
+                                                        path:(nonnull NSString *)path
+                                                      script:(nonnull NSData *)script
+                                                     address:(nonnull NSString *)address
 {
-    return [[self alloc] init];
+    return [[self alloc] initWithTransactionHash:transactionHash
+                                           index:index
+                                            path:path
+                                          script:script
+                                         address:address];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p>", self.class, (void *)self];
+    return [NSString stringWithFormat:@"<%@ %p transactionHash:%@ index:%@ path:%@ script:%@ address:%@>", self.class, (void *)self, self.transactionHash, @(self.index), self.path, self.script, self.address];
 }
 
 @end

@@ -12,19 +12,25 @@
 @import "../preferences/preferences.djinni"
 @import "../math/random.djinni"
 @import "../database/database.djinni"
+@import "configuration.djinni"
+
+# Interface used as a callback to iterate through mutiple BitcoinLikeWallets.
+StringArrayCallback = interface +j +o +s +n {
+    onCallback(strs: list<string>);
+}
 
 WalletPool = interface +c {
-    getAllWallets(): list<WalletCommonInterface>;
-    getAllBitcoinLikeWallets(): list<BitcoinLikeWallet>;
-    getAllEthereumLikeWallets(): list<EthereumLikeWallet>;
+    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinLikeExtendedPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, configuration: Configuration, callback: GetBitcoinLikeWalletCallback);
+    getAllBitcoinLikeWalletIdentifiers(callback: StringArrayCallback);
+    getBitcoinLikeWallet(identifier: string, callback: GetBitcoinLikeWalletCallback);
 
-    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetBitcoinLikeWalletCallback);
-    getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback);
+    #getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback);
 
     getAllSupportedCryptoCurrencies(): list<CryptoCurrencyDescription>;
     getLogger(): Logger;
 
     getPreferences(): Preferences;
+    getWalletPreferences(walletIdentifier: string);
 
     close();
 }

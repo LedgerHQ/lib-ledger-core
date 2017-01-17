@@ -3,7 +3,9 @@
 
 #import "LGBitcoinPublicKeyProvider+Private.h"
 #import "LGBitcoinPublicKeyProvider.h"
+#import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "LGBitcoinPublicKeyCallback+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -16,6 +18,13 @@ class BitcoinPublicKeyProvider::ObjcProxy final
 {
 public:
     using Handle::Handle;
+    void get(const std::string & c_path, const std::shared_ptr<::ledger::core::api::BitcoinPublicKeyCallback> & c_callback) override
+    {
+        @autoreleasepool {
+            [Handle::get() get:(::djinni::String::fromCpp(c_path))
+                      callback:(::djinni_generated::BitcoinPublicKeyCallback::fromCpp(c_callback))];
+        }
+    }
 };
 
 }  // namespace djinni_generated

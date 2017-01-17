@@ -3,11 +3,32 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeOutput final {
+    std::string transactionHash;
+    int32_t index;
+    std::string path;
+    /**value: Amount; */
+    std::vector<uint8_t> script;
+    std::string address;
+
+    BitcoinLikeOutput(std::string transactionHash_,
+                      int32_t index_,
+                      std::string path_,
+                      std::vector<uint8_t> script_,
+                      std::string address_)
+    : transactionHash(std::move(transactionHash_))
+    , index(std::move(index_))
+    , path(std::move(path_))
+    , script(std::move(script_))
+    , address(std::move(address_))
+    {}
 };
 
 } } }  // namespace ledger::core::api

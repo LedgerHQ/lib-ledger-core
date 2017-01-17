@@ -7,21 +7,20 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WalletPool {
-    public abstract ArrayList<WalletCommonInterface> getAllWallets();
+    public abstract void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback);
 
-    public abstract ArrayList<BitcoinLikeWallet> getAllBitcoinLikeWallets();
+    public abstract void getAllBitcoinLikeWalletIdentifiers(StringArrayCallback callback);
 
-    public abstract ArrayList<EthereumLikeWallet> getAllEthereumLikeWallets();
+    public abstract void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback);
 
-    public abstract void getOrCreateBitcoinLikeWallet(BitcoinPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetBitcoinLikeWalletCallback callback);
-
-    public abstract void getOrCreateEthereumLikeWallet(EthereumPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetEthreumLikeWalletCallback callback);
-
+    /**getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback); */
     public abstract ArrayList<CryptoCurrencyDescription> getAllSupportedCryptoCurrencies();
 
     public abstract Logger getLogger();
 
     public abstract Preferences getPreferences();
+
+    public abstract void getWalletPreferences(String walletIdentifier);
 
     public abstract void close();
 
@@ -49,44 +48,28 @@ public abstract class WalletPool {
         }
 
         @Override
-        public ArrayList<WalletCommonInterface> getAllWallets()
+        public void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAllWallets(this.nativeRef);
+            native_getOrCreateBitcoinLikeWallet(this.nativeRef, publicKeyProvider, currency, configuration, callback);
         }
-        private native ArrayList<WalletCommonInterface> native_getAllWallets(long _nativeRef);
+        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback);
 
         @Override
-        public ArrayList<BitcoinLikeWallet> getAllBitcoinLikeWallets()
+        public void getAllBitcoinLikeWalletIdentifiers(StringArrayCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAllBitcoinLikeWallets(this.nativeRef);
+            native_getAllBitcoinLikeWalletIdentifiers(this.nativeRef, callback);
         }
-        private native ArrayList<BitcoinLikeWallet> native_getAllBitcoinLikeWallets(long _nativeRef);
+        private native void native_getAllBitcoinLikeWalletIdentifiers(long _nativeRef, StringArrayCallback callback);
 
         @Override
-        public ArrayList<EthereumLikeWallet> getAllEthereumLikeWallets()
+        public void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAllEthereumLikeWallets(this.nativeRef);
+            native_getBitcoinLikeWallet(this.nativeRef, identifier, callback);
         }
-        private native ArrayList<EthereumLikeWallet> native_getAllEthereumLikeWallets(long _nativeRef);
-
-        @Override
-        public void getOrCreateBitcoinLikeWallet(BitcoinPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetBitcoinLikeWalletCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOrCreateBitcoinLikeWallet(this.nativeRef, publicKeyProvider, currency, callback);
-        }
-        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetBitcoinLikeWalletCallback callback);
-
-        @Override
-        public void getOrCreateEthereumLikeWallet(EthereumPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetEthreumLikeWalletCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOrCreateEthereumLikeWallet(this.nativeRef, publicKeyProvider, currency, callback);
-        }
-        private native void native_getOrCreateEthereumLikeWallet(long _nativeRef, EthereumPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, GetEthreumLikeWalletCallback callback);
+        private native void native_getBitcoinLikeWallet(long _nativeRef, String identifier, GetBitcoinLikeWalletCallback callback);
 
         @Override
         public ArrayList<CryptoCurrencyDescription> getAllSupportedCryptoCurrencies()
@@ -111,6 +94,14 @@ public abstract class WalletPool {
             return native_getPreferences(this.nativeRef);
         }
         private native Preferences native_getPreferences(long _nativeRef);
+
+        @Override
+        public void getWalletPreferences(String walletIdentifier)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getWalletPreferences(this.nativeRef, walletIdentifier);
+        }
+        private native void native_getWalletPreferences(long _nativeRef, String walletIdentifier);
 
         @Override
         public void close()

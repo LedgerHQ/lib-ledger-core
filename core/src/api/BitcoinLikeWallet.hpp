@@ -8,6 +8,7 @@
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeOperationCursor;
+class BitcoinLikeWalletSynchronizationListener;
 class Preferences;
 
 class BitcoinLikeWallet {
@@ -16,9 +17,9 @@ public:
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
-    virtual std::shared_ptr<Preferences> getSynchronizedPreferences() = 0;
-
     virtual std::shared_ptr<BitcoinLikeOperationCursor> openOperationCursor() = 0;
+
+    virtual void synchronize(const std::shared_ptr<BitcoinLikeWalletSynchronizationListener> & listener) = 0;
 };
 
 } } }  // namespace ledger::core::api

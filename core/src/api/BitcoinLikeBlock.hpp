@@ -3,11 +3,24 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
 #include <utility>
 
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeBlock final {
+    std::string hash;
+    int64_t height;
+    int64_t time;
+
+    BitcoinLikeBlock(std::string hash_,
+                     int64_t height_,
+                     int64_t time_)
+    : hash(std::move(hash_))
+    , height(std::move(height_))
+    , time(std::move(time_))
+    {}
 };
 
 } } }  // namespace ledger::core::api

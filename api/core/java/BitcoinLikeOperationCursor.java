@@ -6,7 +6,6 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeOperationCursor {
-    public abstract int getAccountIndex();
 
     private static final class CppProxy extends BitcoinLikeOperationCursor
     {
@@ -30,13 +29,5 @@ public abstract class BitcoinLikeOperationCursor {
             destroy();
             super.finalize();
         }
-
-        @Override
-        public int getAccountIndex()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAccountIndex(this.nativeRef);
-        }
-        private native int native_getAccountIndex(long _nativeRef);
     }
 }

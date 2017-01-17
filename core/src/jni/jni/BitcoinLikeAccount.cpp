@@ -30,16 +30,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_native_1getSynchronizedPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
-        auto r = ref->getSynchronizedPreferences();
-        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_native_1openOperationsCursor(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

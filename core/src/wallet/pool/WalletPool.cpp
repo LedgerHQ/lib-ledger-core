@@ -58,14 +58,17 @@ namespace ledger {
             _queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
 
             // Initialize preferences
-            /*
-            _localPreferencesBackend = std::make_shared<AtomicPreferencesBackend>(
-                    std::string("/") + name + "/preferences.json",
+            _externalBackend = std::make_shared<PreferencesBackend>(
+                    std::string("/") + name + "/preferences.db" ,
                     _queue,
-                    pathResolver,
-                    _dispatcher->newLock()
+                    _resolver
             );
-            */
+            _internalBackend = std::make_shared<PreferencesBackend>(
+                    std::string("/") + name + "/_preferences.db" ,
+                    _queue,
+                    _resolver
+            );
+
             // Initialize logger
             _logger = logger::create(name + "-logs", password,
                                      dispatcher->getSerialExecutionContext("logger_queue_" + name),
@@ -73,34 +76,6 @@ namespace ledger {
             _loggerApi = std::make_shared<LoggerApi>(std::weak_ptr<spdlog::logger>(_logger));
             // Initialize network
             _http = std::make_shared<HttpClient>(_configuration[api::WalletPoolBuilder::API_BASE_URL], httpClient, _queue);
-
-        }
-
-
-
-        std::vector<std::shared_ptr<api::WalletCommonInterface>> WalletPool::getAllWallets() {
-            return std::vector<std::shared_ptr<api::WalletCommonInterface>>();
-        }
-
-        std::vector<std::shared_ptr<api::BitcoinLikeWallet>> WalletPool::getAllBitcoinLikeWallets() {
-            return std::vector<std::shared_ptr<api::BitcoinLikeWallet>>();
-        }
-
-        std::vector<std::shared_ptr<api::EthereumLikeWallet>> WalletPool::getAllEthereumLikeWallets() {
-            return std::vector<std::shared_ptr<api::EthereumLikeWallet>>();
-        }
-
-        void WalletPool::getOrCreateBitcoinLikeWallet(
-                const std::shared_ptr<api::BitcoinPublicKeyProvider> &publicKeyProvider,
-                const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
-                const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) {
-
-        }
-
-        void WalletPool::getOrCreateEthereumLikeWallet(
-                const std::shared_ptr<api::EthereumPublicKeyProvider> &publicKeyProvider,
-                const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
-                const std::shared_ptr<api::GetEthreumLikeWalletCallback> &callback) {
 
         }
 
@@ -124,8 +99,18 @@ namespace ledger {
             }
         }
 
+        void WalletPool::runOnMainQueue(std::function<void()> func) {
+            if (_queue != nullptr) {
+                _queue->execute(LambdaRunnable::make(func));
+            }
+        }
+
         std::shared_ptr<api::Preferences> WalletPool::getPreferences() {
-            return nullptr;//_preferencesBackend->getPreferences("pool");
+            return _externalBackend->getPreferences("pool");
+        }
+
+        std::shared_ptr<api::Preferences> WalletPool::getInterfacePreferences() {
+            return _internalBackend->getPreferences("pool");
         }
 
         void WalletPool::open(const std::string &name, const std::experimental::optional<std::string> &password,
@@ -155,6 +140,34 @@ namespace ledger {
                     }
                 }
             }));
+        }
+
+        void WalletPool::getBitcoinLikeWallet(const std::string &identifier,
+                                              const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) {
+            runOnPoolQueue([] () {
+
+            });
+        }
+
+        void WalletPool::getAllBitcoinLikeWalletIdentifiers(const std::shared_ptr<api::StringArrayCallback> &callback) {
+            runOnPoolQueue([this, callback] () {
+               auto identifiers = getInterfacePreferences()->getStringArray("bitcoin_wallets", {});
+                runOnMainQueue([callback, identifiers] () {
+                   callback->onCallback(identifiers);
+                });
+            });
+        }
+
+        void WalletPool::getOrCreateBitcoinLikeWallet(
+                const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
+                const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
+                const std::shared_ptr<api::Configuration> &configuration,
+                const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) {
+
+        }
+
+        void WalletPool::getWalletPreferences(const std::string &walletIdentifier) {
+
         }
     }
 }

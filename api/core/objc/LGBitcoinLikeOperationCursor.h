@@ -6,6 +6,4 @@
 
 @interface LGBitcoinLikeOperationCursor : NSObject
 
-- (int32_t)getAccountIndex;
-
 @end

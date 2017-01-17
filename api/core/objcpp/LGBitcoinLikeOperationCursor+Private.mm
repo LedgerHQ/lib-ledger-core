@@ -5,7 +5,6 @@
 #import "LGBitcoinLikeOperationCursor.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
-#import "DJIMarshal+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -28,13 +27,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.assign(cppRef);
     }
     return self;
-}
-
-- (int32_t)getAccountIndex {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccountIndex();
-        return ::djinni::I32::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 namespace djinni_generated {

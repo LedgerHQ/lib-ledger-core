@@ -10,8 +10,6 @@
 
 - (nullable LGPreferences *)getPreferences;
 
-- (nullable LGPreferences *)getSynchronizedPreferences;
-
 - (nullable LGBitcoinLikeOperationCursor *)openOperationsCursor;
 
 @end

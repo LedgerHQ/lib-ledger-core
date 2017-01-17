@@ -6,13 +6,49 @@ package co.ledger.core;
 public final class BitcoinLikeInput {
 
 
+    /*package*/ final String path;
+
+    /*package*/ final boolean isCoinbase;
+
+    /*package*/ final String previousTxHash;
+
+    /*package*/ final int indexInPreviousTx;
+
     public BitcoinLikeInput(
-            ) {
+            String path,
+            boolean isCoinbase,
+            String previousTxHash,
+            int indexInPreviousTx) {
+        this.path = path;
+        this.isCoinbase = isCoinbase;
+        this.previousTxHash = previousTxHash;
+        this.indexInPreviousTx = indexInPreviousTx;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    /**value: Amount; */
+    public boolean getIsCoinbase() {
+        return isCoinbase;
+    }
+
+    public String getPreviousTxHash() {
+        return previousTxHash;
+    }
+
+    public int getIndexInPreviousTx() {
+        return indexInPreviousTx;
     }
 
     @Override
     public String toString() {
         return "BitcoinLikeInput{" +
+                "path=" + path +
+                "," + "isCoinbase=" + isCoinbase +
+                "," + "previousTxHash=" + previousTxHash +
+                "," + "indexInPreviousTx=" + indexInPreviousTx +
         "}";
     }
 

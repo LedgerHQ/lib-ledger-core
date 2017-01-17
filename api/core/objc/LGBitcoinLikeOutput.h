@@ -4,7 +4,26 @@
 #import <Foundation/Foundation.h>
 
 @interface LGBitcoinLikeOutput : NSObject
-- (nonnull instancetype)init;
-+ (nonnull instancetype)BitcoinLikeOutput;
+- (nonnull instancetype)initWithTransactionHash:(nonnull NSString *)transactionHash
+                                          index:(int32_t)index
+                                           path:(nonnull NSString *)path
+                                         script:(nonnull NSData *)script
+                                        address:(nonnull NSString *)address;
++ (nonnull instancetype)BitcoinLikeOutputWithTransactionHash:(nonnull NSString *)transactionHash
+                                                       index:(int32_t)index
+                                                        path:(nonnull NSString *)path
+                                                      script:(nonnull NSData *)script
+                                                     address:(nonnull NSString *)address;
+
+@property (nonatomic, readonly, nonnull) NSString * transactionHash;
+
+@property (nonatomic, readonly) int32_t index;
+
+@property (nonatomic, readonly, nonnull) NSString * path;
+
+/**value: Amount; */
+@property (nonatomic, readonly, nonnull) NSData * script;
+
+@property (nonatomic, readonly, nonnull) NSString * address;
 
 @end

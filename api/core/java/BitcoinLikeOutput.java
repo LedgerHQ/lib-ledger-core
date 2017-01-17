@@ -6,13 +6,58 @@ package co.ledger.core;
 public final class BitcoinLikeOutput {
 
 
+    /*package*/ final String transactionHash;
+
+    /*package*/ final int index;
+
+    /*package*/ final String path;
+
+    /*package*/ final byte[] script;
+
+    /*package*/ final String address;
+
     public BitcoinLikeOutput(
-            ) {
+            String transactionHash,
+            int index,
+            String path,
+            byte[] script,
+            String address) {
+        this.transactionHash = transactionHash;
+        this.index = index;
+        this.path = path;
+        this.script = script;
+        this.address = address;
+    }
+
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    /**value: Amount; */
+    public byte[] getScript() {
+        return script;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override
     public String toString() {
         return "BitcoinLikeOutput{" +
+                "transactionHash=" + transactionHash +
+                "," + "index=" + index +
+                "," + "path=" + path +
+                "," + "script=" + script +
+                "," + "address=" + address +
         "}";
     }
 

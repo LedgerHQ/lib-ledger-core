@@ -25,10 +25,12 @@ private:
     friend ::djinni::JniClass<BitcoinLikeTransaction>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeTransaction") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/util/ArrayList;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeBlock;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/util/ArrayList;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeBlock;JJ)V") };
     const jfieldID field_inputs { ::djinni::jniGetFieldID(clazz.get(), "inputs", "Ljava/util/ArrayList;") };
     const jfieldID field_outputs { ::djinni::jniGetFieldID(clazz.get(), "outputs", "Ljava/util/ArrayList;") };
     const jfieldID field_block { ::djinni::jniGetFieldID(clazz.get(), "block", "Lco/ledger/core/BitcoinLikeBlock;") };
+    const jfieldID field_lockTime { ::djinni::jniGetFieldID(clazz.get(), "lockTime", "J") };
+    const jfieldID field_time { ::djinni::jniGetFieldID(clazz.get(), "time", "J") };
 };
 
 }  // namespace djinni_generated

@@ -3,11 +3,28 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
 #include <utility>
 
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeInput final {
+    std::string path;
+    /**value: Amount; */
+    bool isCoinbase;
+    std::string previousTxHash;
+    int32_t indexInPreviousTx;
+
+    BitcoinLikeInput(std::string path_,
+                     bool isCoinbase_,
+                     std::string previousTxHash_,
+                     int32_t indexInPreviousTx_)
+    : path(std::move(path_))
+    , isCoinbase(std::move(isCoinbase_))
+    , previousTxHash(std::move(previousTxHash_))
+    , indexInPreviousTx(std::move(indexInPreviousTx_))
+    {}
 };
 
 } } }  // namespace ledger::core::api

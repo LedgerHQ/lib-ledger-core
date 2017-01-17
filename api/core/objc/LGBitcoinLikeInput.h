@@ -4,7 +4,22 @@
 #import <Foundation/Foundation.h>
 
 @interface LGBitcoinLikeInput : NSObject
-- (nonnull instancetype)init;
-+ (nonnull instancetype)BitcoinLikeInput;
+- (nonnull instancetype)initWithPath:(nonnull NSString *)path
+                          isCoinbase:(BOOL)isCoinbase
+                      previousTxHash:(nonnull NSString *)previousTxHash
+                   indexInPreviousTx:(int32_t)indexInPreviousTx;
++ (nonnull instancetype)BitcoinLikeInputWithPath:(nonnull NSString *)path
+                                      isCoinbase:(BOOL)isCoinbase
+                                  previousTxHash:(nonnull NSString *)previousTxHash
+                               indexInPreviousTx:(int32_t)indexInPreviousTx;
+
+@property (nonatomic, readonly, nonnull) NSString * path;
+
+/**value: Amount; */
+@property (nonatomic, readonly) BOOL isCoinbase;
+
+@property (nonatomic, readonly, nonnull) NSString * previousTxHash;
+
+@property (nonatomic, readonly) int32_t indexInPreviousTx;
 
 @end

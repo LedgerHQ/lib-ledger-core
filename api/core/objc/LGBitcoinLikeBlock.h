@@ -4,7 +4,17 @@
 #import <Foundation/Foundation.h>
 
 @interface LGBitcoinLikeBlock : NSObject
-- (nonnull instancetype)init;
-+ (nonnull instancetype)BitcoinLikeBlock;
+- (nonnull instancetype)initWithHash:(nonnull NSString *)hash
+                              height:(int64_t)height
+                                time:(int64_t)time;
++ (nonnull instancetype)BitcoinLikeBlockWithHash:(nonnull NSString *)hash
+                                          height:(int64_t)height
+                                            time:(int64_t)time;
+
+@property (nonatomic, readonly, nonnull) NSString * hash;
+
+@property (nonatomic, readonly) int64_t height;
+
+@property (nonatomic, readonly) int64_t time;
 
 @end
