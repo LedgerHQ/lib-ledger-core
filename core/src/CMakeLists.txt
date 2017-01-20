@@ -94,7 +94,9 @@ add_library(
         preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeyChain.cpp wallet/bitcoin/keychains/BitcoinLikeKeyChain.hpp
         wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
-        api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp)
+        api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
+        wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
+        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

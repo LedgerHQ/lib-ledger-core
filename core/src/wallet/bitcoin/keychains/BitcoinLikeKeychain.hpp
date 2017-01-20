@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 #include "../../../utils/optional.hpp"
-
+#include "../../../preferences/Preferences.hpp"
 namespace ledger {
     namespace core {
 
@@ -50,7 +50,8 @@ namespace ledger {
             BitcoinLikeKeychain(
                     const api::BitcoinLikeCurrencyDescription& description,
                     int account,
-                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub);
+                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
+                    const std::shared_ptr<Preferences> preferences);
 
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
             virtual bool markAsUsed(const std::string& address) = 0;
@@ -65,10 +66,15 @@ namespace ledger {
             inline int getAccountIndex() const;
             inline const api::BitcoinLikeCurrencyDescription& getCurrencyDescription() const;
             inline std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
+
+        protected:
+            inline std::shared_ptr<Preferences> getPreferences();
+
         private:
             const api::BitcoinLikeCurrencyDescription& _description;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
             int _account;
+            std::shared_ptr<Preferences> _preferences;
         };
     }
 }

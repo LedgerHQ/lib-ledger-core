@@ -1,9 +1,9 @@
 /*
  *
- * callback_test
+ * Deffered
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/09/2016.
+ * Created by Pierre Pollastri on 20/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,17 +28,38 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_DEFFERED_HPP
+#define LEDGER_CORE_DEFFERED_HPP
 
-#include <gtest/gtest.h>
-#include <ledger/core/async/Callback.hpp>
+#include <memory>
+#include <functional>
 
-#include <future>
-#include <NativeThreadDispatcher.hpp>
+namespace ledger {
+    namespace core {
 
-TEST(Callback, PThreadTest) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+        template <typename T>
+        class Future;
+
+        template <typename T>
+        class Promise;
+
+        template <typename T>
+        class Deffered {
+            friend class Future<T>;
+            friend class Promise<T>;
+            Deffered() = delete;
+            Deffered(const Deffered&) = delete;
+            Deffered(Deffered&&) = delete;
+
+            void setValue(T& value);
+            void setError();
+
+            void addCallback(std::function<void (const T&)> callback);
 
 
-
-    dispatcher->waitUntilStopped();
+        };
+    }
 }
+
+
+#endif //LEDGER_CORE_DEFFERED_HPP

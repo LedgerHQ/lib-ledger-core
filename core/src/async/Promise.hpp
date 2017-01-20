@@ -1,9 +1,9 @@
 /*
  *
- * callback_test
+ * Promise
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/09/2016.
+ * Created by Pierre Pollastri on 20/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,17 +28,22 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_PROMISE_HPP
+#define LEDGER_CORE_PROMISE_HPP
 
-#include <gtest/gtest.h>
-#include <ledger/core/async/Callback.hpp>
+namespace ledger {
+    namespace core {
 
-#include <future>
-#include <NativeThreadDispatcher.hpp>
+        template <typename T>
+        class Future;
 
-TEST(Callback, PThreadTest) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-
-
-
-    dispatcher->waitUntilStopped();
+        template <typename T>
+        class Promise {
+        public:
+            Future<T> getFuture();
+        };
+    }
 }
+
+
+#endif //LEDGER_CORE_PROMISE_HPP

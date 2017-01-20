@@ -34,8 +34,9 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeKeychain::BitcoinLikeKeychain(const api::BitcoinLikeCurrencyDescription &description, int account,
-                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub) :
-            _description(description), _account(account), _xpub(xpub) {
+                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                 const std::shared_ptr<Preferences> preferences) :
+            _description(description), _account(account), _xpub(xpub), _preferences(preferences) {
 
         }
 
@@ -57,6 +58,10 @@ namespace ledger {
                 result = markAsUsed(address) || result;
             }
             return result;
+        }
+
+        std::shared_ptr<Preferences> BitcoinLikeKeychain::getPreferences() {
+            return _preferences;
         }
     }
 }

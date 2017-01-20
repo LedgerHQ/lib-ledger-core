@@ -1,9 +1,9 @@
 /*
  *
- * callback_test
+ * Future
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/09/2016.
+ * Created by Pierre Pollastri on 18/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,17 +28,4 @@
  * SOFTWARE.
  *
  */
-
-#include <gtest/gtest.h>
-#include <ledger/core/async/Callback.hpp>
-
-#include <future>
-#include <NativeThreadDispatcher.hpp>
-
-TEST(Callback, PThreadTest) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-
-
-
-    dispatcher->waitUntilStopped();
-}
+#include "Future.hpp"
