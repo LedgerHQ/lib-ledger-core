@@ -33,6 +33,11 @@
 
 #include <functional>
 #include "optional.hpp"
+#include "Option.hpp"
+#include "Exception.hpp"
+#include <typeinfo>
+#include <stdexcept>
+#include <boost/exception/diagnostic_information.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,8 +48,16 @@ namespace ledger {
 
             };
 
-            void fail(const std::exception &exception) {
-                _exception = exception;
+            Try(const T&v) {
+                _value = optional<T>(v);
+            }
+
+            void fail(api::ErrorCode code, const std::string& message) {
+                _exception = Exception(code, message);
+            }
+
+            void fail(const Exception& ex) {
+                _exception = ex;
             }
 
             void success(const T& v) {
@@ -55,7 +68,7 @@ namespace ledger {
                 return _value.value();
             }
 
-            const std::exception& getFailure() const {
+            const Exception& getFailure() const {
                 return _exception.value();
             }
 
@@ -69,20 +82,28 @@ namespace ledger {
                 return isSuccess() || isFailure();
             }
 
+            Option<T> toOption() const {
+                if (isSuccess())
+                    return Option<T>(getValue());
+                return Option<T>();
+            }
+
             ~Try() {
 
             };
         private:
-            optional<std::exception> _exception;
+            optional<Exception> _exception;
             optional<T> _value;
 
         public:
-            static const Try<T> tryAndCatch(std::function<T ()> lambda) {
+            static const Try<T> from(std::function<T ()> lambda) {
                 Try<T> result;
                 try {
                     result.success(lambda());
-                } catch (const std::exception& ex) {
+                } catch (const Exception& ex) {
                     result.fail(ex);
+                } catch (...) {
+                    result.fail(api::ErrorCode::RUNTIME_ERROR, boost::current_exception_diagnostic_information(true));
                 }
                 return result;
             }

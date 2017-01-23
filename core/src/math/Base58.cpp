@@ -87,7 +87,7 @@ std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uin
 }
 
 ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str) {
-    return Try<std::vector<uint8_t>>::tryAndCatch([&] () {
+    return Try<std::vector<uint8_t>>::from([&] () {
         auto decoded = decode(str);
         std::vector<uint8_t> data(decoded.begin(), decoded.end() - 4);
         std::vector<uint8_t> checksum(decoded.end() - 4, decoded.end());

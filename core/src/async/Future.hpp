@@ -38,30 +38,185 @@
 #include "Deffered.hpp"
 #include "../api/ExecutionContext.hpp"
 #include "ExecutionContext.hpp"
+#include "../utils/Exception.hpp"
+#include "../utils/ImmediateExecutionContext.hpp"
 
 namespace ledger {
     namespace core {
 
         template <typename T>
         class Future {
-
+            typedef std::shared_ptr<api::ExecutionContext> Context;
         public:
             Future(const std::shared_ptr<Deffered<T>> &_defer) : _defer(_defer) {}
             Future(const Future<T>& future) {
                 _defer = future._defer;
             }
+
             Future(Future<T>&& future) : _defer(std::move(future._defer)) {}
             Future<T>& operator=(const Future<T>& future) {
                 if (this != &future)
                     _defer = future._defer;
+                return *this;
             }
             Future<T>& operator=(Future<T>&& future) {
                 if (this != &future)
                     _defer = std::move(future._defer);
+                return *this;
             }
 
             template <typename R>
-            Future<R> map(const std::shared_ptr<ExecutionContext>& context, std::function<R (const T&)> map);
+            Future<R> map(const Context& context, std::function<R (const T&)> map) {
+                auto defer = Future<R>::make_deffered();
+                _defer->addCallback([defer, map] (const Try<T>& result) {
+                    Try<R> r;
+                    if (result.isSuccess()) {
+                        r = Try<R>::from([map, result] () -> R {
+                            return map(result.getValue());
+                        });
+                    } else {
+                        r.fail(result.getFailure());
+                    }
+                    defer->setResult(r);
+                }, context);
+                return Future<R>(defer);
+            }
+
+            template <typename R>
+            Future<R> flatMap(const Context& context, std::function<Future<R> (const T&)> map) {
+                auto deffer = Future<R>::make_deffered();
+                _defer->addCallback([deffer, map, context] (const Try<T>& result) {
+                    if (result.isSuccess()) {
+                        Try<Future<R>> r;
+                        r = Try<Future<R>>::from([deffer, map, result] () -> Future<R> {
+                            return map(result.getValue());
+                        });
+                        if (r.isSuccess()) {
+                            Future<R> future = r.getValue();
+                            future.onComplete(context, [deffer] (const Try<R>& finalResult) {
+                                deffer->setResult(finalResult);
+                            });
+                        } else {
+                            Try<R> re;
+                            re.fail(r.getFailure());
+                            deffer->setResult(re);
+                        }
+                    } else {
+                        Try<R> r;
+                        r.fail(result.getFailure());
+                        deffer->setResult(r);
+                    }
+                }, context);
+                return Future<R>(deffer);
+            }
+
+            Future<T> recover(const Context& context, std::function<T (const Exception&)> f) {
+                auto deffer = Future<T>::make_deffered();
+                _defer->addCallback([deffer, f] (const Try<T>& result) {
+                    if (result.isFailure()) {
+                        deffer->setResult(Try<T>::from([f, result] () {
+                            return f(result.getFailure());
+                        }));
+                    } else {
+                        deffer->setResult(result);
+                    }
+                }, context);
+                return Future<T>(deffer);
+            }
+
+            Future<T> recoverWith(const Context& context, std::function<Future<T> (const Exception&)> f) {
+                auto deffer = Future<T>::make_deffered();
+                _defer->addCallback([deffer, f, context] (const Try<T>& result) {
+                    if (result.isFailure()) {
+                        auto future = Try<Future<T>>::from([f, result] () {
+                            return f(result.getFailure());
+                        });
+                        if (future.isFailure()) {
+                            Try<T> r;
+                            r.fail(future.getFailure());
+                            deffer->setResult(r);
+                        } else {
+                            Future<T> fut = future.getValue();
+                            fut.onComplete(context, [deffer] (const Try<T>& finalResult) {
+                                deffer->setResult(finalResult);
+                            });
+                        }
+                    } else {
+                        deffer->setResult(result);
+                    }
+                }, context);
+                return Future<T>(deffer);
+            }
+
+            template <typename R>
+            Future<R> recoverTo(const Context& context, std::function<R (const Exception&)> f) {
+                auto deffer = Future<R>::make_deffered();
+                _defer->addCallback([deffer, f] (const Try<T>& result) {
+                    if (result.isFailure()) {
+                        deffer->setResult(Try<R>::from([f, result] () {
+                            return f(result.getFailure());
+                        }));
+                    } else {
+                        deffer->setResult(result);
+                    }
+                }, context);
+                return Future<T>(deffer);
+            }
+
+            template <typename R>
+            Future<R> recoverToWith(const Context& context, std::function<Future<R> (const Exception&)> f) {
+                return Future<R>(Future<R>::make_deffered());
+            }
+
+            Future<T> fallback(const T& fallback) {
+                return Future<T>(Future<T>::make_deffered());
+            }
+            Future<T> fallbackWith(Future<T> fallback) {
+                return Future<T>(Future<T>::make_deffered());
+            }
+
+            void foreach(const Context& context, std::function<void (T&)> f) {
+                _defer->addCallback([f] (const Try<T>& result) {
+                    if (result.isSuccess()) {
+                        T value = result.getValue();
+                        f(value);
+                    }
+                }, context);
+            }
+
+            Option<Try<T>> getValue() const {
+                return _defer->getValue();
+            }
+
+            bool isCompleted() const {
+                return getValue().hasValue();
+            }
+
+            Future<Exception> failed() {
+                return recoverTo<Exception>(ImmediateExecutionContext::INSTANCE, [] (const Exception& ex) -> Exception {
+                    return ex;
+                });
+            };
+
+            void onComplete(const Context& context, std::function<void (const Try<T>&)> f) {
+                _defer->addCallback(f, context);
+            };
+
+            static Future<T> async(const Context& context, std::function<T ()> f) {
+                auto deffer = make_deffered();
+                context->execute(make_runnable([deffer, f] () {
+                    auto result = Try<T>::from([&] () -> T {
+                        return f();
+                    });
+                    deffer->setResult(result);
+                }));
+                return Future<T>(deffer);
+            }
+
+            static std::shared_ptr<Deffered<T>> make_deffered() {
+                auto d = new Deffered<T>();
+                return std::shared_ptr<Deffered<T>>(d);
+            };
 
         private:
             std::shared_ptr<Deffered<T>> _defer;

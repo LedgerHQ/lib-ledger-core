@@ -33,6 +33,14 @@
 
 #include <memory>
 #include <functional>
+#include "../utils/Option.hpp"
+#include "../utils/Try.hpp"
+#include <mutex>
+#include <src/utils/Exception.hpp>
+#include <queue>
+#include "../api/ExecutionContext.hpp"
+#include <tuple>
+#include "../utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -45,19 +53,84 @@ namespace ledger {
 
         template <typename T>
         class Deffered {
+
+        public:
+            using Callback = std::function<void (const Try<T>&)>;
+
             friend class Future<T>;
             friend class Promise<T>;
-            Deffered() = delete;
+            Deffered() {
+
+            };
             Deffered(const Deffered&) = delete;
             Deffered(Deffered&&) = delete;
 
-            void setValue(T& value);
-            void setError();
+            void setResult(const Try<T>& result) {
+                {
+                    std::lock_guard<std::mutex> lock(_lock);
+                    _value = result;
+                }
+                trigger();
+            }
 
-            void addCallback(std::function<void (const T&)> callback);
+            void setValue(T& value) {
+                {
+                    std::lock_guard<std::mutex> lock(_lock);
+                    _value = Try<T>(value);
+                }
+                trigger();
+            };
+
+            void setError(const Exception& exception) {
+                {
+                    std::lock_guard<std::mutex> lock(_lock);
+                    Try<T> ex;
+                    ex.fail(exception);
+                    _value = ex;
+                }
+                trigger();
+            }
+
+            void addCallback(Callback callback, std::shared_ptr<api::ExecutionContext> context) {
+                // Add to the queue
+                {
+                    std::lock_guard<std::mutex> lock(_lock);
+                    _callbacks.push(std::make_tuple(callback, context));
+                }
+                trigger();
+            }
+
+            Option<Try<T>> getValue() const {
+                std::lock_guard<std::mutex> lock(_lock);
+                Option<Try<T>> cpy = _value;
+                return cpy;
+            }
 
 
+            void trigger() {
+                std::lock_guard<std::mutex> lock(_lock);
+                if (_value.isEmpty() || _callbacks.empty()) {
+                    return ;
+                }
+                while (!_callbacks.empty()) {
+                    std::tuple<Callback, std::shared_ptr<api::ExecutionContext>> callback = _callbacks.front();
+                    Callback cb = std::get<0>(callback);
+                    auto value = _value.getValue();
+                    std::get<1>(callback)->execute(make_runnable([cb, value] () {
+                        cb(value);
+                    }));
+                    _callbacks.pop();
+                }
+            }
+
+        private:
+            std::mutex _lock;
+            Option<Try<T>> _value;
+            std::queue<std::tuple<Callback, std::shared_ptr<api::ExecutionContext>>> _callbacks;
         };
+
+
+
     }
 }
 

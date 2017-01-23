@@ -1,9 +1,9 @@
 /*
  *
- * callback_test
+ * ImmediateExecutionContext
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/09/2016.
+ * Created by Pierre Pollastri on 23/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,17 +28,17 @@
  * SOFTWARE.
  *
  */
+#include "ImmediateExecutionContext.hpp"
+#include "../api/Runnable.hpp"
+#include "Exception.hpp"
 
-#include <gtest/gtest.h>
-#include <ledger/core/async/Callback.hpp>
+std::shared_ptr<ledger::core::ImmediateExecutionContext> ledger::core::ImmediateExecutionContext::INSTANCE = std::make_shared<ledger::core::ImmediateExecutionContext>();
 
-#include <future>
-#include <NativeThreadDispatcher.hpp>
+void ledger::core::ImmediateExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable> &runnable) {
+    runnable->run();
+}
 
-TEST(Callback, PThreadTest) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-
-
-
-    dispatcher->waitUntilStopped();
+void ledger::core::ImmediateExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable> &runnable,
+                                                    int64_t millis) {
+    throw Exception(api::ErrorCode::RUNTIME_ERROR, "ImmediateExecutionContext shall not be used for delayed calls.");
 }

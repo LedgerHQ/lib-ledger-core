@@ -60,13 +60,34 @@ namespace ledger {
                 if (this != &option) {
                     _optional = option._optional;
                 }
-            }
+                return *this;
+            };
 
             Option<T>& operator=(Option<T>&& option) {
                 if (this != &option) {
                     _optional = std::move(option._optional);
                 }
-            }
+                return *this;
+            };
+
+            Option<T>& operator=(const T& v) {
+                _optional = optional<T>(v);
+                return *this;
+            };
+
+            Option<T>& operator=(T&& v) {
+                _optional = optional<T>(std::move(v));
+                return *this;
+            };
+
+            Option<T>&operator=(T* v) {
+                if (v == nullptr) {
+                    _optional = optional<T>(v);
+                } else {
+                    _optional = optional<T>(*v);
+                }
+                return *this;
+            };
 
             inline bool isEmpty() const {
               return !_optional;
@@ -74,7 +95,7 @@ namespace ledger {
 
             inline bool hasValue() const {
                 return !isEmpty();
-            }
+            };
 
             T& operator*() & {return *_optional;};
             const T& operator*() const & { return *_optional;};
@@ -116,6 +137,10 @@ namespace ledger {
                     return std::move(v);
                 return getValue();
             }
+
+            optional<T> toOptional() const {
+                return _optional;
+            };
 
             bool operator==(const T& v) const noexcept {
                 return hasValue() && **this == v;

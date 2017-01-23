@@ -98,7 +98,7 @@ std::shared_ptr<ledger::core::api::BitcoinLikeAddress>
 bool
 ledger::core::api::BitcoinLikeAddress::isAddressValid(const ledger::core::api::BitcoinLikeNetworkParameters &params,
                                                       const std::string &address) {
-    return Try<std::shared_ptr<ledger::core::api::BitcoinLikeAddress>>::tryAndCatch([&] () {
+    return Try<std::shared_ptr<ledger::core::api::BitcoinLikeAddress>>::from([&] () {
         return fromBase58(params, address);
     }).isSuccess();
 }

@@ -31,6 +31,10 @@
 #ifndef LEDGER_CORE_PROMISE_HPP
 #define LEDGER_CORE_PROMISE_HPP
 
+#include "../utils/Try.hpp"
+#include "../utils/Option.hpp"
+#include "../utils/Exception.hpp"
+
 namespace ledger {
     namespace core {
 
@@ -40,6 +44,11 @@ namespace ledger {
         template <typename T>
         class Promise {
         public:
+            void complete(const Try<T>& result);
+            void completeWith(const Future<T>& future);
+            void success(const T& value);
+            void failure(const Exception& exception);
+            bool isCompleted() const;
             Future<T> getFuture();
         };
     }

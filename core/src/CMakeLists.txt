@@ -96,7 +96,7 @@ add_library(
         wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
         api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
-        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp)
+        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp utils/ImmediateExecutionContext.cpp utils/ImmediateExecutionContext.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)
@@ -138,6 +138,7 @@ target_include_directories(ledger-core PUBLIC ../lib/soci_sqlite3)
 target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)
+target_include_directories(ledger-core PUBLIC ../test/lib/boost)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

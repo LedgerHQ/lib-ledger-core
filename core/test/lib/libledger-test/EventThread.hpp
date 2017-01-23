@@ -40,6 +40,7 @@ public:
     EventLooper* getLooper() const;
     void start();
     void stop();
+    ~EventThread();
 private:
     EventLooper _looper;
     std::thread* _thread;

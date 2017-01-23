@@ -33,7 +33,7 @@
 #include <chrono>
 #include <thread>
 
-static const long RUN_LOOP_FREQUENCY_MS = 1000 / 30;
+static const long RUN_LOOP_FREQUENCY_MS = 1;
 using namespace std::chrono;
 
 static long getTimeMillis() {

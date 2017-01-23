@@ -83,20 +83,29 @@ private:
 
 class MutexLock : public ledger::core::api::Lock {
 public:
+    MutexLock() : _lock(_mutex) {
+
+    };
+
     virtual void lock() override {
-        _mutex.lock();
+        _lock.lock();
     }
 
     virtual bool tryLock() override {
-        return _mutex.try_lock();
+        return _lock.try_lock();
     }
 
     virtual void unlock() override {
-        _mutex.unlock();
+        _lock.unlock();
+    }
+
+    virtual ~MutexLock() {
+        _lock.unlock();
     }
 
 private:
     std::recursive_mutex _mutex;
+    std::unique_lock<std::recursive_mutex> _lock;
 };
 
 NativeThreadDispatcher::NativeThreadDispatcher() {

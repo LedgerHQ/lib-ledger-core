@@ -1,9 +1,9 @@
 /*
  *
- * EventThread
+ * ImmediateExecutionContext
  * ledger-core
  *
- * Created by Pierre Pollastri on 21/11/2016.
+ * Created by Pierre Pollastri on 23/01/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,34 +28,20 @@
  * SOFTWARE.
  *
  */
-#include <thread>
-#include <iostream>
-#include "EventThread.hpp"
+#ifndef LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
+#define LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
 
-EventLooper *EventThread::getLooper() const {
-    return const_cast<EventLooper *>(&_looper);
-}
+#include "../api/ExecutionContext.hpp"
 
-void EventThread::start() {
-    if (_thread == nullptr) {
-        _thread = new std::thread([this] () {
-            _looper.run();
-        });
+namespace ledger {
+    namespace core {
+        class ImmediateExecutionContext : public api::ExecutionContext {
+        public:
+            void execute(const std::shared_ptr<api::Runnable> &runnable) override;
+            void delay(const std::shared_ptr<api::Runnable> &runnable, int64_t millis) override;
+            static std::shared_ptr<ImmediateExecutionContext> INSTANCE;
+        };
     }
 }
 
-void EventThread::stop() {
-    if (_thread != nullptr) {
-        _looper.stop();
-        _thread->join();
-        _thread = nullptr;
-    }
-}
-
-EventThread::EventThread() {
-    _thread = nullptr;
-}
-
-EventThread::~EventThread() {
-    stop();
-}
+#endif //LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
