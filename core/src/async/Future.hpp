@@ -148,31 +148,26 @@ namespace ledger {
                 return Future<T>(deffer);
             }
 
-            template <typename R>
-            Future<R> recoverTo(const Context& context, std::function<R (const Exception&)> f) {
-                auto deffer = Future<R>::make_deffered();
-                _defer->addCallback([deffer, f] (const Try<T>& result) {
-                    if (result.isFailure()) {
-                        deffer->setResult(Try<R>::from([f, result] () {
-                            return f(result.getFailure());
-                        }));
-                    } else {
-                        deffer->setResult(result);
-                    }
-                }, context);
-                return Future<T>(deffer);
-            }
-
-            template <typename R>
-            Future<R> recoverToWith(const Context& context, std::function<Future<R> (const Exception&)> f) {
-                return Future<R>(Future<R>::make_deffered());
-            }
 
             Future<T> fallback(const T& fallback) {
-                return Future<T>(Future<T>::make_deffered());
+                return recover(ImmediateExecutionContext::INSTANCE, [fallback] (const Exception& ex) {
+                   return fallback;
+                });
             }
             Future<T> fallbackWith(Future<T> fallback) {
-                return Future<T>(Future<T>::make_deffered());
+                return recoverWith(ImmediateExecutionContext::INSTANCE, [fallback] (const Exception& ex) {
+                    return fallback;
+                });
+            }
+
+            Future<T> filter(const Context& context, std::function<bool (const T&)> f) {
+                return map<T>(context, [f] (const T& v) {
+                    if (f(v)) {
+                        return v;
+                    } else {
+                        throw Exception(api::ErrorCode::NO_SUCH_ELEMENT, "Value didn't pass the filter function.");
+                    }
+                });
             }
 
             void foreach(const Context& context, std::function<void (T&)> f) {
@@ -193,9 +188,17 @@ namespace ledger {
             }
 
             Future<Exception> failed() {
-                return recoverTo<Exception>(ImmediateExecutionContext::INSTANCE, [] (const Exception& ex) -> Exception {
-                    return ex;
-                });
+                auto deffer = Future<Exception>::make_deffered();
+                _defer->addCallback([deffer] (const Try<T>& result) {
+                    if (result.isFailure()) {
+                        deffer->setResult(Try<Exception>(result.getFailure()));
+                    } else {
+                        Try<Exception> r;
+                        r.fail(Exception(api::ErrorCode::FUTURE_WAS_SUCCESSFULL, "Future was successful but rejected cause of the failed projection."));
+                        deffer->setResult(r);
+                    }
+                }, ImmediateExecutionContext::INSTANCE);
+                return Future<Exception>(deffer);
             };
 
             void onComplete(const Context& context, std::function<void (const Try<T>&)> f) {

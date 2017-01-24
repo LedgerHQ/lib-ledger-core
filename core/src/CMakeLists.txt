@@ -96,7 +96,7 @@ add_library(
         wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
         api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
-        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp utils/ImmediateExecutionContext.cpp utils/ImmediateExecutionContext.hpp)
+        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp utils/ImmediateExecutionContext.cpp utils/ImmediateExecutionContext.hpp ../../cmake-build-debug/include/ledger/core/utils/Unit.cpp ../../cmake-build-debug/include/ledger/core/utils/Unit.hpp utils/Unit.cpp utils/Unit.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

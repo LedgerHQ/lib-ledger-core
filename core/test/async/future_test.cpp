@@ -205,3 +205,74 @@ TEST(Future, FailureProjection) {
     });
     dispatcher->waitUntilStopped();
 }
+
+TEST(Future, MapChainFallback) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, [] () -> std::string {
+        return "Hello world";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        return str + " from";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        return str + " another";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        throw std::out_of_range("Not good");
+    }).fallback("Whew, we recovered !").foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
+        EXPECT_EQ("Whew, we recovered !", value);
+        dispatcher->stop();
+    });
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, MapChainFallbackWith) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, [] () -> std::string {
+        return "Hello world";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        return str + " from";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        return str + " another";
+    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
+        throw std::out_of_range("Not good");
+    }).fallbackWith(Future<std::string>::async(queue, [] () {
+            return "Whew, we recovered !";
+        })
+    ).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
+        EXPECT_EQ("Whew, we recovered !", value);
+        dispatcher->stop();
+    });
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, Filter) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, [] () {
+        return 42;
+    }).filter(queue, [] (const int& i) {
+        return i > 21;
+    }).onComplete(queue, [dispatcher] (const Try<int>& result) {
+        EXPECT_TRUE(result.isSuccess());
+        if (result.isSuccess())
+            EXPECT_EQ(42, result.getValue());
+        dispatcher->stop();
+    });
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, FilterFail) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, [] () {
+        return 42;
+    }).filter(queue, [] (const int& i) {
+        return i < 21;
+    }).onComplete(queue, [dispatcher] (const Try<int>& result) {
+        EXPECT_TRUE(result.isFailure());
+        if (result.isFailure())
+            EXPECT_EQ(api::ErrorCode::NO_SUCH_ELEMENT, result.getFailure().getErrorCode());
+        dispatcher->stop();
+    });
+    dispatcher->waitUntilStopped();
+}

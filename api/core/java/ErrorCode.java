@@ -27,6 +27,9 @@ public enum ErrorCode {
     UNSUPPORTED_OPERATION,
     UNKNOWN,
     IMPLEMENTATION_IS_MISSING,
+    FUTURE_WAS_SUCCESSFULL,
+    ALREADY_COMPLETED,
+    NO_SUCH_ELEMENT,
     /** Preferences Error */
     UNABLE_TO_OPEN_LEVELDB,
     ;

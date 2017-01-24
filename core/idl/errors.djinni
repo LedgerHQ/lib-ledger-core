@@ -28,6 +28,9 @@ ErrorCode = enum {
     unsupported_operation;
     unknown;
     implementation_is_missing;
+    future_was_successfull;
+    already_completed;
+    no_such_element;
 
     # Preferences Error
     unable_to_open_leveldb;

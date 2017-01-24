@@ -68,14 +68,16 @@ namespace ledger {
             void setResult(const Try<T>& result) {
                 {
                     std::lock_guard<std::mutex> lock(_lock);
+                    ensureNotCompleted();
                     _value = result;
                 }
                 trigger();
             }
 
-            void setValue(T& value) {
+            void setValue(const T& value) {
                 {
                     std::lock_guard<std::mutex> lock(_lock);
+                    ensureNotCompleted();
                     _value = Try<T>(value);
                 }
                 trigger();
@@ -84,6 +86,7 @@ namespace ledger {
             void setError(const Exception& exception) {
                 {
                     std::lock_guard<std::mutex> lock(_lock);
+                    ensureNotCompleted();
                     Try<T> ex;
                     ex.fail(exception);
                     _value = ex;
@@ -106,6 +109,10 @@ namespace ledger {
                 return cpy;
             }
 
+            bool hasValue() const {
+                std::lock_guard<std::mutex> lock(_lock);
+                return _value.hasValue();
+            }
 
             void trigger() {
                 std::lock_guard<std::mutex> lock(_lock);
@@ -122,6 +129,12 @@ namespace ledger {
                     _callbacks.pop();
                 }
             }
+
+        private:
+            inline void ensureNotCompleted() {
+                if (_value.hasValue())
+                    throw Exception(api::ErrorCode::ALREADY_COMPLETED, "This promise is already completed");
+            };
 
         private:
             std::mutex _lock;

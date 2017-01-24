@@ -6,7 +6,7 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-async-tests main.cpp future_test.cpp)
+add_executable(ledger-core-async-tests main.cpp future_test.cpp promise_test.cpp)
 
 target_link_libraries(ledger-core-async-tests gtest gtest_main)
 target_link_libraries(ledger-core-async-tests ledger-core)
