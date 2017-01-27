@@ -35,6 +35,7 @@
 #include "../api/PreferencesEditor.hpp"
 #include "PreferencesBackend.hpp"
 #include "PreferencesEditor.hpp"
+#include "../utils/Option.hpp"
 
 namespace ledger {
     namespace core {
@@ -51,6 +52,8 @@ namespace ledger {
             getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) override;
             bool contains(const std::string &key) override;
             std::shared_ptr<api::PreferencesEditor> edit() override;
+
+            void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
 
             std::shared_ptr<Preferences> getSubPreferences(std::string prefix);
 

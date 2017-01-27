@@ -37,7 +37,7 @@
 #include <NativePathResolver.hpp>
 #include <fstream>
 
-TEST(JsonPreferences, StoreAndGetWithPreferencesAPI) {
+TEST(Preferences, StoreAndGetWithPreferencesAPI) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
     auto preferencesLock = dispatcher->newLock();
@@ -78,6 +78,68 @@ TEST(JsonPreferences, StoreAndGetWithPreferencesAPI) {
             EXPECT_EQ(preferences->getString("my_string_to_remove", "Removed"), "Removed");
             dispatcher->stop();
         }), 50);
+    }), 100);
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+        dispatcher->stop();
+        FAIL() << "Timeout";
+    }), 5000);
+
+    dispatcher->waitUntilStopped();
+    resolver->clean();
+}
+
+TEST(Preferences, IterateThroughMembers) {
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto preferencesLock = dispatcher->newLock();
+    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
+            "/preferences/tests.db",
+            dispatcher->getSerialExecutionContext("worker"),
+            resolver
+    );
+    auto preferences = backend->getPreferences("my_test_preferences");
+    auto otherPreferences = backend->getPreferences("my_other_test_preferences");
+    dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
+        preferences->edit()
+                ->putString("address:0", "Hello World!")
+                ->putString("address:1", "Hello World!")
+                ->putString("address:2", "Hello World!")
+                ->putString("address:3", "Hello World!")
+                ->putString("address:4", "Hello World!")
+                ->putString("address:5", "Hello World!")
+                ->putString("address:6", "Hello World!")
+                ->putString("address:7", "Hello World!")
+                ->putString("address:8", "Hello World!")
+                ->putString("address:9", "Hello World!")
+                ->putString("address:10", "Hello World!")
+                ->putString("address:16", "Hello World!")
+                ->putString("notaddress:0", "Hello World!")
+                ->putString("notaddress:1", "Hello World!")
+                ->commit();
+        otherPreferences->edit()
+                ->putString("address:0", "Hello World!")
+                ->putString("address:1", "Hello World!")
+                ->commit();
+    }));
+    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
+        preferences
+                ->edit()
+                ->putString("address:11", "Hello World!")
+                ->putString("address:12", "Hello World!")
+                ->putString("address:13", "Hello World!")
+                ->putString("address:14", "Hello World!")
+                ->putString("address:15", "Hello World!")
+                ->commit();
+    }));
+    // Assume that 100ms should be enough to persist data
+    dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
+        std::set<std::string> addresses({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                                         "10", "11", "12", "13", "14", "15", "16"});
+        preferences->iterate([addresses] (leveldb::Slice&& key, leveldb::Slice&& value) {
+            EXPECT_NE(addresses.find(key.ToString()), addresses.end());
+            return true;
+        }, ledger::core::Option<std::string>("address:"));
+        dispatcher->stop();
     }), 100);
     dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
         dispatcher->stop();

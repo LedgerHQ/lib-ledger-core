@@ -6,46 +6,58 @@
 
 @implementation LGBitcoinLikeNetworkParameters
 
-- (nonnull instancetype)initWithIdentifier:(nonnull NSString *)identifier
+- (nonnull instancetype)initWithIdentifier:(nonnull NSString *)Identifier
                               P2PKHVersion:(nonnull NSData *)P2PKHVersion
                                P2SHVersion:(nonnull NSData *)P2SHVersion
                                XPUBVersion:(nonnull NSData *)XPUBVersion
-                      usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                                 FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
                              BIP44CoinType:(int64_t)BIP44CoinType
                           PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
+                                DustAmount:(int64_t)DustAmount
+                             MessagePrefix:(nonnull NSString *)MessagePrefix
+                UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
 {
     if (self = [super init]) {
-        _identifier = [identifier copy];
+        _Identifier = [Identifier copy];
         _P2PKHVersion = [P2PKHVersion copy];
         _P2SHVersion = [P2SHVersion copy];
         _XPUBVersion = [XPUBVersion copy];
-        _usesFeePerBytePolicy = usesFeePerBytePolicy;
+        _FeePolicy = FeePolicy;
         _BIP44CoinType = BIP44CoinType;
         _PaymentUriScheme = [PaymentUriScheme copy];
+        _DustAmount = DustAmount;
+        _MessagePrefix = [MessagePrefix copy];
+        _UsesTimestampedTransaction = UsesTimestampedTransaction;
     }
     return self;
 }
 
-+ (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)identifier
++ (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)Identifier
                                                       P2PKHVersion:(nonnull NSData *)P2PKHVersion
                                                        P2SHVersion:(nonnull NSData *)P2SHVersion
                                                        XPUBVersion:(nonnull NSData *)XPUBVersion
-                                              usesFeePerBytePolicy:(BOOL)usesFeePerBytePolicy
+                                                         FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
                                                      BIP44CoinType:(int64_t)BIP44CoinType
                                                   PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
+                                                        DustAmount:(int64_t)DustAmount
+                                                     MessagePrefix:(nonnull NSString *)MessagePrefix
+                                        UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
 {
-    return [[self alloc] initWithIdentifier:identifier
+    return [[self alloc] initWithIdentifier:Identifier
                                P2PKHVersion:P2PKHVersion
                                 P2SHVersion:P2SHVersion
                                 XPUBVersion:XPUBVersion
-                       usesFeePerBytePolicy:usesFeePerBytePolicy
+                                  FeePolicy:FeePolicy
                               BIP44CoinType:BIP44CoinType
-                           PaymentUriScheme:PaymentUriScheme];
+                           PaymentUriScheme:PaymentUriScheme
+                                 DustAmount:DustAmount
+                              MessagePrefix:MessagePrefix
+                 UsesTimestampedTransaction:UsesTimestampedTransaction];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ usesFeePerBytePolicy:%@ BIP44CoinType:%@ PaymentUriScheme:%@>", self.class, (void *)self, self.identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.usesFeePerBytePolicy), @(self.BIP44CoinType), self.PaymentUriScheme];
+    return [NSString stringWithFormat:@"<%@ %p Identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ FeePolicy:%@ BIP44CoinType:%@ PaymentUriScheme:%@ DustAmount:%@ MessagePrefix:%@ UsesTimestampedTransaction:%@>", self.class, (void *)self, self.Identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.FeePolicy), @(self.BIP44CoinType), self.PaymentUriScheme, @(self.DustAmount), self.MessagePrefix, @(self.UsesTimestampedTransaction)];
 }
 
 @end

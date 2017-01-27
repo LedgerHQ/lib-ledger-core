@@ -43,7 +43,7 @@ namespace ledger {
         BitcoinLikeExtendedPublicKey::BitcoinLikeExtendedPublicKey(const api::BitcoinLikeNetworkParameters &params,
                                                                    const DeterministicPublicKey& key,
                                                                    const DerivationPath& path) :
-            CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(params, _params), _key(key), _path(path)
+            _params(params), _key(key), _path(path)
         {
 
         }

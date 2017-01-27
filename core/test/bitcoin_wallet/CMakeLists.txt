@@ -8,7 +8,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-bitcoin-wallet-tests main.cpp initialization_test.cpp)
+add_executable(ledger-core-bitcoin-wallet-tests main.cpp initialization_test.cpp p2pkh_keychain_test.cpp)
 
 target_link_libraries(ledger-core-bitcoin-wallet-tests gtest gtest_main)
 target_link_libraries(ledger-core-bitcoin-wallet-tests ledger-core)

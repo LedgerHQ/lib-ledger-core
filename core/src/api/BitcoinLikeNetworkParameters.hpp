@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "BitcoinLikeFeePolicy.hpp"
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -11,28 +12,37 @@
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeNetworkParameters final {
-    std::string identifier;
+    std::string Identifier;
     std::vector<uint8_t> P2PKHVersion;
     std::vector<uint8_t> P2SHVersion;
     std::vector<uint8_t> XPUBVersion;
-    bool usesFeePerBytePolicy;
+    BitcoinLikeFeePolicy FeePolicy;
     int64_t BIP44CoinType;
     std::string PaymentUriScheme;
+    int64_t DustAmount;
+    std::string MessagePrefix;
+    bool UsesTimestampedTransaction;
 
-    BitcoinLikeNetworkParameters(std::string identifier_,
+    BitcoinLikeNetworkParameters(std::string Identifier_,
                                  std::vector<uint8_t> P2PKHVersion_,
                                  std::vector<uint8_t> P2SHVersion_,
                                  std::vector<uint8_t> XPUBVersion_,
-                                 bool usesFeePerBytePolicy_,
+                                 BitcoinLikeFeePolicy FeePolicy_,
                                  int64_t BIP44CoinType_,
-                                 std::string PaymentUriScheme_)
-    : identifier(std::move(identifier_))
+                                 std::string PaymentUriScheme_,
+                                 int64_t DustAmount_,
+                                 std::string MessagePrefix_,
+                                 bool UsesTimestampedTransaction_)
+    : Identifier(std::move(Identifier_))
     , P2PKHVersion(std::move(P2PKHVersion_))
     , P2SHVersion(std::move(P2SHVersion_))
     , XPUBVersion(std::move(XPUBVersion_))
-    , usesFeePerBytePolicy(std::move(usesFeePerBytePolicy_))
+    , FeePolicy(std::move(FeePolicy_))
     , BIP44CoinType(std::move(BIP44CoinType_))
     , PaymentUriScheme(std::move(PaymentUriScheme_))
+    , DustAmount(std::move(DustAmount_))
+    , MessagePrefix(std::move(MessagePrefix_))
+    , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
     {}
 };
 

@@ -6,7 +6,7 @@ package co.ledger.core;
 public final class BitcoinLikeNetworkParameters {
 
 
-    /*package*/ final String identifier;
+    /*package*/ final String Identifier;
 
     /*package*/ final byte[] P2PKHVersion;
 
@@ -14,31 +14,43 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final byte[] XPUBVersion;
 
-    /*package*/ final boolean usesFeePerBytePolicy;
+    /*package*/ final BitcoinLikeFeePolicy FeePolicy;
 
     /*package*/ final long BIP44CoinType;
 
     /*package*/ final String PaymentUriScheme;
 
+    /*package*/ final long DustAmount;
+
+    /*package*/ final String MessagePrefix;
+
+    /*package*/ final boolean UsesTimestampedTransaction;
+
     public BitcoinLikeNetworkParameters(
-            String identifier,
+            String Identifier,
             byte[] P2PKHVersion,
             byte[] P2SHVersion,
             byte[] XPUBVersion,
-            boolean usesFeePerBytePolicy,
+            BitcoinLikeFeePolicy FeePolicy,
             long BIP44CoinType,
-            String PaymentUriScheme) {
-        this.identifier = identifier;
+            String PaymentUriScheme,
+            long DustAmount,
+            String MessagePrefix,
+            boolean UsesTimestampedTransaction) {
+        this.Identifier = Identifier;
         this.P2PKHVersion = P2PKHVersion;
         this.P2SHVersion = P2SHVersion;
         this.XPUBVersion = XPUBVersion;
-        this.usesFeePerBytePolicy = usesFeePerBytePolicy;
+        this.FeePolicy = FeePolicy;
         this.BIP44CoinType = BIP44CoinType;
         this.PaymentUriScheme = PaymentUriScheme;
+        this.DustAmount = DustAmount;
+        this.MessagePrefix = MessagePrefix;
+        this.UsesTimestampedTransaction = UsesTimestampedTransaction;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return Identifier;
     }
 
     public byte[] getP2PKHVersion() {
@@ -53,8 +65,8 @@ public final class BitcoinLikeNetworkParameters {
         return XPUBVersion;
     }
 
-    public boolean getUsesFeePerBytePolicy() {
-        return usesFeePerBytePolicy;
+    public BitcoinLikeFeePolicy getFeePolicy() {
+        return FeePolicy;
     }
 
     public long getBIP44CoinType() {
@@ -65,16 +77,31 @@ public final class BitcoinLikeNetworkParameters {
         return PaymentUriScheme;
     }
 
+    public long getDustAmount() {
+        return DustAmount;
+    }
+
+    public String getMessagePrefix() {
+        return MessagePrefix;
+    }
+
+    public boolean getUsesTimestampedTransaction() {
+        return UsesTimestampedTransaction;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeNetworkParameters{" +
-                "identifier=" + identifier +
+                "Identifier=" + Identifier +
                 "," + "P2PKHVersion=" + P2PKHVersion +
                 "," + "P2SHVersion=" + P2SHVersion +
                 "," + "XPUBVersion=" + XPUBVersion +
-                "," + "usesFeePerBytePolicy=" + usesFeePerBytePolicy +
+                "," + "FeePolicy=" + FeePolicy +
                 "," + "BIP44CoinType=" + BIP44CoinType +
                 "," + "PaymentUriScheme=" + PaymentUriScheme +
+                "," + "DustAmount=" + DustAmount +
+                "," + "MessagePrefix=" + MessagePrefix +
+                "," + "UsesTimestampedTransaction=" + UsesTimestampedTransaction +
         "}";
     }
 

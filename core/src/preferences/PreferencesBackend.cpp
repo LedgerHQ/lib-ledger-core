@@ -80,9 +80,17 @@ namespace ledger {
         }
 
         void PreferencesBackend::iterate(const std::vector<uint8_t> &keyPrefix,
-                                         std::function<void(leveldb::Slice &, leveldb::Slice &)>) {
+                                         std::function<bool (leveldb::Slice &&, leveldb::Slice &&)> f) {
             leveldb::Iterator* it = _db->NewIterator(leveldb::ReadOptions());
-
+            leveldb::Slice start((const char *)keyPrefix.data(), keyPrefix.size());
+            std::vector<uint8_t> limitRaw(keyPrefix.begin(), keyPrefix.end());
+            limitRaw[limitRaw.size() - 1] += 1;
+            leveldb::Slice limit((const char *)limitRaw.data(), limitRaw.size());
+            for (it->Seek(start); it->Valid(); it->Next()) {
+                if (it->key().compare(limit) > 0 || !f(it->key(), it->value())) {
+                    break;
+                }
+            }
             delete it;
         }
 

@@ -114,5 +114,13 @@ namespace ledger {
             }
             return std::make_shared<Preferences>(_backend, p);
         }
+
+        void
+        Preferences::iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice &&)> f, Option<std::string> begin) {
+            auto start = wrapKey(begin.getValueOr(""));
+            _backend.iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
+                return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())), std::move(value));
+            });
+        }
     }
 }

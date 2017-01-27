@@ -33,10 +33,12 @@
 namespace ledger {
     namespace core {
 
-        BitcoinLikeKeychain::BitcoinLikeKeychain(const api::BitcoinLikeCurrencyDescription &description, int account,
-                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                 const std::shared_ptr<Preferences> preferences) :
-            _description(description), _account(account), _xpub(xpub), _preferences(preferences) {
+        BitcoinLikeKeychain::BitcoinLikeKeychain(
+                const std::shared_ptr<api::Configuration> configuration,
+                const api::BitcoinLikeNetworkParameters &params, int account,
+                const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                const std::shared_ptr<Preferences> preferences) :
+            _params(params), _account(account), _xpub(xpub), _preferences(preferences), _configuration(configuration) {
 
         }
 
@@ -44,8 +46,8 @@ namespace ledger {
             return _account;
         }
 
-        const api::BitcoinLikeCurrencyDescription &BitcoinLikeKeychain::getCurrencyDescription() const {
-            return _description;
+        const api::BitcoinLikeNetworkParameters &BitcoinLikeKeychain::getNetworkParameters() const {
+            return _params;
         }
 
         std::shared_ptr<api::BitcoinLikeExtendedPublicKey> BitcoinLikeKeychain::getExtendedPublicKey() const {
@@ -62,6 +64,10 @@ namespace ledger {
 
         std::shared_ptr<Preferences> BitcoinLikeKeychain::getPreferences() {
             return _preferences;
+        }
+
+        std::shared_ptr<api::Configuration> BitcoinLikeKeychain::getConfiguration() const {
+            return _configuration;
         }
     }
 }

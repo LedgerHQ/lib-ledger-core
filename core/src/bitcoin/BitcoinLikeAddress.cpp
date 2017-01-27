@@ -39,7 +39,7 @@ ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Bi
                                                      const std::vector<uint8_t>& hash160,
                                                      const std::vector<uint8_t>& version,
                                                      ledger::core::optional<std::string> derivationPath) :
-        CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(params, _params),
+        _params(params),
         _version(version),
         _derivationPath(derivationPath),
         _hash160(hash160)

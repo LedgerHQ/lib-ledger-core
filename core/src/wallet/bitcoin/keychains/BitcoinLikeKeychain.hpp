@@ -35,8 +35,10 @@
 #include "../../../bitcoin/BitcoinLikeExtendedPublicKey.hpp"
 #include <string>
 #include <vector>
-#include "../../../utils/optional.hpp"
+#include "../../../utils/Option.hpp"
 #include "../../../preferences/Preferences.hpp"
+#include "../../../api/Configuration.hpp"
+
 namespace ledger {
     namespace core {
 
@@ -48,7 +50,8 @@ namespace ledger {
 
         public:
             BitcoinLikeKeychain(
-                    const api::BitcoinLikeCurrencyDescription& description,
+                    const std::shared_ptr<api::Configuration> configuration,
+                    const api::BitcoinLikeNetworkParameters& params,
                     int account,
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
                     const std::shared_ptr<Preferences> preferences);
@@ -56,25 +59,30 @@ namespace ledger {
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
             virtual bool markAsUsed(const std::string& address) = 0;
 
-            virtual std::vector<std::string> getAllObservableAddresses() const = 0;
-            virtual std::string getFreshAddress(KeyPurpose purpose) const = 0;
-            virtual std::vector<std::string> getFreshAddresses(KeyPurpose purpose, int n) const = 0;
+            virtual std::vector<std::string> getAllObservableAddresses(off_t from, off_t to) const = 0;
+            virtual std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, off_t from, off_t to) const = 0;
 
-            virtual optional<KeyPurpose> getAddressPurpose(const std::string& address) const = 0;
-            virtual optional<std::string> getAddressDerivationPath(const std::string& address) const = 0;
+            virtual std::string getFreshAddress(KeyPurpose purpose) const = 0;
+            virtual std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) const = 0;
+
+            virtual Option<KeyPurpose> getAddressPurpose(const std::string& address) const = 0;
+            virtual Option<std::string> getAddressDerivationPath(const std::string& address) const = 0;
+            virtual bool isEmpty() const = 0;
 
             inline int getAccountIndex() const;
-            inline const api::BitcoinLikeCurrencyDescription& getCurrencyDescription() const;
+            inline const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
             inline std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
+            inline std::shared_ptr<api::Configuration> getConfiguration() const;
 
         protected:
             inline std::shared_ptr<Preferences> getPreferences();
 
         private:
-            const api::BitcoinLikeCurrencyDescription& _description;
+            const api::BitcoinLikeNetworkParameters& _params;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
             int _account;
             std::shared_ptr<Preferences> _preferences;
+            std::shared_ptr<api::Configuration> _configuration;
         };
     }
 }

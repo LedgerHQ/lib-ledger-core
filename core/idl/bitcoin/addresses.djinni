@@ -1,16 +1,21 @@
 @import "../wallet/crypto_currency_description.djinni"
 
+BitcoinLikeFeePolicy = enum {
+    PER_BYTE;
+    PER_KBYTE;
+}
+
 BitcoinLikeNetworkParameters = record {
-    identifier: string;
+    Identifier: string;
     P2PKHVersion: binary;
     P2SHVersion: binary;
     XPUBVersion: binary;
-
-    usesFeePerBytePolicy: bool;
-
+    FeePolicy: BitcoinLikeFeePolicy;
     BIP44CoinType: i64;
-
     PaymentUriScheme: string;
+    DustAmount: i64;
+    MessagePrefix: string;
+    UsesTimestampedTransaction: bool;
 }
 
 # Helper class for manipulating Bitcoin like addresses

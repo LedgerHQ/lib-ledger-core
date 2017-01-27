@@ -3,6 +3,7 @@
 
 #import "LGBitcoinLikeNetworkParameters+Private.h"
 #import "DJIMarshal+Private.h"
+#import "LGBitcoinLikeFeePolicy+Private.h"
 #include <cassert>
 
 namespace djinni_generated {
@@ -10,24 +11,30 @@ namespace djinni_generated {
 auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
-    return {::djinni::String::toCpp(obj.identifier),
+    return {::djinni::String::toCpp(obj.Identifier),
             ::djinni::Binary::toCpp(obj.P2PKHVersion),
             ::djinni::Binary::toCpp(obj.P2SHVersion),
             ::djinni::Binary::toCpp(obj.XPUBVersion),
-            ::djinni::Bool::toCpp(obj.usesFeePerBytePolicy),
+            ::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::toCpp(obj.FeePolicy),
             ::djinni::I64::toCpp(obj.BIP44CoinType),
-            ::djinni::String::toCpp(obj.PaymentUriScheme)};
+            ::djinni::String::toCpp(obj.PaymentUriScheme),
+            ::djinni::I64::toCpp(obj.DustAmount),
+            ::djinni::String::toCpp(obj.MessagePrefix),
+            ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction)};
 }
 
 auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
 {
-    return [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:(::djinni::String::fromCpp(cpp.identifier))
+    return [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:(::djinni::String::fromCpp(cpp.Identifier))
                                                          P2PKHVersion:(::djinni::Binary::fromCpp(cpp.P2PKHVersion))
                                                           P2SHVersion:(::djinni::Binary::fromCpp(cpp.P2SHVersion))
                                                           XPUBVersion:(::djinni::Binary::fromCpp(cpp.XPUBVersion))
-                                                 usesFeePerBytePolicy:(::djinni::Bool::fromCpp(cpp.usesFeePerBytePolicy))
+                                                            FeePolicy:(::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::fromCpp(cpp.FeePolicy))
                                                         BIP44CoinType:(::djinni::I64::fromCpp(cpp.BIP44CoinType))
-                                                     PaymentUriScheme:(::djinni::String::fromCpp(cpp.PaymentUriScheme))];
+                                                     PaymentUriScheme:(::djinni::String::fromCpp(cpp.PaymentUriScheme))
+                                                           DustAmount:(::djinni::I64::fromCpp(cpp.DustAmount))
+                                                        MessagePrefix:(::djinni::String::fromCpp(cpp.MessagePrefix))
+                                           UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))];
 }
 
 }  // namespace djinni_generated
