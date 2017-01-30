@@ -51,6 +51,10 @@ namespace ledger {
             std::shared_ptr<api::PreferencesEditor>
             putStringArray(const std::string &key, const std::vector<std::string> &value) override;
             std::shared_ptr<api::PreferencesEditor> remove(const std::string &key) override;
+
+            std::shared_ptr<api::PreferencesEditor>
+            putData(const std::string &key, const std::vector<uint8_t> &value) override;
+
             void commit() override;
 
         private:

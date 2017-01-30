@@ -47,6 +47,8 @@ namespace ledger {
             virtual std::shared_ptr<api::BitcoinLikeAddress> derive(const std::string &path) override;
             virtual std::string toBase58() override;
 
+            std::string getRootPath() override;
+
         public:
             static std::shared_ptr<api::BitcoinLikeExtendedPublicKey> fromPublicKeyCouple(
                     const api::BitcoinLikeNetworkParameters& params,

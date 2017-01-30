@@ -53,6 +53,8 @@ namespace ledger {
             bool contains(const std::string &key) override;
             std::shared_ptr<api::PreferencesEditor> edit() override;
 
+            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) override;
+
             void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
 
             std::shared_ptr<Preferences> getSubPreferences(std::string prefix);

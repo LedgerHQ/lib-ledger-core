@@ -54,6 +54,15 @@
                                            value:(nonnull NSArray<NSString *> *)value;
 
 /**
+ * Sets the value to the given key in the Preferences.
+ * @param key The data key.
+ * @param value The value to store
+ * @return The reference of self in order to chain the call to the editor.
+ */
+- (nullable LGPreferencesEditor *)putData:(nonnull NSString *)key
+                                    value:(nonnull NSData *)value;
+
+/**
  * Removes the data associated with the given key.
  * @param key The key to remove from the Preferences
  * @return The reference of self in order to chain the call to the editor.

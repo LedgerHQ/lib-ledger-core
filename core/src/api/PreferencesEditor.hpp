@@ -56,6 +56,14 @@ public:
     virtual std::shared_ptr<PreferencesEditor> putStringArray(const std::string & key, const std::vector<std::string> & value) = 0;
 
     /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
+    virtual std::shared_ptr<PreferencesEditor> putData(const std::string & key, const std::vector<uint8_t> & value) = 0;
+
+    /**
      * Removes the data associated with the given key.
      * @param key The key to remove from the Preferences
      * @return The reference of self in order to chain the call to the editor.

@@ -32,9 +32,31 @@
 #define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
 #include "BitcoinLikeKeychain.hpp"
+#include <set>
 
 namespace ledger {
     namespace core {
+        struct P2PKHKeychainPersistentState {
+            uint32_t maxConsecutiveChangeIndex;
+            uint32_t maxConsecutiveReceiveIndex;
+            std::set<uint32_t> nonConsecutiveChangeIndexes;
+            std::set<uint32_t> nonConsecutiveReceiveIndexes;
+            bool empty;
+
+            template <class Archive>
+            void serialize(Archive& archive, std::uint32_t const version) {
+                if (version == 0) {
+                    archive(
+                            maxConsecutiveChangeIndex,
+                            maxConsecutiveReceiveIndex,
+                            nonConsecutiveChangeIndexes,
+                            nonConsecutiveReceiveIndexes,
+                            empty
+                    );
+                }
+            }
+        };
+
         class P2PKHBitcoinLikeKeychain : public BitcoinLikeKeychain {
         public:
             P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::Configuration> &configuration,
@@ -42,14 +64,19 @@ namespace ledger {
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
             bool markAsUsed(const std::string &address) override;
-            std::string getFreshAddress(KeyPurpose purpose) const override;
-            std::vector<std::string> getAllObservableAddresses(off_t from, off_t to) const override;
-            std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) const override;
+            std::string getFreshAddress(KeyPurpose purpose) override;
+            std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to) override;
+            std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) override;
             Option<KeyPurpose> getAddressPurpose(const std::string &address) const override;
             Option<std::string> getAddressDerivationPath(const std::string &address) const override;
-            std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, off_t from, off_t to) const override;
-
+            std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
             bool isEmpty() const override;
+        private:
+            std::string derive(KeyPurpose purpose, off_t index);
+            void saveState();
+        private:
+            P2PKHKeychainPersistentState _state;
+            uint32_t _observableRange;
         };
     }
 }

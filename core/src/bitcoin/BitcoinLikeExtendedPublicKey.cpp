@@ -88,6 +88,10 @@ namespace ledger {
             return std::make_shared<BitcoinLikeExtendedPublicKey>(params, k, p);
         }
 
+        std::string BitcoinLikeExtendedPublicKey::getRootPath() {
+            return _path.toString();
+        }
+
         std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
         api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
                                                       const std::string &address,
@@ -112,37 +116,3 @@ namespace ledger {
         }
     }
 }
-
-/*
- *   derivePublicAddress(path, network) map {(result) =>
-        val magic = network.getBip32HeaderPub
-        val depth = path.length.toByte
-        val childNum = path.childNum
-        val chainCode = result.chainCode
-        val publicKey = Crypto.compressPublicKey(result.publicKey)
-        val rawXpub = new BytesWriter(13 + chainCode.length + publicKey.length)
-        rawXpub.writeInt(magic)
-        rawXpub.writeByte(depth)
-        rawXpub.writeInt(fingerprint)
-        rawXpub.writeInt(childNum)
-        rawXpub.writeByteArray(chainCode)
-        rawXpub.writeByteArray(publicKey)
-        val xpub58 = Base58.encodeWitchChecksum(rawXpub.toByteArray)
-        DeterministicKey.deserializeB58(xpub58, network)
-      }
-    }
-
-    if (path.depth > 0) {
-      derivePublicAddress(path.parent, network) flatMap {(result) =>
-        val hash160 = Hash160.hash(Crypto.compressPublicKey(result.publicKey))
-        val fingerprint: Long =
-            ((hash160(0) & 0xFFL) << 24) |
-            ((hash160(1) & 0xFFL) << 16) |
-            ((hash160(2) & 0xFFL) << 8) |
-            (hash160(3) & 0xFFL)
-        finalize(fingerprint)
-      }
-    } else {
-      finalize(0)
-    }
- */

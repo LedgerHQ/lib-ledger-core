@@ -10,6 +10,8 @@ public abstract class BitcoinLikeExtendedPublicKey {
 
     public abstract String toBase58();
 
+    public abstract String getRootPath();
+
     public static native BitcoinLikeExtendedPublicKey fromBase58(BitcoinLikeNetworkParameters params, String address, String path);
 
     private static final class CppProxy extends BitcoinLikeExtendedPublicKey
@@ -50,5 +52,13 @@ public abstract class BitcoinLikeExtendedPublicKey {
             return native_toBase58(this.nativeRef);
         }
         private native String native_toBase58(long _nativeRef);
+
+        @Override
+        public String getRootPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getRootPath(this.nativeRef);
+        }
+        private native String native_getRootPath(long _nativeRef);
     }
 }

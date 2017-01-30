@@ -122,5 +122,13 @@ namespace ledger {
                 return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())), std::move(value));
             });
         }
+
+        std::vector<uint8_t> Preferences::getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) {
+            auto value = _backend.get(wrapKey(key));
+            if (!value)
+                return fallbackValue;
+            BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
+            return reader.readUntilEnd();
+        }
     }
 }

@@ -53,6 +53,12 @@ public:
     virtual std::vector<std::string> getStringArray(const std::string & key, const std::vector<std::string> & fallbackValue) = 0;
 
     /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
+    virtual std::vector<uint8_t> getData(const std::string & key, const std::vector<uint8_t> & fallbackValue) = 0;
+
+    /**
      * Checks whether the Preferences contains the given key.
      * @return true the preferences contains the key, false otherwise.
      */

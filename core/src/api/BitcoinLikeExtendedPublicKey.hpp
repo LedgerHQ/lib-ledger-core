@@ -20,6 +20,8 @@ public:
 
     virtual std::string toBase58() = 0;
 
+    virtual std::string getRootPath() = 0;
+
     static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(const BitcoinLikeNetworkParameters & params, const std::string & address, const std::experimental::optional<std::string> & path);
 };
 

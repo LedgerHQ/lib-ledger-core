@@ -32,6 +32,7 @@
 #include "../utils/Exception.hpp"
 #include "../utils/LambdaRunnable.hpp"
 #include <leveldb/write_batch.h>
+#include <cstring>
 
 namespace ledger {
     namespace core {
@@ -57,9 +58,9 @@ namespace ledger {
                 leveldb::WriteOptions options;
                 options.sync = true;
                 for (auto& item : changes) {
-                    leveldb::Slice k(std::string((const char *)item.key.data(), item.key.size()));
+                    leveldb::Slice k((const char *)item.key.data(), item.key.size());
                     if (item.type == PreferencesChangeType::PUT) {
-                        leveldb::Slice v(std::string((const char *)item.value.data(), item.value.size()));
+                        leveldb::Slice v((const char *)item.value.data(), item.value.size());
                         batch.Put(k, v);
                     } else {
                         batch.Delete(k);

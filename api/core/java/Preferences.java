@@ -44,6 +44,12 @@ public abstract class Preferences {
     public abstract ArrayList<String> getStringArray(String key, ArrayList<String> fallbackValue);
 
     /**
+     * Retrieves the value associated with the given key or fallback to the default value.
+     * @return The data associated with the key or fallbackValue.
+     */
+    public abstract byte[] getData(String key, byte[] fallbackValue);
+
+    /**
      * Checks whether the Preferences contains the given key.
      * @return true the preferences contains the key, false otherwise.
      */
@@ -117,6 +123,14 @@ public abstract class Preferences {
             return native_getStringArray(this.nativeRef, key, fallbackValue);
         }
         private native ArrayList<String> native_getStringArray(long _nativeRef, String key, ArrayList<String> fallbackValue);
+
+        @Override
+        public byte[] getData(String key, byte[] fallbackValue)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getData(this.nativeRef, key, fallbackValue);
+        }
+        private native byte[] native_getData(long _nativeRef, String key, byte[] fallbackValue);
 
         @Override
         public boolean contains(String key)

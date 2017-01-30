@@ -1,4 +1,6 @@
 
+
+
 Configuration = interface +c {
     getString(key: string, fallback: string): string;
     putString(key: string, value: string): Configuration;
@@ -13,4 +15,6 @@ Configuration = interface +c {
     putData(key: string, data: binary): Configuration;
 
     static newInstance(): Configuration;
+
+    const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
 }

@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 @class LGConfiguration;
 
+extern NSString * __nonnull const LGConfigurationKEYCHAINOBSERVABLERANGE;
 
 @interface LGConfiguration : NSObject
 

@@ -19,7 +19,9 @@ Preferences = interface +c {
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
     getStringArray(key: string, fallbackValue: list<string>): list<string>;
-
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getData(key: string, fallbackValue: binary): binary;
     # Checks whether the Preferences contains the given key.
     # @return true the preferences contains the key, false otherwise.
     contains(key: string): bool;
@@ -56,6 +58,11 @@ PreferencesEditor = interface +c {
     # @param value The value to store
     # @return The reference of self in order to chain the call to the editor.
     putStringArray(key: string, value: list<string>): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putData(key: string, value: binary): PreferencesEditor;
 
     # Removes the data associated with the given key.
     # @param key The key to remove from the Preferences

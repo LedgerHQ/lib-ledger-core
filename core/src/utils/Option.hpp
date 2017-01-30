@@ -51,7 +51,7 @@ namespace ledger {
                           "Option is not compatible with abstract types");
         public:
             Option() {};
-            Option(T& value) : _optional(value) {};
+            Option(const T& value) : _optional(value) {};
             Option(T&& value) : _optional(std::move(value)) {};
 
             Option(const Option<T>& option) : _optional(option._optional) {};

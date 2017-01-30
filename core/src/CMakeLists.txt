@@ -96,7 +96,16 @@ add_library(
         wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
         api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
-        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp async/Future.cpp async/Future.hpp async/Deffered.cpp async/Deffered.hpp async/Promise.cpp async/Promise.hpp utils/Option.cpp utils/Option.hpp utils/ImmediateExecutionContext.cpp utils/ImmediateExecutionContext.hpp ../../cmake-build-debug/include/ledger/core/utils/Unit.cpp ../../cmake-build-debug/include/ledger/core/utils/Unit.hpp utils/Unit.cpp utils/Unit.hpp wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.cpp wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp wallet/bitcoin/networks.cpp wallet/bitcoin/networks.hpp)
+        wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp
+        async/Future.cpp async/Future.hpp
+        async/Deffered.cpp async/Deffered.hpp
+        async/Promise.cpp async/Promise.hpp
+        utils/Option.cpp utils/Option.hpp
+        utils/ImmediateExecutionContext.cpp utils/ImmediateExecutionContext.hpp
+        utils/Unit.cpp utils/Unit.hpp
+        wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.cpp wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp
+        wallet/bitcoin/networks.cpp wallet/bitcoin/networks.hpp
+        collections/strings.cpp collections/strings.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)
@@ -139,6 +148,7 @@ target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)
 target_include_directories(ledger-core PUBLIC ../test/lib/boost)
+target_include_directories(ledger-core PUBLIC ../lib/cereal/)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

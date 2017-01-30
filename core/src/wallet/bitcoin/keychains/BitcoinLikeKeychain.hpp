@@ -59,23 +59,23 @@ namespace ledger {
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
             virtual bool markAsUsed(const std::string& address) = 0;
 
-            virtual std::vector<std::string> getAllObservableAddresses(off_t from, off_t to) const = 0;
-            virtual std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, off_t from, off_t to) const = 0;
+            virtual std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to)  = 0;
+            virtual std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) = 0;
 
-            virtual std::string getFreshAddress(KeyPurpose purpose) const = 0;
-            virtual std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) const = 0;
+            virtual std::string getFreshAddress(KeyPurpose purpose) = 0;
+            virtual std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) = 0;
 
             virtual Option<KeyPurpose> getAddressPurpose(const std::string& address) const = 0;
             virtual Option<std::string> getAddressDerivationPath(const std::string& address) const = 0;
             virtual bool isEmpty() const = 0;
 
-            inline int getAccountIndex() const;
-            inline const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
-            inline std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
-            inline std::shared_ptr<api::Configuration> getConfiguration() const;
+            int getAccountIndex() const;
+            const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
+            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
+            std::shared_ptr<api::Configuration> getConfiguration() const;
 
         protected:
-            inline std::shared_ptr<Preferences> getPreferences();
+            std::shared_ptr<Preferences> getPreferences() const;
 
         private:
             const api::BitcoinLikeNetworkParameters& _params;

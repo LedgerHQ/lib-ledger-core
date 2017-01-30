@@ -109,5 +109,17 @@ namespace ledger {
         PreferencesEditor::PreferencesEditor(Preferences &preferences) : _preferences(preferences) {
 
         }
+
+        std::shared_ptr<api::PreferencesEditor>
+        PreferencesEditor::putData(const std::string &key, const std::vector<uint8_t> &value) {
+            PreferencesChange change;
+            change.type = PreferencesChangeType::PUT;
+            change.key = _preferences.wrapKey(key);
+            BytesWriter writer;
+            writer.writeByteArray(value);
+            change.value = writer.toByteArray();
+            _changes.push_back(change);
+            return shared_from_this();
+        }
     }
 }

@@ -75,6 +75,17 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_fallbackValue)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
+        auto r = ref->getData(::djinni::String::toCpp(jniEnv, j_key),
+                              ::djinni::Binary::toCpp(jniEnv, j_fallbackValue));
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {

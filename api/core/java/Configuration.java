@@ -6,6 +6,8 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Configuration {
+    public static final String KEYCHAIN_OBSERVABLE_RANGE = "KEYCHAIN_OBSERVABLE_RANGE";
+
     public abstract String getString(String key, String fallback);
 
     public abstract Configuration putString(String key, String value);

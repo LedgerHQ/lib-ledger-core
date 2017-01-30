@@ -49,6 +49,14 @@ public abstract class PreferencesEditor {
     public abstract PreferencesEditor putStringArray(String key, ArrayList<String> value);
 
     /**
+     * Sets the value to the given key in the Preferences.
+     * @param key The data key.
+     * @param value The value to store
+     * @return The reference of self in order to chain the call to the editor.
+     */
+    public abstract PreferencesEditor putData(String key, byte[] value);
+
+    /**
      * Removes the data associated with the given key.
      * @param key The key to remove from the Preferences
      * @return The reference of self in order to chain the call to the editor.
@@ -120,6 +128,14 @@ public abstract class PreferencesEditor {
             return native_putStringArray(this.nativeRef, key, value);
         }
         private native PreferencesEditor native_putStringArray(long _nativeRef, String key, ArrayList<String> value);
+
+        @Override
+        public PreferencesEditor putData(String key, byte[] value)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_putData(this.nativeRef, key, value);
+        }
+        private native PreferencesEditor native_putData(long _nativeRef, String key, byte[] value);
 
         @Override
         public PreferencesEditor remove(String key)

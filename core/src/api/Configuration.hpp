@@ -14,6 +14,8 @@ class Configuration {
 public:
     virtual ~Configuration() {}
 
+    static std::string const KEYCHAIN_OBSERVABLE_RANGE;
+
     virtual std::string getString(const std::string & key, const std::string & fallback) = 0;
 
     virtual std::shared_ptr<Configuration> putString(const std::string & key, const std::string & value) = 0;

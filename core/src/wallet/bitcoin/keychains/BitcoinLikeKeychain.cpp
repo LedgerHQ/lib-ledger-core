@@ -62,7 +62,7 @@ namespace ledger {
             return result;
         }
 
-        std::shared_ptr<Preferences> BitcoinLikeKeychain::getPreferences() {
+        std::shared_ptr<Preferences> BitcoinLikeKeychain::getPreferences() const {
             return _preferences;
         }
 

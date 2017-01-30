@@ -49,6 +49,13 @@
                                   fallbackValue:(nonnull NSArray<NSString *> *)fallbackValue;
 
 /**
+ * Retrieves the value associated with the given key or fallback to the default value.
+ * @return The data associated with the key or fallbackValue.
+ */
+- (nonnull NSData *)getData:(nonnull NSString *)key
+              fallbackValue:(nonnull NSData *)fallbackValue;
+
+/**
  * Checks whether the Preferences contains the given key.
  * @return true the preferences contains the key, false otherwise.
  */
