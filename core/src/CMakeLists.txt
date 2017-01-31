@@ -105,7 +105,7 @@ add_library(
         utils/Unit.cpp utils/Unit.hpp
         wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.cpp wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp
         wallet/bitcoin/networks.cpp wallet/bitcoin/networks.hpp
-        collections/strings.cpp collections/strings.hpp)
+        collections/strings.cpp collections/strings.hpp ../../cmake-build-debug/include/ledger/core/io/filesystem.cpp ../../cmake-build-debug/include/ledger/core/io/filesystem.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

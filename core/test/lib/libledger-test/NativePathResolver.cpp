@@ -32,7 +32,7 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <fstream>
-#include <cstdio>
+#include <ledger/core/io/filesystem.hpp>
 
 std::string NativePathResolver::resolveDatabasePath(const std::string &path) {
     std::string p = path;
@@ -60,6 +60,6 @@ std::string NativePathResolver::resolvePreferencesPath(const std::string &path) 
 
 void NativePathResolver::clean() {
     for (auto path : _createdPaths) {
-        std::remove(path.c_str());
+        ledger::core::fs::remove_all(path);
     }
 }

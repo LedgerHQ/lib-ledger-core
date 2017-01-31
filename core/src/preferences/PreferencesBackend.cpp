@@ -33,6 +33,7 @@
 #include "../utils/LambdaRunnable.hpp"
 #include <leveldb/write_batch.h>
 #include <cstring>
+#include <leveldb/env.h>
 
 namespace ledger {
     namespace core {

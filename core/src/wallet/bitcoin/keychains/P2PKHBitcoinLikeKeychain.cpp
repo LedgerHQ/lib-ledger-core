@@ -76,6 +76,7 @@ namespace ledger {
                             _state.maxConsecutiveReceiveIndex += 1;
                         else
                             _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
+                        _state.empty = false;
                         saveState();
                         return Option<Unit>(unit);
                     }
@@ -88,6 +89,7 @@ namespace ledger {
                             _state.maxConsecutiveChangeIndex += 1;
                         else
                             _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
+                        _state.empty = false;
                         saveState();
                         return Option<Unit>(unit);
                     }
@@ -104,10 +106,10 @@ namespace ledger {
         }
 
         std::vector<std::string> P2PKHBitcoinLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
+            auto maxObservableChangeIndex = _state.maxConsecutiveChangeIndex + _observableRange + _state.nonConsecutiveChangeIndexes.size();
+            auto maxObservableReceiveIndex = _state.maxConsecutiveReceiveIndex + _observableRange + _state.nonConsecutiveReceiveIndexes.size();
             auto length = to - from;
-            std::vector<std::string> result(length * 2);
-            auto maxObservableChangeIndex = _state.maxConsecutiveChangeIndex + _observableRange;
-            auto maxObservableReceiveIndex = _state.maxConsecutiveReceiveIndex + _observableRange;
+            std::vector<std::string> result;
             for (auto i = 0; i < length && ((from + i) < maxObservableChangeIndex || (from + i) < maxObservableReceiveIndex); i++) {
                 if ((from + i) < maxObservableReceiveIndex)
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
@@ -152,10 +154,10 @@ namespace ledger {
         std::vector<std::string>
         P2PKHBitcoinLikeKeychain::getAllObservableAddresses(BitcoinLikeKeychain::KeyPurpose purpose, uint32_t from,
                                                             uint32_t to) {
-            auto length = to - from;
+            auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
+            auto length = std::min<size_t >(to - from, maxObservableIndex - from);
             std::vector<std::string> result(length);
-            auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex : _state.maxConsecutiveReceiveIndex) + _observableRange;
-            for (auto i = 0; i < length && ((from + i) < maxObservableIndex); i++) {
+            for (auto i = 0; i < length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
                 } else {
@@ -184,7 +186,19 @@ namespace ledger {
         }
 
         void P2PKHBitcoinLikeKeychain::saveState() {
-
+            while (_state.nonConsecutiveReceiveIndexes.find(_state.maxConsecutiveReceiveIndex) != _state.nonConsecutiveReceiveIndexes.end()) {
+                _state.nonConsecutiveReceiveIndexes.erase(_state.maxConsecutiveReceiveIndex);
+                _state.maxConsecutiveReceiveIndex += 1;
+            }
+            while (_state.nonConsecutiveChangeIndexes.find(_state.maxConsecutiveChangeIndex) != _state.nonConsecutiveChangeIndexes.end()) {
+                _state.nonConsecutiveChangeIndexes.erase(_state.maxConsecutiveChangeIndex);
+                _state.maxConsecutiveChangeIndex += 1;
+            }
+            std::stringstream is;
+            ::cereal::BinaryOutputArchive archive(is);
+            archive(_state);
+            auto savedState = is.str();
+            getPreferences()->edit()->putData("state", std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size()))->commit();
         }
     }
 }
