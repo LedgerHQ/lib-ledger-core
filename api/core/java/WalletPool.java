@@ -3,26 +3,28 @@
 
 package co.ledger.core;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WalletPool {
-    public abstract void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback);
-
-    public abstract void getAllBitcoinLikeWalletIdentifiers(StringArrayCallback callback);
+    public abstract void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback);
 
     public abstract void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback);
 
-    /**getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback); */
-    public abstract ArrayList<CryptoCurrencyDescription> getAllSupportedCryptoCurrencies();
+    public abstract void getSupportedBitcoinLikeNetworkParameters(BitcoinLikeNetworkParametersCallback callback);
+
+    public abstract void addBitcoinLikeNetworkParameters(BitcoinLikeNetworkParameters params);
+
+    public abstract void removeBitcoinLikenetworkParameters(BitcoinLikeNetworkParameters params);
 
     public abstract Logger getLogger();
 
     public abstract Preferences getPreferences();
 
-    public abstract void getWalletPreferences(String walletIdentifier);
+    public abstract Preferences getWalletPreferences(String walletIdentifier);
 
-    public abstract void close();
+    public abstract Preferences getAccountPreferences(String walletIdentifier, int accountNumber);
+
+    public abstract Preferences getOperationPreferences(String uid);
 
     private static final class CppProxy extends WalletPool
     {
@@ -48,20 +50,12 @@ public abstract class WalletPool {
         }
 
         @Override
-        public void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback)
+        public void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOrCreateBitcoinLikeWallet(this.nativeRef, publicKeyProvider, currency, configuration, callback);
+            native_getOrCreateBitcoinLikeWallet(this.nativeRef, publicKeyProvider, networkParams, configuration, callback);
         }
-        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, CryptoCurrencyDescription currency, Configuration configuration, GetBitcoinLikeWalletCallback callback);
-
-        @Override
-        public void getAllBitcoinLikeWalletIdentifiers(StringArrayCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getAllBitcoinLikeWalletIdentifiers(this.nativeRef, callback);
-        }
-        private native void native_getAllBitcoinLikeWalletIdentifiers(long _nativeRef, StringArrayCallback callback);
+        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback);
 
         @Override
         public void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback)
@@ -72,12 +66,28 @@ public abstract class WalletPool {
         private native void native_getBitcoinLikeWallet(long _nativeRef, String identifier, GetBitcoinLikeWalletCallback callback);
 
         @Override
-        public ArrayList<CryptoCurrencyDescription> getAllSupportedCryptoCurrencies()
+        public void getSupportedBitcoinLikeNetworkParameters(BitcoinLikeNetworkParametersCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAllSupportedCryptoCurrencies(this.nativeRef);
+            native_getSupportedBitcoinLikeNetworkParameters(this.nativeRef, callback);
         }
-        private native ArrayList<CryptoCurrencyDescription> native_getAllSupportedCryptoCurrencies(long _nativeRef);
+        private native void native_getSupportedBitcoinLikeNetworkParameters(long _nativeRef, BitcoinLikeNetworkParametersCallback callback);
+
+        @Override
+        public void addBitcoinLikeNetworkParameters(BitcoinLikeNetworkParameters params)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_addBitcoinLikeNetworkParameters(this.nativeRef, params);
+        }
+        private native void native_addBitcoinLikeNetworkParameters(long _nativeRef, BitcoinLikeNetworkParameters params);
+
+        @Override
+        public void removeBitcoinLikenetworkParameters(BitcoinLikeNetworkParameters params)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_removeBitcoinLikenetworkParameters(this.nativeRef, params);
+        }
+        private native void native_removeBitcoinLikenetworkParameters(long _nativeRef, BitcoinLikeNetworkParameters params);
 
         @Override
         public Logger getLogger()
@@ -96,19 +106,27 @@ public abstract class WalletPool {
         private native Preferences native_getPreferences(long _nativeRef);
 
         @Override
-        public void getWalletPreferences(String walletIdentifier)
+        public Preferences getWalletPreferences(String walletIdentifier)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getWalletPreferences(this.nativeRef, walletIdentifier);
+            return native_getWalletPreferences(this.nativeRef, walletIdentifier);
         }
-        private native void native_getWalletPreferences(long _nativeRef, String walletIdentifier);
+        private native Preferences native_getWalletPreferences(long _nativeRef, String walletIdentifier);
 
         @Override
-        public void close()
+        public Preferences getAccountPreferences(String walletIdentifier, int accountNumber)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_close(this.nativeRef);
+            return native_getAccountPreferences(this.nativeRef, walletIdentifier, accountNumber);
         }
-        private native void native_close(long _nativeRef);
+        private native Preferences native_getAccountPreferences(long _nativeRef, String walletIdentifier, int accountNumber);
+
+        @Override
+        public Preferences getOperationPreferences(String uid)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getOperationPreferences(this.nativeRef, uid);
+        }
+        private native Preferences native_getOperationPreferences(long _nativeRef, String uid);
     }
 }

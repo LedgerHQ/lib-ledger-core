@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <cereal/types/unordered_map.hpp>
 
 namespace ledger {
     namespace core {
@@ -53,6 +54,25 @@ namespace ledger {
         struct ConfigurationValue {
             ConfigurationVariant variant;
             ConfigurationValueType type;
+
+            template <class Archive>
+            void serialize(Archive& ar) {
+                ar(type);
+                switch (type) {
+                    case ConfigurationValueType::STRING:
+                        ar(variant.string);
+                        break;
+                    case ConfigurationValueType::BYTES:
+                        ar(variant.bytes);
+                        break;
+                    case ConfigurationValueType::BOOLEAN:
+                        ar(variant.boolean);
+                        break;
+                    case ConfigurationValueType::INTEGER:
+                        ar(variant.integer);
+                        break;
+                }
+            };
         };
 
         class ConfigurationImpl : public api::Configuration, public std::enable_shared_from_this<ConfigurationImpl> {
@@ -67,6 +87,10 @@ namespace ledger {
             std::string getString(const std::string &key, const std::string &fallback) override;
             std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallback) override;
 
+            template <class Archive>
+            void serialize(Archive& ar) {
+                ar(_values);
+            }
         private:
             std::unordered_map<std::string, ConfigurationValue> _values;
         };

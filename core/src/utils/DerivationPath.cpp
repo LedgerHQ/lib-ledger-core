@@ -31,7 +31,7 @@
 #include "DerivationPath.hpp"
 #include <string>
 #include <cstdlib>
-#include "vector.hpp"
+#include "../collections/vector.hpp"
 #include <sstream>
 #include <fmt/format.h>
 

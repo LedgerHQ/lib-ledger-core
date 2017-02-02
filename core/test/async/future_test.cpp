@@ -276,3 +276,79 @@ TEST(Future, FilterFail) {
     });
     dispatcher->waitUntilStopped();
 }
+
+TEST(Future, ToSuccessOnlyCallback) {
+
+    struct SuccessOnlyCallback {
+
+        SuccessOnlyCallback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const int& i) {
+            EXPECT_EQ(i, 42);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    };
+
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, [] () {
+        return 42;
+    }).callback(queue, std::make_shared<SuccessOnlyCallback>(dispatcher));
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ToCallbackSuccess) {
+
+    struct Callback {
+
+        Callback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+            EXPECT_TRUE(!!i);
+            EXPECT_TRUE(!error);
+            EXPECT_EQ(i, 42);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    };
+
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, [] () {
+        return 42;
+    }).callback(queue, std::make_shared<Callback>(dispatcher));
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ToCallbackFailure) {
+
+    struct Callback {
+
+        Callback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+            EXPECT_FALSE(!!i);
+            EXPECT_FALSE(!error);
+            EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    };
+
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, [] () -> int {
+        throw Exception(api::ErrorCode::RUNTIME_ERROR, "Toto");
+    }).callback(queue, std::make_shared<Callback>(dispatcher));
+    dispatcher->waitUntilStopped();
+}

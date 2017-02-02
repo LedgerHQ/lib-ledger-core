@@ -32,6 +32,26 @@ struct BitcoinLikeTransaction final {
     , lockTime(std::move(lockTime_))
     , time(std::move(time_))
     {}
+
+    BitcoinLikeTransaction(const BitcoinLikeTransaction& cpy) {
+       this->inputs = cpy.inputs;
+       this->outputs = cpy.outputs;
+       this->block = cpy.block;
+       this->lockTime = cpy.lockTime;
+       this->time = cpy.time;
+    }
+
+    BitcoinLikeTransaction() = default;
+
+
+    BitcoinLikeTransaction& operator=(const BitcoinLikeTransaction& cpy) {
+       this->inputs = cpy.inputs;
+       this->outputs = cpy.outputs;
+       this->block = cpy.block;
+       this->lockTime = cpy.lockTime;
+       this->time = cpy.time;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

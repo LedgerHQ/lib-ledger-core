@@ -18,3 +18,6 @@ LedgerCore = interface +c {
     static getIntVersion(): i32;
 }
 
+TestCallback = interface +j +o +n +s {
+    onCallback(value: optional<string>, error: optional<Error>);
+}

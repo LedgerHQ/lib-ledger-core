@@ -32,7 +32,7 @@
 #include "../utils/djinni_helpers.hpp"
 #include "../bytes/BytesWriter.h"
 #include "../math/Base58.hpp"
-#include "../utils/vector.hpp"
+#include "../collections/vector.hpp"
 #include "../utils/Exception.hpp"
 
 ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::BitcoinLikeNetworkParameters &params,

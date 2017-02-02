@@ -21,6 +21,22 @@ struct BitcoinLikeBlock final {
     , height(std::move(height_))
     , time(std::move(time_))
     {}
+
+    BitcoinLikeBlock(const BitcoinLikeBlock& cpy) {
+       this->hash = cpy.hash;
+       this->height = cpy.height;
+       this->time = cpy.time;
+    }
+
+    BitcoinLikeBlock() = default;
+
+
+    BitcoinLikeBlock& operator=(const BitcoinLikeBlock& cpy) {
+       this->hash = cpy.hash;
+       this->height = cpy.height;
+       this->time = cpy.time;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

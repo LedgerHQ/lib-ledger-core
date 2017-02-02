@@ -29,6 +29,26 @@ struct BitcoinLikeOutput final {
     , script(std::move(script_))
     , address(std::move(address_))
     {}
+
+    BitcoinLikeOutput(const BitcoinLikeOutput& cpy) {
+       this->transactionHash = cpy.transactionHash;
+       this->index = cpy.index;
+       this->path = cpy.path;
+       this->script = cpy.script;
+       this->address = cpy.address;
+    }
+
+    BitcoinLikeOutput() = default;
+
+
+    BitcoinLikeOutput& operator=(const BitcoinLikeOutput& cpy) {
+       this->transactionHash = cpy.transactionHash;
+       this->index = cpy.index;
+       this->path = cpy.path;
+       this->script = cpy.script;
+       this->address = cpy.address;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

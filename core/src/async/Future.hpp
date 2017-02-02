@@ -40,6 +40,8 @@
 #include "ExecutionContext.hpp"
 #include "../utils/Exception.hpp"
 #include "../utils/ImmediateExecutionContext.hpp"
+#include "../traits/callback_traits.hpp"
+#include "../api/Error.hpp"
 
 namespace ledger {
     namespace core {
@@ -203,6 +205,27 @@ namespace ledger {
 
             void onComplete(const Context& context, std::function<void (const Try<T>&)> f) {
                 _defer->addCallback(f, context);
+            };
+
+            template<typename Callback>
+            typename std::enable_if<has_on_callback_method<Callback, void (T&)>::value, void>::type
+            callback(const Context& context, std::shared_ptr<Callback> cb) {
+                onComplete(context, [cb] (const Try<T>& result) {
+                    cb->onCallback(result.getValue());
+                });
+            };
+
+            template<typename Callback>
+            typename std::enable_if<has_on_callback_method<Callback, void (const std::experimental::optional<T>&, const std::experimental::optional<api::Error>&)>::value, void>::type
+            callback(const Context& context, std::shared_ptr<Callback> cb) {
+                onComplete(context, [cb] (const Try<T>& result) {
+                    if (result.isSuccess()) {
+                        cb->onCallback(result.toOption().toOptional(), Option<api::Error>().toOptional());
+                    } else {
+                        cb->onCallback(Option<T>().toOptional(), Option<api::Error>(result.getFailure().toApiError()).toOptional());
+                    }
+
+                });
             };
 
             static Future<T> async(const Context& context, std::function<T ()> f) {

@@ -25,6 +25,24 @@ struct BitcoinLikeInput final {
     , previousTxHash(std::move(previousTxHash_))
     , indexInPreviousTx(std::move(indexInPreviousTx_))
     {}
+
+    BitcoinLikeInput(const BitcoinLikeInput& cpy) {
+       this->path = cpy.path;
+       this->isCoinbase = cpy.isCoinbase;
+       this->previousTxHash = cpy.previousTxHash;
+       this->indexInPreviousTx = cpy.indexInPreviousTx;
+    }
+
+    BitcoinLikeInput() = default;
+
+
+    BitcoinLikeInput& operator=(const BitcoinLikeInput& cpy) {
+       this->path = cpy.path;
+       this->isCoinbase = cpy.isCoinbase;
+       this->previousTxHash = cpy.previousTxHash;
+       this->indexInPreviousTx = cpy.indexInPreviousTx;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

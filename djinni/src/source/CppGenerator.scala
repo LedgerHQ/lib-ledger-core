@@ -193,6 +193,32 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
           w.wl("{}")
         }
 
+
+        if (r.fields.nonEmpty) {
+            // Copy constructor
+            w.wl
+            w.wl(s"${actualSelf}(const ${actualSelf}& cpy) {")
+            r.fields foreach {(field) =>
+              w wl s"   this->${idCpp.field(field.ident)} = cpy.${idCpp.field(field.ident)};"
+            }
+            w.wl("}")
+
+            // Default constructor
+            w.wl
+            w.wl(s"${actualSelf}() = default;")
+            w.wl
+
+            // Assignement operator
+            w.wl
+            w.wl(s"${actualSelf}& operator=(const ${actualSelf}& cpy) {")
+            r.fields foreach {(field) =>
+                w wl s"   this->${idCpp.field(field.ident)} = cpy.${idCpp.field(field.ident)};"
+            }
+            w.wl("   return *this;")
+            w.wl("}")
+        }
+
+
         if (r.ext.cpp) {
           w.wl
           w.wl(s"virtual ~$actualSelf() = default;")

@@ -3,41 +3,43 @@
 
 #pragma once
 
-#include "../utils/optional.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeExtendedPublicKeyProvider;
+class BitcoinLikeNetworkParametersCallback;
 class Configuration;
-class CryptoCurrencyDescription;
 class GetBitcoinLikeWalletCallback;
 class Logger;
 class Preferences;
-class StringArrayCallback;
+struct BitcoinLikeNetworkParameters;
 
 class WalletPool {
 public:
     virtual ~WalletPool() {}
 
-    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & publicKeyProvider, const std::shared_ptr<CryptoCurrencyDescription> & currency, const std::shared_ptr<Configuration> & configuration, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
-
-    virtual void getAllBitcoinLikeWalletIdentifiers(const std::shared_ptr<StringArrayCallback> & callback) = 0;
+    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & publicKeyProvider, const BitcoinLikeNetworkParameters & networkParams, const std::shared_ptr<Configuration> & configuration, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
 
     virtual void getBitcoinLikeWallet(const std::string & identifier, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
 
-    /**getOrCreateEthereumLikeWallet(publicKeyProvider: EthereumPublicKeyProvider, currency: optional<CryptoCurrencyDescription>, callback: GetEthreumLikeWalletCallback); */
-    virtual std::vector<std::shared_ptr<CryptoCurrencyDescription>> getAllSupportedCryptoCurrencies() = 0;
+    virtual void getSupportedBitcoinLikeNetworkParameters(const std::shared_ptr<BitcoinLikeNetworkParametersCallback> & callback) = 0;
+
+    virtual void addBitcoinLikeNetworkParameters(const BitcoinLikeNetworkParameters & params) = 0;
+
+    virtual void removeBitcoinLikenetworkParameters(const BitcoinLikeNetworkParameters & params) = 0;
 
     virtual std::shared_ptr<Logger> getLogger() = 0;
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
-    virtual void getWalletPreferences(const std::string & walletIdentifier) = 0;
+    virtual std::shared_ptr<Preferences> getWalletPreferences(const std::string & walletIdentifier) = 0;
 
-    virtual void close() = 0;
+    virtual std::shared_ptr<Preferences> getAccountPreferences(const std::string & walletIdentifier, int32_t accountNumber) = 0;
+
+    virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
 };
 
 } } }  // namespace ledger::core::api

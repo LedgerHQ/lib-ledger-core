@@ -3,13 +3,13 @@
 
 #include "WalletPool.hpp"  // my header
 #include "BitcoinLikeExtendedPublicKeyProvider.hpp"
+#include "BitcoinLikeNetworkParameters.hpp"
+#include "BitcoinLikeNetworkParametersCallback.hpp"
 #include "Configuration.hpp"
-#include "CryptoCurrencyDescription.hpp"
 #include "GetBitcoinLikeWalletCallback.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "Preferences.hpp"
-#include "StringArrayCallback.hpp"
 
 namespace djinni_generated {
 
@@ -26,24 +26,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_nativeDestr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getOrCreateBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_publicKeyProvider, jobject j_currency, jobject j_configuration, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getOrCreateBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_publicKeyProvider, jobject j_networkParams, jobject j_configuration, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
         ref->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(jniEnv, j_publicKeyProvider),
-                                          ::djinni::Optional<std::experimental::optional, ::djinni_generated::CryptoCurrencyDescription>::toCpp(jniEnv, j_currency),
+                                          ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_networkParams),
                                           ::djinni_generated::Configuration::toCpp(jniEnv, j_configuration),
                                           ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getAllBitcoinLikeWalletIdentifiers(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        ref->getAllBitcoinLikeWalletIdentifiers(::djinni_generated::StringArrayCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
@@ -57,14 +48,31 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getAllSupportedCryptoCurrencies(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getSupportedBitcoinLikeNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        auto r = ref->getAllSupportedCryptoCurrencies();
-        return ::djinni::release(::djinni::List<::djinni_generated::CryptoCurrencyDescription>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->getSupportedBitcoinLikeNetworkParameters(::djinni_generated::BitcoinLikeNetworkParametersCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1addBitcoinLikeNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_params)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
+        ref->addBitcoinLikeNetworkParameters(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_params));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1removeBitcoinLikenetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_params)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
+        ref->removeBitcoinLikenetworkParameters(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_params));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
@@ -87,22 +95,35 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getWalletPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_walletIdentifier)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getWalletPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_walletIdentifier)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        ref->getWalletPreferences(::djinni::String::toCpp(jniEnv, j_walletIdentifier));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->getWalletPreferences(::djinni::String::toCpp(jniEnv, j_walletIdentifier));
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1close(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getAccountPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_walletIdentifier, jint j_accountNumber)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        ref->close();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->getAccountPreferences(::djinni::String::toCpp(jniEnv, j_walletIdentifier),
+                                            ::djinni::I32::toCpp(jniEnv, j_accountNumber));
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getOperationPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_uid)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
+        auto r = ref->getOperationPreferences(::djinni::String::toCpp(jniEnv, j_uid));
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

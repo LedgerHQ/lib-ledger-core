@@ -18,6 +18,20 @@ struct Error final {
     : code(std::move(code_))
     , message(std::move(message_))
     {}
+
+    Error(const Error& cpy) {
+       this->code = cpy.code;
+       this->message = cpy.message;
+    }
+
+    Error() = default;
+
+
+    Error& operator=(const Error& cpy) {
+       this->code = cpy.code;
+       this->message = cpy.message;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

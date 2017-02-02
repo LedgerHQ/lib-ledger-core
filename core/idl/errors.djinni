@@ -1,5 +1,8 @@
 
 ErrorCode = enum {
+    # Pool errors
+    unknown_network_parameters;
+
     # Device errors
 
     # Wallet errors

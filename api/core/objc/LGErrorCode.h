@@ -5,6 +5,8 @@
 
 typedef NS_ENUM(NSInteger, LGErrorCode)
 {
+    /** Pool errors */
+    LGErrorCodeUnknownNetworkParameters,
     /**
      * Device errors
      * Wallet errors

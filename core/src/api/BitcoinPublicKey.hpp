@@ -18,6 +18,20 @@ struct BitcoinPublicKey final {
     : publicKey(std::move(publicKey_))
     , chainCode(std::move(chainCode_))
     {}
+
+    BitcoinPublicKey(const BitcoinPublicKey& cpy) {
+       this->publicKey = cpy.publicKey;
+       this->chainCode = cpy.chainCode;
+    }
+
+    BitcoinPublicKey() = default;
+
+
+    BitcoinPublicKey& operator=(const BitcoinPublicKey& cpy) {
+       this->publicKey = cpy.publicKey;
+       this->chainCode = cpy.chainCode;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

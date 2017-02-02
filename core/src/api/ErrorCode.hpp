@@ -8,6 +8,8 @@
 namespace ledger { namespace core { namespace api {
 
 enum class ErrorCode : int {
+    /** Pool errors */
+    UNKNOWN_NETWORK_PARAMETERS,
     /**
      * Device errors
      * Wallet errors

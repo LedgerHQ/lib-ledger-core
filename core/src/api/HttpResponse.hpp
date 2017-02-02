@@ -26,6 +26,24 @@ struct HttpResponse final {
     , headers(std::move(headers_))
     , body(std::move(body_))
     {}
+
+    HttpResponse(const HttpResponse& cpy) {
+       this->statusCode = cpy.statusCode;
+       this->statusText = cpy.statusText;
+       this->headers = cpy.headers;
+       this->body = cpy.body;
+    }
+
+    HttpResponse() = default;
+
+
+    HttpResponse& operator=(const HttpResponse& cpy) {
+       this->statusCode = cpy.statusCode;
+       this->statusText = cpy.statusText;
+       this->headers = cpy.headers;
+       this->body = cpy.body;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

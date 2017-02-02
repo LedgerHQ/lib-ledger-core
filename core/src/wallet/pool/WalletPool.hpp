@@ -53,11 +53,34 @@
 #include "../../api/BitcoinLikeExtendedPublicKeyProvider.hpp"
 #include "../../api/BitcoinLikeExtendedPublicKey.hpp"
 #include "../../api/BitcoinLikeWallet.hpp"
+#include <cereal/types/polymorphic.hpp>
+#include "../../api_impl/ConfigurationImpl.hpp"
+#include "../../async/DedicatedContext.hpp"
+#include "../../preferences/Preferences.hpp"
 
 namespace ledger {
     namespace core {
 
-        class WalletPool : public api::WalletPool {
+        class BitcoinLikeWalletFactory;
+
+        class WalletPool : public api::WalletPool, DedicatedContext, public std::enable_shared_from_this<WalletPool> {
+
+        public:
+            struct WalletEntry {
+                std::string currencyIdentifier;
+                ConfigurationImpl configuration;
+
+                virtual void no_op() {
+
+                };
+
+                template <class Archive>
+                void serialize(Archive& ar) {
+                    ar(currencyIdentifier, configuration);
+                }
+            };
+
+        private:
             WalletPool(
                     const std::string &name,
                     const std::experimental::optional<std::string>& password,
@@ -73,35 +96,37 @@ namespace ledger {
 
         public:
 
+            // Bitcoin
             void getOrCreateBitcoinLikeWallet(
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
-                    const std::shared_ptr<api::CryptoCurrencyDescription> &currency,
+                    const api::BitcoinLikeNetworkParameters &networkParams,
                     const std::shared_ptr<api::Configuration> &configuration,
                     const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
-
-            void getWalletPreferences(const std::string &walletIdentifier) override;
-
-            void getAllBitcoinLikeWalletIdentifiers(const std::shared_ptr<api::StringArrayCallback> &callback) override;
 
             void getBitcoinLikeWallet(const std::string &identifier,
                                       const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
 
-            virtual std::vector<std::shared_ptr<api::CryptoCurrencyDescription>>
-            getAllSupportedCryptoCurrencies() override;
+            void getSupportedBitcoinLikeNetworkParameters(
+                    const std::shared_ptr<api::BitcoinLikeNetworkParametersCallback> &callback) override;
 
-            virtual std::shared_ptr<api::Logger> getLogger() override;
+            void addBitcoinLikeNetworkParameters(const api::BitcoinLikeNetworkParameters &params) override;
 
-            virtual std::shared_ptr<api::Preferences> getPreferences() override;
-            std::shared_ptr<api::Preferences> getInterfacePreferences();
-            virtual void close() override;
+            void removeBitcoinLikenetworkParameters(const api::BitcoinLikeNetworkParameters &params) override;
+
+            // Utilities
+            std::shared_ptr<api::Logger> getLogger() override;
+            std::shared_ptr<api::Preferences> getPreferences() override;
+            std::shared_ptr<api::Preferences> getWalletPreferences(const std::string &walletIdentifier) override;
+            std::shared_ptr<api::Preferences>
+            getAccountPreferences(const std::string &walletIdentifier, int32_t accountNumber) override;
+            std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
+            std::shared_ptr<Preferences> getInternalPreferences();
 
         private:
-            void runOnPoolQueue(std::function<void()> func);
-            void runOnMainQueue(std::function<void ()> func);
+            std::shared_ptr<BitcoinLikeWalletFactory> getBitcoinLikeWalletFactory(const std::string& networkParamsIdentifier);
 
         private:
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
-            std::shared_ptr<api::ExecutionContext> _queue;
             std::shared_ptr<DatabaseBackend> _databaseBackend;
             std::shared_ptr<HttpClient> _http;
             std::unordered_map<std::string, std::string> _configuration;
@@ -115,7 +140,9 @@ namespace ledger {
             std::shared_ptr<PreferencesBackend> _internalBackend;
 
             // Bitcoin wallets
-            std::vector<std::shared_ptr<api::BitcoinLikeWallet>> _wallet;
+            std::unordered_map<std::string, std::shared_ptr<BitcoinLikeWalletFactory>> _bitcoinWalletFactories;
+            std::vector<std::shared_ptr<api::BitcoinLikeWallet>> _bitcoinWallets;
+            std::map<std::string, api::BitcoinLikeNetworkParameters> _bitcoinNetworkParams;
 
         public:
             static void open( const std::string &name,

@@ -28,6 +28,26 @@ struct BitcoinLikeCurrencyDescription final {
     , XPUBAddressVersion(std::move(XPUBAddressVersion_))
     , shortName(std::move(shortName_))
     {}
+
+    BitcoinLikeCurrencyDescription(const BitcoinLikeCurrencyDescription& cpy) {
+       this->BIP44CoinType = cpy.BIP44CoinType;
+       this->P2PKHAddressVersion = cpy.P2PKHAddressVersion;
+       this->P2SHAddressVersion = cpy.P2SHAddressVersion;
+       this->XPUBAddressVersion = cpy.XPUBAddressVersion;
+       this->shortName = cpy.shortName;
+    }
+
+    BitcoinLikeCurrencyDescription() = default;
+
+
+    BitcoinLikeCurrencyDescription& operator=(const BitcoinLikeCurrencyDescription& cpy) {
+       this->BIP44CoinType = cpy.BIP44CoinType;
+       this->P2PKHAddressVersion = cpy.P2PKHAddressVersion;
+       this->P2SHAddressVersion = cpy.P2SHAddressVersion;
+       this->XPUBAddressVersion = cpy.XPUBAddressVersion;
+       this->shortName = cpy.shortName;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

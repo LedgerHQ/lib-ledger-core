@@ -4,6 +4,8 @@
 package co.ledger.core;
 
 public enum ErrorCode {
+    /** Pool errors */
+    UNKNOWN_NETWORK_PARAMETERS,
     /**
      * Device errors
      * Wallet errors

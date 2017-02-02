@@ -44,6 +44,36 @@ struct BitcoinLikeNetworkParameters final {
     , MessagePrefix(std::move(MessagePrefix_))
     , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
     {}
+
+    BitcoinLikeNetworkParameters(const BitcoinLikeNetworkParameters& cpy) {
+       this->Identifier = cpy.Identifier;
+       this->P2PKHVersion = cpy.P2PKHVersion;
+       this->P2SHVersion = cpy.P2SHVersion;
+       this->XPUBVersion = cpy.XPUBVersion;
+       this->FeePolicy = cpy.FeePolicy;
+       this->BIP44CoinType = cpy.BIP44CoinType;
+       this->PaymentUriScheme = cpy.PaymentUriScheme;
+       this->DustAmount = cpy.DustAmount;
+       this->MessagePrefix = cpy.MessagePrefix;
+       this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
+    }
+
+    BitcoinLikeNetworkParameters() = default;
+
+
+    BitcoinLikeNetworkParameters& operator=(const BitcoinLikeNetworkParameters& cpy) {
+       this->Identifier = cpy.Identifier;
+       this->P2PKHVersion = cpy.P2PKHVersion;
+       this->P2SHVersion = cpy.P2SHVersion;
+       this->XPUBVersion = cpy.XPUBVersion;
+       this->FeePolicy = cpy.FeePolicy;
+       this->BIP44CoinType = cpy.BIP44CoinType;
+       this->PaymentUriScheme = cpy.PaymentUriScheme;
+       this->DustAmount = cpy.DustAmount;
+       this->MessagePrefix = cpy.MessagePrefix;
+       this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api

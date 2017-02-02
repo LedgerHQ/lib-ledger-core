@@ -18,6 +18,20 @@ struct CryptoCurrencyUnit final {
     : name(std::move(name_))
     , decimalPlace(std::move(decimalPlace_))
     {}
+
+    CryptoCurrencyUnit(const CryptoCurrencyUnit& cpy) {
+       this->name = cpy.name;
+       this->decimalPlace = cpy.decimalPlace;
+    }
+
+    CryptoCurrencyUnit() = default;
+
+
+    CryptoCurrencyUnit& operator=(const CryptoCurrencyUnit& cpy) {
+       this->name = cpy.name;
+       this->decimalPlace = cpy.decimalPlace;
+       return *this;
+    }
 };
 
 } } }  // namespace ledger::core::api
