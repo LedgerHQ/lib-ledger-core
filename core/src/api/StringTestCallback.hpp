@@ -10,11 +10,15 @@ namespace ledger { namespace core { namespace api {
 
 struct Error;
 
-class TestCallback {
+class StringTestCallback {
 public:
-    virtual ~TestCallback() {}
+    virtual ~StringTestCallback() {}
 
     virtual void onCallback(const std::experimental::optional<std::string> & value, const std::experimental::optional<Error> & error) = 0;
+
+    virtual void onValue(const std::string & value) = 0;
+
+    virtual std::string getValue() = 0;
 };
 
 } } }  // namespace ledger::core::api

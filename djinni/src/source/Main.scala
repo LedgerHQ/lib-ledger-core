@@ -16,9 +16,11 @@
 
 package djinni
 
-import java.io.{IOException, FileInputStream, InputStreamReader, File, BufferedWriter, FileWriter}
+import java.io.{BufferedWriter, File, FileInputStream, FileWriter, IOException, InputStreamReader}
 
 import djinni.generatorTools._
+
+import scala.util.{Failure, Success}
 
 object Main {
 
@@ -284,91 +286,98 @@ object Main {
     }
 
     // Resolve names in IDL file, check types.
-    System.out.println("Resolving...")
-    resolver.resolve(meta.defaults, idl) match {
-      case Some(err) =>
-        System.err.println(err)
+    System.out.println("Preprocessing...")
+    preprocessor.resolveTemplates(meta.defaults, idl) match {
+      case Success((meta, idl)) =>
+        System.out.println("Resolving...")
+        resolver.resolve(meta, idl) match {
+          case Some(err) =>
+            System.err.println(err)
+            System.exit(1); return
+          case _ =>
+        }
+
+        System.out.println("Generating...")
+        val outFileListWriter = if (outFileListPath.isDefined) {
+          if (outFileListPath.get.getParentFile != null)
+            createFolder("output file list", outFileListPath.get.getParentFile)
+          Some(new BufferedWriter(new FileWriter(outFileListPath.get)))
+        } else {
+          None
+        }
+
+        val outSpec = Spec(
+          javaOutFolder,
+          javaPackage,
+          javaClassAccessModifier,
+          javaIdentStyle,
+          javaCppException,
+          javaAnnotation,
+          javaNullableAnnotation,
+          javaNonnullAnnotation,
+          javaUseFinalForRecord,
+          cppOutFolder,
+          cppHeaderOutFolder,
+          cppIncludePrefix,
+          cppExtendedRecordIncludePrefix,
+          cppNamespace,
+          cppIdentStyle,
+          cppFileIdentStyle,
+          cppOptionalTemplate,
+          cppOptionalHeader,
+          cppEnumHashWorkaround,
+          cppNnHeader,
+          cppNnType,
+          cppNnCheckExpression,
+          cppUseWideStrings,
+          jniOutFolder,
+          jniHeaderOutFolder,
+          jniIncludePrefix,
+          jniIncludeCppPrefix,
+          jniNamespace,
+          jniClassIdentStyle,
+          jniFileIdentStyle,
+          jniBaseLibIncludePrefix,
+          cppExt,
+          cppHeaderExt,
+          objcOutFolder,
+          objcppOutFolder,
+          objcIdentStyle,
+          objcFileIdentStyle,
+          objcppExt,
+          objcHeaderExt,
+          objcIncludePrefix,
+          objcExtendedRecordIncludePrefix,
+          objcppIncludePrefix,
+          objcppIncludeCppPrefix,
+          objcppIncludeObjcPrefix,
+          objcppNamespace,
+          objcBaseLibIncludePrefix,
+          outFileListWriter,
+          skipGeneration,
+          yamlOutFolder,
+          yamlOutFile,
+          yamlPrefix,
+          swiftOutFolder,
+          swiftTypePrefix,
+          swiftUmbrellaHeaderFilename,
+          nodeOutFolder,
+          nodePackage
+        )
+
+
+        try {
+          val r = generate(idl, outSpec)
+          r.foreach(e => System.err.println("Error generating output: " + e))
+        }
+        finally {
+          if (outFileListWriter.isDefined) {
+            outFileListWriter.get.close()
+          }
+        }
+      case Failure(ex) =>
+        System.err.println(ex)
         System.exit(1); return
-      case _ =>
-    }
-
-    System.out.println("Generating...")
-    val outFileListWriter = if (outFileListPath.isDefined) {
-      if (outFileListPath.get.getParentFile != null)
-        createFolder("output file list", outFileListPath.get.getParentFile)
-      Some(new BufferedWriter(new FileWriter(outFileListPath.get)))
-    } else {
-      None
-    }
-
-    val outSpec = Spec(
-      javaOutFolder,
-      javaPackage,
-      javaClassAccessModifier,
-      javaIdentStyle,
-      javaCppException,
-      javaAnnotation,
-      javaNullableAnnotation,
-      javaNonnullAnnotation,
-      javaUseFinalForRecord,
-      cppOutFolder,
-      cppHeaderOutFolder,
-      cppIncludePrefix,
-      cppExtendedRecordIncludePrefix,
-      cppNamespace,
-      cppIdentStyle,
-      cppFileIdentStyle,
-      cppOptionalTemplate,
-      cppOptionalHeader,
-      cppEnumHashWorkaround,
-      cppNnHeader,
-      cppNnType,
-      cppNnCheckExpression,
-      cppUseWideStrings,
-      jniOutFolder,
-      jniHeaderOutFolder,
-      jniIncludePrefix,
-      jniIncludeCppPrefix,
-      jniNamespace,
-      jniClassIdentStyle,
-      jniFileIdentStyle,
-      jniBaseLibIncludePrefix,
-      cppExt,
-      cppHeaderExt,
-      objcOutFolder,
-      objcppOutFolder,
-      objcIdentStyle,
-      objcFileIdentStyle,
-      objcppExt,
-      objcHeaderExt,
-      objcIncludePrefix,
-      objcExtendedRecordIncludePrefix,
-      objcppIncludePrefix,
-      objcppIncludeCppPrefix,
-      objcppIncludeObjcPrefix,
-      objcppNamespace,
-      objcBaseLibIncludePrefix,
-      outFileListWriter,
-      skipGeneration,
-      yamlOutFolder,
-      yamlOutFile,
-      yamlPrefix,
-      swiftOutFolder,
-      swiftTypePrefix,
-      swiftUmbrellaHeaderFilename,
-      nodeOutFolder,
-      nodePackage
-    )
-
-
-    try {
-      val r = generate(idl, outSpec)
-      r.foreach(e => System.err.println("Error generating output: " + e))
-    }
-    finally {
-      if (outFileListWriter.isDefined) {
-        outFileListWriter.get.close()
-      }
     }
   }
 }

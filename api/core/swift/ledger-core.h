@@ -59,5 +59,8 @@
 #import "../objc/LGLogPrinter.h"
 #import "../objc/LGLogger.h"
 #import "../objc/LGLedgerCore.h"
-#import "../objc/LGTestCallback.h"
+#import "../objc/LGTestService.h"
+#import "../objc/LGI64TestCallback.h"
+#import "../objc/LGStringTestCallback.h"
+#import "../objc/LGLedgerCoreTestCallback.h"
 #endif UMBRELLA_LEDGER_CORE_H

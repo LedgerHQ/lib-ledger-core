@@ -100,7 +100,7 @@ recordMemberVariable ::= identifier COLON typeReference SEMICOLON
 
 private interfaceDescription ::= interfaceTypeVariant LEFT_BLOCK_BRACE interfaceMember* RIGHT_BLOCK_BRACE
 
-interfaceTypeVariant ::= 'interface' generator*
+interfaceTypeVariant ::= 'interface'['[' toto (identifier [','])*  ']'] generator*
 
 interfaceMember ::= constMember | interfaceMemberFunction
 

@@ -128,19 +128,37 @@ private object IdlParser extends RegexParsers {
     case doc~ident => Enum.Option(ident, doc)
   }
 
-  def interfaceHeader = "interface" ~> extInterface
+  def interfaceHeader = "interface" ~> (genericType ~ extInterface)
   def interface: Parser[Interface] = interfaceHeader ~ bracesList(method | const) ^^ {
     case ext~items => {
       val methods = items collect {case m: Method => m}
       val consts = items collect {case c: Const => c}
-      Interface(ext, methods, consts)
+      Interface(ext._2, methods, consts, ext._1)
     }
+  }
+
+  def genericTypeIdentifier: Parser[Seq[GenericType]] = {
+    "\\[([A-Za-z]+)\\]".r ^^ {
+      _.toString.replace("[", "").replace("]", "")
+    } map {(r) =>
+      Seq(GenericType(r))
+    }
+  }
+  def noGenericTypeIdentifier = {
+    "".r ^^ {
+      _.toString
+    } map {(_) =>
+      Seq[GenericType]()
+    }
+  }
+  def genericType:Parser[Seq[GenericType]] = {
+   genericTypeIdentifier | noGenericTypeIdentifier
   }
 
   def externTypeDecl: Parser[TypeDef] = externEnum | externInterface | externRecord
   def externEnum: Parser[Enum] = enumHeader ^^ { case _ => Enum(List()) }
   def externRecord: Parser[Record] = recordHeader ~ opt(deriving) ^^ { case ext~deriving => Record(ext, List(), List(), deriving.getOrElse(Set[DerivingType]())) }
-  def externInterface: Parser[Interface] = interfaceHeader ^^ { case ext => Interface(ext, List(), List()) }
+  def externInterface: Parser[Interface] = interfaceHeader ^^ { case ext => Interface(ext._2, List(), List(), ext._1) }
 
   def staticLabel: Parser[Boolean] = ("static ".r | "".r) ^^ {
     case "static " => true
