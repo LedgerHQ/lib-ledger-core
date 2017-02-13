@@ -1,0 +1,7 @@
+@import "bitcoin/addresses.djinni"
+
+
+Networks = interface +c {
+    static bitcoin(): BitcoinLikeNetworkParameters;
+
+}

@@ -35,6 +35,7 @@
 #include <ledger/core/utils/hex.h>
 #include <ledger/core/api/BitcoinLikeExtendedPublicKey.hpp>
 #include <ledger/core/utils/optional.hpp>
+#include <ledger/core/api/Networks.hpp>
 
 std::vector<std::vector<std::string>> fixtures = {
         {"010966776006953D5567439E5E39F86A0D273BEE", "16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM", "00"},
@@ -48,16 +49,7 @@ std::vector<std::vector<std::string>> fixtures = {
 using namespace ledger::core::api;
 using namespace ledger::core;
 
-const BitcoinLikeNetworkParameters params(
-        "bitcoin",
-        {0},
-        {5},
-        {0x04, 0x88, 0xB2, 0x1E},
-        true,
-        0,
-        "bitcoin",
-        false
-);
+const BitcoinLikeNetworkParameters params = api::Networks::bitcoin();
 
 TEST(Address, AddressFromBase58String) {
      for (auto& item : fixtures) {

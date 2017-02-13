@@ -8,6 +8,7 @@
 @import "idl/crypto/crypto.djinni"
 @import "idl/math/random.djinni"
 @import "idl/bitcoin/addresses.djinni"
+@import "idl/networks.djinni"
 
 LedgerCore = interface +c {
     # Gets the version of the library as a human readable string.
@@ -16,14 +17,4 @@ LedgerCore = interface +c {
     # Get the integer version of the Library
     # @return The integer version of the library
     static getIntVersion(): i32;
-}
-
-TestService = interface +c {
-    getCallback(): TestCallback<i64>;
-    setStringCallback(callback: TestCallback<string>);
-    setLedgerCoreCallback(callback: TestCallback<LedgerCore>);
-}
-
-TestCallback = interface[T] +j +o +n {
-    onCallback(value: optional<T>, error: optional<Error>);
 }
