@@ -72,6 +72,10 @@ public class DjinniVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGenericTypeReference(@NotNull DjinniGenericTypeReference o) {
+    visitPsiElement(o);
+  }
+
   public void visitImportStatement(@NotNull DjinniImportStatement o) {
     visitPsiNamedElement(o);
   }

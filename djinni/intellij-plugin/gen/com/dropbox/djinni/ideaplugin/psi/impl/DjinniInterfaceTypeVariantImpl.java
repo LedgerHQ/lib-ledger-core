@@ -17,8 +17,12 @@ public class DjinniInterfaceTypeVariantImpl extends ASTWrapperPsiElement impleme
     super(node);
   }
 
+  public void accept(@NotNull DjinniVisitor visitor) {
+    visitor.visitInterfaceTypeVariant(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof DjinniVisitor) ((DjinniVisitor)visitor).visitInterfaceTypeVariant(this);
+    if (visitor instanceof DjinniVisitor) accept((DjinniVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -26,6 +30,24 @@ public class DjinniInterfaceTypeVariantImpl extends ASTWrapperPsiElement impleme
   @NotNull
   public List<DjinniGenerator> getGeneratorList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, DjinniGenerator.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLeftGenericsBracket() {
+    return findChildByType(LEFT_GENERICS_BRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightGenericsBracket() {
+    return findChildByType(RIGHT_GENERICS_BRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getToto() {
+    return findChildByType(TOTO);
   }
 
 }

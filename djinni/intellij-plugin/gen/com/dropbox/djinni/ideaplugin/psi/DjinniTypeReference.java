@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface DjinniTypeReference extends DjinniNamedElement {
 
   @Nullable
+  DjinniGenericTypeReference getGenericTypeReference();
+
+  @Nullable
   DjinniPredefinedType getPredefinedType();
 
   @Nullable

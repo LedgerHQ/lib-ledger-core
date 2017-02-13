@@ -17,8 +17,12 @@ public class DjinniInterfaceMemberFunctionImpl extends ASTWrapperPsiElement impl
     super(node);
   }
 
+  public void accept(@NotNull DjinniVisitor visitor) {
+    visitor.visitInterfaceMemberFunction(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof DjinniVisitor) ((DjinniVisitor)visitor).visitInterfaceMemberFunction(this);
+    if (visitor instanceof DjinniVisitor) accept((DjinniVisitor)visitor);
     else super.accept(visitor);
   }
 

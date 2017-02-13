@@ -26,6 +26,4 @@ TestService = interface +c {
 
 TestCallback = interface[T] +j +o +n {
     onCallback(value: optional<T>, error: optional<Error>);
-    onValue(value: T);
-    getValue(): T;
 }

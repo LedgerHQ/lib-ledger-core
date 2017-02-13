@@ -37,10 +37,16 @@ public interface DjinniTypeDefinition extends DjinniNamedElement {
   PsiElement getLeftBlockBrace();
 
   @Nullable
+  PsiElement getLeftGenericsBracket();
+
+  @Nullable
   PsiElement getLeftParamBrace();
 
   @NotNull
   PsiElement getRightBlockBrace();
+
+  @Nullable
+  PsiElement getRightGenericsBracket();
 
   @Nullable
   PsiElement getRightParamBrace();

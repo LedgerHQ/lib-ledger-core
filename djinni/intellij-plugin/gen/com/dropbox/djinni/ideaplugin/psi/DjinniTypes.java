@@ -24,6 +24,7 @@ public interface DjinniTypes {
   IElementType GENERIC_BASIC_TYPE = new DjinniElementType("GENERIC_BASIC_TYPE");
   IElementType GENERIC_BASIC_TYPE_DUAL_PARAMETER = new DjinniElementType("GENERIC_BASIC_TYPE_DUAL_PARAMETER");
   IElementType GENERIC_BASIC_TYPE_SINGLE_PARAMETER = new DjinniElementType("GENERIC_BASIC_TYPE_SINGLE_PARAMETER");
+  IElementType GENERIC_TYPE_REFERENCE = new DjinniElementType("GENERIC_TYPE_REFERENCE");
   IElementType IMPORT_STATEMENT = new DjinniElementType("IMPORT_STATEMENT");
   IElementType INTERFACE_FUNCTION_PARAM = new DjinniElementType("INTERFACE_FUNCTION_PARAM");
   IElementType INTERFACE_FUNCTION_PARAM_LIST = new DjinniElementType("INTERFACE_FUNCTION_PARAM_LIST");
@@ -44,6 +45,7 @@ public interface DjinniTypes {
   IElementType IDENTIFIER = new DjinniTokenType("identifier");
   IElementType LEFT_BLOCK_BRACE = new DjinniTokenType("{");
   IElementType LEFT_GENERICS_BRACE = new DjinniTokenType("<");
+  IElementType LEFT_GENERICS_BRACKET = new DjinniTokenType("[");
   IElementType LEFT_PARAM_BRACE = new DjinniTokenType("(");
   IElementType LIST = new DjinniTokenType("list");
   IElementType LIST_SEPARATOR = new DjinniTokenType(",");
@@ -53,12 +55,14 @@ public interface DjinniTypes {
   IElementType PLUS = new DjinniTokenType("+");
   IElementType RIGHT_BLOCK_BRACE = new DjinniTokenType("}");
   IElementType RIGHT_GENERICS_BRACE = new DjinniTokenType(">");
+  IElementType RIGHT_GENERICS_BRACKET = new DjinniTokenType("]");
   IElementType RIGHT_PARAM_BRACE = new DjinniTokenType(")");
   IElementType SEMICOLON = new DjinniTokenType(";");
   IElementType SET = new DjinniTokenType("set");
   IElementType SPACE = new DjinniTokenType("space");
   IElementType STRING_LITERAL = new DjinniTokenType("string_literal");
   IElementType TEXT = new DjinniTokenType("text");
+  IElementType TOTO = new DjinniTokenType("toto");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -110,6 +114,9 @@ public interface DjinniTypes {
       }
       else if (type == GENERIC_BASIC_TYPE_SINGLE_PARAMETER) {
         return new DjinniGenericBasicTypeSingleParameterImpl(node);
+      }
+      else if (type == GENERIC_TYPE_REFERENCE) {
+        return new DjinniGenericTypeReferenceImpl(node);
       }
       else if (type == IMPORT_STATEMENT) {
         return new DjinniImportStatementImpl(node);

@@ -40,6 +40,8 @@
     RIGHT_BLOCK_BRACE="}"
     LEFT_GENERICS_BRACE="<"
     RIGHT_GENERICS_BRACE=">"
+    LEFT_GENERICS_BRACKET="["
+    RIGHT_GENERICS_BRACKET="]"
     LEFT_PARAM_BRACE="("
     RIGHT_PARAM_BRACE=")"
     AT="@"
@@ -98,7 +100,7 @@ recordMemberVariable ::= identifier COLON typeReference SEMICOLON
 
 // interface.
 
-private interfaceDescription ::= interfaceTypeVariant LEFT_BLOCK_BRACE interfaceMember* RIGHT_BLOCK_BRACE
+private interfaceDescription ::= interfaceTypeVariant [LEFT_GENERICS_BRACKET !text RIGHT_GENERICS_BRACKET] LEFT_BLOCK_BRACE interfaceMember* RIGHT_BLOCK_BRACE
 
 interfaceTypeVariant ::= 'interface'['[' toto (identifier [','])*  ']'] generator*
 
@@ -113,11 +115,13 @@ interfaceFunctionParam ::= identifier COLON typeReference
 //
 // type references
 //
-typeReference ::= predefinedType | identifier {
+typeReference ::= predefinedType | genericTypeReference | identifier {
   mixin="com.dropbox.djinni.ideaplugin.psi.impl.DjinniReferenceImpl"
   implements="com.dropbox.djinni.ideaplugin.psi.DjinniNamedElement"
   methods=[getName setName getNameIdentifier]
 }
+
+genericTypeReference ::= identifier !space LEFT_GENERICS_BRACE typeReference RIGHT_GENERICS_BRACE
 
 predefinedType ::= basicType | genericBasicType
 

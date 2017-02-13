@@ -58,6 +58,8 @@ TEXT=[a-zA-Z_0-9]+
   ">"                   { return RIGHT_GENERICS_BRACE; }
   "("                   { return LEFT_PARAM_BRACE; }
   ")"                   { return RIGHT_PARAM_BRACE; }
+  "["                   { return LEFT_PARAM_BRACKET; }
+  "]"                   { return RIGHT_PARAM_BRACKET; }
   "@"                   { return AT; }
   "list"                { return LIST; }
   "set"                 { return SET; }

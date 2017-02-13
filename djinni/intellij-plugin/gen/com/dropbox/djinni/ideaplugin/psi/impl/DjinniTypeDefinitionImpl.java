@@ -18,8 +18,12 @@ public class DjinniTypeDefinitionImpl extends DjinniNamedElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull DjinniVisitor visitor) {
+    visitor.visitTypeDefinition(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof DjinniVisitor) ((DjinniVisitor)visitor).visitTypeDefinition(this);
+    if (visitor instanceof DjinniVisitor) accept((DjinniVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -79,6 +83,12 @@ public class DjinniTypeDefinitionImpl extends DjinniNamedElementImpl implements 
 
   @Override
   @Nullable
+  public PsiElement getLeftGenericsBracket() {
+    return findChildByType(LEFT_GENERICS_BRACKET);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLeftParamBrace() {
     return findChildByType(LEFT_PARAM_BRACE);
   }
@@ -87,6 +97,12 @@ public class DjinniTypeDefinitionImpl extends DjinniNamedElementImpl implements 
   @NotNull
   public PsiElement getRightBlockBrace() {
     return findNotNullChildByType(RIGHT_BLOCK_BRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightGenericsBracket() {
+    return findChildByType(RIGHT_GENERICS_BRACKET);
   }
 
   @Override

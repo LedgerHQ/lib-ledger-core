@@ -55,7 +55,8 @@ const BitcoinLikeNetworkParameters params(
         {0x04, 0x88, 0xB2, 0x1E},
         true,
         0,
-        "bitcoin"
+        "bitcoin",
+        false
 );
 
 TEST(Address, AddressFromBase58String) {

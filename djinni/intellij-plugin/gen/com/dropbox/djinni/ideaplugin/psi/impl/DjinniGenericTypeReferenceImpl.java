@@ -11,14 +11,14 @@ import static com.dropbox.djinni.ideaplugin.psi.DjinniTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.dropbox.djinni.ideaplugin.psi.*;
 
-public class DjinniEnumMemberImpl extends ASTWrapperPsiElement implements DjinniEnumMember {
+public class DjinniGenericTypeReferenceImpl extends ASTWrapperPsiElement implements DjinniGenericTypeReference {
 
-  public DjinniEnumMemberImpl(ASTNode node) {
+  public DjinniGenericTypeReferenceImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DjinniVisitor visitor) {
-    visitor.visitEnumMember(this);
+    visitor.visitGenericTypeReference(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,14 +28,26 @@ public class DjinniEnumMemberImpl extends ASTWrapperPsiElement implements Djinni
 
   @Override
   @NotNull
-  public DjinniEnumValue getEnumValue() {
-    return findNotNullChildByClass(DjinniEnumValue.class);
+  public DjinniTypeReference getTypeReference() {
+    return findNotNullChildByClass(DjinniTypeReference.class);
   }
 
   @Override
   @NotNull
-  public PsiElement getSemicolon() {
-    return findNotNullChildByType(SEMICOLON);
+  public PsiElement getLeftGenericsBrace() {
+    return findNotNullChildByType(LEFT_GENERICS_BRACE);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getRightGenericsBrace() {
+    return findNotNullChildByType(RIGHT_GENERICS_BRACE);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getIdentifier() {
+    return findNotNullChildByType(IDENTIFIER);
   }
 
 }
