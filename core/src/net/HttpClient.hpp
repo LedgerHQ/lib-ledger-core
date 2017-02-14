@@ -34,16 +34,19 @@
 #include "../api/HttpClient.hpp"
 #include "../api/HttpMethod.hpp"
 #include "../api/HttpRequest.hpp"
-#include "../api/HttpResponse.hpp"
+#include "../api/HttpUrlConnection.hpp"
+#include "../api/HttpReadBodyResult.hpp"
 #include "../api/ExecutionContext.hpp"
 #include "../utils/optional.hpp"
-#include <map>
+#include <unordered_map>
 #include <memory>
+#include "../async/Future.hpp"
+#include "../async/Promise.hpp"
 
 namespace ledger {
     namespace core {
 
-        class HttpRequest {
+        class HttpRequest : public std::enable_shared_from_this<HttpRequest> {
         public:
             HttpRequest(api::HttpMethod method,
                         const std::string& url,
@@ -51,7 +54,7 @@ namespace ledger {
                         const std::experimental::optional<std::vector<uint8_t >> body,
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context);
-            void operator()(std::function<void (const api::HttpResponse&)> callback);
+            Future<std::shared_ptr<api::HttpUrlConnection>> operator()();
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
         private:
             api::HttpMethod _method;
@@ -63,7 +66,7 @@ namespace ledger {
 
             class ApiRequest : public api::HttpRequest {
             public:
-                ApiRequest(const  ledger::core::HttpRequest& self);
+                ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
                 virtual api::HttpMethod getMethod() override;
 
                 virtual std::unordered_map<std::string, std::string> getHeaders() override;
@@ -72,13 +75,16 @@ namespace ledger {
 
                 virtual std::string getUrl() override;
 
-                virtual void complete(const api::HttpResponse &response) override;
+                virtual ~ApiRequest();
 
-                void setCallback(std::function<void (const api::HttpResponse&)> callback);
-                ~ApiRequest();
+                virtual void complete(const std::shared_ptr<api::HttpUrlConnection> &response,
+                              const optional<api::Error> &error) override;
+
+                Future<std::shared_ptr<api::HttpUrlConnection>> getFuture() const;
+
             private:
-                ledger::core::HttpRequest *_self;
-                std::function<void (const api::HttpResponse&)> _callback;
+                std::shared_ptr<const ledger::core::HttpRequest> _self;
+                Promise<std::shared_ptr<api::HttpUrlConnection>> _promise;
             };
         };
 

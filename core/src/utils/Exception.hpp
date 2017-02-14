@@ -35,16 +35,19 @@
 #include <string>
 #include "../api/ErrorCode.hpp"
 #include "../api/Error.hpp"
-#include "../utils/optional.hpp"
+#include "../utils/Option.hpp"
+#include <memory>
 
 namespace ledger {
     namespace core {
         class Exception : public std::exception {
         public:
-            Exception(api::ErrorCode code, const std::string& message);
+            Exception(api::ErrorCode code, const std::string& message,
+                      Option<std::shared_ptr<void>> userData = Option<std::shared_ptr<void>>());
             api::ErrorCode getErrorCode() const;
+            const std::string& getMessage() const;
+            const Option<std::shared_ptr<void>>& getUserData() const;
             api::Error toApiError() const;
-
             virtual ~Exception() override;
 
             virtual const char *what() const noexcept override;
@@ -55,6 +58,7 @@ namespace ledger {
         private:
             api::ErrorCode _code;
             std::string _message;
+            Option<std::shared_ptr<void>> _userData;
         };
     }
 }

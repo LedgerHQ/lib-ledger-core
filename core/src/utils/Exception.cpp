@@ -33,11 +33,12 @@
 
 const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_ERROR;
 
-ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message) {
+ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message, Option<std::shared_ptr<void>> userData) {
     _code = code;
     std::stringstream ss;
     ss << message << "(Error " << (unsigned int)code << ")";
     _message = ss.str();
+    _userData = userData;
 }
 
 ledger::core::Exception::~Exception() {
@@ -54,4 +55,12 @@ ledger::core::api::ErrorCode ledger::core::Exception::getErrorCode() const {
 
 ledger::core::api::Error ledger::core::Exception::toApiError() const {
     return api::Error(_code, _message);
+}
+
+const std::string &ledger::core::Exception::getMessage() const {
+    return _message;
+}
+
+const ledger::core::Option<std::shared_ptr<void>> &ledger::core::Exception::getUserData() const {
+    return _userData;
 }

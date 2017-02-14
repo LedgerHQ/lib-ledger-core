@@ -36,6 +36,8 @@
 #include <vector>
 #include "../../../utils/optional.hpp"
 #include "../../../api/ErrorCode.hpp"
+#include "../../../utils/Option.hpp"
+#include "../../../async/Future.hpp"
 
 namespace ledger {
     namespace core {
@@ -111,26 +113,29 @@ namespace ledger {
             std::vector<Output> outputs;
         };
 
+        struct TransactionsBulk {
+            std::vector<Transaction> transactions;
+            bool hasNext;
+        };
+
         class BitcoinLikeBlockchainExplorer {
         public:
-            typedef std::function<void (const Transaction& transaction, int index)> TransactionConsumer;
-            typedef std::function<void (bool hasNext, int numberOfTransacions)> TransactionSuccessCallback;
-            typedef std::function<void (api::ErrorCode code, std::string message)> TransactionFailureCallback;
-
-            virtual void *startSession() = 0;
+            virtual Future<void *> startSession() = 0;
             virtual void killSession(void *session) = 0;
 
-            virtual void getTransactions(const std::vector<std::string>& addresses,
-                                         optional<Block> from,
-                                         TransactionConsumer consumer,
-                                         TransactionSuccessCallback success,
-                                         void* session = nullptr) = 0;
+            virtual Future<TransactionsBulk> getTransactions(
+                    const std::vector<std::string>& addresses,
+                    Option<std::string> fromBlockHash = Option<std::string>(),
+                    Option<void*> session = Option<void *>()
+            ) = 0;
+
+            virtual Future<Block> getCurrentBlock() = 0;
 
             virtual void getRawTransaction(const std::string& transactionHash,
                                            std::function<void (std::vector<uint8_t>)> callback
             ) = 0;
 
-            //virtual void pushTransaction(std::vector)
+            virtual Future<Unit> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
         };
     }
 }

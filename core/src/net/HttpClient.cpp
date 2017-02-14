@@ -29,7 +29,6 @@
  *
  */
 #include "HttpClient.hpp"
-#include "../utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -106,19 +105,25 @@ namespace ledger {
             _context = context;
         }
 
-        void HttpRequest::operator()(std::function<void (const api::HttpResponse&)> callback) {
-            auto req = toApiRequest();
-            std::dynamic_pointer_cast<ApiRequest>(req)->setCallback(callback);
-            _client->execute(req);
-        }
-
-        HttpRequest::ApiRequest::ApiRequest(const  ledger::core::HttpRequest &self) {
-            _self = new ledger::core::HttpRequest(self);
+        HttpRequest::ApiRequest::ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self) {
+            _self = self;
         }
 
         std::shared_ptr<api::HttpRequest> HttpRequest::toApiRequest() const {
-            auto request = std::make_shared<HttpRequest::ApiRequest>(*this);
+            auto request = std::shared_ptr<HttpRequest::ApiRequest>(new ApiRequest(std::make_shared<HttpRequest>(*this)));
             return std::dynamic_pointer_cast<api::HttpRequest>(request);
+        }
+
+        Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() {
+            auto request = std::dynamic_pointer_cast<ApiRequest>(toApiRequest());
+            _client->execute(request);
+            return  request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [] (const std::shared_ptr<api::HttpUrlConnection>& connection) {
+                if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
+                    throw Exception(api::ErrorCode::HTTP_ERROR, connection->getStatusText(),
+                                    Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(connection)));
+                }
+                return connection;
+            });
         }
 
         api::HttpMethod HttpRequest::ApiRequest::getMethod() {
@@ -137,19 +142,21 @@ namespace ledger {
             return _self->_url;
         }
 
-        void HttpRequest::ApiRequest::complete(const api::HttpResponse &response) {
-            auto callback = _callback;
-            _self->_context->execute(make_runnable([callback, response] () {
-                callback(response);
-            }));
-        }
-
-        void HttpRequest::ApiRequest::setCallback(std::function<void (const api::HttpResponse&)> callback) {
-            _callback = callback;
-        }
-
         HttpRequest::ApiRequest::~ApiRequest() {
-            delete _self;
+
+        }
+
+        void HttpRequest::ApiRequest::complete(const std::shared_ptr<api::HttpUrlConnection> &response,
+                                               const optional<api::Error> &error) {
+            if (error) {
+                _promise.failure(Exception(error->code, error->message));
+            } else {
+                _promise.success(response);
+            }
+        }
+
+        Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::ApiRequest::getFuture() const {
+            return _promise.getFuture();
         }
     }
 

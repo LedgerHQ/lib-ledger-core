@@ -6,8 +6,9 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGError+Private.h"
 #import "LGHttpMethod+Private.h"
-#import "LGHttpResponse+Private.h"
+#import "LGHttpUrlConnection+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -60,9 +61,11 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)complete:(nonnull LGHttpResponse *)response {
+- (void)complete:(nullable id<LGHttpUrlConnection>)response
+           error:(nullable LGError *)error {
     try {
-        _cppRefHandle.get()->complete(::djinni_generated::HttpResponse::toCpp(response));
+        _cppRefHandle.get()->complete(::djinni::Optional<std::experimental::optional, ::djinni_generated::HttpUrlConnection>::toCpp(response),
+                                      ::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::toCpp(error));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

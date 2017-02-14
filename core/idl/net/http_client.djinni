@@ -1,3 +1,4 @@
+@import "../errors.djinni"
 
 HttpMethod = enum {
     GET;
@@ -6,11 +7,24 @@ HttpMethod = enum {
     DEL;
 }
 
-HttpResponse = record {
-    statusCode: i32;
-    statusText: string;
-    headers: map<string, string>;
-    body: binary;
+HttpReadBodyResult = record {
+    error: optional<Error>;
+    data: optional<binary>;
+}
+
+HttpUrlConnection = interface +j +o +n {
+    # Gets the HTTP response status code
+    # @return The HTTP response status code
+    getStatusCode(): i32;
+    # Gets the HTTP response status text
+    # @return The HTTP response status text
+    getStatusText(): string;
+    # Gets the HTTP response headers
+    # @return The HTTP response headers
+    getHeaders(): map<string, string>;
+    # Reads available HTTP response body. This method will be called multiple times until it returns a empty bytes array.
+    # @returns A chunk of the body data wrapped into a HttpReadBodyResult (for error management)
+    readBody(): HttpReadBodyResult;
 }
 
 HttpRequest = interface +c {
@@ -18,7 +32,7 @@ HttpRequest = interface +c {
     getHeaders(): map<string, string>;
     getBody(): binary;
     getUrl(): string;
-    complete(response: HttpResponse);
+    complete(response: optional<HttpUrlConnection>, error: optional<Error>);
 }
 
 HttpClient = interface +j +o +n {

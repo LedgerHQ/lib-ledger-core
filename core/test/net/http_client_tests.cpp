@@ -52,6 +52,8 @@ static std::string BIG_TEXT =
         "\n"
         "G. ";
 
+using namespace ledger::core;
+
 TEST(HttpClient, GET) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
     auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
@@ -68,14 +70,16 @@ TEST(HttpClient, GET) {
 
         server->start(8000);
 
-        worker->execute(make_runnable([&http, dispatcher, &server] () {
-            http.GET("/say/hello/toto/please")([dispatcher,  &server] (const ledger::core::api::HttpResponse& response) {
-                auto res = std::string((char *)response.body.data(), response.body.size());
-                EXPECT_EQ(200, response.statusCode);
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+            http.GET("/say/hello/toto/please")().foreach(dispatcher->getMainExecutionContext(),
+                                                            [dispatcher, &server] (const std::shared_ptr<api::HttpUrlConnection> connection) {
+                auto body = connection->readBody();
+                auto res = std::string((char *)(body.data->data()), body.data->size());
+                EXPECT_EQ(200, connection->getStatusCode());
                 EXPECT_EQ("Hello toto", res);
                 std::cout << res << std::endl;
                 server->stop();
-                dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
                     dispatcher->stop();
                 }), 0);
             });
@@ -100,14 +104,16 @@ TEST(HttpClient, POST) {
         server->start(8000);
 
 
-        worker->execute(make_runnable([&http, dispatcher, &server] () {
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
             std::vector<uint8_t> body((uint8_t *)BIG_TEXT.c_str(), (uint8_t *)(BIG_TEXT.c_str() + BIG_TEXT.size()));
-            http.POST("/next/century/postal/service", body)([dispatcher,  &server] (const ledger::core::api::HttpResponse& response) {
-                auto res = std::string((char *)response.body.data(), response.body.size());
-                EXPECT_EQ(200, response.statusCode);
+            http.POST("/next/century/postal/service", body)().foreach(dispatcher->getMainExecutionContext(),
+                                                            [dispatcher, &server] (const std::shared_ptr<api::HttpUrlConnection> connection) {
+                auto body = connection->readBody();
+                auto res = std::string((char *)(body.data->data()), body.data->size());
+                EXPECT_EQ(200, connection->getStatusCode());
                 EXPECT_EQ(BIG_TEXT, res);
                 server->stop();
-                dispatcher->getMainExecutionContext()->delay(make_runnable([dispatcher]() {
+                dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
                     dispatcher->stop();
                 }), 0);
             });

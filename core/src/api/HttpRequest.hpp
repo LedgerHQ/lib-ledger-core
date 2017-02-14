@@ -3,15 +3,18 @@
 
 #pragma once
 
+#include "../utils/optional.hpp"
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
 
+class HttpUrlConnection;
 enum class HttpMethod;
-struct HttpResponse;
+struct Error;
 
 class HttpRequest {
 public:
@@ -25,7 +28,7 @@ public:
 
     virtual std::string getUrl() = 0;
 
-    virtual void complete(const HttpResponse & response) = 0;
+    virtual void complete(const std::shared_ptr<HttpUrlConnection> & response, const std::experimental::optional<Error> & error) = 0;
 };
 
 } } }  // namespace ledger::core::api

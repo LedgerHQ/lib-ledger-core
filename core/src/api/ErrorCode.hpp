@@ -38,6 +38,9 @@ enum class ErrorCode : int {
     NO_SUCH_ELEMENT,
     /** Preferences Error */
     UNABLE_TO_OPEN_LEVELDB,
+    /** Network errors */
+    NO_INTERNET_CONNECTIVITY,
+    HTTP_ERROR,
 };
 
 } } }  // namespace ledger::core::api

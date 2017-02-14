@@ -15,7 +15,7 @@ public abstract class HttpRequest {
 
     public abstract String getUrl();
 
-    public abstract void complete(HttpResponse response);
+    public abstract void complete(HttpUrlConnection response, Error error);
 
     private static final class CppProxy extends HttpRequest
     {
@@ -73,11 +73,11 @@ public abstract class HttpRequest {
         private native String native_getUrl(long _nativeRef);
 
         @Override
-        public void complete(HttpResponse response)
+        public void complete(HttpUrlConnection response, Error error)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_complete(this.nativeRef, response);
+            native_complete(this.nativeRef, response, error);
         }
-        private native void native_complete(long _nativeRef, HttpResponse response);
+        private native void native_complete(long _nativeRef, HttpUrlConnection response, Error error);
     }
 }

@@ -35,6 +35,8 @@
 #include <ledger/core/api/HttpResponse.hpp>
 #include <sstream>
 #include <cstring>
+#include <ledger/core/api/HttpUrlConnection.hpp>
+#include <ledger/core/api/HttpReadBodyResult.hpp>
 
 static void ev_handler(struct mg_connection *c, int ev, void *p) {
     if (ev == MG_EV_CONNECT) {
@@ -60,14 +62,53 @@ static void ev_handler(struct mg_connection *c, int ev, void *p) {
     }
 }
 
+class HttpUrlConnection : public ledger::core::api::HttpUrlConnection {
+public:
+    HttpUrlConnection(int32_t statusCode,
+                      std::string statusMessage,
+                      std::unordered_map<std::string, std::string> headers,
+                      std::vector<uint8_t> body) {
+        _statusCode = statusCode;
+        _statusMessage = statusMessage;
+        _headers = headers;
+        _body = body;
+    };
+
+    int32_t getStatusCode()override {
+        return _statusCode;
+    };
+
+    std::string getStatusText() override {
+        return _statusMessage;
+    }
+
+    std::unordered_map<std::string, std::string> getHeaders() override{
+        return _headers;
+    }
+
+    ledger::core::api::HttpReadBodyResult readBody() override {
+        auto body = _body;
+        _body = std::vector<uint8_t>();
+        return ledger::core::api::HttpReadBodyResult(
+                std::experimental::optional<ledger::core::api::Error>(),
+                std::experimental::optional<std::vector<uint8_t>>(body)
+        );
+    }
+private:
+    int32_t _statusCode;
+    std::string _statusMessage;
+    std::unordered_map<std::string, std::string> _headers;
+    std::vector<uint8_t> _body;
+};
+
 void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http_message *hm, const std::shared_ptr<ledger::core::api::HttpRequest>& request) {
-    ledger::core::api::HttpResponse response(
+     auto connection = std::make_shared<HttpUrlConnection>(
             hm->resp_code,
             std::string(hm->resp_status_msg.p, hm->resp_status_msg.len),
             std::unordered_map<std::string, std::string>(),
             std::vector<uint8_t >((uint8_t *)hm->body.p, (uint8_t *)(hm->body.p + hm->body.len))
     );
-    request->complete(response);
+    request->complete(connection, std::experimental::optional<ledger::core::api::Error>());
 }
 
 void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) {

@@ -109,7 +109,7 @@ namespace ledger {
                 return _deffer->hasValue();
             };
 
-            Future<T> getFuture() {
+            Future<T> getFuture() const {
                 return Future<T>(_deffer);
             };
 

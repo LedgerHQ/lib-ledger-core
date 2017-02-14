@@ -37,6 +37,10 @@ ErrorCode = enum {
 
     # Preferences Error
     unable_to_open_leveldb;
+
+    # Network errors
+    no_internet_connectivity;
+    http_error;
 }
 
 Error = record {

@@ -35,4 +35,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeNoSuchElement,
     /** Preferences Error */
     LGErrorCodeUnableToOpenLeveldb,
+    /** Network errors */
+    LGErrorCodeNoInternetConnectivity,
+    LGErrorCodeHttpError,
 };
