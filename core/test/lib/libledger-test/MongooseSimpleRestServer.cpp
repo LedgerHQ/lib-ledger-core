@@ -57,7 +57,7 @@ void MongooseSimpleRestServer::ev_handler(struct mg_connection *c, int ev, void 
                 return ;
             }
         }
-        mg_printf(c, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+        mg_printf(c, "%s", "HTTP/1.1 404 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
         mg_printf_http_chunk(c, "{\"error\": \"unknown call\"}");
         mg_send_http_chunk(c, "", 0); /* Send empty chunk, the end of response */
     }

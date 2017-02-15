@@ -29,6 +29,7 @@
  *
  */
 #include "HttpClient.hpp"
+#include "HttpUrlConnectionInputStream.hpp"
 
 namespace ledger {
     namespace core {
@@ -114,7 +115,7 @@ namespace ledger {
             return std::dynamic_pointer_cast<api::HttpRequest>(request);
         }
 
-        Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() {
+        Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() const {
             auto request = std::dynamic_pointer_cast<ApiRequest>(toApiRequest());
             _client->execute(request);
             return  request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [] (const std::shared_ptr<api::HttpUrlConnection>& connection) {
@@ -123,6 +124,27 @@ namespace ledger {
                                     Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(connection)));
                 }
                 return connection;
+            });
+        }
+
+        Future<HttpRequest::JsonResult> HttpRequest::json() const {
+            return operator()().recover(_context, [] (const Exception& exception) {
+                if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
+                    return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                }
+                throw exception;
+            }).map<JsonResult>
+                    (_context, [] (const std::shared_ptr<api::HttpUrlConnection>& co) {
+                        std::shared_ptr<api::HttpUrlConnection> connection = co;
+                        auto doc = std::make_shared<rapidjson::Document>();
+                        HttpUrlConnectionInputStream is(connection);
+                        doc->ParseStream(is);
+                        std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
+                        if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
+                            throw Exception(api::ErrorCode::HTTP_ERROR, connection->getStatusText(),
+                                            Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
+                        }
+                        return std::make_tuple(connection, doc);
             });
         }
 

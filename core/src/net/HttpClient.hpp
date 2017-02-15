@@ -42,20 +42,30 @@
 #include <memory>
 #include "../async/Future.hpp"
 #include "../async/Promise.hpp"
+#include <rapidjson/document.h>
 
 namespace ledger {
     namespace core {
 
+        template <typename T, class Handler>
+        class HttpJsonHandler;
+
         class HttpRequest : public std::enable_shared_from_this<HttpRequest> {
         public:
+            using JsonResult = std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>;
+
             HttpRequest(api::HttpMethod method,
                         const std::string& url,
                         const std::unordered_map<std::string, std::string>& headers,
                         const std::experimental::optional<std::vector<uint8_t >> body,
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context);
-            Future<std::shared_ptr<api::HttpUrlConnection>> operator()();
+            Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
+//            template <typename T>
+//            Future<std::tuple<std::shared_ptr<api::HttpUrlConnection>, T>> json(const HttpJsonHandler& handler) const;
+            Future<JsonResult> json() const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
+
         private:
             api::HttpMethod _method;
             std::string _url;

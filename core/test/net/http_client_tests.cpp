@@ -88,6 +88,73 @@ TEST(HttpClient, GET) {
     }
 }
 
+TEST(HttpClient, GETJson) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
+    {
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
+
+        server->GET("/talk/to/me/in/json", [dispatcher](const RestRequest &request) -> RestResponse {
+            return {200, "OK", "{\"the_answer\": 42}"};
+        });
+
+        server->start(8000);
+
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+                http
+                    .GET("/talk/to/me/in/json")
+                    .json()
+                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        EXPECT_TRUE(json.HasMember("the_answer"));
+                        EXPECT_TRUE(json["the_answer"].IsInt());
+                        EXPECT_EQ(42, json["the_answer"].GetInt());
+                        server->stop();
+                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                            dispatcher->stop();
+                        }), 0);
+            });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000)
+    }
+}
+
+TEST(HttpClient, GETJsonError) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
+    {
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
+
+        server->GET("/knock/knock/neo", [dispatcher](const RestRequest &request) -> RestResponse {
+            return {301, "Moved Permanently", "{\"not_here\": true}"};
+        });
+
+        server->start(8000);
+
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+            http
+                    .GET("/knock/knock/neo")
+                    .json()
+                    .onComplete(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Try<HttpRequest::JsonResult>& result) {
+                        EXPECT_TRUE(result.isFailure());
+                        auto& json = *std::get<1>(*result.getFailure().getTypeUserData<HttpRequest::JsonResult>().getValue());
+                        EXPECT_TRUE(json.HasMember("not_here"));
+                        EXPECT_TRUE(json["not_here"].IsBool());
+                        EXPECT_EQ(true, json["not_here"].GetBool());
+                        server->stop();
+                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                            dispatcher->stop();
+                        }), 0);
+                    });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000)
+    }
+}
+
 TEST(HttpClient, POST) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
     auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));

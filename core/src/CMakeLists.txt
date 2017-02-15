@@ -106,7 +106,14 @@ add_library(
         wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.cpp wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp
         wallet/bitcoin/networks.cpp wallet/bitcoin/networks.hpp
         collections/strings.cpp collections/strings.hpp
-        io/filesystem.hpp io/filesystem.cpp wallet/bitcoin/factories/BitcoinLikeWalletFactory.cpp wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp bytes/serialization.cpp bytes/serialization.hpp async/DedicatedContext.cpp async/DedicatedContext.hpp traits/callback_traits.hpp config/Networks.cpp config/Networks.hpp)
+        io/filesystem.hpp io/filesystem.cpp wallet/bitcoin/factories/BitcoinLikeWalletFactory.cpp
+        wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp bytes/serialization.cpp
+        bytes/serialization.hpp async/DedicatedContext.cpp
+        async/DedicatedContext.hpp traits/callback_traits.hpp
+        config/Networks.cpp config/Networks.hpp
+        net/HttpJsonHandler.cpp net/HttpJsonHandler.hpp
+        net/HttpUrlConnectionInputStream.cpp net/HttpUrlConnectionInputStream.hpp
+        )
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

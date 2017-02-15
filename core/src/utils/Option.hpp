@@ -97,6 +97,10 @@ namespace ledger {
                 return !isEmpty();
             };
 
+            inline bool nonEmpty() const {
+                return !isEmpty();
+            }
+
             T& operator*() & {return *_optional;};
             const T& operator*() const & { return *_optional;};
             T&& operator*() && {return std::move(*_optional);};

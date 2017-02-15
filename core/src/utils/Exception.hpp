@@ -47,7 +47,15 @@ namespace ledger {
             api::ErrorCode getErrorCode() const;
             const std::string& getMessage() const;
             const Option<std::shared_ptr<void>>& getUserData() const;
+
+            template<typename T> Option<std::shared_ptr<T>> getTypeUserData() const {
+                return _userData.map<std::shared_ptr<T>>([] (const std::shared_ptr<void>& ptr) -> std::shared_ptr<T> {
+                    return std::static_pointer_cast<std::shared_ptr<T>>(ptr);
+                });
+            };
+
             api::Error toApiError() const;
+
             virtual ~Exception() override;
 
             virtual const char *what() const noexcept override;
