@@ -38,6 +38,8 @@
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>
 #include <ledger/core/net/HttpClient.hpp>
+#include <ledger/core/net/HttpJsonHandler.hpp>
+#include <test/lib/boost/boost/variant/detail/substitute.hpp>
 
 static std::string BIG_TEXT =
         "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
@@ -187,5 +189,161 @@ TEST(HttpClient, POST) {
         }));
 
         WAIT_AND_TIMEOUT(dispatcher, 10000)
+    }
+}
+
+TEST(HttpClient, GETWithSax) {
+    struct Success {
+        int the_answer;
+    };
+    struct Failure {
+        int code;
+        bool not_here;
+    };
+
+    struct Handler : public HttpJsonHandler<Success, Failure, Handler> {
+        Handler() {};
+
+        bool Bool(bool b) {
+            return true;
+        };
+
+        bool Uint(unsigned int i) {
+            if (_currentKey == std::string("the_answer"))
+                _result.getRight().the_answer = i;
+            return true;
+        }
+
+        bool Int(int i) {
+            if (_currentKey == std::string("the_answer"))
+                _result.getRight().the_answer = i;
+            return true;
+        }
+
+        bool Key(const Ch *str, rapidjson::SizeType len, bool copy) {
+            _currentKey = std::string(str, len);
+            if (getStatusCode() >= 200 && getStatusCode() < 300) {
+                _result = Success();
+            } else {
+                _result = Failure();
+            }
+            return true;
+        }
+
+        Either<Failure, Success> build() {
+            return _result;
+        }
+
+    private:
+        std::string _currentKey;
+        Either<Failure, Success> _result;
+    };
+
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
+    {
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
+
+        server->GET("/talk/to/me/in/json", [dispatcher](const RestRequest &request) -> RestResponse {
+            return {200, "OK", "{\"the_answer\": 42}"};
+        });
+
+        server->start(8000);
+
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+            http
+                    .GET("/talk/to/me/in/json")
+                    .json<Success, Failure>(Handler())
+                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, Success>& result) {
+                        EXPECT_TRUE(result.isRight());
+                        EXPECT_EQ(result.getRight().the_answer, 42);
+                        server->stop();
+                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                            dispatcher->stop();
+                        }), 0);
+                    });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000);
+    }
+}
+
+TEST(HttpClient, GETWithSaxError) {
+    struct Success {
+        int the_answer;
+    };
+    struct Failure {
+        int code;
+        bool not_here;
+    };
+
+    struct Handler : public HttpJsonHandler<Success, Failure, Handler> {
+        Handler() {};
+
+        bool Bool(bool b) {
+            if (_currentKey == std::string("not_here"))
+                _result.getLeft().not_here = b;
+            return true;
+        };
+
+        bool Uint(unsigned int i) {
+            if (_currentKey == std::string("the_answer"))
+                _result.getRight().the_answer = i;
+            return true;
+        }
+
+        bool Int(int i) {
+            if (_currentKey == std::string("the_answer"))
+                _result.getRight().the_answer = i;
+            return true;
+        }
+
+        bool Key(const Ch *str, rapidjson::SizeType len, bool copy) {
+            _currentKey = std::string(str, len);
+            if (getStatusCode() >= 200 && getStatusCode() < 300) {
+                _result = Success();
+            } else {
+                _result = Failure();
+            }
+            return true;
+        }
+
+        Either<Failure, Success> build() {
+            return _result;
+        }
+
+    private:
+        std::string _currentKey;
+        Either<Failure, Success> _result;
+    };
+
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    ledger::core::HttpClient http("http://localhost:8000", client, worker);
+    {
+        auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
+
+        server->GET("/knock/knock/neo", [dispatcher](const RestRequest &request) -> RestResponse {
+            return {301, "Moved Permanently", "{\"not_here\": true}"};
+        });
+
+        server->start(8000);
+
+        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+            http
+                    .GET("/knock/knock/neo")
+                    .json<Success, Failure>(Handler())
+                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, Success>& result) {
+                        EXPECT_TRUE(result.isLeft());
+                        EXPECT_EQ(result.getLeft().not_here, true);
+                        server->stop();
+                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                            dispatcher->stop();
+                        }), 0);
+                    });
+        }));
+        WAIT_AND_TIMEOUT(dispatcher, 10000);
     }
 }

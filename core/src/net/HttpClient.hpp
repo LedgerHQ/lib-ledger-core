@@ -43,11 +43,14 @@
 #include "../async/Future.hpp"
 #include "../async/Promise.hpp"
 #include <rapidjson/document.h>
+#include "../utils/Either.hpp"
+#include "HttpUrlConnectionInputStream.hpp"
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
 
-        template <typename T, class Handler>
+        template <typename Success, typename Failure, class Handler>
         class HttpJsonHandler;
 
         class HttpRequest : public std::enable_shared_from_this<HttpRequest> {
@@ -61,8 +64,25 @@ namespace ledger {
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context);
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
-//            template <typename Success, typename Failure>
-//            Future<std::tuple<std::shared_ptr<api::HttpUrlConnection>, T>> json(const HttpJsonHandler& handler) const;
+
+            template <typename Success, typename Failure, typename Handler>
+            Future<Either<Failure, Success>> json(Handler handler) const {
+                return operator()().recover(_context, [] (const Exception& exception) {
+                    if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
+                        return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                    }
+                    throw exception;
+                }).template map<Either<Failure, Success>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection> c) {
+                    Handler h = handler;
+                    std::shared_ptr<api::HttpUrlConnection> connection = c;
+                    h.attach(connection);
+                    HttpUrlConnectionInputStream is(connection);
+                    rapidjson::Reader reader;
+                    reader.Parse(is, h);
+                    return h.build();
+                });
+            }
+
             Future<JsonResult> json() const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
 

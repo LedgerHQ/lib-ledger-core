@@ -33,28 +33,33 @@
 
 #include <rapidjson/reader.h>
 #include "HttpClient.hpp"
+#include "../utils/Either.hpp"
 
 namespace ledger {
     namespace core {
-        template <typename T, class Handler>
+        template <typename Success, typename Failure, class Handler>
         class HttpJsonHandler : public rapidjson::BaseReaderHandler<rapidjson::UTF8<>, Handler> {
         public:
-            HttpJsonHandler(const std::shared_ptr<api::HttpUrlConnection>& connection) {
-                _connection = connection;
-            };
-            virtual T build() = 0;
-            virtual ~HttpJsonHandler() {
+            HttpJsonHandler() {
 
-            }
-            virtual std::string getStatusText() const {
+            };
+            Either<Failure, Success> build() {
+                throw std::exception();
+            };
+
+            std::string getStatusText() const {
                 return _connection->getStatusText();
             }
-            virtual int32_t getStatusCode() const {
+            int32_t getStatusCode() const {
                 return _connection->getStatusCode();
             }
-            virtual std::unordered_map<std::string, std::string> getHttpHeaders() const {
+            std::unordered_map<std::string, std::string> getHttpHeaders() const {
                 return _connection->getHeaders();
             };
+            void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) const {
+                _connection = connection;
+            };
+
         private:
             mutable std::shared_ptr<api::HttpUrlConnection> _connection;
         };

@@ -35,6 +35,7 @@
 #include "Either.hpp"
 #include <functional>
 #include "Exception.hpp"
+#include "../../../cmake-build-debug/include/ledger/core/utils/Either.hpp"
 
 namespace ledger {
     namespace core {
@@ -42,6 +43,10 @@ namespace ledger {
         template<typename Left, typename Right>
         class Either {
         public:
+            Either() {
+
+            }
+
             Either(const Left &left) {
                 _left = Option<Left>(left);
             };
@@ -64,6 +69,17 @@ namespace ledger {
                 _left = either._left;
                 _right = either._right;
             }
+
+            Either(Either& either) {
+                _left = either._left;
+                _right = either._right;
+            }
+
+            Either<Left, Right>&operator=(const Either<Left, Right>& either) {
+                _left = either._left;
+                _right = either._right;
+                return *this;
+            };
 
             Either<Left, Right>&operator=(const Left& left) {
                 _left = Option<Left>(left);
@@ -95,6 +111,14 @@ namespace ledger {
 
             const Right *operator->() const {
                 return &_right.getValue();
+            }
+
+            Left &getLeft() {
+                return _left.getValue();
+            }
+
+            Right &getRight() {
+                return _right.getValue();
             }
 
             const Left &getLeft() const {

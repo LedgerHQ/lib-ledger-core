@@ -29,7 +29,6 @@
  *
  */
 #include "HttpClient.hpp"
-#include "HttpUrlConnectionInputStream.hpp"
 
 namespace ledger {
     namespace core {

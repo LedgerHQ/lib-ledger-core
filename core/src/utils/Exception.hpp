@@ -50,7 +50,7 @@ namespace ledger {
 
             template<typename T> Option<std::shared_ptr<T>> getTypeUserData() const {
                 return _userData.map<std::shared_ptr<T>>([] (const std::shared_ptr<void>& ptr) -> std::shared_ptr<T> {
-                    return std::static_pointer_cast<std::shared_ptr<T>>(ptr);
+                    return std::static_pointer_cast<T>(ptr);
                 });
             };
 
