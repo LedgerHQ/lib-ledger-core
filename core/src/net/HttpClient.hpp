@@ -61,7 +61,7 @@ namespace ledger {
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context);
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
-//            template <typename T>
+//            template <typename Success, typename Failure>
 //            Future<std::tuple<std::shared_ptr<api::HttpUrlConnection>, T>> json(const HttpJsonHandler& handler) const;
             Future<JsonResult> json() const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;

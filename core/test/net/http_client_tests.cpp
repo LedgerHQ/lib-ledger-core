@@ -117,7 +117,7 @@ TEST(HttpClient, GETJson) {
                         }), 0);
             });
         }));
-        WAIT_AND_TIMEOUT(dispatcher, 10000)
+        WAIT_AND_TIMEOUT(dispatcher, 10000);
     }
 }
 
