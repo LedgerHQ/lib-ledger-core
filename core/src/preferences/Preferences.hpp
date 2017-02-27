@@ -36,6 +36,11 @@
 #include "PreferencesBackend.hpp"
 #include "PreferencesEditor.hpp"
 #include "../utils/Option.hpp"
+#include <cereal/cereal.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/set.hpp>
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 namespace ledger {
     namespace core {
@@ -52,8 +57,23 @@ namespace ledger {
             getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) override;
             bool contains(const std::string &key) override;
             std::shared_ptr<api::PreferencesEditor> edit() override;
+            std::shared_ptr<PreferencesEditor> editor();
 
             std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) override;
+
+            template <typename T>
+            Option<T> getObject(const std::string& key) {
+                auto data = getData(key, {});
+                if (data.size() == 0) {
+                    return Option<T>();
+                }
+                T object;
+                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&data[0]), data.size());
+                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
+                ::cereal::BinaryInputArchive archive(is);
+                archive(object);
+                return Option<T>(object);
+            };
 
             void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
 

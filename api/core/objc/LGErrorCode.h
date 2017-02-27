@@ -10,8 +10,9 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     /**
      * Device errors
      * Wallet errors
-     * User land errors
      */
+    LGErrorCodeWalletNotFound,
+    /** User land errors */
     LGErrorCodeCancelledByUser,
     /** Others */
     LGErrorCodeInvalidBase58Format,

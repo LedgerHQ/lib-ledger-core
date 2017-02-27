@@ -9,8 +9,9 @@ public enum ErrorCode {
     /**
      * Device errors
      * Wallet errors
-     * User land errors
      */
+    WALLET_NOT_FOUND,
+    /** User land errors */
     CANCELLED_BY_USER,
     /** Others */
     INVALID_BASE58_FORMAT,

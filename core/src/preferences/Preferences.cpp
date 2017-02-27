@@ -130,5 +130,9 @@ namespace ledger {
             BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
             return reader.readUntilEnd();
         }
+
+        std::shared_ptr<PreferencesEditor> Preferences::editor() {
+            return std::make_shared<PreferencesEditor>(*this);
+        }
     }
 }

@@ -52,6 +52,16 @@ namespace ledger {
             putStringArray(const std::string &key, const std::vector<std::string> &value) override;
             std::shared_ptr<api::PreferencesEditor> remove(const std::string &key) override;
 
+            template <typename T>
+            std::shared_ptr<PreferencesEditor> putObject(const std::string& key, T& object) {
+                std::stringstream is;
+                ::cereal::BinaryOutputArchive archive(is);
+                archive(object);
+                auto savedState = is.str();
+                putData(key, std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data();
+                return shared_from_this();
+            };
+
             std::shared_ptr<api::PreferencesEditor>
             putData(const std::string &key, const std::vector<uint8_t> &value) override;
 

@@ -67,6 +67,7 @@ namespace ledger {
 
         public:
             struct WalletEntry {
+                std::string walletIdentifier;
                 std::string currencyIdentifier;
                 ConfigurationImpl configuration;
 
@@ -76,7 +77,7 @@ namespace ledger {
 
                 template <class Archive>
                 void serialize(Archive& ar) {
-                    ar(currencyIdentifier, configuration);
+                    ar(walletIdentifier, currencyIdentifier, configuration);
                 }
             };
 

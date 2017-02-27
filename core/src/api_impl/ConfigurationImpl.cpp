@@ -94,6 +94,20 @@ namespace ledger {
                                                                                              : it->second.variant.bytes;
         }
 
+        ConfigurationImpl::ConfigurationImpl() {
+
+        }
+
+        ConfigurationImpl::ConfigurationImpl(const ConfigurationImpl &cpy) {
+            _values = cpy._values;
+        }
+
+        ConfigurationImpl &ConfigurationImpl::operator=(std::shared_ptr<api::Configuration> configuration) {
+            auto conf = std::static_pointer_cast<ConfigurationImpl>(configuration);
+            _values = conf->_values;
+            return *this;
+        }
+
         std::shared_ptr<api::Configuration> api::Configuration::newInstance() {
             return std::make_shared<ledger::core::ConfigurationImpl>();
         }

@@ -48,7 +48,7 @@ namespace ledger {
 
             template <typename Archive>
             void serialize(Archive& ar) {
-                ar( cereal::base_class<WalletPool::WalletEntry>(this));
+                ar(cereal::base_class<WalletPool::WalletEntry>(this));
             };
         };
 
@@ -57,11 +57,14 @@ namespace ledger {
             BitcoinLikeWalletFactory(const api::BitcoinLikeNetworkParameters& params,
                                      std::shared_ptr<WalletPool> pool,
                                      std::shared_ptr<Preferences> preferences);
-            std::shared_ptr<BitcoinLikeWallet> build(const std::string identifier);
-            std::shared_ptr<BitcoinLikeWallet> build(
+            Future<std::shared_ptr<BitcoinLikeWallet>> build(const std::string identifier);
+            Future<std::shared_ptr<BitcoinLikeWallet>> build(
                     std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> provider,
                     std::shared_ptr<api::Configuration> configuration
             );
+
+        private:
+            Future<std::shared_ptr<BitcoinLikeWallet>> build(const BitcoinLikeWalletEntry& entry);
 
         private:
             std::shared_ptr<Preferences> _preferences;

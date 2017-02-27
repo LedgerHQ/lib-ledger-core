@@ -113,7 +113,7 @@ add_library(
         config/Networks.cpp config/Networks.hpp
         net/HttpJsonHandler.cpp net/HttpJsonHandler.hpp
         net/HttpUrlConnectionInputStream.cpp net/HttpUrlConnectionInputStream.hpp
-        utils/Either.cpp utils/Either.hpp)
+        utils/Either.cpp utils/Either.hpp utils/Lazy.cpp utils/Lazy.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

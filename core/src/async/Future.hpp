@@ -228,6 +228,30 @@ namespace ledger {
                 });
             };
 
+            static Future<T> successful(T value) {
+                Promise<T> p;
+                p.success(value);
+                return p.getFuture();
+            }
+
+            static Future<T> successful(T&& value) {
+                Promise<T> p;
+                p.success(value);
+                return p.getFuture();
+            }
+
+            static Future<T> failure(Exception&& exception) {
+                Promise<T> p;
+                p.failure(exception);
+                return p.getFuture();
+            }
+
+            static Future<T> failure(const Exception& exception) {
+                Promise<T> p;
+                p.failure(exception);
+                return p.getFuture();
+            }
+
             static Future<T> async(const Context& context, std::function<T ()> f) {
                 auto deffer = make_deffered();
                 context->execute(make_runnable([deffer, f] () {

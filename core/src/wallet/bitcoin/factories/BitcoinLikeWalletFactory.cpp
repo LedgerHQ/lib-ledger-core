@@ -40,13 +40,28 @@ namespace ledger {
             _pool = pool;
         }
 
-        std::shared_ptr<BitcoinLikeWallet>
+        Future<std::shared_ptr<BitcoinLikeWallet>>
         BitcoinLikeWalletFactory::build(std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> provider,
                                         std::shared_ptr<api::Configuration> configuration) {
-            return nullptr;
+            Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
+            BitcoinLikeWalletEntry entry;
+            std::string identifier = "";
+            entry.configuration = std::static_pointer_cast<ConfigurationImpl>(configuration);
+            _preferences->editor()->putObject(identifier, entry)->commit();
+            return promise.getFuture();
         }
 
-        std::shared_ptr<BitcoinLikeWallet> BitcoinLikeWalletFactory::build(const std::string identifier) {
+        Future<std::shared_ptr<BitcoinLikeWallet>>
+        BitcoinLikeWalletFactory::build(const std::string identifier) {
+            return  _preferences->getObject<BitcoinLikeWalletEntry>(identifier)
+                    .map<Future<std::shared_ptr<BitcoinLikeWallet>>>([] (const BitcoinLikeWalletEntry& entry) {
+                        return build(entry);
+                    })
+                    .getValueOr(Future<std::shared_ptr<BitcoinLikeWallet>>::failure(Exception(api::ErrorCode::WALLET_NOT_FOUND, "Wallet not found")));
+        }
+
+        Future<std::shared_ptr<BitcoinLikeWallet>>
+        BitcoinLikeWalletFactory::build(const BitcoinLikeWalletEntry& entry) {
             return nullptr;
         }
 

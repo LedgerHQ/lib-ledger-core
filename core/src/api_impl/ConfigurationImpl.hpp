@@ -77,6 +77,11 @@ namespace ledger {
 
         class ConfigurationImpl : public api::Configuration, public std::enable_shared_from_this<ConfigurationImpl> {
         public:
+            ConfigurationImpl();
+            ConfigurationImpl(const ConfigurationImpl& cpy);
+
+            ConfigurationImpl&operator=(std::shared_ptr<api::Configuration> configuration);
+
             std::shared_ptr<api::Configuration> putString(const std::string &key, const std::string &value) override;
             int32_t getInt(const std::string &key, int32_t fallback) override;
             std::shared_ptr<api::Configuration> putInt(const std::string &key, int32_t value) override;
