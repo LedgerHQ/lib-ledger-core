@@ -131,10 +131,10 @@ namespace ledger {
             async<std::shared_ptr<BitcoinLikeWalletFactory>>([=] () {
                 return getBitcoinLikeWalletFactory(networkParams.Identifier);
             })
-            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
+            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
                 return factory->build(publicKeyProvider, configuration);
-            })
-            .callback(_dispatcher->getMainExecutionContext(), callback);
+            });
+            //.callback(_dispatcher->getMainExecutionContext(), callback);
         }
 
         void WalletPool::getBitcoinLikeWallet(const std::string &identifier,
@@ -147,10 +147,10 @@ namespace ledger {
                 }
                 return getBitcoinLikeWalletFactory(entry->currencyIdentifier);
             })
-            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
+            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
                 return factory->build(identifier);
-            })
-            .callback(_dispatcher->getMainExecutionContext(), callback);
+            });
+            //.callback(_dispatcher->getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::Preferences> WalletPool::getWalletPreferences(const std::string &walletIdentifier) {

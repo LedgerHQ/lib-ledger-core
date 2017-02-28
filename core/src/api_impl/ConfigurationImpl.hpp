@@ -36,6 +36,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cereal/types/unordered_map.hpp>
+#include <cereal/types/vector.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,19 +58,18 @@ namespace ledger {
 
             template <class Archive>
             void serialize(Archive& ar) {
-                ar(type);
                 switch (type) {
                     case ConfigurationValueType::STRING:
-                        ar(variant.string);
+                        ar(type, variant.string);
                         break;
                     case ConfigurationValueType::BYTES:
-                        ar(variant.bytes);
+                        ar(type, variant.bytes);
                         break;
                     case ConfigurationValueType::BOOLEAN:
-                        ar(variant.boolean);
+                        ar(type, variant.boolean);
                         break;
                     case ConfigurationValueType::INTEGER:
-                        ar(variant.integer);
+                        ar(type, variant.integer);
                         break;
                 }
             };

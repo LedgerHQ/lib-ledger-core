@@ -54,7 +54,7 @@ namespace ledger {
         Future<std::shared_ptr<BitcoinLikeWallet>>
         BitcoinLikeWalletFactory::build(const std::string identifier) {
             return  _preferences->getObject<BitcoinLikeWalletEntry>(identifier)
-                    .map<Future<std::shared_ptr<BitcoinLikeWallet>>>([] (const BitcoinLikeWalletEntry& entry) {
+                    .map<Future<std::shared_ptr<BitcoinLikeWallet>>>([=] (const BitcoinLikeWalletEntry& entry) {
                         return build(entry);
                     })
                     .getValueOr(Future<std::shared_ptr<BitcoinLikeWallet>>::failure(Exception(api::ErrorCode::WALLET_NOT_FOUND, "Wallet not found")));
@@ -62,7 +62,8 @@ namespace ledger {
 
         Future<std::shared_ptr<BitcoinLikeWallet>>
         BitcoinLikeWalletFactory::build(const BitcoinLikeWalletEntry& entry) {
-            return nullptr;
+            Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
+            return promise.getFuture();
         }
 
     }
