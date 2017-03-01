@@ -11,8 +11,8 @@ namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeExtendedPublicKeyProvider;
 class BitcoinLikeNetworkParametersCallback;
+class BitcoinLikeWalletCallback;
 class Configuration;
-class GetBitcoinLikeWalletCallback;
 class Logger;
 class Preferences;
 struct BitcoinLikeNetworkParameters;
@@ -21,9 +21,9 @@ class WalletPool {
 public:
     virtual ~WalletPool() {}
 
-    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & publicKeyProvider, const BitcoinLikeNetworkParameters & networkParams, const std::shared_ptr<Configuration> & configuration, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
+    virtual void getOrCreateBitcoinLikeWallet(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & publicKeyProvider, const BitcoinLikeNetworkParameters & networkParams, const std::shared_ptr<Configuration> & configuration, const std::shared_ptr<BitcoinLikeWalletCallback> & callback) = 0;
 
-    virtual void getBitcoinLikeWallet(const std::string & identifier, const std::shared_ptr<GetBitcoinLikeWalletCallback> & callback) = 0;
+    virtual void getBitcoinLikeWallet(const std::string & identifier, const std::shared_ptr<BitcoinLikeWalletCallback> & callback) = 0;
 
     virtual void getSupportedBitcoinLikeNetworkParameters(const std::shared_ptr<BitcoinLikeNetworkParametersCallback> & callback) = 0;
 

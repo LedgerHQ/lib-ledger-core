@@ -29,8 +29,15 @@
  *
  */
 #include "PoolTestCaseBootstraper.hpp"
+#include "callbacks.hpp"
 #include <ledger/core/api/WalletPoolBuildCallback.hpp>
 #include <ledger/core/api/WalletPoolBuilder.hpp>
+#include <ledger/core/api/BitcoinLikeWalletCallback.hpp>
+#include <ledger/core/async/Promise.hpp>
+#include <ledger/core/utils/Exception.hpp>
+#include "callbacks.hpp"
+
+using namespace ledger::core;
 
 class PoolBuilderCallback : public ledger::core::api::WalletPoolBuildCallback {
 public:
@@ -74,4 +81,24 @@ void PoolTestCaseBootstraper::setup(std::function<void(std::shared_ptr<ledger::c
             ->setHttpClient(client)
             ->setName(_poolName)
             ->build(c);
+}
+
+ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
+PoolTestCaseBootstraper::getBitcoinLikeWallet(
+    const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
+    const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
+    const std::shared_ptr<ledger::core::api::Configuration> &configuration) {
+    Promise<std::shared_ptr<api::BitcoinLikeWallet>> promise;
+
+    setup([=] (std::shared_ptr<api::WalletPool> pool, std::experimental::optional<api::Error> error) mutable {
+        if (error) {
+            promise.failure(Exception(error.value().code, error.value().message));
+        } else {
+            auto callback = make_api_callback<api::BitcoinLikeWallet, api::BitcoinLikeWalletCallback>();
+            pool->getOrCreateBitcoinLikeWallet(publicKeyProvider, networkParams, configuration, callback);
+            promise.completeWith(callback->getFuture());
+        }
+    });
+
+    return promise.getFuture();
 }

@@ -42,6 +42,7 @@
 #import "../objc/LGStringArrayCallback.h"
 #import "../objc/LGBitcoinLikeNetworkParametersCallback.h"
 #import "../objc/LGWalletPool.h"
+#import "../objc/LGBitcoinLikeWalletCallback.h"
 #import "../objc/LGWalletPoolBuildCallback.h"
 #import "../objc/LGWalletPoolBuilder.h"
 #import "../objc/LGWebSocketClient.h"

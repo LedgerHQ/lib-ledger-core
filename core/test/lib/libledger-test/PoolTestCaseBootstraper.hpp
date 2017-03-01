@@ -38,12 +38,23 @@
 #include <ledger/core/api/WalletPool.hpp>
 #include <memory>
 #include <ledger/core/utils/Exception.hpp>
+#include <ledger/core/async/Future.hpp>
+#include <ledger/core/api/BitcoinLikeWallet.hpp>
+#include <ledger/core/api/BitcoinLikeExtendedPublicKeyProvider.hpp>
+#include <ledger/core/api/BitcoinLikeNetworkParameters.hpp>
+#include <ledger/core/api/Configuration.hpp>
+#include <ledger/core/api/BitcoinLikeWallet.hpp>
 
 class PoolTestCaseBootstraper {
 public:
     PoolTestCaseBootstraper(const std::string &poolName);
     void setup(std::function<void (std::shared_ptr<ledger::core::api::WalletPool>, std::experimental::optional<ledger::core::api::Error>)> callback);
     void tearDown();
+
+    ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
+    getBitcoinLikeWallet( const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
+                          const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
+                          const std::shared_ptr<ledger::core::api::Configuration> &configuration);
 
 public:
     std::shared_ptr<NativeThreadDispatcher> dispatcher;
@@ -54,6 +65,5 @@ public:
 private:
     std::string _poolName;
 };
-
 
 #endif //LEDGER_CORE_POOLTESTCASEBOOTSTRAPER_HPP

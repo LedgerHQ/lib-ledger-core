@@ -21,6 +21,8 @@ BitcoinLikeBase58ExtendedPublicKeyProvider = interface +j +o + n {
 }
 
 BitcoinLikeExtendedPublicKeyProvider = interface +c {
+    getExtendedPublicKey(path: string, )
+
     static fromBitcoinLikeBase58ExtendedPublicKeyProvider(provider: BitcoinLikeBase58ExtendedPublicKeyProvider);
     static fromBitcoinLikePublicKeyProvider(provider: BitcoinLikePublicKeyProvider);
 }

@@ -6,9 +6,9 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WalletPool {
-    public abstract void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback);
+    public abstract void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, BitcoinLikeWalletCallback callback);
 
-    public abstract void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback);
+    public abstract void getBitcoinLikeWallet(String identifier, BitcoinLikeWalletCallback callback);
 
     public abstract void getSupportedBitcoinLikeNetworkParameters(BitcoinLikeNetworkParametersCallback callback);
 
@@ -50,20 +50,20 @@ public abstract class WalletPool {
         }
 
         @Override
-        public void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback)
+        public void getOrCreateBitcoinLikeWallet(BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, BitcoinLikeWalletCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             native_getOrCreateBitcoinLikeWallet(this.nativeRef, publicKeyProvider, networkParams, configuration, callback);
         }
-        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, GetBitcoinLikeWalletCallback callback);
+        private native void native_getOrCreateBitcoinLikeWallet(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider publicKeyProvider, BitcoinLikeNetworkParameters networkParams, Configuration configuration, BitcoinLikeWalletCallback callback);
 
         @Override
-        public void getBitcoinLikeWallet(String identifier, GetBitcoinLikeWalletCallback callback)
+        public void getBitcoinLikeWallet(String identifier, BitcoinLikeWalletCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             native_getBitcoinLikeWallet(this.nativeRef, identifier, callback);
         }
-        private native void native_getBitcoinLikeWallet(long _nativeRef, String identifier, GetBitcoinLikeWalletCallback callback);
+        private native void native_getBitcoinLikeWallet(long _nativeRef, String identifier, BitcoinLikeWalletCallback callback);
 
         @Override
         public void getSupportedBitcoinLikeNetworkParameters(BitcoinLikeNetworkParametersCallback callback)

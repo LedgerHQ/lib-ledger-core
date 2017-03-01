@@ -67,7 +67,7 @@ namespace ledger {
                 return get();
             }
             T* operator->() {
-                return &get;
+                return &get();
             }
             T&operator*() {
                 return get();

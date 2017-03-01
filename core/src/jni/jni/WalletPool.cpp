@@ -5,8 +5,8 @@
 #include "BitcoinLikeExtendedPublicKeyProvider.hpp"
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "BitcoinLikeNetworkParametersCallback.hpp"
+#include "BitcoinLikeWalletCallback.hpp"
 #include "Configuration.hpp"
-#include "GetBitcoinLikeWalletCallback.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "Preferences.hpp"
@@ -34,7 +34,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
         ref->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(jniEnv, j_publicKeyProvider),
                                           ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_networkParams),
                                           ::djinni_generated::Configuration::toCpp(jniEnv, j_configuration),
-                                          ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
+                                          ::djinni_generated::BitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
@@ -44,7 +44,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
         ref->getBitcoinLikeWallet(::djinni::String::toCpp(jniEnv, j_identifier),
-                                  ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
+                                  ::djinni_generated::BitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

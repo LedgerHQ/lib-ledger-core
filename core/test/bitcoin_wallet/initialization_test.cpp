@@ -42,7 +42,7 @@
 
 using namespace ledger::core;
 
-TEST(BitcoinWalletInitialization, InitializeNewWallet) {
+TEST(BitcoinWalletInitialization, InitializeNewWalletPool) {
     PoolTestCaseBootstraper bootstraper("default");
     bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool, optional<api::Error> error) {
         if (!error) {
@@ -55,3 +55,11 @@ TEST(BitcoinWalletInitialization, InitializeNewWallet) {
     bootstraper.dispatcher->waitUntilStopped();
     bootstraper.tearDown();
 }
+
+TEST(BitcoinWalletInitialization, InitializeBitcoinWallet) {
+    PoolTestCaseBootstraper bootstraper("default");
+
+    bootstraper.dispatcher->waitUntilStopped();
+    bootstraper.tearDown();
+}
+

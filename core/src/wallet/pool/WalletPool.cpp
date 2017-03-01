@@ -127,18 +127,17 @@ namespace ledger {
                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
                 const api::BitcoinLikeNetworkParameters &networkParams,
                 const std::shared_ptr<api::Configuration> &configuration,
-                const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) {
+                const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
             async<std::shared_ptr<BitcoinLikeWalletFactory>>([=] () {
                 return getBitcoinLikeWalletFactory(networkParams.Identifier);
             })
             .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
                 return factory->build(publicKeyProvider, configuration);
-            });
-            //.callback(_dispatcher->getMainExecutionContext(), callback);
+            }).callback(_dispatcher->getMainExecutionContext(), callback);
         }
 
         void WalletPool::getBitcoinLikeWallet(const std::string &identifier,
-                                              const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) {
+                                              const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
             async<std::shared_ptr<BitcoinLikeWalletFactory>>([=] () {
                 auto wallets = getInternalPreferences()->getSubPreferences("wallets");
                 auto entry = wallets->getObject<WalletEntry>(identifier);
@@ -149,8 +148,7 @@ namespace ledger {
             })
             .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
                 return factory->build(identifier);
-            });
-            //.callback(_dispatcher->getMainExecutionContext(), callback);
+            }).callback(_dispatcher->getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::Preferences> WalletPool::getWalletPreferences(const std::string &walletIdentifier) {

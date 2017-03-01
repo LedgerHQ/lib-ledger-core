@@ -1,6 +1,6 @@
 /*
  *
- * lazy_test
+ * callbacks
  * ledger-core
  *
  * Created by Pierre Pollastri on 28/02/2017.
@@ -28,54 +28,4 @@
  * SOFTWARE.
  *
  */
-
-#include <gtest/gtest.h>
-#include <ledger/core/utils/Lazy.hpp>
-
-
-struct MySuperClass {
-
-    MySuperClass() {
-        _id = counter;
-        counter += 1;
-    }
-
-    MySuperClass(int id) {
-        _id = id;
-    }
-
-    MySuperClass(const MySuperClass& c) {
-        _id = c._id;
-    }
-
-    int getId() const {
-      return _id;
-    };
-
-    static int counter;
-
-private:
-    int _id;
-};
-
-int MySuperClass::counter = 0;
-
-using namespace ledger::core;
-
-TEST(Lazy, CreateLazyValue) {
-    MySuperClass::counter = 0;
-    Lazy<MySuperClass> obj = Lazy<MySuperClass>::make_lazy();
-    EXPECT_EQ(MySuperClass::counter, 0);
-    EXPECT_EQ(obj->getId(), 0);
-    EXPECT_EQ(MySuperClass::counter, 1);
-    MySuperClass o = obj;
-    EXPECT_EQ(MySuperClass::counter, 1);
-    EXPECT_EQ(o.getId(), 0);
-}
-
-TEST(Lazy, CreateLazyWithInitializer) {
-    MySuperClass::counter = 0;
-    Lazy<MySuperClass> obj = Lazy<MySuperClass>::make_lazy(42);
-    EXPECT_EQ(MySuperClass::counter, 0);
-    EXPECT_EQ(obj->getId(), 42);
-}
+#include "callbacks.hpp"

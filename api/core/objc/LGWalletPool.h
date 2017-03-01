@@ -8,7 +8,7 @@
 @class LGLogger;
 @class LGPreferences;
 @protocol LGBitcoinLikeNetworkParametersCallback;
-@protocol LGGetBitcoinLikeWalletCallback;
+@protocol LGBitcoinLikeWalletCallback;
 
 
 @interface LGWalletPool : NSObject
@@ -16,10 +16,10 @@
 - (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
                        networkParams:(nonnull LGBitcoinLikeNetworkParameters *)networkParams
                        configuration:(nullable LGConfiguration *)configuration
-                            callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback;
+                            callback:(nullable id<LGBitcoinLikeWalletCallback>)callback;
 
 - (void)getBitcoinLikeWallet:(nonnull NSString *)identifier
-                    callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback;
+                    callback:(nullable id<LGBitcoinLikeWalletCallback>)callback;
 
 - (void)getSupportedBitcoinLikeNetworkParameters:(nullable id<LGBitcoinLikeNetworkParametersCallback>)callback;
 

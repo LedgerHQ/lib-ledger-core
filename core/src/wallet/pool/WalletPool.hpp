@@ -53,6 +53,7 @@
 #include "../../api/BitcoinLikeExtendedPublicKeyProvider.hpp"
 #include "../../api/BitcoinLikeExtendedPublicKey.hpp"
 #include "../../api/BitcoinLikeWallet.hpp"
+#include "../../api/BitcoinLikeWalletCallback.hpp"
 #include <cereal/types/polymorphic.hpp>
 #include "../../api_impl/ConfigurationImpl.hpp"
 #include "../../async/DedicatedContext.hpp"
@@ -102,10 +103,10 @@ namespace ledger {
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
                     const api::BitcoinLikeNetworkParameters &networkParams,
                     const std::shared_ptr<api::Configuration> &configuration,
-                    const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
+                    const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) override;
 
             void getBitcoinLikeWallet(const std::string &identifier,
-                                      const std::shared_ptr<api::GetBitcoinLikeWalletCallback> &callback) override;
+                                      const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) override;
 
             void getSupportedBitcoinLikeNetworkParameters(
                     const std::shared_ptr<api::BitcoinLikeNetworkParametersCallback> &callback) override;

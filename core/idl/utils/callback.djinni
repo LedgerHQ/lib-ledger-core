@@ -1,0 +1,4 @@
+
+Callback = interface[T] +j +o +s +n {
+                                    onCallback(result: optional<T>, error: optional<Error>);
+}

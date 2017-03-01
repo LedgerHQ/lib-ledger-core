@@ -9,8 +9,8 @@
 #import "LGBitcoinLikeExtendedPublicKeyProvider+Private.h"
 #import "LGBitcoinLikeNetworkParameters+Private.h"
 #import "LGBitcoinLikeNetworkParametersCallback+Private.h"
+#import "LGBitcoinLikeWalletCallback+Private.h"
 #import "LGConfiguration+Private.h"
-#import "LGGetBitcoinLikeWalletCallback+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
 #include <exception>
@@ -40,20 +40,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
                        networkParams:(nonnull LGBitcoinLikeNetworkParameters *)networkParams
                        configuration:(nullable LGConfiguration *)configuration
-                            callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback {
+                            callback:(nullable id<LGBitcoinLikeWalletCallback>)callback {
     try {
         _cppRefHandle.get()->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(publicKeyProvider),
                                                           ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(networkParams),
                                                           ::djinni_generated::Configuration::toCpp(configuration),
-                                                          ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(callback));
+                                                          ::djinni_generated::BitcoinLikeWalletCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 - (void)getBitcoinLikeWallet:(nonnull NSString *)identifier
-                    callback:(nullable id<LGGetBitcoinLikeWalletCallback>)callback {
+                    callback:(nullable id<LGBitcoinLikeWalletCallback>)callback {
     try {
         _cppRefHandle.get()->getBitcoinLikeWallet(::djinni::String::toCpp(identifier),
-                                                  ::djinni_generated::GetBitcoinLikeWalletCallback::toCpp(callback));
+                                                  ::djinni_generated::BitcoinLikeWalletCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

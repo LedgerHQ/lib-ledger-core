@@ -228,6 +228,19 @@ namespace ledger {
                 });
             };
 
+            template<typename Callback>
+            typename std::enable_if<has_on_callback_method<Callback, void (const T&, const std::experimental::optional<api::Error>&)>::value, void>::type
+            callback(const Context& context, std::shared_ptr<Callback> cb) {
+                onComplete(context, [cb] (const Try<T>& result) {
+                    if (result.isSuccess()) {
+                        cb->onCallback(result.getValue(), Option<api::Error>().toOptional());
+                    } else {
+                        cb->onCallback(nullptr, Option<api::Error>(result.getFailure().toApiError()).toOptional());
+                    }
+
+                });
+            };
+
             static Future<T> successful(T value) {
                 Promise<T> p;
                 p.success(value);
