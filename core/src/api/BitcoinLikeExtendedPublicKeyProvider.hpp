@@ -14,9 +14,9 @@ class BitcoinLikeExtendedPublicKeyProvider {
 public:
     virtual ~BitcoinLikeExtendedPublicKeyProvider() {}
 
-    static void fromBitcoinLikeBase58ExtendedPublicKeyProvider(const std::shared_ptr<BitcoinLikeBase58ExtendedPublicKeyProvider> & provider);
+    static std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> fromBitcoinLikeBase58ExtendedPublicKeyProvider(const std::shared_ptr<BitcoinLikeBase58ExtendedPublicKeyProvider> & provider);
 
-    static void fromBitcoinLikePublicKeyProvider(const std::shared_ptr<BitcoinLikePublicKeyProvider> & provider);
+    static std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> fromBitcoinLikePublicKeyProvider(const std::shared_ptr<BitcoinLikePublicKeyProvider> & provider);
 };
 
 } } }  // namespace ledger::core::api

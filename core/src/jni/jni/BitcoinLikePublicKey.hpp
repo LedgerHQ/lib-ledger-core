@@ -3,28 +3,28 @@
 
 #pragma once
 
-#include "../../api/BitcoinPublicKey.hpp"
+#include "../../api/BitcoinLikePublicKey.hpp"
 #include "djinni_support.hpp"
 
 namespace djinni_generated {
 
-class BitcoinPublicKey final {
+class BitcoinLikePublicKey final {
 public:
-    using CppType = ::ledger::core::api::BitcoinPublicKey;
+    using CppType = ::ledger::core::api::BitcoinLikePublicKey;
     using JniType = jobject;
 
-    using Boxed = BitcoinPublicKey;
+    using Boxed = BitcoinLikePublicKey;
 
-    ~BitcoinPublicKey();
+    ~BitcoinLikePublicKey();
 
     static CppType toCpp(JNIEnv* jniEnv, JniType j);
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c);
 
 private:
-    BitcoinPublicKey();
-    friend ::djinni::JniClass<BitcoinPublicKey>;
+    BitcoinLikePublicKey();
+    friend ::djinni::JniClass<BitcoinLikePublicKey>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinPublicKey") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikePublicKey") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "([B[B)V") };
     const jfieldID field_publicKey { ::djinni::jniGetFieldID(clazz.get(), "publicKey", "[B") };
     const jfieldID field_chainCode { ::djinni::jniGetFieldID(clazz.get(), "chainCode", "[B") };

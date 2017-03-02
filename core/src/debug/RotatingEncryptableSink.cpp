@@ -84,10 +84,11 @@ namespace ledger {
                                                                   const spdlog::filename_t &extension) {
             std::conditional<std::is_same<spdlog::filename_t::value_type, char>::value, fmt::MemoryWriter, fmt::WMemoryWriter>::type w;
             if (index)
-                w.write(resolver->resolveLogFilePath(SPDLOG_FILENAME_T("{}.{}.{}")), filename, index, extension);
+                w.write(SPDLOG_FILENAME_T("{}.{}.{}"), filename, index, extension);
             else
-                w.write(resolver->resolveLogFilePath(SPDLOG_FILENAME_T("{}.{}")), filename, extension);
-            return w.str();
+                w.write(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
+            auto mangledFilename = w.str();
+            return resolver->resolveLogFilePath(mangledFilename);
         }
 
         void RotatingEncryptableSink::_rotate() {

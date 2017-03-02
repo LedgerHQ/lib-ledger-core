@@ -8,13 +8,14 @@
 
 namespace ledger { namespace core { namespace api {
 
-class BitcoinLikeBase58PublicKeyCallback;
+class StringCompletionBlock;
+struct BitcoinLikeNetworkParameters;
 
 class BitcoinLikeBase58ExtendedPublicKeyProvider {
 public:
     virtual ~BitcoinLikeBase58ExtendedPublicKeyProvider() {}
 
-    virtual void get(const std::string & path, const std::shared_ptr<BitcoinLikeBase58PublicKeyCallback> & callback) = 0;
+    virtual void get(const std::string & path, const BitcoinLikeNetworkParameters & params, const std::shared_ptr<StringCompletionBlock> & completion) = 0;
 };
 
 } } }  // namespace ledger::core::api

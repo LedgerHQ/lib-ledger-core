@@ -1,28 +1,22 @@
+@import "../../utils/callback.djinni"
+@import "../../bitcoin/addresses.djinni"
 
-BitcoinPublicKey = record {
+BitcoinLikePublicKey = record {
     publicKey: binary;
     chainCode: binary;
 }
 
-BitcoinLikePublicKeyCallback = interface +c {
-    onPublicKey(publicKey: BitcoinPublicKey);
-}
 
 BitcoinLikePublicKeyProvider = interface +j +o +n {
-    get(path: string, callback: BitcoinLikePublicKeyCallback);
-}
-
-BitcoinLikeBase58PublicKeyCallback = interface +c {
-    onBase58ExtendedPublicKey(xpub: string);
+    get(path: string, params: BitcoinLikeNetworkParameters, callback: CompletionBlock<BitcoinLikePublicKey>);
 }
 
 BitcoinLikeBase58ExtendedPublicKeyProvider = interface +j +o + n {
-    get(path: string, callback: BitcoinLikeBase58PublicKeyCallback);
+    get(path: string, params: BitcoinLikeNetworkParameters, completion: CompletionBlock<string>);
 }
 
 BitcoinLikeExtendedPublicKeyProvider = interface +c {
-    getExtendedPublicKey(path: string, )
-
-    static fromBitcoinLikeBase58ExtendedPublicKeyProvider(provider: BitcoinLikeBase58ExtendedPublicKeyProvider);
-    static fromBitcoinLikePublicKeyProvider(provider: BitcoinLikePublicKeyProvider);
+    static fromBitcoinLikeBase58ExtendedPublicKeyProvider(provider: BitcoinLikeBase58ExtendedPublicKeyProvider) : BitcoinLikeExtendedPublicKeyProvider;
+    static fromBitcoinLikePublicKeyProvider(provider: BitcoinLikePublicKeyProvider) : BitcoinLikeExtendedPublicKeyProvider;
 }
+

@@ -48,24 +48,62 @@ TEST(LoggerTest, LogAndOverflow) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
+
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs",
                                                std::experimental::optional<std::string>(),
                                                dispatcher->getSerialExecutionContext("logger"),
                                                resolver,
                                                logPrinter,
-                                               200
+                                                                          (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
     );
     dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
         for (auto i = 0; i < 200; i++) {
-            logger->debug("This is a log {}", i);
+            logger->debug("This is a log {0:03d}", i);
         }
-        dispatcher->stop();
+
+        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=] () {
+            dispatcher->stop();
+        }), 0);
     }));
     dispatcher->waitUntilStopped();
     std::ifstream t(resolver->resolveLogFilePath("test_logs.log"));
     std::string str((std::istreambuf_iterator<char>(t)),
                     std::istreambuf_iterator<char>());
+    std::cout << "File size: " << str.size() << std::endl;
+    std::cout << str << std::endl;
     EXPECT_TRUE(str.find("This is a log 199") != std::string::npos);
     EXPECT_FALSE(str.find("This is a log 0") != std::string::npos);
+    resolver->clean();
+}
+
+TEST(LoggerTest, LogNoOverflow) {
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver = std::make_shared<NativePathResolver>();
+
+    std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs_1",
+                                                                          std::experimental::optional<std::string>(),
+                                                                          dispatcher->getSerialExecutionContext("logger"),
+                                                                          resolver,
+                                                                          logPrinter,
+                                                                          (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 200
+    );
+    dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
+        for (auto i = 0; i < 200; i++) {
+            logger->debug("This is a log {0:03d}", i);
+        }
+
+        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=] () {
+            dispatcher->stop();
+        }), 0);
+    }));
+    dispatcher->waitUntilStopped();
+    std::ifstream t(resolver->resolveLogFilePath("test_logs_1.log"));
+    std::string str((std::istreambuf_iterator<char>(t)),
+                    std::istreambuf_iterator<char>());
+    std::cout << "File size: " << str.size() << std::endl;
+    std::cout << str << std::endl;
+    EXPECT_TRUE(str.find("This is a log 199") != std::string::npos);
+    EXPECT_TRUE(str.find("This is a log 0") != std::string::npos);
     resolver->clean();
 }

@@ -4,5 +4,5 @@
 package co.ledger.core;
 
 public abstract class BitcoinLikeBase58ExtendedPublicKeyProvider {
-    public abstract void get(String path, BitcoinLikeBase58PublicKeyCallback callback);
+    public abstract void get(String path, BitcoinLikeNetworkParameters params, StringCompletionBlock completion);
 }

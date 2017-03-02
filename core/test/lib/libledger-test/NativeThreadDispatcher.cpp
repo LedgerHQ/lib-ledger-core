@@ -30,7 +30,12 @@
  */
 #include "NativeThreadDispatcher.hpp"
 
-class MainThreadExecutionContext : public ledger::core::api::ExecutionContext {
+class ExecutionContext : public ledger::core::api::ExecutionContext {
+public:
+   virtual void stop() = 0;
+};
+
+class MainThreadExecutionContext : public ExecutionContext {
 public:
     MainThreadExecutionContext() {
 
@@ -50,6 +55,13 @@ public:
         }), millis);
     }
 
+    void stop() override {
+        auto looper = getLooper();
+        looper->push_back(new LambdaEvent([looper] () {
+            looper->stop();
+        }));
+    }
+
     EventLooper* getLooper() {
         return &_looper;
     }
@@ -58,7 +70,7 @@ private:
     EventLooper _looper;
 };
 
-class SerialQueueExecutionContext : public ledger::core::api::ExecutionContext {
+class SerialQueueExecutionContext : public ExecutionContext {
 public:
     SerialQueueExecutionContext() {
         _thread.start();
@@ -75,6 +87,10 @@ public:
         _thread.getLooper()->push_back(new LambdaEvent([r] () {
             r->run();
         }), millis);
+    }
+
+    void stop() override {
+       _thread.stop();
     }
 
 private:
@@ -137,9 +153,10 @@ std::shared_ptr<ledger::core::api::Lock> NativeThreadDispatcher::newLock() {
 }
 
 void NativeThreadDispatcher::stop() {
-    auto looper = std::dynamic_pointer_cast<MainThreadExecutionContext>(_contexts.front().second)->getLooper();
-    looper->push_back(new LambdaEvent([looper] () {
-        looper->stop();
+    getMainExecutionContext()->execute(make_runnable([this] () {
+        for (auto context : _contexts) {
+            std::dynamic_pointer_cast<ExecutionContext>(context.second)->stop();
+        }
     }));
 }
 

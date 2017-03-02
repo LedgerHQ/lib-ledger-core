@@ -65,12 +65,12 @@ namespace ledger {
             return Base58::encodeWithChecksum(_key.toByteArray(_params.XPUBVersion));
         }
 
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
-        BitcoinLikeExtendedPublicKey::fromPublicKeyCouple(const api::BitcoinLikeNetworkParameters &params,
-                                                          const optional<std::vector<uint8_t>> &parentPublicKey,
-                                                          const std::vector<uint8_t> &publicKey,
-                                                          const std::vector<uint8_t> &chainCode,
-                                                          const std::string &path) {
+        std::shared_ptr<BitcoinLikeExtendedPublicKey>
+        BitcoinLikeExtendedPublicKey::fromRaw(const api::BitcoinLikeNetworkParameters &params,
+                                              const optional<std::vector<uint8_t>> &parentPublicKey,
+                                              const std::vector<uint8_t> &publicKey,
+                                              const std::vector<uint8_t> &chainCode,
+                                              const std::string &path) {
             uint32_t parentFingerprint = 0;
 
             if (parentPublicKey) {
@@ -92,11 +92,10 @@ namespace ledger {
             return _path.toString();
         }
 
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
-        api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
-                                                      const std::string &address,
-                                                      const std::experimental::optional<std::string> & path) {
-            auto decodeResult = Base58::checkAndDecode(address);
+        std::shared_ptr<BitcoinLikeExtendedPublicKey>
+        BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
+                                                 const std::string &xpubBase58, const Option<std::string> &path) {
+            auto decodeResult = Base58::checkAndDecode(xpubBase58);
             if (decodeResult.isFailure())
                 throw decodeResult.getFailure();
             BytesReader reader(decodeResult.getValue());
@@ -110,9 +109,16 @@ namespace ledger {
             auto chainCode = reader.read(32);
             auto publicKey = reader.readUntilEnd();
             DeterministicPublicKey k(
-                    publicKey, chainCode, childNum, depth, fingerprint
+                publicKey, chainCode, childNum, depth, fingerprint
             );
-            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, DerivationPath(path.value_or("m")));
+            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, path.getValueOr("m"));
+        }
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
+        api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
+                                                      const std::string &address,
+                                                      const std::experimental::optional<std::string> & path) {
+            return ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(params, address, path);
         }
     }
 }

@@ -2,3 +2,8 @@
 Callback = interface[T] +j +o +s +n {
                                     onCallback(result: optional<T>, error: optional<Error>);
 }
+
+
+CompletionBlock = interface[T] +c {
+    complete(result: optional<T>, error: optional<Error>);
+}

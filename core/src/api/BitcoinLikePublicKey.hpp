@@ -9,25 +9,25 @@
 
 namespace ledger { namespace core { namespace api {
 
-struct BitcoinPublicKey final {
+struct BitcoinLikePublicKey final {
     std::vector<uint8_t> publicKey;
     std::vector<uint8_t> chainCode;
 
-    BitcoinPublicKey(std::vector<uint8_t> publicKey_,
-                     std::vector<uint8_t> chainCode_)
+    BitcoinLikePublicKey(std::vector<uint8_t> publicKey_,
+                         std::vector<uint8_t> chainCode_)
     : publicKey(std::move(publicKey_))
     , chainCode(std::move(chainCode_))
     {}
 
-    BitcoinPublicKey(const BitcoinPublicKey& cpy) {
+    BitcoinLikePublicKey(const BitcoinLikePublicKey& cpy) {
        this->publicKey = cpy.publicKey;
        this->chainCode = cpy.chainCode;
     }
 
-    BitcoinPublicKey() = default;
+    BitcoinLikePublicKey() = default;
 
 
-    BitcoinPublicKey& operator=(const BitcoinPublicKey& cpy) {
+    BitcoinLikePublicKey& operator=(const BitcoinLikePublicKey& cpy) {
        this->publicKey = cpy.publicKey;
        this->chainCode = cpy.chainCode;
        return *this;

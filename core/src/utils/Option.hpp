@@ -55,7 +55,7 @@ namespace ledger {
             Option(T&& value) : _optional(std::move(value)) {};
 
             Option(const Option<T>& option) : _optional(option._optional) {};
-
+            Option(const std::experimental::optional<T>& optional) : _optional(optional) {};
             Option<T>& operator=(const Option<T>& option) {
                 if (this != &option) {
                     _optional = option._optional;
@@ -202,6 +202,9 @@ namespace ledger {
         private:
             optional<T> _optional;
         };
+
+        template <typename T>
+        using OptionPtr = Option<std::shared_ptr<T>>;
     }
 }
 

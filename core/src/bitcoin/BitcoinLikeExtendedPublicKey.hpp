@@ -35,7 +35,7 @@
 #include "../crypto/DeterministicPublicKey.hpp"
 #include "../api/BitcoinLikeNetworkParameters.hpp"
 #include <memory>
-#include "../utils/optional.hpp"
+#include "../utils/Option.hpp"
 #include "../utils/DerivationPath.hpp"
 
 namespace ledger {
@@ -50,12 +50,18 @@ namespace ledger {
             std::string getRootPath() override;
 
         public:
-            static std::shared_ptr<api::BitcoinLikeExtendedPublicKey> fromPublicKeyCouple(
+            static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromRaw(
                     const api::BitcoinLikeNetworkParameters& params,
                     const optional<std::vector<uint8_t>>& parentPublicKey,
                     const std::vector<uint8_t>& publicKey,
                     const std::vector<uint8_t> &chainCode,
                     const std::string& path
+            );
+
+            static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(
+                const api::BitcoinLikeNetworkParameters& params,
+                const std::string& xpubBase58,
+                const Option<std::string>& path
             );
 
         private:

@@ -31,15 +31,17 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-+ (void)fromBitcoinLikeBase58ExtendedPublicKeyProvider:(nullable id<LGBitcoinLikeBase58ExtendedPublicKeyProvider>)provider {
++ (nullable LGBitcoinLikeExtendedPublicKeyProvider *)fromBitcoinLikeBase58ExtendedPublicKeyProvider:(nullable id<LGBitcoinLikeBase58ExtendedPublicKeyProvider>)provider {
     try {
-        ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(::djinni_generated::BitcoinLikeBase58ExtendedPublicKeyProvider::toCpp(provider));
+        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(::djinni_generated::BitcoinLikeBase58ExtendedPublicKeyProvider::toCpp(provider));
+        return ::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-+ (void)fromBitcoinLikePublicKeyProvider:(nullable id<LGBitcoinLikePublicKeyProvider>)provider {
++ (nullable LGBitcoinLikeExtendedPublicKeyProvider *)fromBitcoinLikePublicKeyProvider:(nullable id<LGBitcoinLikePublicKeyProvider>)provider {
     try {
-        ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(::djinni_generated::BitcoinLikePublicKeyProvider::toCpp(provider));
+        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(::djinni_generated::BitcoinLikePublicKeyProvider::toCpp(provider));
+        return ::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

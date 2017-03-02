@@ -42,6 +42,7 @@
 #include "../utils/ImmediateExecutionContext.hpp"
 #include "../traits/callback_traits.hpp"
 #include "../api/Error.hpp"
+#include "../traits/shared_ptr_traits.hpp"
 
 namespace ledger {
     namespace core {
@@ -229,7 +230,7 @@ namespace ledger {
             };
 
             template<typename Callback>
-            typename std::enable_if<has_on_callback_method<Callback, void (const T&, const std::experimental::optional<api::Error>&)>::value, void>::type
+            typename std::enable_if<is_shared_ptr<T>::value && has_on_callback_method<Callback, void (const T&, const std::experimental::optional<api::Error>&)>::value, void>::type
             callback(const Context& context, std::shared_ptr<Callback> cb) {
                 onComplete(context, [cb] (const Try<T>& result) {
                     if (result.isSuccess()) {
@@ -272,6 +273,24 @@ namespace ledger {
                         return f();
                     });
                     deffer->setResult(result);
+                }));
+                return Future<T>(deffer);
+            }
+
+            static Future<T> async(const Context& context, std::function<Future<T> ()> f) {
+                auto deffer = make_deffered();
+                context->execute(make_runnable([context, deffer, f] () {
+                    auto result = Try<Future<T>>::from([&] () -> Future<T> {
+                       return f();
+                    });
+                    if (result.isFailure()) {
+                        deffer->setError(result.getFailure());
+                    } else {
+                        Future<T> f = result.getValue();
+                        f.onComplete(context, [deffer] (const Try<T>& r) {
+                            deffer->setResult(r);
+                        });
+                    }
                 }));
                 return Future<T>(deffer);
             }

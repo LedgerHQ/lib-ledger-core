@@ -20,20 +20,22 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKeyProvider
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKeyProvider_fromBitcoinLikeBase58ExtendedPublicKeyProvider(JNIEnv* jniEnv, jobject /*this*/, jobject j_provider)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKeyProvider_fromBitcoinLikeBase58ExtendedPublicKeyProvider(JNIEnv* jniEnv, jobject /*this*/, jobject j_provider)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(::djinni_generated::BitcoinLikeBase58ExtendedPublicKeyProvider::toCpp(jniEnv, j_provider));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(::djinni_generated::BitcoinLikeBase58ExtendedPublicKeyProvider::toCpp(jniEnv, j_provider));
+        return ::djinni::release(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKeyProvider_fromBitcoinLikePublicKeyProvider(JNIEnv* jniEnv, jobject /*this*/, jobject j_provider)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKeyProvider_fromBitcoinLikePublicKeyProvider(JNIEnv* jniEnv, jobject /*this*/, jobject j_provider)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(::djinni_generated::BitcoinLikePublicKeyProvider::toCpp(jniEnv, j_provider));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ::ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(::djinni_generated::BitcoinLikePublicKeyProvider::toCpp(jniEnv, j_provider));
+        return ::djinni::release(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

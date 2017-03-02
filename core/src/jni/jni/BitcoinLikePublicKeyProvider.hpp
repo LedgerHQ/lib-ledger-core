@@ -33,14 +33,14 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        void get(const std::string & path, const std::shared_ptr<::ledger::core::api::BitcoinLikePublicKeyCallback> & callback) override;
+        void get(const std::string & path, const ::ledger::core::api::BitcoinLikeNetworkParameters & params, const std::shared_ptr<::ledger::core::api::BitcoinLikePublicKeyCompletionBlock> & callback) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikePublicKeyProvider, ::djinni_generated::BitcoinLikePublicKeyProvider>;
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikePublicKeyProvider") };
-    const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "(Ljava/lang/String;Lco/ledger/core/BitcoinLikePublicKeyCallback;)V") };
+    const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "(Ljava/lang/String;Lco/ledger/core/BitcoinLikeNetworkParameters;Lco/ledger/core/BitcoinLikePublicKeyCompletionBlock;)V") };
 };
 
 }  // namespace djinni_generated

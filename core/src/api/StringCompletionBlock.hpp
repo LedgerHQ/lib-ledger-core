@@ -4,18 +4,17 @@
 #pragma once
 
 #include "../utils/optional.hpp"
-#include <memory>
+#include <string>
 
 namespace ledger { namespace core { namespace api {
 
-class BitcoinLikeWallet;
 struct Error;
 
-class BitcoinLikeWalletCallback {
+class StringCompletionBlock {
 public:
-    virtual ~BitcoinLikeWalletCallback() {}
+    virtual ~StringCompletionBlock() {}
 
-    virtual void onCallback(const std::shared_ptr<BitcoinLikeWallet> & result, const std::experimental::optional<Error> & error) = 0;
+    virtual void complete(const std::experimental::optional<std::string> & result, const std::experimental::optional<Error> & error) = 0;
 };
 
 } } }  // namespace ledger::core::api
