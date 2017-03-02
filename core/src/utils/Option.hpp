@@ -40,7 +40,6 @@
 #include <utility>
 #include <vector>
 
-
 namespace ledger {
     namespace core {
         template <typename T>
@@ -50,6 +49,8 @@ namespace ledger {
             static_assert(!std::is_abstract<T>::value,
                           "Option is not compatible with abstract types");
         public:
+            static const Option<T> NONE;
+
             Option() {};
             Option(const T& value) : _optional(value) {};
             Option(T&& value) : _optional(std::move(value)) {};
@@ -130,6 +131,20 @@ namespace ledger {
                 return std::move(_optional.value());
             }
 
+            T getValueOr(const T& v) const& {
+                if (isEmpty())
+                    return v;
+                else
+                    return getValue();
+            }
+
+            T getOrElse(std::function<T ()> f) const {
+                if (isEmpty())
+                    return f();
+                else
+                    return getValue();
+            }
+
             T getValueOr(T&& v) const & {
                 if (isEmpty())
                     return std::forward<T>(v);
@@ -151,7 +166,7 @@ namespace ledger {
             }
 
             bool operator==(const Option<T>& v) const noexcept {
-                return hasValue() && v.hasValue() && **this == *v;
+                return (isEmpty() == v.isEmpty()) || (hasValue() && v.hasValue() && **this == *v);
             }
 
             bool operator!=(const T& v) const noexcept {
@@ -199,14 +214,29 @@ namespace ledger {
                 return out;
             }
 
+            template <typename A>
+            Option<A> orElse(std::function<Option<A> ()> f) const {
+                if (isEmpty()) {
+                    return f();
+                } else {
+                    return Option<A>::NONE;
+                }
+            }
+
+            operator optional<T>() {
+                return _optional;
+            }
+
         private:
             optional<T> _optional;
         };
 
         template <typename T>
         using OptionPtr = Option<std::shared_ptr<T>>;
+
+        template <typename T>
+        const Option<T> Option<T>::NONE;
     }
 }
-
 
 #endif //LEDGER_CORE_OPTION_HPP

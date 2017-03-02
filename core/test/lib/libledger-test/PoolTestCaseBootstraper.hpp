@@ -35,6 +35,7 @@
 #include "NativePathResolver.hpp"
 #include "CoutLogPrinter.hpp"
 #include "MongooseHttpClient.hpp"
+#include "../../../lib/cereal/cereal/types/unordered_map.hpp"
 #include <ledger/core/api/WalletPool.hpp>
 #include <memory>
 #include <ledger/core/utils/Exception.hpp>
@@ -44,9 +45,25 @@
 #include <ledger/core/api/BitcoinLikeNetworkParameters.hpp>
 #include <ledger/core/api/Configuration.hpp>
 #include <ledger/core/api/BitcoinLikeWallet.hpp>
+#include <ledger/core/api/BitcoinLikeExtendedPublicKeyProvider.hpp>
+#include <ledger/core/api/BitcoinLikeBase58ExtendedPublicKeyProvider.hpp>
+#include <ledger/core/collections/collections.hpp>
 
-class PoolTestCaseBootstraper {
+class PoolTestCaseBootstraper;
+class BootstrapperBase58ExtendedPublicKeyProvider :  public ledger::core::api::BitcoinLikeBase58ExtendedPublicKeyProvider {
 public:
+    BootstrapperBase58ExtendedPublicKeyProvider(PoolTestCaseBootstraper* self) : _self(self) {};
+    void get(const std::string &path, const ledger::core::api::BitcoinLikeNetworkParameters &params,
+             const std::shared_ptr<ledger::core::api::StringCompletionBlock> &completion) override;
+
+private:
+    PoolTestCaseBootstraper* _self;
+};
+
+class PoolTestCaseBootstraper  {
+public:
+    friend class BootstrapperBase58ExtendedPublicKeyProvider;
+
     PoolTestCaseBootstraper(const std::string &poolName);
     void setup(std::function<void (std::shared_ptr<ledger::core::api::WalletPool>, std::experimental::optional<ledger::core::api::Error>)> callback);
     void tearDown();
@@ -56,14 +73,20 @@ public:
                           const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
                           const std::shared_ptr<ledger::core::api::Configuration> &configuration);
 
+    ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>> getBitcoinWallet();
+
+    PoolTestCaseBootstraper& xpubs(const ledger::core::Map<std::string, std::string>& xpubs);
+
 public:
     std::shared_ptr<NativeThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<CoutLogPrinter> printer;
     std::shared_ptr<MongooseHttpClient> client;
 
+
 private:
     std::string _poolName;
+    ledger::core::Map<std::string, std::string> _xpubs;
 };
 
 #endif //LEDGER_CORE_POOLTESTCASEBOOTSTRAPER_HPP

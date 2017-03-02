@@ -1,9 +1,9 @@
 /*
  *
- * initialization_test
+ * map_tests
  * ledger-core
  *
- * Created by Pierre Pollastri on 21/12/2016.
+ * Created by Pierre Pollastri on 02/03/2017.
  *
  * The MIT License (MIT)
  *
@@ -30,38 +30,28 @@
  */
 
 #include <gtest/gtest.h>
-#include <NativePathResolver.hpp>
-#include <NativeThreadDispatcher.hpp>
-#include <ledger/core/api/WalletPoolBuilder.hpp>
-#include <ledger/core/api/WalletPool.hpp>
-#include <ledger/core/api/WalletPoolBuildCallback.hpp>
-#include <CoutLogPrinter.hpp>
-#include <MongooseHttpClient.hpp>
-#include <PoolTestCaseBootstraper.hpp>
-#include <ledger/core/api/Logger.hpp>
+#include <ledger/core/collections/collections.hpp>
 
 using namespace ledger::core;
 
-TEST(BitcoinWalletInitialization, InitializeNewWalletPool) {
-    PoolTestCaseBootstraper bootstraper("default");
-    bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool, optional<api::Error> error) {
-        if (!error) {
-            pool->getLogger()->d("test", "Pool created");
-        } else {
-            std::cout << "Error: " << error.value().message << std::endl;
-        }
-        bootstraper.dispatcher->stop();
-    });
-    bootstraper.dispatcher->waitUntilStopped();
-    bootstraper.tearDown();
+TEST(Map, InitializeAndGet) {
+    Map<std::string, int> map = {
+        {"my_key", 12},
+        {"my_other_key", 13}
+    };
+    EXPECT_EQ(map["my_key"], 12);
 }
 
-TEST(BitcoinWalletInitialization, InitializeBitcoinWallet) {
-    PoolTestCaseBootstraper bootstraper("default");
-
-
-
-    bootstraper.dispatcher->waitUntilStopped();
-    bootstraper.tearDown();
+TEST(Map, GetOptional) {
+    Map<std::string, int> map = {
+        {"my_key", 12},
+    };
+    EXPECT_TRUE(map.get("my_key") == 12);
+    EXPECT_TRUE(map.get("nihil").isEmpty());
 }
 
+TEST(Map, Contains) {
+    Map<std::string, int> map({{"here", 0}});
+    EXPECT_FALSE(map.contains("toto"));
+    EXPECT_TRUE(map.contains("here"));
+}

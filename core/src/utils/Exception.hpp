@@ -37,6 +37,7 @@
 #include "../api/Error.hpp"
 #include "../utils/Option.hpp"
 #include <memory>
+#include <fmt/format.h>
 
 namespace ledger {
     namespace core {
@@ -67,6 +68,16 @@ namespace ledger {
             api::ErrorCode _code;
             std::string _message;
             Option<std::shared_ptr<void>> _userData;
+        };
+
+        template <typename... Args>
+        Exception make_exception(api::ErrorCode code, const std::string& format, const Args&... args) {
+            return Exception(code, fmt::format(format, args...));
+        };
+
+        template <typename... Args>
+        Exception make_exception(api::ErrorCode code, std::shared_ptr<void> userData, const std::string& format, const Args&... args) {
+            return Exception(code, fmt::format(format, args...), userData);
         };
     }
 }

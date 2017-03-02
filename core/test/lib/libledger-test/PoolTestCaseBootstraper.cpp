@@ -36,6 +36,7 @@
 #include <ledger/core/async/Promise.hpp>
 #include <ledger/core/utils/Exception.hpp>
 #include "callbacks.hpp"
+#include <ledger/core/api/StringCompletionBlock.hpp>
 
 using namespace ledger::core;
 
@@ -101,4 +102,18 @@ PoolTestCaseBootstraper::getBitcoinLikeWallet(
     });
 
     return promise.getFuture();
+}
+
+PoolTestCaseBootstraper &PoolTestCaseBootstraper::xpubs(const ledger::core::Map<std::string, std::string> &xpubs) {
+    _xpubs = xpubs;
+    return *this;
+}
+
+void BootstrapperBase58ExtendedPublicKeyProvider::get(const std::string &path,
+                                                      const api::BitcoinLikeNetworkParameters &params,
+                                                      const std::shared_ptr<api::StringCompletionBlock> &completion) {
+    auto value = _self->_xpubs.lift(path);
+    completion->complete(value, value.orElse<api::Error>([] () {
+        return make_exception(api::ErrorCode::NO_SUCH_ELEMENT, "No xpubg for {}", path).toApiError();
+    }));
 }

@@ -85,3 +85,9 @@ TEST(Option, FlatMap) {
         EXPECT_TRUE(NONE.isEmpty());
     }
 }
+
+TEST(Option, OrElse) {
+    EXPECT_TRUE(Option<std::string>::NONE.orElse<int>([] ()  {
+        return 12;
+    }) == 12);
+}
