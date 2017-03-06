@@ -61,7 +61,19 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
 
     if (spec.cppEnumHashWorkaround) {
       refs.hpp.add("#include <functional>") // needed for std::hash
+      refs.hpp.add("#include <string>")
     }
+
+    writeCppFile(ident, origin, refs.cpp, w => {
+      val variableName = self(0).toLower + self.slice(1, self.length)
+      w.w(s"std::string to_string(const $self& $variableName)").bracedSemi {
+        w.w(s"switch ($variableName)").bracedSemi {
+          for (o <- e.options) {
+            w.wl(s"case $self::${idCpp.enum(o.ident.name)}: return ${'"' + idCpp.enum(o.ident.name) + '"'};")
+          }
+        }
+      }
+    })
 
     writeHppFile(ident, origin, refs.hpp, refs.hppFwds, w => {
       w.w(s"enum class $self : int").bracedSemi {
@@ -70,6 +82,8 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
           w.wl(idCpp.enum(o.ident.name) + ",")
         }
       }
+      val variableName = self(0).toLower + self.slice(1, self.length)
+      w.wl(s"std::string to_string(const $self& $variableName);")
     },
     w => {
       // std::hash specialization has to go *outside* of the wrapNs
@@ -218,6 +232,30 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
             w.wl("}")
         }
 
+
+        // Cereal load serialization
+        {
+          w.wl
+          w.wl("template <class Archive>")
+          w.w("void load(Archive& archive)").braced {
+            val vars = r.fields map {(field) =>
+              idCpp.field(field.ident)
+            } mkString(", ")
+            w.wl(s"archive($vars);")
+          }
+        }
+
+        // Cereal save serialization
+        {
+          w.wl
+          w.wl("template <class Archive>")
+          w.w("void save(Archive& archive) const").braced {
+            val vars = r.fields map {(field) =>
+              idCpp.field(field.ident)
+            } mkString(", ")
+            w.wl(s"archive($vars);")
+          }
+        }
 
         if (r.ext.cpp) {
           w.wl
