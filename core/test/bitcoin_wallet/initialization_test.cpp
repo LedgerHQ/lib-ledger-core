@@ -59,7 +59,11 @@ TEST(BitcoinWalletInitialization, InitializeNewWalletPool) {
 TEST(BitcoinWalletInitialization, InitializeBitcoinWallet) {
     PoolTestCaseBootstraper bootstraper("default");
 
-
+    bootstraper.getBitcoinWallet().onComplete(bootstraper.mainContext, [&] (const TryPtr<api::BitcoinLikeWallet>& result) {
+        std::cout << "success: " << result.isSuccess() << std::endl;
+        std::cout << result.getFailure() << std::endl;
+        bootstraper.dispatcher->stop();
+    });
 
     bootstraper.dispatcher->waitUntilStopped();
     bootstraper.tearDown();

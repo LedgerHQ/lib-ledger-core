@@ -34,6 +34,16 @@ struct HttpReadBodyResult final {
        this->data = cpy.data;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(error, data);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(error, data);
+    }
 };
 
 } } }  // namespace ledger::core::api

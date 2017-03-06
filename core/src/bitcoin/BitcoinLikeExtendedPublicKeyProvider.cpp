@@ -29,3 +29,15 @@
  *
  */
 #include "BitcoinLikeExtendedPublicKeyProvider.hpp"
+#include "BitcoinLikeBase58Provider.hpp"
+
+namespace ledger {
+    namespace core {
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(
+        const std::shared_ptr<BitcoinLikeBase58ExtendedPublicKeyProvider> &provider) {
+            return std::make_shared<ledger::core::BitcoinLikeBase58Provider>(provider);
+        }
+
+    }
+}

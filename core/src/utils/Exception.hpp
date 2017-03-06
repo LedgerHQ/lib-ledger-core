@@ -38,6 +38,7 @@
 #include "../utils/Option.hpp"
 #include <memory>
 #include <fmt/format.h>
+#include <iostream>
 
 namespace ledger {
     namespace core {
@@ -46,7 +47,7 @@ namespace ledger {
             Exception(api::ErrorCode code, const std::string& message,
                       Option<std::shared_ptr<void>> userData = Option<std::shared_ptr<void>>());
             api::ErrorCode getErrorCode() const;
-            const std::string& getMessage() const;
+            std::string getMessage() const;
             const Option<std::shared_ptr<void>>& getUserData() const;
 
             template<typename T> Option<std::shared_ptr<T>> getTypeUserData() const {
@@ -60,6 +61,10 @@ namespace ledger {
             virtual ~Exception() override;
 
             virtual const char *what() const noexcept override;
+
+            friend std::ostream &operator<<(std::ostream &os, const Exception &e) {
+                return os << "Exception(" << e.getMessage() << ")";
+            }
 
         public:
             static const optional<api::Error> NO_ERROR;

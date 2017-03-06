@@ -111,5 +111,6 @@ namespace ledger {
         std::shared_ptr<api::Configuration> api::Configuration::newInstance() {
             return std::make_shared<ledger::core::ConfigurationImpl>();
         }
+
     }
 }

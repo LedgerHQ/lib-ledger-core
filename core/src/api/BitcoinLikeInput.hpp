@@ -43,6 +43,16 @@ struct BitcoinLikeInput final {
        this->indexInPreviousTx = cpy.indexInPreviousTx;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(path, isCoinbase, previousTxHash, indexInPreviousTx);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(path, isCoinbase, previousTxHash, indexInPreviousTx);
+    }
 };
 
 } } }  // namespace ledger::core::api

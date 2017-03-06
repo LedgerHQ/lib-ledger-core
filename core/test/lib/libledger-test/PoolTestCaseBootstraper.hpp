@@ -48,6 +48,7 @@
 #include <ledger/core/api/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <ledger/core/api/BitcoinLikeBase58ExtendedPublicKeyProvider.hpp>
 #include <ledger/core/collections/collections.hpp>
+#include <ledger/core/api/Configuration.hpp>
 
 class PoolTestCaseBootstraper;
 class BootstrapperBase58ExtendedPublicKeyProvider :  public ledger::core::api::BitcoinLikeBase58ExtendedPublicKeyProvider {
@@ -73,7 +74,8 @@ public:
                           const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
                           const std::shared_ptr<ledger::core::api::Configuration> &configuration);
 
-    ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>> getBitcoinWallet();
+    ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
+    getBitcoinWallet(const std::shared_ptr<ledger::core::api::Configuration>& configuration = ledger::core::api::Configuration::newInstance());
 
     PoolTestCaseBootstraper& xpubs(const ledger::core::Map<std::string, std::string>& xpubs);
 
@@ -82,7 +84,8 @@ public:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<CoutLogPrinter> printer;
     std::shared_ptr<MongooseHttpClient> client;
-
+    std::shared_ptr<ledger::core::api::ExecutionContext> mainContext;
+    std::shared_ptr<ledger::core::api::ExecutionContext> workerContext;
 
 private:
     std::string _poolName;

@@ -94,7 +94,5 @@ BitcoinLikeAccount = interface +c {
 
 
 BitcoinLikeWallet = interface +c {
-    getPreferences(): Preferences;
-    openOperationCursor(): BitcoinLikeOperationCursor;
-    synchronize(listener: BitcoinLikeWalletSynchronizationListener);
+
 }

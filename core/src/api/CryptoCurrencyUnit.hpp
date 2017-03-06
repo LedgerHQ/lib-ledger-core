@@ -32,6 +32,16 @@ struct CryptoCurrencyUnit final {
        this->decimalPlace = cpy.decimalPlace;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(name, decimalPlace);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(name, decimalPlace);
+    }
 };
 
 } } }  // namespace ledger::core::api

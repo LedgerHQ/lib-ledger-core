@@ -45,6 +45,11 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false
             );
+
+            const std::vector<api::BitcoinLikeNetworkParameters> ALL
+            ({
+                BITCOIN
+            });
         }
     }
 }

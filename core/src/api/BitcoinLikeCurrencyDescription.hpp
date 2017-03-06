@@ -48,6 +48,16 @@ struct BitcoinLikeCurrencyDescription final {
        this->shortName = cpy.shortName;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(BIP44CoinType, P2PKHAddressVersion, P2SHAddressVersion, XPUBAddressVersion, shortName);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(BIP44CoinType, P2PKHAddressVersion, P2SHAddressVersion, XPUBAddressVersion, shortName);
+    }
 };
 
 } } }  // namespace ledger::core::api

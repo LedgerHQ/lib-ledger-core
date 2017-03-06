@@ -9,3 +9,5 @@ add_library(ledger-test STATIC
 include_directories(${CMAKE_BINARY_DIR}/include ../../../lib/openssl/include)
 target_link_libraries(ledger-test PUBLIC crypto)
 include_directories(../boost)
+target_include_directories(ledger-test PUBLIC ../../../lib/fmt-3.0.0)
+target_include_directories(ledger-test PUBLIC ../../../lib/cereal/)

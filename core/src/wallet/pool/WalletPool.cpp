@@ -80,6 +80,11 @@ namespace ledger {
             // Initialize network
             _http = std::make_shared<HttpClient>(_configuration[api::WalletPoolBuilder::API_BASE_URL], httpClient, _executionContext);
 
+            // Initialize Bitcoin constants
+            BitcoinLikeWalletFactory::initialize(
+                getExternalPreferences()->getSubPreferences("bitcoin_like")->getSubPreferences("networks"),
+                _bitcoinNetworkParams
+            );
         }
 
         std::shared_ptr<api::Logger> WalletPool::getLogger() {
@@ -168,11 +173,11 @@ namespace ledger {
         WalletPool::getBitcoinLikeWalletFactory(const std::string &networkParamsIdentifier) {
             if (_bitcoinWalletFactories.find(networkParamsIdentifier) != _bitcoinWalletFactories.end()) {
                 return _bitcoinWalletFactories[networkParamsIdentifier];
-            } else if (_bitcoinNetworkParams.find(networkParamsIdentifier) != _bitcoinNetworkParams.end()) {
+            } else if (_bitcoinNetworkParams.contains(networkParamsIdentifier)) {
                 return std::make_shared<BitcoinLikeWalletFactory>(
                         _bitcoinNetworkParams[networkParamsIdentifier],
                         shared_from_this(),
-                        getInternalPreferences()->getSubPreferences("wallets")
+                        getExternalPreferences()->getSubPreferences("wallets")
                 );
             }
             throw Exception(api::ErrorCode::UNKNOWN_NETWORK_PARAMETERS,
@@ -190,6 +195,10 @@ namespace ledger {
 
         void WalletPool::getSupportedBitcoinLikeNetworkParameters(const std::shared_ptr<api::BitcoinLikeNetworkParametersCallback> &callback) {
 
+        }
+
+        std::shared_ptr<Preferences> WalletPool::getExternalPreferences() {
+            return _externalBackend->getPreferences("pool");
         }
 
     }

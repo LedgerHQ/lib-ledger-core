@@ -36,7 +36,7 @@
 #include "../api/PreferencesEditor.hpp"
 #include <memory>
 #include <cereal/cereal.hpp>
-#include <cereal/archives/binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,10 +57,10 @@ namespace ledger {
             template <typename T>
             std::shared_ptr<PreferencesEditor> putObject(const std::string& key, T& object) {
                 std::stringstream is;
-                ::cereal::BinaryOutputArchive archive(is);
+                ::cereal::PortableBinaryOutputArchive archive(is);
                 archive(object);
                 auto savedState = is.str();
-                putData(key, std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data()));
+                putData(key, std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.length()));
                 return shared_from_this();
             };
 

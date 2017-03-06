@@ -74,6 +74,16 @@ struct BitcoinLikeNetworkParameters final {
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, BIP44CoinType, PaymentUriScheme, DustAmount, MessagePrefix, UsesTimestampedTransaction);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, BIP44CoinType, PaymentUriScheme, DustAmount, MessagePrefix, UsesTimestampedTransaction);
+    }
 };
 
 } } }  // namespace ledger::core::api

@@ -43,7 +43,7 @@
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeExtendedPublicKeyProvider : api::BitcoinLikeExtendedPublicKeyProvider {
+        class BitcoinLikeExtendedPublicKeyProvider : public api::BitcoinLikeExtendedPublicKeyProvider {
         public:
             virtual Future<std::shared_ptr<BitcoinLikeExtendedPublicKey>> get(
             std::shared_ptr<api::ExecutionContext> context,

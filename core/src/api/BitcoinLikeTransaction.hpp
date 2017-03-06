@@ -52,6 +52,16 @@ struct BitcoinLikeTransaction final {
        this->time = cpy.time;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(inputs, outputs, block, lockTime, time);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(inputs, outputs, block, lockTime, time);
+    }
 };
 
 } } }  // namespace ledger::core::api

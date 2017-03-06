@@ -149,3 +149,69 @@ TEST(Preferences, IterateThroughMembers) {
     dispatcher->waitUntilStopped();
     resolver->clean();
 }
+
+struct MyClass
+{
+    int x, y, z;
+
+    template<class Archive>
+    void serialize(Archive & archive)
+    {
+        archive( x, y, z );
+    }
+};
+TEST(Preferences, IterateThroughObjectMembers) {
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto preferencesLock = dispatcher->newLock();
+    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
+    "/preferences/tests.db",
+    dispatcher->getSerialExecutionContext("worker"),
+    resolver
+    );
+    auto preferences = backend->getPreferences("my_test_preferences");
+    auto otherPreferences = backend->getPreferences("my_other_test_preferences");
+
+    MyClass obj1;
+    obj1.x = 06;
+    obj1.y = 03;
+    obj1.z = 2017;
+
+    MyClass obj2;
+    obj2.x = 07;
+    obj2.y = 03;
+    obj2.z = 2017;
+
+    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([&] () {
+        preferences
+        ->editor()
+        ->putObject<MyClass>("0", obj1)
+        ->putObject<MyClass>("1", obj2)
+        ->commit();
+    }));
+    // Assume that 100ms should be enough to persist data
+    dispatcher->getMainExecutionContext()->delay(make_runnable([&] () {
+        preferences->iterate<MyClass>([=] (leveldb::Slice&& key, const MyClass& value) {
+            if (key.ToString() == "0") {
+                EXPECT_EQ(obj1.x, value.x);
+                EXPECT_EQ(obj1.y, value.y);
+                EXPECT_EQ(obj1.z, value.z);
+            } else if (key.ToString() == "1") {
+                EXPECT_EQ(obj2.x, value.x);
+                EXPECT_EQ(obj2.y, value.y);
+                EXPECT_EQ(obj2.z, value.z);
+            } else {
+               EXPECT_TRUE(false);
+            }
+            return true;
+        });
+        dispatcher->stop();
+    }), 100);
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+        dispatcher->stop();
+        FAIL() << "Timeout";
+    }), 5000);
+
+    dispatcher->waitUntilStopped();
+    resolver->clean();
+}

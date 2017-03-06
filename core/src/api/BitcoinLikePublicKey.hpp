@@ -32,6 +32,16 @@ struct BitcoinLikePublicKey final {
        this->chainCode = cpy.chainCode;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(publicKey, chainCode);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(publicKey, chainCode);
+    }
 };
 
 } } }  // namespace ledger::core::api

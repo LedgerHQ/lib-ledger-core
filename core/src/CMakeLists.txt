@@ -93,7 +93,6 @@ add_library(
         preferences/Preferences.cpp preferences/Preferences.hpp
         preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeyChain.cpp wallet/bitcoin/keychains/BitcoinLikeKeyChain.hpp
-        wallet/bitcoin/BitcoinWalletFactory.cpp wallet/bitcoin/BitcoinWalletFactory.hpp
         api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
         wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp

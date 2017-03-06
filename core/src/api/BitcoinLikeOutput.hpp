@@ -49,6 +49,16 @@ struct BitcoinLikeOutput final {
        this->address = cpy.address;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(transactionHash, index, path, script, address);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(transactionHash, index, path, script, address);
+    }
 };
 
 } } }  // namespace ledger::core::api

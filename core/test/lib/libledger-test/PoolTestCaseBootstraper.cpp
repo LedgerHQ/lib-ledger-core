@@ -37,6 +37,7 @@
 #include <ledger/core/utils/Exception.hpp>
 #include "callbacks.hpp"
 #include <ledger/core/api/StringCompletionBlock.hpp>
+#include <ledger/core/wallet/bitcoin/networks.hpp>
 
 using namespace ledger::core;
 
@@ -65,6 +66,8 @@ PoolTestCaseBootstraper::PoolTestCaseBootstraper(const std::string &poolName) {
     resolver = std::make_shared<NativePathResolver>();
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("http"));
+    mainContext = dispatcher->getMainExecutionContext();
+    workerContext = dispatcher->getSerialExecutionContext("worker");
 }
 
 
@@ -109,11 +112,20 @@ PoolTestCaseBootstraper &PoolTestCaseBootstraper::xpubs(const ledger::core::Map<
     return *this;
 }
 
+ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
+PoolTestCaseBootstraper::getBitcoinWallet(const std::shared_ptr<ledger::core::api::Configuration>& configuration) {
+    return getBitcoinLikeWallet(
+          api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(std::make_shared<BootstrapperBase58ExtendedPublicKeyProvider>(this)),
+          networks::BITCOIN,
+          configuration
+    );
+}
+
 void BootstrapperBase58ExtendedPublicKeyProvider::get(const std::string &path,
                                                       const api::BitcoinLikeNetworkParameters &params,
                                                       const std::shared_ptr<api::StringCompletionBlock> &completion) {
     auto value = _self->_xpubs.lift(path);
-    completion->complete(value, value.orElse<api::Error>([] () {
-        return make_exception(api::ErrorCode::NO_SUCH_ELEMENT, "No xpubg for {}", path).toApiError();
+    completion->complete(value, value.orElse<api::Error>([&] () {
+        return make_exception(api::ErrorCode::NO_SUCH_ELEMENT, "No xpub for {}", path).toApiError();
     }));
 }

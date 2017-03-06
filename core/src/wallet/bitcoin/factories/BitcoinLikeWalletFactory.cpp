@@ -29,6 +29,8 @@
  *
  */
 #include "BitcoinLikeWalletFactory.hpp"
+#include "../networks.hpp"
+#include <leveldb/db.h>
 
 namespace ledger {
     namespace core {
@@ -64,6 +66,21 @@ namespace ledger {
         BitcoinLikeWalletFactory::build(const BitcoinLikeWalletEntry& entry) {
             Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
             return promise.getFuture();
+        }
+
+        void BitcoinLikeWalletFactory::initialize(const std::shared_ptr<Preferences> &preferences,
+                                                  Map<std::string, ledger::core::api::BitcoinLikeNetworkParameters> &networks) {
+            if (!preferences->contains(ledger::core::networks::BITCOIN.Identifier)) {
+                auto editor = preferences->editor();
+                for (auto network : ledger::core::networks::ALL) {
+                    editor->putObject<api::BitcoinLikeNetworkParameters>(network.Identifier, network);
+                }
+                editor->commit();
+            }
+            preferences->iterate<api::BitcoinLikeNetworkParameters>([&] (leveldb::Slice&& key, const api::BitcoinLikeNetworkParameters& value) {
+                networks[value.Identifier] = value;
+                return true;
+            });
         }
 
     }

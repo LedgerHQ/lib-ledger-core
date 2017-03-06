@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 namespace ledger { namespace core { namespace api {
 
@@ -11,6 +12,7 @@ enum class BitcoinLikeFeePolicy : int {
     PER_BYTE,
     PER_KBYTE,
 };
+std::string to_string(const BitcoinLikeFeePolicy& bitcoinLikeFeePolicy);
 
 } } }  // namespace ledger::core::api
 

@@ -48,13 +48,18 @@ namespace ledger {
                 _container = base;
             };
 
-            MapLike(const MapLike &map) {
+            MapLike(const MapLike<K, V, Container> &map) {
                 _container = map._container;
             }
 
-            MapLike(MapLike &&map) {
+            MapLike(MapLike<K, V, Container> &&map) {
                 _container = std::move(map._container);
             }
+
+            MapLike<K, V, Container>& operator=(const MapLike<K, V, Container>& map) {
+                _container = map._container;
+                return *this;
+            };
 
             V &operator[](const K &key) {
                 return _container[key];

@@ -63,6 +63,7 @@ namespace ledger {
                     std::shared_ptr<api::Configuration> configuration
             );
 
+            static void initialize(const std::shared_ptr<Preferences>& preferences, Map<std::string, api::BitcoinLikeNetworkParameters>& networks);
         private:
             Future<std::shared_ptr<BitcoinLikeWallet>> build(const BitcoinLikeWalletEntry& entry);
 

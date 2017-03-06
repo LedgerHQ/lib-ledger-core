@@ -303,7 +303,8 @@ namespace ledger {
         private:
             std::shared_ptr<Deffered<T>> _defer;
         };
-
+        template <typename T>
+        using FuturePtr = Future<std::shared_ptr<T>>;
     }
 }
 

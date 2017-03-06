@@ -37,7 +37,7 @@
 #include "PreferencesEditor.hpp"
 #include "../utils/Option.hpp"
 #include <cereal/cereal.hpp>
-#include <cereal/archives/binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -70,12 +70,24 @@ namespace ledger {
                 T object;
                 boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&data[0]), data.size());
                 boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                ::cereal::BinaryInputArchive archive(is);
+                ::cereal::PortableBinaryInputArchive archive(is);
                 archive(object);
                 return Option<T>(object);
             };
 
             void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
+
+            template <typename T>
+            void iterate(std::function<bool (leveldb::Slice&& key, const T& value)> f, Option<std::string> begin = Option<std::string>()) {
+                iterate([f] (leveldb::Slice&& key, leveldb::Slice&& value) {
+                    T object;
+                    boost::iostreams::array_source my_vec_source(reinterpret_cast<const char*>(&value.data()[0]), value.size());
+                    boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
+                    ::cereal::PortableBinaryInputArchive archive(is);
+                    archive(object);
+                    return f(std::move(key), object);
+                }, begin);
+            }
 
             std::shared_ptr<Preferences> getSubPreferences(std::string prefix);
 

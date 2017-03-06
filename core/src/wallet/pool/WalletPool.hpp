@@ -58,6 +58,7 @@
 #include "../../api_impl/ConfigurationImpl.hpp"
 #include "../../async/DedicatedContext.hpp"
 #include "../../preferences/Preferences.hpp"
+#include "../../collections/collections.hpp"
 
 namespace ledger {
     namespace core {
@@ -123,6 +124,7 @@ namespace ledger {
             getAccountPreferences(const std::string &walletIdentifier, int32_t accountNumber) override;
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             std::shared_ptr<Preferences> getInternalPreferences();
+            std::shared_ptr<Preferences> getExternalPreferences();
 
         private:
             std::shared_ptr<BitcoinLikeWalletFactory> getBitcoinLikeWalletFactory(const std::string& networkParamsIdentifier);
@@ -144,7 +146,7 @@ namespace ledger {
             // Bitcoin wallets
             std::unordered_map<std::string, std::shared_ptr<BitcoinLikeWalletFactory>> _bitcoinWalletFactories;
             std::vector<std::shared_ptr<api::BitcoinLikeWallet>> _bitcoinWallets;
-            std::map<std::string, api::BitcoinLikeNetworkParameters> _bitcoinNetworkParams;
+            Map<std::string, api::BitcoinLikeNetworkParameters> _bitcoinNetworkParams;
 
         public:
             static void open( const std::string &name,

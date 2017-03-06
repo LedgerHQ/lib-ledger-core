@@ -32,6 +32,16 @@ struct Error final {
        this->message = cpy.message;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(code, message);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(code, message);
+    }
 };
 
 } } }  // namespace ledger::core::api

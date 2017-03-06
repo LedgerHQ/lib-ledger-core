@@ -37,6 +37,25 @@ namespace ledger {
     namespace core {
         namespace networks {
             extern const api::BitcoinLikeNetworkParameters BITCOIN;
+            extern const std::vector<api::BitcoinLikeNetworkParameters> ALL;
+
+            template<class Archive>
+            void serialize(Archive & archive,
+                           api::BitcoinLikeNetworkParameters & p)
+            {
+                archive(
+                    p.Identifier,
+                    p.P2PKHVersion,
+                    p.P2SHVersion,
+                    p.XPUBVersion,
+                    p.FeePolicy,
+                    p.BIP44CoinType,
+                    p.PaymentUriScheme,
+                    p.DustAmount,
+                    p.MessagePrefix,
+                    p.UsesTimestampedTransaction
+                );
+            }
 
         }
     }

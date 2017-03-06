@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 namespace ledger { namespace core { namespace api {
 
@@ -13,6 +14,7 @@ enum class HttpMethod : int {
     PUT,
     DEL,
 };
+std::string to_string(const HttpMethod& httpMethod);
 
 } } }  // namespace ledger::core::api
 

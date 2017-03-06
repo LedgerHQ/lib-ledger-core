@@ -88,6 +88,14 @@ namespace ledger {
                 return Option<T>();
             }
 
+//            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
+//                if (d.isSuccess()) {
+//                    os << "Success(" << d.getFailure() << ")";
+//                } else {
+//                    os << "Failure(" << d.getFailure() << ")";
+//                }
+//            }
+
             ~Try() {
 
             };
@@ -108,6 +116,9 @@ namespace ledger {
                 return result;
             }
         };
+
+        template <typename T>
+        using TryPtr = Try<std::shared_ptr<T>>;
     }
 }
 

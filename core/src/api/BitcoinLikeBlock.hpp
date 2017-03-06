@@ -37,6 +37,16 @@ struct BitcoinLikeBlock final {
        this->time = cpy.time;
        return *this;
     }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(hash, height, time);
+    }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(hash, height, time);
+    }
 };
 
 } } }  // namespace ledger::core::api

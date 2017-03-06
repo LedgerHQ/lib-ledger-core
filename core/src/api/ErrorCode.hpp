@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 namespace ledger { namespace core { namespace api {
 
@@ -43,6 +44,7 @@ enum class ErrorCode : int {
     NO_INTERNET_CONNECTIVITY,
     HTTP_ERROR,
 };
+std::string to_string(const ErrorCode& errorCode);
 
 } } }  // namespace ledger::core::api
 
