@@ -14,4 +14,14 @@ std::string to_string(const HttpMethod& httpMethod) {
     };
 };
 
+std::ostream &operator<<(std::ostream &os, const HttpMethod &o)
+{
+    switch (o) {
+        case HttpMethod::GET:  return os << "GET";
+        case HttpMethod::POST:  return os << "POST";
+        case HttpMethod::PUT:  return os << "PUT";
+        case HttpMethod::DEL:  return os << "DEL";
+    }
+}
+
 } } }  // namespace ledger::core::api

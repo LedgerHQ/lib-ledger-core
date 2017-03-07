@@ -12,4 +12,12 @@ std::string to_string(const BitcoinLikeFeePolicy& bitcoinLikeFeePolicy) {
     };
 };
 
+std::ostream &operator<<(std::ostream &os, const BitcoinLikeFeePolicy &o)
+{
+    switch (o) {
+        case BitcoinLikeFeePolicy::PER_BYTE:  return os << "PER_BYTE";
+        case BitcoinLikeFeePolicy::PER_KBYTE:  return os << "PER_KBYTE";
+    }
+}
+
 } } }  // namespace ledger::core::api

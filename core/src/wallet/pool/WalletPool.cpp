@@ -85,6 +85,8 @@ namespace ledger {
                 getExternalPreferences()->getSubPreferences("bitcoin_like")->getSubPreferences("networks"),
                 _bitcoinNetworkParams
             );
+            fmt::print("Bitcoin params {}\n",  _bitcoinNetworkParams["btc"].Identifier);
+            fmt::print("Bitcoin contained {}\n",  _bitcoinNetworkParams.contains("btc"));
         }
 
         std::shared_ptr<api::Logger> WalletPool::getLogger() {
@@ -133,10 +135,11 @@ namespace ledger {
                 const api::BitcoinLikeNetworkParameters &networkParams,
                 const std::shared_ptr<api::Configuration> &configuration,
                 const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
-            async<std::shared_ptr<BitcoinLikeWalletFactory>>([=] () {
+            auto self = shared_from_this();
+            async<std::shared_ptr<BitcoinLikeWalletFactory>>([self, networkParams, this] () {
                 return getBitcoinLikeWalletFactory(networkParams.Identifier);
             })
-            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
+            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [self, publicKeyProvider, this, configuration] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
                 return factory->build(publicKeyProvider, configuration);
             }).callback(_dispatcher->getMainExecutionContext(), callback);
         }
@@ -171,6 +174,8 @@ namespace ledger {
 
         std::shared_ptr<BitcoinLikeWalletFactory>
         WalletPool::getBitcoinLikeWalletFactory(const std::string &networkParamsIdentifier) {
+            fmt::print("Bitcoin params {}\n",  _bitcoinNetworkParams["btc"].Identifier);
+            fmt::print("Bitcoin contained {}\n",  _bitcoinNetworkParams.contains("btc"));
             if (_bitcoinWalletFactories.find(networkParamsIdentifier) != _bitcoinWalletFactories.end()) {
                 return _bitcoinWalletFactories[networkParamsIdentifier];
             } else if (_bitcoinNetworkParams.contains(networkParamsIdentifier)) {
@@ -199,6 +204,10 @@ namespace ledger {
 
         std::shared_ptr<Preferences> WalletPool::getExternalPreferences() {
             return _externalBackend->getPreferences("pool");
+        }
+
+        WalletPool::~WalletPool() {
+            fmt::print("Destruct pool\n");
         }
 
     }

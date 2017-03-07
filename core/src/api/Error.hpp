@@ -4,6 +4,7 @@
 #pragma once
 
 #include "ErrorCode.hpp"
+#include <iostream>
 #include <string>
 #include <utility>
 

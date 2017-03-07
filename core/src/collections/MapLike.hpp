@@ -99,6 +99,9 @@ namespace ledger {
                 return !_container.empty();
             }
 
+            size_t size() const {
+                return _container.size();
+            }
 
         private:
             Container _container;

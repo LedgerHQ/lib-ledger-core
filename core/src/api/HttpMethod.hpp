@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
@@ -15,6 +16,7 @@ enum class HttpMethod : int {
     DEL,
 };
 std::string to_string(const HttpMethod& httpMethod);
+std::ostream &operator<<(std::ostream &os, const HttpMethod &o);
 
 } } }  // namespace ledger::core::api
 

@@ -12,4 +12,12 @@ std::string to_string(const WalletType& walletType) {
     };
 };
 
+std::ostream &operator<<(std::ostream &os, const WalletType &o)
+{
+    switch (o) {
+        case WalletType::BITCOIN_WALLET:  return os << "BITCOIN_WALLET";
+        case WalletType::ETHEREUM_WALLET:  return os << "ETHEREUM_WALLET";
+    }
+}
+
 } } }  // namespace ledger::core::api

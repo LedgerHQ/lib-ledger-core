@@ -70,14 +70,19 @@ namespace ledger {
 
         void BitcoinLikeWalletFactory::initialize(const std::shared_ptr<Preferences> &preferences,
                                                   Map<std::string, ledger::core::api::BitcoinLikeNetworkParameters> &networks) {
+            for (auto network : ledger::core::networks::ALL) {
+                networks[network.Identifier] = network;
+            }
             if (!preferences->contains(ledger::core::networks::BITCOIN.Identifier)) {
                 auto editor = preferences->editor();
                 for (auto network : ledger::core::networks::ALL) {
+                    fmt::print("Putting {}\n", network.Identifier);
                     editor->putObject<api::BitcoinLikeNetworkParameters>(network.Identifier, network);
                 }
                 editor->commit();
             }
             preferences->iterate<api::BitcoinLikeNetworkParameters>([&] (leveldb::Slice&& key, const api::BitcoinLikeNetworkParameters& value) {
+                fmt::print("Params for {}\n", value.Identifier);
                 networks[value.Identifier] = value;
                 return true;
             });

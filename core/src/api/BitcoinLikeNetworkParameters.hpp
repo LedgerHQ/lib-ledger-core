@@ -5,6 +5,7 @@
 
 #include "BitcoinLikeFeePolicy.hpp"
 #include <cstdint>
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>

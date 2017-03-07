@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
@@ -45,6 +46,7 @@ enum class ErrorCode : int {
     HTTP_ERROR,
 };
 std::string to_string(const ErrorCode& errorCode);
+std::ostream &operator<<(std::ostream &os, const ErrorCode &o);
 
 } } }  // namespace ledger::core::api
 

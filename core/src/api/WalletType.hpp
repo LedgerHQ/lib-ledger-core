@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
@@ -13,6 +14,7 @@ enum class WalletType : int {
     ETHEREUM_WALLET,
 };
 std::string to_string(const WalletType& walletType);
+std::ostream &operator<<(std::ostream &os, const WalletType &o);
 
 } } }  // namespace ledger::core::api
 

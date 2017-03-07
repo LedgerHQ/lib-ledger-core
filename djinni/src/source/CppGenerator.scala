@@ -62,6 +62,7 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
     if (spec.cppEnumHashWorkaround) {
       refs.hpp.add("#include <functional>") // needed for std::hash
       refs.hpp.add("#include <string>")
+      refs.hpp.add("#include <iostream>")
     }
 
     writeCppFile(ident, origin, refs.cpp, w => {
@@ -70,6 +71,15 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
         w.w(s"switch ($variableName)").bracedSemi {
           for (o <- e.options) {
             w.wl(s"case $self::${idCpp.enum(o.ident.name)}: return ${'"' + idCpp.enum(o.ident.name) + '"'};")
+          }
+        }
+      }
+      // Dump method
+      w.wl
+      w.wl(s"std::ostream &operator<<(std::ostream &os, const $self &o)").braced {
+        w.w("switch (o)") braced {
+          for (o <- e.options) {
+            w.wl(s"case $self::${idCpp.enum(o.ident.name)}:  return os << ${'"' + idCpp.enum(o.ident.name) + '"'};")
           }
         }
       }
@@ -84,6 +94,7 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
       }
       val variableName = self(0).toLower + self.slice(1, self.length)
       w.wl(s"std::string to_string(const $self& $variableName);")
+      w.wl(s"std::ostream &operator<<(std::ostream &os, const $self &o);")
     },
     w => {
       // std::hash specialization has to go *outside* of the wrapNs
@@ -153,7 +164,7 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
     r.fields.foreach(f => refs.find(f.ty, false))
     r.consts.foreach(c => refs.find(c.ty, false))
     refs.hpp.add("#include <utility>") // Add for std::move
-
+    refs.hpp.add("#include <iostream>")
     val self = marshal.typename(ident, r)
     val (cppName, cppFinal) = if (r.ext.cpp) (ident.name + "_base", "") else (ident.name, " final")
     val actualSelf = marshal.typename(cppName, r)

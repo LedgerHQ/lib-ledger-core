@@ -6,6 +6,7 @@
 #include "../utils/optional.hpp"
 #include "Error.hpp"
 #include <cstdint>
+#include <iostream>
 #include <utility>
 #include <vector>
 

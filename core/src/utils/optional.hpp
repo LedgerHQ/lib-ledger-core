@@ -17,6 +17,8 @@
 # include <functional>
 # include <string>
 # include <stdexcept>
+# include <iostream>
+# include <vector>
 
 # define TR2_OPTIONAL_REQUIRES(...) typename enable_if<__VA_ARGS__::value, bool>::type = false
 
@@ -632,6 +634,14 @@ struct is_nothrow_move_assignable
                 return *this;
             }
 
+            friend ostream& operator<<(ostream& os, const optional<T>& o) {
+                if (!o) {
+                    return os << "None";
+                } else {
+                    return os << "Some(" << o.value() << ")";
+                }
+            }
+
             // optional& operator=(const optional& rhs) noexcept {
             // ref = rhs.ref;
             // return *this;
@@ -986,8 +996,7 @@ struct is_nothrow_move_assignable
             return bool(x) ? v >= *x : true;
         }
 
-
-// 20.5.12, Specialized algorithms
+        // 20.5.12, Specialized algorithms
         template <class T>
         void swap(optional<T>& x, optional<T>& y) noexcept(noexcept(x.swap(y)))
         {

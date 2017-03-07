@@ -126,6 +126,8 @@ namespace ledger {
             std::shared_ptr<Preferences> getInternalPreferences();
             std::shared_ptr<Preferences> getExternalPreferences();
 
+            ~WalletPool();
+
         private:
             std::shared_ptr<BitcoinLikeWalletFactory> getBitcoinLikeWalletFactory(const std::string& networkParamsIdentifier);
 

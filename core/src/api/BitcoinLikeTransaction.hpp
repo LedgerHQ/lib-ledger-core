@@ -8,6 +8,7 @@
 #include "BitcoinLikeInput.hpp"
 #include "BitcoinLikeOutput.hpp"
 #include <cstdint>
+#include <iostream>
 #include <utility>
 #include <vector>
 
