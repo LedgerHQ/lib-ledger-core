@@ -93,7 +93,6 @@ add_library(
         preferences/Preferences.cpp preferences/Preferences.hpp
         preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeyChain.cpp wallet/bitcoin/keychains/BitcoinLikeKeyChain.hpp
-        api_impl/ConfigurationImpl.cpp api_impl/ConfigurationImpl.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
         wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp
         async/Future.cpp async/Future.hpp
@@ -112,7 +111,15 @@ add_library(
         config/Networks.cpp config/Networks.hpp
         net/HttpJsonHandler.cpp net/HttpJsonHandler.hpp
         net/HttpUrlConnectionInputStream.cpp net/HttpUrlConnectionInputStream.hpp
-        utils/Either.cpp utils/Either.hpp utils/Lazy.cpp utils/Lazy.hpp bitcoin/BitcoinLikeBase58Provider.cpp bitcoin/BitcoinLikeBase58Provider.hpp bitcoin/BitcoinLikeExtendedPublicKeyProvider.cpp bitcoin/BitcoinLikeExtendedPublicKeyProvider.hpp async/CompletionBlock.cpp async/CompletionBlock.hpp traits/shared_ptr_traits.hpp collections/collections.hpp collections/MapLike.hpp utils/optional.cpp)
+        utils/Either.cpp utils/Either.hpp
+        utils/Lazy.cpp utils/Lazy.hpp
+        bitcoin/BitcoinLikeBase58Provider.cpp bitcoin/BitcoinLikeBase58Provider.hpp
+        bitcoin/BitcoinLikeExtendedPublicKeyProvider.cpp bitcoin/BitcoinLikeExtendedPublicKeyProvider.hpp
+        async/CompletionBlock.cpp async/CompletionBlock.hpp
+        traits/shared_ptr_traits.hpp collections/collections.hpp
+        collections/MapLike.hpp utils/optional.cpp collections/DynamicObject.cpp collections/DynamicObject.hpp
+        collections/DynamicArray.cpp collections/DynamicArray.hpp collections/DynamicValue.cpp
+        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

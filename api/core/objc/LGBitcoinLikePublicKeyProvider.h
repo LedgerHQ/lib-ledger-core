@@ -8,7 +8,8 @@
 
 @protocol LGBitcoinLikePublicKeyProvider
 
-- (void)get:(nonnull NSString *)path
+- (void)get:(nonnull NSString *)deviceId
+       path:(nonnull NSString *)path
      params:(nonnull LGBitcoinLikeNetworkParameters *)params
    callback:(nullable LGBitcoinLikePublicKeyCompletionBlock *)callback;
 

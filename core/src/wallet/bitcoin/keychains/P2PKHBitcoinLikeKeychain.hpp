@@ -33,6 +33,7 @@
 
 #include "BitcoinLikeKeychain.hpp"
 #include <set>
+#include <src/api/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,7 +60,7 @@ namespace ledger {
 
         class P2PKHBitcoinLikeKeychain : public BitcoinLikeKeychain {
         public:
-            P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::Configuration> &configuration,
+            P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                      const api::BitcoinLikeNetworkParameters &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);

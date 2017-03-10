@@ -39,7 +39,7 @@ namespace ledger {
         public:
             BitcoinLikeBase58Provider(std::shared_ptr<api::BitcoinLikeBase58ExtendedPublicKeyProvider> provider);
             Future<std::shared_ptr<BitcoinLikeExtendedPublicKey>>
-            get(std::shared_ptr<api::ExecutionContext> context, const std::string &path,
+            get(std::shared_ptr<api::ExecutionContext> context, const std::string& deviceId, const std::string &path,
                 const api::BitcoinLikeNetworkParameters &params) override;
 
         private:

@@ -34,5 +34,7 @@
 #include "strings.hpp"
 #include "vector.hpp"
 #include "MapLike.hpp"
+#include "Sequence.hpp"
+#include "String.hpp"
 
 #endif //LEDGER_CORE_COLLECTIONS_HPP

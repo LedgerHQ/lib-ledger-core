@@ -6,7 +6,7 @@
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "BitcoinLikeNetworkParametersCallback.hpp"
 #include "BitcoinLikeWalletCallback.hpp"
-#include "Configuration.hpp"
+#include "DynamicObject.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "Preferences.hpp"
@@ -33,7 +33,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
         ref->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(jniEnv, j_publicKeyProvider),
                                           ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_networkParams),
-                                          ::djinni_generated::Configuration::toCpp(jniEnv, j_configuration),
+                                          ::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration),
                                           ::djinni_generated::BitcoinLikeWalletCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }

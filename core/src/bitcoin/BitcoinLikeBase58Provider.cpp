@@ -41,7 +41,9 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BitcoinLikeExtendedPublicKey>>
-        BitcoinLikeBase58Provider::get(std::shared_ptr<api::ExecutionContext> context, const std::string &path,
+        BitcoinLikeBase58Provider::get(std::shared_ptr<api::ExecutionContext> context,
+                                       const std::string & deviceId,
+                                       const std::string &path,
                                        const api::BitcoinLikeNetworkParameters &params) {
             auto provider = _provider;
             return Future<std::string>::async(context, [=] () -> Future<std::string> {

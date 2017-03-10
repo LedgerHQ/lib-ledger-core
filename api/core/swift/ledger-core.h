@@ -4,6 +4,9 @@
 #define UMBRELLA_LEDGER_CORE_H
 #import "../objc/LGNetworks.h"
 #import "../objc/LGHashAlgorithmHelper.h"
+#import "../objc/LGDynamicType.h"
+#import "../objc/LGDynamicArray.h"
+#import "../objc/LGDynamicObject.h"
 #import "../objc/LGConfiguration.h"
 #import "../objc/LGDatabaseBackend.h"
 #import "../objc/LGRandomNumberGenerator.h"

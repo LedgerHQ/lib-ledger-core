@@ -60,7 +60,7 @@ namespace ledger {
             Future<std::shared_ptr<BitcoinLikeWallet>> build(const std::string identifier);
             Future<std::shared_ptr<BitcoinLikeWallet>> build(
                     std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> provider,
-                    std::shared_ptr<api::Configuration> configuration
+                    std::shared_ptr<api::DynamicObject> configuration
             );
 
             static void initialize(const std::shared_ptr<Preferences>& preferences, Map<std::string, api::BitcoinLikeNetworkParameters>& networks);

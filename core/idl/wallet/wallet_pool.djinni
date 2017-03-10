@@ -15,6 +15,7 @@
 @import "configuration.djinni"
 @import "../bitcoin/addresses.djinni"
 @import "../utils/callback.djinni"
+@import "../collections/dynamic.djinni"
 
 # Interface used as a callback to iterate through mutiple BitcoinLikeWallets.
 StringArrayCallback = interface +j +o +s +n {
@@ -26,7 +27,7 @@ BitcoinLikeNetworkParametersCallback = interface +j +o +s +n {
 }
 
 WalletPool = interface +c {
-    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinLikeExtendedPublicKeyProvider, networkParams: BitcoinLikeNetworkParameters, configuration: Configuration, callback: Callback<BitcoinLikeWallet>);
+    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinLikeExtendedPublicKeyProvider, networkParams: BitcoinLikeNetworkParameters, configuration: DynamicObject, callback: Callback<BitcoinLikeWallet>);
     getBitcoinLikeWallet(identifier: string, callback: Callback<BitcoinLikeWallet>);
     getSupportedBitcoinLikeNetworkParameters(callback: BitcoinLikeNetworkParametersCallback);
     addBitcoinLikeNetworkParameters(params: BitcoinLikeNetworkParameters);

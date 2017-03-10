@@ -4,5 +4,5 @@
 package co.ledger.core;
 
 public abstract class BitcoinLikePublicKeyProvider {
-    public abstract void get(String path, BitcoinLikeNetworkParameters params, BitcoinLikePublicKeyCompletionBlock callback);
+    public abstract void get(String deviceId, String path, BitcoinLikeNetworkParameters params, BitcoinLikePublicKeyCompletionBlock callback);
 }

@@ -1,0 +1,83 @@
+
+DynamicType = enum {
+    OBJECT;
+    INT32;
+    INT64;
+    DOUBLE;
+    BOOLEAN;
+    DATA;
+    ARRAY;
+    STRING;
+    UNDEFINED;
+}
+
+DynamicArray = interface +c {
+    size(): i64;
+
+    getString(index: i64): optional<string>;
+    getInt(index: i64): optional<i32>;
+    getLong(index: i64): optional<i64>;
+    getDouble(index: i64): optional<f64>;
+    getData(index: i64): optional<binary>;
+    getBoolean(index: i64): optional<bool>;
+
+    pushInt(value: i32): DynamicArray;
+    pushLong(value: i64): DynamicArray;
+    pushString(value: string): DynamicArray;
+    pushDouble(value: f64): DynamicArray;
+    pushData(value: binary): DynamicArray;
+    pushBoolean(value: bool): DynamicArray;
+
+    getObject(index: i64): optional<DynamicObject>;
+    getArray(index: i64): optional<DynamicArray>;
+
+    pushObject(value: DynamicObject): DynamicArray;
+    pushArray(value: DynamicArray): DynamicArray;
+
+    concat(array: DynamicArray): DynamicArray;
+
+    getType(index: i64): optional<DynamicType>;
+
+    remove(index: i64): bool;
+
+    dump(): string;
+    serialize(): binary;
+
+    static newInstance(): DynamicArray;
+    static load(serialized: binary): optional<DynamicArray>;
+}
+
+DynamicObject = interface +c {
+    putString(key: string, value: string): DynamicObject;
+    putInt(key: string, value: i32): DynamicObject;
+    putLong(key: string, value: i64): DynamicObject;
+    putDouble(key: string, value: f64): DynamicObject;
+    putData(key: string, value: binary): DynamicObject;
+    putBoolean(key: string, value: bool): DynamicObject;
+
+    getString(key: string): optional<string>;
+    getInt(key: string): optional<i32>;
+    getLong(key: string): optional<i64>;
+    getDouble(key: string): optional<f64>;
+    getData(key: string): optional<binary>;
+    getBoolean(key: string): optional<bool>;
+
+    putObject(key: string, value: DynamicObject): DynamicObject;
+    putArray(key: string, value: DynamicArray): DynamicObject;
+
+    getObject(key: string): optional<DynamicObject>;
+    getArray(key: string): optional<DynamicArray>;
+
+    contains(key: string): bool;
+    remove(key: string): bool;
+
+    getKeys(): list<string>;
+    getType(key: string): optional<DynamicType>;
+    dump(): string;
+    serialize(): binary;
+
+    size(): i64;
+
+    static newInstance(): DynamicObject;
+    static load(serialized: binary): optional<DynamicObject>;
+}

@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
+
 #include "BitcoinLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
 
         BitcoinLikeKeychain::BitcoinLikeKeychain(
-                const std::shared_ptr<api::Configuration> configuration,
+                const std::shared_ptr<api::DynamicObject> configuration,
                 const api::BitcoinLikeNetworkParameters &params, int account,
                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                 const std::shared_ptr<Preferences> preferences) :
@@ -66,7 +67,7 @@ namespace ledger {
             return _preferences;
         }
 
-        std::shared_ptr<api::Configuration> BitcoinLikeKeychain::getConfiguration() const {
+        std::shared_ptr<api::DynamicObject> BitcoinLikeKeychain::getConfiguration() const {
             return _configuration;
         }
     }

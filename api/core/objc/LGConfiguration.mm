@@ -5,3 +5,7 @@
 
 
 NSString * __nonnull const LGConfigurationKEYCHAINOBSERVABLERANGE = @"KEYCHAIN_OBSERVABLE_RANGE";
+
+NSString * __nonnull const LGConfigurationKEYCHAINENGINE = @"KEYCHAIN_ENGINE";
+
+NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT = @"BLOCKCHAIN_EXPLORER_API_ENDPOINT";

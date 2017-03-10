@@ -19,10 +19,11 @@ class BitcoinLikeBase58ExtendedPublicKeyProvider::ObjcProxy final
 {
 public:
     using Handle::Handle;
-    void get(const std::string & c_path, const ::ledger::core::api::BitcoinLikeNetworkParameters & c_params, const std::shared_ptr<::ledger::core::api::StringCompletionBlock> & c_completion) override
+    void get(const std::string & c_deviceId, const std::string & c_path, const ::ledger::core::api::BitcoinLikeNetworkParameters & c_params, const std::shared_ptr<::ledger::core::api::StringCompletionBlock> & c_completion) override
     {
         @autoreleasepool {
-            [Handle::get() get:(::djinni::String::fromCpp(c_path))
+            [Handle::get() get:(::djinni::String::fromCpp(c_deviceId))
+                          path:(::djinni::String::fromCpp(c_path))
                         params:(::djinni_generated::BitcoinLikeNetworkParameters::fromCpp(c_params))
                     completion:(::djinni_generated::StringCompletionBlock::fromCpp(c_completion))];
         }

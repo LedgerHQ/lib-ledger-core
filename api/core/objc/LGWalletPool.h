@@ -4,7 +4,7 @@
 #import "LGBitcoinLikeNetworkParameters.h"
 #import <Foundation/Foundation.h>
 @class LGBitcoinLikeExtendedPublicKeyProvider;
-@class LGConfiguration;
+@class LGDynamicObject;
 @class LGLogger;
 @class LGPreferences;
 @protocol LGBitcoinLikeNetworkParametersCallback;
@@ -15,7 +15,7 @@
 
 - (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
                        networkParams:(nonnull LGBitcoinLikeNetworkParameters *)networkParams
-                       configuration:(nullable LGConfiguration *)configuration
+                       configuration:(nullable LGDynamicObject *)configuration
                             callback:(nullable id<LGBitcoinLikeWalletCallback>)callback;
 
 - (void)getBitcoinLikeWallet:(nonnull NSString *)identifier

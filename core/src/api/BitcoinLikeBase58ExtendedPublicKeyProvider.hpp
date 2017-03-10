@@ -15,7 +15,7 @@ class BitcoinLikeBase58ExtendedPublicKeyProvider {
 public:
     virtual ~BitcoinLikeBase58ExtendedPublicKeyProvider() {}
 
-    virtual void get(const std::string & path, const BitcoinLikeNetworkParameters & params, const std::shared_ptr<StringCompletionBlock> & completion) = 0;
+    virtual void get(const std::string & deviceId, const std::string & path, const BitcoinLikeNetworkParameters & params, const std::shared_ptr<StringCompletionBlock> & completion) = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -10,7 +10,7 @@
 #import "LGBitcoinLikeNetworkParameters+Private.h"
 #import "LGBitcoinLikeNetworkParametersCallback+Private.h"
 #import "LGBitcoinLikeWalletCallback+Private.h"
-#import "LGConfiguration+Private.h"
+#import "LGDynamicObject+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
 #include <exception>
@@ -39,12 +39,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 
 - (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
                        networkParams:(nonnull LGBitcoinLikeNetworkParameters *)networkParams
-                       configuration:(nullable LGConfiguration *)configuration
+                       configuration:(nullable LGDynamicObject *)configuration
                             callback:(nullable id<LGBitcoinLikeWalletCallback>)callback {
     try {
         _cppRefHandle.get()->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(publicKeyProvider),
                                                           ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(networkParams),
-                                                          ::djinni_generated::Configuration::toCpp(configuration),
+                                                          ::djinni_generated::DynamicObject::toCpp(configuration),
                                                           ::djinni_generated::BitcoinLikeWalletCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

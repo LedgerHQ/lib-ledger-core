@@ -55,10 +55,11 @@
 #include "../../api/BitcoinLikeWallet.hpp"
 #include "../../api/BitcoinLikeWalletCallback.hpp"
 #include <cereal/types/polymorphic.hpp>
-#include "../../api_impl/ConfigurationImpl.hpp"
+#include <cereal/types/memory.hpp>
 #include "../../async/DedicatedContext.hpp"
 #include "../../preferences/Preferences.hpp"
 #include "../../collections/collections.hpp"
+#include "../../collections/DynamicObject.hpp"
 
 namespace ledger {
     namespace core {
@@ -71,7 +72,7 @@ namespace ledger {
             struct WalletEntry {
                 std::string walletIdentifier;
                 std::string currencyIdentifier;
-                ConfigurationImpl configuration;
+                std::shared_ptr<DynamicObject> configuration;
 
                 virtual void no_op() {
 
@@ -103,7 +104,7 @@ namespace ledger {
             void getOrCreateBitcoinLikeWallet(
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
                     const api::BitcoinLikeNetworkParameters &networkParams,
-                    const std::shared_ptr<api::Configuration> &configuration,
+                    const std::shared_ptr<api::DynamicObject> &configuration,
                     const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) override;
 
             void getBitcoinLikeWallet(const std::string &identifier,

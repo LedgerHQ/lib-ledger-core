@@ -8,7 +8,8 @@
 
 @protocol LGBitcoinLikeBase58ExtendedPublicKeyProvider
 
-- (void)get:(nonnull NSString *)path
+- (void)get:(nonnull NSString *)deviceId
+       path:(nonnull NSString *)path
      params:(nonnull LGBitcoinLikeNetworkParameters *)params
  completion:(nullable LGStringCompletionBlock *)completion;
 

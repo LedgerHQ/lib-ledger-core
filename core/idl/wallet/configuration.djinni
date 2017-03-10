@@ -1,20 +1,7 @@
 
-
-
 Configuration = interface +c {
-    getString(key: string, fallback: string): string;
-    putString(key: string, value: string): Configuration;
-
-    getInt(key: string, fallback: i32): i32;
-    putInt(key: string, value: i32): Configuration;
-
-    getBoolean(key: string, fallback: bool): bool;
-    putBoolean(key: string, value: bool): Configuration;
-
-    getData(key: string, fallback: binary): binary;
-    putData(key: string, data: binary): Configuration;
-
-    static newInstance(): Configuration;
-
     const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
+    const KEYCHAIN_ENGINE: string = "KEYCHAIN_ENGINE";
+
+    const BLOCKCHAIN_EXPLORER_API_ENDPOINT: string = "BLOCKCHAIN_EXPLORER_API_ENDPOINT";
 }

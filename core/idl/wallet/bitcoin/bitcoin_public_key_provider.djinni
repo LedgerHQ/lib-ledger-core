@@ -8,11 +8,11 @@ BitcoinLikePublicKey = record {
 
 
 BitcoinLikePublicKeyProvider = interface +j +o +n {
-    get(path: string, params: BitcoinLikeNetworkParameters, callback: CompletionBlock<BitcoinLikePublicKey>);
+    get(deviceId: string, path: string, params: BitcoinLikeNetworkParameters, callback: CompletionBlock<BitcoinLikePublicKey>);
 }
 
 BitcoinLikeBase58ExtendedPublicKeyProvider = interface +j +o + n {
-    get(path: string, params: BitcoinLikeNetworkParameters, completion: CompletionBlock<string>);
+    get(deviceId: string, path: string, params: BitcoinLikeNetworkParameters, completion: CompletionBlock<string>);
 }
 
 BitcoinLikeExtendedPublicKeyProvider = interface +c {

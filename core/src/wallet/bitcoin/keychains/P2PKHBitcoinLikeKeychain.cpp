@@ -35,6 +35,7 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <fmt/format.h>
+#include <src/api/DynamicObject.hpp>
 #include "../../../api/BitcoinLikeAddress.hpp"
 #include "../../../api/Configuration.hpp"
 #include "../../../utils/DerivationPath.hpp"
@@ -43,7 +44,7 @@
 namespace ledger {
     namespace core {
 
-        P2PKHBitcoinLikeKeychain::P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::Configuration> &configuration,
+        P2PKHBitcoinLikeKeychain::P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                                            const api::BitcoinLikeNetworkParameters &params,
                                                            int account,
                                                            const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
@@ -61,7 +62,7 @@ namespace ledger {
                 _state.maxConsecutiveChangeIndex = 0;
                 _state.empty = true;
             }
-            _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE, 20);
+            _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
         }
 
         bool P2PKHBitcoinLikeKeychain::markAsUsed(const std::string &address) {

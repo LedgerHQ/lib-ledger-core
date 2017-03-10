@@ -36,6 +36,7 @@
 #include "../utils/Try.hpp"
 #include "../utils/Exception.hpp"
 #include <fmt/format.h>
+#include "Sequence.hpp"
 
 namespace ledger {
     namespace core {
@@ -91,6 +92,31 @@ namespace ledger {
                 return _container.find(key) != _container.end();
             }
 
+            bool remove(const K &key) {
+                auto it = _container.find(key);
+                if (it == _container.end()) {
+                    return false;
+                }
+                _container.erase(it);
+                return true;
+            }
+
+            Array<K> getKeys() const {
+                Array<K> keys;
+                for (auto &entry : _container) {
+                    keys += entry.first;
+                }
+                return keys;
+            }
+
+            Array<V> getValues() const {
+                Array<V> values;
+                for (auto &entry : _container) {
+                    values += entry.second;
+                }
+                return values;
+            }
+
             bool empty() const {
                 return _container.empty();
             }
@@ -101,6 +127,14 @@ namespace ledger {
 
             size_t size() const {
                 return _container.size();
+            }
+
+            Container& getContainer() {
+                return _container;
+            }
+
+            const Container& getContainer() const {
+                return _container;
             }
 
         private:

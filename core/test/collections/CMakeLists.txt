@@ -7,7 +7,7 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-collections-tests main.cpp map_tests.cpp)
+add_executable(ledger-core-collections-tests main.cpp map_tests.cpp dynamics_tests.cpp)
 
 target_link_libraries(ledger-core-collections-tests gtest gtest_main)
 target_link_libraries(ledger-core-collections-tests ledger-core)

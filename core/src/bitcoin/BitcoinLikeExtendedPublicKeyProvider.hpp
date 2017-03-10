@@ -47,6 +47,7 @@ namespace ledger {
         public:
             virtual Future<std::shared_ptr<BitcoinLikeExtendedPublicKey>> get(
             std::shared_ptr<api::ExecutionContext> context,
+            const std::string& deviceName,
             const std::string& path,
             const api::BitcoinLikeNetworkParameters& params
             ) = 0;

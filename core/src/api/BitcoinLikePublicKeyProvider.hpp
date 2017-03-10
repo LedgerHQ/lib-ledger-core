@@ -15,7 +15,7 @@ class BitcoinLikePublicKeyProvider {
 public:
     virtual ~BitcoinLikePublicKeyProvider() {}
 
-    virtual void get(const std::string & path, const BitcoinLikeNetworkParameters & params, const std::shared_ptr<BitcoinLikePublicKeyCompletionBlock> & callback) = 0;
+    virtual void get(const std::string & deviceId, const std::string & path, const BitcoinLikeNetworkParameters & params, const std::shared_ptr<BitcoinLikePublicKeyCompletionBlock> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

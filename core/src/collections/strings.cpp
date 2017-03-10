@@ -30,6 +30,7 @@
  */
 #include "strings.hpp"
 #include <boost/algorithm/string.hpp>
+#include "String.hpp"
 
 namespace ledger {
     namespace core {
@@ -40,5 +41,14 @@ namespace ledger {
             }
 
         }
+
+        String operator "" _S(const char* str, size_t size) {
+            return String(str, size);
+        }
+
     }
+}
+
+std::ostream& operator<<(std::ostream& ss, const ledger::core::String& str) {
+   return ss << str.str();
 }

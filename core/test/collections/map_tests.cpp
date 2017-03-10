@@ -46,8 +46,8 @@ TEST(Map, GetOptional) {
     Map<std::string, int> map = {
         {"my_key", 12},
     };
-    EXPECT_TRUE(map.get("my_key") == 12);
-    EXPECT_TRUE(map.get("nihil").isEmpty());
+    EXPECT_TRUE(map.lift("my_key") == 12);
+    EXPECT_TRUE(map.lift("nihil").isEmpty());
 }
 
 TEST(Map, Contains) {

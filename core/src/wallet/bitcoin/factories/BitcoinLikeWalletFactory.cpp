@@ -44,13 +44,13 @@ namespace ledger {
 
         Future<std::shared_ptr<BitcoinLikeWallet>>
         BitcoinLikeWalletFactory::build(std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> provider,
-                                        std::shared_ptr<api::Configuration> configuration) {
+                                        std::shared_ptr<api::DynamicObject> configuration) {
             Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
             BitcoinLikeWalletEntry entry;
             std::string identifier = "";
-            entry.configuration = std::static_pointer_cast<ConfigurationImpl>(configuration);
+            entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
             _preferences->editor()->putObject(identifier, entry)->commit();
-            return promise.getFuture();
+            return build(entry);
         }
 
         Future<std::shared_ptr<BitcoinLikeWallet>>

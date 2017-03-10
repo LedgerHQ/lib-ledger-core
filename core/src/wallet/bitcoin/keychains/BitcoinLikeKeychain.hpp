@@ -38,6 +38,7 @@
 #include "../../../utils/Option.hpp"
 #include "../../../preferences/Preferences.hpp"
 #include "../../../api/Configuration.hpp"
+#include "../../../api/DynamicObject.hpp"
 
 namespace ledger {
     namespace core {
@@ -50,7 +51,7 @@ namespace ledger {
 
         public:
             BitcoinLikeKeychain(
-                    const std::shared_ptr<api::Configuration> configuration,
+                    const std::shared_ptr<api::DynamicObject> configuration,
                     const api::BitcoinLikeNetworkParameters& params,
                     int account,
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
@@ -72,7 +73,7 @@ namespace ledger {
             int getAccountIndex() const;
             const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
-            std::shared_ptr<api::Configuration> getConfiguration() const;
+            std::shared_ptr<api::DynamicObject> getConfiguration() const;
 
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
@@ -82,7 +83,7 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
             int _account;
             std::shared_ptr<Preferences> _preferences;
-            std::shared_ptr<api::Configuration> _configuration;
+            std::shared_ptr<api::DynamicObject> _configuration;
         };
     }
 }

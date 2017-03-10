@@ -133,7 +133,7 @@ namespace ledger {
         void WalletPool::getOrCreateBitcoinLikeWallet(
                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
                 const api::BitcoinLikeNetworkParameters &networkParams,
-                const std::shared_ptr<api::Configuration> &configuration,
+                const std::shared_ptr<api::DynamicObject> &configuration,
                 const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
             auto self = shared_from_this();
             async<std::shared_ptr<BitcoinLikeWalletFactory>>([self, networkParams, this] () {
