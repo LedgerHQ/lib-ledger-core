@@ -41,6 +41,7 @@
  * For the "custom" platform, includes and dependencies can be
  * provided through mg_locals.h.
  */
+#define MG_ENABLE_SSL 1
 #define CS_P_CUSTOM 0
 #define CS_P_UNIX 1
 #define CS_P_WINDOWS 2

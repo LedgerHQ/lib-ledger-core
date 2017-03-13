@@ -37,7 +37,9 @@ namespace ledger {
             bool remove_all(const std::string& path) {
                 if (!leveldb::Env::Default()->DeleteFile(path).ok()) {
                     remove_dir(path);
+                    return true;
                 }
+                return false;
             }
 
             bool remove_dir(const std::string& path) {

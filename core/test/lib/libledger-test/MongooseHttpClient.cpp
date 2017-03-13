@@ -32,35 +32,10 @@
 #include "NativeThreadDispatcher.hpp"
 #include "../../../src/api/HttpMethod.hpp"
 #include <ledger/core/api/HttpRequest.hpp>
-#include <ledger/core/api/HttpResponse.hpp>
 #include <sstream>
 #include <cstring>
 #include <ledger/core/api/HttpUrlConnection.hpp>
 #include <ledger/core/api/HttpReadBodyResult.hpp>
-
-static void ev_handler(struct mg_connection *c, int ev, void *p) {
-    if (ev == MG_EV_CONNECT) {
-        int status = *(int *)p;
-        if (p != 0) {
-            auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
-            ledger::core::api::HttpResponse response(
-                    0,
-                   "Unable to connect",
-                    std::unordered_map<std::string, std::string>(),
-                    std::vector<uint8_t >()
-            );
-            //pair->first->complete(response);
-            //delete pair;
-        }
-    } else if (ev == MG_EV_HTTP_REPLY) {
-        c->flags |= MG_F_CLOSE_IMMEDIATELY;
-        struct http_message *hm = (struct http_message *) p;
-        auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
-        if (pair->second)
-            pair->second->ev_handler(c, ev, hm, pair->first);
-        delete pair;
-    }
-}
 
 class HttpUrlConnection : public ledger::core::api::HttpUrlConnection {
 public:
@@ -100,6 +75,38 @@ private:
     std::unordered_map<std::string, std::string> _headers;
     std::vector<uint8_t> _body;
 };
+
+static void ev_handler(struct mg_connection *c, int ev, void *p) {
+    if (ev == MG_EV_CONNECT) {
+        int status = *(int *)p;
+        if (p != 0) {
+            auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
+//            ledger::core::api::HttpResponse response(
+//                    0,
+//                   "Unable to connect",
+//                    std::unordered_map<std::string, std::string>(),
+//                    std::vector<uint8_t >()
+//            );
+            //pair->first->complete(response);
+            //delete pair;
+            auto connection = std::make_shared<HttpUrlConnection>(
+            status,
+            std::string("Unable to connect"),
+            std::unordered_map<std::string, std::string>(),
+            std::vector<uint8_t >()
+            );
+            pair->first->complete(connection, std::experimental::optional<ledger::core::api::Error>());
+            delete pair;
+        }
+    } else if (ev == MG_EV_HTTP_REPLY) {
+        c->flags |= MG_F_CLOSE_IMMEDIATELY;
+        struct http_message *hm = (struct http_message *) p;
+        auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
+        if (pair->second)
+            pair->second->ev_handler(c, ev, hm, pair->first);
+        delete pair;
+    }
+}
 
 void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http_message *hm, const std::shared_ptr<ledger::core::api::HttpRequest>& request) {
      auto connection = std::make_shared<HttpUrlConnection>(

@@ -1,7 +1,34 @@
 
-Configuration = interface +c {
-    const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
-    const KEYCHAIN_ENGINE: string = "KEYCHAIN_ENGINE";
+BlockchainExplorerEngines = interface +c {
+    const LEDGER_API: string = "LEDGER_API";
+}
 
+BlockchainObserverEngines = interface +c {
+    const LEDGER_API: string = "LEDGER_API";
+}
+
+KeychainEngines = interface +c {
+    const BIP32_P2PKH: string = "BIP32_P2PKH";
+}
+
+SynchronizationEngines = interface +c {
+    const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION: string = "BLOCKCHAIN_EXPLORER_SYNCHRONIZATION";
+}
+
+Configuration = interface +c {
+    # Selects the keychain engine (P2PKH, P2SH...)
+    const KEYCHAIN_ENGINE: string = "KEYCHAIN_ENGINE";
+    # Sets the observable range for HD keychains (BIP32 based)
+    const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
+
+    # Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC)
+    const BLOCKCHAIN_EXPLORER_ENGINE: string = "BLOCKCHAIN_EXPLORER_ENGINE";
+    # Sets the API endpoint for API based engine (Ledger's API)
     const BLOCKCHAIN_EXPLORER_API_ENDPOINT: string = "BLOCKCHAIN_EXPLORER_API_ENDPOINT";
+
+    # Selects the blockchain observer engine (Ledger's API)
+    const BLOCKCHAIN_OBSERVER_ENGINE: string = "BLOCKCHAIN_OBSERVER_ENGINE";
+
+    # Selects the synchronization engine
+    const SYNCHRONIZATION_ENGINE: string = "SYNCHRONIZATION_ENGINE";
 }

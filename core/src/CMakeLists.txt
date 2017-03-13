@@ -119,7 +119,7 @@ add_library(
         traits/shared_ptr_traits.hpp collections/collections.hpp
         collections/MapLike.hpp utils/optional.cpp collections/DynamicObject.cpp collections/DynamicObject.hpp
         collections/DynamicArray.cpp collections/DynamicArray.hpp collections/DynamicValue.cpp
-        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp)
+        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

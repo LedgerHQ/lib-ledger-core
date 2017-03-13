@@ -91,7 +91,7 @@ ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
 PoolTestCaseBootstraper::getBitcoinLikeWallet(
     const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
     const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
-    const std::shared_ptr<ledger::core::api::Configuration> &configuration) {
+    const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
     Promise<std::shared_ptr<api::BitcoinLikeWallet>> promise;
 
     setup([=] (std::shared_ptr<api::WalletPool> pool, std::experimental::optional<api::Error> error) mutable {
@@ -113,7 +113,7 @@ PoolTestCaseBootstraper &PoolTestCaseBootstraper::xpubs(const ledger::core::Map<
 }
 
 ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
-PoolTestCaseBootstraper::getBitcoinWallet(const std::shared_ptr<ledger::core::api::Configuration>& configuration) {
+PoolTestCaseBootstraper::getBitcoinWallet(const std::shared_ptr<ledger::core::api::DynamicObject>& configuration) {
     return getBitcoinLikeWallet(
           api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(std::make_shared<BootstrapperBase58ExtendedPublicKeyProvider>(this)),
           networks::BITCOIN,
@@ -121,11 +121,12 @@ PoolTestCaseBootstraper::getBitcoinWallet(const std::shared_ptr<ledger::core::ap
     );
 }
 
-void BootstrapperBase58ExtendedPublicKeyProvider::get(const std::string &path,
-                                                      const api::BitcoinLikeNetworkParameters &params,
-                                                      const std::shared_ptr<api::StringCompletionBlock> &completion) {
+void BootstrapperBase58ExtendedPublicKeyProvider::get(const std::string &deviceId, const std::string &path,
+                                                      const ledger::core::api::BitcoinLikeNetworkParameters &params,
+                                                      const std::shared_ptr<ledger::core::api::StringCompletionBlock> &completion) {
     auto value = _self->_xpubs.lift(path);
     completion->complete(value, value.orElse<api::Error>([&] () {
         return make_exception(api::ErrorCode::NO_SUCH_ELEMENT, "No xpub for {}", path).toApiError();
     }));
 }
+

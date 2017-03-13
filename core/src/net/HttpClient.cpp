@@ -88,21 +88,28 @@ namespace ledger {
                     fullheaders,
                     body,
                     _client,
-                    _context
+                    _context,
+                    _logger
             );
+        }
+
+        void HttpClient::setLogger(const std::shared_ptr<spdlog::logger> &logger) {
+            _logger = make_option(logger);
         }
 
         HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url,
                                  const std::unordered_map<std::string, std::string> &headers,
                                  const std::experimental::optional<std::vector<uint8_t >> body,
                                  const std::shared_ptr<api::HttpClient> &client,
-                                 const std::shared_ptr<api::ExecutionContext> &context) {
+                                 const std::shared_ptr<api::ExecutionContext> &context,
+                                 const Option<std::shared_ptr<spdlog::logger>>& logger) {
             _method = method;
             _url = url;
             _headers = headers;
             _body = body;
             _client = client;
             _context = context;
+            _logger = logger;
         }
 
         HttpRequest::ApiRequest::ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self) {
@@ -117,7 +124,14 @@ namespace ledger {
         Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() const {
             auto request = std::dynamic_pointer_cast<ApiRequest>(toApiRequest());
             _client->execute(request);
-            return  request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [] (const std::shared_ptr<api::HttpUrlConnection>& connection) {
+            _logger.foreach([&] (const std::shared_ptr<spdlog::logger>& logger) {
+                logger->info("{} {}", api::to_string(request->getMethod()), request->getUrl());
+            });
+            auto logger = _logger;
+            return  request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [=] (const std::shared_ptr<api::HttpUrlConnection>& connection) {
+                logger.foreach([&] (const std::shared_ptr<spdlog::logger>& l) {
+                    l->info("{} {} - {} {}", api::to_string(request->getMethod()), request->getUrl(),  connection->getStatusCode(), connection->getStatusText());
+                });
                 if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
                     throw Exception(api::ErrorCode::HTTP_ERROR, connection->getStatusText(),
                                     Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(connection)));

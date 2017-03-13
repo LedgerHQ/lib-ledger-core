@@ -34,7 +34,6 @@
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
 #include <ledger/core/wallet/bitcoin/networks.hpp>
-#include <ledger/core/api_impl/ConfigurationImpl.hpp>
 
 using namespace ledger::core;
 
@@ -49,7 +48,7 @@ static void testKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeK
             dispatcher->getSerialExecutionContext("worker"),
             resolver
     );
-    auto configuration = std::make_shared<ConfigurationImpl>();
+    auto configuration = std::make_shared<DynamicObject>();
 
     dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
         P2PKHBitcoinLikeKeychain keychain(

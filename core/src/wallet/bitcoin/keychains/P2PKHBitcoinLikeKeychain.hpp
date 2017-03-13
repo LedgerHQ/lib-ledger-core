@@ -33,7 +33,7 @@
 
 #include "BitcoinLikeKeychain.hpp"
 #include <set>
-#include <src/api/DynamicObject.hpp>
+#include "../../../collections/DynamicObject.hpp"
 
 namespace ledger {
     namespace core {

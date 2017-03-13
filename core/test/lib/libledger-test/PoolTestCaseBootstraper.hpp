@@ -49,12 +49,15 @@
 #include <ledger/core/api/BitcoinLikeBase58ExtendedPublicKeyProvider.hpp>
 #include <ledger/core/collections/collections.hpp>
 #include <ledger/core/api/Configuration.hpp>
+#include <ledger/core/api/DynamicObject.hpp>
 
 class PoolTestCaseBootstraper;
 class BootstrapperBase58ExtendedPublicKeyProvider :  public ledger::core::api::BitcoinLikeBase58ExtendedPublicKeyProvider {
 public:
     BootstrapperBase58ExtendedPublicKeyProvider(PoolTestCaseBootstraper* self) : _self(self) {};
-    void get(const std::string &path, const ledger::core::api::BitcoinLikeNetworkParameters &params,
+
+    void get(const std::string &deviceId, const std::string &path,
+             const ledger::core::api::BitcoinLikeNetworkParameters &params,
              const std::shared_ptr<ledger::core::api::StringCompletionBlock> &completion) override;
 
 private:
@@ -72,10 +75,10 @@ public:
     ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
     getBitcoinLikeWallet( const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
                           const ledger::core::api::BitcoinLikeNetworkParameters &networkParams,
-                          const std::shared_ptr<ledger::core::api::Configuration> &configuration);
+                          const std::shared_ptr<ledger::core::api::DynamicObject> &configuration);
 
     ledger::core::Future<std::shared_ptr<ledger::core::api::BitcoinLikeWallet>>
-    getBitcoinWallet(const std::shared_ptr<ledger::core::api::Configuration>& configuration = ledger::core::api::Configuration::newInstance());
+    getBitcoinWallet(const std::shared_ptr<ledger::core::api::DynamicObject>& configuration = ledger::core::api::DynamicObject::newInstance());
 
     PoolTestCaseBootstraper& xpubs(const ledger::core::Map<std::string, std::string>& xpubs);
 

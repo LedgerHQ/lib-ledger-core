@@ -43,7 +43,9 @@ namespace ledger {
             Future<T> async(std::function<T ()> f) {
                 return Future<T>::async(_executionContext, f);
             };
-
+            inline std::shared_ptr<api::ExecutionContext> getContext() const {
+                return _executionContext;
+            };
         protected:
             std::shared_ptr<api::ExecutionContext> _executionContext;
         };

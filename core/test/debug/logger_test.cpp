@@ -33,7 +33,6 @@
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
-#include <ledger/core/preferences/AtomicPreferencesBackend.hpp>
 #include <NativePathResolver.hpp>
 #include <fstream>
 #include <ledger/core/debug/logger.hpp>

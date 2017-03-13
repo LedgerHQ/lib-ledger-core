@@ -236,6 +236,15 @@ namespace ledger {
 
         template <typename T>
         const Option<T> Option<T>::NONE;
+
+        template <typename T>
+        Option<std::shared_ptr<T>> make_option(const std::shared_ptr<T>& ptr) {
+            if (ptr == nullptr)
+                return Option<std::shared_ptr<T>>();
+            else
+                return Option<std::shared_ptr<T>>(ptr);
+        }
+
     }
 }
 

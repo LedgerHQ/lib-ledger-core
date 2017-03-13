@@ -46,6 +46,8 @@
 #include "../utils/Either.hpp"
 #include "HttpUrlConnectionInputStream.hpp"
 #include <rapidjson/reader.h>
+#include "../debug/logger.hpp"
+#include "../utils/Option.hpp"
 
 namespace ledger {
     namespace core {
@@ -62,7 +64,8 @@ namespace ledger {
                         const std::unordered_map<std::string, std::string>& headers,
                         const std::experimental::optional<std::vector<uint8_t >> body,
                         const std::shared_ptr<api::HttpClient> &client,
-                        const std::shared_ptr<api::ExecutionContext> &context);
+                        const std::shared_ptr<api::ExecutionContext> &context,
+                        const Option<std::shared_ptr<spdlog::logger>>& logger);
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
 
             template <typename Success, typename Failure, typename Handler>
@@ -86,6 +89,7 @@ namespace ledger {
             Future<JsonResult> json() const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
 
+
         private:
             api::HttpMethod _method;
             std::string _url;
@@ -93,6 +97,7 @@ namespace ledger {
             std::experimental::optional<std::vector<uint8_t >> _body;
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _context;
+            Option<std::shared_ptr<spdlog::logger>> _logger;
 
             class ApiRequest : public api::HttpRequest {
             public:
@@ -130,6 +135,8 @@ namespace ledger {
             HttpRequest POST(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             void addHeader(const std::string& key, const std::string& value);
             void removeHeader(const std::string& key);
+            void setLogger(const std::shared_ptr<spdlog::logger>& logger);
+
         private:
             HttpRequest createRequest(api::HttpMethod method,
                                       const std::string& path,
@@ -142,6 +149,7 @@ namespace ledger {
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _context;
             std::unordered_map<std::string, std::string> _headers;
+            Option<std::shared_ptr<spdlog::logger>> _logger;
         };
     }
 }
