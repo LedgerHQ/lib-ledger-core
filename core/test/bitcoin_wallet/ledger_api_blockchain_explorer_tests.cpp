@@ -42,9 +42,9 @@ using namespace ledger::core;
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<AsioHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
     auto worker = dispatcher->getSerialExecutionContext("worker");
-    auto http = std::make_shared<HttpClient>("https://api.ledgerwallet.com", client, worker);
+    auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
@@ -58,7 +58,6 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
     http->setLogger(logger);
     explorer->startSession().onComplete(worker, [&] (const Try<void *>& session) {
         EXPECT_TRUE(session.isSuccess());
-        std::cout << session.getFailure().getMessage() << std::endl;
         EXPECT_EQ(((std::string *)session.getValue())->size(), 36);
         dispatcher->stop();
     });

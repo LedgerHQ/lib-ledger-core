@@ -30,6 +30,8 @@
  */
 #include "LedgerApiBitcoinLikeBlockchainExplorer.hpp"
 #include <fmt/format.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 namespace ledger {
     namespace core {

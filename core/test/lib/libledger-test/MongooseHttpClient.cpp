@@ -119,8 +119,6 @@ void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http
     request->complete(connection, std::experimental::optional<ledger::core::api::Error>());
 }
 
-static struct mg_connect_opts opts;
-
 void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) {
     start();
     auto self = shared_from_this();
@@ -160,10 +158,7 @@ void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRe
             c_body = ::strdup(body.str().c_str());
         }
 
-        memset(&opts, 0, sizeof(opts));
-        opts.ssl_key = "cert.key";
-        opts.ssl_cert = "cert.pem";
-        nc = mg_connect_http_opt(&_mgr, ::ev_handler, opts, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
+        nc = mg_connect_http(&_mgr, ::ev_handler, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
 
         nc->user_data = new std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>>(request, self);
         mg_set_protocol_http_websocket(nc);
