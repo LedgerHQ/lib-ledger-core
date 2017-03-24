@@ -38,5 +38,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnableToOpenLeveldb,
     /** Network errors */
     LGErrorCodeNoInternetConnectivity,
+    LGErrorCodeUnableToResolveHost,
+    LGErrorCodeUnableToConnectToHost,
     LGErrorCodeHttpError,
+    LGErrorCodeSslError,
 };

@@ -138,7 +138,7 @@ extern "C" {
 # endif
 
 # include <errno.h>
-
+# include "crypto.h"
 # define ERR_TXT_MALLOCED        0x01
 # define ERR_TXT_STRING          0x02
 

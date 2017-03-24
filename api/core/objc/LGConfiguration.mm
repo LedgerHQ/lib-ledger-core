@@ -4,8 +4,14 @@
 #import "LGConfiguration.h"
 
 
-NSString * __nonnull const LGConfigurationKEYCHAINOBSERVABLERANGE = @"KEYCHAIN_OBSERVABLE_RANGE";
-
 NSString * __nonnull const LGConfigurationKEYCHAINENGINE = @"KEYCHAIN_ENGINE";
 
+NSString * __nonnull const LGConfigurationKEYCHAINOBSERVABLERANGE = @"KEYCHAIN_OBSERVABLE_RANGE";
+
+NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERENGINE = @"BLOCKCHAIN_EXPLORER_ENGINE";
+
 NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT = @"BLOCKCHAIN_EXPLORER_API_ENDPOINT";
+
+NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE = @"BLOCKCHAIN_OBSERVER_ENGINE";
+
+NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE = @"SYNCHRONIZATION_ENGINE";

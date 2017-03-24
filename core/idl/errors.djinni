@@ -41,7 +41,10 @@ ErrorCode = enum {
 
     # Network errors
     no_internet_connectivity;
+    unable_to_resolve_host;
+    unable_to_connect_to_host;
     http_error;
+    ssl_error;
 }
 
 Error = record {

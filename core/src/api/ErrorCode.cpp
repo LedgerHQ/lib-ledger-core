@@ -28,7 +28,10 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::NO_SUCH_ELEMENT: return "NO_SUCH_ELEMENT";
         case ErrorCode::UNABLE_TO_OPEN_LEVELDB: return "UNABLE_TO_OPEN_LEVELDB";
         case ErrorCode::NO_INTERNET_CONNECTIVITY: return "NO_INTERNET_CONNECTIVITY";
+        case ErrorCode::UNABLE_TO_RESOLVE_HOST: return "UNABLE_TO_RESOLVE_HOST";
+        case ErrorCode::UNABLE_TO_CONNECT_TO_HOST: return "UNABLE_TO_CONNECT_TO_HOST";
         case ErrorCode::HTTP_ERROR: return "HTTP_ERROR";
+        case ErrorCode::SSL_ERROR: return "SSL_ERROR";
     };
 };
 
@@ -56,7 +59,10 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::NO_SUCH_ELEMENT:  return os << "NO_SUCH_ELEMENT";
         case ErrorCode::UNABLE_TO_OPEN_LEVELDB:  return os << "UNABLE_TO_OPEN_LEVELDB";
         case ErrorCode::NO_INTERNET_CONNECTIVITY:  return os << "NO_INTERNET_CONNECTIVITY";
+        case ErrorCode::UNABLE_TO_RESOLVE_HOST:  return os << "UNABLE_TO_RESOLVE_HOST";
+        case ErrorCode::UNABLE_TO_CONNECT_TO_HOST:  return os << "UNABLE_TO_CONNECT_TO_HOST";
         case ErrorCode::HTTP_ERROR:  return os << "HTTP_ERROR";
+        case ErrorCode::SSL_ERROR:  return os << "SSL_ERROR";
     }
 }
 

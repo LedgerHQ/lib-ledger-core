@@ -85,6 +85,10 @@ namespace ledger {
                 return _backend;
             }
 
+            const C* toCString() const {
+                return _backend.c_str();
+            };
+
         private:
             Backend _backend;
         };

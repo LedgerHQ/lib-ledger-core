@@ -37,6 +37,9 @@ public enum ErrorCode {
     UNABLE_TO_OPEN_LEVELDB,
     /** Network errors */
     NO_INTERNET_CONNECTIVITY,
+    UNABLE_TO_RESOLVE_HOST,
+    UNABLE_TO_CONNECT_TO_HOST,
     HTTP_ERROR,
+    SSL_ERROR,
     ;
 }

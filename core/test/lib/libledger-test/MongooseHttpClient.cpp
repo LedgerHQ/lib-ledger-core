@@ -79,24 +79,25 @@ private:
 static void ev_handler(struct mg_connection *c, int ev, void *p) {
     if (ev == MG_EV_CONNECT) {
         int status = *(int *)p;
-        if (p != 0) {
+        if (status != 0) {
             auto pair = (std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>> *)c->user_data;
-//            ledger::core::api::HttpResponse response(
-//                    0,
-//                   "Unable to connect",
-//                    std::unordered_map<std::string, std::string>(),
-//                    std::vector<uint8_t >()
-//            );
-            //pair->first->complete(response);
-            //delete pair;
-            auto connection = std::make_shared<HttpUrlConnection>(
-            status,
-            std::string("Unable to connect"),
-            std::unordered_map<std::string, std::string>(),
-            std::vector<uint8_t >()
-            );
-            pair->first->complete(connection, std::experimental::optional<ledger::core::api::Error>());
-            delete pair;
+            if (pair->first != nullptr) {
+                std::string errorMessage;
+                if (status == MG_SSL_ERROR) {
+                    errorMessage = "SSL error";
+                } else {
+                    errorMessage = strerror(*(int *) p);
+                }
+                auto connection = std::make_shared<HttpUrlConnection>(
+                status,
+                errorMessage,
+                std::unordered_map<std::string, std::string>(),
+                std::vector<uint8_t>()
+                );
+                pair->first->complete(connection, std::experimental::optional<ledger::core::api::Error>());
+                pair->first = nullptr;
+            }
+            // delete pair # Yep that's a leak;
         }
     } else if (ev == MG_EV_HTTP_REPLY) {
         c->flags |= MG_F_CLOSE_IMMEDIATELY;
@@ -117,6 +118,8 @@ void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http
     );
     request->complete(connection, std::experimental::optional<ledger::core::api::Error>());
 }
+
+static struct mg_connect_opts opts;
 
 void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) {
     start();
@@ -157,7 +160,11 @@ void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRe
             c_body = ::strdup(body.str().c_str());
         }
 
-        nc = mg_connect_http(&_mgr, ::ev_handler, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
+        memset(&opts, 0, sizeof(opts));
+        opts.ssl_key = "cert.key";
+        opts.ssl_cert = "cert.pem";
+        nc = mg_connect_http_opt(&_mgr, ::ev_handler, opts, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
+
         nc->user_data = new std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>>(request, self);
         mg_set_protocol_http_websocket(nc);
     }));
