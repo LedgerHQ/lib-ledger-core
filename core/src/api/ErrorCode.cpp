@@ -9,6 +9,7 @@ std::string to_string(const ErrorCode& errorCode) {
     switch (errorCode) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS: return "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::WALLET_NOT_FOUND: return "WALLET_NOT_FOUND";
+        case ErrorCode::RAW_TRANSACTION_NOT_FOUND: return "RAW_TRANSACTION_NOT_FOUND";
         case ErrorCode::CANCELLED_BY_USER: return "CANCELLED_BY_USER";
         case ErrorCode::INVALID_BASE58_FORMAT: return "INVALID_BASE58_FORMAT";
         case ErrorCode::INVALID_CHECKSUM: return "INVALID_CHECKSUM";
@@ -40,6 +41,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
     switch (o) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS:  return os << "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::WALLET_NOT_FOUND:  return os << "WALLET_NOT_FOUND";
+        case ErrorCode::RAW_TRANSACTION_NOT_FOUND:  return os << "RAW_TRANSACTION_NOT_FOUND";
         case ErrorCode::CANCELLED_BY_USER:  return os << "CANCELLED_BY_USER";
         case ErrorCode::INVALID_BASE58_FORMAT:  return os << "INVALID_BASE58_FORMAT";
         case ErrorCode::INVALID_CHECKSUM:  return os << "INVALID_CHECKSUM";

@@ -11,6 +11,7 @@ public enum ErrorCode {
      * Wallet errors
      */
     WALLET_NOT_FOUND,
+    RAW_TRANSACTION_NOT_FOUND,
     /** User land errors */
     CANCELLED_BY_USER,
     /** Others */

@@ -53,8 +53,9 @@ namespace ledger {
             getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash,
                             Option<void *> session) override;
             Future<Block> getCurrentBlock() override;
-            void getRawTransaction(const std::string &transactionHash,
-                                   std::function<void(std::vector<uint8_t>)> callback) override;
+
+            Future<Bytes> getRawTransaction(const String transactionHash) override;
+
             Future<Unit> pushTransaction(const std::vector<uint8_t> &transaction) override;
 
         private:

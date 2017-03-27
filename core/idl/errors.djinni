@@ -7,6 +7,7 @@ ErrorCode = enum {
 
     # Wallet errors
     wallet_not_found;
+    raw_transaction_not_found;
 
     # User land errors
     cancelled_by_user;

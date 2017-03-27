@@ -32,6 +32,7 @@
 #include <fmt/format.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
+#include "../../../utils/hex.h"
 
 namespace ledger {
     namespace core {
@@ -70,15 +71,26 @@ namespace ledger {
             return promise.getFuture();
         }
 
-        void LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const std::string &transactionHash,
-                                                                       std::function<void(
-                                                                       std::vector<uint8_t>)> callback) {
 
-        }
+
 
         Future<Unit> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
             Promise<Unit> promise;
             return promise.getFuture();
+        }
+
+        Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String transactionHash) {
+            return _http
+            ->GET(fmt::format("/blockchain/v2/{}/transactions/{}/hex", _parameters.Identifier, transactionHash.str()))
+            .json().map<Bytes>(getContext(), [transactionHash] (const HttpRequest::JsonResult& result) {
+                auto& json = *std::get<1>(result);
+                if (json.GetArray().Size() == 0) {
+                    throw make_exception(api::ErrorCode::RAW_TRANSACTION_NOT_FOUND, "Unable to retrieve {}", transactionHash.str());
+                } else {
+                    auto& hex = json[0].GetObject()["hex"];
+                    return Bytes(ledger::core::hex::toByteArray(std::string(hex.GetString(), hex.GetStringLength())));
+                }
+            });
         }
     }
 }

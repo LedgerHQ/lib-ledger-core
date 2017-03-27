@@ -69,10 +69,6 @@ namespace ledger {
                 return CharSequence<C, Backend>(ss.str());
             }
 
-            std::istream& operator<<(std::istream& is) {
-                return is << _backend;
-            }
-
             std::stringstream& operator<<(std::stringstream& ss) {
                 return ss << _backend;
             }
@@ -87,6 +83,10 @@ namespace ledger {
 
             const C* toCString() const {
                 return _backend.c_str();
+            };
+
+            operator std::string() const {
+                return _backend;
             };
 
         private:

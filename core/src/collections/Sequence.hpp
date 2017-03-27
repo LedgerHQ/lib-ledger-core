@@ -41,6 +41,14 @@ namespace ledger {
         template <typename T, typename Container>
         class Sequence {
         public:
+            Sequence() {
+
+            }
+
+            Sequence(const Container& container) : _container(container) {
+
+            }
+
             T& operator[](size_t index) {
                 return _container[index];
             }
@@ -83,6 +91,7 @@ namespace ledger {
 
         template <typename T>
         using List = Sequence<T, std::vector<T>>;
+
     }
 }
 

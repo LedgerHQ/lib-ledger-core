@@ -1,9 +1,9 @@
 /*
  *
- * collections
+ * Bytes
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/03/2017.
+ * Created by Pierre Pollastri on 27/03/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,19 +28,38 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COLLECTIONS_HPP
-#define LEDGER_CORE_COLLECTIONS_HPP
+#ifndef LEDGER_CORE_BYTES_HPP
+#define LEDGER_CORE_BYTES_HPP
 
-#include "strings.hpp"
-#include "vector.hpp"
-#include "MapLike.hpp"
 #include "Sequence.hpp"
+#include "../utils/hex.h"
 #include "String.hpp"
-#include "Bytes.hpp"
 
 namespace ledger {
     namespace core {
 
+        class Bytes : public Array<uint8_t> {
+        public:
+
+            Bytes() : Array<uint8_t>() {};
+            Bytes(const std::vector<uint8_t>& bytes) : Array<uint8_t>(bytes) {
+
+            };
+
+            String toAscii() const {
+                return std::string((char *)getContainer().data(), size());
+            }
+
+            String toHex(bool uppercase = false) const {
+                return hex::toString(getContainer(), uppercase);
+            }
+
+            static Bytes fromHex(const String& hex) {
+                return hex::toByteArray(hex.str());
+            }
+
+        };
     }
 }
-#endif //LEDGER_CORE_COLLECTIONS_HPP
+
+#endif //LEDGER_CORE_BYTES_HPP

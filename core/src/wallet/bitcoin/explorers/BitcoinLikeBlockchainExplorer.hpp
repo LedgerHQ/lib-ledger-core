@@ -38,6 +38,7 @@
 #include "../../../api/ErrorCode.hpp"
 #include "../../../utils/Option.hpp"
 #include "../../../async/Future.hpp"
+#include "../../../collections/collections.hpp"
 
 namespace ledger {
     namespace core {
@@ -130,10 +131,7 @@ namespace ledger {
             ) = 0;
 
             virtual Future<Block> getCurrentBlock() = 0;
-
-            virtual void getRawTransaction(const std::string& transactionHash,
-                                           std::function<void (std::vector<uint8_t>)> callback
-            ) = 0;
+            virtual Future<Bytes> getRawTransaction(const String transactionHash) = 0;
 
             virtual Future<Unit> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
         };
