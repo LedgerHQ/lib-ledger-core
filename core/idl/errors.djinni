@@ -46,6 +46,12 @@ ErrorCode = enum {
     unable_to_connect_to_host;
     http_error;
     ssl_error;
+
+    # API errors
+    api_error;
+
+    # Format
+    invalid_date_format;
 }
 
 Error = record {

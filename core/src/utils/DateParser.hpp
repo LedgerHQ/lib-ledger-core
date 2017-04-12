@@ -1,9 +1,9 @@
 /*
  *
- * collections
+ * DateParser
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/03/2017.
+ * Created by Pierre Pollastri on 11/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,21 +28,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COLLECTIONS_HPP
-#define LEDGER_CORE_COLLECTIONS_HPP
+#ifndef LEDGER_CORE_DATEPARSER_HPP
+#define LEDGER_CORE_DATEPARSER_HPP
 
-#include "strings.hpp"
-#include "vector.hpp"
-#include "../utils/Option.hpp"
-#include "../utils/Either.hpp"
-#include "MapLike.hpp"
-#include "Sequence.hpp"
-#include "String.hpp"
-#include "Bytes.hpp"
+#include <chrono>
+#include <string>
 
 namespace ledger {
     namespace core {
-
+        class DateParser {
+        public:
+            static std::chrono::system_clock::time_point fromJSON(const std::string& str);
+        };
     }
 }
-#endif //LEDGER_CORE_COLLECTIONS_HPP
+
+
+#endif //LEDGER_CORE_DATEPARSER_HPP

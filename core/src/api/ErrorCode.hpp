@@ -48,6 +48,10 @@ enum class ErrorCode : int {
     UNABLE_TO_CONNECT_TO_HOST,
     HTTP_ERROR,
     SSL_ERROR,
+    /** API errors */
+    API_ERROR,
+    /** Format */
+    INVALID_DATE_FORMAT,
 };
 std::string to_string(const ErrorCode& errorCode);
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

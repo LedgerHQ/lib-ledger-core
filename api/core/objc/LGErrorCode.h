@@ -43,4 +43,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnableToConnectToHost,
     LGErrorCodeHttpError,
     LGErrorCodeSslError,
+    /** API errors */
+    LGErrorCodeApiError,
+    /** Format */
+    LGErrorCodeInvalidDateFormat,
 };

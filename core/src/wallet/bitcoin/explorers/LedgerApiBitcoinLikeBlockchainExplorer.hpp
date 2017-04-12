@@ -48,15 +48,17 @@ namespace ledger {
                 const api::BitcoinLikeNetworkParameters& parameters
             );
             Future<void *> startSession() override;
-            void killSession(void *session) override;
+            Future<Unit> killSession(void *session) override;
+            Future<Bytes> getRawTransaction(const String& transactionHash) override;
+            Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
+
             Future<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash,
                             Option<void *> session) override;
+
             Future<Block> getCurrentBlock() override;
 
-            Future<Bytes> getRawTransaction(const String transactionHash) override;
-
-            Future<Unit> pushTransaction(const std::vector<uint8_t> &transaction) override;
+            Future<Transaction> getTransactionByHash(const String &transactionHash) override;
 
         private:
             std::shared_ptr<HttpClient> _http;

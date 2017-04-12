@@ -33,6 +33,8 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include "../../../utils/hex.h"
+#include "src/wallet/bitcoin/explorers/api/TransactionParser.hpp"
+#include "api/BlockParser.hpp"
 
 namespace ledger {
     namespace core {
@@ -54,32 +56,17 @@ namespace ledger {
             });
         }
 
-        void LedgerApiBitcoinLikeBlockchainExplorer::killSession(void *session) {
-
-        }
-
-        Future<TransactionsBulk>
-        LedgerApiBitcoinLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                                Option<std::string> fromBlockHash,
-                                                                Option<void *> session) {
-            Promise<TransactionsBulk> promise;
-            return promise.getFuture();
-        }
-
-        Future<Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() {
-            Promise<Block> promise;
-            return promise.getFuture();
-        }
-
-
-
-
-        Future<Unit> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+        Future<Unit> LedgerApiBitcoinLikeBlockchainExplorer::killSession(void *session) {
             Promise<Unit> promise;
             return promise.getFuture();
         }
 
-        Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String transactionHash) {
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+            Promise<String> promise;
+            return promise.getFuture();
+        }
+
+        Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String& transactionHash) {
             return _http
             ->GET(fmt::format("/blockchain/v2/{}/transactions/{}/hex", _parameters.Identifier, transactionHash.str()))
             .json().map<Bytes>(getContext(), [transactionHash] (const HttpRequest::JsonResult& result) {
@@ -92,5 +79,35 @@ namespace ledger {
                 }
             });
         }
+
+        Future<BitcoinLikeBlockchainExplorer::TransactionsBulk>
+        LedgerApiBitcoinLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
+                                                                Option<std::string> fromBlockHash,
+                                                                Option<void *> session) {
+            Promise<BitcoinLikeBlockchainExplorer::TransactionsBulk> promise;
+            return promise.getFuture();
+        }
+
+        Future<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() {
+            Promise<BitcoinLikeBlockchainExplorer::Block> promise;
+            return promise.getFuture();
+        }
+
+        Future<BitcoinLikeBlockchainExplorer::Transaction>
+        LedgerApiBitcoinLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) {
+            Promise<BitcoinLikeBlockchainExplorer::Transaction> promise;
+            return _http
+                ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash.str()))
+                .json<BitcoinLikeBlockchainExplorer::Transaction, Exception>(TransactionParser())
+            .map<BitcoinLikeBlockchainExplorer::Transaction>(_executionContext, [] (const Either<Exception, BitcoinLikeBlockchainExplorer::Transaction>& result) {
+                if (result.isLeft()) {
+                    throw result.getLeft();
+                } else {
+                    BitcoinLikeBlockchainExplorer::Transaction transaction = result.getRight();
+                    return transaction;
+                }
+            });
+        }
+
     }
 }

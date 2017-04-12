@@ -1,9 +1,9 @@
 /*
  *
- * collections
+ * date_parser_tests
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/03/2017.
+ * Created by Pierre Pollastri on 12/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,21 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COLLECTIONS_HPP
-#define LEDGER_CORE_COLLECTIONS_HPP
 
-#include "strings.hpp"
-#include "vector.hpp"
-#include "../utils/Option.hpp"
-#include "../utils/Either.hpp"
-#include "MapLike.hpp"
-#include "Sequence.hpp"
-#include "String.hpp"
-#include "Bytes.hpp"
+#include <gtest/gtest.h>
+#include <ledger/core/utils/DateParser.hpp>
 
-namespace ledger {
-    namespace core {
+using namespace ledger::core;
 
-    }
+TEST(DateParser, ParseJSONDate) {
+    auto date = "2012-04-23T18:25:43.511Z";
+
+    EXPECT_EQ(DateParser::fromJSON(date).time_since_epoch().count(), 1335205543000000);
 }
-#endif //LEDGER_CORE_COLLECTIONS_HPP

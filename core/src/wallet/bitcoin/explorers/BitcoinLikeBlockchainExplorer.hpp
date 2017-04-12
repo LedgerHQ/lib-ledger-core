@@ -82,47 +82,50 @@ namespace ledger {
          }
          */
 
-        struct Block {
-            std::string hash;
-            uint64_t height;
-            std::chrono::steady_clock::time_point time;
-        };
-
-        struct Input {
-            uint32_t index;
-            optional<uint64_t> value;
-            optional<std::string> previousTxHash;
-            optional<uint32_t> previousTxOutputIndex;
-            optional<std::string> address;
-            optional<std::string> signatureScript;
-            optional<std::string> coinbase;
-        };
-
-        struct Output {
-            uint32_t index;
-            uint64_t value;
-            optional<std::string> address;
-            std::string script;
-        };
-
-        struct Transaction {
-            std::string hash;
-            std::chrono::steady_clock::time_point receivedAt;
-            uint64_t lockTime;
-            optional<Block> block;
-            std::vector<Input> inputs;
-            std::vector<Output> outputs;
-        };
-
-        struct TransactionsBulk {
-            std::vector<Transaction> transactions;
-            bool hasNext;
-        };
 
         class BitcoinLikeBlockchainExplorer {
         public:
+            struct Block {
+                std::string hash;
+                uint64_t height;
+                std::chrono::system_clock::time_point time;
+            };
+
+            struct Input {
+                uint32_t index;
+                optional<uint64_t> value;
+                optional<std::string> previousTxHash;
+                optional<uint32_t> previousTxOutputIndex;
+                optional<std::string> address;
+                optional<std::string> signatureScript;
+                optional<std::string> coinbase;
+            };
+
+            struct Output {
+                uint32_t index;
+                uint64_t value;
+                optional<std::string> address;
+                std::string script;
+            };
+
+            struct Transaction {
+                std::string hash;
+                std::chrono::system_clock::time_point receivedAt;
+                uint64_t lockTime;
+                optional<Block> block;
+                std::vector<Input> inputs;
+                std::vector<Output> outputs;
+            };
+
+            struct TransactionsBulk {
+                std::vector<Transaction> transactions;
+                bool hasNext;
+            };
+
+
+        public:
             virtual Future<void *> startSession() = 0;
-            virtual void killSession(void *session) = 0;
+            virtual Future<Unit> killSession(void *session) = 0;
 
             virtual Future<TransactionsBulk> getTransactions(
                     const std::vector<std::string>& addresses,
@@ -131,9 +134,9 @@ namespace ledger {
             ) = 0;
 
             virtual Future<Block> getCurrentBlock() = 0;
-            virtual Future<Bytes> getRawTransaction(const String transactionHash) = 0;
-
-            virtual Future<Unit> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
+            virtual Future<Bytes> getRawTransaction(const String& transactionHash) = 0;
+            virtual Future<Transaction> getTransactionByHash(const String& transactionHash) = 0;
+            virtual Future<String> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
         };
     }
 }

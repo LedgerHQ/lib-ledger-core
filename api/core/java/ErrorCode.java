@@ -42,5 +42,9 @@ public enum ErrorCode {
     UNABLE_TO_CONNECT_TO_HOST,
     HTTP_ERROR,
     SSL_ERROR,
+    /** API errors */
+    API_ERROR,
+    /** Format */
+    INVALID_DATE_FORMAT,
     ;
 }
