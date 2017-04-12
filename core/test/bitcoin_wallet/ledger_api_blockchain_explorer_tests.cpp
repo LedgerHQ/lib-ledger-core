@@ -111,8 +111,13 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
     http->setLogger(logger);
     explorer->getTransactionByHash("9d7945129b78e2f63a72fed93e8ebe38567bdc9318591cfe8c8a7de76c5cb1a3").onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
         EXPECT_TRUE(transaction.isSuccess());
-        auto& tx = transaction.getValue();
-        EXPECT_EQ(tx.outputs.size(), 2);
+        if (transaction.isFailure()) {
+            std::cerr << transaction.getFailure().getMessage() << std::endl;
+            FAIL();
+        } else {
+            auto &tx = transaction.getValue();
+            EXPECT_EQ(tx.outputs.size(), 2);
+        }
         dispatcher->stop();
     });
 

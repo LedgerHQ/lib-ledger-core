@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
-
+#include "../collections/collections.hpp"
 #undef LITTLE_ENDIAN
 #undef BIG_ENDIAN
 
@@ -320,6 +320,14 @@ namespace ledger {
 
         BigInt BigInt::fromDecimal(const std::string &str) {
             return BigInt(str, 10);
+        }
+
+        BigInt BigInt::fromString(const std::string &str) {
+            if (strings::startsWith(str, "0x")) {
+                return BigInt::fromHex(str.substr(2, str.length()));
+            } else {
+                return BigInt::fromDecimal(str);
+            }
         }
 
     }

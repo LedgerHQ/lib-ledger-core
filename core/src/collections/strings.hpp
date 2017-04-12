@@ -37,7 +37,7 @@ namespace ledger {
     namespace core {
         namespace strings {
 
-            inline bool startsWith(const std::string& str, const std::string& prefix);
+            bool startsWith(const std::string& str, const std::string& prefix);
 
         }
     }

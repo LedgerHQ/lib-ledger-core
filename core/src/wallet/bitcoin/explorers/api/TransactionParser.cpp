@@ -29,6 +29,7 @@
  *
  */
 #include "TransactionParser.hpp"
+#include "../../../../utils/DateParser.hpp"
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -103,21 +104,15 @@ namespace ledger {
         }
 
         bool TransactionParser::Int(int i) {
-            PROXY_PARSE(Int, i) {
-                return true;
-            }
+            return Uint64(i);
         }
 
         bool TransactionParser::Uint(unsigned i) {
-            PROXY_PARSE(Uint, i) {
-                return true;
-            }
+            return Uint64(i);
         }
 
         bool TransactionParser::Int64(int64_t i) {
-            PROXY_PARSE(Int64, i) {
-                return true;
-            }
+            return Uint64(i);
         }
 
         bool TransactionParser::Uint64(uint64_t i) {
@@ -134,6 +129,13 @@ namespace ledger {
 
         bool TransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
+                std::string number(str, length);
+                BigInt value = BigInt::fromString(number);
+                if (_lastKey == "lock_time") {
+                    _transaction.lockTime = value.toUint64();
+                } else if (_lastKey == "fees") {
+                    _transaction.fees = Option<BigInt>(value);
+                }
                 return true;
             }
         }
@@ -144,7 +146,7 @@ namespace ledger {
                 if (_lastKey == "hash") {
                     _transaction.hash = value;
                 } else if (_lastKey == "received_at") {
-
+                    _transaction.receivedAt = DateParser::fromJSON(value);
                 }
                 return true;
             }

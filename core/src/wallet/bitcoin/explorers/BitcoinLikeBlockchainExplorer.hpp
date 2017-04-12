@@ -39,6 +39,7 @@
 #include "../../../utils/Option.hpp"
 #include "../../../async/Future.hpp"
 #include "../../../collections/collections.hpp"
+#include "../../../math/BigInt.h"
 
 namespace ledger {
     namespace core {
@@ -93,18 +94,18 @@ namespace ledger {
 
             struct Input {
                 uint32_t index;
-                optional<uint64_t> value;
-                optional<std::string> previousTxHash;
-                optional<uint32_t> previousTxOutputIndex;
-                optional<std::string> address;
-                optional<std::string> signatureScript;
-                optional<std::string> coinbase;
+                Option<BigInt> value;
+                Option<std::string> previousTxHash;
+                Option<uint32_t> previousTxOutputIndex;
+                Option<std::string> address;
+                Option<std::string> signatureScript;
+                Option<std::string> coinbase;
             };
 
             struct Output {
                 uint32_t index;
-                uint64_t value;
-                optional<std::string> address;
+                BigInt value;
+                Option<std::string> address;
                 std::string script;
             };
 
@@ -112,9 +113,10 @@ namespace ledger {
                 std::string hash;
                 std::chrono::system_clock::time_point receivedAt;
                 uint64_t lockTime;
-                optional<Block> block;
+                Option<Block> block;
                 std::vector<Input> inputs;
                 std::vector<Output> outputs;
+                Option<BigInt> fees;
             };
 
             struct TransactionsBulk {

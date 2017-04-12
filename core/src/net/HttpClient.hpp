@@ -81,7 +81,7 @@ namespace ledger {
                     h.attach(connection);
                     HttpUrlConnectionInputStream is(connection);
                     rapidjson::Reader reader;
-                    reader.Parse(is, h);
+                    reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
                     return h.build();
                 });
             }

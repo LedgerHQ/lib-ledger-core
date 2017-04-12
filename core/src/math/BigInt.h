@@ -88,6 +88,8 @@ namespace ledger {
             * @return
             */
             static BigInt fromDecimal(const std::string& str);
+
+            static BigInt fromString(const std::string& str);
         private:
             BigInt();
             BigInt(const std::string& str, int radix);

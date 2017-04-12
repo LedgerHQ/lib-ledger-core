@@ -35,7 +35,7 @@
 #include <ctime>
 
 std::chrono::system_clock::time_point ledger::core::DateParser::fromJSON(const std::string &str) {
-    std::regex ex("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)\\.[0-9]+([Z]?)");
+    std::regex ex("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
     std::cmatch what;
     if (regex_match(str.c_str(), what, ex)) {
         auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
