@@ -211,7 +211,7 @@ namespace ledger {
 
         std::ostream &DynamicObject::dump(std::ostream &ss, int depth) const {
             for (auto& item : _values.getContainer()) {
-                ss << (" "_S * depth) << '"' << item.first << "\" -> ";
+                ss << (" "_S * depth).str() << '"' << item.first << "\" -> ";
                 item.second.dump(ss, depth);
                 ss << std::endl;
             }

@@ -44,6 +44,7 @@ public enum ErrorCode {
     SSL_ERROR,
     /** API errors */
     API_ERROR,
+    TRANSACTION_NOT_FOUND,
     /** Format */
     INVALID_DATE_FORMAT,
     ;

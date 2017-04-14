@@ -1,9 +1,9 @@
 /*
  *
- * BlockParser
+ * OutputParser
  * ledger-core
  *
- * Created by Pierre Pollastri on 27/03/2017.
+ * Created by Pierre Pollastri on 13/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,91 +28,92 @@
  * SOFTWARE.
  *
  */
-#include "BlockParser.hpp"
-#include "../../../../utils/DateParser.hpp"
+#include "OutputParser.hpp"
 
 namespace ledger {
     namespace core {
 
-        bool BlockParser::Null() {
+        bool OutputParser::Null() {
             return true;
         }
 
-        bool BlockParser::Bool(bool b) {
+        bool OutputParser::Bool(bool b) {
             return true;
         }
 
-        bool BlockParser::Int(int i) {
+        bool OutputParser::Int(int i) {
             return true;
         }
 
-        bool BlockParser::Uint(unsigned i) {
+        bool OutputParser::Uint(unsigned int i) {
             return true;
         }
 
-        bool BlockParser::Int64(int64_t i) {
+        bool OutputParser::Int64(int64_t i) {
             return true;
         }
 
-        bool BlockParser::Uint64(uint64_t i) {
+        bool OutputParser::Uint64(uint64_t i) {
             return true;
         }
 
-        bool BlockParser::Double(double d) {
+        bool OutputParser::Double(double d) {
             return true;
         }
 
-        bool BlockParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            if (_lastKey == "height") {
-                std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
-                _block.height = value.toUint64();
+        bool OutputParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+            std::string number(str, length);
+            BigInt value = BigInt::fromString(number);
+            if (_lastKey == "output_index") {
+                _output.index = value.toUint64();
+            } else if (_lastKey == "value") {
+                _output.value = value;
             }
             return true;
         }
 
-        bool BlockParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool OutputParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             std::string value = std::string(str, length);
-            if (_lastKey == "hash") {
-                _block.hash = value;
-            } else if (_lastKey == "time") {
-                _block.time = DateParser::fromJSON(value);
+            if (_lastKey == "address") {
+                _output.address = Option<std::string>(value);
+            } else if (_lastKey == "script_hex") {
+                _output.script = value;
             }
             return true;
         }
 
-        bool BlockParser::StartObject() {
+        bool OutputParser::StartObject() {
             return true;
         }
 
-        bool BlockParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool OutputParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             _lastKey = std::string(str, length);
             return true;
         }
 
-        bool BlockParser::EndObject(rapidjson::SizeType memberCount) {
+        bool OutputParser::EndObject(rapidjson::SizeType memberCount) {
             return true;
         }
 
-        bool BlockParser::StartArray() {
+        bool OutputParser::StartArray() {
             return true;
         }
 
-        bool BlockParser::EndArray(rapidjson::SizeType elementCount) {
+        bool OutputParser::EndArray(rapidjson::SizeType elementCount) {
             return true;
         }
 
-        Either<Exception, BitcoinLikeBlockchainExplorer::Block> BlockParser::build() {
-            return Either<Exception, BitcoinLikeBlockchainExplorer::Block>(_block);
+        Either<Exception, BitcoinLikeBlockchainExplorer::Output> OutputParser::build() {
+            return Either<Exception, BitcoinLikeBlockchainExplorer::Output>(_output);
         }
 
-        void BlockParser::reset() {
-            _block = BitcoinLikeBlockchainExplorer::Block();
+        void OutputParser::reset() {
+            _output = BitcoinLikeBlockchainExplorer::Output();
         }
 
-        void BlockParser::attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
-            _statusText = connection->getStatusText();
+        void OutputParser::attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
             _statusCode = connection->getStatusCode();
+            _statusText = connection->getStatusText();
         }
     }
 }

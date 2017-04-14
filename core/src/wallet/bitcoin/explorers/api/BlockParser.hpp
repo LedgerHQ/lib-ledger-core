@@ -34,6 +34,7 @@
 #include <rapidjson/reader.h>
 #include "../../../../collections/collections.hpp"
 #include "../BitcoinLikeBlockchainExplorer.hpp"
+#include "../../../../net/HttpClient.hpp"
 
 namespace ledger {
     namespace core {
@@ -55,9 +56,13 @@ namespace ledger {
             bool EndArray(rapidjson::SizeType elementCount);
             Either<Exception, BitcoinLikeBlockchainExplorer::Block> build();
             void reset();
+            void attach(const std::shared_ptr<api::HttpUrlConnection>& connection);
 
         private:
             BitcoinLikeBlockchainExplorer::Block _block;
+            std::string _statusText;
+            uint32_t _statusCode;
+            std::string _lastKey;
         };
     }
 }

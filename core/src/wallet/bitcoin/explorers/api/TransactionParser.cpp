@@ -36,9 +36,9 @@
  if (currentObject == "block") {                                    \
     return _blockParser.method(__VA_ARGS__);                        \
  } else if (currentObject == "inputs") {                            \
-    return _blockParser.method(__VA_ARGS__);                        \
+    return _inputParser.method(__VA_ARGS__);                        \
  } else if (currentObject == "outputs") {                           \
-    return _blockParser.method(__VA_ARGS__);                        \
+    return _outputParser.method(__VA_ARGS__);                        \
  } else                                                             \
 
 namespace ledger {
@@ -47,6 +47,9 @@ namespace ledger {
         void TransactionParser::attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
             _statusText = connection->getStatusText();
             _statusCode = (uint32_t) connection->getStatusCode();
+            _blockParser.attach(connection);
+            _inputParser.attach(connection);
+            _outputParser.attach(connection);
         }
 
         Either<Exception, BitcoinLikeBlockchainExplorer::Transaction> TransactionParser::build() {
@@ -67,27 +70,51 @@ namespace ledger {
 
         bool TransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             _lastKey = std::string(str, length);
-            return true;
+            PROXY_PARSE(Key, str, length, copy) {
+                return true;
+            }
         }
 
         bool TransactionParser::StartObject() {
-            _hierarchy.push(_lastKey);
+            if (_arrayDepth == 0) {
+                _hierarchy.push(_lastKey);
+            }
             return true;
         }
 
         bool TransactionParser::EndObject(rapidjson::SizeType memberCount) {
-            _hierarchy.pop();
+            auto& currentObject = _hierarchy.top();
+
+            if (currentObject == "inputs") {
+                _transaction.inputs.push_back(_inputParser.build().getRight());
+            } else if (currentObject == "outputs") {
+                _transaction.outputs.push_back(_outputParser.build().getRight());
+            } else if (currentObject == "block") {
+                _transaction.block = Option<BitcoinLikeBlockchainExplorer::Block>(_blockParser.build().getRight());
+            }
+
+            if (_arrayDepth == 0) {
+                _hierarchy.pop();
+            }
             _blockParser.reset();
+            _inputParser.reset();
+            _outputParser.reset();
             return true;
         }
 
         bool TransactionParser::StartArray() {
-            StartObject();
+            if (_arrayDepth == 0) {
+                _hierarchy.push(_lastKey);
+            }
+            _arrayDepth += 1;
             return true;
         }
 
         bool TransactionParser::EndArray(rapidjson::SizeType elementCount) {
-            EndObject(elementCount);
+            _arrayDepth -= 1;
+            if (_arrayDepth == 0) {
+                _hierarchy.pop();
+            }
             return true;
         }
 
@@ -150,6 +177,10 @@ namespace ledger {
                 }
                 return true;
             }
+        }
+
+        TransactionParser::TransactionParser() {
+            _arrayDepth = 0;
         }
 
     }

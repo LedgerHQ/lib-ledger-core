@@ -91,10 +91,10 @@ namespace ledger {
 
             static BigInt fromString(const std::string& str);
         private:
-            BigInt();
             BigInt(const std::string& str, int radix);
 
         public:
+            BigInt();
             BigInt(const BigInt& cpy);
 
             /**

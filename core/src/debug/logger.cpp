@@ -46,6 +46,7 @@ namespace ledger {
             auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
             auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
             auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
+            spdlog::drop(name);
             logger->set_level(spdlog::level::trace);
             logger->flush_on(spdlog::level::trace);
             logger->set_pattern("%Y-%m-%dT%XZ%z %L: %v");

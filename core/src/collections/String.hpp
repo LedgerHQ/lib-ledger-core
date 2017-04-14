@@ -89,6 +89,8 @@ namespace ledger {
                 return _backend;
             };
 
+            //friend std::ostream &operator<<(std::ostream &os, const CharSequence<C, Backend> &d);
+
         private:
             Backend _backend;
         };
@@ -98,7 +100,5 @@ namespace ledger {
         String operator "" _S(const char* str, size_t size);
     }
 }
-
-std::ostream& operator<<(std::ostream& ss, const ledger::core::String& str);
 
 #endif //LEDGER_CORE_STRING_HPP

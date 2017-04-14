@@ -33,7 +33,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include "../../../utils/hex.h"
-#include "src/wallet/bitcoin/explorers/api/TransactionParser.hpp"
+#include "src/wallet/bitcoin/explorers/api/TransactionsParser.hpp"
 #include "api/BlockParser.hpp"
 
 namespace ledger {
@@ -98,12 +98,14 @@ namespace ledger {
             Promise<BitcoinLikeBlockchainExplorer::Transaction> promise;
             return _http
                 ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash.str()))
-                .json<BitcoinLikeBlockchainExplorer::Transaction, Exception>(TransactionParser())
-            .map<BitcoinLikeBlockchainExplorer::Transaction>(_executionContext, [] (const Either<Exception, BitcoinLikeBlockchainExplorer::Transaction>& result) {
+                .json<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, Exception>(TransactionsParser())
+            .map<BitcoinLikeBlockchainExplorer::Transaction>(_executionContext, [transactionHash] (const Either<Exception, std::vector<BitcoinLikeBlockchainExplorer::Transaction>>& result) {
                 if (result.isLeft()) {
                     throw result.getLeft();
+                } else if (result.getRight().size() == 0) {
+                    throw make_exception(api::ErrorCode::RAW_TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash.str());
                 } else {
-                    BitcoinLikeBlockchainExplorer::Transaction transaction = result.getRight();
+                    BitcoinLikeBlockchainExplorer::Transaction transaction = result.getRight()[0];
                     return transaction;
                 }
             });

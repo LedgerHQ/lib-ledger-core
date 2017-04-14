@@ -194,12 +194,12 @@ namespace ledger {
                 case api::DynamicType::ARRAY:
                     ss << fmt::format("[{}] (\n", api::to_string(type));
                     array->dump(ss, depth + 1);
-                    ss << (" "_S * depth) << ")";
+                    ss << (" "_S * depth).str() << ")";
                     return ss;
                 case api::DynamicType::OBJECT:
                     ss << fmt::format("[{}] (", api::to_string(type)) << std::endl;
                     object->dump(ss, depth + 1);
-                    ss << (" "_S * depth) << ")";
+                    ss << (" "_S * depth).str() << ")";
                     return ss;
                 case api::DynamicType::BOOLEAN:
                     return ss << fmt::format("[{}] {}", api::to_string(type), boolean);

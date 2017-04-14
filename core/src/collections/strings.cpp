@@ -48,7 +48,3 @@ namespace ledger {
 
     }
 }
-
-std::ostream& operator<<(std::ostream& ss, const ledger::core::String& str) {
-   return ss << str.str();
-}

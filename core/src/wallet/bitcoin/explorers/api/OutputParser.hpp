@@ -1,9 +1,9 @@
 /*
  *
- * TransactionParser
+ * OutputParser
  * ledger-core
  *
- * Created by Pierre Pollastri on 27/03/2017.
+ * Created by Pierre Pollastri on 13/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,25 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_TRANSACTIONPARSER_HPP
-#define LEDGER_CORE_TRANSACTIONPARSER_HPP
+#ifndef LEDGER_CORE_OUTPUTPARSER_HPP
+#define LEDGER_CORE_OUTPUTPARSER_HPP
 
-#include "../../../../collections/collections.hpp"
-#include <cstdio>
-#include <cstdint>
+#include <rapidjson/reader.h>
 #include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
-#include "BlockParser.hpp"
-#include <rapidjson/reader.h>
-#include <stack>
-#include "InputParser.hpp"
-#include "OutputParser.hpp"
 
 namespace ledger {
     namespace core {
-        class TransactionParser {
+        class OutputParser {
         public:
-            TransactionParser();
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -61,26 +53,19 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            Either<Exception, BitcoinLikeBlockchainExplorer::Transaction> build();
+            Either<Exception, BitcoinLikeBlockchainExplorer::Output> build();
+            void reset();
             void attach(const std::shared_ptr<api::HttpUrlConnection>& connection);
-
-        private:
-            Exception buildException();
-            BitcoinLikeBlockchainExplorer::Transaction buildTransaction();
 
         private:
             std::string _statusText;
             uint32_t _statusCode;
             std::string _lastKey;
-            BitcoinLikeBlockchainExplorer::Transaction _transaction;
-            std::stack<std::string> _hierarchy;
-            uint32_t _arrayDepth;
-            BlockParser _blockParser;
-            InputParser _inputParser;
-            OutputParser _outputParser;
+            BitcoinLikeBlockchainExplorer::Output _output;
+
         };
     }
 }
 
 
-#endif //LEDGER_CORE_TRANSACTIONPARSER_HPP
+#endif //LEDGER_CORE_OUTPUTPARSER_HPP

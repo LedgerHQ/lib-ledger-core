@@ -45,6 +45,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeSslError,
     /** API errors */
     LGErrorCodeApiError,
+    LGErrorCodeTransactionNotFound,
     /** Format */
     LGErrorCodeInvalidDateFormat,
 };

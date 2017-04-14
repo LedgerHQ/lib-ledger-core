@@ -224,7 +224,7 @@ namespace ledger {
         std::ostream &DynamicArray::dump(std::ostream &ss, int depth) const {
             auto index = 0;
             for (auto& item : _values.getContainer()) {
-                ss << (" "_S * depth) << index << " -> ";
+                ss << (" "_S * depth).str() << index << " -> ";
                 item.dump(ss, depth);
                 ss << std::endl;
                 index += 1;

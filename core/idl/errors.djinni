@@ -49,6 +49,7 @@ ErrorCode = enum {
 
     # API errors
     api_error;
+    transaction_not_found;
 
     # Format
     invalid_date_format;
