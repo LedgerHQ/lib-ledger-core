@@ -89,7 +89,7 @@ bool ledger::core::TransactionsParser::EndObject(rapidjson::SizeType memberCount
         _objectDepth -= 1;
         auto result =  _transactionParser.EndObject(memberCount);
         if (_arrayDepth == 1 && _objectDepth == 0)
-            _transactions.push_back(_transactionParser.build().getRight());
+            _transactions.push_back(_transactionParser.build());
         return result;
     } else {
         return true;
@@ -112,16 +112,11 @@ bool ledger::core::TransactionsParser::EndArray(rapidjson::SizeType elementCount
     return true;
 }
 
-ledger::core::Either<ledger::core::Exception, std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction>>
+std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction>
 ledger::core::TransactionsParser::build() {
-    return ledger::core::Either<ledger::core::Exception, std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction>>(_transactions);
+    return _transactions;
 }
 
-void ledger::core::TransactionsParser::attach(const std::shared_ptr<ledger::core::api::HttpUrlConnection> &connection) {
-    _statusCode = connection->getStatusCode();
-    _statusText = connection->getStatusText();
-    _transactionParser.attach(connection);
-}
 
 void ledger::core::TransactionsParser::reset() {
     _transactions = std::vector<BitcoinLikeBlockchainExplorer::Transaction>();

@@ -33,8 +33,10 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include "../../../utils/hex.h"
-#include "src/wallet/bitcoin/explorers/api/TransactionsParser.hpp"
+#include "api/TransactionsBulkParser.hpp"
+#include "api/TransactionParser.hpp"
 #include "api/BlockParser.hpp"
+#include "api/LedgerApiParser.hpp"
 
 namespace ledger {
     namespace core {
@@ -84,13 +86,46 @@ namespace ledger {
         LedgerApiBitcoinLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                                 Option<std::string> fromBlockHash,
                                                                 Option<void *> session) {
-            Promise<BitcoinLikeBlockchainExplorer::TransactionsBulk> promise;
-            return promise.getFuture();
+            auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
+            std::string params;
+            std::unordered_map<std::string, std::string> headers;
+
+            if (session.isEmpty()) {
+                params = "?noToken=true";
+            } else {
+                headers["X-LedgerWallet-SyncToken"] = *((std::string *)session.getValue());
+            }
+            if (!fromBlockHash.isEmpty()) {
+                if (params.size() > 0) {
+                    params = params + "&";
+                } else {
+                    params = params + "?";
+                }
+                params = params + "blockHash=" + fromBlockHash.getValue();
+            }
+            return _http
+            ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
+            .json<BitcoinLikeBlockchainExplorer::TransactionsBulk, Exception>(LedgerApiParser<BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsBulkParser>())
+            .map<TransactionsBulk>(_executionContext, [] (const Either<Exception, BitcoinLikeBlockchainExplorer::TransactionsBulk>& result) {
+                if (result.isLeft()) {
+                    throw result.getLeft();
+                } else {
+                    return result.getRight();
+                }
+            });
         }
 
         Future<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() {
-            Promise<BitcoinLikeBlockchainExplorer::Block> promise;
-            return promise.getFuture();
+            return _http
+            ->GET(fmt::format("/blockchain/v2/{}/blocks/current", _parameters.Identifier))
+            .json<BitcoinLikeBlockchainExplorer::Block, Exception>(LedgerApiParser<BitcoinLikeBlockchainExplorer::Block, BlockParser>())
+            .map<BitcoinLikeBlockchainExplorer::Block>(_executionContext, [] (const Either<Exception, BitcoinLikeBlockchainExplorer::Block>& result) {
+                if (result.isLeft()) {
+                    throw result.getLeft();
+                } else {
+                    return result.getRight();
+                }
+            });
         }
 
         Future<BitcoinLikeBlockchainExplorer::Transaction>
@@ -98,12 +133,12 @@ namespace ledger {
             Promise<BitcoinLikeBlockchainExplorer::Transaction> promise;
             return _http
                 ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash.str()))
-                .json<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, Exception>(TransactionsParser())
+                .json<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, Exception>(LedgerApiParser<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, TransactionsParser>())
             .map<BitcoinLikeBlockchainExplorer::Transaction>(_executionContext, [transactionHash] (const Either<Exception, std::vector<BitcoinLikeBlockchainExplorer::Transaction>>& result) {
                 if (result.isLeft()) {
                     throw result.getLeft();
                 } else if (result.getRight().size() == 0) {
-                    throw make_exception(api::ErrorCode::RAW_TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash.str());
+                    throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash.str());
                 } else {
                     BitcoinLikeBlockchainExplorer::Transaction transaction = result.getRight()[0];
                     return transaction;

@@ -32,7 +32,7 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <fstream>
-#include <ledger/core/io/filesystem.hpp>
+#include <src/io/filesystem.hpp>
 
 std::string NativePathResolver::resolveDatabasePath(const std::string &path) {
     std::string p = path;

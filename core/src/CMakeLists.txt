@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 2.8.11)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 list(APPEND ledger-core-sources
         bytes/BytesReader.cpp
@@ -119,7 +122,7 @@ add_library(
         traits/shared_ptr_traits.hpp collections/collections.hpp
         collections/MapLike.hpp utils/optional.cpp collections/DynamicObject.cpp collections/DynamicObject.hpp
         collections/DynamicArray.cpp collections/DynamicArray.hpp collections/DynamicValue.cpp
-        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp net/URI.cpp net/URI.hpp collections/Bytes.hpp wallet/bitcoin/explorers/api/TransactionParser.cpp wallet/bitcoin/explorers/api/TransactionParser.hpp wallet/bitcoin/explorers/api/BlockParser.cpp wallet/bitcoin/explorers/api/BlockParser.hpp utils/DateParser.cpp utils/DateParser.hpp wallet/bitcoin/explorers/api/InputParser.cpp wallet/bitcoin/explorers/api/InputParser.hpp wallet/bitcoin/explorers/api/OutputParser.cpp wallet/bitcoin/explorers/api/OutputParser.hpp wallet/bitcoin/explorers/api/TransactionsParser.cpp wallet/bitcoin/explorers/api/TransactionsParser.hpp)
+        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp net/URI.cpp net/URI.hpp collections/Bytes.hpp wallet/bitcoin/explorers/api/TransactionParser.cpp wallet/bitcoin/explorers/api/TransactionParser.hpp wallet/bitcoin/explorers/api/BlockParser.cpp wallet/bitcoin/explorers/api/BlockParser.hpp utils/DateParser.cpp utils/DateParser.hpp wallet/bitcoin/explorers/api/InputParser.cpp wallet/bitcoin/explorers/api/InputParser.hpp wallet/bitcoin/explorers/api/OutputParser.cpp wallet/bitcoin/explorers/api/OutputParser.hpp wallet/bitcoin/explorers/api/TransactionsParser.cpp wallet/bitcoin/explorers/api/TransactionsParser.hpp wallet/bitcoin/explorers/api/TransactionsBulkParser.cpp wallet/bitcoin/explorers/api/TransactionsBulkParser.hpp wallet/bitcoin/explorers/api/LedgerApiParser.hpp)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

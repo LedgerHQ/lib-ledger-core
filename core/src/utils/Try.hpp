@@ -88,6 +88,12 @@ namespace ledger {
                 return Option<T>();
             }
 
+            Option<Exception> exception() const {
+                if (isFailure())
+                    return Option<Exception>(getFailure());
+                return Option<Exception>();
+            }
+
 //            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
 //                if (d.isSuccess()) {
 //                    os << "Success(" << d.getFailure() << ")";

@@ -31,6 +31,7 @@
 #include "strings.hpp"
 #include <boost/algorithm/string.hpp>
 #include "String.hpp"
+#include "String.hpp"
 
 namespace ledger {
     namespace core {
@@ -40,6 +41,16 @@ namespace ledger {
                 return boost::starts_with(str, prefix);
             }
 
+            std::function<std::string (const std::string&, const Option<std::string>&)> mkString(const std::string& separator) {
+                return [separator] (const std::string& item, const Option<std::string>& carry) -> std::string {
+                    if (carry.isEmpty()) {
+                        return item;
+                    } else {
+                        return carry.getValue() + separator + item;
+                    }
+                };
+            }
+
         }
 
         String operator "" _S(const char* str, size_t size) {
@@ -47,4 +58,9 @@ namespace ledger {
         }
 
     }
+}
+
+std::ostream &operator<<(std::ostream & os, const ledger::core::String& str) {
+    os << str.str();
+    return os;
 }

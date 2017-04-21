@@ -44,27 +44,7 @@
 namespace ledger {
     namespace core {
 
-        void TransactionParser::attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
-            _statusText = connection->getStatusText();
-            _statusCode = (uint32_t) connection->getStatusCode();
-            _blockParser.attach(connection);
-            _inputParser.attach(connection);
-            _outputParser.attach(connection);
-        }
-
-        Either<Exception, BitcoinLikeBlockchainExplorer::Transaction> TransactionParser::build() {
-            if (_statusCode == 200) {
-                return Either<Exception, BitcoinLikeBlockchainExplorer::Transaction>(buildTransaction());
-            } else {
-                return Either<Exception, BitcoinLikeBlockchainExplorer::Transaction>(buildException());
-            }
-        }
-
-        Exception TransactionParser::buildException() {
-            return Exception(api::ErrorCode::API_ERROR, _statusText);
-        }
-
-        BitcoinLikeBlockchainExplorer::Transaction TransactionParser::buildTransaction() {
+        BitcoinLikeBlockchainExplorer::Transaction TransactionParser::build() {
             return _transaction;
         }
 
@@ -86,11 +66,11 @@ namespace ledger {
             auto& currentObject = _hierarchy.top();
 
             if (currentObject == "inputs") {
-                _transaction.inputs.push_back(_inputParser.build().getRight());
+                _transaction.inputs.push_back(_inputParser.build());
             } else if (currentObject == "outputs") {
-                _transaction.outputs.push_back(_outputParser.build().getRight());
+                _transaction.outputs.push_back(_outputParser.build());
             } else if (currentObject == "block") {
-                _transaction.block = Option<BitcoinLikeBlockchainExplorer::Block>(_blockParser.build().getRight());
+                _transaction.block = Option<BitcoinLikeBlockchainExplorer::Block>(_blockParser.build());
             }
 
             if (_arrayDepth == 0) {

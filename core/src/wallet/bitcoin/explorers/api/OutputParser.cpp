@@ -65,7 +65,7 @@ namespace ledger {
             std::string number(str, length);
             BigInt value = BigInt::fromString(number);
             if (_lastKey == "output_index") {
-                _output.index = value.toUint64();
+                _output.index = value.toUnsignedInt();
             } else if (_lastKey == "value") {
                 _output.value = value;
             }
@@ -103,17 +103,12 @@ namespace ledger {
             return true;
         }
 
-        Either<Exception, BitcoinLikeBlockchainExplorer::Output> OutputParser::build() {
-            return Either<Exception, BitcoinLikeBlockchainExplorer::Output>(_output);
+        BitcoinLikeBlockchainExplorer::Output OutputParser::build() {
+            return _output;
         }
 
         void OutputParser::reset() {
             _output = BitcoinLikeBlockchainExplorer::Output();
-        }
-
-        void OutputParser::attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
-            _statusCode = connection->getStatusCode();
-            _statusText = connection->getStatusText();
         }
     }
 }

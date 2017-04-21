@@ -53,8 +53,8 @@ namespace ledger {
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
 
             Future<TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash,
-                            Option<void *> session) override;
+            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
+                            Option<void *> session = Option<void *>()) override;
 
             Future<Block> getCurrentBlock() override;
 

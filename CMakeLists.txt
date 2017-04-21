@@ -20,6 +20,7 @@ set(CMAKE_MACOSX_RPATH 1)
 
 add_subdirectory(doc)
 add_subdirectory(core)
+add_subdirectory(qt-host)
 
 enable_testing()
 

@@ -30,14 +30,17 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/async/Future.hpp>
-#include <NativeThreadDispatcher.hpp>
+#include <src/async/Future.hpp>
 #include <iostream>
+#include <async/QtThreadDispatcher.hpp>
+
+#undef foreach
 
 using namespace ledger::core;
+using namespace ledger::qt;
 
 TEST(Future, OnCompleteSuccess) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -52,7 +55,7 @@ TEST(Future, OnCompleteSuccess) {
 }
 
 TEST(Future, OnCompleteFailure) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
        throw std::out_of_range("Not good");
@@ -67,7 +70,7 @@ TEST(Future, OnCompleteFailure) {
 }
 
 TEST(Future, Map) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -77,12 +80,11 @@ TEST(Future, Map) {
         EXPECT_EQ("Hello world from another thread", value);
         dispatcher->stop();
     });
-
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapToInt) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "42";
@@ -97,7 +99,7 @@ TEST(Future, MapToInt) {
 }
 
 TEST(Future, FlatMap) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -113,7 +115,7 @@ TEST(Future, FlatMap) {
 }
 
 TEST(Future, MapChain) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -131,7 +133,7 @@ TEST(Future, MapChain) {
 }
 
 TEST(Future, MapChainRecover) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -151,7 +153,7 @@ TEST(Future, MapChainRecover) {
 }
 
 TEST(Future, MapChainRecoverWith) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -173,7 +175,7 @@ TEST(Future, MapChainRecoverWith) {
 }
 
 TEST(Future, MapChainRecoverWithFail) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -195,7 +197,7 @@ TEST(Future, MapChainRecoverWithFail) {
 }
 
 TEST(Future, FailureProjection) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         throw Exception(api::ErrorCode::ILLEGAL_STATE, "We shouldn't do that");
@@ -207,7 +209,7 @@ TEST(Future, FailureProjection) {
 }
 
 TEST(Future, MapChainFallback) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -225,7 +227,7 @@ TEST(Future, MapChainFallback) {
 }
 
 TEST(Future, MapChainFallbackWith) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -246,7 +248,7 @@ TEST(Future, MapChainFallbackWith) {
 }
 
 TEST(Future, Filter) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -262,7 +264,7 @@ TEST(Future, Filter) {
 }
 
 TEST(Future, FilterFail) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -281,7 +283,7 @@ TEST(Future, ToSuccessOnlyCallback) {
 
     struct SuccessOnlyCallback {
 
-        SuccessOnlyCallback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+        SuccessOnlyCallback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -290,10 +292,10 @@ TEST(Future, ToSuccessOnlyCallback) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -305,7 +307,7 @@ TEST(Future, ToCallbackSuccess) {
 
     struct Callback {
 
-        Callback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -316,10 +318,10 @@ TEST(Future, ToCallbackSuccess) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -331,7 +333,7 @@ TEST(Future, ToCallbackFailure) {
 
     struct Callback {
 
-        Callback(std::shared_ptr<NativeThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -342,10 +344,10 @@ TEST(Future, ToCallbackFailure) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<NativeThreadDispatcher> dispatcher;
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () -> int {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Toto");

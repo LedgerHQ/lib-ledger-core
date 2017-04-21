@@ -32,6 +32,8 @@
 #define LEDGER_CORE_STRINGS_HPP
 
 #include <string>
+#include <functional>
+#include "../utils/Option.hpp"
 
 namespace ledger {
     namespace core {
@@ -39,6 +41,7 @@ namespace ledger {
 
             bool startsWith(const std::string& str, const std::string& prefix);
 
+            std::function<std::string (const std::string&, const Option<std::string>&)> mkString(const std::string& separator);
         }
     }
 }

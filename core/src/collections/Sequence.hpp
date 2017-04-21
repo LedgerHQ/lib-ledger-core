@@ -82,6 +82,15 @@ namespace ledger {
                 return _container;
             }
 
+            template<typename Result>
+            Option<Result> join(std::function<Result (const T&, const Option<Result>&)> f) const {
+                Option<T> carry;
+                for (auto& item : _container) {
+                   carry = Option<T>(f(item, carry));
+                }
+                return carry;
+            }
+
         private:
             Container _container;
         };

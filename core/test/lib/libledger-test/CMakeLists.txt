@@ -1,4 +1,7 @@
 
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 add_library(ledger-test STATIC
         EventLooper.cpp EventLooper.hpp EventThread.cpp EventThread.hpp
         NativeThreadDispatcher.cpp NativeThreadDispatcher.hpp
@@ -13,4 +16,4 @@ include_directories(../boost)
 target_include_directories(ledger-test PUBLIC ../../../lib/fmt-3.0.0)
 target_include_directories(ledger-test PUBLIC ../../../lib/cereal/)
 target_include_directories(ledger-test PUBLIC ../asio/include/)
-
+target_include_directories(ledger-test PUBLIC ../../../../core)

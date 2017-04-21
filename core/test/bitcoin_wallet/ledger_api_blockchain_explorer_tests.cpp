@@ -30,19 +30,21 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
-#include <AsioHttpClient.hpp>
-#include <ledger/core/wallet/bitcoin/networks.hpp>
-#include <NativeThreadDispatcher.hpp>
+#include <src/wallet/bitcoin/networks.hpp>
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>
-#include <MongooseHttpClient.hpp>
+
+#include <src/wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <net/QtHttpClient.hpp>
+#include <async/QtThreadDispatcher.hpp>
+
 
 using namespace ledger::core;
+using namespace ledger::qt;
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -67,8 +69,8 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
 }
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetRawTransaction) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -94,8 +96,8 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetRawTransaction) {
 }
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -139,8 +141,8 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
 }
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -177,8 +179,8 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
 }
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -212,6 +214,71 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
             EXPECT_EQ(tx.outputs[1].address.getValue(), "1pCL4HJ3wbNXKiDde8eNmu9uMs1Tkd9hD");
         }
         dispatcher->stop();
+    });
+
+    dispatcher->waitUntilStopped();
+    resolver->clean();
+}
+
+TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetCurrentBlock) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto logger = ledger::core::logger::create("test_logs",
+                                               std::experimental::optional<std::string>(),
+                                               dispatcher->getSerialExecutionContext("logger"),
+                                               resolver,
+                                               logPrinter,
+                                               (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
+    );
+    http->setLogger(logger);
+
+    explorer->getCurrentBlock().onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Block>& result) {
+        if (result.isFailure()) {
+            std::cerr << result.getFailure().getMessage() << std::endl;
+            dispatcher->stop();
+            FAIL();
+        } else {
+            EXPECT_GT(result.getValue().height, 462400);
+            dispatcher->stop();
+        }
+    });
+
+    dispatcher->waitUntilStopped();
+    resolver->clean();
+}
+
+TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactions) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>();
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto logger = ledger::core::logger::create("test_logs",
+                                               std::experimental::optional<std::string>(),
+                                               dispatcher->getSerialExecutionContext("logger"),
+                                               resolver,
+                                               logPrinter,
+                                               (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
+    );
+    http->setLogger(logger);
+
+    explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP", "1DxPxrQtUXVcebgNYETn163RQaEKxAvxqP"}, Option<std::string>(), Option<void *>()).onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::TransactionsBulk>& result) {
+        if (result.isFailure()) {
+            std::cerr << result.getFailure().getMessage() << std::endl;
+            dispatcher->stop();
+            FAIL();
+        } else {
+            EXPECT_TRUE(result.getValue().hasNext);
+            EXPECT_TRUE(result.getValue().transactions.size() > 0);
+        }
+       dispatcher->stop();
     });
 
     dispatcher->waitUntilStopped();

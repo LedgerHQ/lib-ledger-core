@@ -43,6 +43,10 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnableToConnectToHost,
     LGErrorCodeHttpError,
     LGErrorCodeSslError,
+    LGErrorCodeTooManyRedirect,
+    LGErrorCodeAuthenticationRequired,
+    LGErrorCodeHttpTimeout,
+    LGErrorCodeProxyError,
     /** API errors */
     LGErrorCodeApiError,
     LGErrorCodeTransactionNotFound,

@@ -30,10 +30,10 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+#include <src/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
-#include <ledger/core/wallet/bitcoin/networks.hpp>
+#include <src/wallet/bitcoin/networks.hpp>
 
 using namespace ledger::core;
 

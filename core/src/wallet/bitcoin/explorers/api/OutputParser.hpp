@@ -53,13 +53,10 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            Either<Exception, BitcoinLikeBlockchainExplorer::Output> build();
+            BitcoinLikeBlockchainExplorer::Output build();
             void reset();
-            void attach(const std::shared_ptr<api::HttpUrlConnection>& connection);
 
         private:
-            std::string _statusText;
-            uint32_t _statusCode;
             std::string _lastKey;
             BitcoinLikeBlockchainExplorer::Output _output;
 

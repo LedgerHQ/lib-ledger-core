@@ -55,7 +55,7 @@ namespace ledger {
             };
 
             struct Input {
-                uint32_t index;
+                uint64_t index;
                 Option<BigInt> value;
                 Option<std::string> previousTxHash;
                 Option<uint32_t> previousTxOutputIndex;
@@ -67,7 +67,7 @@ namespace ledger {
             };
 
             struct Output {
-                uint32_t index;
+                uint64_t index;
                 BigInt value;
                 Option<std::string> address;
                 std::string script;

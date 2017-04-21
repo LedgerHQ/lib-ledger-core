@@ -34,7 +34,6 @@
 namespace ledger {
     namespace core {
 
-
         bool InputParser::Null() {
             return true;
         }
@@ -111,17 +110,12 @@ namespace ledger {
             return true;
         }
 
-        Either<Exception, BitcoinLikeBlockchainExplorer::Input> InputParser::build() {
-            return Either<Exception, BitcoinLikeBlockchainExplorer::Input>(_input);
+        BitcoinLikeBlockchainExplorer::Input InputParser::build() {
+            return _input;
         }
 
         void InputParser::reset() {
             _input = BitcoinLikeBlockchainExplorer::Input();
-        }
-
-        void InputParser::attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
-            _statusText = connection->getStatusText();
-            _statusCode = connection->getStatusCode();
         }
     }
 }

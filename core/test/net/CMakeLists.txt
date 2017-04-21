@@ -13,4 +13,7 @@ add_executable(ledger-core-net-tests main.cpp http_client_tests.cpp)
 target_link_libraries(ledger-core-net-tests gtest gtest_main)
 target_link_libraries(ledger-core-net-tests ledger-core)
 target_link_libraries(ledger-core-net-tests ledger-test)
+target_link_libraries(ledger-core-net-tests ledger-qt-host)
+
+target_include_directories(ledger-core-net-tests PUBLIC ../../../qt-host)
 add_test (NAME ledger-core-net-tests COMMAND ledger-core-net-tests)

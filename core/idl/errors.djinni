@@ -46,6 +46,10 @@ ErrorCode = enum {
     unable_to_connect_to_host;
     http_error;
     ssl_error;
+    too_many_redirect;
+    authentication_required;
+    http_timeout;
+    proxy_error;
 
     # API errors
     api_error;

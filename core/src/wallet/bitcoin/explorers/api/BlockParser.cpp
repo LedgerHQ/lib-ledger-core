@@ -102,17 +102,12 @@ namespace ledger {
             return true;
         }
 
-        Either<Exception, BitcoinLikeBlockchainExplorer::Block> BlockParser::build() {
-            return Either<Exception, BitcoinLikeBlockchainExplorer::Block>(_block);
+        BitcoinLikeBlockchainExplorer::Block BlockParser::build() {
+            return _block;
         }
 
         void BlockParser::reset() {
             _block = BitcoinLikeBlockchainExplorer::Block();
-        }
-
-        void BlockParser::attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
-            _statusText = connection->getStatusText();
-            _statusCode = connection->getStatusCode();
         }
     }
 }

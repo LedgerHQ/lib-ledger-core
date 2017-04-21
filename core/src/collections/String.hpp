@@ -101,4 +101,6 @@ namespace ledger {
     }
 }
 
+std::ostream &operator<<(std::ostream & os, const ledger::core::String& str);
+
 #endif //LEDGER_CORE_STRING_HPP
