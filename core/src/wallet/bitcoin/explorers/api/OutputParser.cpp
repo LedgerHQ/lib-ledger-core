@@ -65,9 +65,9 @@ namespace ledger {
             std::string number(str, length);
             BigInt value = BigInt::fromString(number);
             if (_lastKey == "output_index") {
-                _output.index = value.toUnsignedInt();
+                _output->index = value.toUnsignedInt();
             } else if (_lastKey == "value") {
-                _output.value = value;
+                _output->value = value;
             }
             return true;
         }
@@ -75,9 +75,9 @@ namespace ledger {
         bool OutputParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             std::string value = std::string(str, length);
             if (_lastKey == "address") {
-                _output.address = Option<std::string>(value);
+                _output->address = Option<std::string>(value);
             } else if (_lastKey == "script_hex") {
-                _output.script = value;
+                _output->script = value;
             }
             return true;
         }
@@ -87,7 +87,6 @@ namespace ledger {
         }
 
         bool OutputParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
             return true;
         }
 
@@ -103,12 +102,9 @@ namespace ledger {
             return true;
         }
 
-        BitcoinLikeBlockchainExplorer::Output OutputParser::build() {
-            return _output;
+        void OutputParser::init(BitcoinLikeBlockchainExplorer::Output *output) {
+            _output = output;
         }
 
-        void OutputParser::reset() {
-            _output = BitcoinLikeBlockchainExplorer::Output();
-        }
     }
 }

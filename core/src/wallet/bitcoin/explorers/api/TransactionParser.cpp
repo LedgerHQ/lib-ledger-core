@@ -44,10 +44,6 @@
 namespace ledger {
     namespace core {
 
-        BitcoinLikeBlockchainExplorer::Transaction TransactionParser::build() {
-            return _transaction;
-        }
-
         bool TransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             _lastKey = std::string(str, length);
             PROXY_PARSE(Key, str, length, copy) {
@@ -59,26 +55,32 @@ namespace ledger {
             if (_arrayDepth == 0) {
                 _hierarchy.push(_lastKey);
             }
+
+            auto& currentObject = _hierarchy.top();
+
+            if (currentObject == "inputs") {
+                BitcoinLikeBlockchainExplorer::Input input;
+                _transaction->inputs.push_back(input);
+                _inputParser.init(&_transaction->inputs.back());
+            } else if (currentObject == "outputs") {
+                BitcoinLikeBlockchainExplorer::Output output;
+                _transaction->outputs.push_back(output);
+                _outputParser.init(&_transaction->outputs.back());
+            } else if (currentObject == "block") {
+                BitcoinLikeBlockchainExplorer::Block block;
+                _transaction->block = Option<BitcoinLikeBlockchainExplorer::Block>(block);
+                _blockParser.init(&_transaction->block.getValue());
+            }
+
             return true;
         }
 
         bool TransactionParser::EndObject(rapidjson::SizeType memberCount) {
             auto& currentObject = _hierarchy.top();
 
-            if (currentObject == "inputs") {
-                _transaction.inputs.push_back(_inputParser.build());
-            } else if (currentObject == "outputs") {
-                _transaction.outputs.push_back(_outputParser.build());
-            } else if (currentObject == "block") {
-                _transaction.block = Option<BitcoinLikeBlockchainExplorer::Block>(_blockParser.build());
-            }
-
             if (_arrayDepth == 0) {
                 _hierarchy.pop();
             }
-            _blockParser.reset();
-            _inputParser.reset();
-            _outputParser.reset();
             return true;
         }
 
@@ -139,9 +141,9 @@ namespace ledger {
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
                 if (_lastKey == "lock_time") {
-                    _transaction.lockTime = value.toUint64();
+                    _transaction->lockTime = value.toUint64();
                 } else if (_lastKey == "fees") {
-                    _transaction.fees = Option<BigInt>(value);
+                    _transaction->fees = Option<BigInt>(value);
                 }
                 return true;
             }
@@ -151,16 +153,22 @@ namespace ledger {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
                 if (_lastKey == "hash") {
-                    _transaction.hash = value;
+                    _transaction->hash = value;
                 } else if (_lastKey == "received_at") {
-                    _transaction.receivedAt = DateParser::fromJSON(value);
+                    _transaction->receivedAt = DateParser::fromJSON(value);
                 }
                 return true;
             }
         }
 
-        TransactionParser::TransactionParser() {
+        TransactionParser::TransactionParser(std::string& lastKey) :
+            _lastKey(lastKey), _blockParser(lastKey), _inputParser(lastKey), _outputParser(lastKey)
+        {
             _arrayDepth = 0;
+        }
+
+        void TransactionParser::init(BitcoinLikeBlockchainExplorer::Transaction *transaction) {
+            _transaction = transaction;
         }
 
     }

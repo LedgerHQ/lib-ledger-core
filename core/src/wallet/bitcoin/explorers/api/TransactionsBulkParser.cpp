@@ -46,7 +46,7 @@ namespace ledger {
 
         bool TransactionsBulkParser::Bool(bool b) {
             if (_lastKey == "truncated" && _depth == 0) {
-                _bulk.hasNext = b;
+                _bulk->hasNext = b;
             }
             PROXY_PARSE(Bool, b)
         }
@@ -71,8 +71,7 @@ namespace ledger {
             PROXY_PARSE(Double, d)
         }
 
-        bool
-        TransactionsBulkParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool TransactionsBulkParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy)
         }
 
@@ -85,7 +84,6 @@ namespace ledger {
         }
 
         bool TransactionsBulkParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
             PROXY_PARSE(Key, str, length, copy)
         }
 
@@ -94,9 +92,14 @@ namespace ledger {
         }
 
         bool TransactionsBulkParser::StartArray() {
-            if (_depth == 1 || _lastKey == "txs") {
+            if (_depth >= 1 || _lastKey == "txs") {
                 _depth += 1;
             }
+
+            if (_depth == 1) {
+                _transactionsParser.init(&_bulk->transactions);
+            }
+
             PROXY_PARSE(StartArray)
         }
 
@@ -104,12 +107,16 @@ namespace ledger {
             if (_depth > 0) {
                 _depth -= 1;
             }
+
             PROXY_PARSE(EndArray, elementCount)
         }
 
-        BitcoinLikeBlockchainExplorer::TransactionsBulk
-        TransactionsBulkParser::build() {
-            return _bulk;
+        TransactionsBulkParser::TransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey), _transactionsParser(lastKey) {
+            _depth = 0;
+        }
+
+        void TransactionsBulkParser::init(BitcoinLikeBlockchainExplorer::TransactionsBulk *bulk) {
+            _bulk = bulk;
         }
     }
 }

@@ -69,13 +69,13 @@ namespace ledger {
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
 
             template <typename Success, typename Failure, typename Handler>
-            Future<Either<Failure, Success>> json(Handler handler) const {
+            Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler) const {
                 return operator()().recover(_context, [] (const Exception& exception) {
                     if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
                         return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
                     }
                     throw exception;
-                }).template map<Either<Failure, Success>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection> c) {
+                }).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection> c) {
                     Handler h = handler;
                     std::shared_ptr<api::HttpUrlConnection> connection = c;
                     h.attach(connection);

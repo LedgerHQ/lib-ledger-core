@@ -66,7 +66,7 @@ namespace ledger {
             if (_lastKey == "height") {
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
-                _block.height = value.toUint64();
+                _block->height = value.toUint64();
             }
             return true;
         }
@@ -74,9 +74,9 @@ namespace ledger {
         bool BlockParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             std::string value = std::string(str, length);
             if (_lastKey == "hash") {
-                _block.hash = value;
+                _block->hash = value;
             } else if (_lastKey == "time") {
-                _block.time = DateParser::fromJSON(value);
+                _block->time = DateParser::fromJSON(value);
             }
             return true;
         }
@@ -86,7 +86,6 @@ namespace ledger {
         }
 
         bool BlockParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
             return true;
         }
 
@@ -102,12 +101,9 @@ namespace ledger {
             return true;
         }
 
-        BitcoinLikeBlockchainExplorer::Block BlockParser::build() {
-            return _block;
+        void BlockParser::init(BitcoinLikeBlockchainExplorer::Block *block) {
+            _block = block;
         }
 
-        void BlockParser::reset() {
-            _block = BitcoinLikeBlockchainExplorer::Block();
-        }
     }
 }

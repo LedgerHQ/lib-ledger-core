@@ -40,6 +40,8 @@ namespace ledger {
     namespace core {
         class BlockParser {
         public:
+            BlockParser(std::string &lastKey) : _lastKey(lastKey) {};
+            void init(BitcoinLikeBlockchainExplorer::Block* block);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -54,12 +56,10 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            BitcoinLikeBlockchainExplorer::Block build();
-            void reset();
 
         private:
-            BitcoinLikeBlockchainExplorer::Block _block;
-            std::string _lastKey;
+            BitcoinLikeBlockchainExplorer::Block* _block;
+            std::string& _lastKey;
         };
     }
 }

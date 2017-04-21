@@ -86,6 +86,11 @@ namespace ledger {
             }
 
             template <typename R>
+            Future<std::shared_ptr<R>> mapPtr(const Context& context, std::function<std::shared_ptr<R> (const T&)> map) {
+                return this->map<std::shared_ptr<R>>(context, map);
+            }
+
+            template <typename R>
             Future<R> flatMap(const Context& context, std::function<Future<R> (const T&)> map) {
                 auto deffer = Future<R>::make_deffered();
                 _defer->addCallback([deffer, map, context] (const Try<T>& result) {

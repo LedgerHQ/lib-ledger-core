@@ -41,9 +41,21 @@ namespace ledger {
         template <typename ResultType, typename Parser>
         class LedgerApiParser {
         public:
-            LedgerApiParser() {
+            LedgerApiParser() : _parser(_lastKey) {
                 _statusCode = 0;
                 _depth = 0;
+                _result = std::make_shared<ResultType>();
+                _parser.init(_result.get());
+            }
+
+            LedgerApiParser(const LedgerApiParser<ResultType, Parser>& cpy) :
+                _statusCode(cpy._statusCode),
+                _statusText(cpy._statusText),
+                _depth(cpy._depth),
+                _result(cpy._result),
+                _lastKey(cpy._lastKey),
+                _parser(_lastKey) {
+                _parser.init(_result.get());
             }
 
             bool Null() {
@@ -142,12 +154,12 @@ namespace ledger {
                 return continueParsing();
             }
 
-            Either<Exception, ResultType> build() {
+            Either<Exception, std::shared_ptr<ResultType>> build() {
                 if (isFailure()) {
                     auto ex = make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", _statusCode, _statusText, _error);
-                    return Either<Exception, ResultType>(ex);
+                    return Either<Exception, std::shared_ptr<ResultType>>(ex);
                 } else {
-                    return Either<Exception, ResultType>(_parser.build());
+                    return Either<Exception, std::shared_ptr<ResultType>>(_result);
                 }
             };
 
@@ -176,6 +188,7 @@ namespace ledger {
             }
         private:
             Parser _parser;
+            std::shared_ptr<ResultType> _result;
             uint32_t _depth;
             std::string _statusText;
             uint32_t _statusCode;

@@ -77,6 +77,13 @@ bool ledger::core::TransactionsParser::String(const rapidjson::Reader::Ch *str, 
 
 bool ledger::core::TransactionsParser::StartObject() {
     _objectDepth += 1;
+
+    if (_arrayDepth == 1 && _objectDepth == 1) {
+        BitcoinLikeBlockchainExplorer::Transaction transaction;
+        _transactions->push_back(transaction);
+        _transactionParser.init(&_transactions->back());
+    }
+
     PROXY_PARSE(StartObject)
 }
 
@@ -88,8 +95,6 @@ bool ledger::core::TransactionsParser::EndObject(rapidjson::SizeType memberCount
     if (_arrayDepth > 0) {
         _objectDepth -= 1;
         auto result =  _transactionParser.EndObject(memberCount);
-        if (_arrayDepth == 1 && _objectDepth == 0)
-            _transactions.push_back(_transactionParser.build());
         return result;
     } else {
         return true;
@@ -112,17 +117,12 @@ bool ledger::core::TransactionsParser::EndArray(rapidjson::SizeType elementCount
     return true;
 }
 
-std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction>
-ledger::core::TransactionsParser::build() {
-    return _transactions;
-}
-
-
-void ledger::core::TransactionsParser::reset() {
-    _transactions = std::vector<BitcoinLikeBlockchainExplorer::Transaction>();
-}
-
-ledger::core::TransactionsParser::TransactionsParser() {
+ledger::core::TransactionsParser::TransactionsParser(std::string& lastKey) : _lastKey(lastKey), _transactionParser(lastKey) {
     _arrayDepth = 0;
     _objectDepth = 0;
+}
+
+void ledger::core::TransactionsParser::init(
+std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction> *transactions) {
+    _transactions = transactions;
 }

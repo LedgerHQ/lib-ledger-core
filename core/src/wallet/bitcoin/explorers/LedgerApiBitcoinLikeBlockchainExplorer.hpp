@@ -52,13 +52,13 @@ namespace ledger {
             Future<Bytes> getRawTransaction(const String& transactionHash) override;
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
 
-            Future<TransactionsBulk>
+            FuturePtr<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
                             Option<void *> session = Option<void *>()) override;
 
-            Future<Block> getCurrentBlock() override;
+            FuturePtr<Block> getCurrentBlock() override;
 
-            Future<Transaction> getTransactionByHash(const String &transactionHash) override;
+            FuturePtr<Transaction> getTransactionByHash(const String &transactionHash) override;
 
         private:
             std::shared_ptr<HttpClient> _http;

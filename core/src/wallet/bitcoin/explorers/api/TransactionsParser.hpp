@@ -41,7 +41,8 @@ namespace ledger {
     namespace core {
         class TransactionsParser {
         public:
-            TransactionsParser();
+            TransactionsParser(std::string& lastKey);
+            void init(std::vector<BitcoinLikeBlockchainExplorer::Transaction>* transactions);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -56,12 +57,10 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            std::vector<BitcoinLikeBlockchainExplorer::Transaction> build();
-            void reset();
 
         private:
-            std::string _lastKey;
-            std::vector<BitcoinLikeBlockchainExplorer::Transaction> _transactions;
+            std::string& _lastKey;
+            std::vector<BitcoinLikeBlockchainExplorer::Transaction>* _transactions;
             uint32_t _arrayDepth;
             uint32_t _objectDepth;
             TransactionParser _transactionParser;

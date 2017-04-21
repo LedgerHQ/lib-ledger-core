@@ -66,11 +66,11 @@ namespace ledger {
             std::string number(str, length);
             BigInt value = BigInt::fromString(number);
             if (_lastKey == "input_index") {
-                _input.index = value.toUint64();
+                _input->index = value.toUint64();
             } else if (_lastKey == "value") {
-                _input.value = Option<BigInt>(value);
+                _input->value = Option<BigInt>(value);
             } else if (_lastKey == "output_index") {
-                _input.previousTxOutputIndex = value.toUint64();
+                _input->previousTxOutputIndex = value.toUint64();
             }
             return true;
         }
@@ -78,13 +78,13 @@ namespace ledger {
         bool InputParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             std::string value = std::string(str, length);
             if (_lastKey == "output_hash") {
-                _input.previousTxHash = value;
+                _input->previousTxHash = value;
             } else if (_lastKey == "address") {
-                _input.address = Option<std::string>(value);
+                _input->address = Option<std::string>(value);
             } else if (_lastKey == "script_signature") {
-                _input.signatureScript = Option<std::string>(value);
+                _input->signatureScript = Option<std::string>(value);
             } else if (_lastKey == "coinbase") {
-                _input.coinbase = Option<std::string>(value);
+                _input->coinbase = Option<std::string>(value);
             }
             return true;
         }
@@ -94,7 +94,6 @@ namespace ledger {
         }
 
         bool InputParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
             return true;
         }
 
@@ -110,12 +109,8 @@ namespace ledger {
             return true;
         }
 
-        BitcoinLikeBlockchainExplorer::Input InputParser::build() {
-            return _input;
-        }
-
-        void InputParser::reset() {
-            _input = BitcoinLikeBlockchainExplorer::Input();
+        void InputParser::init(BitcoinLikeBlockchainExplorer::Input *input) {
+            _input = input;
         }
     }
 }

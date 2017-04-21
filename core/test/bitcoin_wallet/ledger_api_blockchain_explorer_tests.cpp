@@ -111,13 +111,13 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
                                                (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
     );
     http->setLogger(logger);
-    explorer->getTransactionByHash("9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda").onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
+    explorer->getTransactionByHash("9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda").onComplete(worker, [&] (const TryPtr<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
         if (transaction.isFailure()) {
             std::cerr << transaction.getFailure().getMessage() << std::endl;
             dispatcher->stop();
             FAIL();
         } else {
-            auto &tx = transaction.getValue();
+            auto &tx = *transaction.getValue().get();
             EXPECT_EQ(tx.inputs.size(), 1);
             EXPECT_EQ(tx.hash, "9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda");
             EXPECT_EQ(tx.inputs[0].value.getValue().toString(), "1634001");
@@ -156,13 +156,13 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
                                                (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
     );
     http->setLogger(logger);
-    explorer->getTransactionByHash("16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e").onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
+    explorer->getTransactionByHash("16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e").onComplete(worker, [&] (const TryPtr<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
         if (transaction.isFailure()) {
             std::cerr << transaction.getFailure().getMessage() << std::endl;
             dispatcher->stop();
             FAIL();
         } else {
-            auto &tx = transaction.getValue();
+            auto &tx = *transaction.getValue();
             EXPECT_EQ(tx.inputs.size(), 1);
             EXPECT_EQ(tx.hash, "16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e");
             EXPECT_EQ(tx.inputs.size(), 1);
@@ -194,13 +194,13 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
                                                (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
     );
     http->setLogger(logger);
-    explorer->getTransactionByHash("8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d").onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
+    explorer->getTransactionByHash("8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d").onComplete(worker, [&] (const TryPtr<BitcoinLikeBlockchainExplorer::Transaction>& transaction) {
         if (transaction.isFailure()) {
             std::cerr << transaction.getFailure().getMessage() << std::endl;
             dispatcher->stop();
             FAIL();
         } else {
-            auto &tx = transaction.getValue();
+            auto &tx = *transaction.getValue();
             EXPECT_EQ(tx.hash, "8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d");
             EXPECT_EQ(tx.inputs.size(), 8);
             EXPECT_EQ(tx.outputs.size(), 2);
@@ -237,13 +237,13 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetCurrentBlock) {
     );
     http->setLogger(logger);
 
-    explorer->getCurrentBlock().onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::Block>& result) {
+    explorer->getCurrentBlock().onComplete(worker, [&] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& result) {
         if (result.isFailure()) {
             std::cerr << result.getFailure().getMessage() << std::endl;
             dispatcher->stop();
             FAIL();
         } else {
-            EXPECT_GT(result.getValue().height, 462400);
+            EXPECT_GT(result.getValue()->height, 462400);
             dispatcher->stop();
         }
     });
@@ -269,14 +269,14 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactions) {
     );
     http->setLogger(logger);
 
-    explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP", "1DxPxrQtUXVcebgNYETn163RQaEKxAvxqP"}, Option<std::string>(), Option<void *>()).onComplete(worker, [&] (const Try<BitcoinLikeBlockchainExplorer::TransactionsBulk>& result) {
+    explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP", "1DxPxrQtUXVcebgNYETn163RQaEKxAvxqP"}, Option<std::string>(), Option<void *>()).onComplete(worker, [&] (const TryPtr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& result) {
         if (result.isFailure()) {
             std::cerr << result.getFailure().getMessage() << std::endl;
             dispatcher->stop();
             FAIL();
         } else {
-            EXPECT_TRUE(result.getValue().hasNext);
-            EXPECT_TRUE(result.getValue().transactions.size() > 0);
+            EXPECT_TRUE(result.getValue()->hasNext);
+            EXPECT_TRUE(result.getValue()->transactions.size() > 0);
         }
        dispatcher->stop();
     });
