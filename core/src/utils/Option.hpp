@@ -40,6 +40,8 @@
 #include <utility>
 #include <vector>
 
+#undef foreach
+
 namespace ledger {
     namespace core {
         template <typename T>

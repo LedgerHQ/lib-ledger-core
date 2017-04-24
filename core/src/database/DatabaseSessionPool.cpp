@@ -1,9 +1,9 @@
 /*
  *
- * QtHttpClient
+ * DatabaseSessionPool
  * ledger-core
  *
- * Created by Pierre Pollastri on 21/04/2017.
+ * Created by Pierre Pollastri on 24/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,31 +28,4 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_QTHTTPCLIENT_HPP
-#define LEDGER_CORE_QTHTTPCLIENT_HPP
-
-#include <src/api/HttpClient.hpp>
-#include <src/api/HttpUrlConnection.hpp>
-#include <src/api/HttpRequest.hpp>
-#include <src/api/HttpReadBodyResult.hpp>
-#include <src/api/HttpMethod.hpp>
-#include <QtNetwork>
-#include <QObject>
-#include "../async/QtThreadDispatcher.hpp"
-
-namespace ledger {
-    namespace qt {
-        class QtHttpClient : public QObject, public core::api::HttpClient {
-            Q_OBJECT
-        public:
-            QtHttpClient(const std::shared_ptr<core::api::ExecutionContext>& context) : _context(context), _manager(this) {};
-            void execute(const std::shared_ptr<core::api::HttpRequest> &request) override;
-
-        private:
-            QNetworkAccessManager _manager;
-            std::shared_ptr<core::api::ExecutionContext> _context;
-        };
-    }
-}
-
-#endif //LEDGER_CORE_QTHTTPCLIENT_HPP
+#include "DatabaseSessionPool.hpp"

@@ -133,8 +133,8 @@ namespace ledger {
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest POST(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
-            void addHeader(const std::string& key, const std::string& value);
-            void removeHeader(const std::string& key);
+            HttpClient& addHeader(const std::string& key, const std::string& value);
+            HttpClient& removeHeader(const std::string& key);
             void setLogger(const std::shared_ptr<spdlog::logger>& logger);
 
         private:

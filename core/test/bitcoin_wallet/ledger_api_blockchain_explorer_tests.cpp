@@ -44,7 +44,7 @@ using namespace ledger::qt;
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -70,7 +70,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetRawTransaction) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -97,7 +97,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetRawTransaction) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -142,7 +142,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -180,7 +180,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -222,7 +222,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetCurrentBlock) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -254,7 +254,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetCurrentBlock) {
 
 TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactions) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto client = std::make_shared<QtHttpClient>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
     auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
@@ -279,6 +279,35 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactions) {
             EXPECT_TRUE(result.getValue()->transactions.size() > 0);
         }
        dispatcher->stop();
+    });
+
+    dispatcher->waitUntilStopped();
+    resolver->clean();
+}
+
+TEST(LedgerApiBitcoinLikeBlockchainExplorer, EndSession) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto logger = ledger::core::logger::create("test_logs",
+                                               std::experimental::optional<std::string>(),
+                                               dispatcher->getSerialExecutionContext("logger"),
+                                               resolver,
+                                               logPrinter,
+                                               (std::string("2017-03-02T10:07:06Z+01:00 D: This is a log \n").size() + 3) * 199
+    );
+    http->setLogger(logger);
+    explorer->startSession().onComplete(worker, [&] (const Try<void *>& session) {
+        EXPECT_TRUE(session.isSuccess());
+        EXPECT_EQ(((std::string *)session.getValue())->size(), 36);
+        explorer->killSession(session.getValue()).onComplete(worker, [&] (const Try<Unit>& result) {
+            EXPECT_TRUE(result.isSuccess());
+            dispatcher->stop();
+        });
     });
 
     dispatcher->waitUntilStopped();

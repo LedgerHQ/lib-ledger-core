@@ -59,8 +59,12 @@ namespace ledger {
         }
 
         Future<Unit> LedgerApiBitcoinLikeBlockchainExplorer::killSession(void *session) {
-            Promise<Unit> promise;
-            return promise.getFuture();
+            return _http
+            ->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
+            .DEL(fmt::format("/blockchain/v2/{}/syncToken", _parameters.Identifier))
+            .json().map<Unit>(getContext(), [] (const HttpRequest::JsonResult& result) {
+                return unit;
+            });
         }
 
         Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
