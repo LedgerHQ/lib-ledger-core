@@ -7,6 +7,8 @@ namespace ledger { namespace core { namespace api {
 
 std::string const Configuration::KEYCHAIN_ENGINE = {"KEYCHAIN_ENGINE"};
 
+std::string const Configuration::KEYCHAIN_DERIVATION_SCHEME = {"KEYCHAIN_DERIVATION_SCHEME"};
+
 std::string const Configuration::KEYCHAIN_OBSERVABLE_RANGE = {"KEYCHAIN_OBSERVABLE_RANGE"};
 
 std::string const Configuration::BLOCKCHAIN_EXPLORER_ENGINE = {"BLOCKCHAIN_EXPLORER_ENGINE"};

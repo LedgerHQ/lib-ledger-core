@@ -9,6 +9,9 @@ public abstract class Configuration {
     /** Selects the keychain engine (P2PKH, P2SH...) */
     public static final String KEYCHAIN_ENGINE = "KEYCHAIN_ENGINE";
 
+    /** Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<index>) */
+    public static final String KEYCHAIN_DERIVATION_SCHEME = "KEYCHAIN_DERIVATION_SCHEME";
+
     /** Sets the observable range for HD keychains (BIP32 based) */
     public static final String KEYCHAIN_OBSERVABLE_RANGE = "KEYCHAIN_OBSERVABLE_RANGE";
 

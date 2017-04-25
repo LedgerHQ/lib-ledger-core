@@ -51,12 +51,35 @@ namespace ledger {
                 };
             }
 
+            int indexOf(const std::string& src, const std::string& search) {
+                auto i = src.find(search);
+                if (i != std::string::npos) {
+                    return (int) i;
+                } else {
+                    return -1;
+                }
+            }
+
+            std::string& replace(std::string& str, const std::string& from, const std::string& to) {
+                std::string::size_type i;
+                while ((i = str.find(from)) != std::string::npos) {
+                    str.replace(i, from.length(), to);
+                }
+                return str;
+            }
+
+            std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+                std::vector<std::string> splitted;
+                boost::split(splitted, str, boost::is_any_of(delimiter));
+                return splitted;
+            }
+
+
         }
 
         String operator "" _S(const char* str, size_t size) {
             return String(str, size);
         }
-
     }
 }
 

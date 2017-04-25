@@ -56,6 +56,14 @@ namespace ledger {
 
         public:
             static std::vector<uint32_t> parse(const std::string& path) throw(Exception);
+            static DerivationPath fromScheme(
+                const std::string& scheme,
+                int coinType,
+                int account,
+                int node,
+                int addressIndex,
+                Option<std::string> stopAt = Option<std::string>()
+            );
 
         private:
             inline void assertIndexIsValid(int index, const std::string& method) const throw(Exception);

@@ -6,6 +6,8 @@
 
 NSString * __nonnull const LGConfigurationKEYCHAINENGINE = @"KEYCHAIN_ENGINE";
 
+NSString * __nonnull const LGConfigurationKEYCHAINDERIVATIONSCHEME = @"KEYCHAIN_DERIVATION_SCHEME";
+
 NSString * __nonnull const LGConfigurationKEYCHAINOBSERVABLERANGE = @"KEYCHAIN_OBSERVABLE_RANGE";
 
 NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERENGINE = @"BLOCKCHAIN_EXPLORER_ENGINE";

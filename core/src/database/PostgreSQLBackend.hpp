@@ -38,24 +38,17 @@ namespace ledger {
         class PostgreSQLBackend : public DatabaseBackend {
         public:
             virtual std::shared_ptr<api::DatabaseBackend> setUsername(const std::string &username) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setPassword(const std::string &pwd) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setHost(const std::string &host) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setHostAddr(const std::string &hostAddr) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setPort(const std::string &port) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setOptions(const std::string &opts) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setSslMode(const std::string &mode) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setKerberosName(const std::string &name) override;
-
             virtual std::shared_ptr<api::DatabaseBackend> setService(const std::string &service) override;
 
-            virtual std::shared_ptr<soci::session> makeSession(const std::shared_ptr<api::PathResolver>& resolver, const std::string &dbName) override;
+            void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+                      soci::session &session) override;
         };
     }
 }

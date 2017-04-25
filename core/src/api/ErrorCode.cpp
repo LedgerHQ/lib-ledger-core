@@ -40,6 +40,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::API_ERROR: return "API_ERROR";
         case ErrorCode::TRANSACTION_NOT_FOUND: return "TRANSACTION_NOT_FOUND";
         case ErrorCode::INVALID_DATE_FORMAT: return "INVALID_DATE_FORMAT";
+        case ErrorCode::INVALID_DERIVATION_SCHEME: return "INVALID_DERIVATION_SCHEME";
     };
 };
 
@@ -79,6 +80,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::API_ERROR:  return os << "API_ERROR";
         case ErrorCode::TRANSACTION_NOT_FOUND:  return os << "TRANSACTION_NOT_FOUND";
         case ErrorCode::INVALID_DATE_FORMAT:  return os << "INVALID_DATE_FORMAT";
+        case ErrorCode::INVALID_DERIVATION_SCHEME:  return os << "INVALID_DERIVATION_SCHEME";
     }
 }
 

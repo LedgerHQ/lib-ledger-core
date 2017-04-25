@@ -1,9 +1,9 @@
 /*
  *
- * DatabaseBackend
+ * functional
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 25/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,26 +28,29 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DATABASEBACKEND_HPP
-#define LEDGER_CORE_DATABASEBACKEND_HPP
+#ifndef LEDGER_CORE_FUNCTIONAL_HPP
+#define LEDGER_CORE_FUNCTIONAL_HPP
 
-#include "../api/DatabaseBackend.hpp"
-#include <soci.h>
-#include <memory>
-#include "../api/PathResolver.hpp"
+#include <functional>
+#include <vector>
 
 namespace ledger {
     namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
-        public:
-            virtual void init(
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::string& dbName,
-                soci::session& session
+        namespace functional {
 
-            ) = 0;
-        };
+            template <typename FromType, typename ToType>
+            std::vector<ToType> map(const std::vector<FromType>& container, std::function<ToType (const FromType&)> f) {
+                std::vector<ToType> result(container.size());
+                auto index = 0;
+                for (auto& item : container) {
+                    result[index] = f(item);
+                    index += 1;
+                }
+                return result;
+            };
+
+        }
     }
 }
 
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP
+#endif //LEDGER_CORE_FUNCTIONAL_HPP

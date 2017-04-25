@@ -34,6 +34,7 @@
 #include "../collections/vector.hpp"
 #include <sstream>
 #include <fmt/format.h>
+#include <src/collections/strings.hpp>
 
 namespace ledger {
     namespace core {
@@ -182,6 +183,5 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, fmt::format("{} - Cannot get parent of root derivation path", method));
             }
         }
-
     }
 }

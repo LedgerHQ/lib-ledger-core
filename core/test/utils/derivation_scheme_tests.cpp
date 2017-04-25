@@ -1,9 +1,9 @@
 /*
  *
- * DatabaseBackend
+ * derivation_scheme_tests
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 25/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,26 +28,31 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DATABASEBACKEND_HPP
-#define LEDGER_CORE_DATABASEBACKEND_HPP
 
-#include "../api/DatabaseBackend.hpp"
-#include <soci.h>
-#include <memory>
-#include "../api/PathResolver.hpp"
+#include <gtest/gtest.h>
+#include <src/utils/DerivationScheme.hpp>
 
-namespace ledger {
-    namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
-        public:
-            virtual void init(
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::string& dbName,
-                soci::session& session
+using namespace ledger::core;
 
-            ) = 0;
-        };
-    }
+TEST(DerivationScheme, SimpleCases) {
+    DerivationScheme scheme("16/<account>'/<coin_type>");
+    EXPECT_EQ(scheme.setAccountIndex(2).setCoinType(1990).getPath().toString(), "16/2'/1990");
 }
 
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP
+TEST(DerivationScheme, BIP44) {
+    DerivationScheme scheme("44'/<coin_type>'/<account>'/<node>/<address>");
+    scheme
+      .setCoinType(0)
+      .setAccountIndex(1)
+      .setNode(1)
+      .setAddressIndex(42);
+    EXPECT_EQ(scheme.getPath().toString(), "44'/0'/1'/1/42");
+}
+
+TEST(DerivationScheme, PartialScheme) {
+    DerivationScheme scheme("44'/<coin_type>'/<account>'/<node>/<address>");
+    auto xpubScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
+    auto accountScheme = scheme.getSchemeFrom(DerivationSchemeLevel::NODE);
+    EXPECT_EQ(xpubScheme.toString(), "44'/<coin_type>'/<account>'");
+    EXPECT_EQ(accountScheme.toString(), "<node>/<address>");
+}

@@ -39,6 +39,7 @@
 #include "Sequence.hpp"
 #include "String.hpp"
 #include "Bytes.hpp"
+#include "functional.hpp"
 
 namespace ledger {
     namespace core {

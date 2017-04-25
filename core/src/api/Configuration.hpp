@@ -15,6 +15,9 @@ public:
     /** Selects the keychain engine (P2PKH, P2SH...) */
     static std::string const KEYCHAIN_ENGINE;
 
+    /** Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<index>) */
+    static std::string const KEYCHAIN_DERIVATION_SCHEME;
+
     /** Sets the observable range for HD keychains (BIP32 based) */
     static std::string const KEYCHAIN_OBSERVABLE_RANGE;
 

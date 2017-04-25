@@ -51,5 +51,6 @@ public enum ErrorCode {
     TRANSACTION_NOT_FOUND,
     /** Format */
     INVALID_DATE_FORMAT,
+    INVALID_DERIVATION_SCHEME,
     ;
 }

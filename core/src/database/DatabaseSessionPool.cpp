@@ -29,3 +29,33 @@
  *
  */
 #include "DatabaseSessionPool.hpp"
+
+namespace ledger {
+    namespace core {
+
+        const int DatabaseSessionPool::POOL_SIZE = 24;
+
+        FuturePtr<DatabaseSessionPool>
+        DatabaseSessionPool::getSessionPool(const std::shared_ptr<api::ExecutionContext> &context,
+                                            const std::shared_ptr<DatabaseBackend>& backend,
+                                            const std::shared_ptr<api::PathResolver>& resolver,
+                                            const std::string& dbName) {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName] () {
+                auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(POOL_SIZE));
+                for (size_t i = 0; i < POOL_SIZE; i++) {
+                    auto& session = pool->getPool().at(i);
+                    backend->init(resolver, dbName, session);
+                }
+                return pool;
+            });
+        }
+
+        DatabaseSessionPool::DatabaseSessionPool(int poolSize) : _pool((size_t) poolSize) {
+
+        }
+
+        soci::connection_pool &DatabaseSessionPool::getPool() {
+            return _pool;
+        }
+    }
+}

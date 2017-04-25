@@ -52,4 +52,5 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeTransactionNotFound,
     /** Format */
     LGErrorCodeInvalidDateFormat,
+    LGErrorCodeInvalidDerivationScheme,
 };

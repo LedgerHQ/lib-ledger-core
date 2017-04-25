@@ -57,6 +57,7 @@ ErrorCode = enum {
 
     # Format
     invalid_date_format;
+    invalid_derivation_scheme;
 }
 
 Error = record {

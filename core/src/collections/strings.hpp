@@ -34,14 +34,17 @@
 #include <string>
 #include <functional>
 #include "../utils/Option.hpp"
+#include <vector>
 
 namespace ledger {
     namespace core {
         namespace strings {
 
             bool startsWith(const std::string& str, const std::string& prefix);
-
             std::function<std::string (const std::string&, const Option<std::string>&)> mkString(const std::string& separator);
+            int indexOf(const std::string& src, const std::string& search);
+            std::string& replace(std::string& str, const std::string& from, const std::string& to);
+            std::vector<std::string> split(const std::string& str, const std::string& delimiter);
         }
     }
 }

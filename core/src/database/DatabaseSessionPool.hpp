@@ -31,10 +31,33 @@
 #ifndef LEDGER_CORE_DATABASESESSIONPOOL_HPP
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
+#include <soci.h>
+#include <src/api/ExecutionContext.hpp>
+#include <src/async/Future.hpp>
+#include <src/database/DatabaseBackend.hpp>
 
-class DatabaseSessionPool {
+namespace ledger {
+    namespace core {
+        class DatabaseSessionPool {
+        public:
+            soci::connection_pool& getPool();
 
-};
+            static FuturePtr<DatabaseSessionPool> getSessionPool(
+                const std::shared_ptr<api::ExecutionContext>& context,
+                const std::shared_ptr<DatabaseBackend>& backend,
+                const std::shared_ptr<api::PathResolver>& resolver,
+                const std::string& dbName
+            );
+
+            static const int POOL_SIZE;
+        private:
+            DatabaseSessionPool(int poolSize);
+
+        private:
+            soci::connection_pool _pool;
+        };
+    }
+}
 
 
 #endif //LEDGER_CORE_DATABASESESSIONPOOL_HPP

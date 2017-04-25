@@ -58,6 +58,7 @@ enum class ErrorCode : int {
     TRANSACTION_NOT_FOUND,
     /** Format */
     INVALID_DATE_FORMAT,
+    INVALID_DERIVATION_SCHEME,
 };
 std::string to_string(const ErrorCode& errorCode);
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

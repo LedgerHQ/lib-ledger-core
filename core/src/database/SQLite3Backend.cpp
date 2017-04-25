@@ -74,8 +74,7 @@ ledger::core::SQLite3Backend::setService(const std::string &service) {
 
 using namespace soci;
 
-std::shared_ptr<soci::session> ledger::core::SQLite3Backend::makeSession(const std::shared_ptr<api::PathResolver>& resolver,
-                                                                         const std::string &dbName) {
-    // The SQLite3Backend is really simple since it only requires the database name
-    return std::make_shared<soci::session>(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
+void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
+                                        const std::string &dbName, soci::session &session) {
+    session.open(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
 }

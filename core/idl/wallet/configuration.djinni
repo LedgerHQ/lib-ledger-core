@@ -18,6 +18,8 @@ SynchronizationEngines = interface +c {
 Configuration = interface +c {
     # Selects the keychain engine (P2PKH, P2SH...)
     const KEYCHAIN_ENGINE: string = "KEYCHAIN_ENGINE";
+    # Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<address>)
+    const KEYCHAIN_DERIVATION_SCHEME: string = "KEYCHAIN_DERIVATION_SCHEME";
     # Sets the observable range for HD keychains (BIP32 based)
     const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
 
