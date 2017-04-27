@@ -66,7 +66,7 @@ std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core:
     return std::make_shared<ledger::core::Event>(code, payload);
 }
 
-std::share_ptr<ledger::core::api::Event> ledger::core::api::Event::newInstance(EventCode code,
+std::shared_ptr<ledger::core::api::Event> ledger::core::api::Event::newInstance(EventCode code,
                                                                                const std::shared_ptr<DynamicObject> &payload) {
     return std::make_shared<ledger::core::Event>(code, payload);
 }
