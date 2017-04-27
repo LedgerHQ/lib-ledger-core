@@ -41,6 +41,7 @@ namespace ledger {
     namespace core {
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putString(const std::string &key, const std::string &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::STRING;
             v.string = value;
@@ -49,6 +50,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putInt(const std::string &key, int32_t value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::INT32;
             v.int32 = value;
@@ -57,6 +59,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putLong(const std::string &key, int64_t value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::INT64;
             v.int64 = value;
@@ -65,6 +68,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putDouble(const std::string &key, double value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::DOUBLE;
             v.doubleFloat = value;
@@ -74,6 +78,7 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putData(const std::string &key, const std::vector<uint8_t> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::DATA;
             v.bytes = value;
@@ -82,6 +87,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putBoolean(const std::string &key, bool value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::BOOLEAN;
             v.boolean = value;
@@ -133,6 +139,7 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::OBJECT;
             v.object = std::static_pointer_cast<DynamicObject>(value);
@@ -142,6 +149,7 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putArray(const std::string &key, const std::shared_ptr<api::DynamicArray> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::ARRAY;
             v.array = std::static_pointer_cast<DynamicArray>(value);
@@ -220,6 +228,21 @@ namespace ledger {
 
         int64_t DynamicObject::size() {
             return _values.getContainer().size();
+        }
+
+        bool DynamicObject::isReadOnly() {
+            return _readOnly;
+        }
+
+        void DynamicObject::setReadOnly(bool enable) {
+            _readOnly = enable;
+            for (auto& v : _values.getContainer()) {
+                if (v.second.type == api::DynamicType::ARRAY) {
+                    v.second.array->setReadOnly(enable);
+                } else if (v.second.type == api::DynamicType::OBJECT ) {
+                    v.second.object->setReadOnly(enable);
+                }
+            }
         }
     }
 }

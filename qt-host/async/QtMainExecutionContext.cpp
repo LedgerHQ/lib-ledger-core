@@ -38,7 +38,10 @@ void ledger::qt::QtMainExecutionContext::execute(const std::shared_ptr<ledger::c
 
 void ledger::qt::QtMainExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable> &runnable,
                                                int64_t millis) {
-    QTimer::singleShot((int) millis, this, SLOT(performExecute(runnable)));
+    auto self = this;
+    QTimer::singleShot((int) millis, this, [=] () -> void {
+        self->performExecute(runnable);
+    });
 }
 
 ledger::qt::QtMainExecutionContext::QtMainExecutionContext(const std::shared_ptr<QCoreApplication> &app) {

@@ -13,6 +13,7 @@
 #import "LGDynamicObject+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGWalletListCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -109,6 +110,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getOperationPreferences(::djinni::String::toCpp(uid));
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable id<LGWalletListCallback>)getWallets {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getWallets();
+        return ::djinni_generated::WalletListCallback::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

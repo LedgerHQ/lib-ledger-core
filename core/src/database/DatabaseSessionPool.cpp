@@ -29,6 +29,7 @@
  *
  */
 #include "DatabaseSessionPool.hpp"
+#include "migrations.hpp"
 
 namespace ledger {
     namespace core {
@@ -46,6 +47,8 @@ namespace ledger {
                     auto& session = pool->getPool().at(i);
                     backend->init(resolver, dbName, session);
                 }
+                // Migrate database
+                pool->performDatabaseMigration();
                 return pool;
             });
         }
@@ -57,5 +60,20 @@ namespace ledger {
         soci::connection_pool &DatabaseSessionPool::getPool() {
             return _pool;
         }
+
+        void DatabaseSessionPool::performDatabaseMigration() {
+            soci::session sql(getPool());
+            int version = -1;
+            try {
+                sql << "SELECT version FROM __database_meta__ WHERE id == 0", soci::into(version);
+            } catch (...) {
+                // Ignore
+            }
+            soci::transaction tr(sql);
+            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            tr.commit();
+        }
+
+
     }
 }

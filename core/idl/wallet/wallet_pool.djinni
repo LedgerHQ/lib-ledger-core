@@ -16,6 +16,7 @@
 @import "../bitcoin/addresses.djinni"
 @import "../utils/callback.djinni"
 @import "../collections/dynamic.djinni"
+@import "common/wallet.djinni"
 
 # Interface used as a callback to iterate through mutiple BitcoinLikeWallets.
 StringArrayCallback = interface +j +o +s +n {
@@ -39,6 +40,7 @@ WalletPool = interface +c {
     getAccountPreferences(walletIdentifier: string, accountNumber: i32): Preferences;
     getOperationPreferences(uid: string): Preferences;
 
+    getWallets(): ListCallback<Wallet>;
 }
 
 WalletPoolBuildCallback = interface +j +o +s +n {

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class DynamicObject {
+    public abstract boolean isReadOnly();
+
     public abstract DynamicObject putString(String key, String value);
 
     public abstract DynamicObject putInt(String key, int value);
@@ -79,6 +81,14 @@ public abstract class DynamicObject {
             destroy();
             super.finalize();
         }
+
+        @Override
+        public boolean isReadOnly()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isReadOnly(this.nativeRef);
+        }
+        private native boolean native_isReadOnly(long _nativeRef);
 
         @Override
         public DynamicObject putString(String key, String value)

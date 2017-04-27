@@ -26,6 +26,8 @@ public abstract class WalletPool {
 
     public abstract Preferences getOperationPreferences(String uid);
 
+    public abstract WalletListCallback getWallets();
+
     private static final class CppProxy extends WalletPool
     {
         private final long nativeRef;
@@ -128,5 +130,13 @@ public abstract class WalletPool {
             return native_getOperationPreferences(this.nativeRef, uid);
         }
         private native Preferences native_getOperationPreferences(long _nativeRef, String uid);
+
+        @Override
+        public WalletListCallback getWallets()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWallets(this.nativeRef);
+        }
+        private native WalletListCallback native_getWallets(long _nativeRef);
     }
 }

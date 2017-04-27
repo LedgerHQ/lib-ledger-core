@@ -1,0 +1,70 @@
+@import "../../events/emitter.djinni"
+@import "../../utils/callback.djinni"
+@import "../amount.djinni"
+@import "../../preferences/preferences.djinni"
+
+OperationType = enum {
+    SEND; RECEIVE;
+}
+
+Currency = record {
+    name: string;
+    bip44CoinType: i32;
+    paymentSchemeUri: i32;
+}
+
+Operation = interface +c {
+    getUid(): string;
+    getAccountIndex(): i32;
+    getOperationType(): OperationType;
+    getDate(): date;
+    getSenders(): list<string>;
+    getRecipients(): list<string>;
+    getAmount(): Amount;
+    getFees(): Amount;
+
+
+    ## asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
+    ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
+    ## asRippleLikeOperation(): Callback<RippleLikeEthereum>;
+    isInstanceOfBitcoinLikeOperation(): bool;
+    isInstanceOfEthereumLikeOperation(): bool;
+    isInstanceOfRippleLikeOperation(): bool;
+}
+
+Account = interface +c {
+    getIndex(): i32;
+    getOperations(from: i32, to: i32, descending: bool): ListCallback<Operation>;
+    getOperationsCount(): Callback<i64>;
+    getOperation(uid: string): Callback<Operation>;
+    getBalance(): Callback<Amount>;
+    isSynchronizing(): bool;
+    synchronize(): EventBus;
+    getPreferences(): Preferences;
+
+    # asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
+    # asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
+    # asRippleLikeAccount(): Callback<RippleLikeAccount>;
+    isInstanceOfBitcoinLikeAccount(): bool;
+    isInstanceOfEthereumLikeAccount(): bool;
+    isInstanceOfRippleLikeAccount(): bool;
+}
+
+Wallet = interface +c {
+    getAccounts(): ListCallback<Account>;
+    getAccount(index: i32): Callback<Account>;
+    getAccountCount(): Callback<i32>;
+    getEventBus(): EventBus;
+
+    isSynchronizing(): bool;
+    synchronize(): EventBus;
+    getPreferences(): Preferences;
+
+    # asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
+    # asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
+    # asRippleLikeWallet(): Callback<RippleLikeWallet>;
+    getCurrency(): Currency;
+    isInstanceOfBitcoinLikeWallet(): bool;
+    isInstanceOfEthereumLikeWallet(): bool;
+    isInstanceOfRippleLikeWallet(): bool;
+}

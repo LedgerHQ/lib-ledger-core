@@ -210,5 +210,9 @@ namespace ledger {
             fmt::print("Destruct pool\n");
         }
 
+        std::shared_ptr<api::WalletListCallback> WalletPool::getWallets() {
+            return nullptr;
+        }
+
     }
 }

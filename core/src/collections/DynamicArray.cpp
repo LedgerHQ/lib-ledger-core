@@ -101,6 +101,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushInt(int32_t value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::INT32;
             v.int32 = value;
@@ -146,6 +147,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushLong(int64_t value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::INT64;
             v.int64 = value;
@@ -154,6 +156,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushString(const std::string &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::STRING;
             v.string = value;
@@ -162,6 +165,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushDouble(double value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::DOUBLE;
             v.doubleFloat = value;
@@ -170,6 +174,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushData(const std::vector<uint8_t> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::DATA;
             v.bytes = value;
@@ -178,6 +183,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushBoolean(bool value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::BOOLEAN;
             v.boolean = value;
@@ -186,6 +192,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushObject(const std::shared_ptr<api::DynamicObject> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::OBJECT;
             v.object = std::static_pointer_cast<DynamicObject>(value);
@@ -194,6 +201,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushArray(const std::shared_ptr<api::DynamicArray> &value) {
+            if (_readOnly) return shared_from_this();
             DynamicValue v;
             v.type = api::DynamicType::ARRAY;
             v.array = std::static_pointer_cast<DynamicArray>(value);
@@ -202,6 +210,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::concat(const std::shared_ptr<api::DynamicArray> &array) {
+            if (_readOnly) return shared_from_this();
             auto a = std::static_pointer_cast<DynamicArray>(array);
             for (auto& v : a->_values.getContainer()) {
                 _values += v;
@@ -230,6 +239,21 @@ namespace ledger {
                 index += 1;
             }
             return ss;
+        }
+
+        bool DynamicArray::isReadOnly() {
+            return _readOnly;
+        }
+
+        void DynamicArray::setReadOnly(bool enable) {
+            _readOnly = enable;
+            for (auto& v : _values.getContainer()) {
+                if (v.type == api::DynamicType::ARRAY) {
+                    v.array->setReadOnly(enable);
+                } else if (v.type == api::DynamicType::OBJECT) {
+                    v.object->setReadOnly(enable);
+                }
+            }
         }
 
         std::shared_ptr<api::DynamicArray> api::DynamicArray::load(const std::vector<uint8_t> &serialized) {

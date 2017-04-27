@@ -9,6 +9,8 @@
 
 @interface LGDynamicObject : NSObject
 
+- (BOOL)isReadOnly;
+
 - (nullable LGDynamicObject *)putString:(nonnull NSString *)key
                                   value:(nonnull NSString *)value;
 

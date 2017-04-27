@@ -10,6 +10,7 @@
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "Preferences.hpp"
+#include "WalletListCallback.hpp"
 
 namespace djinni_generated {
 
@@ -123,6 +124,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
         auto r = ref->getOperationPreferences(::djinni::String::toCpp(jniEnv, j_uid));
         return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getWallets(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
+        auto r = ref->getWallets();
+        return ::djinni::release(::djinni_generated::WalletListCallback::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

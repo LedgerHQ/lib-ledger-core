@@ -117,6 +117,8 @@ namespace ledger {
 
             void removeBitcoinLikenetworkParameters(const api::BitcoinLikeNetworkParameters &params) override;
 
+            std::shared_ptr<api::WalletListCallback> getWallets() override;
+
             // Utilities
             std::shared_ptr<api::Logger> getLogger() override;
             std::shared_ptr<api::Preferences> getPreferences() override;

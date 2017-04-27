@@ -1,0 +1,31 @@
+
+@import "../collections/dynamic.djinni"
+@import "events.djinni"
+@import "../async/thread_dispatcher.djinni"
+
+Event = interface +c {
+    getCode(): EventCode;
+    getPayload(): DynamicObject;
+    isSticky(): bool;
+    getStickyTag(): i32;
+
+    static newInstance(code: EventCode, payload: DynamicObject);
+}
+
+EventReceiver = interface +j +o +n +s {
+    onEvent(event: Event);
+}
+
+EventBus = interface +c {
+    subscribe(context: ExecutionContext, receiver: EventReceiver);
+    unsubscribe(receiver: EventReceiver);
+}
+
+EventPublisher = interface +c {
+    getEventBus(): EventBus;
+    post(event: Event);
+    postSticky(event: Event, tag: i32);
+    relay(bus: EventBus);
+
+    static newInstance(): EventPublisher;
+}

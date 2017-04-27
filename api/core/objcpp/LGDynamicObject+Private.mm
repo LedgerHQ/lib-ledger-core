@@ -32,6 +32,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
+- (BOOL)isReadOnly {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->isReadOnly();
+        return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nullable LGDynamicObject *)putString:(nonnull NSString *)key
                                   value:(nonnull NSString *)value {
     try {

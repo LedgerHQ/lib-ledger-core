@@ -45,6 +45,7 @@ namespace ledger {
     namespace core {
         class DynamicObject : public api::DynamicObject, public std::enable_shared_from_this<DynamicObject> {
         public:
+            DynamicObject() : _readOnly(false) {};
             std::shared_ptr<api::DynamicObject> putString(const std::string &key, const std::string &value) override;
             std::shared_ptr<api::DynamicObject> putInt(const std::string &key, int32_t value) override;
             std::shared_ptr<api::DynamicObject> putLong(const std::string &key, int64_t value) override;
@@ -71,6 +72,9 @@ namespace ledger {
             std::string dump() override;
             std::vector<uint8_t> serialize() override;
 
+            bool isReadOnly() override;
+            void setReadOnly(bool enable);
+
             int64_t size() override;
 
             std::ostream& dump(std::ostream& ss, int depth) const;
@@ -82,6 +86,7 @@ namespace ledger {
 
         private:
             Map<std::string, DynamicValue> _values;
+            bool _readOnly;
         };
     }
 }

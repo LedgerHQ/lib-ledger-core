@@ -38,10 +38,16 @@ namespace ledger {
     namespace core {
         class DedicatedContext {
         public:
-            DedicatedContext(std::shared_ptr<api::ExecutionContext> context) : _executionContext(context) {};
+            DedicatedContext(const std::shared_ptr<api::ExecutionContext>& context) : _executionContext(context) {};
             template<typename T>
             Future<T> async(std::function<T ()> f) {
                 return Future<T>::async(_executionContext, f);
+            };
+            Future<Unit> run(std::function<void ()> f) {
+                return async<Unit>([=] () {
+                    f();
+                    return unit;
+                });
             };
             inline std::shared_ptr<api::ExecutionContext> getContext() const {
                 return _executionContext;

@@ -53,6 +53,8 @@
 
 - (nonnull NSData *)serialize;
 
+- (BOOL)isReadOnly;
+
 + (nullable LGDynamicArray *)newInstance;
 
 + (nullable LGDynamicArray *)load:(nonnull NSData *)serialized;

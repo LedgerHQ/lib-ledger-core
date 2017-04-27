@@ -63,6 +63,8 @@ public:
 
     virtual std::vector<uint8_t> serialize() = 0;
 
+    virtual bool isReadOnly() = 0;
+
     static std::shared_ptr<DynamicArray> newInstance();
 
     static std::shared_ptr<DynamicArray> load(const std::vector<uint8_t> & serialized);

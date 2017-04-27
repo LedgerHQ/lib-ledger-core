@@ -19,6 +19,8 @@ class DynamicObject {
 public:
     virtual ~DynamicObject() {}
 
+    virtual bool isReadOnly() = 0;
+
     virtual std::shared_ptr<DynamicObject> putString(const std::string & key, const std::string & value) = 0;
 
     virtual std::shared_ptr<DynamicObject> putInt(const std::string & key, int32_t value) = 0;

@@ -9,6 +9,7 @@
 @class LGPreferences;
 @protocol LGBitcoinLikeNetworkParametersCallback;
 @protocol LGBitcoinLikeWalletCallback;
+@protocol LGWalletListCallback;
 
 
 @interface LGWalletPool : NSObject
@@ -37,5 +38,7 @@
                                     accountNumber:(int32_t)accountNumber;
 
 - (nullable LGPreferences *)getOperationPreferences:(nonnull NSString *)uid;
+
+- (nullable id<LGWalletListCallback>)getWallets;
 
 @end

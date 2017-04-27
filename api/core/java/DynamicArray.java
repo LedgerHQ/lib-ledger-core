@@ -50,6 +50,8 @@ public abstract class DynamicArray {
 
     public abstract byte[] serialize();
 
+    public abstract boolean isReadOnly();
+
     public static native DynamicArray newInstance();
 
     public static native DynamicArray load(byte[] serialized);
@@ -252,5 +254,13 @@ public abstract class DynamicArray {
             return native_serialize(this.nativeRef);
         }
         private native byte[] native_serialize(long _nativeRef);
+
+        @Override
+        public boolean isReadOnly()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isReadOnly(this.nativeRef);
+        }
+        private native boolean native_isReadOnly(long _nativeRef);
     }
 }

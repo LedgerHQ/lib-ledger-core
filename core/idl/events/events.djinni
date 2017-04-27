@@ -1,0 +1,10 @@
+
+EventCode = enum {
+    undefined;
+
+    new_operation;
+
+    synchronization_start;
+    synchronization_stop;
+    synchronization_done;
+}

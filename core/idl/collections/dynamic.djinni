@@ -43,11 +43,15 @@ DynamicArray = interface +c {
     dump(): string;
     serialize(): binary;
 
+    isReadOnly(): bool;
+
     static newInstance(): DynamicArray;
     static load(serialized: binary): optional<DynamicArray>;
 }
 
 DynamicObject = interface +c {
+    isReadOnly(): bool;
+
     putString(key: string, value: string): DynamicObject;
     putInt(key: string, value: i32): DynamicObject;
     putLong(key: string, value: i64): DynamicObject;

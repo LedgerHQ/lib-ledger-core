@@ -45,7 +45,7 @@ namespace ledger {
 
         class DynamicArray : public api::DynamicArray, public std::enable_shared_from_this<DynamicArray> {
         public:
-            DynamicArray() {};
+            DynamicArray() : _readOnly(false) {};
             int64_t size() override;
             optional<std::string> getString(int64_t index) override;
             optional<int32_t> getInt(int64_t index) override;
@@ -65,6 +65,10 @@ namespace ledger {
             std::shared_ptr<api::DynamicArray> concat(const std::shared_ptr<api::DynamicArray> &array) override;
 
             std::shared_ptr <api::DynamicArray> getArray(int64_t index) override;
+
+            bool isReadOnly() override;
+            void setReadOnly(bool enable);
+
             optional<api::DynamicType> getType(int64_t index) override;
             bool remove(int64_t index) override;
             std::string dump() override;
@@ -79,6 +83,7 @@ namespace ledger {
 
         private:
             Array<DynamicValue> _values;
+            bool _readOnly;
         };
     }
 }

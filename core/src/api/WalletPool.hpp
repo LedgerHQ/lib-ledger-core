@@ -16,6 +16,7 @@ class BitcoinLikeWalletCallback;
 class DynamicObject;
 class Logger;
 class Preferences;
+class WalletListCallback;
 struct BitcoinLikeNetworkParameters;
 
 class WalletPool {
@@ -41,6 +42,8 @@ public:
     virtual std::shared_ptr<Preferences> getAccountPreferences(const std::string & walletIdentifier, int32_t accountNumber) = 0;
 
     virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
+
+    virtual std::shared_ptr<WalletListCallback> getWallets() = 0;
 };
 
 } } }  // namespace ledger::core::api

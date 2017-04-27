@@ -50,9 +50,10 @@ namespace ledger {
             );
 
             static const int POOL_SIZE;
+            static const int CURRENT_DATABASE_SCHEME_VERSION = 1;
         private:
             DatabaseSessionPool(int poolSize);
-
+            void performDatabaseMigration();
         private:
             soci::connection_pool _pool;
         };
