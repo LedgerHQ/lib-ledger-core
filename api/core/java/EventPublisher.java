@@ -14,7 +14,7 @@ public abstract class EventPublisher {
 
     public abstract void relay(EventBus bus);
 
-    public static native EventPublisher newInstance();
+    public static native EventPublisher newInstance(ExecutionContext context);
 
     private static final class CppProxy extends EventPublisher
     {

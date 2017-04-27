@@ -27,5 +27,5 @@ EventPublisher = interface +c {
     postSticky(event: Event, tag: i32);
     relay(bus: EventBus);
 
-    static newInstance(): EventPublisher;
+    static newInstance(context: ExecutionContext): EventPublisher;
 }

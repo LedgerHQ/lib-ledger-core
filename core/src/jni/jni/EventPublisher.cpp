@@ -4,6 +4,7 @@
 #include "EventPublisher.hpp"  // my header
 #include "Event.hpp"
 #include "EventBus.hpp"
+#include "ExecutionContext.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -59,11 +60,11 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_newInstance(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_context)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        auto r = ::ledger::core::api::EventPublisher::newInstance();
+        auto r = ::ledger::core::api::EventPublisher::newInstance(::djinni_generated::ExecutionContext::toCpp(jniEnv, j_context));
         return ::djinni::release(::djinni_generated::EventPublisher::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

@@ -11,6 +11,7 @@ namespace ledger { namespace core { namespace api {
 
 class Event;
 class EventBus;
+class ExecutionContext;
 
 class EventPublisher {
 public:
@@ -24,7 +25,7 @@ public:
 
     virtual void relay(const std::shared_ptr<EventBus> & bus) = 0;
 
-    static std::shared_ptr<EventPublisher> newInstance();
+    static std::shared_ptr<EventPublisher> newInstance(const std::shared_ptr<ExecutionContext> & context);
 };
 
 } } }  // namespace ledger::core::api

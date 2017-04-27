@@ -65,3 +65,8 @@ void ledger::core::Event::setSticky(int32_t tag) {
 std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core::api::EventCode code, const std::shared_ptr<ledger::core::api::DynamicObject>& payload) {
     return std::make_shared<ledger::core::Event>(code, payload);
 }
+
+std::share_ptr<ledger::core::api::Event> ledger::core::api::Event::newInstance(EventCode code,
+                                                                               const std::shared_ptr<DynamicObject> &payload) {
+    return std::make_shared<ledger::core::Event>(code, payload);
+}

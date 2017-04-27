@@ -5,6 +5,7 @@
 @class LGEvent;
 @class LGEventBus;
 @class LGEventPublisher;
+@protocol LGExecutionContext;
 
 
 @interface LGEventPublisher : NSObject
@@ -18,6 +19,6 @@
 
 - (void)relay:(nullable LGEventBus *)bus;
 
-+ (nullable LGEventPublisher *)newInstance;
++ (nullable LGEventPublisher *)newInstance:(nullable id<LGExecutionContext>)context;
 
 @end
