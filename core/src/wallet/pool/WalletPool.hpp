@@ -121,6 +121,7 @@ namespace ledger {
 
             // Utilities
             std::shared_ptr<api::Logger> getLogger() override;
+            std::shared_ptr<spdlog::logger> getSpdLogger() const { return _logger; };
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Preferences> getWalletPreferences(const std::string &walletIdentifier) override;
             std::shared_ptr<api::Preferences>
@@ -128,7 +129,7 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             std::shared_ptr<Preferences> getInternalPreferences();
             std::shared_ptr<Preferences> getExternalPreferences();
-
+            std::shared_ptr<api::ThreadDispatcher> getDispatcher() const;
             ~WalletPool();
 
         private:

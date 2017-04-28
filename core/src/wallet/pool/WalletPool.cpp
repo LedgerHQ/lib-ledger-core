@@ -214,5 +214,9 @@ namespace ledger {
             return nullptr;
         }
 
+        std::shared_ptr<api::ThreadDispatcher> WalletPool::getDispatcher() const {
+            return _dispatcher;
+        }
+
     }
 }

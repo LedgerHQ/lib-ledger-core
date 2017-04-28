@@ -14,6 +14,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 enum class OperationType;
+enum class WalletType;
 
 class Operation {
 public:
@@ -45,6 +46,8 @@ public:
     virtual bool isInstanceOfEthereumLikeOperation() = 0;
 
     virtual bool isInstanceOfRippleLikeOperation() = 0;
+
+    virtual WalletType getWalletType() = 0;
 };
 
 } } }  // namespace ledger::core::api

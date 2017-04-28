@@ -11,7 +11,9 @@
 #import "LGCurrency+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGI32Callback+Private.h"
+#import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -36,24 +38,23 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nullable id<LGAccountListCallback>)getAccounts {
+- (void)getAccounts:(nullable id<LGAccountListCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccounts();
-        return ::djinni_generated::AccountListCallback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getAccounts(::djinni_generated::AccountListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGAccountCallback>)getAccount:(int32_t)index {
+- (void)getAccount:(int32_t)index
+          callback:(nullable id<LGAccountCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccount(::djinni::I32::toCpp(index));
-        return ::djinni_generated::AccountCallback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getAccount(::djinni::I32::toCpp(index),
+                                        ::djinni_generated::AccountCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGI32Callback>)getAccountCount {
+- (void)getAccountCount:(nullable id<LGI32Callback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccountCount();
-        return ::djinni_generated::I32Callback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getAccountCount(::djinni_generated::I32Callback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -85,6 +86,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGLogger *)getLogger {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getLogger();
+        return ::djinni_generated::Logger::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGPreferences *)getAccountPreferences:(int32_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getAccountPreferences(::djinni::I32::toCpp(index));
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nonnull LGCurrency *)getCurrency {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getCurrency();
@@ -110,6 +125,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfRippleLikeWallet();
         return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (LGWalletType)getWalletType {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
+        return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

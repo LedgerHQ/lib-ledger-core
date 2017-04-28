@@ -5,6 +5,6 @@
 
 typedef NS_ENUM(NSInteger, LGOperationType)
 {
-    LGOperationTypeSEND,
-    LGOperationTypeRECEIVE,
+    LGOperationTypeSend,
+    LGOperationTypeReceive,
 };

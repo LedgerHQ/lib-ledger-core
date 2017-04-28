@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeWallet
+ * BitcoinLikeAccountSynchronizer
  * ledger-core
  *
- * Created by Pierre Pollastri on 19/12/2016.
+ * Created by Pierre Pollastri on 28/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,35 +28,16 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEWALLET_HPP
-#define LEDGER_CORE_BITCOINLIKEWALLET_HPP
-
-#include "../../api/BitcoinLikeWallet.hpp"
-#include <memory>
-#include "explorers/BitcoinLikeBlockchainExplorer.hpp"
-#include "keychains/BitcoinLikeKeychain.hpp"
-#include "observers/BitcoinLikeBlockchainObserver.hpp"
-#include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
-#include <src/wallet/common/AbstractWallet.hpp>
-#include <src/api/BitcoinLikeNetworkParameters.hpp>
+#ifndef LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
+#define LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
+        class BitcoinLikeAccountSynchronizer {
         public:
-            BitcoinLikeWallet(
-                const std::string& name,
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<BitcoinLikeKeychain>& keychain,
-                const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
-                const std::shared_ptr<WalletPool>& pool,
-                const api::BitcoinLikeNetworkParameters& network
-            );
-        private:
+            void synchronize();
         };
     }
 }
 
-
-#endif //LEDGER_CORE_BITCOINLIKEWALLET_HPP
+#endif //LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP

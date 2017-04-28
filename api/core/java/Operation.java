@@ -35,6 +35,8 @@ public abstract class Operation {
 
     public abstract boolean isInstanceOfRippleLikeOperation();
 
+    public abstract WalletType getWalletType();
+
     private static final class CppProxy extends Operation
     {
         private final long nativeRef;
@@ -145,5 +147,13 @@ public abstract class Operation {
             return native_isInstanceOfRippleLikeOperation(this.nativeRef);
         }
         private native boolean native_isInstanceOfRippleLikeOperation(long _nativeRef);
+
+        @Override
+        public WalletType getWalletType()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWalletType(this.nativeRef);
+        }
+        private native WalletType native_getWalletType(long _nativeRef);
     }
 }

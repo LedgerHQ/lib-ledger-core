@@ -13,9 +13,11 @@ namespace ledger { namespace core { namespace api {
 class AmountCallback;
 class EventBus;
 class I64Callback;
+class Logger;
 class OperationCallback;
 class OperationListCallback;
 class Preferences;
+enum class WalletType;
 
 class Account {
 public:
@@ -23,19 +25,23 @@ public:
 
     virtual int32_t getIndex() = 0;
 
-    virtual std::shared_ptr<OperationListCallback> getOperations(int32_t from, int32_t to, bool descending) = 0;
+    virtual void getOperations(int32_t from, int32_t to, bool descending, const std::shared_ptr<OperationListCallback> & callback) = 0;
 
-    virtual std::shared_ptr<I64Callback> getOperationsCount() = 0;
+    virtual void getOperationsCount(const std::shared_ptr<I64Callback> & callback) = 0;
 
-    virtual std::shared_ptr<OperationCallback> getOperation(const std::string & uid) = 0;
+    virtual void getOperation(const std::string & uid, const std::shared_ptr<OperationCallback> & callback) = 0;
 
-    virtual std::shared_ptr<AmountCallback> getBalance() = 0;
+    virtual void getBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
 
     virtual bool isSynchronizing() = 0;
 
     virtual std::shared_ptr<EventBus> synchronize() = 0;
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual std::shared_ptr<Logger> getLogger() = 0;
+
+    virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
 
     /**
      * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
@@ -47,6 +53,8 @@ public:
     virtual bool isInstanceOfEthereumLikeAccount() = 0;
 
     virtual bool isInstanceOfRippleLikeAccount() = 0;
+
+    virtual WalletType getWalletType() = 0;
 };
 
 } } }  // namespace ledger::core::api

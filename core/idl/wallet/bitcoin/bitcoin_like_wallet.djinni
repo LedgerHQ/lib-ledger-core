@@ -58,11 +58,6 @@ BitcoinLikeBlock = record {
     time: i64;
 }
 
-BitcoinLikeOperationCursor = interface +c {
-
-}
-
-
 BitcoinLikeTransaction = record {
     inputs: list<BitcoinLikeInput>;
     outputs: list<BitcoinLikeOutput>;

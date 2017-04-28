@@ -13,18 +13,20 @@ class AccountCallback;
 class AccountListCallback;
 class EventBus;
 class I32Callback;
+class Logger;
 class Preferences;
+enum class WalletType;
 struct Currency;
 
 class Wallet {
 public:
     virtual ~Wallet() {}
 
-    virtual std::shared_ptr<AccountListCallback> getAccounts() = 0;
+    virtual void getAccounts(const std::shared_ptr<AccountListCallback> & callback) = 0;
 
-    virtual std::shared_ptr<AccountCallback> getAccount(int32_t index) = 0;
+    virtual void getAccount(int32_t index, const std::shared_ptr<AccountCallback> & callback) = 0;
 
-    virtual std::shared_ptr<I32Callback> getAccountCount() = 0;
+    virtual void getAccountCount(const std::shared_ptr<I32Callback> & callback) = 0;
 
     virtual std::shared_ptr<EventBus> getEventBus() = 0;
 
@@ -33,6 +35,10 @@ public:
     virtual std::shared_ptr<EventBus> synchronize() = 0;
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual std::shared_ptr<Logger> getLogger() = 0;
+
+    virtual std::shared_ptr<Preferences> getAccountPreferences(int32_t index) = 0;
 
     /**
      * asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
@@ -46,6 +52,8 @@ public:
     virtual bool isInstanceOfEthereumLikeWallet() = 0;
 
     virtual bool isInstanceOfRippleLikeWallet() = 0;
+
+    virtual WalletType getWalletType() = 0;
 };
 
 } } }  // namespace ledger::core::api

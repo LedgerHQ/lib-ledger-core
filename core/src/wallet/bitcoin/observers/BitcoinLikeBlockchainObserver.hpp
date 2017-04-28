@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeWallet
+ * BitcoinLikeBlockchainObserver
  * ledger-core
  *
- * Created by Pierre Pollastri on 19/12/2016.
+ * Created by Pierre Pollastri on 28/04/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,35 +28,34 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEWALLET_HPP
-#define LEDGER_CORE_BITCOINLIKEWALLET_HPP
+#ifndef LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
+#define LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
 
-#include "../../api/BitcoinLikeWallet.hpp"
-#include <memory>
-#include "explorers/BitcoinLikeBlockchainExplorer.hpp"
-#include "keychains/BitcoinLikeKeychain.hpp"
-#include "observers/BitcoinLikeBlockchainObserver.hpp"
-#include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
-#include <src/wallet/common/AbstractWallet.hpp>
-#include <src/api/BitcoinLikeNetworkParameters.hpp>
+#include <src/events/EventPublisher.hpp>
+#include <src/async/DedicatedContext.hpp>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
+        class BitcoinLikeBlockchainObserver : public DedicatedContext {
         public:
-            BitcoinLikeWallet(
-                const std::string& name,
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<BitcoinLikeKeychain>& keychain,
-                const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
-                const std::shared_ptr<WalletPool>& pool,
-                const api::BitcoinLikeNetworkParameters& network
-            );
+            BitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext>& context) : DedicatedContext(context) {
+                _publisher = std::make_shared<EventPublisher>(context);
+            };
+            virtual void start() = 0;
+            virtual void stop() = 0;
+            virtual bool isObserving() const = 0;
+            std::shared_ptr<EventBus> getEventBus() const {
+                return _publisher->getEventBus();
+            };
+
+        protected:
+            virtual std::shared_ptr<EventPublisher> getEventPublisher() const {
+                return _publisher;
+            }
         private:
+            std::shared_ptr<EventPublisher> _publisher;
         };
     }
 }
 
-
-#endif //LEDGER_CORE_BITCOINLIKEWALLET_HPP
+#endif //LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP

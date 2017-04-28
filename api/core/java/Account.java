@@ -8,19 +8,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Account {
     public abstract int getIndex();
 
-    public abstract OperationListCallback getOperations(int from, int to, boolean descending);
+    public abstract void getOperations(int from, int to, boolean descending, OperationListCallback callback);
 
-    public abstract I64Callback getOperationsCount();
+    public abstract void getOperationsCount(I64Callback callback);
 
-    public abstract OperationCallback getOperation(String uid);
+    public abstract void getOperation(String uid, OperationCallback callback);
 
-    public abstract AmountCallback getBalance();
+    public abstract void getBalance(AmountCallback callback);
 
     public abstract boolean isSynchronizing();
 
     public abstract EventBus synchronize();
 
     public abstract Preferences getPreferences();
+
+    public abstract Logger getLogger();
+
+    public abstract Preferences getOperationPreferences(String uid);
 
     /**
      * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
@@ -32,6 +36,8 @@ public abstract class Account {
     public abstract boolean isInstanceOfEthereumLikeAccount();
 
     public abstract boolean isInstanceOfRippleLikeAccount();
+
+    public abstract WalletType getWalletType();
 
     private static final class CppProxy extends Account
     {
@@ -65,36 +71,36 @@ public abstract class Account {
         private native int native_getIndex(long _nativeRef);
 
         @Override
-        public OperationListCallback getOperations(int from, int to, boolean descending)
+        public void getOperations(int from, int to, boolean descending, OperationListCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getOperations(this.nativeRef, from, to, descending);
+            native_getOperations(this.nativeRef, from, to, descending, callback);
         }
-        private native OperationListCallback native_getOperations(long _nativeRef, int from, int to, boolean descending);
+        private native void native_getOperations(long _nativeRef, int from, int to, boolean descending, OperationListCallback callback);
 
         @Override
-        public I64Callback getOperationsCount()
+        public void getOperationsCount(I64Callback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getOperationsCount(this.nativeRef);
+            native_getOperationsCount(this.nativeRef, callback);
         }
-        private native I64Callback native_getOperationsCount(long _nativeRef);
+        private native void native_getOperationsCount(long _nativeRef, I64Callback callback);
 
         @Override
-        public OperationCallback getOperation(String uid)
+        public void getOperation(String uid, OperationCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getOperation(this.nativeRef, uid);
+            native_getOperation(this.nativeRef, uid, callback);
         }
-        private native OperationCallback native_getOperation(long _nativeRef, String uid);
+        private native void native_getOperation(long _nativeRef, String uid, OperationCallback callback);
 
         @Override
-        public AmountCallback getBalance()
+        public void getBalance(AmountCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getBalance(this.nativeRef);
+            native_getBalance(this.nativeRef, callback);
         }
-        private native AmountCallback native_getBalance(long _nativeRef);
+        private native void native_getBalance(long _nativeRef, AmountCallback callback);
 
         @Override
         public boolean isSynchronizing()
@@ -121,6 +127,22 @@ public abstract class Account {
         private native Preferences native_getPreferences(long _nativeRef);
 
         @Override
+        public Logger getLogger()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getLogger(this.nativeRef);
+        }
+        private native Logger native_getLogger(long _nativeRef);
+
+        @Override
+        public Preferences getOperationPreferences(String uid)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getOperationPreferences(this.nativeRef, uid);
+        }
+        private native Preferences native_getOperationPreferences(long _nativeRef, String uid);
+
+        @Override
         public boolean isInstanceOfBitcoinLikeAccount()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -143,5 +165,13 @@ public abstract class Account {
             return native_isInstanceOfRippleLikeAccount(this.nativeRef);
         }
         private native boolean native_isInstanceOfRippleLikeAccount(long _nativeRef);
+
+        @Override
+        public WalletType getWalletType()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWalletType(this.nativeRef);
+        }
+        private native WalletType native_getWalletType(long _nativeRef);
     }
 }

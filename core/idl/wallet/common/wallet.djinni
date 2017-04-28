@@ -2,9 +2,17 @@
 @import "../../utils/callback.djinni"
 @import "../amount.djinni"
 @import "../../preferences/preferences.djinni"
+@import "../../debug/logger.djinni"
+
+WalletType = enum {
+    bitcoin;
+    ethereum;
+    ripple;
+    monero;
+}
 
 OperationType = enum {
-    SEND; RECEIVE;
+    send; receive;
 }
 
 Currency = record {
@@ -23,42 +31,49 @@ Operation = interface +c {
     getAmount(): Amount;
     getFees(): Amount;
 
-
     ## asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
     ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
     ## asRippleLikeOperation(): Callback<RippleLikeEthereum>;
     isInstanceOfBitcoinLikeOperation(): bool;
     isInstanceOfEthereumLikeOperation(): bool;
     isInstanceOfRippleLikeOperation(): bool;
+
+    getWalletType(): WalletType;
 }
 
 Account = interface +c {
     getIndex(): i32;
-    getOperations(from: i32, to: i32, descending: bool): ListCallback<Operation>;
-    getOperationsCount(): Callback<i64>;
-    getOperation(uid: string): Callback<Operation>;
-    getBalance(): Callback<Amount>;
+    getOperations(from: i32, to: i32, descending: bool, callback: ListCallback<Operation>);
+    getOperationsCount(callback: Callback<i64>);
+    getOperation(uid: string, callback: Callback<Operation>);
+    getBalance(callback: Callback<Amount>);
     isSynchronizing(): bool;
     synchronize(): EventBus;
     getPreferences(): Preferences;
-
+    getLogger(): Logger;
+    getOperationPreferences(uid: string): Preferences;
     # asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
     # asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
     # asRippleLikeAccount(): Callback<RippleLikeAccount>;
     isInstanceOfBitcoinLikeAccount(): bool;
     isInstanceOfEthereumLikeAccount(): bool;
     isInstanceOfRippleLikeAccount(): bool;
+
+    getWalletType(): WalletType;
 }
 
 Wallet = interface +c {
-    getAccounts(): ListCallback<Account>;
-    getAccount(index: i32): Callback<Account>;
-    getAccountCount(): Callback<i32>;
+    getAccounts(callback: ListCallback<Account>);
+    getAccount(index: i32, callback: Callback<Account>);
+    getAccountCount(callback: Callback<i32>);
     getEventBus(): EventBus;
 
     isSynchronizing(): bool;
     synchronize(): EventBus;
     getPreferences(): Preferences;
+    getLogger(): Logger;
+
+    getAccountPreferences(index: i32): Preferences;
 
     # asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
     # asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
@@ -67,4 +82,5 @@ Wallet = interface +c {
     isInstanceOfBitcoinLikeWallet(): bool;
     isInstanceOfEthereumLikeWallet(): bool;
     isInstanceOfRippleLikeWallet(): bool;
+    getWalletType(): WalletType;
 }

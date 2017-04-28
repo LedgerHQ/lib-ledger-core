@@ -6,11 +6,11 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Wallet {
-    public abstract AccountListCallback getAccounts();
+    public abstract void getAccounts(AccountListCallback callback);
 
-    public abstract AccountCallback getAccount(int index);
+    public abstract void getAccount(int index, AccountCallback callback);
 
-    public abstract I32Callback getAccountCount();
+    public abstract void getAccountCount(I32Callback callback);
 
     public abstract EventBus getEventBus();
 
@@ -19,6 +19,10 @@ public abstract class Wallet {
     public abstract EventBus synchronize();
 
     public abstract Preferences getPreferences();
+
+    public abstract Logger getLogger();
+
+    public abstract Preferences getAccountPreferences(int index);
 
     /**
      * asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
@@ -32,6 +36,8 @@ public abstract class Wallet {
     public abstract boolean isInstanceOfEthereumLikeWallet();
 
     public abstract boolean isInstanceOfRippleLikeWallet();
+
+    public abstract WalletType getWalletType();
 
     private static final class CppProxy extends Wallet
     {
@@ -57,28 +63,28 @@ public abstract class Wallet {
         }
 
         @Override
-        public AccountListCallback getAccounts()
+        public void getAccounts(AccountListCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAccounts(this.nativeRef);
+            native_getAccounts(this.nativeRef, callback);
         }
-        private native AccountListCallback native_getAccounts(long _nativeRef);
+        private native void native_getAccounts(long _nativeRef, AccountListCallback callback);
 
         @Override
-        public AccountCallback getAccount(int index)
+        public void getAccount(int index, AccountCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAccount(this.nativeRef, index);
+            native_getAccount(this.nativeRef, index, callback);
         }
-        private native AccountCallback native_getAccount(long _nativeRef, int index);
+        private native void native_getAccount(long _nativeRef, int index, AccountCallback callback);
 
         @Override
-        public I32Callback getAccountCount()
+        public void getAccountCount(I32Callback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAccountCount(this.nativeRef);
+            native_getAccountCount(this.nativeRef, callback);
         }
-        private native I32Callback native_getAccountCount(long _nativeRef);
+        private native void native_getAccountCount(long _nativeRef, I32Callback callback);
 
         @Override
         public EventBus getEventBus()
@@ -113,6 +119,22 @@ public abstract class Wallet {
         private native Preferences native_getPreferences(long _nativeRef);
 
         @Override
+        public Logger getLogger()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getLogger(this.nativeRef);
+        }
+        private native Logger native_getLogger(long _nativeRef);
+
+        @Override
+        public Preferences getAccountPreferences(int index)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getAccountPreferences(this.nativeRef, index);
+        }
+        private native Preferences native_getAccountPreferences(long _nativeRef, int index);
+
+        @Override
         public Currency getCurrency()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -143,5 +165,13 @@ public abstract class Wallet {
             return native_isInstanceOfRippleLikeWallet(this.nativeRef);
         }
         private native boolean native_isInstanceOfRippleLikeWallet(long _nativeRef);
+
+        @Override
+        public WalletType getWalletType()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWalletType(this.nativeRef);
+        }
+        private native WalletType native_getWalletType(long _nativeRef);
     }
 }

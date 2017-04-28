@@ -8,6 +8,7 @@
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
 #import "LGOperationType+Private.h"
+#import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -106,6 +107,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfRippleLikeOperation();
         return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (LGWalletType)getWalletType {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
+        return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

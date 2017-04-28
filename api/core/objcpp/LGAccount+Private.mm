@@ -9,9 +9,11 @@
 #import "LGAmountCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGI64Callback+Private.h"
+#import "LGLogger+Private.h"
 #import "LGOperationCallback+Private.h"
 #import "LGOperationListCallback+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -43,35 +45,35 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGOperationListCallback>)getOperations:(int32_t)from
-                                                   to:(int32_t)to
-                                           descending:(BOOL)descending {
+- (void)getOperations:(int32_t)from
+                   to:(int32_t)to
+           descending:(BOOL)descending
+             callback:(nullable id<LGOperationListCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getOperations(::djinni::I32::toCpp(from),
-                                                                 ::djinni::I32::toCpp(to),
-                                                                 ::djinni::Bool::toCpp(descending));
-        return ::djinni_generated::OperationListCallback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getOperations(::djinni::I32::toCpp(from),
+                                           ::djinni::I32::toCpp(to),
+                                           ::djinni::Bool::toCpp(descending),
+                                           ::djinni_generated::OperationListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGI64Callback>)getOperationsCount {
+- (void)getOperationsCount:(nullable id<LGI64Callback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getOperationsCount();
-        return ::djinni_generated::I64Callback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getOperationsCount(::djinni_generated::I64Callback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGOperationCallback>)getOperation:(nonnull NSString *)uid {
+- (void)getOperation:(nonnull NSString *)uid
+            callback:(nullable id<LGOperationCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getOperation(::djinni::String::toCpp(uid));
-        return ::djinni_generated::OperationCallback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getOperation(::djinni::String::toCpp(uid),
+                                          ::djinni_generated::OperationCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable id<LGAmountCallback>)getBalance {
+- (void)getBalance:(nullable id<LGAmountCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getBalance();
-        return ::djinni_generated::AmountCallback::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getBalance(::djinni_generated::AmountCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -96,6 +98,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGLogger *)getLogger {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getLogger();
+        return ::djinni_generated::Logger::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGPreferences *)getOperationPreferences:(nonnull NSString *)uid {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getOperationPreferences(::djinni::String::toCpp(uid));
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (BOOL)isInstanceOfBitcoinLikeAccount {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfBitcoinLikeAccount();
@@ -114,6 +130,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfRippleLikeAccount();
         return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (LGWalletType)getWalletType {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
+        return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
