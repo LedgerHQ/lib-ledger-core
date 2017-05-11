@@ -40,6 +40,10 @@ namespace ledger {
     namespace core {
         class DatabaseSessionPool {
         public:
+            DatabaseSessionPool(const std::shared_ptr<DatabaseBackend>& backend,
+                                const std::shared_ptr<api::PathResolver>& resolver,
+                                const std::string& dbName,
+                                int poolSize);
             soci::connection_pool& getPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
@@ -52,7 +56,6 @@ namespace ledger {
             static const int POOL_SIZE;
             static const int CURRENT_DATABASE_SCHEME_VERSION = 1;
         private:
-            DatabaseSessionPool(int poolSize);
             void performDatabaseMigration();
         private:
             soci::connection_pool _pool;

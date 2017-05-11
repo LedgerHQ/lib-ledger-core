@@ -6,27 +6,47 @@
 
 namespace djinni_generated {
 
-BitcoinLikeBlock::BitcoinLikeBlock() = default;
+BitcoinLikeBlock::BitcoinLikeBlock() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeBlock, BitcoinLikeBlock>("co/ledger/core/BitcoinLikeBlock$CppProxy") {}
 
 BitcoinLikeBlock::~BitcoinLikeBlock() = default;
 
-auto BitcoinLikeBlock::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
-    const auto& data = ::djinni::JniClass<BitcoinLikeBlock>::get();
-    auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.hash)),
-                                                           ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.height)),
-                                                           ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.time)))};
-    ::djinni::jniExceptionCheck(jniEnv);
-    return r;
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeBlock_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        delete reinterpret_cast<::djinni::CppProxyHandle<::ledger::core::api::BitcoinLikeBlock>*>(nativeRef);
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-auto BitcoinLikeBlock::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 4);
-    assert(j != nullptr);
-    const auto& data = ::djinni::JniClass<BitcoinLikeBlock>::get();
-    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_hash)),
-            ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_height)),
-            ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_time))};
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeBlock_00024CppProxy_native_1getHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeBlock>(nativeRef);
+        auto r = ref->getHash();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jlong JNICALL Java_co_ledger_core_BitcoinLikeBlock_00024CppProxy_native_1getHeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeBlock>(nativeRef);
+        auto r = ref->getHeight();
+        return ::djinni::release(::djinni::I64::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeBlock_00024CppProxy_native_1getTime(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeBlock>(nativeRef);
+        auto r = ref->getTime();
+        return ::djinni::release(::djinni::Date::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

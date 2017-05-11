@@ -5,10 +5,7 @@
 #import "LGBitcoinLikeOperation.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
-#import "DJIMarshal+Private.h"
-#import "LGAmount+Private.h"
 #import "LGBitcoinLikeTransaction+Private.h"
-#import "LGPreferences+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -33,87 +30,10 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nullable LGPreferences *)getPreferences {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull LGBitcoinLikeTransaction *)getTransaction {
+- (nullable LGBitcoinLikeTransaction *)getTransaction {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getTransaction();
         return ::djinni_generated::BitcoinLikeTransaction::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGAmount *)getAmount {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAmount();
-        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (BOOL)isSending {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->isSending();
-        return ::djinni::Bool::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (BOOL)isReception {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->isReception();
-        return ::djinni::Bool::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGAmount *)getFees {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getFees();
-        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull NSArray<NSString *> *)getSenders {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getSenders();
-        return ::djinni::List<::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull NSArray<NSString *> *)getRecipients {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getRecipients();
-        return ::djinni::List<::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nonnull NSDate *)getTime {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getTime();
-        return ::djinni::Date::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSDate *)getConfirmationTime {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getConfirmationTime();
-        return ::djinni::Optional<std::experimental::optional, ::djinni::Date>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (int64_t)getConfirmationCount {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getConfirmationCount();
-        return ::djinni::I64::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (int32_t)getAccountIndex {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccountIndex();
-        return ::djinni::I32::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

@@ -24,8 +24,13 @@ public abstract class Operation {
 
     public abstract Amount getFees();
 
+    public abstract Preferences getPreferences();
+
+    public abstract int getConfirmationsCount();
+
+    public abstract BitcoinLikeOperation asBitcoinLikeOperation();
+
     /**
-     *# asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
      *# asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
      *# asRippleLikeOperation(): Callback<RippleLikeEthereum>;
      */
@@ -34,6 +39,8 @@ public abstract class Operation {
     public abstract boolean isInstanceOfEthereumLikeOperation();
 
     public abstract boolean isInstanceOfRippleLikeOperation();
+
+    public abstract boolean isComplete();
 
     public abstract WalletType getWalletType();
 
@@ -125,6 +132,30 @@ public abstract class Operation {
         private native Amount native_getFees(long _nativeRef);
 
         @Override
+        public Preferences getPreferences()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreferences(this.nativeRef);
+        }
+        private native Preferences native_getPreferences(long _nativeRef);
+
+        @Override
+        public int getConfirmationsCount()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getConfirmationsCount(this.nativeRef);
+        }
+        private native int native_getConfirmationsCount(long _nativeRef);
+
+        @Override
+        public BitcoinLikeOperation asBitcoinLikeOperation()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_asBitcoinLikeOperation(this.nativeRef);
+        }
+        private native BitcoinLikeOperation native_asBitcoinLikeOperation(long _nativeRef);
+
+        @Override
         public boolean isInstanceOfBitcoinLikeOperation()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -147,6 +178,14 @@ public abstract class Operation {
             return native_isInstanceOfRippleLikeOperation(this.nativeRef);
         }
         private native boolean native_isInstanceOfRippleLikeOperation(long _nativeRef);
+
+        @Override
+        public boolean isComplete()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isComplete(this.nativeRef);
+        }
+        private native boolean native_isComplete(long _nativeRef);
 
         @Override
         public WalletType getWalletType()

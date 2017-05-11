@@ -3,43 +3,61 @@
 
 package co.ledger.core;
 
-public final class BitcoinLikeBlock {
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+public abstract class BitcoinLikeBlock {
+    public abstract String getHash();
 
-    /*package*/ final String hash;
+    public abstract long getHeight();
 
-    /*package*/ final long height;
+    public abstract Date getTime();
 
-    /*package*/ final long time;
+    private static final class CppProxy extends BitcoinLikeBlock
+    {
+        private final long nativeRef;
+        private final AtomicBoolean destroyed = new AtomicBoolean(false);
 
-    public BitcoinLikeBlock(
-            String hash,
-            long height,
-            long time) {
-        this.hash = hash;
-        this.height = height;
-        this.time = time;
+        private CppProxy(long nativeRef)
+        {
+            if (nativeRef == 0) throw new RuntimeException("nativeRef is zero");
+            this.nativeRef = nativeRef;
+        }
+
+        private native void nativeDestroy(long nativeRef);
+        public void destroy()
+        {
+            boolean destroyed = this.destroyed.getAndSet(true);
+            if (!destroyed) nativeDestroy(this.nativeRef);
+        }
+        protected void finalize() throws java.lang.Throwable
+        {
+            destroy();
+            super.finalize();
+        }
+
+        @Override
+        public String getHash()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getHash(this.nativeRef);
+        }
+        private native String native_getHash(long _nativeRef);
+
+        @Override
+        public long getHeight()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getHeight(this.nativeRef);
+        }
+        private native long native_getHeight(long _nativeRef);
+
+        @Override
+        public Date getTime()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getTime(this.nativeRef);
+        }
+        private native Date native_getTime(long _nativeRef);
     }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public long getHeight() {
-        return height;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    @Override
-    public String toString() {
-        return "BitcoinLikeBlock{" +
-                "hash=" + hash +
-                "," + "height=" + height +
-                "," + "time=" + time +
-        "}";
-    }
-
 }

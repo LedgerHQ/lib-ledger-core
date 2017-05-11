@@ -9,29 +9,25 @@
 
 namespace djinni_generated {
 
-class BitcoinLikeTransaction final {
+class BitcoinLikeTransaction final : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeTransaction, BitcoinLikeTransaction> {
 public:
-    using CppType = ::ledger::core::api::BitcoinLikeTransaction;
+    using CppType = std::shared_ptr<::ledger::core::api::BitcoinLikeTransaction>;
+    using CppOptType = std::shared_ptr<::ledger::core::api::BitcoinLikeTransaction>;
     using JniType = jobject;
 
     using Boxed = BitcoinLikeTransaction;
 
     ~BitcoinLikeTransaction();
 
-    static CppType toCpp(JNIEnv* jniEnv, JniType j);
-    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c);
+    static CppType toCpp(JNIEnv* jniEnv, JniType j) { return ::djinni::JniClass<BitcoinLikeTransaction>::get()._fromJava(jniEnv, j); }
+    static ::djinni::LocalRef<JniType> fromCppOpt(JNIEnv* jniEnv, const CppOptType& c) { return {jniEnv, ::djinni::JniClass<BitcoinLikeTransaction>::get()._toJava(jniEnv, c)}; }
+    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c) { return fromCppOpt(jniEnv, c); }
 
 private:
     BitcoinLikeTransaction();
     friend ::djinni::JniClass<BitcoinLikeTransaction>;
+    friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikeTransaction, BitcoinLikeTransaction>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeTransaction") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/util/ArrayList;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeBlock;JJ)V") };
-    const jfieldID field_inputs { ::djinni::jniGetFieldID(clazz.get(), "inputs", "Ljava/util/ArrayList;") };
-    const jfieldID field_outputs { ::djinni::jniGetFieldID(clazz.get(), "outputs", "Ljava/util/ArrayList;") };
-    const jfieldID field_block { ::djinni::jniGetFieldID(clazz.get(), "block", "Lco/ledger/core/BitcoinLikeBlock;") };
-    const jfieldID field_lockTime { ::djinni::jniGetFieldID(clazz.get(), "lockTime", "J") };
-    const jfieldID field_time { ::djinni::jniGetFieldID(clazz.get(), "time", "J") };
 };
 
 }  // namespace djinni_generated

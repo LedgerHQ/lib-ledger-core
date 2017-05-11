@@ -4,63 +4,31 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEOUTPUT_HPP
 #define DJINNI_GENERATED_BITCOINLIKEOUTPUT_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
-#include <iostream>
+#include <memory>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
 
-struct BitcoinLikeOutput final {
-    std::string transactionHash;
-    int32_t index;
-    std::string path;
-    /**value: Amount; */
-    std::vector<uint8_t> script;
-    std::string address;
+class Amount;
 
-    BitcoinLikeOutput(std::string transactionHash_,
-                      int32_t index_,
-                      std::string path_,
-                      std::vector<uint8_t> script_,
-                      std::string address_)
-    : transactionHash(std::move(transactionHash_))
-    , index(std::move(index_))
-    , path(std::move(path_))
-    , script(std::move(script_))
-    , address(std::move(address_))
-    {}
+class BitcoinLikeOutput {
+public:
+    virtual ~BitcoinLikeOutput() {}
 
-    BitcoinLikeOutput(const BitcoinLikeOutput& cpy) {
-       this->transactionHash = cpy.transactionHash;
-       this->index = cpy.index;
-       this->path = cpy.path;
-       this->script = cpy.script;
-       this->address = cpy.address;
-    }
+    virtual std::string getTransactionHash() = 0;
 
-    BitcoinLikeOutput() = default;
+    virtual int32_t getOutputIndex() = 0;
 
+    virtual std::experimental::optional<std::string> getAddressDerivationPath() = 0;
 
-    BitcoinLikeOutput& operator=(const BitcoinLikeOutput& cpy) {
-       this->transactionHash = cpy.transactionHash;
-       this->index = cpy.index;
-       this->path = cpy.path;
-       this->script = cpy.script;
-       this->address = cpy.address;
-       return *this;
-    }
+    virtual std::shared_ptr<Amount> getValue() = 0;
 
-    template <class Archive>
-    void load(Archive& archive) {
-        archive(transactionHash, index, path, script, address);
-    }
+    virtual std::vector<uint8_t> getScript() = 0;
 
-    template <class Archive>
-    void save(Archive& archive) const {
-        archive(transactionHash, index, path, script, address);
-    }
+    virtual std::experimental::optional<std::string> getAddress() = 0;
 };
 
 } } }  // namespace ledger::core::api

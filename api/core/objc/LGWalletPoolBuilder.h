@@ -3,16 +3,16 @@
 
 #import <Foundation/Foundation.h>
 @class LGDatabaseBackend;
+@class LGDynamicObject;
 @class LGWalletPoolBuilder;
 @protocol LGHttpClient;
 @protocol LGLogPrinter;
 @protocol LGPathResolver;
 @protocol LGRandomNumberGenerator;
 @protocol LGThreadDispatcher;
-@protocol LGWalletPoolBuildCallback;
+@protocol LGWalletPoolCallback;
 @protocol LGWebSocketClient;
 
-extern NSString * __nonnull const LGWalletPoolBuilderAPIBASEURL;
 
 @interface LGWalletPoolBuilder : NSObject
 
@@ -34,10 +34,9 @@ extern NSString * __nonnull const LGWalletPoolBuilderAPIBASEURL;
 
 - (nullable LGWalletPoolBuilder *)setDatabaseBackend:(nullable LGDatabaseBackend *)backend;
 
-- (nullable LGWalletPoolBuilder *)setConfiguration:(nonnull NSString *)key
-                                             value:(nonnull NSString *)value;
+- (nullable LGWalletPoolBuilder *)setConfiguration:(nullable LGDynamicObject *)configuration;
 
-- (void)build:(nullable id<LGWalletPoolBuildCallback>)listener;
+- (void)build:(nullable id<LGWalletPoolCallback>)listener;
 
 + (nullable LGWalletPoolBuilder *)createInstance;
 

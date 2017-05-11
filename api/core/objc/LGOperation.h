@@ -5,6 +5,8 @@
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
 @class LGAmount;
+@class LGBitcoinLikeOperation;
+@class LGPreferences;
 
 
 @interface LGOperation : NSObject
@@ -25,8 +27,13 @@
 
 - (nullable LGAmount *)getFees;
 
+- (nullable LGPreferences *)getPreferences;
+
+- (int32_t)getConfirmationsCount;
+
+- (nullable LGBitcoinLikeOperation *)asBitcoinLikeOperation;
+
 /**
- *# asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
  *# asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
  *# asRippleLikeOperation(): Callback<RippleLikeEthereum>;
  */
@@ -35,6 +42,8 @@
 - (BOOL)isInstanceOfEthereumLikeOperation;
 
 - (BOOL)isInstanceOfRippleLikeOperation;
+
+- (BOOL)isComplete;
 
 - (LGWalletType)getWalletType;
 

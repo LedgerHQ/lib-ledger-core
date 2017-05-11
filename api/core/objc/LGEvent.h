@@ -4,6 +4,7 @@
 #import "LGEventCode.h"
 #import <Foundation/Foundation.h>
 @class LGDynamicObject;
+@class LGEvent;
 
 
 @interface LGEvent : NSObject
@@ -16,7 +17,7 @@
 
 - (int32_t)getStickyTag;
 
-+ (void)newInstance:(LGEventCode)code
-            payload:(nullable LGDynamicObject *)payload;
++ (nullable LGEvent *)newInstance:(LGEventCode)code
+                          payload:(nullable LGDynamicObject *)payload;
 
 @end

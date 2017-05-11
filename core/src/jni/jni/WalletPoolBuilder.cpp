@@ -3,13 +3,14 @@
 
 #include "WalletPoolBuilder.hpp"  // my header
 #include "DatabaseBackend.hpp"
+#include "DynamicObject.hpp"
 #include "HttpClient.hpp"
 #include "LogPrinter.hpp"
 #include "Marshal.hpp"
 #include "PathResolver.hpp"
 #include "RandomNumberGenerator.hpp"
 #include "ThreadDispatcher.hpp"
-#include "WalletPoolBuildCallback.hpp"
+#include "WalletPoolCallback.hpp"
 #include "WebSocketClient.hpp"
 
 namespace djinni_generated {
@@ -117,13 +118,12 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1setConfiguration(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1setConfiguration(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_configuration)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
-        auto r = ref->setConfiguration(::djinni::String::toCpp(jniEnv, j_key),
-                                       ::djinni::String::toCpp(jniEnv, j_value));
+        auto r = ref->setConfiguration(::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration));
         return ::djinni::release(::djinni_generated::WalletPoolBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
@@ -133,7 +133,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
-        ref->build(::djinni_generated::WalletPoolBuildCallback::toCpp(jniEnv, j_listener));
+        ref->build(::djinni_generated::WalletPoolCallback::toCpp(jniEnv, j_listener));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

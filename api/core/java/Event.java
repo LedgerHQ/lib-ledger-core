@@ -14,7 +14,7 @@ public abstract class Event {
 
     public abstract int getStickyTag();
 
-    public static native void newInstance(EventCode code, DynamicObject payload);
+    public static native Event newInstance(EventCode code, DynamicObject payload);
 
     private static final class CppProxy extends Event
     {

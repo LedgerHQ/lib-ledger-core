@@ -6,8 +6,6 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class WalletPoolBuilder {
-    public static final String API_BASE_URL = "API_BASE_URL";
-
     public abstract WalletPoolBuilder setHttpClient(HttpClient client);
 
     public abstract WalletPoolBuilder setWebsocketClient(WebSocketClient client);
@@ -26,9 +24,9 @@ public abstract class WalletPoolBuilder {
 
     public abstract WalletPoolBuilder setDatabaseBackend(DatabaseBackend backend);
 
-    public abstract WalletPoolBuilder setConfiguration(String key, String value);
+    public abstract WalletPoolBuilder setConfiguration(DynamicObject configuration);
 
-    public abstract void build(WalletPoolBuildCallback listener);
+    public abstract void build(WalletPoolCallback listener);
 
     public static native WalletPoolBuilder createInstance();
 
@@ -128,19 +126,19 @@ public abstract class WalletPoolBuilder {
         private native WalletPoolBuilder native_setDatabaseBackend(long _nativeRef, DatabaseBackend backend);
 
         @Override
-        public WalletPoolBuilder setConfiguration(String key, String value)
+        public WalletPoolBuilder setConfiguration(DynamicObject configuration)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_setConfiguration(this.nativeRef, key, value);
+            return native_setConfiguration(this.nativeRef, configuration);
         }
-        private native WalletPoolBuilder native_setConfiguration(long _nativeRef, String key, String value);
+        private native WalletPoolBuilder native_setConfiguration(long _nativeRef, DynamicObject configuration);
 
         @Override
-        public void build(WalletPoolBuildCallback listener)
+        public void build(WalletPoolCallback listener)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             native_build(this.nativeRef, listener);
         }
-        private native void native_build(long _nativeRef, WalletPoolBuildCallback listener);
+        private native void native_build(long _nativeRef, WalletPoolCallback listener);
     }
 }

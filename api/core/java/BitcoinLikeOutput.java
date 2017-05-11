@@ -3,62 +3,90 @@
 
 package co.ledger.core;
 
-public final class BitcoinLikeOutput {
+import java.util.concurrent.atomic.AtomicBoolean;
 
+public abstract class BitcoinLikeOutput {
+    public abstract String getTransactionHash();
 
-    /*package*/ final String transactionHash;
+    public abstract int getOutputIndex();
 
-    /*package*/ final int index;
+    public abstract String getAddressDerivationPath();
 
-    /*package*/ final String path;
+    public abstract Amount getValue();
 
-    /*package*/ final byte[] script;
+    public abstract byte[] getScript();
 
-    /*package*/ final String address;
+    public abstract String getAddress();
 
-    public BitcoinLikeOutput(
-            String transactionHash,
-            int index,
-            String path,
-            byte[] script,
-            String address) {
-        this.transactionHash = transactionHash;
-        this.index = index;
-        this.path = path;
-        this.script = script;
-        this.address = address;
+    private static final class CppProxy extends BitcoinLikeOutput
+    {
+        private final long nativeRef;
+        private final AtomicBoolean destroyed = new AtomicBoolean(false);
+
+        private CppProxy(long nativeRef)
+        {
+            if (nativeRef == 0) throw new RuntimeException("nativeRef is zero");
+            this.nativeRef = nativeRef;
+        }
+
+        private native void nativeDestroy(long nativeRef);
+        public void destroy()
+        {
+            boolean destroyed = this.destroyed.getAndSet(true);
+            if (!destroyed) nativeDestroy(this.nativeRef);
+        }
+        protected void finalize() throws java.lang.Throwable
+        {
+            destroy();
+            super.finalize();
+        }
+
+        @Override
+        public String getTransactionHash()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getTransactionHash(this.nativeRef);
+        }
+        private native String native_getTransactionHash(long _nativeRef);
+
+        @Override
+        public int getOutputIndex()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getOutputIndex(this.nativeRef);
+        }
+        private native int native_getOutputIndex(long _nativeRef);
+
+        @Override
+        public String getAddressDerivationPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getAddressDerivationPath(this.nativeRef);
+        }
+        private native String native_getAddressDerivationPath(long _nativeRef);
+
+        @Override
+        public Amount getValue()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getValue(this.nativeRef);
+        }
+        private native Amount native_getValue(long _nativeRef);
+
+        @Override
+        public byte[] getScript()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getScript(this.nativeRef);
+        }
+        private native byte[] native_getScript(long _nativeRef);
+
+        @Override
+        public String getAddress()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getAddress(this.nativeRef);
+        }
+        private native String native_getAddress(long _nativeRef);
     }
-
-    public String getTransactionHash() {
-        return transactionHash;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    /**value: Amount; */
-    public byte[] getScript() {
-        return script;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public String toString() {
-        return "BitcoinLikeOutput{" +
-                "transactionHash=" + transactionHash +
-                "," + "index=" + index +
-                "," + "path=" + path +
-                "," + "script=" + script +
-                "," + "address=" + address +
-        "}";
-    }
-
 }

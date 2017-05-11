@@ -5,8 +5,9 @@
 #import "LGBitcoinLikeAccount.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
-#import "LGBitcoinLikeOperationCursor+Private.h"
-#import "LGPreferences+Private.h"
+#import "DJIMarshal+Private.h"
+#import "LGBitcoinLikeOutputListCallback+Private.h"
+#import "LGI32Callback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -31,17 +32,19 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (nullable LGPreferences *)getPreferences {
+- (void)getUTXO:(int32_t)from
+             to:(int32_t)to
+       callback:(nullable id<LGBitcoinLikeOutputListCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getUTXO(::djinni::I32::toCpp(from),
+                                     ::djinni::I32::toCpp(to),
+                                     ::djinni_generated::BitcoinLikeOutputListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGBitcoinLikeOperationCursor *)openOperationsCursor {
+- (void)getUTXOCount:(nullable id<LGI32Callback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->openOperationsCursor();
-        return ::djinni_generated::BitcoinLikeOperationCursor::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getUTXOCount(::djinni_generated::I32Callback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

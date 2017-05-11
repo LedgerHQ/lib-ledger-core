@@ -34,3 +34,7 @@ Configuration = interface +c {
     # Selects the synchronization engine
     const SYNCHRONIZATION_ENGINE: string = "SYNCHRONIZATION_ENGINE";
 }
+
+PoolConfiguration = interface +c {
+    const DATABASE_NAME: string = "DATABASE_NAME";
+}

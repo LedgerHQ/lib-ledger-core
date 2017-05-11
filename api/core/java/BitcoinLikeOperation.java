@@ -3,34 +3,10 @@
 
 package co.ledger.core;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeOperation {
-    public abstract Preferences getPreferences();
-
     public abstract BitcoinLikeTransaction getTransaction();
-
-    public abstract Amount getAmount();
-
-    public abstract boolean isSending();
-
-    public abstract boolean isReception();
-
-    public abstract Amount getFees();
-
-    public abstract ArrayList<String> getSenders();
-
-    public abstract ArrayList<String> getRecipients();
-
-    public abstract Date getTime();
-
-    public abstract Date getConfirmationTime();
-
-    public abstract long getConfirmationCount();
-
-    public abstract int getAccountIndex();
 
     private static final class CppProxy extends BitcoinLikeOperation
     {
@@ -56,99 +32,11 @@ public abstract class BitcoinLikeOperation {
         }
 
         @Override
-        public Preferences getPreferences()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getPreferences(this.nativeRef);
-        }
-        private native Preferences native_getPreferences(long _nativeRef);
-
-        @Override
         public BitcoinLikeTransaction getTransaction()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getTransaction(this.nativeRef);
         }
         private native BitcoinLikeTransaction native_getTransaction(long _nativeRef);
-
-        @Override
-        public Amount getAmount()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAmount(this.nativeRef);
-        }
-        private native Amount native_getAmount(long _nativeRef);
-
-        @Override
-        public boolean isSending()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_isSending(this.nativeRef);
-        }
-        private native boolean native_isSending(long _nativeRef);
-
-        @Override
-        public boolean isReception()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_isReception(this.nativeRef);
-        }
-        private native boolean native_isReception(long _nativeRef);
-
-        @Override
-        public Amount getFees()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getFees(this.nativeRef);
-        }
-        private native Amount native_getFees(long _nativeRef);
-
-        @Override
-        public ArrayList<String> getSenders()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getSenders(this.nativeRef);
-        }
-        private native ArrayList<String> native_getSenders(long _nativeRef);
-
-        @Override
-        public ArrayList<String> getRecipients()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getRecipients(this.nativeRef);
-        }
-        private native ArrayList<String> native_getRecipients(long _nativeRef);
-
-        @Override
-        public Date getTime()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getTime(this.nativeRef);
-        }
-        private native Date native_getTime(long _nativeRef);
-
-        @Override
-        public Date getConfirmationTime()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getConfirmationTime(this.nativeRef);
-        }
-        private native Date native_getConfirmationTime(long _nativeRef);
-
-        @Override
-        public long getConfirmationCount()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getConfirmationCount(this.nativeRef);
-        }
-        private native long native_getConfirmationCount(long _nativeRef);
-
-        @Override
-        public int getAccountIndex()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAccountIndex(this.nativeRef);
-        }
-        private native int native_getAccountIndex(long _nativeRef);
     }
 }

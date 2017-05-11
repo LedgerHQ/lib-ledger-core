@@ -29,17 +29,13 @@
  *
  */
 #include "WalletPoolBuilder.hpp"
-#include "WalletPool.hpp"
-#include "../../api/DatabaseBackend.hpp"
-
-static const std::unordered_map<std::string, std::string> DEFAULT_CONFIGURATION = {
-        {ledger::core::api::WalletPoolBuilder::API_BASE_URL, "https://api.ledgerwallet.com/blockchain/v2/"}
-};
+#include "WalletPoolApi.hpp"
 
 namespace ledger { namespace core {
 
-        WalletPoolBuilder::WalletPoolBuilder() : _configuration(DEFAULT_CONFIGURATION) {
+        WalletPoolBuilder::WalletPoolBuilder() {
             _backend = api::DatabaseBackend::getSqlite3Backend();
+            _configuration = nullptr;
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
@@ -77,22 +73,6 @@ namespace ledger { namespace core {
             return shared_from_this();
         }
 
-        void WalletPoolBuilder::build(const std::shared_ptr<api::WalletPoolBuildCallback> &listener) {
-            WalletPool::open(
-                    _name,
-                    _password,
-                    _httpClient,
-                    _webSocketClient,
-                    _pathResolver,
-                    _logPrinter,
-                    _dispatcher,
-                    _rng,
-                    _backend,
-                    _configuration,
-                    listener
-            );
-        }
-
         std::shared_ptr<api::WalletPoolBuilder> WalletPoolBuilder::setPassword(const std::string &password) {
             _password = password;
             return shared_from_this();
@@ -110,11 +90,27 @@ namespace ledger { namespace core {
             return shared_from_this();
         }
 
-        std::shared_ptr<api::WalletPoolBuilder> WalletPoolBuilder::setConfiguration(const std::string &key, const std::string &value) {
-            _configuration[key] = value;
-            return shared_from_this();
+        void WalletPoolBuilder::build(const std::shared_ptr<api::WalletPoolCallback> &listener) {
+            WalletPoolApi::open(
+                _name,
+                _password,
+                _httpClient,
+                _webSocketClient,
+                _pathResolver,
+                _logPrinter,
+                _dispatcher,
+                _rng,
+                _backend,
+                _configuration,
+                listener
+            );
         }
 
+        std::shared_ptr <api::WalletPoolBuilder>
+        WalletPoolBuilder::setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration)  {
+            _configuration = configuration;
+            return shared_from_this();
+        }
 
         std::shared_ptr<api::WalletPoolBuilder> api::WalletPoolBuilder::createInstance() {
             return std::make_shared<ledger::core::WalletPoolBuilder>();

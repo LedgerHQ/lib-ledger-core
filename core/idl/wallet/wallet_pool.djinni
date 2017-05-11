@@ -18,34 +18,12 @@
 @import "../collections/dynamic.djinni"
 @import "common/wallet.djinni"
 
-# Interface used as a callback to iterate through mutiple BitcoinLikeWallets.
-StringArrayCallback = interface +j +o +s +n {
-    onCallback(strs: list<string>);
-}
 
-BitcoinLikeNetworkParametersCallback = interface +j +o +s +n {
-    onCallback(params: list<BitcoinLikeNetworkParameters>);
-}
+
 
 WalletPool = interface +c {
-    getOrCreateBitcoinLikeWallet(publicKeyProvider: BitcoinLikeExtendedPublicKeyProvider, networkParams: BitcoinLikeNetworkParameters, configuration: DynamicObject, callback: Callback<BitcoinLikeWallet>);
-    getBitcoinLikeWallet(identifier: string, callback: Callback<BitcoinLikeWallet>);
-    getSupportedBitcoinLikeNetworkParameters(callback: BitcoinLikeNetworkParametersCallback);
-    addBitcoinLikeNetworkParameters(params: BitcoinLikeNetworkParameters);
-    removeBitcoinLikenetworkParameters(params: BitcoinLikeNetworkParameters);
-
     getLogger(): Logger;
     getPreferences(): Preferences;
-    getWalletPreferences(walletIdentifier: string): Preferences;
-    getAccountPreferences(walletIdentifier: string, accountNumber: i32): Preferences;
-    getOperationPreferences(uid: string): Preferences;
-
-    getWallets(): ListCallback<Wallet>;
-}
-
-WalletPoolBuildCallback = interface +j +o +s +n {
-    onWalletPoolBuilt(pool: WalletPool);
-    onWalletPoolBuildError(error: Error);
 }
 
 WalletPoolBuilder = interface +c {
@@ -58,11 +36,9 @@ WalletPoolBuilder = interface +c {
     setPassword(password: string): WalletPoolBuilder;
     setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
     setDatabaseBackend(backend: DatabaseBackend): WalletPoolBuilder;
-    setConfiguration(key: string, value: string): WalletPoolBuilder;
-    build(listener: WalletPoolBuildCallback);
+    setConfiguration(configuration: DynamicObject): WalletPoolBuilder;
+    build(listener: Callback<WalletPool>);
 
     static createInstance(): WalletPoolBuilder;
-
-    const API_BASE_URL: string = "API_BASE_URL";
 }
 

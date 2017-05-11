@@ -7,12 +7,13 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGDatabaseBackend+Private.h"
+#import "LGDynamicObject+Private.h"
 #import "LGHttpClient+Private.h"
 #import "LGLogPrinter+Private.h"
 #import "LGPathResolver+Private.h"
 #import "LGRandomNumberGenerator+Private.h"
 #import "LGThreadDispatcher+Private.h"
-#import "LGWalletPoolBuildCallback+Private.h"
+#import "LGWalletPoolCallback+Private.h"
 #import "LGWebSocketClient+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -101,18 +102,16 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGWalletPoolBuilder *)setConfiguration:(nonnull NSString *)key
-                                             value:(nonnull NSString *)value {
+- (nullable LGWalletPoolBuilder *)setConfiguration:(nullable LGDynamicObject *)configuration {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->setConfiguration(::djinni::String::toCpp(key),
-                                                                    ::djinni::String::toCpp(value));
+        auto objcpp_result_ = _cppRefHandle.get()->setConfiguration(::djinni_generated::DynamicObject::toCpp(configuration));
         return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)build:(nullable id<LGWalletPoolBuildCallback>)listener {
+- (void)build:(nullable id<LGWalletPoolCallback>)listener {
     try {
-        _cppRefHandle.get()->build(::djinni_generated::WalletPoolBuildCallback::toCpp(listener));
+        _cppRefHandle.get()->build(::djinni_generated::WalletPoolCallback::toCpp(listener));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -122,7 +121,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         return ::djinni_generated::WalletPoolBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
-
 
 namespace djinni_generated {
 

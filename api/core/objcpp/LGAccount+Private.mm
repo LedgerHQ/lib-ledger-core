@@ -6,6 +6,7 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGAmount+Private.h"
 #import "LGAmountCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGI64Callback+Private.h"
@@ -48,11 +49,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getOperations:(int32_t)from
                    to:(int32_t)to
            descending:(BOOL)descending
+             complete:(BOOL)complete
              callback:(nullable id<LGOperationListCallback>)callback {
     try {
         _cppRefHandle.get()->getOperations(::djinni::I32::toCpp(from),
                                            ::djinni::I32::toCpp(to),
                                            ::djinni::Bool::toCpp(descending),
+                                           ::djinni::Bool::toCpp(complete),
                                            ::djinni_generated::OperationListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
@@ -137,6 +140,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
         return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)computeFees:(nullable LGAmount *)amount
+           priority:(int32_t)priority
+         recipients:(nonnull NSArray<NSString *> *)recipients
+               data:(nonnull NSArray<NSData *> *)data
+           callback:(nullable id<LGAmountCallback>)callback {
+    try {
+        _cppRefHandle.get()->computeFees(::djinni_generated::Amount::toCpp(amount),
+                                         ::djinni::I32::toCpp(priority),
+                                         ::djinni::List<::djinni::String>::toCpp(recipients),
+                                         ::djinni::List<::djinni::Binary>::toCpp(data),
+                                         ::djinni_generated::AmountCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

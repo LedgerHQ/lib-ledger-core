@@ -3,8 +3,10 @@
 
 #include "Operation.hpp"  // my header
 #include "Amount.hpp"
+#include "BitcoinLikeOperation.hpp"
 #include "Marshal.hpp"
 #include "OperationType.hpp"
+#include "Preferences.hpp"
 #include "WalletType.hpp"
 
 namespace djinni_generated {
@@ -102,6 +104,36 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->getPreferences();
+        return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jint JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getConfirmationsCount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->getConfirmationsCount();
+        return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1asBitcoinLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->asBitcoinLikeOperation();
+        return ::djinni::release(::djinni_generated::BitcoinLikeOperation::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1isInstanceOfBitcoinLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -128,6 +160,16 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
         auto r = ref->isInstanceOfRippleLikeOperation();
+        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1isComplete(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->isComplete();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

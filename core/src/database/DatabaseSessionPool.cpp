@@ -42,19 +42,12 @@ namespace ledger {
                                             const std::shared_ptr<api::PathResolver>& resolver,
                                             const std::string& dbName) {
             return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName] () {
-                auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(POOL_SIZE));
-                for (size_t i = 0; i < POOL_SIZE; i++) {
-                    auto& session = pool->getPool().at(i);
-                    backend->init(resolver, dbName, session);
-                }
-                // Migrate database
-                pool->performDatabaseMigration();
+                auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
+                    backend, resolver, dbName, POOL_SIZE
+                ));
+
                 return pool;
             });
-        }
-
-        DatabaseSessionPool::DatabaseSessionPool(int poolSize) : _pool((size_t) poolSize) {
-
         }
 
         soci::connection_pool &DatabaseSessionPool::getPool() {
@@ -72,6 +65,17 @@ namespace ledger {
             soci::transaction tr(sql);
             migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
             tr.commit();
+        }
+
+        DatabaseSessionPool::DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
+                                                 const std::shared_ptr<api::PathResolver> &resolver,
+                                                 const std::string &dbName, int poolSize) : _pool((size_t) poolSize) {
+            for (size_t i = 0; i < poolSize; i++) {
+                auto& session = getPool().at(i);
+                backend->init(resolver, dbName, session);
+            }
+            // Migrate database
+            performDatabaseMigration();
         }
 
 

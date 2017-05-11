@@ -96,7 +96,7 @@ namespace ledger {
 
         namespace api {
             std::shared_ptr<EventPublisher> EventPublisher::newInstance(const std::shared_ptr<ExecutionContext> &context) {
-                return std::make_shared<ledger::core::EventReceiver>(context);
+                return std::make_shared<ledger::core::EventPublisher>(context);
             }
         }
     }

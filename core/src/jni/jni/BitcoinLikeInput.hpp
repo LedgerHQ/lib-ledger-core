@@ -9,28 +9,25 @@
 
 namespace djinni_generated {
 
-class BitcoinLikeInput final {
+class BitcoinLikeInput final : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeInput, BitcoinLikeInput> {
 public:
-    using CppType = ::ledger::core::api::BitcoinLikeInput;
+    using CppType = std::shared_ptr<::ledger::core::api::BitcoinLikeInput>;
+    using CppOptType = std::shared_ptr<::ledger::core::api::BitcoinLikeInput>;
     using JniType = jobject;
 
     using Boxed = BitcoinLikeInput;
 
     ~BitcoinLikeInput();
 
-    static CppType toCpp(JNIEnv* jniEnv, JniType j);
-    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c);
+    static CppType toCpp(JNIEnv* jniEnv, JniType j) { return ::djinni::JniClass<BitcoinLikeInput>::get()._fromJava(jniEnv, j); }
+    static ::djinni::LocalRef<JniType> fromCppOpt(JNIEnv* jniEnv, const CppOptType& c) { return {jniEnv, ::djinni::JniClass<BitcoinLikeInput>::get()._toJava(jniEnv, c)}; }
+    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c) { return fromCppOpt(jniEnv, c); }
 
 private:
     BitcoinLikeInput();
     friend ::djinni::JniClass<BitcoinLikeInput>;
+    friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikeInput, BitcoinLikeInput>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeInput") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;ZLjava/lang/String;I)V") };
-    const jfieldID field_path { ::djinni::jniGetFieldID(clazz.get(), "path", "Ljava/lang/String;") };
-    const jfieldID field_isCoinbase { ::djinni::jniGetFieldID(clazz.get(), "isCoinbase", "Z") };
-    const jfieldID field_previousTxHash { ::djinni::jniGetFieldID(clazz.get(), "previousTxHash", "Ljava/lang/String;") };
-    const jfieldID field_indexInPreviousTx { ::djinni::jniGetFieldID(clazz.get(), "indexInPreviousTx", "I") };
 };
 
 }  // namespace djinni_generated

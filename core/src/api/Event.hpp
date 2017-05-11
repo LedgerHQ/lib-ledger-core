@@ -24,7 +24,7 @@ public:
 
     virtual int32_t getStickyTag() = 0;
 
-    static void newInstance(EventCode code, const std::shared_ptr<DynamicObject> & payload);
+    static std::shared_ptr<Event> newInstance(EventCode code, const std::shared_ptr<DynamicObject> & payload);
 };
 
 } } }  // namespace ledger::core::api

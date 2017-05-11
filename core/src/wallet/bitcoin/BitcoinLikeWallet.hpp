@@ -50,10 +50,16 @@ namespace ledger {
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
                 const std::shared_ptr<BitcoinLikeKeychain>& keychain,
                 const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
-                const std::shared_ptr<WalletPool>& pool,
+                const std::shared_ptr<WalletPoolApi>& pool,
                 const api::BitcoinLikeNetworkParameters& network
             );
+
         private:
+            std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
+            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
+            std::shared_ptr<BitcoinLikeKeychain> _keychain;
+            std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
+            api::BitcoinLikeNetworkParameters _network;
         };
     }
 }

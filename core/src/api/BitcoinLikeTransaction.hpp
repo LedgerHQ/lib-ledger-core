@@ -5,65 +5,33 @@
 #define DJINNI_GENERATED_BITCOINLIKETRANSACTION_HPP
 
 #include "../utils/optional.hpp"
-#include "BitcoinLikeBlock.hpp"
-#include "BitcoinLikeInput.hpp"
-#include "BitcoinLikeOutput.hpp"
+#include <chrono>
 #include <cstdint>
-#include <iostream>
-#include <utility>
+#include <memory>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
 
-struct BitcoinLikeTransaction final {
-    std::vector<BitcoinLikeInput> inputs;
-    std::vector<BitcoinLikeOutput> outputs;
-    std::experimental::optional<BitcoinLikeBlock> block;
-    int64_t lockTime;
-    /**fee: Amount; */
-    int64_t time;
+class Amount;
+class BitcoinLikeBlock;
+class BitcoinLikeInput;
+class BitcoinLikeOutput;
 
-    BitcoinLikeTransaction(std::vector<BitcoinLikeInput> inputs_,
-                           std::vector<BitcoinLikeOutput> outputs_,
-                           std::experimental::optional<BitcoinLikeBlock> block_,
-                           int64_t lockTime_,
-                           int64_t time_)
-    : inputs(std::move(inputs_))
-    , outputs(std::move(outputs_))
-    , block(std::move(block_))
-    , lockTime(std::move(lockTime_))
-    , time(std::move(time_))
-    {}
+class BitcoinLikeTransaction {
+public:
+    virtual ~BitcoinLikeTransaction() {}
 
-    BitcoinLikeTransaction(const BitcoinLikeTransaction& cpy) {
-       this->inputs = cpy.inputs;
-       this->outputs = cpy.outputs;
-       this->block = cpy.block;
-       this->lockTime = cpy.lockTime;
-       this->time = cpy.time;
-    }
+    virtual std::vector<std::shared_ptr<BitcoinLikeInput>> getInputs() = 0;
 
-    BitcoinLikeTransaction() = default;
+    virtual std::vector<std::shared_ptr<BitcoinLikeOutput>> getOutputs() = 0;
 
+    virtual std::shared_ptr<BitcoinLikeBlock> getBlock() = 0;
 
-    BitcoinLikeTransaction& operator=(const BitcoinLikeTransaction& cpy) {
-       this->inputs = cpy.inputs;
-       this->outputs = cpy.outputs;
-       this->block = cpy.block;
-       this->lockTime = cpy.lockTime;
-       this->time = cpy.time;
-       return *this;
-    }
+    virtual int64_t getLockTime() = 0;
 
-    template <class Archive>
-    void load(Archive& archive) {
-        archive(inputs, outputs, block, lockTime, time);
-    }
+    virtual std::shared_ptr<Amount> getFees() = 0;
 
-    template <class Archive>
-    void save(Archive& archive) const {
-        archive(inputs, outputs, block, lockTime, time);
-    }
+    virtual std::chrono::system_clock::time_point geTime() = 0;
 };
 
 } } }  // namespace ledger::core::api

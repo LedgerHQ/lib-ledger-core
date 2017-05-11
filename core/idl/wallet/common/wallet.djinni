@@ -3,6 +3,7 @@
 @import "../amount.djinni"
 @import "../../preferences/preferences.djinni"
 @import "../../debug/logger.djinni"
+@import "../bitcoin/bitcoin_like_wallet.djinni"
 
 WalletType = enum {
     bitcoin;
@@ -30,20 +31,25 @@ Operation = interface +c {
     getRecipients(): list<string>;
     getAmount(): Amount;
     getFees(): Amount;
+    getPreferences(): Preferences;
+    getConfirmationsCount(): i32;
 
-    ## asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
+    asBitcoinLikeOperation(): BitcoinLikeOperation;
     ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
     ## asRippleLikeOperation(): Callback<RippleLikeEthereum>;
     isInstanceOfBitcoinLikeOperation(): bool;
     isInstanceOfEthereumLikeOperation(): bool;
     isInstanceOfRippleLikeOperation(): bool;
 
+
+    isComplete(): bool;
+
     getWalletType(): WalletType;
 }
 
 Account = interface +c {
     getIndex(): i32;
-    getOperations(from: i32, to: i32, descending: bool, callback: ListCallback<Operation>);
+    getOperations(from: i32, to: i32, descending: bool, complete: bool, callback: ListCallback<Operation>);
     getOperationsCount(callback: Callback<i64>);
     getOperation(uid: string, callback: Callback<Operation>);
     getBalance(callback: Callback<Amount>);
@@ -60,6 +66,8 @@ Account = interface +c {
     isInstanceOfRippleLikeAccount(): bool;
 
     getWalletType(): WalletType;
+
+    computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }
 
 Wallet = interface +c {

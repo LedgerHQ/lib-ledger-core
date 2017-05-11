@@ -36,10 +36,11 @@
 #include <src/api/Account.hpp>
 #include <src/preferences/Preferences.hpp>
 #include <src/async/DedicatedContext.hpp>
-#include <src/wallet/pool/WalletPool.hpp>
+#include <wallet/pool/api/WalletPoolApi.hpp>
 #include <src/events/EventPublisher.hpp>
 #include <src/debug/logger.hpp>
 #include <src/api/WalletType.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,7 +49,7 @@ namespace ledger {
         public:
             AbstractWallet(const std::string& walletName,
                            api::WalletType  type,
-                           const std::shared_ptr<WalletPool>& pool);
+                           const std::shared_ptr<WalletPoolApi>& pool);
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
@@ -65,6 +66,7 @@ namespace ledger {
             virtual std::shared_ptr<Preferences> getExternalPreferences() const;
             virtual std::shared_ptr<EventPublisher> getEventPublisher() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
+            virtual std::shared_ptr<DatabaseSessionPool> getDatabase() const;
 
         private:
             api::WalletType _type;
@@ -73,7 +75,7 @@ namespace ledger {
             std::shared_ptr<EventPublisher> _publisher;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<Preferences> _internalPreferences;
-
+            std::shared_ptr<DatabaseSessionPool> _database;
         };
     }
 }

@@ -3,12 +3,13 @@
 
 package co.ledger.core;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Account {
     public abstract int getIndex();
 
-    public abstract void getOperations(int from, int to, boolean descending, OperationListCallback callback);
+    public abstract void getOperations(int from, int to, boolean descending, boolean complete, OperationListCallback callback);
 
     public abstract void getOperationsCount(I64Callback callback);
 
@@ -38,6 +39,8 @@ public abstract class Account {
     public abstract boolean isInstanceOfRippleLikeAccount();
 
     public abstract WalletType getWalletType();
+
+    public abstract void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
 
     private static final class CppProxy extends Account
     {
@@ -71,12 +74,12 @@ public abstract class Account {
         private native int native_getIndex(long _nativeRef);
 
         @Override
-        public void getOperations(int from, int to, boolean descending, OperationListCallback callback)
+        public void getOperations(int from, int to, boolean descending, boolean complete, OperationListCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOperations(this.nativeRef, from, to, descending, callback);
+            native_getOperations(this.nativeRef, from, to, descending, complete, callback);
         }
-        private native void native_getOperations(long _nativeRef, int from, int to, boolean descending, OperationListCallback callback);
+        private native void native_getOperations(long _nativeRef, int from, int to, boolean descending, boolean complete, OperationListCallback callback);
 
         @Override
         public void getOperationsCount(I64Callback callback)
@@ -173,5 +176,13 @@ public abstract class Account {
             return native_getWalletType(this.nativeRef);
         }
         private native WalletType native_getWalletType(long _nativeRef);
+
+        @Override
+        public void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_computeFees(this.nativeRef, amount, priority, recipients, data, callback);
+        }
+        private native void native_computeFees(long _nativeRef, Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
     }
 }

@@ -66,7 +66,12 @@ std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core:
     return std::make_shared<ledger::core::Event>(code, payload);
 }
 
-std::shared_ptr<ledger::core::api::Event> ledger::core::api::Event::newInstance(EventCode code,
-                                                                               const std::shared_ptr<DynamicObject> &payload) {
-    return std::make_shared<ledger::core::Event>(code, payload);
+namespace ledger {
+    namespace core {
+        namespace api {
+            std::shared_ptr<Event> Event::newInstance(EventCode code, const std::shared_ptr<DynamicObject> & payload) {
+                return std::make_shared<ledger::core::Event>(code, payload);
+            }
+        }
+    }
 }

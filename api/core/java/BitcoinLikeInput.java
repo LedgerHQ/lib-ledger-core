@@ -3,53 +3,100 @@
 
 package co.ledger.core;
 
-public final class BitcoinLikeInput {
+import java.util.concurrent.atomic.AtomicBoolean;
 
+public abstract class BitcoinLikeInput {
+    public abstract String getAddress();
 
-    /*package*/ final String path;
+    public abstract String getAddressDerivationPath();
 
-    /*package*/ final boolean isCoinbase;
+    public abstract Amount getValue();
 
-    /*package*/ final String previousTxHash;
+    public abstract boolean isCoinbase();
 
-    /*package*/ final int indexInPreviousTx;
+    public abstract String getCoinbase();
 
-    public BitcoinLikeInput(
-            String path,
-            boolean isCoinbase,
-            String previousTxHash,
-            int indexInPreviousTx) {
-        this.path = path;
-        this.isCoinbase = isCoinbase;
-        this.previousTxHash = previousTxHash;
-        this.indexInPreviousTx = indexInPreviousTx;
+    public abstract String getPreviousTxHash();
+
+    public abstract int getPreviousOutputIndex();
+
+    private static final class CppProxy extends BitcoinLikeInput
+    {
+        private final long nativeRef;
+        private final AtomicBoolean destroyed = new AtomicBoolean(false);
+
+        private CppProxy(long nativeRef)
+        {
+            if (nativeRef == 0) throw new RuntimeException("nativeRef is zero");
+            this.nativeRef = nativeRef;
+        }
+
+        private native void nativeDestroy(long nativeRef);
+        public void destroy()
+        {
+            boolean destroyed = this.destroyed.getAndSet(true);
+            if (!destroyed) nativeDestroy(this.nativeRef);
+        }
+        protected void finalize() throws java.lang.Throwable
+        {
+            destroy();
+            super.finalize();
+        }
+
+        @Override
+        public String getAddress()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getAddress(this.nativeRef);
+        }
+        private native String native_getAddress(long _nativeRef);
+
+        @Override
+        public String getAddressDerivationPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getAddressDerivationPath(this.nativeRef);
+        }
+        private native String native_getAddressDerivationPath(long _nativeRef);
+
+        @Override
+        public Amount getValue()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getValue(this.nativeRef);
+        }
+        private native Amount native_getValue(long _nativeRef);
+
+        @Override
+        public boolean isCoinbase()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isCoinbase(this.nativeRef);
+        }
+        private native boolean native_isCoinbase(long _nativeRef);
+
+        @Override
+        public String getCoinbase()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getCoinbase(this.nativeRef);
+        }
+        private native String native_getCoinbase(long _nativeRef);
+
+        @Override
+        public String getPreviousTxHash()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreviousTxHash(this.nativeRef);
+        }
+        private native String native_getPreviousTxHash(long _nativeRef);
+
+        @Override
+        public int getPreviousOutputIndex()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreviousOutputIndex(this.nativeRef);
+        }
+        private native int native_getPreviousOutputIndex(long _nativeRef);
     }
-
-    public String getPath() {
-        return path;
-    }
-
-    /**value: Amount; */
-    public boolean getIsCoinbase() {
-        return isCoinbase;
-    }
-
-    public String getPreviousTxHash() {
-        return previousTxHash;
-    }
-
-    public int getIndexInPreviousTx() {
-        return indexInPreviousTx;
-    }
-
-    @Override
-    public String toString() {
-        return "BitcoinLikeInput{" +
-                "path=" + path +
-                "," + "isCoinbase=" + isCoinbase +
-                "," + "previousTxHash=" + previousTxHash +
-                "," + "indexInPreviousTx=" + indexInPreviousTx +
-        "}";
-    }
-
 }

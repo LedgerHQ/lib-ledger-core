@@ -4,63 +4,91 @@
 package co.ledger.core;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class BitcoinLikeTransaction {
+public abstract class BitcoinLikeTransaction {
+    public abstract ArrayList<BitcoinLikeInput> getInputs();
 
+    public abstract ArrayList<BitcoinLikeOutput> getOutputs();
 
-    /*package*/ final ArrayList<BitcoinLikeInput> inputs;
+    public abstract BitcoinLikeBlock getBlock();
 
-    /*package*/ final ArrayList<BitcoinLikeOutput> outputs;
+    public abstract long getLockTime();
 
-    /*package*/ final BitcoinLikeBlock block;
+    public abstract Amount getFees();
 
-    /*package*/ final long lockTime;
+    public abstract Date geTime();
 
-    /*package*/ final long time;
+    private static final class CppProxy extends BitcoinLikeTransaction
+    {
+        private final long nativeRef;
+        private final AtomicBoolean destroyed = new AtomicBoolean(false);
 
-    public BitcoinLikeTransaction(
-            ArrayList<BitcoinLikeInput> inputs,
-            ArrayList<BitcoinLikeOutput> outputs,
-            BitcoinLikeBlock block,
-            long lockTime,
-            long time) {
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.block = block;
-        this.lockTime = lockTime;
-        this.time = time;
+        private CppProxy(long nativeRef)
+        {
+            if (nativeRef == 0) throw new RuntimeException("nativeRef is zero");
+            this.nativeRef = nativeRef;
+        }
+
+        private native void nativeDestroy(long nativeRef);
+        public void destroy()
+        {
+            boolean destroyed = this.destroyed.getAndSet(true);
+            if (!destroyed) nativeDestroy(this.nativeRef);
+        }
+        protected void finalize() throws java.lang.Throwable
+        {
+            destroy();
+            super.finalize();
+        }
+
+        @Override
+        public ArrayList<BitcoinLikeInput> getInputs()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getInputs(this.nativeRef);
+        }
+        private native ArrayList<BitcoinLikeInput> native_getInputs(long _nativeRef);
+
+        @Override
+        public ArrayList<BitcoinLikeOutput> getOutputs()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getOutputs(this.nativeRef);
+        }
+        private native ArrayList<BitcoinLikeOutput> native_getOutputs(long _nativeRef);
+
+        @Override
+        public BitcoinLikeBlock getBlock()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getBlock(this.nativeRef);
+        }
+        private native BitcoinLikeBlock native_getBlock(long _nativeRef);
+
+        @Override
+        public long getLockTime()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getLockTime(this.nativeRef);
+        }
+        private native long native_getLockTime(long _nativeRef);
+
+        @Override
+        public Amount getFees()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getFees(this.nativeRef);
+        }
+        private native Amount native_getFees(long _nativeRef);
+
+        @Override
+        public Date geTime()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_geTime(this.nativeRef);
+        }
+        private native Date native_geTime(long _nativeRef);
     }
-
-    public ArrayList<BitcoinLikeInput> getInputs() {
-        return inputs;
-    }
-
-    public ArrayList<BitcoinLikeOutput> getOutputs() {
-        return outputs;
-    }
-
-    public BitcoinLikeBlock getBlock() {
-        return block;
-    }
-
-    public long getLockTime() {
-        return lockTime;
-    }
-
-    /**fee: Amount; */
-    public long getTime() {
-        return time;
-    }
-
-    @Override
-    public String toString() {
-        return "BitcoinLikeTransaction{" +
-                "inputs=" + inputs +
-                "," + "outputs=" + outputs +
-                "," + "block=" + block +
-                "," + "lockTime=" + lockTime +
-                "," + "time=" + time +
-        "}";
-    }
-
 }

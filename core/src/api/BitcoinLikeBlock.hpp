@@ -4,51 +4,21 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEBLOCK_HPP
 #define DJINNI_GENERATED_BITCOINLIKEBLOCK_HPP
 
+#include <chrono>
 #include <cstdint>
-#include <iostream>
 #include <string>
-#include <utility>
 
 namespace ledger { namespace core { namespace api {
 
-struct BitcoinLikeBlock final {
-    std::string hash;
-    int64_t height;
-    int64_t time;
+class BitcoinLikeBlock {
+public:
+    virtual ~BitcoinLikeBlock() {}
 
-    BitcoinLikeBlock(std::string hash_,
-                     int64_t height_,
-                     int64_t time_)
-    : hash(std::move(hash_))
-    , height(std::move(height_))
-    , time(std::move(time_))
-    {}
+    virtual std::string getHash() = 0;
 
-    BitcoinLikeBlock(const BitcoinLikeBlock& cpy) {
-       this->hash = cpy.hash;
-       this->height = cpy.height;
-       this->time = cpy.time;
-    }
+    virtual int64_t getHeight() = 0;
 
-    BitcoinLikeBlock() = default;
-
-
-    BitcoinLikeBlock& operator=(const BitcoinLikeBlock& cpy) {
-       this->hash = cpy.hash;
-       this->height = cpy.height;
-       this->time = cpy.time;
-       return *this;
-    }
-
-    template <class Archive>
-    void load(Archive& archive) {
-        archive(hash, height, time);
-    }
-
-    template <class Archive>
-    void save(Archive& archive) const {
-        archive(hash, height, time);
-    }
+    virtual std::chrono::system_clock::time_point getTime() = 0;
 };
 
 } } }  // namespace ledger::core::api

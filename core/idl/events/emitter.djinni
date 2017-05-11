@@ -9,7 +9,7 @@ Event = interface +c {
     isSticky(): bool;
     getStickyTag(): i32;
 
-    static newInstance(code: EventCode, payload: DynamicObject);
+    static newInstance(code: EventCode, payload: DynamicObject): Event;
 }
 
 EventReceiver = interface +j +o +n +s {

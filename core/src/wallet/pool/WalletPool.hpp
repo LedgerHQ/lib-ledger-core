@@ -3,7 +3,7 @@
  * WalletPool
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/11/2016.
+ * Created by Pierre Pollastri on 10/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -31,141 +31,85 @@
 #ifndef LEDGER_CORE_WALLETPOOL_HPP
 #define LEDGER_CORE_WALLETPOOL_HPP
 
+#include <string>
+#include <utils/Option.hpp>
+#include <api/HttpClient.hpp>
+#include <api/WebSocketClient.hpp>
+#include <api/PathResolver.hpp>
+#include <api/LogPrinter.hpp>
+#include <api/ThreadDispatcher.hpp>
+#include <api/RandomNumberGenerator.hpp>
+#include <api/DatabaseBackend.hpp>
+#include <api/WalletPoolCallback.hpp>
+
 #include <memory>
-#include <functional>
-#include "../../api/WebSocketClient.hpp"
-#include "../../api/HttpClient.hpp"
-#include "../../api/WalletPool.hpp"
-#include "../../api/ThreadDispatcher.hpp"
-#include "../../api/PathResolver.hpp"
-#include "../../api/LogPrinter.hpp"
-#include "../../api/ExecutionContext.hpp"
-#include "../../utils/optional.hpp"
-#include "../../api/RandomNumberGenerator.hpp"
-#include "../../database/DatabaseBackend.hpp"
-#include "../../net/HttpClient.hpp"
-#include "../../debug/logger.hpp"
-#include "../../api/WalletPoolBuildCallback.hpp"
-#include "../../api/Logger.hpp"
-#include "../../debug/LoggerApi.hpp"
-#include "../../preferences/PreferencesBackend.hpp"
-#include "../../api/StringArrayCallback.hpp"
-#include "../../api/BitcoinLikeExtendedPublicKeyProvider.hpp"
-#include "../../api/BitcoinLikeExtendedPublicKey.hpp"
-#include "../../api/BitcoinLikeWallet.hpp"
-#include "../../api/BitcoinLikeWalletCallback.hpp"
-#include <cereal/types/polymorphic.hpp>
-#include <cereal/types/memory.hpp>
-#include "../../async/DedicatedContext.hpp"
-#include "../../preferences/Preferences.hpp"
-#include "../../collections/collections.hpp"
-#include "../../collections/DynamicObject.hpp"
+#include <unordered_map>
+
+#include <net/HttpClient.hpp>
+#include <async/DedicatedContext.hpp>
+#include <preferences/Preferences.hpp>
+#include <api/DynamicObject.hpp>
+#include <database/DatabaseSessionPool.hpp>
+#include <collections/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {
-
-        class BitcoinLikeWalletFactory;
-
-        class WalletPool : public api::WalletPool, DedicatedContext, public std::enable_shared_from_this<WalletPool> {
-
+        class WalletPool : public DedicatedContext, protected std::enable_shared_from_this<WalletPool> {
         public:
-            struct WalletEntry {
-                std::string walletIdentifier;
-                std::string currencyIdentifier;
-                std::shared_ptr<DynamicObject> configuration;
+            WalletPool(const std::string &name,
+                       const Option<std::string> &password,
+                       const std::shared_ptr<api::HttpClient> &httpClient,
+                       const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                       const std::shared_ptr<api::PathResolver> &pathResolver,
+                       const std::shared_ptr<api::LogPrinter> &logPrinter,
+                       const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                       const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                       const std::shared_ptr<api::DatabaseBackend> &backend,
+                       const std::shared_ptr<api::DynamicObject>& configuration);
 
-                virtual void no_op() {
-
-                };
-
-                template <class Archive>
-                void serialize(Archive& ar) {
-                    ar(walletIdentifier, currencyIdentifier, configuration);
-                }
-            };
-
-        private:
-            WalletPool(
-                    const std::string &name,
-                    const std::experimental::optional<std::string>& password,
-                    const std::shared_ptr<api::HttpClient> &httpClient,
-                    const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                    const std::shared_ptr<api::PathResolver> &pathResolver,
-                    const std::shared_ptr<api::LogPrinter> &logPrinter,
-                    const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                    const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                    const std::shared_ptr<api::DatabaseBackend> &backend,
-                    const std::unordered_map<std::string, std::string>& configuration
-            );
-
-        public:
-
-            // Bitcoin
-            void getOrCreateBitcoinLikeWallet(
-                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
-                    const api::BitcoinLikeNetworkParameters &networkParams,
-                    const std::shared_ptr<api::DynamicObject> &configuration,
-                    const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) override;
-
-            void getBitcoinLikeWallet(const std::string &identifier,
-                                      const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) override;
-
-            void getSupportedBitcoinLikeNetworkParameters(
-                    const std::shared_ptr<api::BitcoinLikeNetworkParametersCallback> &callback) override;
-
-            void addBitcoinLikeNetworkParameters(const api::BitcoinLikeNetworkParameters &params) override;
-
-            void removeBitcoinLikenetworkParameters(const api::BitcoinLikeNetworkParameters &params) override;
-
-            std::shared_ptr<api::WalletListCallback> getWallets() override;
-
-            // Utilities
-            std::shared_ptr<api::Logger> getLogger() override;
-            std::shared_ptr<spdlog::logger> getSpdLogger() const { return _logger; };
-            std::shared_ptr<api::Preferences> getPreferences() override;
-            std::shared_ptr<api::Preferences> getWalletPreferences(const std::string &walletIdentifier) override;
-            std::shared_ptr<api::Preferences>
-            getAccountPreferences(const std::string &walletIdentifier, int32_t accountNumber) override;
-            std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
-            std::shared_ptr<Preferences> getInternalPreferences();
-            std::shared_ptr<Preferences> getExternalPreferences();
+            std::shared_ptr<HttpClient> getHttpClient(const std::string& baseUrl);
+            std::shared_ptr<Preferences> getExternalPreferences() const;
+            std::shared_ptr<Preferences> getInternalPreferences() const;
+            std::shared_ptr<api::PathResolver> getPathResolver() const;
+            std::shared_ptr<api::RandomNumberGenerator> rng() const;
             std::shared_ptr<api::ThreadDispatcher> getDispatcher() const;
-            ~WalletPool();
+            std::shared_ptr<spdlog::logger> logger() const;
+            std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
+            std::shared_ptr<DynamicObject> getConfiguration() const;
+            const std::string& getName() const;
+            const Option<std::string> getPassword() const;
 
         private:
-            std::shared_ptr<BitcoinLikeWalletFactory> getBitcoinLikeWalletFactory(const std::string& networkParamsIdentifier);
+            // General
+            std::string _poolName;
+            Option<std::string> _password;
+            std::shared_ptr<DynamicObject> _configuration;
 
-        private:
-            std::shared_ptr<api::ThreadDispatcher> _dispatcher;
-            std::shared_ptr<DatabaseBackend> _databaseBackend;
-            std::shared_ptr<HttpClient> _http;
-            std::unordered_map<std::string, std::string> _configuration;
+            // File system management
+            std::shared_ptr<api::PathResolver> _pathResolver;
+
+            // HTTP management
+            std::shared_ptr<api::HttpClient> _httpEngine;
+            std::unordered_map<std::string, std::weak_ptr<HttpClient>> _httpClients;
+
+            // WS management
+            std::shared_ptr<api::WebSocketClient> _wsEngine;
+
+            // Preferences management
+            std::shared_ptr<PreferencesBackend> _externalPreferencesBackend;
+            std::shared_ptr<PreferencesBackend> _internalPreferencesBackend;
+
+            // Database management
+            std::shared_ptr<DatabaseSessionPool> _database;
+
+            // Logger
             std::shared_ptr<spdlog::logger> _logger;
-            std::shared_ptr<api::Logger> _loggerApi;
-            std::shared_ptr<api::PathResolver> _resolver;
+
+            // Threading management
+            std::shared_ptr<api::ThreadDispatcher> _threadDispatcher;
+
+            // RNG management
             std::shared_ptr<api::RandomNumberGenerator> _rng;
-            std::shared_ptr<api::WebSocketClient> _ws;
-            std::experimental::optional<std::string> _password;
-            std::shared_ptr<PreferencesBackend> _externalBackend;
-            std::shared_ptr<PreferencesBackend> _internalBackend;
-
-            // Bitcoin wallets
-            std::unordered_map<std::string, std::shared_ptr<BitcoinLikeWalletFactory>> _bitcoinWalletFactories;
-            std::vector<std::shared_ptr<api::BitcoinLikeWallet>> _bitcoinWallets;
-            Map<std::string, api::BitcoinLikeNetworkParameters> _bitcoinNetworkParams;
-
-        public:
-            static void open( const std::string &name,
-                              const std::experimental::optional<std::string> &password,
-                              const std::shared_ptr<api::HttpClient> &httpClient,
-                              const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                              const std::shared_ptr<api::PathResolver> &pathResolver,
-                              const std::shared_ptr<api::LogPrinter> &logPrinter,
-                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                              const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                              const std::shared_ptr<api::DatabaseBackend> &backend,
-                              const std::unordered_map<std::string, std::string>& configuration,
-                              const std::shared_ptr<api::WalletPoolBuildCallback>& listener);
         };
     }
 }

@@ -7,7 +7,9 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
+#import "LGBitcoinLikeOperation+Private.h"
 #import "LGOperationType+Private.h"
+#import "LGPreferences+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -89,6 +91,27 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGPreferences *)getPreferences {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
+        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (int32_t)getConfirmationsCount {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getConfirmationsCount();
+        return ::djinni::I32::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeOperation *)asBitcoinLikeOperation {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->asBitcoinLikeOperation();
+        return ::djinni_generated::BitcoinLikeOperation::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (BOOL)isInstanceOfBitcoinLikeOperation {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfBitcoinLikeOperation();
@@ -106,6 +129,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (BOOL)isInstanceOfRippleLikeOperation {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfRippleLikeOperation();
+        return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (BOOL)isComplete {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->isComplete();
         return ::djinni::Bool::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

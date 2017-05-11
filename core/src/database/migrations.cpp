@@ -47,11 +47,18 @@ namespace ledger {
 
         template <> void migrate<1>(soci::session& sql) {
 
+            // Pool table
+            sql << "CREATE TABLE pools("
+                "name VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "created_at VARCHAR(255) NOT NULL"
+            ")";
+
             // Abstract currency table
             sql << "CREATE TABLE currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "bip44_coin_type INTEGER NOT NULL,"
-                "payment_uri_scheme TEXT NOT NULL"
+                "payment_uri_scheme TEXT NOT NULL,"
+                "pool_name TEXT NOT NULL"
             ")";
 
             // Abstract units table
@@ -63,24 +70,26 @@ namespace ledger {
 
             // Abstract wallet table
             sql << "CREATE TABLE wallets("
-                "name VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE"
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "name VARCHAR(255),"
+                "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE"
             ")";
 
             // Abstract account table
 
             sql << "CREATE TABLE accounts("
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "idx INTEGER NOT NULL,"
-                "wallet_name VARCHAR(255) NOT NULL REFERENCES wallet(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "PRIMARY KEY (idx, wallet_name)"
+                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE"
             ")";
 
             // Abstract operation table
 
             sql << "CREATE TABLE operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "account_index INTEGER NOT NULL REFERENCES accounts(idx),"
-                "wallet_name VARCHAR(255) NOT NULL REFERENCES wallets(name),"
+                "account_uid VARCHAR(255) NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE,"
+                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE,"
                 "type VARCHAR(255) NOT NULL,"
                 "date VARCHAR(255) NOT NULL,"
                 "senders TEXT NOT NULL,"
@@ -155,10 +164,9 @@ namespace ledger {
 
             // Bitcoin account
             sql << "CREATE TABLE bitcoin_accounts("
-                "idx INTEGER NOT NULL REFERENCES accounts(idx),"
-                "wallet_name VARCHAR(255) NOT NULL REFERENCES wallet(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "xpub VARCHAR(255) NOT NULL,"
-                "PRIMARY KEY (idx, wallet_name)"
+                "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid),"
+                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "xpub VARCHAR(255) NOT NULL"
             ")";
         }
 

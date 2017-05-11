@@ -7,9 +7,11 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
+class Amount;
 class AmountCallback;
 class EventBus;
 class I64Callback;
@@ -25,7 +27,7 @@ public:
 
     virtual int32_t getIndex() = 0;
 
-    virtual void getOperations(int32_t from, int32_t to, bool descending, const std::shared_ptr<OperationListCallback> & callback) = 0;
+    virtual void getOperations(int32_t from, int32_t to, bool descending, bool complete, const std::shared_ptr<OperationListCallback> & callback) = 0;
 
     virtual void getOperationsCount(const std::shared_ptr<I64Callback> & callback) = 0;
 
@@ -55,6 +57,8 @@ public:
     virtual bool isInstanceOfRippleLikeAccount() = 0;
 
     virtual WalletType getWalletType() = 0;
+
+    virtual void computeFees(const std::shared_ptr<Amount> & amount, int32_t priority, const std::vector<std::string> & recipients, const std::vector<std::vector<uint8_t>> & data, const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

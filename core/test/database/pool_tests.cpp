@@ -77,7 +77,7 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
          dispatcher->stop();
      });
     dispatcher->waitUntilStopped();
-    resolver->clean();
+    //resolver->clean();
 }
 
 TEST(DatabaseSessionPool, Toto) {

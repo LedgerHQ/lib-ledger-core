@@ -33,6 +33,7 @@
 
 #include <src/events/EventPublisher.hpp>
 #include <src/async/DedicatedContext.hpp>
+#include <src/events/EventBus.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,7 +46,7 @@ namespace ledger {
             virtual void stop() = 0;
             virtual bool isObserving() const = 0;
             std::shared_ptr<EventBus> getEventBus() const {
-                return _publisher->getEventBus();
+                return std::static_pointer_cast<EventBus>(_publisher->getEventBus());
             };
 
         protected:

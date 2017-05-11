@@ -317,7 +317,7 @@ def parseFile(idlFile: File, inFileListWriter: Option[Writer]): Seq[TypeDecl] = 
         idl.imports.foreach(x => {
           val normalized = normalizePath(x.file)
           if (fileStack.contains(normalized)) {
-            throw new AssertionError("Circular import detected!")
+            throw new AssertionError(s"Circular import detected of file ${normalized} in ${normalizedIdlFile.getName}")
           }
           if (!visitedFiles.contains(normalized)) {
             x match {

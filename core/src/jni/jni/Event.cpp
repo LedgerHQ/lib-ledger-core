@@ -61,13 +61,14 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getStick
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Event_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_code, jobject j_payload)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_code, jobject j_payload)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        ::ledger::core::api::Event::newInstance(::djinni_generated::EventCode::toCpp(jniEnv, j_code),
-                                                ::djinni_generated::DynamicObject::toCpp(jniEnv, j_payload));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ::ledger::core::api::Event::newInstance(::djinni_generated::EventCode::toCpp(jniEnv, j_code),
+                                                         ::djinni_generated::DynamicObject::toCpp(jniEnv, j_payload));
+        return ::djinni::release(::djinni_generated::Event::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

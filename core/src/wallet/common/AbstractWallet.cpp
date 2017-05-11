@@ -32,16 +32,17 @@
 
 namespace ledger {
     namespace core {
-        AbstractWallet::AbstractWallet(const std::string& walletName, api::WalletType  type, const std::shared_ptr<WalletPool> &pool)
+        AbstractWallet::AbstractWallet(const std::string& walletName, api::WalletType  type, const std::shared_ptr<WalletPoolApi> &pool)
             : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName)))
         {
             _type = type;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _internalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
-            _logger = pool->getSpdLogger();
+            _logger = pool->logger();
             _loggerApi = pool->getLogger();
-            // pool->getEventPublisher()->relay(_publisher->getEventBus());
+            _database = pool->getDatabase();
+            //pool->getEventPublisher()->relay(_publisher->getEventBus());
         }
 
         std::shared_ptr<api::EventBus> AbstractWallet::getEventBus() {
@@ -98,6 +99,10 @@ namespace ledger {
 
         std::shared_ptr<api::Preferences> AbstractWallet::getAccountPreferences(int32_t index) {
             return getAccountExternalPreferences(index);
+        }
+
+        std::shared_ptr<DatabaseSessionPool> AbstractWallet::getDatabase() const {
+            return _database;
         }
     }
 }

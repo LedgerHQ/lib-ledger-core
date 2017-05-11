@@ -6,9 +6,9 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeAccount {
-    public abstract Preferences getPreferences();
+    public abstract void getUTXO(int from, int to, BitcoinLikeOutputListCallback callback);
 
-    public abstract BitcoinLikeOperationCursor openOperationsCursor();
+    public abstract void getUTXOCount(I32Callback callback);
 
     private static final class CppProxy extends BitcoinLikeAccount
     {
@@ -34,19 +34,19 @@ public abstract class BitcoinLikeAccount {
         }
 
         @Override
-        public Preferences getPreferences()
+        public void getUTXO(int from, int to, BitcoinLikeOutputListCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getPreferences(this.nativeRef);
+            native_getUTXO(this.nativeRef, from, to, callback);
         }
-        private native Preferences native_getPreferences(long _nativeRef);
+        private native void native_getUTXO(long _nativeRef, int from, int to, BitcoinLikeOutputListCallback callback);
 
         @Override
-        public BitcoinLikeOperationCursor openOperationsCursor()
+        public void getUTXOCount(I32Callback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_openOperationsCursor(this.nativeRef);
+            native_getUTXOCount(this.nativeRef, callback);
         }
-        private native BitcoinLikeOperationCursor native_openOperationsCursor(long _nativeRef);
+        private native void native_getUTXOCount(long _nativeRef, I32Callback callback);
     }
 }

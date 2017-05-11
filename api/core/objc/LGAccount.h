@@ -3,6 +3,7 @@
 
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
+@class LGAmount;
 @class LGEventBus;
 @class LGLogger;
 @class LGPreferences;
@@ -19,6 +20,7 @@
 - (void)getOperations:(int32_t)from
                    to:(int32_t)to
            descending:(BOOL)descending
+             complete:(BOOL)complete
              callback:(nullable id<LGOperationListCallback>)callback;
 
 - (void)getOperationsCount:(nullable id<LGI64Callback>)callback;
@@ -50,5 +52,11 @@
 - (BOOL)isInstanceOfRippleLikeAccount;
 
 - (LGWalletType)getWalletType;
+
+- (void)computeFees:(nullable LGAmount *)amount
+           priority:(int32_t)priority
+         recipients:(nonnull NSArray<NSString *> *)recipients
+               data:(nonnull NSArray<NSData *> *)data
+           callback:(nullable id<LGAmountCallback>)callback;
 
 @end

@@ -5,15 +5,8 @@
 #import "LGWalletPool.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
-#import "DJIMarshal+Private.h"
-#import "LGBitcoinLikeExtendedPublicKeyProvider+Private.h"
-#import "LGBitcoinLikeNetworkParameters+Private.h"
-#import "LGBitcoinLikeNetworkParametersCallback+Private.h"
-#import "LGBitcoinLikeWalletCallback+Private.h"
-#import "LGDynamicObject+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
-#import "LGWalletListCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -38,44 +31,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (void)getOrCreateBitcoinLikeWallet:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)publicKeyProvider
-                       networkParams:(nonnull LGBitcoinLikeNetworkParameters *)networkParams
-                       configuration:(nullable LGDynamicObject *)configuration
-                            callback:(nullable id<LGBitcoinLikeWalletCallback>)callback {
-    try {
-        _cppRefHandle.get()->getOrCreateBitcoinLikeWallet(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(publicKeyProvider),
-                                                          ::djinni_generated::BitcoinLikeNetworkParameters::toCpp(networkParams),
-                                                          ::djinni_generated::DynamicObject::toCpp(configuration),
-                                                          ::djinni_generated::BitcoinLikeWalletCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getBitcoinLikeWallet:(nonnull NSString *)identifier
-                    callback:(nullable id<LGBitcoinLikeWalletCallback>)callback {
-    try {
-        _cppRefHandle.get()->getBitcoinLikeWallet(::djinni::String::toCpp(identifier),
-                                                  ::djinni_generated::BitcoinLikeWalletCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getSupportedBitcoinLikeNetworkParameters:(nullable id<LGBitcoinLikeNetworkParametersCallback>)callback {
-    try {
-        _cppRefHandle.get()->getSupportedBitcoinLikeNetworkParameters(::djinni_generated::BitcoinLikeNetworkParametersCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)addBitcoinLikeNetworkParameters:(nonnull LGBitcoinLikeNetworkParameters *)params {
-    try {
-        _cppRefHandle.get()->addBitcoinLikeNetworkParameters(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)removeBitcoinLikenetworkParameters:(nonnull LGBitcoinLikeNetworkParameters *)params {
-    try {
-        _cppRefHandle.get()->removeBitcoinLikenetworkParameters(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGLogger *)getLogger {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getLogger();
@@ -87,36 +42,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGPreferences *)getWalletPreferences:(nonnull NSString *)walletIdentifier {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getWalletPreferences(::djinni::String::toCpp(walletIdentifier));
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGPreferences *)getAccountPreferences:(nonnull NSString *)walletIdentifier
-                                    accountNumber:(int32_t)accountNumber {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAccountPreferences(::djinni::String::toCpp(walletIdentifier),
-                                                                         ::djinni::I32::toCpp(accountNumber));
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGPreferences *)getOperationPreferences:(nonnull NSString *)uid {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getOperationPreferences(::djinni::String::toCpp(uid));
-        return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable id<LGWalletListCallback>)getWallets {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getWallets();
-        return ::djinni_generated::WalletListCallback::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

@@ -30,3 +30,22 @@
  */
 #include "BitcoinLikeWallet.hpp"
 
+namespace ledger {
+    namespace core {
+
+        BitcoinLikeWallet::BitcoinLikeWallet(const std::string &name,
+                                             const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
+                                             const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
+                                             const std::shared_ptr<BitcoinLikeKeychain> &keychain,
+                                             const std::shared_ptr<BitcoinLikeAccountSynchronizer> &synchronizer,
+                                             const std::shared_ptr<WalletPoolApi> &pool,
+                                             const api::BitcoinLikeNetworkParameters &network)
+        : AbstractWallet(name, api::WalletType::BITCOIN, pool) {
+            _explorer = explorer;
+            _observer = observer;
+            _keychain = keychain;
+            _synchronizer = synchronizer;
+            _network = network;
+        }
+    }
+}

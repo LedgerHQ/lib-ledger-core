@@ -13,6 +13,8 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BitcoinLikeOperation;
+class Preferences;
 enum class OperationType;
 enum class WalletType;
 
@@ -36,8 +38,13 @@ public:
 
     virtual std::shared_ptr<Amount> getFees() = 0;
 
+    virtual std::shared_ptr<Preferences> getPreferences() = 0;
+
+    virtual int32_t getConfirmationsCount() = 0;
+
+    virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
+
     /**
-     *# asBitcoinLikeOperation(): Callback<BitcoinLikeOperation>;
      *# asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
      *# asRippleLikeOperation(): Callback<RippleLikeEthereum>;
      */
@@ -46,6 +53,8 @@ public:
     virtual bool isInstanceOfEthereumLikeOperation() = 0;
 
     virtual bool isInstanceOfRippleLikeOperation() = 0;
+
+    virtual bool isComplete() = 0;
 
     virtual WalletType getWalletType() = 0;
 };

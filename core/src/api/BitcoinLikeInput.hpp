@@ -4,57 +4,32 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEINPUT_HPP
 #define DJINNI_GENERATED_BITCOINLIKEINPUT_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
-#include <iostream>
+#include <memory>
 #include <string>
-#include <utility>
 
 namespace ledger { namespace core { namespace api {
 
-struct BitcoinLikeInput final {
-    std::string path;
-    /**value: Amount; */
-    bool isCoinbase;
-    std::string previousTxHash;
-    int32_t indexInPreviousTx;
+class Amount;
 
-    BitcoinLikeInput(std::string path_,
-                     bool isCoinbase_,
-                     std::string previousTxHash_,
-                     int32_t indexInPreviousTx_)
-    : path(std::move(path_))
-    , isCoinbase(std::move(isCoinbase_))
-    , previousTxHash(std::move(previousTxHash_))
-    , indexInPreviousTx(std::move(indexInPreviousTx_))
-    {}
+class BitcoinLikeInput {
+public:
+    virtual ~BitcoinLikeInput() {}
 
-    BitcoinLikeInput(const BitcoinLikeInput& cpy) {
-       this->path = cpy.path;
-       this->isCoinbase = cpy.isCoinbase;
-       this->previousTxHash = cpy.previousTxHash;
-       this->indexInPreviousTx = cpy.indexInPreviousTx;
-    }
+    virtual std::experimental::optional<std::string> getAddress() = 0;
 
-    BitcoinLikeInput() = default;
+    virtual std::experimental::optional<std::string> getAddressDerivationPath() = 0;
 
+    virtual std::shared_ptr<Amount> getValue() = 0;
 
-    BitcoinLikeInput& operator=(const BitcoinLikeInput& cpy) {
-       this->path = cpy.path;
-       this->isCoinbase = cpy.isCoinbase;
-       this->previousTxHash = cpy.previousTxHash;
-       this->indexInPreviousTx = cpy.indexInPreviousTx;
-       return *this;
-    }
+    virtual bool isCoinbase() = 0;
 
-    template <class Archive>
-    void load(Archive& archive) {
-        archive(path, isCoinbase, previousTxHash, indexInPreviousTx);
-    }
+    virtual std::experimental::optional<std::string> getCoinbase() = 0;
 
-    template <class Archive>
-    void save(Archive& archive) const {
-        archive(path, isCoinbase, previousTxHash, indexInPreviousTx);
-    }
+    virtual std::string getPreviousTxHash() = 0;
+
+    virtual int32_t getPreviousOutputIndex() = 0;
 };
 
 } } }  // namespace ledger::core::api

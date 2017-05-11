@@ -3,7 +3,7 @@
  * WalletPool
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/11/2016.
+ * Created by Pierre Pollastri on 10/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,194 +28,119 @@
  * SOFTWARE.
  *
  */
-#include "../../utils/LambdaRunnable.hpp"
+#include <api/PoolConfiguration.hpp>
 #include "WalletPool.hpp"
-#include "WalletPoolBuilder.hpp"
-#include "../../debug/LoggerApi.hpp"
-#include "../../utils/Exception.hpp"
-#include "../../api/BitcoinLikeNetworkParameters.hpp"
-#include "../../api/BitcoinLikeNetworkParametersCallback.hpp"
-#include "../bitcoin/factories/BitcoinLikeWalletFactory.hpp"
 
 namespace ledger {
     namespace core {
 
-        WalletPool::WalletPool( const std::string &name,
-                                const std::experimental::optional<std::string> &password,
-                                const std::shared_ptr<api::HttpClient> &httpClient,
-                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                const std::shared_ptr<api::PathResolver> &pathResolver,
-                                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                                const std::shared_ptr<api::DatabaseBackend> &backend,
-                                const std::unordered_map<std::string, std::string>& configuration) :
-                DedicatedContext(dispatcher->getSerialExecutionContext("pool_queue_" + name)) {
+        WalletPool::WalletPool(const std::string &name, const Option<std::string> &password,
+                               const std::shared_ptr<api::HttpClient> &httpClient,
+                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                               const std::shared_ptr<api::PathResolver> &pathResolver,
+                               const std::shared_ptr<api::LogPrinter> &logPrinter,
+                               const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                               const std::shared_ptr<api::RandomNumberGenerator> &rng,
+                               const std::shared_ptr<api::DatabaseBackend> &backend,
+                               const std::shared_ptr<api::DynamicObject> &configuration)
+        : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+            // General
+            _poolName = name;
+            _password = password;
+            _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
-            _configuration = configuration;
-            _resolver = pathResolver;
-            // Initialize database
-            _databaseBackend = std::dynamic_pointer_cast<DatabaseBackend>(backend);
+            // File system management
+            _pathResolver = pathResolver;
 
-            // Initialize threading objects
-            _dispatcher = dispatcher;
+            // HTTP management
+            _httpEngine = httpClient;
 
-            // Initialize preferences
-            _externalBackend = std::make_shared<PreferencesBackend>(
-                    std::string("/") + name + "/preferences.db" ,
-                    _executionContext,
-                    _resolver
+            // WS management
+            _wsEngine = webSocketClient;
+
+            // Preferences management
+            _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
+                fmt::format("/{}/preferences.db", _poolName),
+                getContext(),
+                _pathResolver
             );
-            _internalBackend = std::make_shared<PreferencesBackend>(
-                    std::string("/") + name + "/_preferences.db" ,
-                    _executionContext,
-                    _resolver
+            _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
+                fmt::format("/{}/__preferences__.db", _poolName),
+                getContext(),
+                _pathResolver
             );
 
-            // Initialize logger
-            _logger = logger::create(name + "-logs", password,
-                                     dispatcher->getSerialExecutionContext("logger_queue_" + name),
-                                     pathResolver, logPrinter);
-            _loggerApi = std::make_shared<LoggerApi>(std::weak_ptr<spdlog::logger>(_logger));
-            // Initialize network
-            _http = std::make_shared<HttpClient>(_configuration[api::WalletPoolBuilder::API_BASE_URL], httpClient, _executionContext);
-
-            // Initialize Bitcoin constants
-            BitcoinLikeWalletFactory::initialize(
-                getExternalPreferences()->getSubPreferences("bitcoin_like")->getSubPreferences("networks"),
-                _bitcoinNetworkParams
+            // Database management
+            _database = std::make_shared<DatabaseSessionPool>(
+               backend,
+               pathResolver,
+               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name)
             );
-            fmt::print("Bitcoin params {}\n",  _bitcoinNetworkParams["btc"].Identifier);
-            fmt::print("Bitcoin contained {}\n",  _bitcoinNetworkParams.contains("btc"));
-        }
 
-        std::shared_ptr<api::Logger> WalletPool::getLogger() {
-            return _loggerApi;
-        }
-
-        std::shared_ptr<api::Preferences> WalletPool::getPreferences() {
-            return _externalBackend->getPreferences("pool");
-        }
-
-        std::shared_ptr<Preferences> WalletPool::getInternalPreferences() {
-            return _internalBackend->getPreferences("pool");
-        }
-
-        void WalletPool::open(const std::string &name, const std::experimental::optional<std::string> &password,
-                              const std::shared_ptr<api::HttpClient> &httpClient,
-                              const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                              const std::shared_ptr<api::PathResolver> &pathResolver,
-                              const std::shared_ptr<api::LogPrinter> &logPrinter,
-                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                              const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                              const std::shared_ptr<api::DatabaseBackend> &backend,
-                              const std::unordered_map<std::string, std::string> &configuration,
-                              const std::shared_ptr<api::WalletPoolBuildCallback> &listener) {
-            auto queue = dispatcher->getSerialExecutionContext("pool_queue_" + name);
-            queue->execute(LambdaRunnable::make([=] () {
-                try {
-                    auto pool = new WalletPool(
-                            name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng,
-                            backend,
-                            configuration
-                    );
-                    if (listener) {
-                        listener->onWalletPoolBuilt(std::shared_ptr<WalletPool>(pool));
-                    }
-                } catch (std::exception& e) {
-                    if (listener) {
-                        listener->onWalletPoolBuildError(Exception(api::ErrorCode::RUNTIME_ERROR, e.what()).toApiError());
-                    }
-                }
-            }));
-        }
-
-        void WalletPool::getOrCreateBitcoinLikeWallet(
-                const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &publicKeyProvider,
-                const api::BitcoinLikeNetworkParameters &networkParams,
-                const std::shared_ptr<api::DynamicObject> &configuration,
-                const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
-            auto self = shared_from_this();
-            async<std::shared_ptr<BitcoinLikeWalletFactory>>([self, networkParams, this] () {
-                return getBitcoinLikeWalletFactory(networkParams.Identifier);
-            })
-            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [self, publicKeyProvider, this, configuration] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
-                return factory->build(publicKeyProvider, configuration);
-            }).callback(_dispatcher->getMainExecutionContext(), callback);
-        }
-
-        void WalletPool::getBitcoinLikeWallet(const std::string &identifier,
-                                              const std::shared_ptr<api::BitcoinLikeWalletCallback> &callback) {
-            async<std::shared_ptr<BitcoinLikeWalletFactory>>([=] () {
-                auto wallets = getInternalPreferences()->getSubPreferences("wallets");
-                auto entry = wallets->getObject<WalletEntry>(identifier);
-                if (entry.isEmpty()) {
-                    throw Exception(api::ErrorCode::WALLET_NOT_FOUND, "Wallet not found.");
-                }
-                return getBitcoinLikeWalletFactory(entry->currencyIdentifier);
-            })
-            .flatMap<std::shared_ptr<BitcoinLikeWallet>>(_executionContext, [=] (const std::shared_ptr<BitcoinLikeWalletFactory> &factory) {
-                return factory->build(identifier);
-            }).callback(_dispatcher->getMainExecutionContext(), callback);
-        }
-
-        std::shared_ptr<api::Preferences> WalletPool::getWalletPreferences(const std::string &walletIdentifier) {
-            return nullptr;
-        }
-
-        std::shared_ptr<api::Preferences>
-        WalletPool::getAccountPreferences(const std::string &walletIdentifier, int32_t accountNumber) {
-            return nullptr;
-        }
-
-        std::shared_ptr<api::Preferences> WalletPool::getOperationPreferences(const std::string &uid) {
-            return nullptr;
-        }
-
-        std::shared_ptr<BitcoinLikeWalletFactory>
-        WalletPool::getBitcoinLikeWalletFactory(const std::string &networkParamsIdentifier) {
-            fmt::print("Bitcoin params {}\n",  _bitcoinNetworkParams["btc"].Identifier);
-            fmt::print("Bitcoin contained {}\n",  _bitcoinNetworkParams.contains("btc"));
-            if (_bitcoinWalletFactories.find(networkParamsIdentifier) != _bitcoinWalletFactories.end()) {
-                return _bitcoinWalletFactories[networkParamsIdentifier];
-            } else if (_bitcoinNetworkParams.contains(networkParamsIdentifier)) {
-                return std::make_shared<BitcoinLikeWalletFactory>(
-                        _bitcoinNetworkParams[networkParamsIdentifier],
-                        shared_from_this(),
-                        getExternalPreferences()->getSubPreferences("wallets")
-                );
-            }
-            throw Exception(api::ErrorCode::UNKNOWN_NETWORK_PARAMETERS,
-                            fmt::format("Unknown network parameters [{}]", networkParamsIdentifier)
+            // Logger management
+            _logger = logger::create(
+               name + "-l",
+               password.toOptional(),
+               dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
+               pathResolver,
+               logPrinter
             );
+
+            // Threading management
+            _threadDispatcher = dispatcher;
         }
 
-        void WalletPool::addBitcoinLikeNetworkParameters(const api::BitcoinLikeNetworkParameters &params) {
-
+        std::shared_ptr<Preferences> WalletPool::getExternalPreferences() const {
+            return _externalPreferencesBackend->getPreferences("pool");
         }
 
-        void WalletPool::removeBitcoinLikenetworkParameters(const api::BitcoinLikeNetworkParameters &params) {
-
+        std::shared_ptr<Preferences> WalletPool::getInternalPreferences() const {
+            return _internalPreferencesBackend->getPreferences("pool");
         }
 
-        void WalletPool::getSupportedBitcoinLikeNetworkParameters(const std::shared_ptr<api::BitcoinLikeNetworkParametersCallback> &callback) {
-
+        std::shared_ptr<spdlog::logger> WalletPool::logger() const {
+            return _logger;
         }
 
-        std::shared_ptr<Preferences> WalletPool::getExternalPreferences() {
-            return _externalBackend->getPreferences("pool");
+        std::shared_ptr<DatabaseSessionPool> WalletPool::getDatabaseSessionPool() const {
+            return _database;
         }
 
-        WalletPool::~WalletPool() {
-            fmt::print("Destruct pool\n");
+        std::shared_ptr<DynamicObject> WalletPool::getConfiguration() const {
+            return _configuration;
         }
 
-        std::shared_ptr<api::WalletListCallback> WalletPool::getWallets() {
-            return nullptr;
+        const std::string &WalletPool::getName() const {
+            return _poolName;
+        }
+
+        const Option<std::string> WalletPool::getPassword() const {
+            return _password;
+        }
+
+        std::shared_ptr<api::PathResolver> WalletPool::getPathResolver() const {
+            return _pathResolver;
+        }
+
+        std::shared_ptr<api::RandomNumberGenerator> WalletPool::rng() const {
+            return _rng;
         }
 
         std::shared_ptr<api::ThreadDispatcher> WalletPool::getDispatcher() const {
-            return _dispatcher;
+            return _threadDispatcher;
+        }
+
+        std::shared_ptr<HttpClient> WalletPool::getHttpClient(const std::string &baseUrl) {
+            auto it = _httpClients.find(baseUrl);
+            if (it == _httpClients.end() || !it->second.lock()) {
+                auto client = std::make_shared<HttpClient>(
+                    baseUrl,
+                    _httpEngine,
+                    getDispatcher()->getThreadPoolExecutionContext(fmt::format("http_clients"))
+                );
+                _httpClients[baseUrl] = client;
+            }
+            return _httpClients[baseUrl].lock();
         }
 
     }

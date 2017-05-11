@@ -9,27 +9,25 @@
 
 namespace djinni_generated {
 
-class BitcoinLikeBlock final {
+class BitcoinLikeBlock final : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeBlock, BitcoinLikeBlock> {
 public:
-    using CppType = ::ledger::core::api::BitcoinLikeBlock;
+    using CppType = std::shared_ptr<::ledger::core::api::BitcoinLikeBlock>;
+    using CppOptType = std::shared_ptr<::ledger::core::api::BitcoinLikeBlock>;
     using JniType = jobject;
 
     using Boxed = BitcoinLikeBlock;
 
     ~BitcoinLikeBlock();
 
-    static CppType toCpp(JNIEnv* jniEnv, JniType j);
-    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c);
+    static CppType toCpp(JNIEnv* jniEnv, JniType j) { return ::djinni::JniClass<BitcoinLikeBlock>::get()._fromJava(jniEnv, j); }
+    static ::djinni::LocalRef<JniType> fromCppOpt(JNIEnv* jniEnv, const CppOptType& c) { return {jniEnv, ::djinni::JniClass<BitcoinLikeBlock>::get()._toJava(jniEnv, c)}; }
+    static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, const CppType& c) { return fromCppOpt(jniEnv, c); }
 
 private:
     BitcoinLikeBlock();
     friend ::djinni::JniClass<BitcoinLikeBlock>;
+    friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikeBlock, BitcoinLikeBlock>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeBlock") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;JJ)V") };
-    const jfieldID field_hash { ::djinni::jniGetFieldID(clazz.get(), "hash", "Ljava/lang/String;") };
-    const jfieldID field_height { ::djinni::jniGetFieldID(clazz.get(), "height", "J") };
-    const jfieldID field_time { ::djinni::jniGetFieldID(clazz.get(), "time", "J") };
 };
 
 }  // namespace djinni_generated

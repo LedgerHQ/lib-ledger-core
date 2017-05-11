@@ -60,11 +60,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-+ (void)newInstance:(LGEventCode)code
-            payload:(nullable LGDynamicObject *)payload {
++ (nullable LGEvent *)newInstance:(LGEventCode)code
+                          payload:(nullable LGDynamicObject *)payload {
     try {
-        ::ledger::core::api::Event::newInstance(::djinni::Enum<::ledger::core::api::EventCode, LGEventCode>::toCpp(code),
-                                                ::djinni_generated::DynamicObject::toCpp(payload));
+        auto objcpp_result_ = ::ledger::core::api::Event::newInstance(::djinni::Enum<::ledger::core::api::EventCode, LGEventCode>::toCpp(code),
+                                                                      ::djinni_generated::DynamicObject::toCpp(payload));
+        return ::djinni_generated::Event::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

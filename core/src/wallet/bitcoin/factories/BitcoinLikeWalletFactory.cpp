@@ -36,7 +36,7 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(const api::BitcoinLikeNetworkParameters &params,
-                                                           std::shared_ptr<WalletPool> pool,
+                                                           std::shared_ptr<WalletPoolApi> pool,
                                                            std::shared_ptr<Preferences> preferences) : _params(params) {
             _preferences = preferences;
             _pool = pool;

@@ -10,19 +10,18 @@
 namespace ledger { namespace core { namespace api {
 
 class DatabaseBackend;
+class DynamicObject;
 class HttpClient;
 class LogPrinter;
 class PathResolver;
 class RandomNumberGenerator;
 class ThreadDispatcher;
-class WalletPoolBuildCallback;
+class WalletPoolCallback;
 class WebSocketClient;
 
 class WalletPoolBuilder {
 public:
     virtual ~WalletPoolBuilder() {}
-
-    static std::string const API_BASE_URL;
 
     virtual std::shared_ptr<WalletPoolBuilder> setHttpClient(const std::shared_ptr<HttpClient> & client) = 0;
 
@@ -42,9 +41,9 @@ public:
 
     virtual std::shared_ptr<WalletPoolBuilder> setDatabaseBackend(const std::shared_ptr<DatabaseBackend> & backend) = 0;
 
-    virtual std::shared_ptr<WalletPoolBuilder> setConfiguration(const std::string & key, const std::string & value) = 0;
+    virtual std::shared_ptr<WalletPoolBuilder> setConfiguration(const std::shared_ptr<DynamicObject> & configuration) = 0;
 
-    virtual void build(const std::shared_ptr<WalletPoolBuildCallback> & listener) = 0;
+    virtual void build(const std::shared_ptr<WalletPoolCallback> & listener) = 0;
 
     static std::shared_ptr<WalletPoolBuilder> createInstance();
 };

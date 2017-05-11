@@ -4,20 +4,21 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 #define DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 
+#include <cstdint>
 #include <memory>
 
 namespace ledger { namespace core { namespace api {
 
-class BitcoinLikeOperationCursor;
-class Preferences;
+class BitcoinLikeOutputListCallback;
+class I32Callback;
 
 class BitcoinLikeAccount {
 public:
     virtual ~BitcoinLikeAccount() {}
 
-    virtual std::shared_ptr<Preferences> getPreferences() = 0;
+    virtual void getUTXO(int32_t from, int32_t to, const std::shared_ptr<BitcoinLikeOutputListCallback> & callback) = 0;
 
-    virtual std::shared_ptr<BitcoinLikeOperationCursor> openOperationsCursor() = 0;
+    virtual void getUTXOCount(const std::shared_ptr<I32Callback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

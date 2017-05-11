@@ -15,78 +15,54 @@ BitcoinLikeWalletConfiguration = interface +c {
     const OBSERVER: string = "observer";
     const EXPLORER: string = "explorer";
     const SYNCHRONIZER: string = "synchronizer";
-
     const KEYCHAIN_P2PKH_BIP44: string = "p2pkh_bip44";
-
     const OBSERVER_LEDGER_WEBSOCKET: string = "ledger_websocket";
-
     const EXPLORER_LEDGER_API: string = "ledger_api";
-
     const SYNCHRONIZER_DEFAULT: string = "default";
 }
 
-GetBitcoinLikeWalletCallback = interface +j +o +s +n {
-    onSuccess(wallet: BitcoinLikeWallet, isCreated: bool);
-    onError(error: Error);
+BitcoinLikeInput = interface +c {
+    getAddress(): optional<string>;
+    getAddressDerivationPath(): optional<string>;
+    getValue(): optional<Amount>;
+    isCoinbase(): bool;
+    getCoinbase(): optional<string>;
+    getPreviousTxHash(): string;
+    getPreviousOutputIndex(): i32;
 }
 
-BitcoinLikeWalletSynchronizationListener = interface +j +o +s +n {
-    onProgress();
-
+BitcoinLikeOutput = interface +c {
+    getTransactionHash(): string;
+    getOutputIndex(): i32;
+    getAddressDerivationPath(): optional<string>;
+    getValue(): Amount;
+    getScript(): binary;
+    getAddress(): optional<string>;
 }
 
-BitcoinLikeInput = record {
-    path: string;
-    #value: Amount;
-    isCoinbase: bool;
-    previousTxHash: string;
-    indexInPreviousTx: i32;
+BitcoinLikeBlock = interface +c {
+    getHash(): string;
+    getHeight(): i64;
+    getTime(): date;
 }
 
-BitcoinLikeOutput = record {
-    transactionHash: string;
-    index: i32;
-    path: string;
-    #value: Amount;
-    script: binary;
-    address: string;
-}
-
-BitcoinLikeBlock = record {
-    hash: string;
-    height: i64;
-    time: i64;
-}
-
-BitcoinLikeTransaction = record {
-    inputs: list<BitcoinLikeInput>;
-    outputs: list<BitcoinLikeOutput>;
-    block: optional<BitcoinLikeBlock>;
-    lockTime: i64;
-    #fee: Amount;
-    time: i64;
+BitcoinLikeTransaction = interface +c {
+    getInputs(): list<BitcoinLikeInput>;
+    getOutputs(): list<BitcoinLikeOutput>;
+    getBlock(): optional<BitcoinLikeBlock>;
+    getLockTime(): i64;
+    getFees(): Amount;
+    geTime(): date;
 }
 
 BitcoinLikeOperation = interface +c {
-    getPreferences(): Preferences;
     getTransaction(): BitcoinLikeTransaction;
-    getAmount(): Amount;
-    isSending(): bool;
-    isReception(): bool;
-    getFees(): Amount;
-    getSenders(): list<string>;
-    getRecipients(): list<string>;
-    getTime(): date;
-    getConfirmationTime(): optional<date>;
-    getConfirmationCount(): i64;
-    getAccountIndex(): i32;
 }
 
 BitcoinLikeAccount = interface +c {
-    getPreferences(): Preferences;
-    openOperationsCursor(): BitcoinLikeOperationCursor;
+    getUTXO(from: i32, to: i32, callback: ListCallback<BitcoinLikeOutput>);
+    getUTXOCount(callback: Callback<i32>);
 }
-
 
 BitcoinLikeWallet = interface +c {
 

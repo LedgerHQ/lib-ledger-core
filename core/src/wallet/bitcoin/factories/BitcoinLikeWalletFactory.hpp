@@ -37,25 +37,25 @@
 #include "../../../api/Configuration.hpp"
 #include "../../../preferences/Preferences.hpp"
 #include "../../../utils/Option.hpp"
-#include "../../pool/WalletPool.hpp"
+#include "wallet/pool/api/WalletPoolApi.hpp"
 
 #include <memory>
 #include <vector>
 
 namespace ledger {
     namespace core {
-        struct BitcoinLikeWalletEntry : public WalletPool::WalletEntry {
+        struct BitcoinLikeWalletEntry : public WalletPoolApi::WalletEntry {
 
             template <typename Archive>
             void serialize(Archive& ar) {
-                ar(cereal::base_class<WalletPool::WalletEntry>(this));
+                ar(cereal::base_class<WalletPoolApi::WalletEntry>(this));
             };
         };
 
         class BitcoinLikeWalletFactory {
         public:
             BitcoinLikeWalletFactory(const api::BitcoinLikeNetworkParameters& params,
-                                     std::shared_ptr<WalletPool> pool,
+                                     std::shared_ptr<WalletPoolApi> pool,
                                      std::shared_ptr<Preferences> preferences);
             Future<std::shared_ptr<BitcoinLikeWallet>> build(const std::string identifier);
             Future<std::shared_ptr<BitcoinLikeWallet>> build(
@@ -70,12 +70,12 @@ namespace ledger {
         private:
             std::shared_ptr<Preferences> _preferences;
             api::BitcoinLikeNetworkParameters _params;
-            std::shared_ptr<WalletPool> _pool;
+            std::shared_ptr<WalletPoolApi> _pool;
         };
     }
 }
 
 CEREAL_REGISTER_TYPE(ledger::core::BitcoinLikeWalletEntry);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(ledger::core::WalletPool::WalletEntry, ledger::core::BitcoinLikeWalletEntry);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(ledger::core::WalletPoolApi::WalletEntry, ledger::core::BitcoinLikeWalletEntry);
 
 #endif //LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
