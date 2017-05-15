@@ -34,10 +34,6 @@
 namespace ledger {
     namespace core {
 
-        WalletPoolApi::WalletPoolApi(const std::shared_ptr<WalletPool> &pool) {
-            _pool = pool;
-        }
-
         void WalletPoolApi::open(const std::string &name, const std::experimental::optional<std::string> &password,
                                  const std::shared_ptr<api::HttpClient> &httpClient,
                                  const std::shared_ptr<api::WebSocketClient> &webSocketClient,
@@ -50,7 +46,7 @@ namespace ledger {
                                  const std::shared_ptr<api::WalletPoolCallback> &listener) {
             auto context = dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name));
             FuturePtr<WalletPoolApi>::async(context, [=] () {
-                auto pool = std::make_shared<WalletPool>(
+                auto pool = std::make_shared<ledger::core::WalletPool>(
                     name,
                     Option<std::string>(password),
                     httpClient,
@@ -64,6 +60,19 @@ namespace ledger {
                 );
                 return std::make_shared<WalletPoolApi>(pool);
             }).callback(dispatcher->getMainExecutionContext(), listener);
+        }
+
+        WalletPoolApi::WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool> &pool) {
+            _pool = pool;
+            _logger = std::make_shared<LoggerApi>(pool->logger());
+        }
+
+        std::shared_ptr<api::Logger> WalletPoolApi::getLogger() {
+            return _logger;
+        }
+
+        std::shared_ptr<api::Preferences> WalletPoolApi::getPreferences() {
+            return _pool->getExternalPreferences();
         }
     }
 }

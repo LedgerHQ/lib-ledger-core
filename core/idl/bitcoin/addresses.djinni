@@ -1,5 +1,3 @@
-@import "../wallet/crypto_currency_description.djinni"
-
 BitcoinLikeFeePolicy = enum {
     PER_BYTE;
     PER_KBYTE;
@@ -11,8 +9,6 @@ BitcoinLikeNetworkParameters = record {
     P2SHVersion: binary;
     XPUBVersion: binary;
     FeePolicy: BitcoinLikeFeePolicy;
-    BIP44CoinType: i64;
-    PaymentUriScheme: string;
     DustAmount: i64;
     MessagePrefix: string;
     UsesTimestampedTransaction: bool;
@@ -34,7 +30,7 @@ BitcoinLikeAddress = interface +c {
     toBase58(): string;
     # Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
     # @return A payment uri to this address
-    toPaymentUri(): string;
+    # toPaymentUri(): string;
     # Checks if the given address is a P2SH address
     # @return True if the version byte matches the P2SH byte version of the address network parameters
     isP2SH(): bool;

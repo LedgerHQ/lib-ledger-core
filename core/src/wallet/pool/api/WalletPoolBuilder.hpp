@@ -40,7 +40,7 @@
 namespace ledger {
 
     namespace core {
-        class WalletPoolBuilder : public api::WalletPoolBuilder, protected std::enable_shared_from_this<WalletPoolBuilder> {
+        class WalletPoolBuilder : public api::WalletPoolBuilder, public std::enable_shared_from_this<WalletPoolBuilder> {
 
         public:
             virtual std::shared_ptr<api::WalletPoolBuilder> setPassword(const std::string &password) override;

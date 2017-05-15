@@ -295,7 +295,7 @@ def parseExternFile(externFile: File, inFileListWriter: Option[Writer]) : Seq[Ty
 }
 
 def normalizePath(path: File) : File = {
-  return new File(java.nio.file.Paths.get(path.toString()).normalize().toString())
+  new File(java.nio.file.Paths.get(path.toString()).normalize().toString())
 }
 
 def parseFile(idlFile: File, inFileListWriter: Option[Writer]): Seq[TypeDecl] = {

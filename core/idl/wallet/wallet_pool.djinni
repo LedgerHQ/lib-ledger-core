@@ -1,4 +1,3 @@
-@import "wallet_common_interface.djinni"
 @import "bitcoin/bitcoin_like_wallet.djinni"
 @import "ethereum/ethereum_like_wallet.djinni"
 @import "../net/http_client.djinni"
@@ -17,9 +16,6 @@
 @import "../utils/callback.djinni"
 @import "../collections/dynamic.djinni"
 @import "common/wallet.djinni"
-
-
-
 
 WalletPool = interface +c {
     getLogger(): Logger;

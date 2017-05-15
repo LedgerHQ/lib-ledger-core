@@ -4,22 +4,11 @@
 @import "../../preferences/preferences.djinni"
 @import "../../debug/logger.djinni"
 @import "../bitcoin/bitcoin_like_wallet.djinni"
-
-WalletType = enum {
-    bitcoin;
-    ethereum;
-    ripple;
-    monero;
-}
+@import "../../bitcoin/addresses.djinni"
+@import "currency.djinni"
 
 OperationType = enum {
     send; receive;
-}
-
-Currency = record {
-    name: string;
-    bip44CoinType: i32;
-    paymentSchemeUri: i32;
 }
 
 Operation = interface +c {

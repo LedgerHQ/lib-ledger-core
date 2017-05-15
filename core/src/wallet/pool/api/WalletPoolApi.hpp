@@ -34,6 +34,7 @@
 #include <api/WalletPool.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <api/WalletPoolCallback.hpp>
+#include <debug/LoggerApi.hpp>
 
 namespace ledger {
     namespace core {
@@ -41,12 +42,14 @@ namespace ledger {
         class BitcoinLikeWalletFactory;
 
         class WalletPoolApi : public api::WalletPool, public std::enable_shared_from_this<WalletPoolApi> {
+        public:
+            WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool>& pool);
+            std::shared_ptr<api::Logger> getLogger() override;
+            std::shared_ptr<api::Preferences> getPreferences() override;
 
         private:
-            WalletPoolApi(const std::shared_ptr<WalletPool>& pool);
-
-        private:
-            std::shared_ptr<WalletPool> _pool;
+            std::shared_ptr<ledger::core::WalletPool> _pool;
+            std::shared_ptr<LoggerApi> _logger;
 
         public:
             static void open( const std::string &name,

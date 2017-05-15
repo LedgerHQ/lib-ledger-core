@@ -8,11 +8,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Amount {
     public abstract BigInt toBigInt();
 
-    public abstract CryptoCurrencyUnit getUnit();
+    public abstract Currency getCurrency();
 
-    public abstract CryptoCurrencyDescription getCryptoCurrencyDescription();
+    public abstract CurrencyUnit getUnit();
+
+    public abstract void toUnit(CurrencyUnit unit);
 
     public abstract String toString();
+
+    public abstract String format(Locale locale, FormatRules rules);
 
     private static final class CppProxy extends Amount
     {
@@ -46,20 +50,28 @@ public abstract class Amount {
         private native BigInt native_toBigInt(long _nativeRef);
 
         @Override
-        public CryptoCurrencyUnit getUnit()
+        public Currency getCurrency()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getCurrency(this.nativeRef);
+        }
+        private native Currency native_getCurrency(long _nativeRef);
+
+        @Override
+        public CurrencyUnit getUnit()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getUnit(this.nativeRef);
         }
-        private native CryptoCurrencyUnit native_getUnit(long _nativeRef);
+        private native CurrencyUnit native_getUnit(long _nativeRef);
 
         @Override
-        public CryptoCurrencyDescription getCryptoCurrencyDescription()
+        public void toUnit(CurrencyUnit unit)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getCryptoCurrencyDescription(this.nativeRef);
+            native_toUnit(this.nativeRef, unit);
         }
-        private native CryptoCurrencyDescription native_getCryptoCurrencyDescription(long _nativeRef);
+        private native void native_toUnit(long _nativeRef, CurrencyUnit unit);
 
         @Override
         public String toString()
@@ -68,5 +80,13 @@ public abstract class Amount {
             return native_toString(this.nativeRef);
         }
         private native String native_toString(long _nativeRef);
+
+        @Override
+        public String format(Locale locale, FormatRules rules)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_format(this.nativeRef, locale, rules);
+        }
+        private native String native_format(long _nativeRef, Locale locale, FormatRules rules);
     }
 }

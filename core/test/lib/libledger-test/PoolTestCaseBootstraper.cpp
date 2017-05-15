@@ -30,7 +30,6 @@
  */
 #include "PoolTestCaseBootstraper.hpp"
 #include "callbacks.hpp"
-#include <ledger/core/api/WalletPoolBuildCallback.hpp>
 #include <ledger/core/api/WalletPoolBuilder.hpp>
 #include <ledger/core/api/BitcoinLikeWalletCallback.hpp>
 #include <ledger/core/async/Promise.hpp>
@@ -38,21 +37,19 @@
 #include "callbacks.hpp"
 #include <ledger/core/api/StringCompletionBlock.hpp>
 #include <ledger/core/wallet/bitcoin/networks.hpp>
+#include <src/api/WalletPoolCallback.hpp>
 
 using namespace ledger::core;
 
-class PoolBuilderCallback : public ledger::core::api::WalletPoolBuildCallback {
+class PoolBuilderCallback : public ledger::core::api::WalletPoolCallback {
 public:
     PoolBuilderCallback( std::function<void(std::shared_ptr<ledger::core::api::WalletPool>,
                                             std::experimental::optional<ledger::core::api::Error>)> callback) {
         _callback = callback;
     }
-    virtual void onWalletPoolBuilt(const std::shared_ptr<ledger::core::api::WalletPool> &pool) override {
-        _callback(pool, ledger::core::Exception::NO_ERROR);
-    }
 
-    virtual void onWalletPoolBuildError(const ledger::core::api::Error &error) override {
-        _callback(nullptr, error);
+    void onCallback(const std::shared_ptr<api::WalletPool> &result, const optional<api::Error> &error) override {
+         _callback(result, ledger::core::Exception::NO_ERROR);
     }
 
 private:
@@ -99,8 +96,8 @@ PoolTestCaseBootstraper::getBitcoinLikeWallet(
             promise.failure(Exception(error.value().code, error.value().message));
         } else {
             auto callback = make_api_callback<api::BitcoinLikeWallet, api::BitcoinLikeWalletCallback>();
-            pool->getOrCreateBitcoinLikeWallet(publicKeyProvider, networkParams, configuration, callback);
-            promise.completeWith(callback->getFuture());
+            //pool->getOrCreateBitcoinLikeWallet(publicKeyProvider, networkParams, configuration, callback);
+            //promise.completeWith(callback->getFuture());
         }
     });
 

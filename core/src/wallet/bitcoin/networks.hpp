@@ -49,8 +49,6 @@ namespace ledger {
                     p.P2SHVersion,
                     p.XPUBVersion,
                     p.FeePolicy,
-                    p.BIP44CoinType,
-                    p.PaymentUriScheme,
                     p.DustAmount,
                     p.MessagePrefix,
                     p.UsesTimestampedTransaction

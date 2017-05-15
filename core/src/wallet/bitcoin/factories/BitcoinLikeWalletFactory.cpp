@@ -31,59 +31,12 @@
 #include "BitcoinLikeWalletFactory.hpp"
 #include "../networks.hpp"
 #include <leveldb/db.h>
+#include <wallet/currencies.hpp>
 
 namespace ledger {
     namespace core {
 
-        BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(const api::BitcoinLikeNetworkParameters &params,
-                                                           std::shared_ptr<WalletPoolApi> pool,
-                                                           std::shared_ptr<Preferences> preferences) : _params(params) {
-            _preferences = preferences;
-            _pool = pool;
-        }
-
-        Future<std::shared_ptr<BitcoinLikeWallet>>
-        BitcoinLikeWalletFactory::build(std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> provider,
-                                        std::shared_ptr<api::DynamicObject> configuration) {
-            Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
-            BitcoinLikeWalletEntry entry;
-            std::string identifier = "";
-            entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
-            _preferences->editor()->putObject(identifier, entry)->commit();
-            return build(entry);
-        }
-
-        Future<std::shared_ptr<BitcoinLikeWallet>>
-        BitcoinLikeWalletFactory::build(const std::string identifier) {
-            return  _preferences->getObject<BitcoinLikeWalletEntry>(identifier)
-                    .map<Future<std::shared_ptr<BitcoinLikeWallet>>>([=] (const BitcoinLikeWalletEntry& entry) {
-                        return build(entry);
-                    })
-                    .getValueOr(Future<std::shared_ptr<BitcoinLikeWallet>>::failure(Exception(api::ErrorCode::WALLET_NOT_FOUND, "Wallet not found")));
-        }
-
-        Future<std::shared_ptr<BitcoinLikeWallet>>
-        BitcoinLikeWalletFactory::build(const BitcoinLikeWalletEntry& entry) {
-            Promise<std::shared_ptr<BitcoinLikeWallet>> promise;
-            return promise.getFuture();
-        }
-
-        void BitcoinLikeWalletFactory::initialize(const std::shared_ptr<Preferences> &preferences,
-                                                  Map<std::string, ledger::core::api::BitcoinLikeNetworkParameters> &networks) {
-            for (auto network : ledger::core::networks::ALL) {
-                networks[network.Identifier] = network;
-            }
-            if (!preferences->contains(ledger::core::networks::BITCOIN.Identifier)) {
-                auto editor = preferences->editor();
-                for (auto network : ledger::core::networks::ALL) {
-                    editor->putObject<api::BitcoinLikeNetworkParameters>(network.Identifier, network);
-                }
-                editor->commit();
-            }
-            preferences->iterate<api::BitcoinLikeNetworkParameters>([&] (leveldb::Slice&& key, const api::BitcoinLikeNetworkParameters& value) {
-                networks[value.Identifier] = value;
-                return true;
-            });
+        BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(const std::shared_ptr<WalletPool> &pool) {
         }
 
     }

@@ -29,6 +29,8 @@
  *
  */
 #include <api/PoolConfiguration.hpp>
+#include <wallet/currencies.hpp>
+#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include "WalletPool.hpp"
 
 namespace ledger {
@@ -72,9 +74,10 @@ namespace ledger {
 
             // Database management
             _database = std::make_shared<DatabaseSessionPool>(
-               backend,
+               std::static_pointer_cast<DatabaseBackend>(backend),
                pathResolver,
-               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name)
+               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
+               DatabaseSessionPool::POOL_SIZE
             );
 
             // Logger management
@@ -88,6 +91,22 @@ namespace ledger {
 
             // Threading management
             _threadDispatcher = dispatcher;
+
+            // Factories management
+            //_bitcoinLikeFactory = std::make_shared<BitcoinLikeWalletFactory>(shared_from_this());
+
+            // Initialization
+            initializeCurrencies();
+        }
+
+        void WalletPool::initializeCurrencies() {
+            soci::session sql(getDatabaseSessionPool()->getPool());
+            sql.begin();
+            for (auto& currency : currencies::ALL) {
+                CurrenciesDatabaseHelper::insertCurrency(sql, currency);
+            }
+            sql.commit();
+            CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);
         }
 
         std::shared_ptr<Preferences> WalletPool::getExternalPreferences() const {
@@ -141,6 +160,10 @@ namespace ledger {
                 _httpClients[baseUrl] = client;
             }
             return _httpClients[baseUrl].lock();
+        }
+
+        const std::vector<api::Currency> &WalletPool::getCurrencies() const {
+            return _currencies;
         }
 
     }

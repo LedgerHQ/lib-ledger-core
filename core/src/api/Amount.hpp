@@ -4,14 +4,17 @@
 #ifndef DJINNI_GENERATED_AMOUNT_HPP
 #define DJINNI_GENERATED_AMOUNT_HPP
 
+#include "../utils/optional.hpp"
 #include <memory>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
 
 class BigInt;
-class CryptoCurrencyDescription;
-struct CryptoCurrencyUnit;
+struct Currency;
+struct CurrencyUnit;
+struct FormatRules;
+struct Locale;
 
 class Amount {
 public:
@@ -19,11 +22,15 @@ public:
 
     virtual std::shared_ptr<BigInt> toBigInt() = 0;
 
-    virtual CryptoCurrencyUnit getUnit() = 0;
+    virtual Currency getCurrency() = 0;
 
-    virtual std::shared_ptr<CryptoCurrencyDescription> getCryptoCurrencyDescription() = 0;
+    virtual CurrencyUnit getUnit() = 0;
+
+    virtual void toUnit(const CurrencyUnit & unit) = 0;
 
     virtual std::string toString() = 0;
+
+    virtual std::string format(const Locale & locale, const std::experimental::optional<FormatRules> & rules) = 0;
 };
 
 } } }  // namespace ledger::core::api

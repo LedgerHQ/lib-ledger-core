@@ -65,13 +65,24 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
       refs.hpp.add("#include <iostream>")
     }
 
-    writeCppFile(ident, origin, refs.cpp, w => {
+    writeCppFile(ident, origin, refs.cpp += "#include \"enum_from_string.hpp\"" , w => {
       val variableName = self(0).toLower + self.slice(1, self.length)
       w.w(s"std::string to_string(const $self& $variableName)").bracedSemi {
         w.w(s"switch ($variableName)").bracedSemi {
           for (o <- e.options) {
             w.wl(s"case $self::${idCpp.enum(o.ident.name)}: return ${'"' + idCpp.enum(o.ident.name) + '"'};")
           }
+        }
+      }
+      w.wl("template <>")
+      w.w(s"$self from_string(const std::string& $variableName)").bracedSemi {
+        for (o <- e.options) {
+          if (e.options.head == o)
+            w.wl(s"if ($variableName == ${'"' + idCpp.enum(o.ident.name) + '"'}) return $self::${idCpp.enum(o.ident.name)};")
+          else if (e.options.last == o)
+            w.wl(s"else return $self::${idCpp.enum(o.ident.name)};")
+          else
+            w.wl(s"else if ($variableName == ${'"' + idCpp.enum(o.ident.name) + '"'}) return $self::${idCpp.enum(o.ident.name)};")
         }
       }
       // Dump method
@@ -85,6 +96,14 @@ class CppGenerator(spec: Spec) extends Generator(spec) {
       }
     })
 
+    try {
+      writeHppFile("enum_from_string", origin, mutable.TreeSet("#include <string>"), mutable.TreeSet(), w => {
+        w.wl("template <typename T> ")
+        w.wl("T from_string(const std::string&);")
+      })
+    } catch {
+      case all: Throwable => // mute
+    }
     writeHppFile(ident, origin, refs.hpp, refs.hppFwds, w => {
       w.w(s"enum class $self : int").bracedSemi {
         for (o <- e.options) {

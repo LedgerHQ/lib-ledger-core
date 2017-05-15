@@ -31,7 +31,6 @@
 #ifndef LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
 #define LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
 
-#include "../../../api/BitcoinLikeCurrencyDescription.hpp"
 #include "../../../bitcoin/BitcoinLikeExtendedPublicKey.hpp"
 #include <string>
 #include <vector>

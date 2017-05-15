@@ -1,0 +1,24 @@
+@import "../../bitcoin/addresses.djinni"
+
+WalletType = enum {
+    bitcoin;
+    ethereum;
+    ripple;
+    monero;
+}
+
+CurrencyUnit = record {
+    name: string;
+    symbol: string;
+    code: string;
+    numberOfDecimal: i32;
+}
+
+Currency = record {
+    walletType: WalletType;
+    name: string;
+    bip44CoinType: i32;
+    paymentUriScheme: string;
+    units: list<CurrencyUnit>;
+    bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
+}

@@ -34,6 +34,9 @@
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <CoutLogPrinter.hpp>
+#include <src/api/DynamicObject.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -77,9 +80,40 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
          dispatcher->stop();
      });
     dispatcher->waitUntilStopped();
-    //resolver->clean();
+    resolver->clean();
 }
 
-TEST(DatabaseSessionPool, Toto) {
+TEST(DatabaseSessionPool, InitializeCurrencies) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto pool = std::make_shared<WalletPool>(
+        "my_pool",
+        Option<std::string>::NONE,
+        nullptr,
+        nullptr,
+        resolver,
+        printer,
+        dispatcher,
+        nullptr,
+        backend,
+        api::DynamicObject::newInstance()
+    );
 
+    api::Currency bitcoin;
+
+    for (auto& currency : pool->getCurrencies()) {
+        if (currency.name == "bitcoin") {
+            bitcoin = currency;
+        }
+    }
+
+    EXPECT_EQ(bitcoin.name, "bitcoin");
+    EXPECT_EQ(bitcoin.bip44CoinType, 0);
+    EXPECT_EQ(bitcoin.paymentUriScheme, "bitcoin");
+    EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2PKHVersion[0], 0);
+    EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2SHVersion[0], 5);
+
+    //resolver->clean();
 }

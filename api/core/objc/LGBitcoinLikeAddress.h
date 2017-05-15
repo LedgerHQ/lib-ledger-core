@@ -36,10 +36,7 @@
 /**
  * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
  * @return A payment uri to this address
- */
-- (nonnull NSString *)toPaymentUri;
-
-/**
+ * toPaymentUri(): string;
  * Checks if the given address is a P2SH address
  * @return True if the version byte matches the P2SH byte version of the address network parameters
  */

@@ -63,10 +63,6 @@ std::string ledger::core::BitcoinLikeAddress::toBase58() {
     return Base58::encodeWithChecksum(vector::concat(_version, _hash160));
 }
 
-std::string ledger::core::BitcoinLikeAddress::toPaymentUri() {
-    return _params.PaymentUriScheme + ":" + toBase58();
-}
-
 bool ledger::core::BitcoinLikeAddress::isP2SH() {
     return _version == _params.P2SHVersion;
 }

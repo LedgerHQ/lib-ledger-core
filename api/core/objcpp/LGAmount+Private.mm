@@ -7,8 +7,10 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGBigInt+Private.h"
-#import "LGCryptoCurrencyDescription+Private.h"
-#import "LGCryptoCurrencyUnit+Private.h"
+#import "LGCurrency+Private.h"
+#import "LGCurrencyUnit+Private.h"
+#import "LGFormatRules+Private.h"
+#import "LGLocale+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -40,23 +42,38 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nonnull LGCryptoCurrencyUnit *)getUnit {
+- (nonnull LGCurrency *)getCurrency {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getUnit();
-        return ::djinni_generated::CryptoCurrencyUnit::fromCpp(objcpp_result_);
+        auto objcpp_result_ = _cppRefHandle.get()->getCurrency();
+        return ::djinni_generated::Currency::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGCryptoCurrencyDescription *)getCryptoCurrencyDescription {
+- (nonnull LGCurrencyUnit *)getUnit {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getCryptoCurrencyDescription();
-        return ::djinni_generated::CryptoCurrencyDescription::fromCpp(objcpp_result_);
+        auto objcpp_result_ = _cppRefHandle.get()->getUnit();
+        return ::djinni_generated::CurrencyUnit::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)toUnit:(nonnull LGCurrencyUnit *)unit {
+    try {
+        _cppRefHandle.get()->toUnit(::djinni_generated::CurrencyUnit::toCpp(unit));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 - (nonnull NSString *)toString {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->toString();
+        return ::djinni::String::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull NSString *)format:(nonnull LGLocale *)locale
+                       rules:(nullable LGFormatRules *)rules {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->format(::djinni_generated::Locale::toCpp(locale),
+                                                          ::djinni::Optional<std::experimental::optional, ::djinni_generated::FormatRules>::toCpp(rules));
         return ::djinni::String::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

@@ -77,4 +77,5 @@ using namespace soci;
 void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
                                         const std::string &dbName, soci::session &session) {
     session.open(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
+    session << "PRAGMA foreign_keys = ON";
 }

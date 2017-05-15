@@ -3,8 +3,10 @@
 
 #include "Amount.hpp"  // my header
 #include "BigInt.hpp"
-#include "CryptoCurrencyDescription.hpp"
-#include "CryptoCurrencyUnit.hpp"
+#include "Currency.hpp"
+#include "CurrencyUnit.hpp"
+#include "FormatRules.hpp"
+#include "Locale.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -32,24 +34,33 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toBi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
+        auto r = ref->getCurrency();
+        return ::djinni::release(::djinni_generated::Currency::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
         auto r = ref->getUnit();
-        return ::djinni::release(::djinni_generated::CryptoCurrencyUnit::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni_generated::CurrencyUnit::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getCryptoCurrencyDescription(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_unit)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
-        auto r = ref->getCryptoCurrencyDescription();
-        return ::djinni::release(::djinni_generated::CryptoCurrencyDescription::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->toUnit(::djinni_generated::CurrencyUnit::toCpp(jniEnv, j_unit));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
@@ -58,6 +69,17 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toSt
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
         auto r = ref->toString();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1format(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_locale, jobject j_rules)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
+        auto r = ref->format(::djinni_generated::Locale::toCpp(jniEnv, j_locale),
+                             ::djinni::Optional<std::experimental::optional, ::djinni_generated::FormatRules>::toCpp(jniEnv, j_rules));
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

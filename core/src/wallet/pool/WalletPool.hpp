@@ -51,10 +51,13 @@
 #include <api/DynamicObject.hpp>
 #include <database/DatabaseSessionPool.hpp>
 #include <collections/DynamicObject.hpp>
+#include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 
 namespace ledger {
     namespace core {
-        class WalletPool : public DedicatedContext, protected std::enable_shared_from_this<WalletPool> {
+        class BitcoinLikeWalletFactory;
+
+        class WalletPool : public DedicatedContext, public std::enable_shared_from_this<WalletPool> {
         public:
             WalletPool(const std::string &name,
                        const Option<std::string> &password,
@@ -78,6 +81,10 @@ namespace ledger {
             std::shared_ptr<DynamicObject> getConfiguration() const;
             const std::string& getName() const;
             const Option<std::string> getPassword() const;
+            const std::vector<api::Currency>& getCurrencies() const;
+
+        private:
+            void initializeCurrencies();
 
         private:
             // General
@@ -110,6 +117,12 @@ namespace ledger {
 
             // RNG management
             std::shared_ptr<api::RandomNumberGenerator> _rng;
+
+            // Currencies management
+            std::vector<api::Currency> _currencies;
+
+            // Factories management
+            std::shared_ptr<BitcoinLikeWalletFactory> _bitcoinLikeFactory;
         };
     }
 }

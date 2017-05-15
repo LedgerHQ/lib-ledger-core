@@ -1,9 +1,24 @@
 @import "../math/big_int.djinni"
-@import "crypto_currency_description.djinni"
+@import "common/currency.djinni"
+@import "../r10n/locale.djinni"
+
+RoundingMode = enum {
+    truncated;
+    round_half_down;
+    round_half_even;
+    round_half_up;
+}
+
+FormatRules = record {
+    roundingMode: RoundingMode;
+    maxNumberOfDecimals: i32;
+}
 
 Amount = interface +c {
     toBigInt(): BigInt;
-    getUnit(): CryptoCurrencyUnit;
-    getCryptoCurrencyDescription(): CryptoCurrencyDescription;
+    getCurrency(): Currency;
+    getUnit(): CurrencyUnit;
+    toUnit(unit: CurrencyUnit);
     toString(): string;
+    format(locale: Locale, rules: optional<FormatRules>): string;
 }

@@ -34,10 +34,7 @@ public abstract class BitcoinLikeAddress {
     /**
      * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
      * @return A payment uri to this address
-     */
-    public abstract String toPaymentUri();
-
-    /**
+     * toPaymentUri(): string;
      * Checks if the given address is a P2SH address
      * @return True if the version byte matches the P2SH byte version of the address network parameters
      */
@@ -122,14 +119,6 @@ public abstract class BitcoinLikeAddress {
             return native_toBase58(this.nativeRef);
         }
         private native String native_toBase58(long _nativeRef);
-
-        @Override
-        public String toPaymentUri()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_toPaymentUri(this.nativeRef);
-        }
-        private native String native_toPaymentUri(long _nativeRef);
 
         @Override
         public boolean isP2SH()

@@ -56,9 +56,9 @@ namespace ledger {
             // Abstract currency table
             sql << "CREATE TABLE currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "type VARCHAR(255) NOT NULL,"
                 "bip44_coin_type INTEGER NOT NULL,"
-                "payment_uri_scheme TEXT NOT NULL,"
-                "pool_name TEXT NOT NULL"
+                "payment_uri_scheme VARCHAR(255)"
             ")";
 
             // Abstract units table
@@ -73,7 +73,8 @@ namespace ledger {
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "name VARCHAR(255),"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE"
+                "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "build_configuration BLOB NOT NULL"
             ")";
 
             // Abstract account table
@@ -107,6 +108,7 @@ namespace ledger {
                 "xpub_version VARACHAR(255) NOT NULL,"
                 "dust_amount BIGINT NOT NULL,"
                 "fee_policy VARCHAR(20) NOT NULL,"
+                "message_prefix VARCHAR(255) NOT NULL,"
                 "has_timestamped_transaction INTEGER NOT NULL"
             ")";
 

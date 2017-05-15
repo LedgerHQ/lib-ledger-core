@@ -78,6 +78,5 @@ namespace ledger {
             performDatabaseMigration();
         }
 
-
     }
 }

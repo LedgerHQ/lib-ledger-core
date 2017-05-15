@@ -10,8 +10,6 @@
                                P2SHVersion:(nonnull NSData *)P2SHVersion
                                XPUBVersion:(nonnull NSData *)XPUBVersion
                                  FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
-                             BIP44CoinType:(int64_t)BIP44CoinType
-                          PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
                                 DustAmount:(int64_t)DustAmount
                              MessagePrefix:(nonnull NSString *)MessagePrefix
                 UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction;
@@ -20,8 +18,6 @@
                                                        P2SHVersion:(nonnull NSData *)P2SHVersion
                                                        XPUBVersion:(nonnull NSData *)XPUBVersion
                                                          FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
-                                                     BIP44CoinType:(int64_t)BIP44CoinType
-                                                  PaymentUriScheme:(nonnull NSString *)PaymentUriScheme
                                                         DustAmount:(int64_t)DustAmount
                                                      MessagePrefix:(nonnull NSString *)MessagePrefix
                                         UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction;
@@ -35,10 +31,6 @@
 @property (nonatomic, readonly, nonnull) NSData * XPUBVersion;
 
 @property (nonatomic, readonly) LGBitcoinLikeFeePolicy FeePolicy;
-
-@property (nonatomic, readonly) int64_t BIP44CoinType;
-
-@property (nonatomic, readonly, nonnull) NSString * PaymentUriScheme;
 
 @property (nonatomic, readonly) int64_t DustAmount;
 

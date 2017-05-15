@@ -36,7 +36,6 @@
 #include <src/api/Account.hpp>
 #include <src/preferences/Preferences.hpp>
 #include <src/async/DedicatedContext.hpp>
-#include <wallet/pool/api/WalletPoolApi.hpp>
 #include <src/events/EventPublisher.hpp>
 #include <src/debug/logger.hpp>
 #include <src/api/WalletType.hpp>
@@ -45,11 +44,13 @@
 namespace ledger {
     namespace core {
 
+        class WalletPool;
+
         class AbstractWallet : public virtual api::Wallet, public DedicatedContext {
         public:
             AbstractWallet(const std::string& walletName,
                            api::WalletType  type,
-                           const std::shared_ptr<WalletPoolApi>& pool);
+                           const std::shared_ptr<WalletPool>& pool);
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;

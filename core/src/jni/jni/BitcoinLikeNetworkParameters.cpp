@@ -19,8 +19,6 @@ auto BitcoinLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> 
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.P2SHVersion)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.XPUBVersion)),
                                                            ::djinni::get(::djinni_generated::BitcoinLikeFeePolicy::fromCpp(jniEnv, c.FeePolicy)),
-                                                           ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.BIP44CoinType)),
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.PaymentUriScheme)),
                                                            ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.DustAmount)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.MessagePrefix)),
                                                            ::djinni::get(::djinni::Bool::fromCpp(jniEnv, c.UsesTimestampedTransaction)))};
@@ -29,7 +27,7 @@ auto BitcoinLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> 
 }
 
 auto BitcoinLikeNetworkParameters::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 11);
+    ::djinni::JniLocalScope jscope(jniEnv, 9);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<BitcoinLikeNetworkParameters>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_Identifier)),
@@ -37,8 +35,6 @@ auto BitcoinLikeNetworkParameters::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_P2SHVersion)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_XPUBVersion)),
             ::djinni_generated::BitcoinLikeFeePolicy::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_FeePolicy)),
-            ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_BIP44CoinType)),
-            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_PaymentUriScheme)),
             ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_DustAmount)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_MessagePrefix)),
             ::djinni::Bool::toCpp(jniEnv, jniEnv->GetBooleanField(j, data.field_UsesTimestampedTransaction))};

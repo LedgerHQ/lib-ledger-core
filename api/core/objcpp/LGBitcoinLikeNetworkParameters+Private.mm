@@ -16,8 +16,6 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
             ::djinni::Binary::toCpp(obj.P2SHVersion),
             ::djinni::Binary::toCpp(obj.XPUBVersion),
             ::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::toCpp(obj.FeePolicy),
-            ::djinni::I64::toCpp(obj.BIP44CoinType),
-            ::djinni::String::toCpp(obj.PaymentUriScheme),
             ::djinni::I64::toCpp(obj.DustAmount),
             ::djinni::String::toCpp(obj.MessagePrefix),
             ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction)};
@@ -30,8 +28,6 @@ auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
                                                           P2SHVersion:(::djinni::Binary::fromCpp(cpp.P2SHVersion))
                                                           XPUBVersion:(::djinni::Binary::fromCpp(cpp.XPUBVersion))
                                                             FeePolicy:(::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::fromCpp(cpp.FeePolicy))
-                                                        BIP44CoinType:(::djinni::I64::fromCpp(cpp.BIP44CoinType))
-                                                     PaymentUriScheme:(::djinni::String::fromCpp(cpp.PaymentUriScheme))
                                                            DustAmount:(::djinni::I64::fromCpp(cpp.DustAmount))
                                                         MessagePrefix:(::djinni::String::fromCpp(cpp.MessagePrefix))
                                            UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))];

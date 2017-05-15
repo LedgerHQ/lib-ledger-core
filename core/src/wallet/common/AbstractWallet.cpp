@@ -29,19 +29,20 @@
  *
  */
 #include "AbstractWallet.hpp"
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
     namespace core {
-        AbstractWallet::AbstractWallet(const std::string& walletName, api::WalletType  type, const std::shared_ptr<WalletPoolApi> &pool)
+        AbstractWallet::AbstractWallet(const std::string& walletName, api::WalletType  type, const std::shared_ptr<WalletPool> &pool)
             : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName)))
         {
             _type = type;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
-            _internalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
+            _internalPreferences = pool->getInternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
             _logger = pool->logger();
-            _loggerApi = pool->getLogger();
-            _database = pool->getDatabase();
+            _loggerApi = std::make_shared<LoggerApi>(pool->logger());
+            _database = pool->getDatabaseSessionPool();
             //pool->getEventPublisher()->relay(_publisher->getEventBus());
         }
 

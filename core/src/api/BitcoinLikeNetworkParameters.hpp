@@ -19,8 +19,6 @@ struct BitcoinLikeNetworkParameters final {
     std::vector<uint8_t> P2SHVersion;
     std::vector<uint8_t> XPUBVersion;
     BitcoinLikeFeePolicy FeePolicy;
-    int64_t BIP44CoinType;
-    std::string PaymentUriScheme;
     int64_t DustAmount;
     std::string MessagePrefix;
     bool UsesTimestampedTransaction;
@@ -30,8 +28,6 @@ struct BitcoinLikeNetworkParameters final {
                                  std::vector<uint8_t> P2SHVersion_,
                                  std::vector<uint8_t> XPUBVersion_,
                                  BitcoinLikeFeePolicy FeePolicy_,
-                                 int64_t BIP44CoinType_,
-                                 std::string PaymentUriScheme_,
                                  int64_t DustAmount_,
                                  std::string MessagePrefix_,
                                  bool UsesTimestampedTransaction_)
@@ -40,8 +36,6 @@ struct BitcoinLikeNetworkParameters final {
     , P2SHVersion(std::move(P2SHVersion_))
     , XPUBVersion(std::move(XPUBVersion_))
     , FeePolicy(std::move(FeePolicy_))
-    , BIP44CoinType(std::move(BIP44CoinType_))
-    , PaymentUriScheme(std::move(PaymentUriScheme_))
     , DustAmount(std::move(DustAmount_))
     , MessagePrefix(std::move(MessagePrefix_))
     , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
@@ -53,8 +47,6 @@ struct BitcoinLikeNetworkParameters final {
        this->P2SHVersion = cpy.P2SHVersion;
        this->XPUBVersion = cpy.XPUBVersion;
        this->FeePolicy = cpy.FeePolicy;
-       this->BIP44CoinType = cpy.BIP44CoinType;
-       this->PaymentUriScheme = cpy.PaymentUriScheme;
        this->DustAmount = cpy.DustAmount;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
@@ -69,8 +61,6 @@ struct BitcoinLikeNetworkParameters final {
        this->P2SHVersion = cpy.P2SHVersion;
        this->XPUBVersion = cpy.XPUBVersion;
        this->FeePolicy = cpy.FeePolicy;
-       this->BIP44CoinType = cpy.BIP44CoinType;
-       this->PaymentUriScheme = cpy.PaymentUriScheme;
        this->DustAmount = cpy.DustAmount;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
@@ -79,12 +69,12 @@ struct BitcoinLikeNetworkParameters final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, BIP44CoinType, PaymentUriScheme, DustAmount, MessagePrefix, UsesTimestampedTransaction);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, BIP44CoinType, PaymentUriScheme, DustAmount, MessagePrefix, UsesTimestampedTransaction);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction);
     }
 };
 
