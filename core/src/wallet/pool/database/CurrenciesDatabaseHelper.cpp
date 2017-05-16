@@ -43,6 +43,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
     sql << "SELECT COUNT(*) FROM currencies WHERE name = :name",
     soci::use(currency.name),
     soci::into(count);
+    bool inserted = false;
     if (count == 0) {
         // Insert currency
         sql << "INSERT INTO currencies VALUES(:name, :type, :bip44, :uri)",
@@ -71,10 +72,10 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             case api::WalletType::RIPPLE:break; // TODO INSERT ETHEREUM NETWORK PARAMS
             case api::WalletType::MONERO:break; // TODO INSERT MONERO NETWORK PARAMS
         }
-
-        return true;
+        inserted = true;
     }
-    return false;
+    insertUnits(sql, currency);
+    return inserted;
 }
 
 void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql,
@@ -110,6 +111,24 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
             case api::WalletType::RIPPLE:break;
             case api::WalletType::MONERO:break;
         }
+        getAllUnits(sql, currency);
         currencies.push_back(currency);
     }
 }
+
+void ledger::core::CurrenciesDatabaseHelper::getAllUnits(soci::session &sql, ledger::core::api::Currency &currency) {
+
+}
+
+void
+ledger::core::CurrenciesDatabaseHelper::insertUnits(soci::session &sql, const ledger::core::api::Currency &currency) {
+    for (const auto& unit : currency.units) {
+        int count;
+        sql << "SELECT COUNT(*) FROM units WHERE name = :name", use(unit.name), into(count);
+        if (count == 0) {
+            sql << "INSERT INTO units VALUES(:name, :magnitude, :symbol, :code, :currency_name)",
+            use(unit.name), use(unit.numberOfDecimal), use(unit.symbol), use(unit.code), use(currency.name);
+        }
+    }
+}
+

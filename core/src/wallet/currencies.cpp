@@ -40,7 +40,11 @@ namespace ledger {
                 Currency("bitcoin")
                 .forkOfBitcoin(networks::BITCOIN)
                 .bip44(0)
-                .paymentUri("bitcoin");
+                .paymentUri("bitcoin")
+                    .unit("satoshi", 0, "satoshi")
+                    .unit("bitcoin", 8, "BTC")
+                    .unit("milli-bitcoin", 5, "mBTC")
+                    .unit("micro-bitcoin", 2, "μBTC");
 
             const std::vector<api::Currency> ALL({
                 BITCOIN

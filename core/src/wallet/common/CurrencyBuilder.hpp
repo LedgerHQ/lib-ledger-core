@@ -43,6 +43,8 @@ namespace ledger {
             CurrencyBuilder& bip44(int32_t coinType);
             CurrencyBuilder& paymentUri(const std::string& scheme);
             CurrencyBuilder& forkOfBitcoin(api::BitcoinLikeNetworkParameters params);
+            CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& symbol, const std::string& code);
+            CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& code);
             operator api::Currency() const;
 
         private:

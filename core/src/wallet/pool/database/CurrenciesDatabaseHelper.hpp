@@ -40,6 +40,8 @@ namespace ledger {
         public:
             static bool insertCurrency(soci::session& sql, const api::Currency& currency);
             static void getAllCurrencies(soci::session& sql, std::vector<api::Currency>& currencies);
+            static void insertUnits(soci::session& sql, const api::Currency& currency);
+            static void getAllUnits(soci::session& sql, api::Currency& currency);
         private:
 
         };
