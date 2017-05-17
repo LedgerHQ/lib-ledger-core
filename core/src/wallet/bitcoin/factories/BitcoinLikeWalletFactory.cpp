@@ -36,7 +36,16 @@
 namespace ledger {
     namespace core {
 
-        BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(const std::shared_ptr<WalletPool> &pool) {
+        BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(const api::Currency &currency,
+                                                           const std::shared_ptr<WalletPool> &pool)
+        : AbstractWalletFactory(currency, pool) {
+            // Initialize
+
+        }
+
+        std::shared_ptr<AbstractWallet> BitcoinLikeWalletFactory::build(const WalletDatabaseEntry &entry) {
+
+            return nullptr;
         }
 
     }

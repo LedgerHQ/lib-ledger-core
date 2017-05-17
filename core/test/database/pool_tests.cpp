@@ -88,7 +88,7 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto pool = std::make_shared<WalletPool>(
+    auto pool = WalletPool::newInstance(
         "my_pool",
         Option<std::string>::NONE,
         nullptr,
@@ -115,5 +115,17 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2PKHVersion[0], 0);
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2SHVersion[0], 5);
 
-    //resolver->clean();
+    for (const auto& unit : bitcoin.units) {
+        if (unit.name == "bitcoin") {
+            EXPECT_EQ(unit.code, "BTC");
+            EXPECT_EQ(unit.symbol, "BTC");
+            EXPECT_EQ(unit.numberOfDecimal, 8);
+        } else if (unit.name == "milli-bitcoin") {
+            EXPECT_EQ(unit.code, "mBTC");
+            EXPECT_EQ(unit.symbol, "mBTC");
+            EXPECT_EQ(unit.numberOfDecimal, 5);
+        }
+    }
+
+    resolver->clean();
 }

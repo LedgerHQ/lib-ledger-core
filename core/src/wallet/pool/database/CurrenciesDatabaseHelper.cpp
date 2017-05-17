@@ -117,7 +117,17 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
 }
 
 void ledger::core::CurrenciesDatabaseHelper::getAllUnits(soci::session &sql, ledger::core::api::Currency &currency) {
-
+    rowset<row> rows = (sql.prepare <<
+        "SELECT name, magnitude, symbol, code FROM units WHERE currency_name = :currency", use(currency.name)
+    );
+    for (auto& row : rows) {
+        api::CurrencyUnit unit;
+        unit.name = row.get<std::string>(0);
+        unit.numberOfDecimal = row.get<int32_t>(1);
+        unit.symbol = row.get<std::string>(2);
+        unit.code = row.get<std::string>(3);
+        currency.units.push_back(unit);
+    }
 }
 
 void

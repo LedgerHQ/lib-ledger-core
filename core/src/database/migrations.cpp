@@ -76,7 +76,7 @@ namespace ledger {
                 "name VARCHAR(255),"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "build_configuration BLOB NOT NULL"
+                "configuration TEXT NOT NULL"
             ")";
 
             // Abstract account table

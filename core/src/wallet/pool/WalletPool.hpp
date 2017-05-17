@@ -52,6 +52,7 @@
 #include <database/DatabaseSessionPool.hpp>
 #include <collections/DynamicObject.hpp>
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
+#include <wallet/common/AbstractWalletFactory.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,17 +60,6 @@ namespace ledger {
 
         class WalletPool : public DedicatedContext, public std::enable_shared_from_this<WalletPool> {
         public:
-            WalletPool(const std::string &name,
-                       const Option<std::string> &password,
-                       const std::shared_ptr<api::HttpClient> &httpClient,
-                       const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                       const std::shared_ptr<api::PathResolver> &pathResolver,
-                       const std::shared_ptr<api::LogPrinter> &logPrinter,
-                       const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                       const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                       const std::shared_ptr<api::DatabaseBackend> &backend,
-                       const std::shared_ptr<api::DynamicObject>& configuration);
-
             std::shared_ptr<HttpClient> getHttpClient(const std::string& baseUrl);
             std::shared_ptr<Preferences> getExternalPreferences() const;
             std::shared_ptr<Preferences> getInternalPreferences() const;
@@ -83,8 +73,49 @@ namespace ledger {
             const Option<std::string> getPassword() const;
             const std::vector<api::Currency>& getCurrencies() const;
 
+            std::shared_ptr<AbstractWalletFactory> getFactory(const std::string& currencyName) const;
+
+            // Fetch wallet
+            Future<int64_t> getWalletCount() const;
+            Future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
+            FuturePtr<AbstractWallet> getWallet(const std::string& name);
+            Future<std::vector<std::string>> getWalletNames(int64_t from, int64_t size) const;
+
+            // Create wallet
+            FuturePtr<AbstractWallet> createWallet(const std::string& name,
+                                                   api::WalletType type,
+                                                   const std::shared_ptr<api::DynamicObject>& configuration);
+
+
+            // Delete wallet
+            Future<Unit> deleteWallet(const std::string& name);
+
+
+            static std::shared_ptr<WalletPool> newInstance(const std::string &name,
+                                                           const Option<std::string> &password,
+                                                           const std::shared_ptr<api::HttpClient> &httpClient,
+                                                           const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                                                           const std::shared_ptr<api::PathResolver> &pathResolver,
+                                                           const std::shared_ptr<api::LogPrinter> &logPrinter,
+                                                           const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                                                           const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                                                           const std::shared_ptr<api::DatabaseBackend> &backend,
+                                                           const std::shared_ptr<api::DynamicObject>& configuration);
+
         private:
+            WalletPool(const std::string &name,
+                       const Option<std::string> &password,
+                       const std::shared_ptr<api::HttpClient> &httpClient,
+                       const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                       const std::shared_ptr<api::PathResolver> &pathResolver,
+                       const std::shared_ptr<api::LogPrinter> &logPrinter,
+                       const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                       const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                       const std::shared_ptr<api::DatabaseBackend> &backend,
+                       const std::shared_ptr<api::DynamicObject>& configuration);
             void initializeCurrencies();
+            void initializeFactories();
+            std::shared_ptr<AbstractWallet> buildWallet(const WalletDatabaseEntry& entry);
 
         private:
             // General
@@ -122,7 +153,10 @@ namespace ledger {
             std::vector<api::Currency> _currencies;
 
             // Factories management
-            std::shared_ptr<BitcoinLikeWalletFactory> _bitcoinLikeFactory;
+            std::vector<std::shared_ptr<AbstractWalletFactory>> _factories;
+
+            // Wallets
+            std::unordered_map<std::string, std::shared_ptr<AbstractWallet>> _wallets;
         };
     }
 }

@@ -1,9 +1,9 @@
 /*
  *
- * CurrenciesDatabaseHelper
+ * WalletDatabaseEntry
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/05/2017.
+ * Created by Pierre Pollastri on 16/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,23 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
-#define LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
+#include "WalletDatabaseEntry.hpp"
+#include <crypto/SHA256.hpp>
 
-#include <soci.h>
-#include <api/Currency.hpp>
-
-namespace ledger {
-    namespace core {
-        class CurrenciesDatabaseHelper {
-        public:
-            static bool insertCurrency(soci::session& sql, const api::Currency& currency);
-            static void getAllCurrencies(soci::session& sql, std::vector<api::Currency>& currencies);
-            static void insertUnits(soci::session& sql, const api::Currency& currency);
-            static void getAllUnits(soci::session& sql, api::Currency& currency);
-        };
-    }
+std::string
+ledger::core::WalletDatabaseEntry::createWalletUid(const std::string &poolName, const std::string &walletName) {
+    return SHA256::stringToHexHash(fmt::format("uid:{}+{}", poolName, walletName));
 }
-
-
-#endif //LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP

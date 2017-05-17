@@ -46,7 +46,7 @@ namespace ledger {
                                  const std::shared_ptr<api::WalletPoolCallback> &listener) {
             auto context = dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name));
             FuturePtr<WalletPoolApi>::async(context, [=] () {
-                auto pool = std::make_shared<ledger::core::WalletPool>(
+                auto pool = ledger::core::WalletPool::newInstance(
                     name,
                     Option<std::string>(password),
                     httpClient,

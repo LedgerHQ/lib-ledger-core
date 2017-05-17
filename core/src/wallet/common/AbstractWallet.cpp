@@ -30,6 +30,7 @@
  */
 #include "AbstractWallet.hpp"
 #include <wallet/pool/WalletPool.hpp>
+#include <debug/LoggerApi.hpp>
 
 namespace ledger {
     namespace core {

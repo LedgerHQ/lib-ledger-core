@@ -43,6 +43,12 @@ namespace ledger {
             Future<T> async(std::function<T ()> f) {
                 return Future<T>::async(_executionContext, f);
             };
+
+            template<typename T>
+            Future<T> async(std::function<T ()> f) const {
+                return Future<T>::async(_executionContext, f);
+            };
+
             Future<Unit> run(std::function<void ()> f) {
                 return async<Unit>([=] () {
                     f();

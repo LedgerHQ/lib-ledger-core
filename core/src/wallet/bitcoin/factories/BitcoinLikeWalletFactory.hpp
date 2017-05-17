@@ -31,29 +31,23 @@
 #ifndef LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 #define LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 
-#include "../BitcoinLikeWallet.hpp"
-#include "../../../api/BitcoinLikeExtendedPublicKeyProvider.hpp"
-#include "../../../api/BitcoinLikeNetworkParameters.hpp"
-#include "../../../api/Configuration.hpp"
-#include "../../../preferences/Preferences.hpp"
-#include "../../../utils/Option.hpp"
-#include "wallet/pool/api/WalletPoolApi.hpp"
-
-#include <memory>
-#include <vector>
-#include <wallet/pool/WalletPool.hpp>
+#include <wallet/common/AbstractWalletFactory.hpp>
 
 namespace ledger {
     namespace core {
 
         class WalletPool;
 
-        class BitcoinLikeWalletFactory {
+        class BitcoinLikeWalletFactory : public AbstractWalletFactory {
         public:
-            BitcoinLikeWalletFactory(const std::shared_ptr<ledger::core::WalletPool>& pool);
+            BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+            std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
         private:
-            //std::weak_ptr<WalletPool> _pool;
+            // Explorers
+
+            // Observers
+
         };
     }
 }

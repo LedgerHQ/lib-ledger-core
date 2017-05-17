@@ -31,6 +31,7 @@
 #include <api/PoolConfiguration.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include "WalletPool.hpp"
 
 namespace ledger {
@@ -91,12 +92,27 @@ namespace ledger {
 
             // Threading management
             _threadDispatcher = dispatcher;
+        }
 
-            // Factories management
-            //_bitcoinLikeFactory = std::make_shared<BitcoinLikeWalletFactory>(shared_from_this());
-
+        std::shared_ptr<WalletPool>
+        WalletPool::newInstance(const std::string &name, const Option<std::string> &password,
+                                const std::shared_ptr<api::HttpClient> &httpClient,
+                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                                const std::shared_ptr<api::PathResolver> &pathResolver,
+                                const std::shared_ptr<api::LogPrinter> &logPrinter,
+                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                                const std::shared_ptr<api::RandomNumberGenerator> &rng,
+                                const std::shared_ptr<api::DatabaseBackend> &backend,
+                                const std::shared_ptr<api::DynamicObject> &configuration) {
+            auto pool = std::shared_ptr<WalletPool>(new WalletPool(
+                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
+            ));
             // Initialization
-            initializeCurrencies();
+            //  Load currencies
+            pool->initializeCurrencies();
+            //  Create factories
+            pool->initializeFactories();
+            return pool;
         }
 
         void WalletPool::initializeCurrencies() {
@@ -107,6 +123,25 @@ namespace ledger {
             }
             sql.commit();
             CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);
+        }
+
+        void WalletPool::initializeFactories() {
+            for (const auto& currency : _currencies) {
+                switch (currency.walletType) {
+                    case api::WalletType::BITCOIN:
+                        _factories.push_back(make_factory<api::WalletType::BITCOIN>(currency, shared_from_this()));
+                        break;
+                    case api::WalletType::ETHEREUM:
+                        _factories.push_back(make_factory<api::WalletType::ETHEREUM>(currency, shared_from_this()));
+                        break;
+                    case api::WalletType::RIPPLE:
+                        _factories.push_back(make_factory<api::WalletType::RIPPLE>(currency, shared_from_this()));
+                        break;
+                    case api::WalletType::MONERO:
+                        _factories.push_back(make_factory<api::WalletType::MONERO>(currency, shared_from_this()));
+                        break;
+                }
+            }
         }
 
         std::shared_ptr<Preferences> WalletPool::getExternalPreferences() const {
@@ -165,6 +200,70 @@ namespace ledger {
         const std::vector<api::Currency> &WalletPool::getCurrencies() const {
             return _currencies;
         }
+
+        std::shared_ptr<AbstractWalletFactory> WalletPool::getFactory(const std::string &currencyName) const {
+            for (auto& factory : _factories) {
+                if (factory->getCurrency().name == currencyName) {
+                    return factory;
+                }
+            }
+            return nullptr;
+        }
+
+        Future<int64_t> WalletPool::getWalletCount() const {
+            auto self = shared_from_this();
+            return async<int64_t>([=] () -> int64_t {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                return PoolDatabaseHelper::getWalletCount(sql, *self);
+            });
+        }
+
+        Future<std::vector<std::string>> WalletPool::getWalletNames(int64_t from, int64_t size) const {
+            auto self = shared_from_this();
+            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                std::vector<WalletDatabaseEntry> entries((size_t) size);
+                auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
+                std::vector<std::string> names((size_t) count);
+                auto index = 0;
+                for (const auto& entry : entries) {
+                    names[index] = entry.name;
+                    index += 1;
+                }
+                return {};
+            });
+        }
+
+        FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
+            auto self = shared_from_this();
+            return async<std::shared_ptr<AbstractWallet>>([=] () {
+                WalletDatabaseEntry entry;
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                if (!PoolDatabaseHelper::getWallet(sql, *self, name, entry))
+                    throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
+                return self->buildWallet(entry);
+            });
+        }
+
+        std::shared_ptr<AbstractWallet> WalletPool::buildWallet(const WalletDatabaseEntry &entry) {
+
+            return nullptr;
+        }
+
+        Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletPool::getWallets(int64_t from, int64_t size) {
+            auto self = shared_from_this();
+            return async<std::vector<std::shared_ptr<AbstractWallet>>>([=] () {
+                std::vector<WalletDatabaseEntry> entries(size);
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
+                std::vector<std::shared_ptr<AbstractWallet>> wallets(count);
+                for (auto i = 0; i < count; i++) {
+                    wallets[0] = self->buildWallet(entries[i]);
+                }
+                return wallets;
+            });
+        }
+
 
     }
 }
