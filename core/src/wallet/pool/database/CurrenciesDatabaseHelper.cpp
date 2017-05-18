@@ -142,3 +142,7 @@ ledger::core::CurrenciesDatabaseHelper::insertUnits(soci::session &sql, const le
     }
 }
 
+void ledger::core::CurrenciesDatabaseHelper::removeCurrency(soci::session &sql, const std::string &currencyName) {
+    sql << "DELETE FROM currencies WHERE name = :name", use(currencyName);
+}
+

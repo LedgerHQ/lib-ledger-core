@@ -14,6 +14,9 @@ public enum ErrorCode {
     RAW_TRANSACTION_NOT_FOUND,
     /** User land errors */
     CANCELLED_BY_USER,
+    UNSUPPORTED_CURRENCY,
+    CURRENCY_ALREADY_EXISTS,
+    CURRENCY_NOT_FOUND,
     /** Others */
     INVALID_BASE58_FORMAT,
     INVALID_CHECKSUM,

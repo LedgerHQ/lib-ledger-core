@@ -12,6 +12,9 @@ ErrorCode = enum {
     # User land errors
     cancelled_by_user;
 
+    unsupported_currency;
+    currency_already_exists;
+    currency_not_found;
 
     # Others
     invalid_base58_format;

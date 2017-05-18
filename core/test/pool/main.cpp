@@ -1,9 +1,9 @@
-/*
+/**
  *
- * CurrenciesDatabaseHelper
+ * main
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/05/2017.
+ * Created by Pierre Pollastri on 15/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
-#define LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
 
-#include <soci.h>
-#include <api/Currency.hpp>
+#include <gtest/gtest.h>
 
-namespace ledger {
-    namespace core {
-        class CurrenciesDatabaseHelper {
-        public:
-            static bool insertCurrency(soci::session& sql, const api::Currency& currency);
-            static void getAllCurrencies(soci::session& sql, std::vector<api::Currency>& currencies);
-            static void insertUnits(soci::session& sql, const api::Currency& currency);
-            static void getAllUnits(soci::session& sql, api::Currency& currency);
-            static void removeCurrency(soci::session& sql, const std::string& currencyName);
-        };
-    }
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
-
-
-#endif //LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP

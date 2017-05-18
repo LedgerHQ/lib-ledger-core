@@ -15,6 +15,9 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeRawTransactionNotFound,
     /** User land errors */
     LGErrorCodeCancelledByUser,
+    LGErrorCodeUnsupportedCurrency,
+    LGErrorCodeCurrencyAlreadyExists,
+    LGErrorCodeCurrencyNotFound,
     /** Others */
     LGErrorCodeInvalidBase58Format,
     LGErrorCodeInvalidChecksum,

@@ -71,7 +71,6 @@ namespace ledger {
             std::shared_ptr<DynamicObject> getConfiguration() const;
             const std::string& getName() const;
             const Option<std::string> getPassword() const;
-            const std::vector<api::Currency>& getCurrencies() const;
 
             std::shared_ptr<AbstractWalletFactory> getFactory(const std::string& currencyName) const;
 
@@ -90,6 +89,10 @@ namespace ledger {
             // Delete wallet
             Future<Unit> deleteWallet(const std::string& name);
 
+            // Currencies management
+            const std::vector<api::Currency>& getCurrencies() const;
+            Future<Unit> addCurrency(const api::Currency& currency);
+            Future<Unit> removeCurrency(const std::string& currencyName);
 
             static std::shared_ptr<WalletPool> newInstance(const std::string &name,
                                                            const Option<std::string> &password,
@@ -114,6 +117,8 @@ namespace ledger {
                        const std::shared_ptr<api::DatabaseBackend> &backend,
                        const std::shared_ptr<api::DynamicObject>& configuration);
             void initializeCurrencies();
+            void createFactory(const api::Currency& currency);
+
             void initializeFactories();
             std::shared_ptr<AbstractWallet> buildWallet(const WalletDatabaseEntry& entry);
 

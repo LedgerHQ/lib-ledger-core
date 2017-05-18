@@ -127,20 +127,24 @@ namespace ledger {
 
         void WalletPool::initializeFactories() {
             for (const auto& currency : _currencies) {
-                switch (currency.walletType) {
-                    case api::WalletType::BITCOIN:
-                        _factories.push_back(make_factory<api::WalletType::BITCOIN>(currency, shared_from_this()));
-                        break;
-                    case api::WalletType::ETHEREUM:
-                        _factories.push_back(make_factory<api::WalletType::ETHEREUM>(currency, shared_from_this()));
-                        break;
-                    case api::WalletType::RIPPLE:
-                        _factories.push_back(make_factory<api::WalletType::RIPPLE>(currency, shared_from_this()));
-                        break;
-                    case api::WalletType::MONERO:
-                        _factories.push_back(make_factory<api::WalletType::MONERO>(currency, shared_from_this()));
-                        break;
-                }
+               createFactory(currency);
+            }
+        }
+
+        void WalletPool::createFactory(const api::Currency &currency) {
+            switch (currency.walletType) {
+                case api::WalletType::BITCOIN:
+                    _factories.push_back(make_factory<api::WalletType::BITCOIN>(currency, shared_from_this()));
+                    break;
+                case api::WalletType::ETHEREUM:
+                    _factories.push_back(make_factory<api::WalletType::ETHEREUM>(currency, shared_from_this()));
+                    break;
+                case api::WalletType::RIPPLE:
+                    _factories.push_back(make_factory<api::WalletType::RIPPLE>(currency, shared_from_this()));
+                    break;
+                case api::WalletType::MONERO:
+                    _factories.push_back(make_factory<api::WalletType::MONERO>(currency, shared_from_this()));
+                    break;
             }
         }
 
@@ -230,7 +234,7 @@ namespace ledger {
                     names[index] = entry.name;
                     index += 1;
                 }
-                return {};
+                return names;
             });
         }
 
@@ -246,21 +250,73 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractWallet> WalletPool::buildWallet(const WalletDatabaseEntry &entry) {
-
-            return nullptr;
+            // Check if the wallet already exists
+            auto it = _wallets.find(entry.uid);
+            if (it == _wallets.end()) {
+                return it->second;
+            } else {
+                auto factory = getFactory(entry.currencyName);
+                if (factory == nullptr) {
+                    throw Exception(api::ErrorCode::UNSUPPORTED_CURRENCY,
+                                    fmt::format("Wallet '{}' uses an unsupported currency ''{}", entry.name,
+                                                entry.currencyName)
+                    );
+                }
+                auto wallet = factory->build(entry);
+                _wallets[entry.uid] = wallet;
+                return wallet;
+            }
         }
 
         Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletPool::getWallets(int64_t from, int64_t size) {
             auto self = shared_from_this();
             return async<std::vector<std::shared_ptr<AbstractWallet>>>([=] () {
-                std::vector<WalletDatabaseEntry> entries(size);
+                std::vector<WalletDatabaseEntry> entries((size_t) size);
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
-                std::vector<std::shared_ptr<AbstractWallet>> wallets(count);
+                std::vector<std::shared_ptr<AbstractWallet>> wallets((size_t) count);
                 for (auto i = 0; i < count; i++) {
-                    wallets[0] = self->buildWallet(entries[i]);
+                    wallets[i] = self->buildWallet(entries[i]);
                 }
                 return wallets;
+            });
+        }
+
+        Future<Unit> WalletPool::addCurrency(const api::Currency &currency) {
+            auto self = shared_from_this();
+            return async<Unit>([=] () {
+                auto factory = getFactory(currency.name);
+                if (factory != nullptr) {
+                    throw Exception(api::ErrorCode::CURRENCY_ALREADY_EXISTS, fmt::format("Currency '{}' already exists.", currency.name));
+                }
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                CurrenciesDatabaseHelper::insertCurrency(sql, currency);
+                _currencies.push_back(currency);
+                createFactory(currency);
+                return unit;
+            });
+        }
+
+        Future<Unit> WalletPool::removeCurrency(const std::string &currencyName) {
+            auto self = shared_from_this();
+            return async<Unit>([=] () {
+                auto factory = getFactory(currencyName);
+                if (factory == nullptr) {
+                    throw Exception(api::ErrorCode::CURRENCY_NOT_FOUND, fmt::format("Currency '{}' not found.", currencyName));
+                }
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                CurrenciesDatabaseHelper::removeCurrency(sql, currencyName);
+                auto cIt = std::find_if(_currencies.begin(), _currencies.end(), [currencyName] (const api::Currency& currency) {
+                   return currencyName == currency.name;
+                });
+                auto fIt = std::find_if(_factories.begin(), _factories.end(), [currencyName] (const std::shared_ptr<AbstractWalletFactory>& f) {
+                    return currencyName == f->getCurrency().name;
+                });
+                if (cIt != _currencies.end())
+                    _currencies.erase(cIt);
+                if (fIt != _factories.end())
+                    _factories.erase(fIt);
+                return unit;
             });
         }
 

@@ -63,22 +63,22 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, "test")
-     .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<DatabaseSessionPool>& result) {
-         EXPECT_TRUE(result.isSuccess());
-         if (result.isFailure()) {
-             std::cerr << result.getFailure().getMessage() << std::endl;
-         } else {
-             auto tables = ALL_TABLE_NAMES;
-             soci::session sql(result.getValue()->getPool());
-             soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
-             for (auto& row : rows) {
-                 auto name = row.get<std::string>("name");
+    .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<DatabaseSessionPool>& result) {
+        EXPECT_TRUE(result.isSuccess());
+        if (result.isFailure()) {
+            std::cerr << result.getFailure().getMessage() << std::endl;
+        } else {
+            auto tables = ALL_TABLE_NAMES;
+            soci::session sql(result.getValue()->getPool());
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
+            for (auto& row : rows) {
+                auto name = row.get<std::string>("name");
                 tables.erase(name);
-             }
-             EXPECT_TRUE(tables.empty());
-         }
-         dispatcher->stop();
-     });
+            }
+            EXPECT_TRUE(tables.empty());
+        }
+        dispatcher->stop();
+    });
     dispatcher->waitUntilStopped();
     resolver->clean();
 }
@@ -89,16 +89,16 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto pool = WalletPool::newInstance(
-        "my_pool",
-        Option<std::string>::NONE,
-        nullptr,
-        nullptr,
-        resolver,
-        printer,
-        dispatcher,
-        nullptr,
-        backend,
-        api::DynamicObject::newInstance()
+    "my_pool",
+    Option<std::string>::NONE,
+    nullptr,
+    nullptr,
+    resolver,
+    printer,
+    dispatcher,
+    nullptr,
+    backend,
+    api::DynamicObject::newInstance()
     );
 
     api::Currency bitcoin;
