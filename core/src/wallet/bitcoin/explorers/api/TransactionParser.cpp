@@ -29,7 +29,7 @@
  *
  */
 #include "TransactionParser.hpp"
-#include "../../../../utils/DateParser.hpp"
+#include "utils/DateUtils.hpp"
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -155,7 +155,7 @@ namespace ledger {
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
                 } else if (_lastKey == "received_at") {
-                    _transaction->receivedAt = DateParser::fromJSON(value);
+                    _transaction->receivedAt = DateUtils::fromJSON(value);
                 }
                 return true;
             }

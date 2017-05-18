@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#include "DateParser.hpp"
+#include "DateUtils.hpp"
 #include <regex>
 #include "Exception.hpp"
 #include <boost/lexical_cast.hpp>
 #include <ctime>
+#include <ctime>
 
-std::chrono::system_clock::time_point ledger::core::DateParser::fromJSON(const std::string &str) {
+std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const std::string &str) {
     std::regex ex("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
     std::cmatch what;
     if (regex_match(str.c_str(), what, ex)) {
@@ -62,4 +63,15 @@ std::chrono::system_clock::time_point ledger::core::DateParser::fromJSON(const s
     } else {
         throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot convert {} to date", str);
     }
+}
+
+std::string ledger::core::DateUtils::toJSON(const std::chrono::system_clock::time_point &date) {
+    std::tm tm = {0};
+    std::time_t tt = std::chrono::system_clock::to_time_t(date);
+    gmtime_r(&tt, &tm);
+    return fmt::format("{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z", 1900 + tm.tm_year, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
+
+std::chrono::system_clock::time_point ledger::core::DateUtils::now() {
+    return std::chrono::system_clock::now();
 }

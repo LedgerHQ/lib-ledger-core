@@ -29,6 +29,7 @@
  *
  */
 #include "PoolDatabaseHelper.hpp"
+#include <utils/DateUtils.hpp>
 
 using namespace soci;
 
@@ -90,6 +91,16 @@ namespace ledger {
             entry.poolName = pool.getName();
             auto serializedConfig = hex::toByteArray(row.get<std::string>(2));
             entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(DynamicObject::load(serializedConfig));
+        }
+
+        bool PoolDatabaseHelper::insertPool(soci::session &sql, const WalletPool &pool) {
+            auto count = 0;
+            sql << "SELECT COUNT(*) FROM pools WHERE name = :name", use(pool.getName()), into(count);
+            if (count == 0) {
+                sql << "INSERT INTO pools VALUES(:name, :created_at)", use(pool.getName()), use(DateUtils::toJSON(DateUtils::now()));
+                return true;
+            }
+            return false;
         }
 
     }

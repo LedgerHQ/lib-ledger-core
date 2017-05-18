@@ -29,7 +29,7 @@
  *
  */
 #include "BlockParser.hpp"
-#include "../../../../utils/DateParser.hpp"
+#include "utils/DateUtils.hpp"
 
 namespace ledger {
     namespace core {
@@ -76,7 +76,7 @@ namespace ledger {
             if (_lastKey == "hash") {
                 _block->hash = value;
             } else if (_lastKey == "time") {
-                _block->time = DateParser::fromJSON(value);
+                _block->time = DateUtils::fromJSON(value);
             }
             return true;
         }

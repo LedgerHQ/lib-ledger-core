@@ -118,6 +118,7 @@ namespace ledger {
         void WalletPool::initializeCurrencies() {
             soci::session sql(getDatabaseSessionPool()->getPool());
             sql.begin();
+            PoolDatabaseHelper::insertPool(sql, *this);
             for (auto& currency : currencies::ALL) {
                 CurrenciesDatabaseHelper::insertCurrency(sql, currency);
             }

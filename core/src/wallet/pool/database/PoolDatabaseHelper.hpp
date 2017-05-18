@@ -39,7 +39,7 @@ namespace ledger {
     namespace core {
         class PoolDatabaseHelper {
         public:
-            static void insertPool(soci::session& sql, const WalletPool& pool);
+            static bool insertPool(soci::session& sql, const WalletPool& pool);
             static void putWallet(soci::session &sql, const WalletDatabaseEntry &wallet);
             static int64_t getWallets(soci::session& sql,
                                       const WalletPool& pool, int64_t offset,
