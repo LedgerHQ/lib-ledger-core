@@ -29,26 +29,18 @@
  *
  */
 
+#include <api/Currency.hpp>
 #include "BitcoinLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
-
-        BitcoinLikeKeychain::BitcoinLikeKeychain(
-                const std::shared_ptr<api::DynamicObject> configuration,
-                const api::BitcoinLikeNetworkParameters &params, int account,
-                const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                const std::shared_ptr<Preferences> preferences) :
-            _params(params), _account(account), _xpub(xpub), _preferences(preferences), _configuration(configuration) {
-
-        }
 
         int BitcoinLikeKeychain::getAccountIndex() const {
             return _account;
         }
 
         const api::BitcoinLikeNetworkParameters &BitcoinLikeKeychain::getNetworkParameters() const {
-            return _params;
+            return _currency.bitcoinLikeNetworkParameters.value();
         }
 
         std::shared_ptr<api::BitcoinLikeExtendedPublicKey> BitcoinLikeKeychain::getExtendedPublicKey() const {
@@ -69,6 +61,30 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject> BitcoinLikeKeychain::getConfiguration() const {
             return _configuration;
+        }
+
+        BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> configuration,
+                                                 const api::Currency &params, int account,
+                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                 const std::shared_ptr<Preferences> preferences) :
+            _account(account), _xpub(xpub), _preferences(preferences), _configuration(configuration), _currency(params),
+            _scheme(DerivationScheme(configuration
+                    ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                    .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())
+        {
+
+        }
+
+        const api::Currency& BitcoinLikeKeychain::getCurrency() const {
+            return _currency;
+        }
+
+        const DerivationScheme &BitcoinLikeKeychain::getDerivationScheme() const {
+            return _scheme;
+        }
+
+        DerivationScheme &BitcoinLikeKeychain::getDerivationScheme() {
+            return _scheme;
         }
     }
 }

@@ -22,11 +22,11 @@ class Wallet {
 public:
     virtual ~Wallet() {}
 
-    virtual void getAccounts(const std::shared_ptr<AccountListCallback> & callback) = 0;
-
     virtual void getAccount(int32_t index, const std::shared_ptr<AccountCallback> & callback) = 0;
 
     virtual void getAccountCount(const std::shared_ptr<I32Callback> & callback) = 0;
+
+    virtual void getAccounts(int32_t offset, int32_t count, const std::shared_ptr<AccountListCallback> & callback) = 0;
 
     virtual std::shared_ptr<EventBus> getEventBus() = 0;
 

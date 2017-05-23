@@ -38,12 +38,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (void)getAccounts:(nullable id<LGAccountListCallback>)callback {
-    try {
-        _cppRefHandle.get()->getAccounts(::djinni_generated::AccountListCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (void)getAccount:(int32_t)index
           callback:(nullable id<LGAccountCallback>)callback {
     try {
@@ -55,6 +49,16 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getAccountCount:(nullable id<LGI32Callback>)callback {
     try {
         _cppRefHandle.get()->getAccountCount(::djinni_generated::I32Callback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getAccounts:(int32_t)offset
+              count:(int32_t)count
+           callback:(nullable id<LGAccountListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getAccounts(::djinni::I32::toCpp(offset),
+                                         ::djinni::I32::toCpp(count),
+                                         ::djinni_generated::AccountListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

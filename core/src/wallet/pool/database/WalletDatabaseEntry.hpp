@@ -43,7 +43,9 @@ namespace ledger {
             std::string poolName;
             std::shared_ptr<DynamicObject> configuration;
 
-            static std::string createWalletUid(const std::string &poolName, const std::string &walletName);
+            static std::string createWalletUid(const std::string &poolName, const std::string &walletName,
+                const std::string& currencyName
+            );
         };
     }
 }

@@ -12,6 +12,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
      * Wallet errors
      */
     LGErrorCodeWalletNotFound,
+    LGErrorCodeWalletAlreadyExists,
     LGErrorCodeRawTransactionNotFound,
     /** User land errors */
     LGErrorCodeCancelledByUser,

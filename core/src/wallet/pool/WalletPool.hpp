@@ -82,7 +82,7 @@ namespace ledger {
 
             // Create wallet
             FuturePtr<AbstractWallet> createWallet(const std::string& name,
-                                                   api::WalletType type,
+                                                   const std::string& currencyName,
                                                    const std::shared_ptr<api::DynamicObject>& configuration);
 
 

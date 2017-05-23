@@ -34,10 +34,12 @@
 #include "../../../bitcoin/BitcoinLikeExtendedPublicKey.hpp"
 #include <string>
 #include <vector>
+#include <utils/DerivationScheme.hpp>
 #include "../../../utils/Option.hpp"
 #include "../../../preferences/Preferences.hpp"
 #include "../../../api/Configuration.hpp"
 #include "../../../api/DynamicObject.hpp"
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
@@ -51,7 +53,7 @@ namespace ledger {
         public:
             BitcoinLikeKeychain(
                     const std::shared_ptr<api::DynamicObject> configuration,
-                    const api::BitcoinLikeNetworkParameters& params,
+                    const api::Currency& params,
                     int account,
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
                     const std::shared_ptr<Preferences> preferences);
@@ -71,14 +73,18 @@ namespace ledger {
 
             int getAccountIndex() const;
             const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
+            const api::Currency& getCurrency() const;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
+            const DerivationScheme& getDerivationScheme() const;
 
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
+            DerivationScheme& getDerivationScheme();
 
         private:
-            const api::BitcoinLikeNetworkParameters& _params;
+            const api::Currency& _currency;
+            DerivationScheme _scheme;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
             int _account;
             std::shared_ptr<Preferences> _preferences;

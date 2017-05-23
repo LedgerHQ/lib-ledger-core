@@ -321,6 +321,32 @@ namespace ledger {
             });
         }
 
+        FuturePtr<AbstractWallet> WalletPool::createWallet(const std::string &name, const std::string& currencyName,
+                                                           const std::shared_ptr<api::DynamicObject> &configuration) {
+            auto self = shared_from_this();
+            return async<std::shared_ptr<AbstractWallet>>([=] () {
+                auto factory = self->getFactory(currencyName);
+                if (factory == nullptr) {
+                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
+                }
+                // Create the entry
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                sql.begin();
+
+                WalletDatabaseEntry entry;
+                entry.name = name;
+                entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(configuration);
+                entry.currencyName = currencyName;
+                entry.poolName = self->getName();
+                entry.uid = WalletDatabaseEntry::createWalletUid(self->getName(), name, currencyName);
+                if (PoolDatabaseHelper::walletExists(sql, entry))
+                    throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}'", name, currencyName);
+                PoolDatabaseHelper::putWallet(sql, entry);
+                auto wallet = factory->build(entry);
+                sql.commit();
+                return wallet;
+            });
+        }
 
     }
 }

@@ -100,6 +100,13 @@ namespace ledger {
             return *this;
         }
 
+        DerivationScheme DerivationScheme::shift(int n) {
+            auto it = _scheme.begin() + n;
+            auto end = _scheme.end();
+            auto scheme = std::vector<DerivationSchemeNode>(it, end);
+            return DerivationScheme(scheme);
+        }
+
         DerivationScheme DerivationScheme::getSchemeTo(DerivationSchemeLevel level) {
             auto it = _scheme.begin();
             auto end = _scheme.end();

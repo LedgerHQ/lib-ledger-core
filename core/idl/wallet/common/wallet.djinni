@@ -60,9 +60,10 @@ Account = interface +c {
 }
 
 Wallet = interface +c {
-    getAccounts(callback: ListCallback<Account>);
     getAccount(index: i32, callback: Callback<Account>);
     getAccountCount(callback: Callback<i32>);
+    getAccounts(offset: i32, count: i32, callback: ListCallback<Account>);
+
     getEventBus(): EventBus;
 
     isSynchronizing(): bool;

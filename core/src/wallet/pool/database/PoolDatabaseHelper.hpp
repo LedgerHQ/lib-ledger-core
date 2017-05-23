@@ -46,6 +46,8 @@ namespace ledger {
                                       std::vector<WalletDatabaseEntry>& wallets);
             static int64_t getWalletCount(soci::session& sql, const WalletPool& pool);
             static bool getWallet(soci::session& sql, const WalletPool& pool, const std::string& walletName, WalletDatabaseEntry& entry);
+            static bool removeWallet(soci::session& sql, const WalletDatabaseEntry& entry);
+            static bool walletExists(soci::session& sql, const WalletDatabaseEntry& entry);
 
         private:
             PoolDatabaseHelper() = delete;

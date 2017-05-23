@@ -27,15 +27,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_nativeDestroy(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
-        ref->getAccounts(::djinni_generated::AccountListCallback::toCpp(jniEnv, j_callback));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
 CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index, jobject j_callback)
 {
     try {
@@ -52,6 +43,17 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAcco
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
         ref->getAccountCount(::djinni_generated::I32Callback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_offset, jint j_count, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getAccounts(::djinni::I32::toCpp(jniEnv, j_offset),
+                         ::djinni::I32::toCpp(jniEnv, j_count),
+                         ::djinni_generated::AccountListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

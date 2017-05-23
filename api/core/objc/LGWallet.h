@@ -14,12 +14,14 @@
 
 @interface LGWallet : NSObject
 
-- (void)getAccounts:(nullable id<LGAccountListCallback>)callback;
-
 - (void)getAccount:(int32_t)index
           callback:(nullable id<LGAccountCallback>)callback;
 
 - (void)getAccountCount:(nullable id<LGI32Callback>)callback;
+
+- (void)getAccounts:(int32_t)offset
+              count:(int32_t)count
+           callback:(nullable id<LGAccountListCallback>)callback;
 
 - (nullable LGEventBus *)getEventBus;
 

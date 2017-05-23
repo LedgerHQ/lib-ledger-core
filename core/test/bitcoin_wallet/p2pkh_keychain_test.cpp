@@ -34,6 +34,7 @@
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
 #include <src/wallet/bitcoin/networks.hpp>
+#include <src/wallet/currencies.hpp>
 
 using namespace ledger::core;
 
@@ -41,28 +42,32 @@ const std::string XPUB = "xpub6DCi5iJ57ZPd5qPzvTm5hUt6X23TJdh9H4NjNsNbt7t7UuTMJf
 
 static void testKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeKeychain&)> f) {
     auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
-            resolver
-    );
-    auto configuration = std::make_shared<DynamicObject>();
-
-    dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
-        P2PKHBitcoinLikeKeychain keychain(
-                configuration,
-                networks::BITCOIN,
-                0,
-                api::BitcoinLikeExtendedPublicKey::fromBase58(networks::BITCOIN, xpub, optional<std::string>("44'/0'/0'")),
-                backend->getPreferences("keychain")
+    {
+        auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+        auto preferencesLock = dispatcher->newLock();
+        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
+        "/preferences/tests.db",
+        dispatcher->getSerialExecutionContext("worker"),
+        resolver
         );
-        f(keychain);
-        dispatcher->stop();
-    }));
+        auto configuration = std::make_shared<DynamicObject>();
 
-    dispatcher->waitUntilStopped();
+        dispatcher->getMainExecutionContext()->execute(make_runnable([=]() {
+            P2PKHBitcoinLikeKeychain keychain(
+            configuration,
+            ledger::core::currencies::BITCOIN,
+            0,
+            api::BitcoinLikeExtendedPublicKey::fromBase58(networks::BITCOIN, xpub, optional<std::string>("44'/0'/0'")),
+            backend->getPreferences("keychain")
+            );
+            f(keychain);
+            dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
+                dispatcher->stop();
+            }));
+        }));
+
+        dispatcher->waitUntilStopped();
+    }
     resolver->clean();
 }
 

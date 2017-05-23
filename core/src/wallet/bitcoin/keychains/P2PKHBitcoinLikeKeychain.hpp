@@ -61,7 +61,7 @@ namespace ledger {
         class P2PKHBitcoinLikeKeychain : public BitcoinLikeKeychain {
         public:
             P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::BitcoinLikeNetworkParameters &params, int account,
+                                     const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
             bool markAsUsed(const std::string &address) override;

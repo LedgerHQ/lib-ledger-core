@@ -32,6 +32,10 @@
 #define LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 
 #include <wallet/common/AbstractWalletFactory.hpp>
+#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
+#include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
 
 namespace ledger {
     namespace core {
@@ -42,6 +46,7 @@ namespace ledger {
         public:
             BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+
 
         private:
             // Explorers

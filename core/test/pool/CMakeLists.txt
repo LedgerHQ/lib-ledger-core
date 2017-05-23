@@ -11,7 +11,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-pool-tests main.cpp pool_tests.cpp)
+add_executable(ledger-core-pool-tests main.cpp pool_tests.cpp wallet_tests.cpp)
 
 target_link_libraries(ledger-core-pool-tests gtest gtest_main)
 target_link_libraries(ledger-core-pool-tests ledger-core)

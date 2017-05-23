@@ -37,11 +37,10 @@ namespace ledger {
     namespace core {
 
         void PoolDatabaseHelper::putWallet(soci::session &sql, const WalletDatabaseEntry &wallet) {
-            int count = 0;
-            sql << "SELECT COUNT(*) FROM wallets WHERE uid = :uid", use(wallet.uid), into(count);
+
             auto serializeConfig = wallet.configuration->serialize();
             auto configuration = hex::toString(serializeConfig);
-            if (count == 0) {
+            if (walletExists(sql, wallet)) {
                 sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration)",
                         use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration);
             } else {
@@ -73,7 +72,7 @@ namespace ledger {
 
         bool PoolDatabaseHelper::getWallet(soci::session &sql, const WalletPool &pool, const std::string &walletName,
                                            WalletDatabaseEntry &entry) {
-            auto walletUid = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName);
+            auto walletUid = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName, entry.currencyName);
             rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration WHERE uid = :uid", use(walletUid));
             if (rows.begin() == rows.end()) {
                 return false;
@@ -101,6 +100,19 @@ namespace ledger {
                 return true;
             }
             return false;
+        }
+
+        bool PoolDatabaseHelper::walletExists(soci::session &sql, const WalletDatabaseEntry &entry) {
+            int count = 0;
+            sql << "SELECT COUNT(*) FROM wallets WHERE uid = :uid", use(entry.uid), into(count);
+            return count != 1;
+        }
+
+        bool PoolDatabaseHelper::removeWallet(soci::session &sql, const WalletDatabaseEntry &entry) {
+            if (!walletExists(sql, entry))
+                return false;
+            sql << "DELETE FROM wallets WHERE uid = :uid", use(entry.uid);
+            return true;
         }
 
     }

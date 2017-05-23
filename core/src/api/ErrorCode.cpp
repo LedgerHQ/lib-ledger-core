@@ -10,6 +10,7 @@ std::string to_string(const ErrorCode& errorCode) {
     switch (errorCode) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS: return "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::WALLET_NOT_FOUND: return "WALLET_NOT_FOUND";
+        case ErrorCode::WALLET_ALREADY_EXISTS: return "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND: return "RAW_TRANSACTION_NOT_FOUND";
         case ErrorCode::CANCELLED_BY_USER: return "CANCELLED_BY_USER";
         case ErrorCode::UNSUPPORTED_CURRENCY: return "UNSUPPORTED_CURRENCY";
@@ -51,6 +52,7 @@ template <>
 ErrorCode from_string(const std::string& errorCode) {
     if (errorCode == "UNKNOWN_NETWORK_PARAMETERS") return ErrorCode::UNKNOWN_NETWORK_PARAMETERS;
     else if (errorCode == "WALLET_NOT_FOUND") return ErrorCode::WALLET_NOT_FOUND;
+    else if (errorCode == "WALLET_ALREADY_EXISTS") return ErrorCode::WALLET_ALREADY_EXISTS;
     else if (errorCode == "RAW_TRANSACTION_NOT_FOUND") return ErrorCode::RAW_TRANSACTION_NOT_FOUND;
     else if (errorCode == "CANCELLED_BY_USER") return ErrorCode::CANCELLED_BY_USER;
     else if (errorCode == "UNSUPPORTED_CURRENCY") return ErrorCode::UNSUPPORTED_CURRENCY;
@@ -93,6 +95,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
     switch (o) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS:  return os << "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::WALLET_NOT_FOUND:  return os << "WALLET_NOT_FOUND";
+        case ErrorCode::WALLET_ALREADY_EXISTS:  return os << "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND:  return os << "RAW_TRANSACTION_NOT_FOUND";
         case ErrorCode::CANCELLED_BY_USER:  return os << "CANCELLED_BY_USER";
         case ErrorCode::UNSUPPORTED_CURRENCY:  return os << "UNSUPPORTED_CURRENCY";

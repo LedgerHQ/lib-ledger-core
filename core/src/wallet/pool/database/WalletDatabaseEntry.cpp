@@ -32,6 +32,7 @@
 #include <crypto/SHA256.hpp>
 
 std::string
-ledger::core::WalletDatabaseEntry::createWalletUid(const std::string &poolName, const std::string &walletName) {
-    return SHA256::stringToHexHash(fmt::format("uid:{}+{}", poolName, walletName));
+ledger::core::WalletDatabaseEntry::createWalletUid(const std::string &poolName, const std::string &walletName,
+                                                   const std::string &currencyName) {
+    return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", poolName, walletName, currencyName));
 }

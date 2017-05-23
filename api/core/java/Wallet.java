@@ -6,11 +6,11 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Wallet {
-    public abstract void getAccounts(AccountListCallback callback);
-
     public abstract void getAccount(int index, AccountCallback callback);
 
     public abstract void getAccountCount(I32Callback callback);
+
+    public abstract void getAccounts(int offset, int count, AccountListCallback callback);
 
     public abstract EventBus getEventBus();
 
@@ -63,14 +63,6 @@ public abstract class Wallet {
         }
 
         @Override
-        public void getAccounts(AccountListCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getAccounts(this.nativeRef, callback);
-        }
-        private native void native_getAccounts(long _nativeRef, AccountListCallback callback);
-
-        @Override
         public void getAccount(int index, AccountCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -85,6 +77,14 @@ public abstract class Wallet {
             native_getAccountCount(this.nativeRef, callback);
         }
         private native void native_getAccountCount(long _nativeRef, I32Callback callback);
+
+        @Override
+        public void getAccounts(int offset, int count, AccountListCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getAccounts(this.nativeRef, offset, count, callback);
+        }
+        private native void native_getAccounts(long _nativeRef, int offset, int count, AccountListCallback callback);
 
         @Override
         public EventBus getEventBus()

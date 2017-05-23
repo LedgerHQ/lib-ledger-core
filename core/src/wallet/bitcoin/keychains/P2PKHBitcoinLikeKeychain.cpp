@@ -45,7 +45,7 @@ namespace ledger {
     namespace core {
 
         P2PKHBitcoinLikeKeychain::P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                           const api::BitcoinLikeNetworkParameters &params,
+                                                           const api::Currency &params,
                                                            int account,
                                                            const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                                            const std::shared_ptr<Preferences> &preferences)
@@ -170,7 +170,11 @@ namespace ledger {
 
         std::string P2PKHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
             auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
-            auto localPath = fmt::format("{}/{}", iPurpose, index);
+            auto localPath = getDerivationScheme()
+                                .setAccountIndex(getAccountIndex())
+                                .setCoinType(getCurrency().bip44CoinType)
+                                .setNode(iPurpose)
+                                .setAddressIndex((int) index).getPath().toString();
             auto cacheKey = fmt::format("path:{}", localPath);
             auto address = getPreferences()->getString(cacheKey, "");
             if (address.empty()) {
