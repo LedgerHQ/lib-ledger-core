@@ -63,6 +63,11 @@ enum class ErrorCode : int {
     /** Format */
     INVALID_DATE_FORMAT,
     INVALID_DERIVATION_SCHEME,
+    /** Wallet building errors */
+    UNKNOWN_KEYCHAIN_ENGINE,
+    UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
+    UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
+    UNKNOWN_SYNCHRONIZATION_ENGINE,
 };
 std::string to_string(const ErrorCode& errorCode);
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

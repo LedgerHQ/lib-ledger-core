@@ -30,11 +30,11 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/wallet/bitcoin/networks.hpp>
+#include <wallet/bitcoin/networks.hpp>
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>
 
-#include <src/wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <net/QtHttpClient.hpp>
 #include <async/QtThreadDispatcher.hpp>
 
@@ -47,7 +47,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, StartSession) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -73,7 +73,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetRawTransaction) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -100,7 +100,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -145,7 +145,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_2) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -183,7 +183,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactionByHash_3) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -225,7 +225,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetCurrentBlock) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -257,7 +257,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, GetTransactions) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",
@@ -290,7 +290,7 @@ TEST(LedgerApiBitcoinLikeBlockchainExplorer, EndSession) {
     auto client = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     auto worker = dispatcher->getSerialExecutionContext("worker");
     auto http = std::make_shared<HttpClient>("http://api.ledgerwallet.com", client, worker);
-    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN);
+    auto explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, http, networks::BITCOIN, api::DynamicObject::newInstance());
     auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto resolver = std::make_shared<NativePathResolver>();
     auto logger = ledger::core::logger::create("test_logs",

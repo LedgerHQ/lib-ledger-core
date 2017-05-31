@@ -39,26 +39,37 @@
 #include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
 #include <src/wallet/common/AbstractWallet.hpp>
 #include <src/api/BitcoinLikeNetworkParameters.hpp>
-
+#include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
 namespace ledger {
     namespace core {
         class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
         public:
             BitcoinLikeWallet(
                 const std::string& name,
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<BitcoinLikeKeychain>& keychain,
-                const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
+                const BitcoinLikeKeychainFactory& keychainFactory,
+                const BitcoinLikeAccountSynchronizerFactory& synchronizerFactory,
                 const std::shared_ptr<WalletPool>& pool,
-                const api::BitcoinLikeNetworkParameters& network
+                const api::Currency& network
             );
+
+
+            // API methods
+
+            void getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) override;
+            void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
+            void getAccounts(int32_t offset, int32_t count,
+                             const std::shared_ptr<api::AccountListCallback> &callback) override;
+            bool isSynchronizing() override;
+            std::shared_ptr<api::EventBus> synchronize() override;
+
 
         private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
-            std::shared_ptr<BitcoinLikeKeychain> _keychain;
-            std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
+            BitcoinLikeKeychainFactory _keychainFactory;
+            BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
             api::BitcoinLikeNetworkParameters _network;
         };
     }

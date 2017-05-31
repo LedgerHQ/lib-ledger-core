@@ -11,8 +11,18 @@ KeychainEngines = interface +c {
     const BIP32_P2PKH: string = "BIP32_P2PKH";
 }
 
+SynchronizerEngines = interface +c {
+    const BLOCKCHAIN_EXPLORER: string = "BLOCKCHAIN_EXPLORER";
+    const SPV: string = "SPV";
+}
+
 SynchronizationEngines = interface +c {
     const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION: string = "BLOCKCHAIN_EXPLORER_SYNCHRONIZATION";
+}
+
+ConfigurationDefaults = interface +c {
+    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://api.ledgerwallet.com";
+    const BIP44_DERIVATION_SCHEME: string = "44'/<coin_type>'/<account>'/<node>/<address>";
 }
 
 Configuration = interface +c {

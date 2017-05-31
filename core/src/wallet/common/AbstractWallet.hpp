@@ -49,7 +49,7 @@ namespace ledger {
         class AbstractWallet : public virtual api::Wallet, public DedicatedContext {
         public:
             AbstractWallet(const std::string& walletName,
-                           api::WalletType  type,
+                           const api::Currency& currency,
                            const std::shared_ptr<WalletPool>& pool);
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
@@ -59,6 +59,8 @@ namespace ledger {
             std::shared_ptr<api::Logger> getLogger() override;
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getAccountPreferences(int32_t index) override;
+
+            api::Currency getCurrency() override;
 
         public:
             virtual std::shared_ptr<Preferences> getAccountExternalPreferences(int32_t index);
@@ -70,13 +72,13 @@ namespace ledger {
             virtual std::shared_ptr<DatabaseSessionPool> getDatabase() const;
 
         private:
-            api::WalletType _type;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<EventPublisher> _publisher;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<DatabaseSessionPool> _database;
+            api::Currency _currency;
         };
     }
 }

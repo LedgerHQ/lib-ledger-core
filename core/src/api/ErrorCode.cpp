@@ -46,6 +46,10 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::TRANSACTION_NOT_FOUND: return "TRANSACTION_NOT_FOUND";
         case ErrorCode::INVALID_DATE_FORMAT: return "INVALID_DATE_FORMAT";
         case ErrorCode::INVALID_DERIVATION_SCHEME: return "INVALID_DERIVATION_SCHEME";
+        case ErrorCode::UNKNOWN_KEYCHAIN_ENGINE: return "UNKNOWN_KEYCHAIN_ENGINE";
+        case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE: return "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
+        case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE: return "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
+        case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE: return "UNKNOWN_SYNCHRONIZATION_ENGINE";
     };
 };
 template <>
@@ -87,7 +91,11 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "API_ERROR") return ErrorCode::API_ERROR;
     else if (errorCode == "TRANSACTION_NOT_FOUND") return ErrorCode::TRANSACTION_NOT_FOUND;
     else if (errorCode == "INVALID_DATE_FORMAT") return ErrorCode::INVALID_DATE_FORMAT;
-    else return ErrorCode::INVALID_DERIVATION_SCHEME;
+    else if (errorCode == "INVALID_DERIVATION_SCHEME") return ErrorCode::INVALID_DERIVATION_SCHEME;
+    else if (errorCode == "UNKNOWN_KEYCHAIN_ENGINE") return ErrorCode::UNKNOWN_KEYCHAIN_ENGINE;
+    else if (errorCode == "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE;
+    else if (errorCode == "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE;
+    else return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
 };
 
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
@@ -131,6 +139,10 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::TRANSACTION_NOT_FOUND:  return os << "TRANSACTION_NOT_FOUND";
         case ErrorCode::INVALID_DATE_FORMAT:  return os << "INVALID_DATE_FORMAT";
         case ErrorCode::INVALID_DERIVATION_SCHEME:  return os << "INVALID_DERIVATION_SCHEME";
+        case ErrorCode::UNKNOWN_KEYCHAIN_ENGINE:  return os << "UNKNOWN_KEYCHAIN_ENGINE";
+        case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
+        case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
+        case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE:  return os << "UNKNOWN_SYNCHRONIZATION_ENGINE";
     }
 }
 

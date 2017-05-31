@@ -32,26 +32,44 @@
 #define LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 #include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
+#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
 
+        using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
+        using BitcoinLikeKeychainFactory = std::function<std::shared_ptr<BitcoinLikeKeychain>(const std::shared_ptr<api::DynamicObject>&, const api::Currency&, int, const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>, const std::shared_ptr<Preferences>&)>;
         class WalletPool;
+        template <typename T>
+        std::shared_ptr<BitcoinLikeKeychain> make_keychain(const std::shared_ptr<api::DynamicObject>& configuration,
+                                                      const api::Currency& params,
+                                                      int account,
+                                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
+                                                      const std::shared_ptr<Preferences>& preferences) {
+            return std::make_shared<T>(configuration, params, account, xpub, preferences);
+        }
 
         class BitcoinLikeWalletFactory : public AbstractWalletFactory {
         public:
             BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-
+        private:
+            std::shared_ptr<BitcoinLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
+            std::shared_ptr<BitcoinLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
         private:
             // Explorers
+            std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningExplorers;
 
             // Observers
+            std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningObservers;
+
+            // Keychain factories
+            std::unordered_map<std::string, BitcoinLikeKeychainFactory> _keychainFactories;
 
         };
     }

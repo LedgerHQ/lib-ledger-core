@@ -122,7 +122,41 @@ add_library(
         traits/shared_ptr_traits.hpp collections/collections.hpp
         collections/MapLike.hpp utils/optional.cpp collections/DynamicObject.cpp collections/DynamicObject.hpp
         collections/DynamicArray.cpp collections/DynamicArray.hpp collections/DynamicValue.cpp
-        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp net/URI.cpp net/URI.hpp collections/Bytes.hpp wallet/bitcoin/explorers/api/TransactionParser.cpp wallet/bitcoin/explorers/api/TransactionParser.hpp wallet/bitcoin/explorers/api/BlockParser.cpp wallet/bitcoin/explorers/api/BlockParser.hpp utils/DateUtils.cpp utils/DateUtils.hpp wallet/bitcoin/explorers/api/InputParser.cpp wallet/bitcoin/explorers/api/InputParser.hpp wallet/bitcoin/explorers/api/OutputParser.cpp wallet/bitcoin/explorers/api/OutputParser.hpp wallet/bitcoin/explorers/api/TransactionsParser.cpp wallet/bitcoin/explorers/api/TransactionsParser.hpp wallet/bitcoin/explorers/api/TransactionsBulkParser.cpp wallet/bitcoin/explorers/api/TransactionsBulkParser.hpp wallet/bitcoin/explorers/api/LedgerApiParser.hpp database/DatabaseSessionPool.cpp database/DatabaseSessionPool.hpp utils/DerivationScheme.cpp utils/DerivationScheme.hpp collections/functional.hpp database/migrations.cpp database/migrations.hpp events/EventPublisher.cpp events/EventPublisher.hpp events/Event.cpp events/Event.hpp events/EventBus.cpp events/EventBus.hpp events/LambdaEventReceiver.cpp events/LambdaEventReceiver.hpp wallet/common/AbstractWallet.cpp wallet/common/AbstractWallet.hpp wallet/common/AbstractOperation.cpp wallet/common/AbstractOperation.hpp wallet/common/AbstractAccount.cpp wallet/common/AbstractAccount.hpp wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp wallet/bitcoin/BitcoinLikeAccount.cpp wallet/bitcoin/BitcoinLikeAccount.hpp wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp wallet/pool/WalletPool.cpp wallet/pool/WalletPool.hpp wallet/pool/CurrenciesManager.cpp wallet/pool/CurrenciesManager.hpp wallet/currencies.cpp wallet/currencies.hpp wallet/common/CurrencyBuilder.cpp wallet/common/CurrencyBuilder.hpp wallet/pool/database/CurrenciesDatabaseHelper.cpp wallet/pool/database/CurrenciesDatabaseHelper.hpp wallet/pool/database/PoolDatabaseHelper.cpp wallet/pool/database/PoolDatabaseHelper.hpp wallet/common/AbstractWalletFactory.cpp wallet/common/AbstractWalletFactory.hpp wallet/pool/database/WalletDatabaseEntry.cpp wallet/pool/database/WalletDatabaseEntry.hpp)
+        collections/DynamicValue.hpp collections/Sequence.hpp collections/String.hpp
+        wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp
+        wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp
+        net/URI.cpp net/URI.hpp collections/Bytes.hpp wallet/bitcoin/explorers/api/TransactionParser.cpp
+        wallet/bitcoin/explorers/api/TransactionParser.hpp wallet/bitcoin/explorers/api/BlockParser.cpp
+        wallet/bitcoin/explorers/api/BlockParser.hpp utils/DateUtils.cpp utils/DateUtils.hpp
+        wallet/bitcoin/explorers/api/InputParser.cpp wallet/bitcoin/explorers/api/InputParser.hpp
+        wallet/bitcoin/explorers/api/OutputParser.cpp
+        wallet/bitcoin/explorers/api/OutputParser.hpp
+        wallet/bitcoin/explorers/api/TransactionsParser.cpp
+        wallet/bitcoin/explorers/api/TransactionsParser.hpp
+        wallet/bitcoin/explorers/api/TransactionsBulkParser.cpp
+        wallet/bitcoin/explorers/api/TransactionsBulkParser.hpp
+        wallet/bitcoin/explorers/api/LedgerApiParser.hpp
+        database/DatabaseSessionPool.cpp database/DatabaseSessionPool.hpp
+        utils/DerivationScheme.cpp utils/DerivationScheme.hpp collections/functional.hpp
+        database/migrations.cpp database/migrations.hpp
+        events/EventPublisher.cpp events/EventPublisher.hpp events/Event.cpp events/Event.hpp events/EventBus.cpp
+        events/EventBus.hpp events/LambdaEventReceiver.cpp events/LambdaEventReceiver.hpp
+        wallet/common/AbstractWallet.cpp wallet/common/AbstractWallet.hpp wallet/common/AbstractOperation.cpp
+        wallet/common/AbstractOperation.hpp wallet/common/AbstractAccount.cpp wallet/common/AbstractAccount.hpp
+        wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp wallet/bitcoin/BitcoinLikeAccount.cpp
+        wallet/bitcoin/BitcoinLikeAccount.hpp wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp
+        wallet/pool/WalletPool.cpp wallet/pool/WalletPool.hpp wallet/pool/CurrenciesManager.cpp
+        wallet/pool/CurrenciesManager.hpp wallet/currencies.cpp wallet/currencies.hpp wallet/common/CurrencyBuilder.cpp
+        wallet/common/CurrencyBuilder.hpp wallet/pool/database/CurrenciesDatabaseHelper.cpp
+        wallet/pool/database/CurrenciesDatabaseHelper.hpp wallet/pool/database/PoolDatabaseHelper.cpp
+        wallet/pool/database/PoolDatabaseHelper.hpp wallet/common/AbstractWalletFactory.cpp
+        wallet/common/AbstractWalletFactory.hpp wallet/pool/database/WalletDatabaseEntry.cpp
+        wallet/pool/database/WalletDatabaseEntry.hpp utils/ConfigurationMatchable.cpp utils/ConfigurationMatchable.h
+        wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.cpp
+        wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h
+        events/ProgressNotifier.cpp events/ProgressNotifier.h
+        wallet/bitcoin/database/BitcoinLikeWalletDatabase.cpp wallet/bitcoin/database/BitcoinLikeWalletDatabase.h
+        wallet/common/database/AccountDatabaseHelper.cpp wallet/common/database/AccountDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.h wallet/bitcoin/database/BitcoinLikeAccountDatabase.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabase.h)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

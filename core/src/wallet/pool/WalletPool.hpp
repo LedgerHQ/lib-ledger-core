@@ -90,6 +90,7 @@ namespace ledger {
             Future<Unit> deleteWallet(const std::string& name);
 
             // Currencies management
+            Option<api::Currency> getCurrency(const std::string& name) const;
             const std::vector<api::Currency>& getCurrencies() const;
             Future<Unit> addCurrency(const api::Currency& currency);
             Future<Unit> removeCurrency(const std::string& currencyName);

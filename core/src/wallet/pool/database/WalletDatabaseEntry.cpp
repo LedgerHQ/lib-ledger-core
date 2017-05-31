@@ -36,3 +36,7 @@ ledger::core::WalletDatabaseEntry::createWalletUid(const std::string &poolName, 
                                                    const std::string &currencyName) {
     return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", poolName, walletName, currencyName));
 }
+
+void ledger::core::WalletDatabaseEntry::updateUid() {
+    uid = createWalletUid(poolName, name, currencyName);
+}

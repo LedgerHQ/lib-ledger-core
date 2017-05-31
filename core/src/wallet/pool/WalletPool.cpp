@@ -348,5 +348,13 @@ namespace ledger {
             });
         }
 
+        Option<api::Currency> WalletPool::getCurrency(const std::string &name) const {
+            for (auto& currency : _currencies) {
+                if (currency.name == name)
+                    return Option<api::Currency>(currency);
+            }
+            return Option<api::Currency>();
+        }
+
     }
 }

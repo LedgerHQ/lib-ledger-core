@@ -40,12 +40,12 @@ namespace ledger {
 
             auto serializeConfig = wallet.configuration->serialize();
             auto configuration = hex::toString(serializeConfig);
-            if (walletExists(sql, wallet)) {
+            if (!walletExists(sql, wallet)) {
                 sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration)",
                         use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration);
             } else {
-                sql << "UPDATE wallets SET configuration = :configuration, WHERE uid = :uid",
-                use(wallet.uid), use(configuration);
+                sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
+                into(configuration), use(wallet.uid);
             }
         }
 
@@ -105,7 +105,7 @@ namespace ledger {
         bool PoolDatabaseHelper::walletExists(soci::session &sql, const WalletDatabaseEntry &entry) {
             int count = 0;
             sql << "SELECT COUNT(*) FROM wallets WHERE uid = :uid", use(entry.uid), into(count);
-            return count != 1;
+            return count > 0;
         }
 
         bool PoolDatabaseHelper::removeWallet(soci::session &sql, const WalletDatabaseEntry &entry) {

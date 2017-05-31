@@ -31,11 +31,16 @@
 #ifndef LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
 #define LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
 
+#include <events/ProgressNotifier.h>
+
 namespace ledger {
     namespace core {
+        class BitcoinLikeAccount;
         class BitcoinLikeAccountSynchronizer {
         public:
-            void synchronize();
+            virtual void reset(const std::chrono::system_clock::time_point& toDate) = 0;
+            virtual const ProgressNotifier<Unit>& synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) = 0;
+            virtual bool isSynchronizing() const = 0;
         };
     }
 }

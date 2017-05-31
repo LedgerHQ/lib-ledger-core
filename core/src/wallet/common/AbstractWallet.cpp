@@ -34,10 +34,10 @@
 
 namespace ledger {
     namespace core {
-        AbstractWallet::AbstractWallet(const std::string& walletName, api::WalletType  type, const std::shared_ptr<WalletPool> &pool)
+        AbstractWallet::AbstractWallet(const std::string& walletName, const api::Currency& currency, const std::shared_ptr<WalletPool> &pool)
             : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName)))
         {
-            _type = type;
+            _currency = currency;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _internalPreferences = pool->getInternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
@@ -56,15 +56,15 @@ namespace ledger {
         }
 
         bool AbstractWallet::isInstanceOfBitcoinLikeWallet() {
-            return _type == api::WalletType::BITCOIN;
+            return getWalletType() == api::WalletType::BITCOIN;
         }
 
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
-            return _type == api::WalletType::ETHEREUM;
+            return getWalletType() == api::WalletType::ETHEREUM;
         }
 
         bool AbstractWallet::isInstanceOfRippleLikeWallet() {
-            return _type == api::WalletType::RIPPLE;
+            return getWalletType() == api::WalletType::RIPPLE;
         }
 
         std::shared_ptr<Preferences> AbstractWallet::getAccountInternalPreferences(int32_t index) {
@@ -88,7 +88,7 @@ namespace ledger {
         }
 
         api::WalletType AbstractWallet::getWalletType() {
-            return _type;
+            return _currency.walletType;
         }
 
         std::shared_ptr<spdlog::logger> AbstractWallet::logger() const {
@@ -105,6 +105,10 @@ namespace ledger {
 
         std::shared_ptr<DatabaseSessionPool> AbstractWallet::getDatabase() const {
             return _database;
+        }
+
+        api::Currency AbstractWallet::getCurrency() {
+            return _currency;
         }
     }
 }

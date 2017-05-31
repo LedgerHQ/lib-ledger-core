@@ -57,4 +57,9 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     /** Format */
     LGErrorCodeInvalidDateFormat,
     LGErrorCodeInvalidDerivationScheme,
+    /** Wallet building errors */
+    LGErrorCodeUnknownKeychainEngine,
+    LGErrorCodeUnknownBlockchainExplorerEngine,
+    LGErrorCodeUnknownBlockchainObserverEngine,
+    LGErrorCodeUnknownSynchronizationEngine,
 };

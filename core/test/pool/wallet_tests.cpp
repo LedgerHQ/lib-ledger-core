@@ -38,6 +38,7 @@
 #include <CoutLogPrinter.hpp>
 #include <src/api/DynamicObject.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -63,8 +64,21 @@ TEST(Wallets, CreateNewWallet) {
     };
     {
         auto pool = newPool();
-        pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance());
-
+        pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance())
+            .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<AbstractWallet>& result) {
+                if (result.isFailure()) {
+                    std::cerr << result.getFailure().getMessage() << std::endl;
+                    FAIL();
+                } else {
+                    auto& wallet = result.getValue();
+                    EXPECT_EQ(wallet->getCurrency().name, "bitcoin");
+                    EXPECT_EQ(wallet->getWalletType(), api::WalletType::BITCOIN);
+                    auto bitcoinWallet = std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet);
+                    EXPECT_TRUE(bitcoinWallet != nullptr);
+                }
+                dispatcher->stop();
+            });
         dispatcher->waitUntilStopped();
     }
+    resolver->clean();
 }

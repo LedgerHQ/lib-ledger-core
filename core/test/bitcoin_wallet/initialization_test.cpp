@@ -34,39 +34,17 @@
 #include <NativeThreadDispatcher.hpp>
 #include <ledger/core/api/WalletPoolBuilder.hpp>
 #include <ledger/core/api/WalletPool.hpp>
-#include <ledger/core/api/WalletPoolBuildCallback.hpp>
 #include <CoutLogPrinter.hpp>
 #include <MongooseHttpClient.hpp>
-#include <PoolTestCaseBootstraper.hpp>
 #include <ledger/core/api/Logger.hpp>
 
 using namespace ledger::core;
 
 TEST(BitcoinWalletInitialization, InitializeNewWalletPool) {
-    PoolTestCaseBootstraper bootstraper("default");
-    bootstraper.setup([&] (std::shared_ptr<api::WalletPool> pool, optional<api::Error> error) {
-        if (!error) {
-            pool->getLogger()->d("test", "Pool created");
-        } else {
-            std::cout << "Error: " << error.value().message << std::endl;
-        }
-        bootstraper.dispatcher->stop();
-    });
-    bootstraper.dispatcher->waitUntilStopped();
-    bootstraper.tearDown();
+
 }
 
 TEST(BitcoinWalletInitialization, InitializeBitcoinWallet) {
-    PoolTestCaseBootstraper bootstraper("default");
 
-    bootstraper.getBitcoinWallet().onComplete(bootstraper.mainContext, [&] (const TryPtr<api::BitcoinLikeWallet>& result) {
-        std::cout << "success: " << result.isSuccess() << std::endl;
-        std::cout << result.getFailure() << std::endl;
-        EXPECT_TRUE(result.isSuccess());
-        bootstraper.dispatcher->stop();
-    });
-
-    bootstraper.dispatcher->waitUntilStopped();
-    bootstraper.tearDown();
 }
 

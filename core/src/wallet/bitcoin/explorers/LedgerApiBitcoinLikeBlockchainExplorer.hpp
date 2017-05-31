@@ -31,12 +31,13 @@
 #ifndef LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 #define LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 
-#include "../../../api/BitcoinLikeNetworkParameters.hpp"
 #include "BitcoinLikeBlockchainExplorer.hpp"
-#include "../../../net/HttpClient.hpp"
-#include "../../../async/Future.hpp"
-#include "../../../async/DedicatedContext.hpp"
-#include "../../../collections/collections.hpp"
+
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <collections/collections.hpp>
+#include <async/Future.hpp>
+#include <net/HttpClient.hpp>
+#include <async/DedicatedContext.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,7 +46,8 @@ namespace ledger {
             LedgerApiBitcoinLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext>& context,
                 const std::shared_ptr<HttpClient>& http,
-                const api::BitcoinLikeNetworkParameters& parameters
+                const api::BitcoinLikeNetworkParameters& parameters,
+                const std::shared_ptr<api::DynamicObject>& configuration
             );
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;

@@ -34,6 +34,7 @@
 #include <string>
 #include <chrono>
 #include <vector>
+#include <utils/ConfigurationMatchable.h>
 #include "../../../utils/optional.hpp"
 #include "../../../api/ErrorCode.hpp"
 #include "../../../utils/Option.hpp"
@@ -44,7 +45,7 @@
 namespace ledger {
     namespace core {
 
-        class BitcoinLikeBlockchainExplorer {
+        class BitcoinLikeBlockchainExplorer : public ConfigurationMatchable {
         public:
             struct Block {
                 std::string hash;
@@ -92,6 +93,7 @@ namespace ledger {
 
 
         public:
+            BitcoinLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject>& configuration, const std::vector<std::string> &matchableKeys);
             virtual Future<void *> startSession() = 0;
             virtual Future<Unit> killSession(void *session) = 0;
 

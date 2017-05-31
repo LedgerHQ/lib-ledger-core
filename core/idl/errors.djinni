@@ -62,6 +62,12 @@ ErrorCode = enum {
     # Format
     invalid_date_format;
     invalid_derivation_scheme;
+
+    # Wallet building errors
+    unknown_keychain_engine;
+    unknown_blockchain_explorer_engine;
+    unknown_blockchain_observer_engine;
+    unknown_synchronization_engine;
 }
 
 Error = record {

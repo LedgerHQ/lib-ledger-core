@@ -52,11 +52,11 @@ namespace ledger {
 
         public:
             BitcoinLikeKeychain(
-                    const std::shared_ptr<api::DynamicObject> configuration,
+                    const std::shared_ptr<api::DynamicObject>& configuration,
                     const api::Currency& params,
                     int account,
                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
-                    const std::shared_ptr<Preferences> preferences);
+                    const std::shared_ptr<Preferences>& preferences);
 
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
             virtual bool markAsUsed(const std::string& address) = 0;

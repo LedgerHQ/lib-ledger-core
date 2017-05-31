@@ -32,6 +32,7 @@
 #include <fmt/format.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
+#include <api/Configuration.hpp>
 #include "../../../utils/hex.h"
 #include "api/TransactionsBulkParser.hpp"
 #include "api/TransactionParser.hpp"
@@ -44,7 +45,10 @@ namespace ledger {
         LedgerApiBitcoinLikeBlockchainExplorer::LedgerApiBitcoinLikeBlockchainExplorer(
         const std::shared_ptr<api::ExecutionContext> &context,
         const std::shared_ptr<HttpClient> &http,
-        const api::BitcoinLikeNetworkParameters& parameters) : DedicatedContext(context) {
+        const api::BitcoinLikeNetworkParameters& parameters,
+        const std::shared_ptr<api::DynamicObject>& configuration) :
+                DedicatedContext(context),
+                BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
         }

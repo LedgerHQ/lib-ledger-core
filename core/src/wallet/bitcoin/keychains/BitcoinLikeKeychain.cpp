@@ -63,10 +63,10 @@ namespace ledger {
             return _configuration;
         }
 
-        BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> configuration,
+        BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
                                                  const api::Currency &params, int account,
                                                  const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                 const std::shared_ptr<Preferences> preferences) :
+                                                 const std::shared_ptr<Preferences>& preferences) :
             _account(account), _xpub(xpub), _preferences(preferences), _configuration(configuration), _currency(params),
             _scheme(DerivationScheme(configuration
                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)

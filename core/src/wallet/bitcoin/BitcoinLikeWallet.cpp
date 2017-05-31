@@ -34,18 +34,36 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeWallet::BitcoinLikeWallet(const std::string &name,
-                                             const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
                                              const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
-                                             const std::shared_ptr<BitcoinLikeKeychain> &keychain,
-                                             const std::shared_ptr<BitcoinLikeAccountSynchronizer> &synchronizer,
-                                             const std::shared_ptr<WalletPool> &pool,
-                                             const api::BitcoinLikeNetworkParameters &network)
-        : AbstractWallet(name, api::WalletType::BITCOIN, pool) {
-            _explorer = explorer;
+                                             const BitcoinLikeKeychainFactory &keychainFactory,
+                                             const BitcoinLikeAccountSynchronizerFactory &synchronizer,
+                                             const std::shared_ptr<WalletPool> &pool, const api::Currency &network)
+        : AbstractWallet(name, network, pool) {
             _observer = observer;
-            _keychain = keychain;
-            _synchronizer = synchronizer;
-            _network = network;
+            _keychainFactory = keychainFactory;
+            _synchronizerFactory = synchronizer;
         }
+
+        void BitcoinLikeWallet::getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) {
+
+        }
+
+        void BitcoinLikeWallet::getAccountCount(const std::shared_ptr<api::I32Callback> &callback) {
+
+        }
+
+        void BitcoinLikeWallet::getAccounts(int32_t offset, int32_t count,
+                                            const std::shared_ptr<api::AccountListCallback> &callback) {
+
+        }
+
+        bool BitcoinLikeWallet::isSynchronizing() {
+            return false;
+        }
+
+        std::shared_ptr<api::EventBus> BitcoinLikeWallet::synchronize() {
+            return nullptr;
+        }
+
     }
 }

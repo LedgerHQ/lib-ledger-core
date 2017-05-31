@@ -1,6 +1,8 @@
 @import "../../errors.djinni"
 @import "../../preferences/preferences.djinni"
 @import "../amount.djinni"
+@import "../../bitcoin/addresses.djinni"
+@import "bitcoin_public_key_provider.djinni"
 
 BitcoinLikeWalletConfiguration = interface +c {
     const KEYCHAIN: string = "keychain";
@@ -57,5 +59,6 @@ BitcoinLikeAccount = interface +c {
 }
 
 BitcoinLikeWallet = interface +c {
-
+    createNewAccount(index: i32, xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
+    createNextAccount(xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
 }
