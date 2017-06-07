@@ -38,6 +38,7 @@ namespace ledger {
     namespace core {
         class TransactionsBulkParser {
         public:
+            typedef BitcoinLikeBlockchainExplorer::TransactionsBulk Result;
             TransactionsBulkParser(std::string& lastKey);
             void init(BitcoinLikeBlockchainExplorer::TransactionsBulk* bulk);
             bool Null();

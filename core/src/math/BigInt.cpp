@@ -38,6 +38,8 @@
 #undef LITTLE_ENDIAN
 #undef BIG_ENDIAN
 
+#include <cstdlib>
+
 namespace ledger {
     namespace core {
 
@@ -79,6 +81,13 @@ namespace ledger {
 
         BigInt::BigInt(unsigned int value) : BigInt() {
             bdSetShort(_bigd, (bdigit_t)value);
+            _negative = false;
+        }
+
+        BigInt::BigInt(unsigned long long value) : BigInt() {
+            auto bytes = endianness::scalar_type_to_array<unsigned long long>(value, endianness::Endianness::BIG);
+            bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(unsigned long long));
+            std::free(bytes);
             _negative = false;
         }
 

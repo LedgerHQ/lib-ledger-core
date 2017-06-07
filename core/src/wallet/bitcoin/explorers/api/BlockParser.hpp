@@ -40,6 +40,7 @@ namespace ledger {
     namespace core {
         class BlockParser {
         public:
+            typedef BitcoinLikeBlockchainExplorer::Block Result;
             BlockParser(std::string &lastKey) : _lastKey(lastKey) {};
             void init(BitcoinLikeBlockchainExplorer::Block* block);
             bool Null();

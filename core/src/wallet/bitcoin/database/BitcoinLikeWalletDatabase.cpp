@@ -71,5 +71,9 @@ namespace ledger {
             return AccountDatabaseHelper::computeNextAccountIndex(sql, _walletUid);
         }
 
+        const std::string &BitcoinLikeWalletDatabase::getWalletUid() const {
+            return _walletUid;
+        }
+
     }
 }

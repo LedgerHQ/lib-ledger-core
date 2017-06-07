@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * JSONUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 31/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,34 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
+#ifndef LEDGER_CORE_JSONUTILS_H
+#define LEDGER_CORE_JSONUTILS_H
 
-using namespace soci;
+#include <rapidjson/reader.h>
+#include <string>
+#include <wallet/bitcoin/explorers/api/LedgerApiParser.hpp>
 
 namespace ledger {
     namespace core {
 
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-        }
-
+        class JSONUtils {
+        public:
+            template <typename Parser>
+            static std::shared_ptr<typename Parser::Result> parse(const std::string& json) {
+                LedgerApiParser<typename Parser::Result, Parser> parser;
+                parser.attach("", 200);
+                rapidjson::Reader reader;
+                rapidjson::StringStream is(json.data());
+                reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, parser);
+                auto result = parser.build();
+                if (result.isLeft()) {
+                    throw result.getLeft();
+                }
+                return result.getRight();
+            };
+        };
 
     }
 }
+
+#endif //LEDGER_CORE_JSONUTILS_H

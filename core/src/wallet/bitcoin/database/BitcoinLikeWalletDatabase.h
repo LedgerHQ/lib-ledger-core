@@ -48,7 +48,7 @@ namespace ledger {
             int64_t getAccountsCount() const;
             bool accountExists(int32_t index) const;
             void createAccount(int32_t index, const std::string& xpub) const;
-            BitcoinLikeAccountDatabase getAccountDatabase(int32_t index);
+            const std::string& getWalletUid() const;
             int32_t getNextAccountIndex() const;
 
         private:

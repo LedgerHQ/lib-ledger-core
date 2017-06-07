@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * OperationDatabaseHelper
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 31/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,4 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
-
-using namespace soci;
-
-namespace ledger {
-    namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-        }
-
-
-    }
-}
+#include "OperationDatabaseHelper.h"

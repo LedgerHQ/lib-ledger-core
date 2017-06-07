@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * BitcoinLikeBlockDatabaseHelper
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 02/06/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,21 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
+#ifndef LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#define LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
 
-using namespace soci;
+#include <soci.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-        }
-
-
+        class BitcoinLikeBlockDatabaseHelper {
+        public:
+            static void putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+            static bool blockExists(soci::session& sql, const std::string& blockHash);
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H

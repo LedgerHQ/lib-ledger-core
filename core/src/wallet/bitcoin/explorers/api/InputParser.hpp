@@ -39,6 +39,8 @@ namespace ledger {
     namespace core {
         class InputParser {
         public:
+            typedef BitcoinLikeBlockchainExplorer::Input Result;
+
             InputParser(std::string& lastKey) : _lastKey(lastKey) {};
             void init(BitcoinLikeBlockchainExplorer::Input* input);
             bool Null();

@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * soci
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 07/06/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,31 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
+#ifndef LEDGER_CORE_SOCI_NUMBER_H
+#define LEDGER_CORE_SOCI_NUMBER_H
 
-using namespace soci;
+#include <soci.h>
+#include <boost/lexical_cast.hpp>
+#include <utils/Exception.hpp>
 
-namespace ledger {
-    namespace core {
+namespace soci {
 
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+    template<typename T>
+    T get_number(const row& row, std::size_t pos) {
+        auto prop = row.get_properties(pos);
+        switch (prop.get_data_type()) {
+            case dt_string:
+            std::cout << pos << " " << row.get<std::string>(pos) << std::endl;
+                return boost::lexical_cast<T>(row.get<std::string>(pos));
+            case dt_date: throw ledger::core::Exception(ledger::core::api::ErrorCode::RUNTIME_ERROR, "SQL date cannot be casted to number");
+            case dt_double: return (T) row.get<double>(pos);
+            case dt_integer: return (T) row.get<int>(pos);
+            case dt_long_long: return (T) row.get<long long>(pos);
+            case dt_unsigned_long_long: return (T) row.get<unsigned long long>(pos);
         }
+    };
 
-
-    }
 }
+
+
+#endif //LEDGER_CORE_SOCI_NUMBER_H

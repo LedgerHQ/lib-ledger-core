@@ -63,8 +63,10 @@ namespace ledger {
                 Option<std::string> address;
                 Option<std::string> signatureScript;
                 Option<std::string> coinbase;
-
-                Input() {};
+                uint32_t sequence;
+                Input() {
+                    sequence = 0xFFFFFFFF;
+                };
             };
 
             struct Output {
@@ -77,6 +79,7 @@ namespace ledger {
             };
 
             struct Transaction {
+                uint32_t  version;
                 std::string hash;
                 std::chrono::system_clock::time_point receivedAt;
                 uint64_t lockTime;
@@ -84,6 +87,10 @@ namespace ledger {
                 std::vector<Input> inputs;
                 std::vector<Output> outputs;
                 Option<BigInt> fees;
+
+                Transaction() {
+                    version = 1;
+                }
             };
 
             struct TransactionsBulk {

@@ -32,12 +32,18 @@
 #define LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
 
 #include "BitcoinLikeAccountDatabaseEntry.h"
+#include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
+#include <database/DatabaseSessionPool.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeAccountDatabase {
         public:
             BitcoinLikeAccountDatabase(const std::string& walletUid, int32_t index);
+
+
+        private:
+            std::string _accountUid;
         };
     }
 }

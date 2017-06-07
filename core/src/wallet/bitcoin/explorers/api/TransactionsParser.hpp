@@ -41,6 +41,7 @@ namespace ledger {
     namespace core {
         class TransactionsParser {
         public:
+            typedef std::vector<BitcoinLikeBlockchainExplorer::Transaction> Result;
             TransactionsParser(std::string& lastKey);
             void init(std::vector<BitcoinLikeBlockchainExplorer::Transaction>* transactions);
             bool Null();

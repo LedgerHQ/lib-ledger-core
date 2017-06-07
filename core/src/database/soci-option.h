@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * soci
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 02/06/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,38 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
+#ifndef LEDGER_CORE_SOCI_OPTION_H
+#define LEDGER_CORE_SOCI_OPTION_H
 
-using namespace soci;
+#include <type-conversion-traits.h>
+#include <utils/Option.hpp>
+namespace soci {
+    template <typename T>
+    struct type_conversion<ledger::core::Option<T>> {
+        typedef typename type_conversion<T>::base_type base_type;
 
-namespace ledger {
-    namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+        static void from_base(base_type const & in, indicator ind, ledger::core::Option<T> & out) {
+            if (ind == i_null) {
+                out = ledger::core::Option<T>();
+            }
+            else {
+                T tmp = T();
+                type_conversion<T>::from_base(in, ind, tmp);
+                out = ledger::core::Option<T>(tmp);
+            }
         }
 
+        static void to_base(ledger::core::Option<T> const & in, base_type & out, indicator & ind) {
+            if (!in.isEmpty()) {
+                type_conversion<T>::to_base(in.getValue(), out, ind);
+            }
+            else {
+                ind = i_null;
+            }
+        }
 
-    }
+    };
 }
+
+
+#endif //LEDGER_CORE_SOCI_OPTION_H

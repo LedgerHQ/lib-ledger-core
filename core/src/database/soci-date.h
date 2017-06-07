@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * soci
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 02/06/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,22 +28,24 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
+#ifndef LEDGER_CORE_SOCI_DATE_H
+#define LEDGER_CORE_SOCI_DATE_H
+#include <type-conversion-traits.h>
 #include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include "BitcoinLikeBlockDatabaseHelper.h"
 
-using namespace soci;
-
-namespace ledger {
-    namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+namespace soci {
+    template <>
+    struct type_conversion<std::chrono::system_clock::time_point> {
+        typedef std::string base_type;
+        static void from_base(base_type const & in, indicator ind, std::chrono::system_clock::time_point & out) {
+            out = ledger::core::DateUtils::fromJSON(in);
         }
 
+        static void to_base(std::chrono::system_clock::time_point const & in, base_type & out, indicator & ind) {
+           out = ledger::core::DateUtils::toJSON(in);
+        }
 
-    }
+    };
 }
+
+#endif //LEDGER_CORE_SOCI_DATE_H

@@ -168,6 +168,11 @@ namespace ledger {
                 _statusText = connection->getStatusText();
             }
 
+            void attach(const std::string& statusText, uint32_t statusCode) {
+                _statusCode = statusCode;
+                _statusText = _statusText;
+            }
+
             inline bool isFailure() const {
                 return _statusCode < 200 || _statusCode >= 400;
             }

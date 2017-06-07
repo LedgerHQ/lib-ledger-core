@@ -32,12 +32,31 @@
 #define LEDGER_CORE_BITCOINLIKEACCOUNT_HPP
 
 #include "BitcoinLikeWallet.hpp"
-#include <src/api/BitcoinLikeAccount.hpp>
+#include <api/BitcoinLikeAccount.hpp>
+#include "explorers/BitcoinLikeBlockchainExplorer.hpp"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeAccount : public api::BitcoinLikeAccount {
         public:
+            static const int FLAG_NEW_TRANSACTION = 0x01;
+            static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
+            static const int FLAG_TRANSACTION_IGNORED = 0x00;
+            static const int FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 0x01 << 2;
+            static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
+            /**
+             *
+             * @param transaction
+             * @return A flag indicating if the transaction was ignored, inserted
+             */
+            int putTransaction(const BitcoinLikeBlockchainExplorer::Transaction& transaction);
+            /**
+             *
+             * @param block
+             * @return true if the block wasn't already known.
+             */
+            bool putBlock(const BitcoinLikeBlockchainExplorer::Block block);
+
         };
     }
 }

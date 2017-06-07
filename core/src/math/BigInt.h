@@ -113,8 +113,8 @@ namespace ledger {
              * @return
              */
             BigInt(int value);
-            BigInt(unsigned int value);;
-
+            BigInt(unsigned int value);
+            BigInt(unsigned long long value);
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str

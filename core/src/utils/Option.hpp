@@ -51,6 +51,7 @@ namespace ledger {
             static_assert(!std::is_abstract<T>::value,
                           "Option is not compatible with abstract types");
         public:
+            typedef T BaseType;
             static const Option<T> NONE;
 
             Option() {};
