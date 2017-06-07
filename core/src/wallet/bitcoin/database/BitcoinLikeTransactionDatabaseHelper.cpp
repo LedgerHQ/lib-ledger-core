@@ -133,7 +133,7 @@ namespace ledger {
             out.version = (uint32_t) row.get<int32_t>(1);
             out.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
             out.lockTime = (uint64_t) row.get<int>(4);
-            if (row.get_indicator(4) != i_null) {
+            if (row.get_indicator(2) != i_null) {
                 BitcoinLikeBlockchainExplorer::Block block;
                 block.hash = row.get<std::string>(2);
                 block.height = (uint64_t) row.get<unsigned long long>(5);
@@ -158,6 +158,9 @@ namespace ledger {
                 input.value = inputRow.get<Option<unsigned long long>>(3).map<BigInt>([] (const unsigned long long& v) {
                     return BigInt(v);
                 });
+                input.address = inputRow.get<Option<std::string>>(4);
+                input.coinbase = inputRow.get<Option<std::string>>(5);
+                input.sequence = get_number<uint32_t>(inputRow, 6);
                 out.inputs.push_back(input);
             }
 
