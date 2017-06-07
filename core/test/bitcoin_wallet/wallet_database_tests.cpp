@@ -323,3 +323,82 @@ TEST(BitcoinWalletDatabase, PutTransactionWithMultipleOutputs) {
     }
     resolver->clean();
 }
+
+TEST(BitcoinWalletDatabase, PutOperations) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto resolver = std::make_shared<NativePathResolver>();
+    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
+        return WalletPool::newInstance(
+                "my_pool",
+                Option<std::string>::NONE,
+                nullptr,
+                nullptr,
+                resolver,
+                printer,
+                dispatcher,
+                nullptr,
+                backend,
+                api::DynamicObject::newInstance()
+        );
+    };
+    {
+        auto pool = newPool();
+
+        BitcoinLikeWalletDatabase db = newAccount(pool, "my_wallet", 0, XPUB_1);
+        std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
+                *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION),
+                *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_2),
+                *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_3)
+        };
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.begin();
+        BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
+        for (auto& transaction : transactions) {
+            BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, transaction);
+        }
+        sql.commit();
+
+        for (auto& transaction : transactions) {
+            BitcoinLikeBlockchainExplorer::Transaction dbTx;
+            if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, dbTx)) {
+                EXPECT_EQ(transaction.hash, dbTx.hash);
+                EXPECT_EQ(transaction.lockTime, dbTx.lockTime);
+                EXPECT_EQ(transaction.receivedAt.time_since_epoch().count(), dbTx.receivedAt.time_since_epoch().count());
+                EXPECT_EQ(transaction.block.isEmpty(), dbTx.block.isEmpty());
+                if (transaction.block.nonEmpty()) {
+                    auto& block = transaction.block.getValue();
+                    auto& dbBlock = dbTx.block.getValue();
+                    EXPECT_EQ(block.hash, dbBlock.hash);
+                    EXPECT_EQ(block.height, dbBlock.height);
+                    EXPECT_EQ(block.time.time_since_epoch().count(), dbBlock.time.time_since_epoch().count());
+                }
+                EXPECT_EQ(transaction.inputs.size(), dbTx.inputs.size());
+                for (auto i = 0; i < transaction.inputs.size(); i++) {
+                    auto& input = transaction.inputs[i];
+                    auto& dbInput = dbTx.inputs[i];
+                    EXPECT_EQ(input.address.getValueOr(""), dbInput.address.getValueOr(""));
+                    EXPECT_EQ(input.coinbase.getValueOr(""), dbInput.coinbase.getValueOr(""));
+                    EXPECT_EQ(input.index, dbInput.index);
+                    EXPECT_EQ(input.previousTxHash.getValueOr(""), dbInput.previousTxHash.getValueOr(""));
+                    EXPECT_EQ(input.previousTxOutputIndex.getValueOr(0), dbInput.previousTxOutputIndex.getValueOr(0));
+                    EXPECT_EQ(input.sequence, dbInput.sequence);
+                    EXPECT_EQ(input.value.getValue().toUint64(), dbInput.value.getValue().toUint64());
+                }
+                EXPECT_EQ(transaction.outputs.size(), dbTx.outputs.size());
+                for (auto i = 0; i < transaction.outputs.size(); i++) {
+                    auto& output = transaction.outputs[i];
+                    auto& dbOutput = dbTx.outputs[i];
+                    EXPECT_EQ(output.address.getValueOr(""), dbOutput.address.getValueOr(""));
+                    EXPECT_EQ(output.value.toUint64(), dbOutput.value.toUint64());
+                    EXPECT_EQ(output.index, dbOutput.index);
+                    EXPECT_EQ(output.script, dbOutput.script);
+                }
+            } else {
+                FAIL();
+            }
+        }
+    }
+    resolver->clean();
+}

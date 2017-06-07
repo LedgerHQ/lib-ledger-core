@@ -141,8 +141,8 @@ add_library(
         database/migrations.cpp database/migrations.hpp
         events/EventPublisher.cpp events/EventPublisher.hpp events/Event.cpp events/Event.hpp events/EventBus.cpp
         events/EventBus.hpp events/LambdaEventReceiver.cpp events/LambdaEventReceiver.hpp
-        wallet/common/AbstractWallet.cpp wallet/common/AbstractWallet.hpp wallet/common/AbstractOperation.cpp
-        wallet/common/AbstractOperation.hpp wallet/common/AbstractAccount.cpp wallet/common/AbstractAccount.hpp
+        wallet/common/AbstractWallet.cpp wallet/common/AbstractWallet.hpp
+        wallet/common/AbstractAccount.cpp wallet/common/AbstractAccount.hpp
         wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp wallet/bitcoin/BitcoinLikeAccount.cpp
         wallet/bitcoin/BitcoinLikeAccount.hpp wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp
         wallet/pool/WalletPool.cpp wallet/pool/WalletPool.hpp wallet/pool/CurrenciesManager.cpp
@@ -156,7 +156,7 @@ add_library(
         wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h
         events/ProgressNotifier.cpp events/ProgressNotifier.h
         wallet/bitcoin/database/BitcoinLikeWalletDatabase.cpp wallet/bitcoin/database/BitcoinLikeWalletDatabase.h
-        wallet/common/database/AccountDatabaseHelper.cpp wallet/common/database/AccountDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.h wallet/bitcoin/database/BitcoinLikeAccountDatabase.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabase.h wallet/common/database/OperationDatabaseHelper.cpp wallet/common/database/OperationDatabaseHelper.h utils/JSONUtils.h database/soci-option.h database/soci-date.h wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h database/soci-number.h)
+        wallet/common/database/AccountDatabaseHelper.cpp wallet/common/database/AccountDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.h wallet/bitcoin/database/BitcoinLikeAccountDatabase.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabase.h wallet/common/database/OperationDatabaseHelper.cpp wallet/common/database/OperationDatabaseHelper.h utils/JSONUtils.h database/soci-option.h database/soci-date.h wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h database/soci-number.h wallet/common/Operation.cpp wallet/common/Operation.h)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

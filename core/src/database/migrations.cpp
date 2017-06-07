@@ -99,7 +99,9 @@ namespace ledger {
                 "recipients TEXT NOT NULL,"
                 "amount BIGINT NOT NULL,"
                 "fees BIGINT,"
-                "block_height BIGINT"
+                "block_height BIGINT,"
+                "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE,"
+                "trust TEXT"
             ")";
 
             // Bitcoin currency table

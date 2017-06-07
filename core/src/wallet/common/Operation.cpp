@@ -1,9 +1,9 @@
 /*
  *
- * AbstractOperation
+ * Operation
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/04/2017.
+ * Created by Pierre Pollastri on 07/06/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,4 +28,4 @@
  * SOFTWARE.
  *
  */
-#include "AbstractOperation.hpp"
+#include "Operation.h"
