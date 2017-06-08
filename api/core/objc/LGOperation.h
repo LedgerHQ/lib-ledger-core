@@ -7,6 +7,7 @@
 @class LGAmount;
 @class LGBitcoinLikeOperation;
 @class LGPreferences;
+@class LGTrustIndicator;
 
 
 @interface LGOperation : NSObject
@@ -30,6 +31,8 @@
 - (nullable LGPreferences *)getPreferences;
 
 - (int32_t)getConfirmationsCount;
+
+- (nullable LGTrustIndicator *)getTrust;
 
 - (nullable LGBitcoinLikeOperation *)asBitcoinLikeOperation;
 

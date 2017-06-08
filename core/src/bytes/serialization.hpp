@@ -35,6 +35,8 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <sstream>
 
 namespace ledger {
     namespace core {
@@ -56,6 +58,20 @@ namespace ledger {
                 auto raw = is.str();
                 dest.assign((const uint8_t *)raw.data(), (const uint8_t *)raw.data() + raw.size());
             };
+
+            template <typename T>
+            void loadJSON(const std::string& json, T& dest) {
+                std::stringstream ss;
+                ss << json;
+                ::cereal::JSONInputArchive archive(ss);
+                archive(json);
+            }
+
+            template <typename T>
+            void saveJSON(T& src, std::stringstream& dest) {
+                ::cereal::JSONOutputArchive archive(dest);
+                archive(src);
+            }
 
         }
     }

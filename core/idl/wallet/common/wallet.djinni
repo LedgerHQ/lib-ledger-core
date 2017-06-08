@@ -11,6 +11,21 @@ OperationType = enum {
     send; receive;
 }
 
+TrustLevel = enum {
+    trusted;
+    almost_trustable;
+    wait_for_trust;
+    untrusted;
+    dropped;
+}
+
+TrustIndicator = interface +c {
+    getTrustWeight(): i32;
+    getTrustLevel(): TrustLevel;
+    getConflictingOperationUids(): list<string>;
+    getOrigin(): string;
+}
+
 Operation = interface +c {
     getUid(): string;
     getAccountIndex(): i32;
@@ -19,9 +34,10 @@ Operation = interface +c {
     getSenders(): list<string>;
     getRecipients(): list<string>;
     getAmount(): Amount;
-    getFees(): Amount;
+    getFees(): optional<Amount>;
     getPreferences(): Preferences;
     getConfirmationsCount(): i32;
+    getTrust(): TrustIndicator;
 
     asBitcoinLikeOperation(): BitcoinLikeOperation;
     ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;

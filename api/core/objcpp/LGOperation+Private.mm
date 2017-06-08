@@ -10,6 +10,7 @@
 #import "LGBitcoinLikeOperation+Private.h"
 #import "LGOperationType+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGTrustIndicator+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -87,7 +88,7 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (nullable LGAmount *)getFees {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getFees();
-        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
+        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::Amount>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -102,6 +103,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getConfirmationsCount();
         return ::djinni::I32::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGTrustIndicator *)getTrust {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getTrust();
+        return ::djinni_generated::TrustIndicator::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

@@ -28,6 +28,8 @@ public abstract class Operation {
 
     public abstract int getConfirmationsCount();
 
+    public abstract TrustIndicator getTrust();
+
     public abstract BitcoinLikeOperation asBitcoinLikeOperation();
 
     /**
@@ -146,6 +148,14 @@ public abstract class Operation {
             return native_getConfirmationsCount(this.nativeRef);
         }
         private native int native_getConfirmationsCount(long _nativeRef);
+
+        @Override
+        public TrustIndicator getTrust()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getTrust(this.nativeRef);
+        }
+        private native TrustIndicator native_getTrust(long _nativeRef);
 
         @Override
         public BitcoinLikeOperation asBitcoinLikeOperation()

@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_OPERATION_HPP
 #define DJINNI_GENERATED_OPERATION_HPP
 
+#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -15,6 +16,7 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class BitcoinLikeOperation;
 class Preferences;
+class TrustIndicator;
 enum class OperationType;
 enum class WalletType;
 
@@ -41,6 +43,8 @@ public:
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
     virtual int32_t getConfirmationsCount() = 0;
+
+    virtual std::shared_ptr<TrustIndicator> getTrust() = 0;
 
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
 

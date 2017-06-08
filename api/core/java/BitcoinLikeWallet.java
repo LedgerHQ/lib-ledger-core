@@ -6,6 +6,9 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeWallet {
+    public abstract void createNewAccount(int index, BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
+
+    public abstract void createNextAccount(BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
 
     private static final class CppProxy extends BitcoinLikeWallet
     {
@@ -29,5 +32,21 @@ public abstract class BitcoinLikeWallet {
             destroy();
             super.finalize();
         }
+
+        @Override
+        public void createNewAccount(int index, BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_createNewAccount(this.nativeRef, index, xpubProvider, callback);
+        }
+        private native void native_createNewAccount(long _nativeRef, int index, BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
+
+        @Override
+        public void createNextAccount(BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_createNextAccount(this.nativeRef, xpubProvider, callback);
+        }
+        private native void native_createNextAccount(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
     }
 }

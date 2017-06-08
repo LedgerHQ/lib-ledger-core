@@ -38,6 +38,8 @@
 #include <vector>
 #include <math/BigInt.h>
 #include <utils/Option.hpp>
+#include "TrustIndicator.h"
+#include <memory>
 
 namespace ledger {
     namespace core {
@@ -53,7 +55,7 @@ namespace ledger {
             Option<BigInt> fees;
             Option<uint64_t> blockHeight;
             std::string currencyName;
-            std::string trust;
+            std::shared_ptr<TrustIndicator> trust;
 
         private:
 
