@@ -65,37 +65,35 @@ namespace ledger {
             _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
         }
 
-        bool P2PKHBitcoinLikeKeychain::markAsUsed(const std::string &address) {
-            return !getAddressDerivationPath(address).flatMap<Unit>([this] (const std::string& p) {
-                DerivationPath path(p);
-                if (path.getParent().getLastChildNum() == 0) {
-                    if (path.getLastChildNum() < _state.maxConsecutiveReceiveIndex ||
-                        _state.nonConsecutiveReceiveIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveReceiveIndexes.end()) {
-                        return Option<Unit>();
-                    } else {
-                        if (path.getLastChildNum() == _state.maxConsecutiveReceiveIndex)
-                            _state.maxConsecutiveReceiveIndex += 1;
-                        else
-                            _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
-                        _state.empty = false;
-                        saveState();
-                        return Option<Unit>(unit);
-                    }
+        bool P2PKHBitcoinLikeKeychain::markPathAsUsed(const DerivationPath &p) {
+            DerivationPath path(p);
+            if (path.getParent().getLastChildNum() == 0) {
+                if (path.getLastChildNum() < _state.maxConsecutiveReceiveIndex ||
+                    _state.nonConsecutiveReceiveIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveReceiveIndexes.end()) {
+                    return false;
                 } else {
-                    if (path.getLastChildNum() < _state.maxConsecutiveChangeIndex ||
-                        _state.nonConsecutiveChangeIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveChangeIndexes.end()) {
-                        return Option<Unit>();
-                    } else {
-                        if (path.getLastChildNum() == _state.maxConsecutiveChangeIndex)
-                            _state.maxConsecutiveChangeIndex += 1;
-                        else
-                            _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
-                        _state.empty = false;
-                        saveState();
-                        return Option<Unit>(unit);
-                    }
+                    if (path.getLastChildNum() == _state.maxConsecutiveReceiveIndex)
+                        _state.maxConsecutiveReceiveIndex += 1;
+                    else
+                        _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
+                    _state.empty = false;
+                    saveState();
+                    return true;
                 }
-            }).isEmpty();
+            } else {
+                if (path.getLastChildNum() < _state.maxConsecutiveChangeIndex ||
+                    _state.nonConsecutiveChangeIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveChangeIndexes.end()) {
+                    return false;
+                } else {
+                    if (path.getLastChildNum() == _state.maxConsecutiveChangeIndex)
+                        _state.maxConsecutiveChangeIndex += 1;
+                    else
+                        _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
+                    _state.empty = false;
+                    saveState();
+                    return true;
+                }
+            }
         }
 
         std::string P2PKHBitcoinLikeKeychain::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
@@ -205,6 +203,7 @@ namespace ledger {
             auto savedState = is.str();
             getPreferences()->edit()->putData("state", std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size()))->commit();
         }
+
     }
 }
 

@@ -40,6 +40,8 @@
 #include <utils/Option.hpp>
 #include "TrustIndicator.h"
 #include <memory>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <api/OperationType.hpp>
 
 namespace ledger {
     namespace core {
@@ -55,8 +57,12 @@ namespace ledger {
             Option<BigInt> fees;
             Option<uint64_t> blockHeight;
             std::string currencyName;
+            api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
+            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
 
+            Operation();
+            void refreshUid();
         private:
 
         };

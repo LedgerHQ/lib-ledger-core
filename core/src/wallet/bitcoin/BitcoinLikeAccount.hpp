@@ -34,6 +34,9 @@
 #include "BitcoinLikeWallet.hpp"
 #include <api/BitcoinLikeAccount.hpp>
 #include "explorers/BitcoinLikeBlockchainExplorer.hpp"
+#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
+#include <soci.h>
+#include <preferences/Preferences.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,19 +47,26 @@ namespace ledger {
             static const int FLAG_TRANSACTION_IGNORED = 0x00;
             static const int FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 0x01 << 2;
             static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
+
             /**
              *
              * @param transaction
              * @return A flag indicating if the transaction was ignored, inserted
              */
-            int putTransaction(const BitcoinLikeBlockchainExplorer::Transaction& transaction);
+            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorer::Transaction& transaction);
             /**
              *
              * @param block
              * @return true if the block wasn't already known.
              */
-            bool putBlock(const BitcoinLikeBlockchainExplorer::Block block);
+            bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block block);
 
+            std::shared_ptr<const BitcoinLikeKeychain> getKeychain() const;
+
+        private:
+            std::shared_ptr<BitcoinLikeKeychain> _keychain;
+            std::shared_ptr<Preferences> _internalPreferences;
+            std::shared_ptr<Preferences> _externalPreferences;
         };
     }
 }

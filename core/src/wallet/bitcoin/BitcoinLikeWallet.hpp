@@ -54,6 +54,12 @@ namespace ledger {
                 const api::Currency& network
             );
 
+            void createNewAccount(int32_t index,
+                                  const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
+                                  const std::shared_ptr<api::AccountCallback> &callback) override;
+
+            void createNextAccount(const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
+                                   const std::shared_ptr<api::AccountCallback> &callback) override;
 
             // API methods
 

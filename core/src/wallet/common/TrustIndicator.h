@@ -49,7 +49,7 @@ namespace ledger {
             void serialize(Archive& ar, std::uint32_t const version) {
                 std::string level = api::to_string(_level);
                 ar(CEREAL_NVP(_weight), CEREAL_NVP(level), CEREAL_NVP(_conflicts), CEREAL_NVP(_origin));
-                _level = api::from_string(level);
+                _level = api::from_string<api::TrustLevel>(level);
             }
 
             int32_t getTrustWeight() override;

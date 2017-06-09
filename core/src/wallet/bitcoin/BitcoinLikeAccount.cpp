@@ -29,3 +29,44 @@
  *
  */
 #include "BitcoinLikeAccount.hpp"
+#include <wallet/common/Operation.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
+
+namespace ledger {
+    namespace core {
+
+        int BitcoinLikeAccount::putTransaction(soci::session &sql,
+                                               const BitcoinLikeBlockchainExplorer::Transaction &transaction) {
+
+//            std::list<BitcoinLikeBlockchainExplorer::Input&> accountInputs;
+//            std::list<BitcoinLikeBlockchainExplorer::Output&> accountOutputs;
+//            BigInt fees;
+//
+//            // Find inputs
+//            for (auto& input : transaction.inputs) {
+//                if (input.address.nonEmpty()) {
+//                    //if (_keychain->)
+//                }
+//                if (input.value.nonEmpty()) {
+//                    fees = fees + input.value.getValue();
+//                }
+//            }
+//
+//            // Find outputs
+//            for (auto& output : transaction.outputs) {
+//                if (output.address.nonEmpty()) {
+//
+//                }
+//                fees = fees - output.value;
+//            }
+//
+//            // Put the operation
+            return 0;
+        }
+
+        std::shared_ptr<const BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
+            return std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain);
+        }
+
+    }
+}

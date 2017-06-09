@@ -86,5 +86,14 @@ namespace ledger {
         DerivationScheme &BitcoinLikeKeychain::getDerivationScheme() {
             return _scheme;
         }
+
+        bool BitcoinLikeKeychain::markAsUsed(const std::string &address) {
+            auto path = getAddressDerivationPath(address);
+            if (path.nonEmpty()) {
+                return markPathAsUsed(path.getValue());
+            } else {
+                return false;
+            }
+        }
     }
 }

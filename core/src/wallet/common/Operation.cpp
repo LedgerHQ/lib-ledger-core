@@ -29,3 +29,19 @@
  *
  */
 #include "Operation.h"
+#include "database/OperationDatabaseHelper.h"
+#include <utils/Exception.hpp>
+
+namespace ledger {
+    namespace core {
+
+        void Operation::refreshUid() {
+            if (bitcoinTransaction.nonEmpty()) {
+                uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
+            } else {
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
+            }
+        }
+
+    }
+}

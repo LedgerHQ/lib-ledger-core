@@ -64,7 +64,9 @@ namespace ledger {
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
-            bool markAsUsed(const std::string &address) override;
+
+            bool markPathAsUsed(const DerivationPath &path) override;
+
             std::string getFreshAddress(KeyPurpose purpose) override;
             std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to) override;
             std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) override;

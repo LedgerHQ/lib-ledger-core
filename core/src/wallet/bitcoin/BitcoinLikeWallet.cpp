@@ -65,5 +65,17 @@ namespace ledger {
             return nullptr;
         }
 
+        void BitcoinLikeWallet::createNewAccount(int32_t index,
+                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
+                                                 const std::shared_ptr<api::AccountCallback> &callback) {
+
+        }
+
+        void BitcoinLikeWallet::createNextAccount(
+                const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
+                const std::shared_ptr<api::AccountCallback> &callback) {
+
+        }
+
     }
 }

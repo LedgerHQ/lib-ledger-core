@@ -59,7 +59,8 @@ namespace ledger {
                     const std::shared_ptr<Preferences>& preferences);
 
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
-            virtual bool markAsUsed(const std::string& address) = 0;
+            virtual bool markAsUsed(const std::string& address);
+            virtual bool markPathAsUsed(const DerivationPath& path) = 0;
 
             virtual std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to)  = 0;
             virtual std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) = 0;

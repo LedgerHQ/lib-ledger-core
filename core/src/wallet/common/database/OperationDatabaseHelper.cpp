@@ -29,3 +29,19 @@
  *
  */
 #include "OperationDatabaseHelper.h"
+#include <crypto/SHA256.hpp>
+
+namespace ledger {
+    namespace core {
+
+        std::string OperationDatabaseHelper::createUid(const std::string &accountUid, const std::string &txId,
+                                                       const api::OperationType type) {
+            return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
+        }
+
+        void OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
+
+        }
+
+    }
+}

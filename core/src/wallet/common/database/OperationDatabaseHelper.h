@@ -31,10 +31,19 @@
 #ifndef LEDGER_CORE_OPERATIONDATABASEHELPER_H
 #define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
+#include <api/OperationType.hpp>
+#include <wallet/common/Operation.h>
+#include <soci.h>
+#include <string>
+
 namespace ledger {
     namespace core {
         class OperationDatabaseHelper {
-
+        public:
+            static void putOperation(soci::session& sql, const Operation& operation);
+            static std::string createUid(const std::string& accountUid,
+                                         const std::string& txId,
+                                         const api::OperationType type);
         };
     }
 }
