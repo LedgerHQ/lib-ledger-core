@@ -68,6 +68,8 @@ namespace ledger {
             int getNode() const;
             int getAddressIndex() const;
 
+            int getPositionForLevel(DerivationSchemeLevel level) const;
+
             DerivationScheme& setCoinType(int type);
             DerivationScheme& setAccountIndex(int index);
             DerivationScheme& setNode(int node);

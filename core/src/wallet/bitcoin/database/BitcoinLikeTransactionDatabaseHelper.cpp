@@ -136,7 +136,7 @@ namespace ledger {
             if (row.get_indicator(2) != i_null) {
                 BitcoinLikeBlockchainExplorer::Block block;
                 block.hash = row.get<std::string>(2);
-                block.height = (uint64_t) row.get<unsigned long long>(5);
+                block.height = (uint64_t) row.get<long long>(5);
                 block.time = row.get<std::chrono::system_clock::time_point>(6);
                 out.block = block;
             }
@@ -155,7 +155,7 @@ namespace ledger {
                     return (uint32_t) v;
                 });
                 input.previousTxHash = inputRow.get<Option<std::string>>(2);
-                input.value = inputRow.get<Option<unsigned long long>>(3).map<BigInt>([] (const unsigned long long& v) {
+                input.value = inputRow.get<Option<long long>>(3).map<BigInt>([] (const unsigned long long& v) {
                     return BigInt(v);
                 });
                 input.address = inputRow.get<Option<std::string>>(4);
@@ -172,7 +172,7 @@ namespace ledger {
             for (auto& outputRow : outputRows) {
                 BitcoinLikeBlockchainExplorer::Output output;
                 output.index = (uint64_t) outputRow.get<int>(0);
-                output.value = BigInt(outputRow.get<unsigned long long>(1));
+                output.value = BigInt(outputRow.get<long long>(1));
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 out.outputs.push_back(std::move(output));

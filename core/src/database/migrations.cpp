@@ -121,7 +121,7 @@ namespace ledger {
 
             sql << "CREATE TABLE bitcoin_blocks("
                 "hash VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "height UNSIGNED BIG INT NOT NULL,"
+                "height BIGINT NOT NULL,"
                 "time VARCHAR(255) NOT NULL"
             ")";
 
@@ -131,7 +131,7 @@ namespace ledger {
                 "version INTEGER,"
                 "block_hash VARCHAR(255) NULL REFERENCES bitcoin_blocks(hash) ON DELETE CASCADE,"
                 "time VARCHAR(255),"
-                "locktime UNSIGNED INTEGER"
+                "locktime INTEGER"
             ")";
 
             // Bitcoin input table
@@ -139,7 +139,7 @@ namespace ledger {
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL," // idx_previoustxhash_coinbase
                 "previous_output_idx INTEGER,"
                 "previous_tx_hash VARCHAR(255),"
-                "amount UNSIGNED BIG INT,"
+                "amount  BIGINT,"
                 "address VARCHAR(255),"
                 "coinbase VARCHAR(255),"
                 "sequence BIGINT NOT NULL"
@@ -149,7 +149,7 @@ namespace ledger {
             sql << "CREATE TABLE bitcoin_outputs("
                 "idx INTEGER NOT NULL,"
                 "transaction_hash VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(hash) ON DELETE CASCADE,"
-                "amount UNSIGNED BIG INT NOT NULL,"
+                "amount BIGINT NOT NULL,"
                 "script TEXT NOT NULL,"
                 "address VARCHAR(255),"
                 "PRIMARY KEY (idx, transaction_hash)"

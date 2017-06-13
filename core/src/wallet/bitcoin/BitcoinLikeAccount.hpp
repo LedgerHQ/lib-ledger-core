@@ -47,6 +47,8 @@ namespace ledger {
             static const int FLAG_TRANSACTION_IGNORED = 0x00;
             static const int FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 0x01 << 2;
             static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
+            static const int FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 0x01 << 4;
+            static const int FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 0x01 << 5;
 
             /**
              *

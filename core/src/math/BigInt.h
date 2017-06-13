@@ -113,6 +113,7 @@ namespace ledger {
              * @return
              */
             BigInt(int value);
+            BigInt(long long value);
             BigInt(unsigned int value);
             BigInt(unsigned long long value);
             /**

@@ -91,6 +91,13 @@ namespace ledger {
             _negative = false;
         }
 
+        BigInt::BigInt(long long value) : BigInt() {
+            auto bytes = endianness::scalar_type_to_array<long long>(std::abs(value), endianness::Endianness::BIG);
+            bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(long long));
+            std::free(bytes);
+            _negative = value < 0LL;
+        }
+
         BigInt::BigInt(const std::string &str, int radix) : BigInt() {
            if (radix == 10) {
                _negative = str[0] == '-';

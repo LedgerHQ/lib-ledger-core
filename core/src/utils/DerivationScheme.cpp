@@ -209,6 +209,16 @@ namespace ledger {
             return ss.str();
         }
 
+        int DerivationScheme::getPositionForLevel(DerivationSchemeLevel level) const {
+            auto index = 0;
+            for (auto& i : _scheme) {
+                if (i.level == level)
+                    return index;
+                index += 1;
+            }
+            return -1;
+        }
+
 
     }
 }
