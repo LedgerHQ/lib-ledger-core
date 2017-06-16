@@ -9,4 +9,6 @@ std::string const ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT = {"htt
 
 std::string const ConfigurationDefaults::BIP44_DERIVATION_SCHEME = {"44'/<coin_type>'/<account>'/<node>/<address>"};
 
+std::string const ConfigurationDefaults::DEFAULT_KEYCHAIN = {"default"};
+
 } } }  // namespace ledger::core::api

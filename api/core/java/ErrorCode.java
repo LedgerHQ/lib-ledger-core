@@ -13,6 +13,8 @@ public enum ErrorCode {
     WALLET_NOT_FOUND,
     WALLET_ALREADY_EXISTS,
     RAW_TRANSACTION_NOT_FOUND,
+    /** Account errors */
+    ACCOUNT_ALREADY_EXISTS,
     /** User land errors */
     CANCELLED_BY_USER,
     UNSUPPORTED_CURRENCY,
@@ -61,5 +63,7 @@ public enum ErrorCode {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Bad cast */
+    BAD_CAST,
     ;
 }

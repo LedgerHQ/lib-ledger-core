@@ -36,6 +36,19 @@
 namespace ledger {
     namespace core {
 
+
+        BitcoinLikeAccount::BitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
+                                               const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
+                                               const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
+                                               const std::shared_ptr<BitcoinLikeAccountSynchronizer> &synchronizer,
+                                               const std::shared_ptr<BitcoinLikeKeychain> &keychain)
+                : AbstractAccount(wallet, index) {
+            _explorer = explorer;
+            _observer = observer;
+            _synchronizer = synchronizer;
+            _keychain = keychain;
+        }
+
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                const BitcoinLikeBlockchainExplorer::Transaction &transaction) {
 
@@ -133,5 +146,52 @@ namespace ledger {
             return std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain);
         }
 
+        // REVIEW
+
+        void BitcoinLikeAccount::getOperations(int32_t from, int32_t to, bool descending, bool complete,
+                                               const std::shared_ptr<api::OperationListCallback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::getOperationsCount(const std::shared_ptr<api::I64Callback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::getOperation(const std::string &uid,
+                                              const std::shared_ptr<api::OperationCallback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::getBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+
+        }
+
+        bool BitcoinLikeAccount::isSynchronizing() {
+            return false;
+        }
+
+        std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
+            return nullptr;
+        }
+
+        void BitcoinLikeAccount::computeFees(const std::shared_ptr<api::Amount> &amount, int32_t priority,
+                                             const std::vector<std::string> &recipients,
+                                             const std::vector<std::vector<uint8_t>> &data,
+                                             const std::shared_ptr<api::AmountCallback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::getUTXO(int32_t from, int32_t to,
+                                         const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) {
+
+        }
+
+        bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block block) {
+            return false;
+        }
     }
 }

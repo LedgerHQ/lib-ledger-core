@@ -7,3 +7,5 @@
 NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT = @"https://api.ledgerwallet.com";
 
 NSString * __nonnull const LGConfigurationDefaultsBIP44DERIVATIONSCHEME = @"44'/<coin_type>'/<account>'/<node>/<address>";
+
+NSString * __nonnull const LGConfigurationDefaultsDEFAULTKEYCHAIN = @"default";

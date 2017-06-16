@@ -59,6 +59,7 @@ BitcoinLikeAccount = interface +c {
 }
 
 BitcoinLikeWallet = interface +c {
+
     createNewAccount(index: i32, xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
     createNextAccount(xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
 }

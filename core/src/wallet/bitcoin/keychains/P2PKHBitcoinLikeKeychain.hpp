@@ -74,12 +74,16 @@ namespace ledger {
             Option<std::string> getAddressDerivationPath(const std::string &address) const override;
             std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
             bool isEmpty() const override;
+            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
+            std::string getRestoreKey() const override;
+
         private:
             std::string derive(KeyPurpose purpose, off_t index);
             void saveState();
         private:
             P2PKHKeychainPersistentState _state;
             uint32_t _observableRange;
+            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
         };
     }
 }

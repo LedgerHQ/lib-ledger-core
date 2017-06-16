@@ -48,7 +48,7 @@ namespace ledger {
             auto provider = _provider;
             return Future<std::string>::async(context, [=] () -> Future<std::string> {
                 auto completion = make_api_completion_block<std::string, api::StringCompletionBlock>();
-
+                _provider->get(deviceId, path, params, completion);
                 return completion->getFuture();
             }).map<std::shared_ptr<BitcoinLikeExtendedPublicKey>>(context, [=] (const std::string& xpubBase58) {
                 return BitcoinLikeExtendedPublicKey::fromBase58(params, xpubBase58, Option<std::string>(path));

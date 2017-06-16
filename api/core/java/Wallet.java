@@ -6,11 +6,15 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Wallet {
+    public abstract String getName();
+
     public abstract void getAccount(int index, AccountCallback callback);
 
     public abstract void getAccountCount(I32Callback callback);
 
     public abstract void getAccounts(int offset, int count, AccountListCallback callback);
+
+    public abstract void getNextAccountIndex(I32Callback callback);
 
     public abstract EventBus getEventBus();
 
@@ -29,6 +33,8 @@ public abstract class Wallet {
      * asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
      * asRippleLikeWallet(): Callback<RippleLikeWallet>;
      */
+    public abstract BitcoinLikeWallet asBitcoinLikeWallet();
+
     public abstract Currency getCurrency();
 
     public abstract boolean isInstanceOfBitcoinLikeWallet();
@@ -63,6 +69,14 @@ public abstract class Wallet {
         }
 
         @Override
+        public String getName()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getName(this.nativeRef);
+        }
+        private native String native_getName(long _nativeRef);
+
+        @Override
         public void getAccount(int index, AccountCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -85,6 +99,14 @@ public abstract class Wallet {
             native_getAccounts(this.nativeRef, offset, count, callback);
         }
         private native void native_getAccounts(long _nativeRef, int offset, int count, AccountListCallback callback);
+
+        @Override
+        public void getNextAccountIndex(I32Callback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getNextAccountIndex(this.nativeRef, callback);
+        }
+        private native void native_getNextAccountIndex(long _nativeRef, I32Callback callback);
 
         @Override
         public EventBus getEventBus()
@@ -133,6 +155,14 @@ public abstract class Wallet {
             return native_getAccountPreferences(this.nativeRef, index);
         }
         private native Preferences native_getAccountPreferences(long _nativeRef, int index);
+
+        @Override
+        public BitcoinLikeWallet asBitcoinLikeWallet()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_asBitcoinLikeWallet(this.nativeRef);
+        }
+        private native BitcoinLikeWallet native_asBitcoinLikeWallet(long _nativeRef);
 
         @Override
         public Currency getCurrency()

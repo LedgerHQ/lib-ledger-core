@@ -76,9 +76,11 @@ Account = interface +c {
 }
 
 Wallet = interface +c {
+    getName(): string;
     getAccount(index: i32, callback: Callback<Account>);
     getAccountCount(callback: Callback<i32>);
     getAccounts(offset: i32, count: i32, callback: ListCallback<Account>);
+    getNextAccountIndex(callback: Callback<i32>);
 
     getEventBus(): EventBus;
 
@@ -92,6 +94,7 @@ Wallet = interface +c {
     # asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
     # asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
     # asRippleLikeWallet(): Callback<RippleLikeWallet>;
+    asBitcoinLikeWallet(): BitcoinLikeWallet;
     getCurrency(): Currency;
     isInstanceOfBitcoinLikeWallet(): bool;
     isInstanceOfEthereumLikeWallet(): bool;

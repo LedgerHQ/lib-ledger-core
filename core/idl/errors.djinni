@@ -10,6 +10,9 @@ ErrorCode = enum {
     wallet_already_exists;
     raw_transaction_not_found;
 
+    # Account errors
+    account_already_exists;
+
     # User land errors
     cancelled_by_user;
 
@@ -68,6 +71,10 @@ ErrorCode = enum {
     unknown_blockchain_explorer_engine;
     unknown_blockchain_observer_engine;
     unknown_synchronization_engine;
+
+    # Bad cast
+    bad_cast;
+
 }
 
 Error = record {

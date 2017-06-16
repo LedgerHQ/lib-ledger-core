@@ -12,6 +12,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::WALLET_NOT_FOUND: return "WALLET_NOT_FOUND";
         case ErrorCode::WALLET_ALREADY_EXISTS: return "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND: return "RAW_TRANSACTION_NOT_FOUND";
+        case ErrorCode::ACCOUNT_ALREADY_EXISTS: return "ACCOUNT_ALREADY_EXISTS";
         case ErrorCode::CANCELLED_BY_USER: return "CANCELLED_BY_USER";
         case ErrorCode::UNSUPPORTED_CURRENCY: return "UNSUPPORTED_CURRENCY";
         case ErrorCode::CURRENCY_ALREADY_EXISTS: return "CURRENCY_ALREADY_EXISTS";
@@ -50,6 +51,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE: return "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE: return "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE: return "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::BAD_CAST: return "BAD_CAST";
     };
 };
 template <>
@@ -58,6 +60,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "WALLET_NOT_FOUND") return ErrorCode::WALLET_NOT_FOUND;
     else if (errorCode == "WALLET_ALREADY_EXISTS") return ErrorCode::WALLET_ALREADY_EXISTS;
     else if (errorCode == "RAW_TRANSACTION_NOT_FOUND") return ErrorCode::RAW_TRANSACTION_NOT_FOUND;
+    else if (errorCode == "ACCOUNT_ALREADY_EXISTS") return ErrorCode::ACCOUNT_ALREADY_EXISTS;
     else if (errorCode == "CANCELLED_BY_USER") return ErrorCode::CANCELLED_BY_USER;
     else if (errorCode == "UNSUPPORTED_CURRENCY") return ErrorCode::UNSUPPORTED_CURRENCY;
     else if (errorCode == "CURRENCY_ALREADY_EXISTS") return ErrorCode::CURRENCY_ALREADY_EXISTS;
@@ -95,7 +98,8 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "UNKNOWN_KEYCHAIN_ENGINE") return ErrorCode::UNKNOWN_KEYCHAIN_ENGINE;
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE;
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE;
-    else return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
+    else if (errorCode == "UNKNOWN_SYNCHRONIZATION_ENGINE") return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
+    else return ErrorCode::BAD_CAST;
 };
 
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
@@ -105,6 +109,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::WALLET_NOT_FOUND:  return os << "WALLET_NOT_FOUND";
         case ErrorCode::WALLET_ALREADY_EXISTS:  return os << "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND:  return os << "RAW_TRANSACTION_NOT_FOUND";
+        case ErrorCode::ACCOUNT_ALREADY_EXISTS:  return os << "ACCOUNT_ALREADY_EXISTS";
         case ErrorCode::CANCELLED_BY_USER:  return os << "CANCELLED_BY_USER";
         case ErrorCode::UNSUPPORTED_CURRENCY:  return os << "UNSUPPORTED_CURRENCY";
         case ErrorCode::CURRENCY_ALREADY_EXISTS:  return os << "CURRENCY_ALREADY_EXISTS";
@@ -143,6 +148,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE:  return os << "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::BAD_CAST:  return os << "BAD_CAST";
     }
 }
 

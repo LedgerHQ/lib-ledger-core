@@ -167,6 +167,7 @@ namespace ledger {
             sql << "CREATE TABLE bitcoin_accounts("
                 "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "idx INTEGER NOT NULL,"
                 "xpub VARCHAR(255) NOT NULL"
             ")";
 

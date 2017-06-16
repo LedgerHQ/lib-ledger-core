@@ -108,6 +108,8 @@ namespace ledger {
             return result;
         }
 
+
+
         uint32_t DerivationPath::getDepth() const {
             return (uint32_t) _path.size();
         }
@@ -115,6 +117,20 @@ namespace ledger {
         uint32_t DerivationPath::getLastChildNum() const throw(Exception) {
             assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getLastChildNum");
             return _path.back();
+        }
+
+        uint32_t DerivationPath::getNonHardenedChildNum(int index) const throw(ledger::core::Exception) {
+            assertIndexIsValid(index, "ledger::core::DerivationPath::getNonHardenedChildNum");
+            if (isHardened(index)) {
+                return (*this)[index] & ~HARD_BIT;
+            } else {
+                return (*this)[index];
+            }
+        }
+
+        uint32_t DerivationPath::getNonHardenedLastChildNum() const throw(ledger::core::Exception) {
+            assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getNonHardenedLastChildNum");
+            return getLastChildNum() & ~HARD_BIT;
         }
 
         uint32_t DerivationPath::operator[](int index) const throw(ledger::core::Exception) {
@@ -183,5 +199,6 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, fmt::format("{} - Cannot get parent of root derivation path", method));
             }
         }
+
     }
 }

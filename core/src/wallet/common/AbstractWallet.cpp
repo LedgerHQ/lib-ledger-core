@@ -31,19 +31,31 @@
 #include "AbstractWallet.hpp"
 #include <wallet/pool/WalletPool.hpp>
 #include <debug/LoggerApi.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <api/I32Callback.hpp>
 
 namespace ledger {
     namespace core {
-        AbstractWallet::AbstractWallet(const std::string& walletName, const api::Currency& currency, const std::shared_ptr<WalletPool> &pool)
-            : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName)))
+        AbstractWallet::AbstractWallet(const std::string& walletName,
+                                       const api::Currency& currency,
+                                       const std::shared_ptr<WalletPool> &pool,
+                                       const std::shared_ptr<DynamicObject>& configuration,
+                                       const DerivationScheme& derivationScheme
+        )
+            : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))), _scheme(derivationScheme)
         {
+            _name = walletName;
+            _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name, currency.name);
             _currency = currency;
+            _configuration = configuration;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _internalPreferences = pool->getInternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
             _logger = pool->logger();
             _loggerApi = std::make_shared<LoggerApi>(pool->logger());
             _database = pool->getDatabaseSessionPool();
+            _mainExecutionContext = pool->getDispatcher()->getMainExecutionContext();
             //pool->getEventPublisher()->relay(_publisher->getEventBus());
         }
 
@@ -110,5 +122,42 @@ namespace ledger {
         api::Currency AbstractWallet::getCurrency() {
             return _currency;
         }
+
+        std::string AbstractWallet::getName() {
+            return _name;
+        }
+
+        std::shared_ptr<api::BitcoinLikeWallet> AbstractWallet::asBitcoinLikeWallet() {
+            return asInstanceOf<BitcoinLikeWallet>();
+        }
+
+        std::shared_ptr<api::ExecutionContext> AbstractWallet::getMainExecutionContext() const {
+            return _mainExecutionContext;
+        }
+
+        Future<int32_t> AbstractWallet::getNextAccountIndex() {
+            auto self = shared_from_this();
+            return async<int32_t>([self] () {
+                soci::session sql(self->getDatabase()->getPool());
+                return AccountDatabaseHelper::computeNextAccountIndex(sql, self->getWalletUid());
+            });
+        }
+
+        void AbstractWallet::getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) {
+            getNextAccountIndex().callback(getMainExecutionContext(), callback);
+        }
+
+        std::string AbstractWallet::getWalletUid() const {
+            return _uid;
+        }
+
+        std::shared_ptr<DynamicObject> AbstractWallet::getConfiguration() const {
+            return _configuration;
+        }
+
+        const DerivationScheme& AbstractWallet::getDerivationScheme() const {
+            return _scheme;
+        }
+
     }
 }

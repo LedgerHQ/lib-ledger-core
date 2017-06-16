@@ -104,7 +104,6 @@ namespace ledger {
             }
 
             Option<Try<T>> getValue() const {
-                std::lock_guard<std::mutex> lock(_lock);
                 Option<Try<T>> cpy = _value;
                 return cpy;
             }

@@ -4,6 +4,7 @@
 #import "LGCurrency.h"
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
+@class LGBitcoinLikeWallet;
 @class LGEventBus;
 @class LGLogger;
 @class LGPreferences;
@@ -14,6 +15,8 @@
 
 @interface LGWallet : NSObject
 
+- (nonnull NSString *)getName;
+
 - (void)getAccount:(int32_t)index
           callback:(nullable id<LGAccountCallback>)callback;
 
@@ -22,6 +25,8 @@
 - (void)getAccounts:(int32_t)offset
               count:(int32_t)count
            callback:(nullable id<LGAccountListCallback>)callback;
+
+- (void)getNextAccountIndex:(nullable id<LGI32Callback>)callback;
 
 - (nullable LGEventBus *)getEventBus;
 
@@ -40,6 +45,8 @@
  * asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
  * asRippleLikeWallet(): Callback<RippleLikeWallet>;
  */
+- (nullable LGBitcoinLikeWallet *)asBitcoinLikeWallet;
+
 - (nonnull LGCurrency *)getCurrency;
 
 - (BOOL)isInstanceOfBitcoinLikeWallet;

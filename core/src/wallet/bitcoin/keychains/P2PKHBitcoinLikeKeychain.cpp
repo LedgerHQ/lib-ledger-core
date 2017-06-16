@@ -49,7 +49,8 @@ namespace ledger {
                                                            int account,
                                                            const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                                            const std::shared_ptr<Preferences> &preferences)
-                : BitcoinLikeKeychain(configuration, params, account, xpub, preferences) {
+                : BitcoinLikeKeychain(configuration, params, account, preferences) {
+            _xpub = xpub;
             // Try to restore the state from preferences
             auto state = preferences->getData("state", {});
             if (!state.empty()) {
@@ -202,6 +203,14 @@ namespace ledger {
             archive(_state);
             auto savedState = is.str();
             getPreferences()->edit()->putData("state", std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size()))->commit();
+        }
+
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKey> P2PKHBitcoinLikeKeychain::getExtendedPublicKey() const {
+            return _xpub;
+        }
+
+        std::string P2PKHBitcoinLikeKeychain::getRestoreKey() const {
+            return _xpub->toBase58();
         }
 
     }

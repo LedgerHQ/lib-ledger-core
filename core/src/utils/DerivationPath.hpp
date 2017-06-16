@@ -43,6 +43,8 @@ namespace ledger {
             DerivationPath(const std::vector<uint32_t>& path);
             uint32_t getDepth() const;
             uint32_t getLastChildNum() const throw(ledger::core::Exception);
+            uint32_t getNonHardenedChildNum(int index) const throw(ledger::core::Exception);
+            uint32_t getNonHardenedLastChildNum() const throw(ledger::core::Exception);
             uint32_t operator[](int index) const throw(Exception);
             DerivationPath operator+(const DerivationPath& derivationPath) const;
             bool operator==(const DerivationPath& path) const;

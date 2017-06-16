@@ -55,7 +55,6 @@ namespace ledger {
                     const std::shared_ptr<api::DynamicObject>& configuration,
                     const api::Currency& params,
                     int account,
-                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey>& xpub,
                     const std::shared_ptr<Preferences>& preferences);
 
             virtual bool markAsUsed(const std::vector<std::string>& addresses);
@@ -75,9 +74,11 @@ namespace ledger {
             int getAccountIndex() const;
             const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
             const api::Currency& getCurrency() const;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
+
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;
+
+            virtual std::string getRestoreKey() const = 0;
 
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
@@ -86,7 +87,6 @@ namespace ledger {
         private:
             const api::Currency& _currency;
             DerivationScheme _scheme;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
             int _account;
             std::shared_ptr<Preferences> _preferences;
             std::shared_ptr<api::DynamicObject> _configuration;

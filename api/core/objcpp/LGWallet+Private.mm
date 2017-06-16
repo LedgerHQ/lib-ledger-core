@@ -8,6 +8,7 @@
 #import "DJIMarshal+Private.h"
 #import "LGAccountCallback+Private.h"
 #import "LGAccountListCallback+Private.h"
+#import "LGBitcoinLikeWallet+Private.h"
 #import "LGCurrency+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGI32Callback+Private.h"
@@ -38,6 +39,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
+- (nonnull NSString *)getName {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getName();
+        return ::djinni::String::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (void)getAccount:(int32_t)index
           callback:(nullable id<LGAccountCallback>)callback {
     try {
@@ -59,6 +67,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.get()->getAccounts(::djinni::I32::toCpp(offset),
                                          ::djinni::I32::toCpp(count),
                                          ::djinni_generated::AccountListCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getNextAccountIndex:(nullable id<LGI32Callback>)callback {
+    try {
+        _cppRefHandle.get()->getNextAccountIndex(::djinni_generated::I32Callback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -101,6 +115,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getAccountPreferences(::djinni::I32::toCpp(index));
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeWallet *)asBitcoinLikeWallet {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->asBitcoinLikeWallet();
+        return ::djinni_generated::BitcoinLikeWallet::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

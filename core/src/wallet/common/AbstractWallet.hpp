@@ -40,17 +40,22 @@
 #include <src/debug/logger.hpp>
 #include <src/api/WalletType.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
+#include <collections/DynamicObject.hpp>
+#include <utils/DerivationScheme.hpp>
 
 namespace ledger {
     namespace core {
 
         class WalletPool;
 
-        class AbstractWallet : public virtual api::Wallet, public DedicatedContext {
+        class AbstractWallet : public virtual api::Wallet, public DedicatedContext, public virtual std::enable_shared_from_this<AbstractWallet> {
         public:
             AbstractWallet(const std::string& walletName,
                            const api::Currency& currency,
-                           const std::shared_ptr<WalletPool>& pool);
+                           const std::shared_ptr<WalletPool>& pool,
+                           const std::shared_ptr<DynamicObject>& configuration,
+                           const DerivationScheme& derivationScheme
+            );
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
@@ -60,7 +65,22 @@ namespace ledger {
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getAccountPreferences(int32_t index) override;
 
+            std::shared_ptr<api::BitcoinLikeWallet> asBitcoinLikeWallet() override;
+
             api::Currency getCurrency() override;
+            std::string getName() override;
+
+            void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;
+            Future<int32_t> getNextAccountIndex();
+
+            template <typename T>
+            std::shared_ptr<T> asInstanceOf() {
+                auto type = getWalletType();
+                if (type == T::type) {
+                    return std::dynamic_pointer_cast<T>(shared_from_this());
+                }
+                throw make_exception(api::ErrorCode::BAD_CAST, "Wallet of type {} cannot be cast to {}", api::to_string(type), api::to_string(T::type));
+            };
 
         public:
             virtual std::shared_ptr<Preferences> getAccountExternalPreferences(int32_t index);
@@ -70,8 +90,14 @@ namespace ledger {
             virtual std::shared_ptr<EventPublisher> getEventPublisher() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
             virtual std::shared_ptr<DatabaseSessionPool> getDatabase() const;
+            virtual std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
+            virtual std::string getWalletUid() const;
+            virtual std::shared_ptr<DynamicObject> getConfiguration() const;
+            virtual const DerivationScheme& getDerivationScheme() const;
 
         private:
+            std::string _name;
+            std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<EventPublisher> _publisher;
@@ -79,6 +105,9 @@ namespace ledger {
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<DatabaseSessionPool> _database;
             api::Currency _currency;
+            std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
+            std::shared_ptr<DynamicObject> _configuration;
+            DerivationScheme _scheme;
         };
     }
 }

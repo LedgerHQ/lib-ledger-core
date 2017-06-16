@@ -43,10 +43,6 @@ namespace ledger {
             return _currency.bitcoinLikeNetworkParameters.value();
         }
 
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKey> BitcoinLikeKeychain::getExtendedPublicKey() const {
-            return _xpub;
-        }
-
         bool BitcoinLikeKeychain::markAsUsed(const std::vector<std::string> &addresses) {
             bool result = false;
             for (auto& address : addresses) {
@@ -65,9 +61,8 @@ namespace ledger {
 
         BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
                                                  const api::Currency &params, int account,
-                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                                  const std::shared_ptr<Preferences>& preferences) :
-            _account(account), _xpub(xpub), _preferences(preferences), _configuration(configuration), _currency(params),
+            _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
             _scheme(DerivationScheme(configuration
                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
                     .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())

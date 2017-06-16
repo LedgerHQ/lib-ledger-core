@@ -10,6 +10,8 @@ public abstract class ConfigurationDefaults {
 
     public static final String BIP44_DERIVATION_SCHEME = "44'/<coin_type>'/<account>'/<node>/<address>";
 
+    public static final String DEFAULT_KEYCHAIN = "default";
+
 
     private static final class CppProxy extends ConfigurationDefaults
     {

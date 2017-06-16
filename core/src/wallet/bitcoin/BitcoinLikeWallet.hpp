@@ -41,18 +41,25 @@
 #include <src/api/BitcoinLikeNetworkParameters.hpp>
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+
 namespace ledger {
     namespace core {
         class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
         public:
+            static const api::WalletType type;
+
             BitcoinLikeWallet(
                 const std::string& name,
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const BitcoinLikeKeychainFactory& keychainFactory,
+                const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
                 const BitcoinLikeAccountSynchronizerFactory& synchronizerFactory,
                 const std::shared_ptr<WalletPool>& pool,
-                const api::Currency& network
+                const api::Currency& network,
+                const std::shared_ptr<DynamicObject>& configuration,
+                const DerivationScheme& scheme
             );
+
+            FuturePtr<api::Account> createNewAccount(int32_t index, const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider);
 
             void createNewAccount(int32_t index,
                                   const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
@@ -70,11 +77,12 @@ namespace ledger {
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
 
+        private:
 
         private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
-            BitcoinLikeKeychainFactory _keychainFactory;
+            std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
             api::BitcoinLikeNetworkParameters _network;
         };

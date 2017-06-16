@@ -14,6 +14,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeWalletNotFound,
     LGErrorCodeWalletAlreadyExists,
     LGErrorCodeRawTransactionNotFound,
+    /** Account errors */
+    LGErrorCodeAccountAlreadyExists,
     /** User land errors */
     LGErrorCodeCancelledByUser,
     LGErrorCodeUnsupportedCurrency,
@@ -62,4 +64,6 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnknownBlockchainExplorerEngine,
     LGErrorCodeUnknownBlockchainObserverEngine,
     LGErrorCodeUnknownSynchronizationEngine,
+    /** Bad cast */
+    LGErrorCodeBadCast,
 };

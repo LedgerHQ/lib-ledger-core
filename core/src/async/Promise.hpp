@@ -116,6 +116,9 @@ namespace ledger {
         private:
             std::shared_ptr<Deffered<T>> _deffer;
         };
+
+        template <typename T>
+        using PromisePtr = Promise<std::shared_ptr<T>>;
     }
 }
 

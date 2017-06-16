@@ -37,10 +37,11 @@
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <soci.h>
 #include <preferences/Preferences.hpp>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAccount : public api::BitcoinLikeAccount {
+        class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
             static const int FLAG_NEW_TRANSACTION = 0x01;
             static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
@@ -49,6 +50,14 @@ namespace ledger {
             static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
             static const int FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 0x01 << 4;
             static const int FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 0x01 << 5;
+
+            BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                               int32_t index,
+                               const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
+                               const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
+                               const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
+                               const std::shared_ptr<BitcoinLikeKeychain>& keychain
+            );
 
             /**
              *
@@ -65,10 +74,39 @@ namespace ledger {
 
             std::shared_ptr<const BitcoinLikeKeychain> getKeychain() const;
 
+
+            /***
+             * REVIEW
+             */
+            void getOperations(int32_t from, int32_t to, bool descending, bool complete,
+                               const std::shared_ptr<api::OperationListCallback> &callback) override;
+
+            void getOperationsCount(const std::shared_ptr<api::I64Callback> &callback) override;
+
+            void getOperation(const std::string &uid, const std::shared_ptr<api::OperationCallback> &callback) override;
+
+            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+
+            bool isSynchronizing() override;
+
+            std::shared_ptr<api::EventBus> synchronize() override;
+
+            void computeFees(const std::shared_ptr<api::Amount> &amount, int32_t priority,
+                             const std::vector<std::string> &recipients, const std::vector<std::vector<uint8_t>> &data,
+                             const std::shared_ptr<api::AmountCallback> &callback) override;
+
+            void getUTXO(int32_t from, int32_t to,
+                         const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
+
+            void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
+
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
+            std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
+            std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
+            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
         };
     }
 }

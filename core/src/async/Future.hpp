@@ -118,6 +118,11 @@ namespace ledger {
                 return Future<R>(deffer);
             }
 
+            template <typename R>
+            Future<std::shared_ptr<R>> flatMapPtr(const Context& context, std::function<Future<std::shared_ptr<R>> (const T&)> map) {
+                return this->flatMap<std::shared_ptr<R>>(context, map);
+            }
+
             Future<T> recover(const Context& context, std::function<T (const Exception&)> f) {
                 auto deffer = Future<T>::make_deffered();
                 _defer->addCallback([deffer, f] (const Try<T>& result) {
@@ -246,6 +251,8 @@ namespace ledger {
 
                 });
             };
+
+
 
             static Future<T> successful(T value) {
                 Promise<T> p;

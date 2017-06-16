@@ -15,6 +15,8 @@ public:
     static std::string const BLOCKCHAIN_DEFAULT_API_ENDPOINT;
 
     static std::string const BIP44_DERIVATION_SCHEME;
+
+    static std::string const DEFAULT_KEYCHAIN;
 };
 
 } } }  // namespace ledger::core::api

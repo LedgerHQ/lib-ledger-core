@@ -40,6 +40,7 @@
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <api/SynchronizationEngines.hpp>
+#include <wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -101,7 +102,9 @@ namespace ledger {
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
                     pool,
-                    currency.getValue()
+                    currency.getValue(),
+                    entry.configuration,
+                    scheme
             );
         }
 
@@ -109,7 +112,7 @@ namespace ledger {
                                                            const std::shared_ptr<WalletPool> &pool)
         : AbstractWalletFactory(currency, pool) {
             _keychainFactories = {
-                {"BIP32_P2PKH", make_keychain<P2PKHBitcoinLikeKeychain>}
+                {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeP2PKHKeychainFactory>()}
             };
         }
 

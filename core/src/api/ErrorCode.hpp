@@ -20,6 +20,8 @@ enum class ErrorCode : int {
     WALLET_NOT_FOUND,
     WALLET_ALREADY_EXISTS,
     RAW_TRANSACTION_NOT_FOUND,
+    /** Account errors */
+    ACCOUNT_ALREADY_EXISTS,
     /** User land errors */
     CANCELLED_BY_USER,
     UNSUPPORTED_CURRENCY,
@@ -68,6 +70,8 @@ enum class ErrorCode : int {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Bad cast */
+    BAD_CAST,
 };
 std::string to_string(const ErrorCode& errorCode);
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

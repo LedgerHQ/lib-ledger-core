@@ -5,6 +5,7 @@
 
 extern NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT;
 extern NSString * __nonnull const LGConfigurationDefaultsBIP44DERIVATIONSCHEME;
+extern NSString * __nonnull const LGConfigurationDefaultsDEFAULTKEYCHAIN;
 
 @interface LGConfigurationDefaults : NSObject
 

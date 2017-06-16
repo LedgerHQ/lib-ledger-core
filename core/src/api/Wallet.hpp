@@ -6,11 +6,13 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 
 namespace ledger { namespace core { namespace api {
 
 class AccountCallback;
 class AccountListCallback;
+class BitcoinLikeWallet;
 class EventBus;
 class I32Callback;
 class Logger;
@@ -22,11 +24,15 @@ class Wallet {
 public:
     virtual ~Wallet() {}
 
+    virtual std::string getName() = 0;
+
     virtual void getAccount(int32_t index, const std::shared_ptr<AccountCallback> & callback) = 0;
 
     virtual void getAccountCount(const std::shared_ptr<I32Callback> & callback) = 0;
 
     virtual void getAccounts(int32_t offset, int32_t count, const std::shared_ptr<AccountListCallback> & callback) = 0;
+
+    virtual void getNextAccountIndex(const std::shared_ptr<I32Callback> & callback) = 0;
 
     virtual std::shared_ptr<EventBus> getEventBus() = 0;
 
@@ -45,6 +51,8 @@ public:
      * asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
      * asRippleLikeWallet(): Callback<RippleLikeWallet>;
      */
+    virtual std::shared_ptr<BitcoinLikeWallet> asBitcoinLikeWallet() = 0;
+
     virtual Currency getCurrency() = 0;
 
     virtual bool isInstanceOfBitcoinLikeWallet() = 0;
