@@ -63,11 +63,13 @@ namespace ledger {
                                                  const api::Currency &params, int account,
                                                  const std::shared_ptr<Preferences>& preferences) :
             _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
+            _fullScheme(DerivationScheme(configuration
+                                                 ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                                 .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
             _scheme(DerivationScheme(configuration
                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
                     .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())
         {
-
         }
 
         const api::Currency& BitcoinLikeKeychain::getCurrency() const {
@@ -89,6 +91,10 @@ namespace ledger {
             } else {
                 return false;
             }
+        }
+
+        const DerivationScheme &BitcoinLikeKeychain::getFullDerivationScheme() const {
+            return _fullScheme;
         }
     }
 }

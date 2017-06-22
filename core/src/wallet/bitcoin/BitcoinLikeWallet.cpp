@@ -100,10 +100,10 @@ namespace ledger {
             auto provider = std::dynamic_pointer_cast<BitcoinLikeExtendedPublicKeyProvider>(xpubProvider);
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(index);
-
+            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             return _keychainFactory->build(getContext(),
                                            index,
-                                    scheme.getPath(),
+                                    xpubPath,
                                     getConfiguration(),
                                     provider,
                                     getAccountInternalPreferences(index),

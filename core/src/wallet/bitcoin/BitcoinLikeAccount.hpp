@@ -41,6 +41,7 @@
 
 namespace ledger {
     namespace core {
+        class Operation;
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
             static const int FLAG_NEW_TRANSACTION = 0x01;
@@ -99,6 +100,11 @@ namespace ledger {
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
 
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
+
+        private:
+            inline void inflateOperation(Operation& out,
+                                         const std::shared_ptr<const AbstractWallet>& wallet,
+                                         const BitcoinLikeBlockchainExplorer::Transaction& tx);
 
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;

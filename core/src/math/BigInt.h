@@ -90,12 +90,14 @@ namespace ledger {
             static BigInt fromDecimal(const std::string& str);
 
             static BigInt fromString(const std::string& str);
+
         private:
             BigInt(const std::string& str, int radix);
 
         public:
             BigInt();
             BigInt(const BigInt& cpy);
+            BigInt(BigInt& mov);
 
             /**
              * Initializes a new BigInt with the given big endian data.
@@ -113,9 +115,9 @@ namespace ledger {
              * @return
              */
             BigInt(int value);
-            BigInt(long long value);
             BigInt(unsigned int value);
             BigInt(unsigned long long value);
+            BigInt(int64_t value);
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str
@@ -136,6 +138,7 @@ namespace ledger {
             unsigned toUnsignedInt() const;
 
             uint64_t toUint64() const;
+            int64_t toInt64() const;
 
             /**
              * Serializes the BigInt into a decimal std::string.
@@ -188,8 +191,9 @@ namespace ledger {
             BigInt negative() const;
             BigInt positive() const;
 
-            virtual ~BigInt();
+            BigInt& assignI64(int64_t value);
 
+            virtual ~BigInt();
 
         private:
             BIGD _bigd;

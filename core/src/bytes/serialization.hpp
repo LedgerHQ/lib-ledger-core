@@ -35,7 +35,7 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
+#include <cereal/archives/xml.hpp>
 #include <sstream>
 
 namespace ledger {
@@ -60,16 +60,16 @@ namespace ledger {
             };
 
             template <typename T>
-            void loadJSON(const std::string& json, T& dest) {
+            void loadXML(const std::string& json, T& dest) {
                 std::stringstream ss;
                 ss << json;
-                ::cereal::JSONInputArchive archive(ss);
+                ::cereal::XMLInputArchive archive(ss);
                 archive(json);
             }
 
             template <typename T>
-            void saveJSON(T& src, std::stringstream& dest) {
-                ::cereal::JSONOutputArchive archive(dest);
+            void saveXML(T& src, std::stringstream& dest) {
+                ::cereal::XMLOutputArchive archive(dest);
                 archive(src);
             }
 

@@ -61,7 +61,7 @@ namespace ledger {
             std::shared_ptr<TrustIndicator> trust;
             Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
 
-            Operation();
+            Operation() {};
             void refreshUid();
         private:
 

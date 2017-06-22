@@ -74,12 +74,22 @@ namespace ledger {
                 return splitted;
             }
 
+            void join(const std::vector<std::string>& values, std::stringstream& ss, const std::string& separator) {
+                auto size = values.size();
+                for (auto index = 0; index < size; index++) {
+                    if (index > 0) {
+                        ss << separator;
+                    }
+                    ss << values[index];
+                }
+            }
 
         }
 
         String operator "" _S(const char* str, size_t size) {
             return String(str, size);
         }
+
     }
 }
 

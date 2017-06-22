@@ -77,6 +77,7 @@ namespace ledger {
 
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;
+            const DerivationScheme& getFullDerivationScheme() const;
 
             virtual std::string getRestoreKey() const = 0;
 
@@ -87,6 +88,7 @@ namespace ledger {
         private:
             const api::Currency& _currency;
             DerivationScheme _scheme;
+            DerivationScheme _fullScheme;
             int _account;
             std::shared_ptr<Preferences> _preferences;
             std::shared_ptr<api::DynamicObject> _configuration;

@@ -49,34 +49,56 @@ namespace ledger {
             _keychain = keychain;
         }
 
+        void
+        BitcoinLikeAccount::inflateOperation(Operation &out,
+                                             const std::shared_ptr<const AbstractWallet>& wallet,
+                                             const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+            out.accountUid = getAccountUid();
+            out.blockHeight = tx.block.map<uint64_t>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
+                                                   return block.height;
+                                               });
+            out.bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
+            out.currencyName = getWallet()->getCurrency().name;
+            out.walletType = getWalletType();
+            out.walletUid = wallet->getWalletUid();
+            out.date = tx.receivedAt;
+        }
+
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                const BitcoinLikeBlockchainExplorer::Transaction &transaction) {
 
-            auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+            auto wallet = getWallet();
+            if (wallet == nullptr) {
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
+            }
+            auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorer::Input *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorer::Output *, DerivationPath>> accountOutputs;
-            BigInt fees;
-            BigInt sentAmount;
-            BigInt receivedAmount;
-            std::list<std::string> senders;
-            std::list<std::string> recipients;
+            uint64_t fees = 0L;
+            uint64_t sentAmount = 0L;
+            uint64_t receivedAmount = 0L;
+            std::vector<std::string> senders;
+            senders.reserve(transaction.inputs.size());
+            std::vector<std::string> recipients;
+            recipients.reserve(transaction.outputs.size());
 
             int result = 0x00;
 
             // Find inputs
             for (auto& input : transaction.inputs) {
 
-                if (input.address.nonEmpty())
+                if (input.address.nonEmpty()) {
+                    fmt::print("HAS {}\n", input.address.getValue());
                     senders.push_back(input.address.getValue());
-
+                }
                 // Extend input with derivation paths
 
                 if (input.address.nonEmpty() && input.value.nonEmpty()) {
                     auto path = _keychain->getAddressDerivationPath(input.address.getValue());
                     if (path.nonEmpty()) {
                         // This address is part of the account.
+                        sentAmount += input.value.getValue().toUint64();
                         accountInputs.push_back(std::move(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Input *>(&input), path.getValue())));
-                        sentAmount = sentAmount + input.value.getValue();
                         if (_keychain->markPathAsUsed(path.getValue())) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
@@ -85,36 +107,64 @@ namespace ledger {
                     }
                 }
                 if (input.value.nonEmpty()) {
-                    fees = fees + input.value.getValue();
+                    fees += input.value.getValue().toUint64();
                 }
             }
 
             // Find outputs
-            for (auto& output : transaction.outputs) {
+            auto outputCount = transaction.outputs.size();
+            for (auto index = 0; index < outputCount; index++) {
+                auto& output = transaction.outputs[index];
                 if (output.address.nonEmpty()) {
                     auto path = _keychain->getAddressDerivationPath(output.address.getValue());
                     if (path.nonEmpty()) {
+                        DerivationPath p(path.getValue());
                         accountOutputs.push_back(std::move(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Output *>(&output), path.getValue())));
-                        if (path.getValue()[nodeIndex] == 1) {
-                            sentAmount = sentAmount - output.value;
+                        if (p.getNonHardenedChildNum(nodeIndex) == 1) {
+                            if (sentAmount == 0L) {
+                                receivedAmount +=  output.value.toUint64();
+                            }
+                            if (recipients.size() == 0 && index + 1 >= outputCount) {
+                                recipients.push_back(output.address.getValue());
+                            }
                         } else {
+                            receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
                     } else {
                         recipients.push_back(output.address.getValue());
                     }
                 }
-                fees = fees - output.value;
+                fees = fees - output.value.toUint64();
             }
+
+            std::stringstream snds;
+            strings::join(senders, snds, ",");
+            fmt::print("FINAL {}\n", snds.str());
+
+            Operation operation;
+            inflateOperation(operation, wallet, transaction);
+            operation.senders = std::move(senders);
+            operation.recipients = std::move(recipients);
+            operation.fees = std::move(BigInt().assignI64(fees));
+            operation.trust = std::make_shared<TrustIndicator>();
+            operation.date = transaction.receivedAt;
 
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
-                BigInt amount;
 
-                for (auto& accountInput : accountInputs) {
-
+                for (auto& accountOutput : accountOutputs) {
+                    fmt::print("{} {}\n", accountOutput.second.toString(), accountOutput.first->address.getValue());
+                    if (accountOutput.second.getNonHardenedChildNum(nodeIndex) == 1)
+                        sentAmount -= accountOutput.first->value.toInt64();
                 }
+                sentAmount -= fees;
+
+                operation.amount.assignI64(sentAmount);
+                operation.type = api::OperationType::SEND;
+                operation.refreshUid();
+                OperationDatabaseHelper::putOperation(sql, operation);
             }
 
             if (accountOutputs.size() > 0) {
@@ -134,6 +184,10 @@ namespace ledger {
                     filterChangeAddresses = false;
                 }
 
+                operation.amount.assignI64(receivedAmount);
+                operation.type = api::OperationType::RECEIVE;
+                operation.refreshUid();
+                OperationDatabaseHelper::putOperation(sql, operation);
             }
 
             // Put the operation
@@ -193,5 +247,6 @@ namespace ledger {
         bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block block) {
             return false;
         }
+
     }
 }

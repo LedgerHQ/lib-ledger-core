@@ -64,6 +64,7 @@ namespace ledger {
                 _state.empty = true;
             }
             _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
+            getAllObservableAddresses(0, _observableRange);
         }
 
         bool P2PKHBitcoinLikeKeychain::markPathAsUsed(const DerivationPath &p) {

@@ -34,8 +34,22 @@
 #include <soci.h>
 #include <boost/lexical_cast.hpp>
 #include <utils/Exception.hpp>
+#include <math/BigInt.h>
 
 namespace soci {
+
+    template <>
+    struct type_conversion<ledger::core::BigInt> {
+        typedef long long base_type;
+        static void from_base(base_type const & in, indicator ind, ledger::core::BigInt& out) {
+            out = std::move(ledger::core::BigInt(in));
+        }
+
+        static void to_base(ledger::core::BigInt const & in, base_type & out, indicator & ind) {
+            out = (base_type)in.toUint64();
+        }
+
+    };
 
     template<typename T>
     T get_number(const row& row, std::size_t pos) {

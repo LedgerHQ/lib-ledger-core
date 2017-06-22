@@ -48,7 +48,8 @@ namespace ledger {
                           path.toString(),
                           currency.bitcoinLikeNetworkParameters.value()
             ).mapPtr<BitcoinLikeKeychain>(context, [=] (const std::shared_ptr<BitcoinLikeExtendedPublicKey>& xpub) {
-                return std::make_shared<P2PKHBitcoinLikeKeychain>(
+               fmt::print("xpub: {}\n", xpub->toBase58());
+               return std::make_shared<P2PKHBitcoinLikeKeychain>(
                         configuration, currency, index, xpub, accountPreferences
                 );
             });

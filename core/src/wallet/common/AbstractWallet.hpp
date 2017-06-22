@@ -68,6 +68,7 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeWallet> asBitcoinLikeWallet() override;
 
             api::Currency getCurrency() override;
+            const api::Currency& getCurrency() const;
             std::string getName() override;
 
             void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;

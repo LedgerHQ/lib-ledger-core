@@ -30,6 +30,15 @@
  */
 #include "OperationDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
+#include <bytes/serialization.hpp>
+#include <collections/strings.hpp>
+#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+
+using namespace soci;
 
 namespace ledger {
     namespace core {
@@ -40,7 +49,48 @@ namespace ledger {
         }
 
         void OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
+            auto count = 0;
+            std::stringstream trust;
+            serialization::saveXML<TrustIndicator>(*operation.trust, trust);
+            sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
+            auto newOperation = count == 0;
+            if (!newOperation) {
+                sql << "UPDATE operations SET block_height = :height, trust = :trust WHERE uid = :uid"
+                        , use(operation.blockHeight)
+                        , use(trust.str())
+                        , use(operation.uid);
+            } else {
+                auto type = api::to_string(operation.type);
+                std::stringstream senders;
+                std::stringstream recipients;
+                std::string separator(",");
+                strings::join(operation.senders, senders, separator);
+                strings::join(operation.recipients, recipients, separator);
+                fmt::print("{}\n", senders.str());
+                auto sndrs = senders.str();
+                auto rcvrs = recipients.str();
+                sql << "INSERT INTO operations VALUES("
+                            ":uid, :accout_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
+                            ":fees, :block_height, :currency_name, :trust"
+                        ")"
+                        , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
+                        , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
+                        , use(operation.fees), use(operation.blockHeight), use(operation.currencyName), use(trust.str());
 
+
+            }
+            updateBitcoinOperation(sql, operation, newOperation);
+        }
+
+        void
+        OperationDatabaseHelper::updateBitcoinOperation(soci::session &sql, const Operation &operation, bool insert) {
+            if (operation.bitcoinTransaction.nonEmpty()) {
+                BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.bitcoinTransaction
+                                                                                   .getValue());
+                if (insert)
+                    sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_hash)", use(operation.uid)
+                            , use(operation.bitcoinTransaction.getValue().hash);
+            }
         }
 
     }

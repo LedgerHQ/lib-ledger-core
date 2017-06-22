@@ -45,6 +45,7 @@ namespace ledger {
             int indexOf(const std::string& src, const std::string& search);
             std::string& replace(std::string& str, const std::string& from, const std::string& to);
             std::vector<std::string> split(const std::string& str, const std::string& delimiter);
+            void join(const std::vector<std::string>& values, std::stringstream& ss, const std::string& separator);
         }
     }
 }

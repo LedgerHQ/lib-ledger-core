@@ -28,17 +28,20 @@
  * SOFTWARE.
  *
  */
+#include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
 
 namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index) {
+            _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
             _index = index;
             _internalPreferences = wallet->getAccountInternalPreferences(index);
             _externalPreferences = wallet->getAccountExternalPreferences(index);
             _loggerApi = wallet->getLogger();
+            _wallet = std::const_pointer_cast<const AbstractWallet>(wallet);
         }
 
         int32_t AbstractAccount::getIndex() {
@@ -83,6 +86,14 @@ namespace ledger {
 
         std::shared_ptr<Preferences> AbstractAccount::getOperationInternalPreferences(const std::string &uid) {
             return _internalPreferences->getSubPreferences(fmt::format("operation_{}", uid));
+        }
+
+        const std::string &AbstractAccount::getAccountUid() const {
+            return _uid;
+        }
+
+        std::shared_ptr<const AbstractWallet> AbstractAccount::getWallet() const {
+            return _wallet.lock();
         }
     }
 }

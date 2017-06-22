@@ -159,5 +159,9 @@ namespace ledger {
             return _scheme;
         }
 
+        const api::Currency &AbstractWallet::getCurrency() const {
+            return _currency;
+        }
+
     }
 }

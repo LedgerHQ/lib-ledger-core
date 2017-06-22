@@ -50,14 +50,18 @@ namespace ledger {
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<spdlog::logger> logger() const;
+            virtual const std::string& getAccountUid() const;
+            virtual std::shared_ptr<const AbstractWallet> getWallet() const;
 
         private:
             api::WalletType  _type;
             int32_t  _index;
+            std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
+            std::weak_ptr<const AbstractWallet> _wallet;
         };
     }
 }

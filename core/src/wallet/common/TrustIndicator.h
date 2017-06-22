@@ -45,7 +45,7 @@ namespace ledger {
             TrustIndicator();
             TrustIndicator(const TrustIndicator& ind) = delete;
 
-            template <typename Archive>
+            template <class Archive>
             void serialize(Archive& ar, std::uint32_t const version) {
                 std::string level = api::to_string(_level);
                 ar(CEREAL_NVP(_weight), CEREAL_NVP(level), CEREAL_NVP(_conflicts), CEREAL_NVP(_origin));
@@ -71,6 +71,5 @@ namespace ledger {
         };
     }
 }
-CEREAL_CLASS_VERSION(ledger::core::TrustIndicator, 0);
 
 #endif //LEDGER_CORE_TRUSTINDICATOR_H

@@ -35,8 +35,7 @@
 #include <iostream>
 #include <algorithm>
 #include "../collections/collections.hpp"
-#undef LITTLE_ENDIAN
-#undef BIG_ENDIAN
+
 
 #include <cstdlib>
 
@@ -91,11 +90,19 @@ namespace ledger {
             _negative = false;
         }
 
-        BigInt::BigInt(long long value) : BigInt() {
-            auto bytes = endianness::scalar_type_to_array<long long>(std::abs(value), endianness::Endianness::BIG);
-            bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(long long));
+        BigInt::BigInt(int64_t value) : BigInt() {
+            auto bytes = endianness::scalar_type_to_array<int64_t >(std::abs(value), endianness::Endianness::BIG);
+            bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(int64_t));
             std::free(bytes);
             _negative = value < 0LL;
+        }
+
+        BigInt& BigInt::assignI64(int64_t value) {
+            auto bytes = endianness::scalar_type_to_array<int64_t >(std::abs(value), endianness::Endianness::BIG);
+            bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(int64_t));
+            std::free(bytes);
+            _negative = value < 0LL;
+            return *this;
         }
 
         BigInt::BigInt(const std::string &str, int radix) : BigInt() {
@@ -110,7 +117,9 @@ namespace ledger {
         }
 
         BigInt::~BigInt() {
-            bdFree(&_bigd);
+            if (_bigd != nullptr) {
+                bdFree(&_bigd);
+            }
         }
 
         int BigInt::toInt() const {
@@ -247,7 +256,7 @@ namespace ledger {
         }
 
         bool BigInt::isZero() const {
-            return bdIsZero(_bigd);
+            return bdIsZero(_bigd) != 0;
         }
 
         BigInt BigInt::negative() const {
@@ -319,6 +328,15 @@ namespace ledger {
             return reinterpret_cast<uint64_t *>(result.data())[0];
         }
 
+        int64_t BigInt::toInt64() const {
+            std::vector<uint8_t> result(sizeof(uint64_t));
+            bdConvToOctets(_bigd, result.data(), sizeof(uint64_t));
+            if (ledger::core::endianness::isSystemLittleEndian()) {
+                std::reverse(result.begin(), result.end());
+            }
+            return reinterpret_cast<int64_t *>(result.data())[0] * (_negative ? -1 : 1);
+        }
+
         int BigInt::compare(const BigInt &rhs) const {
             if (this->isNegative() && rhs.isPositive()) {
                 return -1;
@@ -344,6 +362,12 @@ namespace ledger {
             } else {
                 return BigInt::fromDecimal(str);
             }
+        }
+
+        BigInt::BigInt(BigInt &mov) {
+            _bigd = mov._bigd;
+            _negative = mov._negative;
+            mov._bigd = nullptr;
         }
 
     }

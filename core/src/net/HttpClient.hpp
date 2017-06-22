@@ -42,12 +42,14 @@
 #include <memory>
 #include "../async/Future.hpp"
 #include "../async/Promise.hpp"
-#include <rapidjson/document.h>
 #include "../utils/Either.hpp"
 #include "HttpUrlConnectionInputStream.hpp"
-#include <rapidjson/reader.h>
+
 #include "../debug/logger.hpp"
 #include "../utils/Option.hpp"
+
+#include <rapidjson/document.h>
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
