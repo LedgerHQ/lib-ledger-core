@@ -32,6 +32,9 @@ public:
 
     /** Selects the synchronization engine */
     static std::string const SYNCHRONIZATION_ENGINE;
+
+    /** Operation trust */
+    static std::string const TRUST_LIMIT;
 };
 
 } } }  // namespace ledger::core::api

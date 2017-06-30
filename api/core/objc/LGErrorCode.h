@@ -66,4 +66,6 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnknownSynchronizationEngine,
     /** Bad cast */
     LGErrorCodeBadCast,
+    /** Query build */
+    LGErrorCodeLinkNonTailFilter,
 };

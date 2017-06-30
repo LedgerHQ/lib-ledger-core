@@ -17,6 +17,8 @@ extern NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT;
 extern NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE;
 /** Selects the synchronization engine */
 extern NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE;
+/** Operation trust */
+extern NSString * __nonnull const LGConfigurationTRUSTLIMIT;
 
 @interface LGConfiguration : NSObject
 

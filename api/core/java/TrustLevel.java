@@ -5,8 +5,7 @@ package co.ledger.core;
 
 public enum TrustLevel {
     TRUSTED,
-    ALMOST_TRUSTABLE,
-    WAIT_FOR_TRUST,
+    PENDING,
     UNTRUSTED,
     DROPPED,
     ;

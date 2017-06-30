@@ -38,6 +38,9 @@
 #include <soci.h>
 #include <preferences/Preferences.hpp>
 #include <wallet/common/AbstractAccount.hpp>
+#include <api/Amount.hpp>
+#include <api/AmountCallback.hpp>
+#include <api/OperationListCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -79,18 +82,14 @@ namespace ledger {
             /***
              * REVIEW
              */
-            void getOperations(int32_t from, int32_t to, bool descending, bool complete,
-                               const std::shared_ptr<api::OperationListCallback> &callback) override;
-
-            void getOperationsCount(const std::shared_ptr<api::I64Callback> &callback) override;
-
-            void getOperation(const std::string &uid, const std::shared_ptr<api::OperationCallback> &callback) override;
-
             void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+            FuturePtr<api::Amount> getBalance();
 
             bool isSynchronizing() override;
 
             std::shared_ptr<api::EventBus> synchronize() override;
+
+            std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             void computeFees(const std::shared_ptr<api::Amount> &amount, int32_t priority,
                              const std::vector<std::string> &recipients, const std::vector<std::vector<uint8_t>> &data,
@@ -100,11 +99,15 @@ namespace ledger {
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
 
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
+            Future<int32_t> getUTXOCount();
 
         private:
             inline void inflateOperation(Operation& out,
                                          const std::shared_ptr<const AbstractWallet>& wallet,
                                          const BitcoinLikeBlockchainExplorer::Transaction& tx);
+            inline void computeOperationTrust(Operation& operation,
+                                              const std::shared_ptr<const AbstractWallet>& wallet,
+                                              const BitcoinLikeBlockchainExplorer::Transaction& tx);
 
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;

@@ -37,6 +37,8 @@
 #include <api/TrustLevel.hpp>
 #include <cereal/cereal.hpp>
 #include <api/enum_from_string.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,7 +50,7 @@ namespace ledger {
             template <class Archive>
             void serialize(Archive& ar, std::uint32_t const version) {
                 std::string level = api::to_string(_level);
-                ar(CEREAL_NVP(_weight), CEREAL_NVP(level), CEREAL_NVP(_conflicts), CEREAL_NVP(_origin));
+                ar(CEREAL_NVP(level), CEREAL_NVP(_origin), CEREAL_NVP(_weight), CEREAL_NVP(_conflicts));
                 _level = api::from_string<api::TrustLevel>(level);
             }
 
@@ -71,5 +73,7 @@ namespace ledger {
         };
     }
 }
+
+CEREAL_CLASS_VERSION(ledger::core::TrustIndicator, 0);
 
 #endif //LEDGER_CORE_TRUSTINDICATOR_H

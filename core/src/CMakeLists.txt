@@ -156,7 +156,28 @@ add_library(
         wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h
         events/ProgressNotifier.cpp events/ProgressNotifier.h
         wallet/bitcoin/database/BitcoinLikeWalletDatabase.cpp wallet/bitcoin/database/BitcoinLikeWalletDatabase.h
-        wallet/common/database/AccountDatabaseHelper.cpp wallet/common/database/AccountDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.h wallet/bitcoin/database/BitcoinLikeAccountDatabase.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabase.h wallet/common/database/OperationDatabaseHelper.cpp wallet/common/database/OperationDatabaseHelper.h utils/JSONUtils.h database/soci-option.h database/soci-date.h wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h database/soci-number.h wallet/common/Operation.cpp wallet/common/Operation.h wallet/common/TrustIndicator.cpp wallet/common/TrustIndicator.h wallet/bitcoin/factories/BitcoinLikeKeychainFactory.cpp wallet/bitcoin/factories/BitcoinLikeKeychainFactory.h wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.cpp wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h bytes/json.h)
+        wallet/common/database/AccountDatabaseHelper.cpp wallet/common/database/AccountDatabaseHelper.h
+        wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.cpp
+        wallet/bitcoin/database/BitcoinLikeAccountDatabaseEntry.h
+        wallet/bitcoin/database/BitcoinLikeAccountDatabase.cpp
+        wallet/bitcoin/database/BitcoinLikeAccountDatabase.h
+        wallet/common/database/OperationDatabaseHelper.cpp
+        wallet/common/database/OperationDatabaseHelper.h
+        utils/JSONUtils.h database/soci-option.h database/soci-date.h
+        wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp
+        wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h
+        wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp
+        wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h database/soci-number.h
+        wallet/common/Operation.cpp wallet/common/Operation.h wallet/common/TrustIndicator.cpp
+        wallet/common/TrustIndicator.h wallet/bitcoin/factories/BitcoinLikeKeychainFactory.cpp
+        wallet/bitcoin/factories/BitcoinLikeKeychainFactory.h
+        wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.cpp
+        wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h
+        wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.cpp
+        wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h
+        database/query/QueryBuilder.cpp database/query/QueryBuilder.h database/query/QueryFilter.cpp
+        database/query/QueryFilter.h database/query/CompoundQueryFilter.cpp database/query/CompoundQueryFilter.h database/query/filters_impl.cpp database/query/ConditionQueryFilter.cpp database/query/ConditionQueryFilter.h)
+
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_link_libraries(ledger-core bigd)

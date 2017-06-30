@@ -35,7 +35,7 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <cereal/archives/binary.hpp>
-#include <cereal/archives/xml.hpp>
+#include <cereal/external/base64.hpp>
 #include <sstream>
 
 namespace ledger {
@@ -60,17 +60,21 @@ namespace ledger {
             };
 
             template <typename T>
-            void loadXML(const std::string& json, T& dest) {
-                std::stringstream ss;
-                ss << json;
-                ::cereal::XMLInputArchive archive(ss);
-                archive(json);
+            void loadBase64(const std::string& str, T& dest) {
+                auto decoded = cereal::base64::decode(str);
+                std::vector<uint8_t> data;
+                data.reserve(decoded.size());
+                for (auto& c : decoded) {
+                    data.push_back((uint8_t) c);
+                }
+                load(data, dest);
             }
 
             template <typename T>
-            void saveXML(T& src, std::stringstream& dest) {
-                ::cereal::XMLOutputArchive archive(dest);
-                archive(src);
+            void saveBase64(T& src, std::string& dest) {
+                std::vector<uint8_t> data;
+                save(src, data);
+                dest = cereal::base64::encode((const unsigned char *)data.data(), data.size());
             }
 
         }

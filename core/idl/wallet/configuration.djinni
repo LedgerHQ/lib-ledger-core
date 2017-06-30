@@ -24,6 +24,7 @@ ConfigurationDefaults = interface +c {
     const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://api.ledgerwallet.com";
     const BIP44_DERIVATION_SCHEME: string = "44'/<coin_type>'/<account>'/<node>/<address>";
     const DEFAULT_KEYCHAIN: string = "default";
+    const DEFAULT_TRUST_LIMIT: i32 = 3;
 }
 
 Configuration = interface +c {
@@ -44,6 +45,9 @@ Configuration = interface +c {
 
     # Selects the synchronization engine
     const SYNCHRONIZATION_ENGINE: string = "SYNCHRONIZATION_ENGINE";
+
+    # Operation trust
+    const TRUST_LIMIT: string = "TRUST_LIMIT";
 }
 
 PoolConfiguration = interface +c {

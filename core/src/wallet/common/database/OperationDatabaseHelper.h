@@ -44,7 +44,8 @@ namespace ledger {
             static std::string createUid(const std::string& accountUid,
                                          const std::string& txId,
                                          const api::OperationType type);
-
+            static void queryOperations(soci::session& sql, int32_t from, int32_t to,
+                                        bool complete, bool excludeDropped, std::vector<Operation>& out);
         private:
             static void updateBitcoinOperation(soci::session& sql, const Operation& operation, bool insert);
         };

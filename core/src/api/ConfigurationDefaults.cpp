@@ -11,4 +11,6 @@ std::string const ConfigurationDefaults::BIP44_DERIVATION_SCHEME = {"44'/<coin_t
 
 std::string const ConfigurationDefaults::DEFAULT_KEYCHAIN = {"default"};
 
+int32_t const ConfigurationDefaults::DEFAULT_TRUST_LIMIT = 3;
+
 } } }  // namespace ledger::core::api

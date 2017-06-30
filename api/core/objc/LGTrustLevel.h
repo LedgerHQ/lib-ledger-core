@@ -6,8 +6,7 @@
 typedef NS_ENUM(NSInteger, LGTrustLevel)
 {
     LGTrustLevelTrusted,
-    LGTrustLevelAlmostTrustable,
-    LGTrustLevelWaitForTrust,
+    LGTrustLevelPending,
     LGTrustLevelUntrusted,
     LGTrustLevelDropped,
 };

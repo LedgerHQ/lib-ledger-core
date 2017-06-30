@@ -27,6 +27,9 @@ public abstract class Configuration {
     /** Selects the synchronization engine */
     public static final String SYNCHRONIZATION_ENGINE = "SYNCHRONIZATION_ENGINE";
 
+    /** Operation trust */
+    public static final String TRUST_LIMIT = "TRUST_LIMIT";
+
 
     private static final class CppProxy extends Configuration
     {

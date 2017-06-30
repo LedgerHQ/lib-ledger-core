@@ -72,6 +72,8 @@ enum class ErrorCode : int {
     UNKNOWN_SYNCHRONIZATION_ENGINE,
     /** Bad cast */
     BAD_CAST,
+    /** Query build */
+    LINK_NON_TAIL_FILTER,
 };
 std::string to_string(const ErrorCode& errorCode);
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

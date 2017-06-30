@@ -13,8 +13,7 @@ OperationType = enum {
 
 TrustLevel = enum {
     trusted;
-    almost_trustable;
-    wait_for_trust;
+    pending;
     untrusted;
     dropped;
 }
@@ -52,11 +51,67 @@ Operation = interface +c {
     getWalletType(): WalletType;
 }
 
+OperationOrderKey = enum {
+    date; amount; senders; recipients; type; currency_name; fees; block_height;
+}
+
+QueryFilter = interface +c {
+    static accountEq(accountUid: string): QueryFilter;
+    static accountNeq(accountUid: string): QueryFilter;
+    static dateLte(time: date): QueryFilter;
+    static dateLt(time: date): QueryFilter;
+    static dateGt(time: date): QueryFilter;
+    static dateGte(time: date): QueryFilter;
+    static dateEq(time: date): QueryFilter;
+    static dateNeq(time: date): QueryFilter;
+    static containsRecipient(recipientAddress: string): QueryFilter;
+    static containsSender(senderAddress: string): QueryFilter;
+    static currencyEq(currencyName: string): QueryFilter;
+    static operationUidEq(operationUid: string): QueryFilter;
+    static operationUidNeq(operationUid: string): QueryFilter;
+    static trustEq(trust: TrustLevel): QueryFilter;
+    static trustNeq(trust: TrustLevel): QueryFilter;
+    static feesEq(amount: Amount): QueryFilter;
+    static feesNeq(amount: Amount): QueryFilter;
+    static feesGte(amount: Amount): QueryFilter;
+    static feesGt(amount: Amount): QueryFilter;
+    static feesLte(amount: Amount): QueryFilter;
+    static feesLt(amount: Amount): QueryFilter;
+    static amountEq(amount: Amount): QueryFilter;
+    static amountNeq(amount: Amount): QueryFilter;
+    static amountGte(amount: Amount): QueryFilter;
+    static amountGt(amount: Amount): QueryFilter;
+    static amountLte(amount: Amount): QueryFilter;
+    static amountLt(amount: Amount): QueryFilter;
+    static blockHeightEq(blockHeight: i64): QueryFilter;
+    static blockHeightNeq(blockHeight: i64): QueryFilter;
+    static blockHeightGte(blockHeight: i64): QueryFilter;
+    static blockHeightGt(blockHeight: i64): QueryFilter;
+    static blockHeightLte(blockHeight: i64): QueryFilter;
+    static blockHeightLt(blockHeight: i64): QueryFilter;
+    static blockHeightIsNull(): QueryFilter;
+    static operationTypeEq(operationType: OperationType): QueryFilter;
+    static operationTypeNeq(operationType: OperationType): QueryFilter;
+
+    op_and(filter: QueryFilter): QueryFilter;
+    op_or(filter: QueryFilter): QueryFilter;
+    op_and_not(filter: QueryFilter): QueryFilter;
+    op_or_not(filter: QueryFilter): QueryFilter;
+}
+
+OperationQuery = interface +c {
+    addOrder(key: OperationOrderKey, descending: bool): OperationQuery;
+    filter(): QueryFilter;
+    offset(from: i64): OperationQuery;
+    limit(count: i64): OperationQuery;
+    complete(): OperationQuery;
+    partial(): OperationQuery;
+    execute(callback: ListCallback<Operation>);
+}
+
 Account = interface +c {
     getIndex(): i32;
-    getOperations(from: i32, to: i32, descending: bool, complete: bool, callback: ListCallback<Operation>);
-    getOperationsCount(callback: Callback<i64>);
-    getOperation(uid: string, callback: Callback<Operation>);
+    queryOperations(): OperationQuery;
     getBalance(callback: Callback<Amount>);
     isSynchronizing(): bool;
     synchronize(): EventBus;

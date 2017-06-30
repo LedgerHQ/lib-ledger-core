@@ -9,10 +9,8 @@
 #import "LGAmount+Private.h"
 #import "LGAmountCallback+Private.h"
 #import "LGEventBus+Private.h"
-#import "LGI64Callback+Private.h"
 #import "LGLogger+Private.h"
-#import "LGOperationCallback+Private.h"
-#import "LGOperationListCallback+Private.h"
+#import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
@@ -46,31 +44,10 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)getOperations:(int32_t)from
-                   to:(int32_t)to
-           descending:(BOOL)descending
-             complete:(BOOL)complete
-             callback:(nullable id<LGOperationListCallback>)callback {
+- (nullable LGOperationQuery *)queryOperations {
     try {
-        _cppRefHandle.get()->getOperations(::djinni::I32::toCpp(from),
-                                           ::djinni::I32::toCpp(to),
-                                           ::djinni::Bool::toCpp(descending),
-                                           ::djinni::Bool::toCpp(complete),
-                                           ::djinni_generated::OperationListCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getOperationsCount:(nullable id<LGI64Callback>)callback {
-    try {
-        _cppRefHandle.get()->getOperationsCount(::djinni_generated::I64Callback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getOperation:(nonnull NSString *)uid
-            callback:(nullable id<LGOperationCallback>)callback {
-    try {
-        _cppRefHandle.get()->getOperation(::djinni::String::toCpp(uid),
-                                          ::djinni_generated::OperationCallback::toCpp(callback));
+        auto objcpp_result_ = _cppRefHandle.get()->queryOperations();
+        return ::djinni_generated::OperationQuery::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

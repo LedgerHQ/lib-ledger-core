@@ -6,27 +6,16 @@
 @class LGAmount;
 @class LGEventBus;
 @class LGLogger;
+@class LGOperationQuery;
 @class LGPreferences;
 @protocol LGAmountCallback;
-@protocol LGI64Callback;
-@protocol LGOperationCallback;
-@protocol LGOperationListCallback;
 
 
 @interface LGAccount : NSObject
 
 - (int32_t)getIndex;
 
-- (void)getOperations:(int32_t)from
-                   to:(int32_t)to
-           descending:(BOOL)descending
-             complete:(BOOL)complete
-             callback:(nullable id<LGOperationListCallback>)callback;
-
-- (void)getOperationsCount:(nullable id<LGI64Callback>)callback;
-
-- (void)getOperation:(nonnull NSString *)uid
-            callback:(nullable id<LGOperationCallback>)callback;
+- (nullable LGOperationQuery *)queryOperations;
 
 - (void)getBalance:(nullable id<LGAmountCallback>)callback;
 

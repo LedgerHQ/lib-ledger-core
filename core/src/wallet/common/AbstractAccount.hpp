@@ -36,7 +36,7 @@
 
 namespace ledger {
     namespace core {
-        class AbstractAccount : public api::Account {
+        class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
         public:
             AbstractAccount(const std::shared_ptr<AbstractWallet>& wallet, int32_t index);
             int32_t getIndex() override;
@@ -52,6 +52,7 @@ namespace ledger {
             virtual std::shared_ptr<spdlog::logger> logger() const;
             virtual const std::string& getAccountUid() const;
             virtual std::shared_ptr<const AbstractWallet> getWallet() const;
+            const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
         private:
             api::WalletType  _type;
@@ -61,6 +62,7 @@ namespace ledger {
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
+            std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
             std::weak_ptr<const AbstractWallet> _wallet;
         };
     }

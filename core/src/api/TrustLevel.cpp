@@ -9,8 +9,7 @@ namespace ledger { namespace core { namespace api {
 std::string to_string(const TrustLevel& trustLevel) {
     switch (trustLevel) {
         case TrustLevel::TRUSTED: return "TRUSTED";
-        case TrustLevel::ALMOST_TRUSTABLE: return "ALMOST_TRUSTABLE";
-        case TrustLevel::WAIT_FOR_TRUST: return "WAIT_FOR_TRUST";
+        case TrustLevel::PENDING: return "PENDING";
         case TrustLevel::UNTRUSTED: return "UNTRUSTED";
         case TrustLevel::DROPPED: return "DROPPED";
     };
@@ -18,8 +17,7 @@ std::string to_string(const TrustLevel& trustLevel) {
 template <>
 TrustLevel from_string(const std::string& trustLevel) {
     if (trustLevel == "TRUSTED") return TrustLevel::TRUSTED;
-    else if (trustLevel == "ALMOST_TRUSTABLE") return TrustLevel::ALMOST_TRUSTABLE;
-    else if (trustLevel == "WAIT_FOR_TRUST") return TrustLevel::WAIT_FOR_TRUST;
+    else if (trustLevel == "PENDING") return TrustLevel::PENDING;
     else if (trustLevel == "UNTRUSTED") return TrustLevel::UNTRUSTED;
     else return TrustLevel::DROPPED;
 };
@@ -28,8 +26,7 @@ std::ostream &operator<<(std::ostream &os, const TrustLevel &o)
 {
     switch (o) {
         case TrustLevel::TRUSTED:  return os << "TRUSTED";
-        case TrustLevel::ALMOST_TRUSTABLE:  return os << "ALMOST_TRUSTABLE";
-        case TrustLevel::WAIT_FOR_TRUST:  return os << "WAIT_FOR_TRUST";
+        case TrustLevel::PENDING:  return os << "PENDING";
         case TrustLevel::UNTRUSTED:  return os << "UNTRUSTED";
         case TrustLevel::DROPPED:  return os << "DROPPED";
     }

@@ -14,10 +14,8 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class AmountCallback;
 class EventBus;
-class I64Callback;
 class Logger;
-class OperationCallback;
-class OperationListCallback;
+class OperationQuery;
 class Preferences;
 enum class WalletType;
 
@@ -27,11 +25,7 @@ public:
 
     virtual int32_t getIndex() = 0;
 
-    virtual void getOperations(int32_t from, int32_t to, bool descending, bool complete, const std::shared_ptr<OperationListCallback> & callback) = 0;
-
-    virtual void getOperationsCount(const std::shared_ptr<I64Callback> & callback) = 0;
-
-    virtual void getOperation(const std::string & uid, const std::shared_ptr<OperationCallback> & callback) = 0;
+    virtual std::shared_ptr<OperationQuery> queryOperations() = 0;
 
     virtual void getBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
 

@@ -12,6 +12,8 @@ public abstract class ConfigurationDefaults {
 
     public static final String DEFAULT_KEYCHAIN = "default";
 
+    public static final int DEFAULT_TRUST_LIMIT = 3;
+
 
     private static final class CppProxy extends ConfigurationDefaults
     {

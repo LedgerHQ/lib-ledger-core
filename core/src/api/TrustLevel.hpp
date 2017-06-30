@@ -12,8 +12,7 @@ namespace ledger { namespace core { namespace api {
 
 enum class TrustLevel : int {
     TRUSTED,
-    ALMOST_TRUSTABLE,
-    WAIT_FOR_TRUST,
+    PENDING,
     UNTRUSTED,
     DROPPED,
 };

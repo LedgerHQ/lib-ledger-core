@@ -17,3 +17,5 @@ NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT = @"BLOC
 NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE = @"BLOCKCHAIN_OBSERVER_ENGINE";
 
 NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE = @"SYNCHRONIZATION_ENGINE";
+
+NSString * __nonnull const LGConfigurationTRUSTLIMIT = @"TRUST_LIMIT";

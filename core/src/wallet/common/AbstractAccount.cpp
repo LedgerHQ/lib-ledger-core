@@ -34,7 +34,8 @@
 namespace ledger {
     namespace core {
 
-        AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index) {
+        AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
+                : DedicatedContext(wallet->getMainExecutionContext()) {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
             _index = index;
@@ -42,6 +43,8 @@ namespace ledger {
             _externalPreferences = wallet->getAccountExternalPreferences(index);
             _loggerApi = wallet->getLogger();
             _wallet = std::const_pointer_cast<const AbstractWallet>(wallet);
+            _mainExecutionContext = wallet->getMainExecutionContext();
+            _logger = wallet->logger();
         }
 
         int32_t AbstractAccount::getIndex() {
@@ -95,5 +98,10 @@ namespace ledger {
         std::shared_ptr<const AbstractWallet> AbstractAccount::getWallet() const {
             return _wallet.lock();
         }
+
+        const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
+            return _mainExecutionContext;
+        }
+
     }
 }

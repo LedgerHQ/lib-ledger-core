@@ -56,6 +56,7 @@ namespace ledger {
             _loggerApi = std::make_shared<LoggerApi>(pool->logger());
             _database = pool->getDatabaseSessionPool();
             _mainExecutionContext = pool->getDispatcher()->getMainExecutionContext();
+            _logger = pool->logger();
             //pool->getEventPublisher()->relay(_publisher->getEventBus());
         }
 
@@ -162,6 +163,7 @@ namespace ledger {
         const api::Currency &AbstractWallet::getCurrency() const {
             return _currency;
         }
+
 
     }
 }

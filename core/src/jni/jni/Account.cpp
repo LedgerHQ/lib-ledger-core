@@ -5,11 +5,9 @@
 #include "Amount.hpp"
 #include "AmountCallback.hpp"
 #include "EventBus.hpp"
-#include "I64Callback.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
-#include "OperationCallback.hpp"
-#include "OperationListCallback.hpp"
+#include "OperationQuery.hpp"
 #include "Preferences.hpp"
 #include "WalletType.hpp"
 
@@ -38,36 +36,14 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getInd
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_from, jint j_to, jboolean j_descending, jboolean j_complete, jobject j_callback)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1queryOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->getOperations(::djinni::I32::toCpp(jniEnv, j_from),
-                           ::djinni::I32::toCpp(jniEnv, j_to),
-                           ::djinni::Bool::toCpp(jniEnv, j_descending),
-                           ::djinni::Bool::toCpp(jniEnv, j_complete),
-                           ::djinni_generated::OperationListCallback::toCpp(jniEnv, j_callback));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getOperationsCount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->getOperationsCount(::djinni_generated::I64Callback::toCpp(jniEnv, j_callback));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_uid, jobject j_callback)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->getOperation(::djinni::String::toCpp(jniEnv, j_uid),
-                          ::djinni_generated::OperationCallback::toCpp(jniEnv, j_callback));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->queryOperations();
+        return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)

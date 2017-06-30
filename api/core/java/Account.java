@@ -9,11 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Account {
     public abstract int getIndex();
 
-    public abstract void getOperations(int from, int to, boolean descending, boolean complete, OperationListCallback callback);
-
-    public abstract void getOperationsCount(I64Callback callback);
-
-    public abstract void getOperation(String uid, OperationCallback callback);
+    public abstract OperationQuery queryOperations();
 
     public abstract void getBalance(AmountCallback callback);
 
@@ -74,28 +70,12 @@ public abstract class Account {
         private native int native_getIndex(long _nativeRef);
 
         @Override
-        public void getOperations(int from, int to, boolean descending, boolean complete, OperationListCallback callback)
+        public OperationQuery queryOperations()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOperations(this.nativeRef, from, to, descending, complete, callback);
+            return native_queryOperations(this.nativeRef);
         }
-        private native void native_getOperations(long _nativeRef, int from, int to, boolean descending, boolean complete, OperationListCallback callback);
-
-        @Override
-        public void getOperationsCount(I64Callback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOperationsCount(this.nativeRef, callback);
-        }
-        private native void native_getOperationsCount(long _nativeRef, I64Callback callback);
-
-        @Override
-        public void getOperation(String uid, OperationCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_getOperation(this.nativeRef, uid, callback);
-        }
-        private native void native_getOperation(long _nativeRef, String uid, OperationCallback callback);
+        private native OperationQuery native_queryOperations(long _nativeRef);
 
         @Override
         public void getBalance(AmountCallback callback)

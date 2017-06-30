@@ -37,6 +37,7 @@
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+#include <wallet/common/TrustIndicator.h>
 
 using namespace soci;
 
@@ -50,14 +51,14 @@ namespace ledger {
 
         void OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
             auto count = 0;
-            std::stringstream trust;
-            serialization::saveXML<TrustIndicator>(*operation.trust, trust);
+            std::string serializedTrust;
+            serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
             sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
             auto newOperation = count == 0;
             if (!newOperation) {
                 sql << "UPDATE operations SET block_height = :height, trust = :trust WHERE uid = :uid"
                         , use(operation.blockHeight)
-                        , use(trust.str())
+                        , use(serializedTrust)
                         , use(operation.uid);
             } else {
                 auto type = api::to_string(operation.type);
@@ -66,7 +67,6 @@ namespace ledger {
                 std::string separator(",");
                 strings::join(operation.senders, senders, separator);
                 strings::join(operation.recipients, recipients, separator);
-                fmt::print("{}\n", senders.str());
                 auto sndrs = senders.str();
                 auto rcvrs = recipients.str();
                 sql << "INSERT INTO operations VALUES("
@@ -75,7 +75,7 @@ namespace ledger {
                         ")"
                         , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
                         , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
-                        , use(operation.fees), use(operation.blockHeight), use(operation.currencyName), use(trust.str());
+                        , use(operation.fees), use(operation.blockHeight), use(operation.currencyName), use(serializedTrust);
 
 
             }
@@ -91,6 +91,11 @@ namespace ledger {
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_hash)", use(operation.uid)
                             , use(operation.bitcoinTransaction.getValue().hash);
             }
+        }
+
+        void OperationDatabaseHelper::queryOperations(soci::session &sql, int32_t from, int32_t to, bool complete,
+                                                      bool excludeDropped, std::vector<Operation> &out) {
+
         }
 
     }

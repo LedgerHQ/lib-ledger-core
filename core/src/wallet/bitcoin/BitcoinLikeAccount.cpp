@@ -31,11 +31,10 @@
 #include "BitcoinLikeAccount.hpp"
 #include <wallet/common/Operation.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
-#include <utility>
+#include <database/query/QueryBuilder.h>
 
 namespace ledger {
     namespace core {
-
 
         BitcoinLikeAccount::BitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
                                                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
@@ -140,7 +139,6 @@ namespace ledger {
 
             std::stringstream snds;
             strings::join(senders, snds, ",");
-            fmt::print("FINAL {}\n", snds.str());
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -150,12 +148,14 @@ namespace ledger {
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
+            // Compute trust
+            computeOperationTrust(operation, wallet, transaction);
+
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
 
                 for (auto& accountOutput : accountOutputs) {
-                    fmt::print("{} {}\n", accountOutput.second.toString(), accountOutput.first->address.getValue());
                     if (accountOutput.second.getNonHardenedChildNum(nodeIndex) == 1)
                         sentAmount -= accountOutput.first->value.toInt64();
                 }
@@ -168,13 +168,6 @@ namespace ledger {
             }
 
             if (accountOutputs.size() > 0) {
-                // Check if this can be a reception
-
-                /* Cases:
-                 *  1 - If transaction is not a sending and we own one output, we consider the ouput as recipient (no matter if it's on a change address)
-                 *  2 - If a transaction contains account outputs and no account inputs, we consider all our outputs in the recipients (no matter if there is change addresses)
-                 *  3 - If a transaction contains both account inputs and outputs, we only consider
-                 */
 
                 BigInt amount;
                 auto flag = 0;
@@ -190,10 +183,13 @@ namespace ledger {
                 OperationDatabaseHelper::putOperation(sql, operation);
             }
 
-            // Put the operation
-
-
             return result;
+        }
+
+        void
+        BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
+                                                  const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
         }
 
         std::shared_ptr<const BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
@@ -201,20 +197,6 @@ namespace ledger {
         }
 
         // REVIEW
-
-        void BitcoinLikeAccount::getOperations(int32_t from, int32_t to, bool descending, bool complete,
-                                               const std::shared_ptr<api::OperationListCallback> &callback) {
-
-        }
-
-        void BitcoinLikeAccount::getOperationsCount(const std::shared_ptr<api::I64Callback> &callback) {
-
-        }
-
-        void BitcoinLikeAccount::getOperation(const std::string &uid,
-                                              const std::shared_ptr<api::OperationCallback> &callback) {
-
-        }
 
         void BitcoinLikeAccount::getBalance(const std::shared_ptr<api::AmountCallback> &callback) {
 
@@ -246,6 +228,20 @@ namespace ledger {
 
         bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block block) {
             return false;
+        }
+
+        FuturePtr<api::Amount> BitcoinLikeAccount::getBalance() {
+            PromisePtr<api::Amount> p;
+            return p.getFuture();
+        }
+
+        Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
+            Promise<int32_t> p;
+            return p.getFuture();
+        }
+
+        std::shared_ptr<api::OperationQuery> BitcoinLikeAccount::queryOperations() {
+            return nullptr;
         }
 
     }

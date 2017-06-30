@@ -19,4 +19,6 @@ std::string const Configuration::BLOCKCHAIN_OBSERVER_ENGINE = {"BLOCKCHAIN_OBSER
 
 std::string const Configuration::SYNCHRONIZATION_ENGINE = {"SYNCHRONIZATION_ENGINE"};
 
+std::string const Configuration::TRUST_LIMIT = {"TRUST_LIMIT"};
+
 } } }  // namespace ledger::core::api

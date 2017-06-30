@@ -9,3 +9,5 @@ NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT =
 NSString * __nonnull const LGConfigurationDefaultsBIP44DERIVATIONSCHEME = @"44'/<coin_type>'/<account>'/<node>/<address>";
 
 NSString * __nonnull const LGConfigurationDefaultsDEFAULTKEYCHAIN = @"default";
+
+int32_t const LGConfigurationDefaultsDEFAULTTRUSTLIMIT = 3;

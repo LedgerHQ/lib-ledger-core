@@ -75,6 +75,8 @@ ErrorCode = enum {
     # Bad cast
     bad_cast;
 
+    # Query build
+    link_non_tail_filter;
 }
 
 Error = record {

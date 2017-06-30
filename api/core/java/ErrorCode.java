@@ -65,5 +65,7 @@ public enum ErrorCode {
     UNKNOWN_SYNCHRONIZATION_ENGINE,
     /** Bad cast */
     BAD_CAST,
+    /** Query build */
+    LINK_NON_TAIL_FILTER,
     ;
 }

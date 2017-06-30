@@ -374,9 +374,11 @@ TEST(BitcoinWalletDatabase, PutOperations) {
                 *JSONUtils::parse<TransactionParser>(TX_4)
         };
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.begin();
         for (auto& tx : transactions) {
             account->putTransaction(sql, tx);
         }
+        sql.commit();
         EXPECT_EQ(wallet->getName(), "my_wallet");
     }
     resolver->clean();

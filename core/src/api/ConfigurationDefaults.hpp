@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_CONFIGURATIONDEFAULTS_HPP
 #define DJINNI_GENERATED_CONFIGURATIONDEFAULTS_HPP
 
+#include <cstdint>
 #include <string>
 
 namespace ledger { namespace core { namespace api {
@@ -17,6 +18,8 @@ public:
     static std::string const BIP44_DERIVATION_SCHEME;
 
     static std::string const DEFAULT_KEYCHAIN;
+
+    static int32_t const DEFAULT_TRUST_LIMIT;
 };
 
 } } }  // namespace ledger::core::api
