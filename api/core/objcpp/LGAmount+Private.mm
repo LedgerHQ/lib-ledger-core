@@ -56,9 +56,10 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)toUnit:(nonnull LGCurrencyUnit *)unit {
+- (nullable LGAmount *)toUnit:(nonnull LGCurrencyUnit *)unit {
     try {
-        _cppRefHandle.get()->toUnit(::djinni_generated::CurrencyUnit::toCpp(unit));
+        auto objcpp_result_ = _cppRefHandle.get()->toUnit(::djinni_generated::CurrencyUnit::toCpp(unit));
+        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -66,6 +67,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->toString();
         return ::djinni::String::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (int64_t)toLong {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->toLong();
+        return ::djinni::I64::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (double)toDouble {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->toDouble();
+        return ::djinni::F64::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

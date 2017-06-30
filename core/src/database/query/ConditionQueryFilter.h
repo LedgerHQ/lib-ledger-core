@@ -76,6 +76,16 @@ namespace ledger {
             std::string _symbol;
             T _value;
         };
+
+        class PlainTextConditionQueryFilter : public QueryFilter {
+        public:
+            PlainTextConditionQueryFilter(const std::string& condition) : _condition(std::move(condition)) {};
+            std::string toString() const override;
+            void bindValue(soci::details::prepare_temp_type &statement) const override;
+
+        private:
+            std::string _condition;
+        };
     }
 }
 

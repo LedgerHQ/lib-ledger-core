@@ -18,7 +18,9 @@ Amount = interface +c {
     toBigInt(): BigInt;
     getCurrency(): Currency;
     getUnit(): CurrencyUnit;
-    toUnit(unit: CurrencyUnit);
+    toUnit(unit: CurrencyUnit): Amount;
     toString(): string;
+    toLong(): i64;
+    toDouble(): f64;
     format(locale: Locale, rules: optional<FormatRules>): string;
 }

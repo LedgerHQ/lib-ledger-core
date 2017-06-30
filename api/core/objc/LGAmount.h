@@ -6,6 +6,7 @@
 #import "LGFormatRules.h"
 #import "LGLocale.h"
 #import <Foundation/Foundation.h>
+@class LGAmount;
 @class LGBigInt;
 
 
@@ -17,9 +18,13 @@
 
 - (nonnull LGCurrencyUnit *)getUnit;
 
-- (void)toUnit:(nonnull LGCurrencyUnit *)unit;
+- (nullable LGAmount *)toUnit:(nonnull LGCurrencyUnit *)unit;
 
 - (nonnull NSString *)toString;
+
+- (int64_t)toLong;
+
+- (double)toDouble;
 
 - (nonnull NSString *)format:(nonnull LGLocale *)locale
                        rules:(nullable LGFormatRules *)rules;

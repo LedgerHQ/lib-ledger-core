@@ -33,16 +33,13 @@
 #include <utils/DateUtils.hpp>
 #include <cereal/external/base64.hpp>
 #include <api/TrustLevel.hpp>
+#include <api/OperationType.hpp>
 
 namespace ledger {
     namespace core {
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::accountEq(const std::string &accountUid) {
             return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid);
-        }
-
-        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGt(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">", blockHeight);
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::accountNeq(const std::string &accountUid) {
@@ -87,6 +84,98 @@ namespace ledger {
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::containsSender(const std::string &senderAddress) {
             return std::make_shared<ConditionQueryFilter<std::string>>("senders", "LIKE", fmt::format("%{}%", senderAddress));
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::containsRecipient(const std::string &recipientAddress) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("recipients", "LIKE", fmt::format("%{}%", recipientAddress));
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::currencyEq(const std::string &currencyName) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("currency_name", "=", currencyName);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::operationUidEq(const std::string &operationUid) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "=", operationUid);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::operationUidNeq(const std::string &operationUid) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "<>", operationUid);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesEq(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesNeq(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<>", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesGt(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesLt(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesGte(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::feesLte(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountEq(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountNeq(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<>", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountGt(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountGte(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountLt(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::amountLte(const std::shared_ptr<Amount> &amount) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<=", amount->toLong());
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightEq(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "=", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightNeq(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<>", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLt(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLte(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<=", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGt(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGte(int64_t blockHeight) {
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">=", blockHeight);
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightIsNull() {
+            return std::make_shared<PlainTextConditionQueryFilter>("block_height IS NULL");
         }
 
     }

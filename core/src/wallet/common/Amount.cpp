@@ -1,6 +1,6 @@
 /*
  *
- * ConditionQueryFilter
+ * Amount
  * ledger-core
  *
  * Created by Pierre Pollastri on 30/06/2017.
@@ -28,35 +28,4 @@
  * SOFTWARE.
  *
  */
-#include "ConditionQueryFilter.h"
-
-namespace ledger {
-    namespace core {
-
-        std::string PlainTextConditionQueryFilter::toString() const {
-            std::string op;
-            if (!isTail()) {
-                switch (getOperatorForNextFilter()) {
-                    case QueryFilterOperator::OP_AND :
-                        op = " AND ";
-                        break;
-                    case QueryFilterOperator::OP_AND_NOT :
-                        op = " AND NOT ";
-                        break;
-                    case QueryFilterOperator::OP_OR :
-                        op = " OR ";
-                        break;
-                    case QueryFilterOperator::OP_OR_NOT :
-                        op = " OR NOT ";
-                        break;
-                }
-            }
-            auto format = fmt::format("{}{}", _condition, op);
-            return isTail() ? format : format + getNext()->toString();
-        }
-
-        void PlainTextConditionQueryFilter::bindValue(soci::details::prepare_temp_type &statement) const {
-            // NO OP
-        }
-    }
-}
+#include "Amount.h"

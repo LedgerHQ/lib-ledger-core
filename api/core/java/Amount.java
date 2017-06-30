@@ -12,9 +12,13 @@ public abstract class Amount {
 
     public abstract CurrencyUnit getUnit();
 
-    public abstract void toUnit(CurrencyUnit unit);
+    public abstract Amount toUnit(CurrencyUnit unit);
 
     public abstract String toString();
+
+    public abstract long toLong();
+
+    public abstract double toDouble();
 
     public abstract String format(Locale locale, FormatRules rules);
 
@@ -66,12 +70,12 @@ public abstract class Amount {
         private native CurrencyUnit native_getUnit(long _nativeRef);
 
         @Override
-        public void toUnit(CurrencyUnit unit)
+        public Amount toUnit(CurrencyUnit unit)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_toUnit(this.nativeRef, unit);
+            return native_toUnit(this.nativeRef, unit);
         }
-        private native void native_toUnit(long _nativeRef, CurrencyUnit unit);
+        private native Amount native_toUnit(long _nativeRef, CurrencyUnit unit);
 
         @Override
         public String toString()
@@ -80,6 +84,22 @@ public abstract class Amount {
             return native_toString(this.nativeRef);
         }
         private native String native_toString(long _nativeRef);
+
+        @Override
+        public long toLong()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_toLong(this.nativeRef);
+        }
+        private native long native_toLong(long _nativeRef);
+
+        @Override
+        public double toDouble()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_toDouble(this.nativeRef);
+        }
+        private native double native_toDouble(long _nativeRef);
 
         @Override
         public String format(Locale locale, FormatRules rules)

@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_AMOUNT_HPP
 
 #include "../utils/optional.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -26,9 +27,13 @@ public:
 
     virtual CurrencyUnit getUnit() = 0;
 
-    virtual void toUnit(const CurrencyUnit & unit) = 0;
+    virtual std::shared_ptr<Amount> toUnit(const CurrencyUnit & unit) = 0;
 
     virtual std::string toString() = 0;
+
+    virtual int64_t toLong() = 0;
+
+    virtual double toDouble() = 0;
 
     virtual std::string format(const Locale & locale, const std::experimental::optional<FormatRules> & rules) = 0;
 };
