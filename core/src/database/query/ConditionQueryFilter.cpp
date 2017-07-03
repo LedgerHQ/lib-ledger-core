@@ -33,30 +33,29 @@
 namespace ledger {
     namespace core {
 
-        std::string PlainTextConditionQueryFilter::toString() const {
-            std::string op;
+        void PlainTextConditionQueryFilter::bindValue(soci::details::prepare_temp_type &statement) const {
+            // NO OP
+        }
+
+        void PlainTextConditionQueryFilter::toString(std::stringstream &ss) const {
+            ss << _condition;
             if (!isTail()) {
                 switch (getOperatorForNextFilter()) {
                     case QueryFilterOperator::OP_AND :
-                        op = " AND ";
+                        ss << " AND ";
                         break;
                     case QueryFilterOperator::OP_AND_NOT :
-                        op = " AND NOT ";
+                        ss << " AND NOT ";
                         break;
                     case QueryFilterOperator::OP_OR :
-                        op = " OR ";
+                        ss << " OR ";
                         break;
                     case QueryFilterOperator::OP_OR_NOT :
-                        op = " OR NOT ";
+                        ss << " OR NOT ";
                         break;
                 }
+                getNext()->toString(ss);
             }
-            auto format = fmt::format("{}{}", _condition, op);
-            return isTail() ? format : format + getNext()->toString();
-        }
-
-        void PlainTextConditionQueryFilter::bindValue(soci::details::prepare_temp_type &statement) const {
-            // NO OP
         }
     }
 }

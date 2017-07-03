@@ -55,7 +55,12 @@ namespace ledger {
             std::shared_ptr<api::QueryFilter> op_and_not(const std::shared_ptr<api::QueryFilter> &filter) override;
             std::shared_ptr<api::QueryFilter> op_or_not(const std::shared_ptr<api::QueryFilter> &filter) override;
 
-            virtual std::string toString() const = 0;
+            virtual std::string toString() const {
+                std::stringstream ss;
+                toString(ss);
+                return ss.str();
+            };
+            virtual void toString(std::stringstream& ss) const = 0;
             virtual void bindValue(soci::details::prepare_temp_type& statement) const = 0;
             int32_t getSiblingsCount() const;
             std::shared_ptr<QueryFilter> getHead() const;

@@ -40,12 +40,14 @@ namespace ledger {
     namespace core {
         class QueryBuilder {
         public:
-            QueryBuilder() {};
+            QueryBuilder() : _keys("*") {
+
+            };
             QueryBuilder& select(const std::string& keys);
             QueryBuilder& select(std::string&& keys);
             QueryBuilder& from(const std::string& table);
             QueryBuilder& from(std::string&& table);
-            QueryBuilder& where(const std::shared_ptr<QueryFilter>& filter);
+            QueryBuilder& where(const std::shared_ptr<api::QueryFilter>& filter);
             QueryBuilder& order(std::string&& keys, bool&& descending);
             soci::details::prepare_temp_type execute(soci::session& sql);
 

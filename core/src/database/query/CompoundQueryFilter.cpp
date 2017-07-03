@@ -38,12 +38,14 @@ namespace ledger {
             _children = std::static_pointer_cast<QueryFilter>(filters);
         }
 
-        std::string CompoundQueryFilter::toString() const {
-            return fmt::format("({})", _children->getHead()->toString());
+        void CompoundQueryFilter::bindValue(soci::details::prepare_temp_type &statement) const {
+            _children->getHead()->bindValue(statement);
         }
 
-        void CompoundQueryFilter::bindValue(soci::details::prepare_temp_type &statement) const {
-
+        void CompoundQueryFilter::toString(std::stringstream &ss) const {
+            ss << "(";
+            _children->getHead()->toString(ss);
+            ss << ")";
         }
     }
 }

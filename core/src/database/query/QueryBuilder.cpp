@@ -29,12 +29,35 @@
  *
  */
 #include "QueryBuilder.h"
+#include <fmt/format.h>
 
 namespace ledger {
     namespace core {
 
         soci::details::prepare_temp_type QueryBuilder::execute(soci::session &sql) {
-            return sql.prepare << "SELECT * FROM operations";
+            std::stringstream query;
+            query << "SELECT " << _keys << " FROM " << _table;
+            if (_filter) {
+                query << " WHERE ";
+                _filter->getHead()->toString(query);
+            }
+            if (_order.size() > 0) {
+                query << " ORDER BY ";
+                for (auto it = _order.begin(); it != _order.end(); it++) {
+                    auto& order = *it;
+                    query << std::get<0>(order) << (std::get<1>(order) ? "DESC" : "ASC");
+
+                    if (std::distance(it, _order.end()) > 1) {
+                        query << ",";
+                    }
+                }
+            }
+            auto s = query.str();
+            soci::details::prepare_temp_type statement = sql.prepare << query.str();
+            if (_filter) {
+                _filter->getHead()->bindValue(statement);
+            }
+            return statement;
         }
 
         QueryBuilder &QueryBuilder::select(const std::string &keys) {
@@ -57,8 +80,8 @@ namespace ledger {
             return *this;
         }
 
-        QueryBuilder &QueryBuilder::where(const std::shared_ptr<QueryFilter> &filter) {
-            _filter = filter;
+        QueryBuilder &QueryBuilder::where(const std::shared_ptr<api::QueryFilter> &filter) {
+            _filter = std::dynamic_pointer_cast<QueryFilter>(filter);
             return *this;
         }
 

@@ -38,9 +38,7 @@ namespace ledger {
         class CompoundQueryFilter : public QueryFilter {
         public:
             CompoundQueryFilter(const std::shared_ptr<api::QueryFilter>& filters);
-
-            std::string toString() const override;
-
+            void toString(std::stringstream &ss) const override;
             void bindValue(soci::details::prepare_temp_type &statement) const override;
 
         private:

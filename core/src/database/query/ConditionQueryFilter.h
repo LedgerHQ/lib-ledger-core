@@ -45,30 +45,33 @@ namespace ledger {
                 _symbol = std::move(symbol);
                 _value = value;
             };
-            std::string toString() const override {
-                std::string op;
+
+            void toString(std::stringstream &ss) const override {
+                ss << _fieldName << " " << _symbol << " :" << _fieldName;
                 if (!isTail()) {
                     switch (getOperatorForNextFilter()) {
                         case QueryFilterOperator::OP_AND :
-                            op = " AND ";
+                            ss << " AND ";
                             break;
                         case QueryFilterOperator::OP_AND_NOT :
-                            op = " AND NOT ";
+                            ss << " AND NOT ";
                             break;
                         case QueryFilterOperator::OP_OR :
-                            op = " OR ";
+                            ss << " OR ";
                             break;
                         case QueryFilterOperator::OP_OR_NOT :
-                            op = " OR NOT ";
+                            ss << " OR NOT ";
                             break;
                     }
+                    getNext()->toString(ss);
                 }
-                auto format = fmt::format("{} {} :{}{}", _fieldName, _symbol, _fieldName, op);
-                return isTail() ? format : format + getNext()->toString();
             }
 
             void bindValue(soci::details::prepare_temp_type &statement) const override {
-
+                statement, soci::use(_value);
+                if (!isTail()) {
+                    getNext()->bindValue(statement);
+                }
             }
 
         private:
@@ -80,7 +83,9 @@ namespace ledger {
         class PlainTextConditionQueryFilter : public QueryFilter {
         public:
             PlainTextConditionQueryFilter(const std::string& condition) : _condition(std::move(condition)) {};
-            std::string toString() const override;
+
+            void toString(std::stringstream &ss) const override;
+
             void bindValue(soci::details::prepare_temp_type &statement) const override;
 
         private:
