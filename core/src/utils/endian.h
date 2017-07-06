@@ -37,6 +37,7 @@
 
 #include <cstddef>
 #include <cstdlib>
+#include <cstdint>
 
 /**
  * Ledger global namespace

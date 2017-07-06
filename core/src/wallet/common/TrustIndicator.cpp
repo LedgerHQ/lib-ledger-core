@@ -29,6 +29,7 @@
  *
  */
 #include "TrustIndicator.h"
+#include <algorithm>
 
 using namespace rapidjson;
 

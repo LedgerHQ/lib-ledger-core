@@ -255,9 +255,9 @@ TEST(HttpClient, GETWithSax) {
             http
                     .GET("/talk/to/me/in/json")
                     .json<Success, Failure>(Handler())
-                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, Success>& result) {
+                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, std::shared_ptr<Success>>& result) {
                         EXPECT_TRUE(result.isRight());
-                        EXPECT_EQ(result.getRight().the_answer, 42);
+                        EXPECT_EQ(result.getRight()->the_answer, 42);
                         server->stop();
                         dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
                             dispatcher->stop();
@@ -334,7 +334,7 @@ TEST(HttpClient, GETWithSaxError) {
             http
                     .GET("/knock/knock/neo")
                     .json<Success, Failure>(Handler())
-                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, Success>& result) {
+                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, std::shared_ptr<Success>>& result) {
                         EXPECT_TRUE(result.isLeft());
                         EXPECT_EQ(result.getLeft().not_here, true);
                         server->stop();

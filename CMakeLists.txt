@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(ledger-core)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -23,4 +24,3 @@ add_subdirectory(core)
 add_subdirectory(qt-host)
 
 enable_testing()
-

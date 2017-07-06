@@ -87,7 +87,7 @@ namespace ledger {
 
             template <typename R>
             Future<std::shared_ptr<R>> mapPtr(const Context& context, std::function<std::shared_ptr<R> (const T&)> map) {
-                return this->map<std::shared_ptr<R>>(context, map);
+                return this->template map<std::shared_ptr<R>>(context, map);
             }
 
             template <typename R>

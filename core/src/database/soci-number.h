@@ -42,7 +42,7 @@ namespace soci {
     struct type_conversion<ledger::core::BigInt> {
         typedef long long base_type;
         static void from_base(base_type const & in, indicator ind, ledger::core::BigInt& out) {
-            out = std::move(ledger::core::BigInt(in));
+            out = std::move(ledger::core::BigInt::fromScalar(in));
         }
 
         static void to_base(ledger::core::BigInt const & in, base_type & out, indicator & ind) {

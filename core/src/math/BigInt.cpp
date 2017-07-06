@@ -30,7 +30,6 @@
  */
 
 #include "BigInt.h"
-#include "../utils/endian.h"
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>

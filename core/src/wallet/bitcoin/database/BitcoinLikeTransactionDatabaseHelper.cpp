@@ -172,7 +172,7 @@ namespace ledger {
             for (auto& outputRow : outputRows) {
                 BitcoinLikeBlockchainExplorer::Output output;
                 output.index = (uint64_t) outputRow.get<int>(0);
-                output.value = BigInt(outputRow.get<long long>(1));
+                output.value.assignScalar(outputRow.get<long long>(1));
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 out.outputs.push_back(std::move(output));
