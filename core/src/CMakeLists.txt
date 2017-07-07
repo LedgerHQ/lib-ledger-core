@@ -95,7 +95,6 @@ add_library(
         preferences/PreferencesBackend.cpp preferences/PreferencesBackend.hpp
         preferences/Preferences.cpp preferences/Preferences.hpp
         preferences/PreferencesEditor.cpp preferences/PreferencesEditor.hpp
-        wallet/bitcoin/keychains/BitcoinLikeKeyChain.cpp wallet/bitcoin/keychains/BitcoinLikeKeyChain.hpp
         wallet/bitcoin/keychains/BitcoinLikeKeychain.cpp wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp
         wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp
         async/Future.cpp async/Future.hpp

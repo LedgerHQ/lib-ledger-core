@@ -35,6 +35,7 @@
 #include <vector>
 #include <bigd.h>
 #include <memory>
+#include "../utils/endian.h"
 
 namespace ledger {
 
@@ -91,6 +92,13 @@ namespace ledger {
 
             static BigInt fromString(const std::string& str);
 
+            template <typename T>
+            static BigInt fromScalar(T value) {
+              BigInt result;
+              result.assignScalar<T>(value);
+              return result;
+            }
+
         private:
             BigInt(const std::string& str, int radix);
 
@@ -114,10 +122,10 @@ namespace ledger {
              * @param bits
              * @return
              */
-            BigInt(int value);
-            BigInt(unsigned int value);
-            BigInt(unsigned long long value);
-            BigInt(int64_t value);
+            explicit BigInt(int value);
+            explicit BigInt(unsigned int value);
+            explicit BigInt(unsigned long long value);
+            explicit BigInt(int64_t value);
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str
@@ -192,6 +200,14 @@ namespace ledger {
             BigInt positive() const;
 
             BigInt& assignI64(int64_t value);
+
+            template <typename T>
+            BigInt& assignScalar(T value) {
+              auto bytes = endianness::scalar_type_to_array<T>(std::abs(value), endianness::Endianness::BIG);
+              bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
+              std::free(bytes);
+              _negative = value < 0LL;
+            }
 
             virtual ~BigInt();
 

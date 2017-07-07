@@ -29,7 +29,7 @@
  *
  */
 #include "currencies.hpp"
-#include "../../../cmake-build-debug/include/ledger/core/wallet/bitcoin/networks.hpp"
+#include "bitcoin/networks.hpp"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {

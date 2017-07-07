@@ -35,7 +35,6 @@
 #include "Either.hpp"
 #include <functional>
 #include "Exception.hpp"
-#include "../../../cmake-build-debug/include/ledger/core/utils/Either.hpp"
 
 namespace ledger {
     namespace core {

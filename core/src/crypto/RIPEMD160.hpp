@@ -31,8 +31,8 @@
 #ifndef LEDGER_CORE_RIPEMD160_HPP
 #define LEDGER_CORE_RIPEMD160_HPP
 
-
 #include <vector>
+#include <cstdint>
 
 namespace ledger {
     namespace core {

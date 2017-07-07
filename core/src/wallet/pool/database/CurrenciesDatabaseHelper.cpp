@@ -29,7 +29,7 @@
  *
  */
 #include "CurrenciesDatabaseHelper.hpp"
-#include "../../../../../cmake-build-debug/include/ledger/core/api/BitcoinLikeNetworkParameters.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
 #include <utils/hex.h>
 #include <api/enum_from_string.hpp>
 #include <api/Currency.hpp>
@@ -145,4 +145,3 @@ ledger::core::CurrenciesDatabaseHelper::insertUnits(soci::session &sql, const le
 void ledger::core::CurrenciesDatabaseHelper::removeCurrency(soci::session &sql, const std::string &currencyName) {
     sql << "DELETE FROM currencies WHERE name = :name", use(currencyName);
 }
-

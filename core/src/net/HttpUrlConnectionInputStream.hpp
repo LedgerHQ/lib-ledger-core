@@ -33,6 +33,7 @@
 
 #include "../api/HttpUrlConnection.hpp"
 #include <vector>
+#include <memory>
 
 namespace ledger {
  namespace core {

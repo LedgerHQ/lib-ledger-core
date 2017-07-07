@@ -35,7 +35,7 @@
 #include <string>
 #include "../utils/Try.hpp"
 #include "../utils/Exception.hpp"
-
+#include <memory>
 namespace ledger {
     namespace core {
         class Base58 {

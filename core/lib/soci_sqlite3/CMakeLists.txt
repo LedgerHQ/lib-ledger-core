@@ -9,6 +9,7 @@
 #
 ###############################################################################
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(soci_sqlite3 STATIC
         blob.cpp common.cpp common.h error.cpp factory.cpp row-id.cpp session.cpp soci-sqlite3.h standard-into-type.cpp
         standard-use-type.cpp statement.cpp vector-into-type.cpp vector-use-type.cpp)
