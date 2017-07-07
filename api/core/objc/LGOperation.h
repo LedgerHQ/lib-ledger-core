@@ -30,9 +30,9 @@
 
 - (nullable LGPreferences *)getPreferences;
 
-- (int32_t)getConfirmationsCount;
-
 - (nullable LGTrustIndicator *)getTrust;
+
+- (nullable NSNumber *)getBlockHeight;
 
 - (nullable LGBitcoinLikeOperation *)asBitcoinLikeOperation;
 

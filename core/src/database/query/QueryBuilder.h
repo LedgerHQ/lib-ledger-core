@@ -35,6 +35,7 @@
 #include <soci.h>
 #include <list>
 #include <tuple>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,6 +50,8 @@ namespace ledger {
             QueryBuilder& from(std::string&& table);
             QueryBuilder& where(const std::shared_ptr<api::QueryFilter>& filter);
             QueryBuilder& order(std::string&& keys, bool&& descending);
+            QueryBuilder& limit(int32_t limit);
+            QueryBuilder& offset(int32_t offset);
             soci::details::prepare_temp_type execute(soci::session& sql);
 
         private:
@@ -56,6 +59,8 @@ namespace ledger {
             std::string _table;
             std::list<std::tuple<std::string, bool>> _order;
             std::shared_ptr<QueryFilter> _filter;
+            Option<int32_t> _limit;
+            Option<int32_t> _offset;
         };
     }
 }

@@ -35,9 +35,8 @@ Operation = interface +c {
     getAmount(): Amount;
     getFees(): optional<Amount>;
     getPreferences(): Preferences;
-    getConfirmationsCount(): i32;
     getTrust(): TrustIndicator;
-
+    getBlockHeight(): optional<i64>;
     asBitcoinLikeOperation(): BitcoinLikeOperation;
     ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
     ## asRippleLikeOperation(): Callback<RippleLikeEthereum>;

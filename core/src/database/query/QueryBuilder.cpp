@@ -52,7 +52,12 @@ namespace ledger {
                     }
                 }
             }
-            auto s = query.str();
+            if (_limit.nonEmpty()) {
+                query << " LIMIT " << _limit.getValue();
+            }
+            if (_offset.nonEmpty()) {
+                query << " OFFSET " << _offset.getValue();
+            }
             soci::details::prepare_temp_type statement = sql.prepare << query.str();
             if (_filter) {
                 _filter->getHead()->bindValue(statement);
@@ -87,6 +92,16 @@ namespace ledger {
 
         QueryBuilder &QueryBuilder::order(std::string &&keys, bool&& descending) {
             _order.push_back(std::move(std::make_tuple(keys, descending)));
+            return *this;
+        }
+
+        QueryBuilder &QueryBuilder::limit(int32_t limit) {
+            _limit = limit;
+            return *this;
+        }
+
+        QueryBuilder &QueryBuilder::offset(int32_t offset) {
+            _offset = offset;
             return *this;
         }
 

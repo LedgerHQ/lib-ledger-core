@@ -42,9 +42,9 @@ public:
 
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
-    virtual int32_t getConfirmationsCount() = 0;
-
     virtual std::shared_ptr<TrustIndicator> getTrust() = 0;
+
+    virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
 
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
 

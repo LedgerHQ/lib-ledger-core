@@ -30,6 +30,7 @@
  */
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
+#include <wallet/common/OperationQuery.h>
 
 namespace ledger {
     namespace core {
@@ -101,6 +102,15 @@ namespace ledger {
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
+        }
+
+        std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
+            return std::make_shared<OperationQuery>(
+                    api::QueryFilter::accountEq(getAccountUid()),
+                    getWallet()->getDatabase(),
+                    getContext(),
+                    getMainExecutionContext()
+            );
         }
 
     }

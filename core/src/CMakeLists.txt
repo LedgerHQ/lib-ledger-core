@@ -178,7 +178,7 @@ add_library(
         database/query/QueryBuilder.cpp database/query/QueryBuilder.h database/query/QueryFilter.cpp
         database/query/QueryFilter.h database/query/CompoundQueryFilter.cpp database/query/CompoundQueryFilter.h
         database/query/filters_impl.cpp database/query/ConditionQueryFilter.cpp database/query/ConditionQueryFilter.h
-        wallet/common/Amount.cpp wallet/common/Amount.h)
+        wallet/common/Amount.cpp wallet/common/Amount.h wallet/common/OperationQuery.cpp wallet/common/OperationQuery.h wallet/common/api_impl/OperationApi.cpp wallet/common/api_impl/OperationApi.h)
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 

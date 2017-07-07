@@ -99,17 +99,17 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (int32_t)getConfirmationsCount {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getConfirmationsCount();
-        return ::djinni::I32::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGTrustIndicator *)getTrust {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getTrust();
         return ::djinni_generated::TrustIndicator::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSNumber *)getBlockHeight {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getBlockHeight();
+        return ::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

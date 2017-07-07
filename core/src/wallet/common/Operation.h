@@ -42,6 +42,7 @@
 #include <memory>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <api/OperationType.hpp>
+#include <api/Operation.hpp>
 
 namespace ledger {
     namespace core {

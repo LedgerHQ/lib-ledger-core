@@ -26,9 +26,9 @@ public abstract class Operation {
 
     public abstract Preferences getPreferences();
 
-    public abstract int getConfirmationsCount();
-
     public abstract TrustIndicator getTrust();
+
+    public abstract Long getBlockHeight();
 
     public abstract BitcoinLikeOperation asBitcoinLikeOperation();
 
@@ -142,20 +142,20 @@ public abstract class Operation {
         private native Preferences native_getPreferences(long _nativeRef);
 
         @Override
-        public int getConfirmationsCount()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getConfirmationsCount(this.nativeRef);
-        }
-        private native int native_getConfirmationsCount(long _nativeRef);
-
-        @Override
         public TrustIndicator getTrust()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getTrust(this.nativeRef);
         }
         private native TrustIndicator native_getTrust(long _nativeRef);
+
+        @Override
+        public Long getBlockHeight()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getBlockHeight(this.nativeRef);
+        }
+        private native Long native_getBlockHeight(long _nativeRef);
 
         @Override
         public BitcoinLikeOperation asBitcoinLikeOperation()
