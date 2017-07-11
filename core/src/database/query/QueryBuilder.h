@@ -49,15 +49,19 @@ namespace ledger {
             QueryBuilder& from(const std::string& table);
             QueryBuilder& from(std::string&& table);
             QueryBuilder& where(const std::shared_ptr<api::QueryFilter>& filter);
+            QueryBuilder& outerJoin(const std::string& table, const std::string& condition);
             QueryBuilder& order(std::string&& keys, bool&& descending);
             QueryBuilder& limit(int32_t limit);
             QueryBuilder& offset(int32_t offset);
             soci::details::prepare_temp_type execute(soci::session& sql);
 
         private:
+            using LeftOuterJoin = std::tuple<std::string, std::string>;
+
             std::string _keys;
             std::string _table;
             std::list<std::tuple<std::string, bool>> _order;
+            Option<LeftOuterJoin> _outerJoin;
             std::shared_ptr<QueryFilter> _filter;
             Option<int32_t> _limit;
             Option<int32_t> _offset;

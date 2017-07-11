@@ -367,7 +367,9 @@ TEST(BitcoinWalletDatabase, PutOperations) {
             account->putTransaction(sql, tx);
         }
         sql.commit();
-        EXPECT_EQ(wallet->getName(), "my_wallet");
+        auto operations = wait(std::static_pointer_cast<OperationQuery>(account->queryOperations())->execute());
+
+        EXPECT_EQ(operations.size(), 5);
     }
     resolver->clean();
 }

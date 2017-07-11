@@ -33,10 +33,10 @@
 
 #include <api/Operation.hpp>
 #include "../Operation.h"
-#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
+        class AbstractAccount;
         class OperationApi : public api::Operation {
         public:
             OperationApi(const std::shared_ptr<AbstractAccount>& account);
@@ -58,6 +58,7 @@ namespace ledger {
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();
+            const std::shared_ptr<AbstractAccount>& getAccount() const;
 
         private:
             ledger::core::Operation _backend;

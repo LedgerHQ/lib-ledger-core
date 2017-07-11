@@ -38,9 +38,13 @@
 #include <async/DedicatedContext.hpp>
 #include "Operation.h"
 #include "../common/api_impl/OperationApi.h"
+#include "AbstractAccount.hpp"
+#include <unordered_map>
+#include "api_impl/OperationApi.h"
 
 namespace ledger {
     namespace core {
+        class AbstractAccount;
         class OperationQuery : public api::OperationQuery, public std::enable_shared_from_this<OperationQuery>,
                                public DedicatedContext {
         public:
@@ -59,9 +63,15 @@ namespace ledger {
             void execute(const std::shared_ptr<api::OperationListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
 
+            std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);
+
         private:
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
-            void inflateBitcoinLikeOperation(std::vector<std::shared_ptr<api::Operation>>& operations);
+            void inflateCompleteTransaction(soci::session& sql, OperationApi& operation);
+            void inflateBitcoinLikeTransaction(soci::session& sql, OperationApi& operation);
+            void inflateRippleLikeTransaction(soci::session& sql, OperationApi& operation);
+            void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
+            void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
 
         private:
             QueryBuilder _builder;
@@ -69,6 +79,7 @@ namespace ledger {
             bool _fetchCompleteOperation;
             std::shared_ptr<api::ExecutionContext> _mainContext;
             std::shared_ptr<DatabaseSessionPool> _pool;
+            std::unordered_map<std::string, std::shared_ptr<AbstractAccount>> _accounts;
         };
     }
 }

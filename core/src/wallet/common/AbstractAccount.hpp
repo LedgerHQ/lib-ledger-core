@@ -33,6 +33,7 @@
 
 #include <src/api/Account.hpp>
 #include "AbstractWallet.hpp"
+#include "OperationQuery.h"
 
 namespace ledger {
     namespace core {
@@ -54,7 +55,7 @@ namespace ledger {
             virtual std::shared_ptr<const AbstractWallet> getWallet() const;
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
-            std::shared_ptr <api::OperationQuery> queryOperations() override;
+            std::shared_ptr<api::OperationQuery> queryOperations() override;
 
         private:
             api::WalletType  _type;

@@ -30,6 +30,7 @@
  */
 #include "OperationApi.h"
 #include <wallet/common/Amount.h>
+#include "../AbstractAccount.hpp"
 
 namespace ledger {
     namespace core {
@@ -110,6 +111,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeOperation> OperationApi::asBitcoinLikeOperation() {
             return nullptr;
+        }
+
+        const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {
+            return _account;
         }
 
     }
