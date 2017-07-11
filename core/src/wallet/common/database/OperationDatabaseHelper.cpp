@@ -29,6 +29,7 @@
  *
  */
 #include "OperationDatabaseHelper.h"
+#include "BlockDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <database/soci-number.h>
@@ -53,11 +54,17 @@ namespace ledger {
             auto count = 0;
             std::string serializedTrust;
             serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
+            if (operation.block.nonEmpty()) {
+                BlockDatabaseHelper::putBlock(sql, operation.block.getValue());
+            }
+            auto blockUid = operation.block.map<std::string>([] (const Block& block) {
+                return block.getUid();
+            });
             sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
             auto newOperation = count == 0;
             if (!newOperation) {
-                sql << "UPDATE operations SET block_height = :height, trust = :trust WHERE uid = :uid"
-                        , use(operation.blockHeight)
+                sql << "UPDATE operations SET block_uid = :block_uid, trust = :trust WHERE uid = :uid"
+                        , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
             } else {
@@ -69,15 +76,15 @@ namespace ledger {
                 strings::join(operation.recipients, recipients, separator);
                 auto sndrs = senders.str();
                 auto rcvrs = recipients.str();
+
                 sql << "INSERT INTO operations VALUES("
                             ":uid, :accout_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
-                            ":fees, :block_height, :currency_name, :trust"
+                            ":fees, :block_uid, :currency_name, :trust"
                         ")"
                         , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
                         , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
-                        , use(operation.fees), use(operation.blockHeight), use(operation.currencyName), use(serializedTrust);
-
-
+                        , use(operation.fees), use(blockUid)
+                        , use(operation.currencyName), use(serializedTrust);
             }
             updateBitcoinOperation(sql, operation, newOperation);
         }

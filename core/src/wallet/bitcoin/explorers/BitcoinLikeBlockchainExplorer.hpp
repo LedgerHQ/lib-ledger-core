@@ -41,19 +41,14 @@
 #include "../../../async/Future.hpp"
 #include "../../../collections/collections.hpp"
 #include "../../../math/BigInt.h"
+#include <wallet/common/Block.h>
 
 namespace ledger {
     namespace core {
 
         class BitcoinLikeBlockchainExplorer : public ConfigurationMatchable {
         public:
-            struct Block {
-                std::string hash;
-                uint64_t height;
-                std::chrono::system_clock::time_point time;
-
-                Block() {};
-            };
+            typedef ledger::core::Block Block;
 
             struct Input {
                 uint64_t index;

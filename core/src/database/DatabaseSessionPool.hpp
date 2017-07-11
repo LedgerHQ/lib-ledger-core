@@ -32,9 +32,10 @@
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
 #include <soci.h>
-#include <src/api/ExecutionContext.hpp>
-#include <src/async/Future.hpp>
-#include <src/database/DatabaseBackend.hpp>
+#include <api/ExecutionContext.hpp>
+#include <async/Future.hpp>
+#include <database/DatabaseBackend.hpp>
+#include <debug/LoggerStreamBuffer.h>
 
 namespace ledger {
     namespace core {
@@ -42,14 +43,17 @@ namespace ledger {
         public:
             DatabaseSessionPool(const std::shared_ptr<DatabaseBackend>& backend,
                                 const std::shared_ptr<api::PathResolver>& resolver,
+                                const std::shared_ptr<spdlog::logger>& logger,
                                 const std::string& dbName,
                                 int poolSize);
             soci::connection_pool& getPool();
+            ~DatabaseSessionPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
                 const std::shared_ptr<api::ExecutionContext>& context,
                 const std::shared_ptr<DatabaseBackend>& backend,
                 const std::shared_ptr<api::PathResolver>& resolver,
+                const std::shared_ptr<spdlog::logger>& logger,
                 const std::string& dbName
             );
 
@@ -59,6 +63,8 @@ namespace ledger {
             void performDatabaseMigration();
         private:
             soci::connection_pool _pool;
+            std::ostream* _logger;
+            LoggerStreamBuffer _buffer;
         };
     }
 }

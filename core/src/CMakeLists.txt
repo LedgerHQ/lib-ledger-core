@@ -163,8 +163,6 @@ add_library(
         wallet/common/database/OperationDatabaseHelper.cpp
         wallet/common/database/OperationDatabaseHelper.h
         utils/JSONUtils.h database/soci-option.h database/soci-date.h
-        wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp
-        wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h
         wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp
         wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h database/soci-number.h
         wallet/common/Operation.cpp wallet/common/Operation.h wallet/common/TrustIndicator.cpp
@@ -177,7 +175,7 @@ add_library(
         database/query/QueryBuilder.cpp database/query/QueryBuilder.h database/query/QueryFilter.cpp
         database/query/QueryFilter.h database/query/CompoundQueryFilter.cpp database/query/CompoundQueryFilter.h
         database/query/filters_impl.cpp database/query/ConditionQueryFilter.cpp database/query/ConditionQueryFilter.h
-        wallet/common/Amount.cpp wallet/common/Amount.h wallet/common/OperationQuery.cpp wallet/common/OperationQuery.h wallet/common/api_impl/OperationApi.cpp wallet/common/api_impl/OperationApi.h)
+        wallet/common/Amount.cpp wallet/common/Amount.h wallet/common/OperationQuery.cpp wallet/common/OperationQuery.h wallet/common/api_impl/OperationApi.cpp wallet/common/api_impl/OperationApi.h wallet/common/database/BlockDatabaseHelper.cpp wallet/common/database/BlockDatabaseHelper.h wallet/common/Block.cpp wallet/common/Block.h debug/LoggerStreamBuffer.cpp debug/LoggerStreamBuffer.h)
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 

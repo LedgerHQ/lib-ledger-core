@@ -32,6 +32,7 @@
 #include "../../pool/database/WalletDatabaseEntry.hpp"
 #include <soci.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 
 using namespace soci;
 
@@ -62,8 +63,7 @@ namespace ledger {
 
         void BitcoinLikeWalletDatabase::createAccount(int32_t index, const std::string &xpub) const {
             session sql(_database->getPool());
-            auto uid = AccountDatabaseHelper::createAccountUid(_walletUid, index);
-            sql << "INSERT INTO bitcoin_accounts VALUES(:uid, :wallet_uid, :xpub)", use(uid), use(_walletUid), use(xpub);
+            BitcoinLikeAccountDatabaseHelper::createAccount(sql, getWalletUid(), index, xpub);
         }
 
         int32_t BitcoinLikeWalletDatabase::getNextAccountIndex() const {

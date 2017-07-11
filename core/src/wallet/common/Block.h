@@ -1,10 +1,9 @@
-
 /*
  *
- * Operation
+ * Block
  * ledger-core
  *
- * Created by Pierre Pollastri on 07/06/2017.
+ * Created by Pierre Pollastri on 07/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -29,48 +28,25 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATION_H
-#define LEDGER_CORE_OPERATION_H
+#ifndef LEDGER_CORE_BLOCK_H
+#define LEDGER_CORE_BLOCK_H
 
-#include <string>
-#include <api/WalletType.hpp>
 #include <chrono>
-#include <vector>
-#include <math/BigInt.h>
-#include <utils/Option.hpp>
-#include "TrustIndicator.h"
-#include <memory>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <api/OperationType.hpp>
-#include <api/Operation.hpp>
-#include "Block.h"
+#include <string>
 
 namespace ledger {
     namespace core {
-        struct Operation {
-            std::string uid;
-            std::string accountUid;
-            std::string walletUid;
-            api::WalletType walletType;
-            std::chrono::system_clock::time_point date;
-            std::vector<std::string> senders;
-            std::vector<std::string> recipients;
-            BigInt amount;
-            Option<BigInt> fees;
-            Option<Block> block;
+        struct Block {
+            std::string hash;
+            uint64_t height;
+            std::chrono::system_clock::time_point time;
             std::string currencyName;
-            api::OperationType type;
-            std::shared_ptr<TrustIndicator> trust;
-            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
 
-            Operation() {};
-            void refreshUid();
-        private:
-
+            Block() {};
+            std::string getUid() const;
         };
     }
-
 }
 
 
-#endif //LEDGER_CORE_OPERATION_H
+#endif //LEDGER_CORE_BLOCK_H

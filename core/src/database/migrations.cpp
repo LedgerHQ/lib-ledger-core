@@ -87,6 +87,15 @@ namespace ledger {
                 "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE"
             ")";
 
+            // Abstract block table
+            sql << "CREATE TABLE blocks("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "height BIGINT NOT NULL,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "currency_name VARCHAR(255)"
+            ")";
+
             // Abstract operation table
 
             sql << "CREATE TABLE operations("
@@ -99,7 +108,7 @@ namespace ledger {
                 "recipients TEXT NOT NULL,"
                 "amount BIGINT NOT NULL,"
                 "fees BIGINT,"
-                "block_height BIGINT,"
+                "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE,"
                 "trust TEXT"
             ")";
@@ -117,19 +126,11 @@ namespace ledger {
                 "has_timestamped_transaction INTEGER NOT NULL"
             ")";
 
-            // Bitcoin block table
-
-            sql << "CREATE TABLE bitcoin_blocks("
-                "hash VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "height BIGINT NOT NULL,"
-                "time VARCHAR(255) NOT NULL"
-            ")";
-
             // Bitcoin transaction table
             sql << "CREATE TABLE bitcoin_transactions("
                 "hash VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "version INTEGER,"
-                "block_hash VARCHAR(255) NULL REFERENCES bitcoin_blocks(hash) ON DELETE CASCADE,"
+                "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                 "time VARCHAR(255),"
                 "locktime INTEGER"
             ")";

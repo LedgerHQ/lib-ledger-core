@@ -1,10 +1,9 @@
-
 /*
  *
- * Operation
+ * BlockDatabaseHelper
  * ledger-core
  *
- * Created by Pierre Pollastri on 07/06/2017.
+ * Created by Pierre Pollastri on 07/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -29,48 +28,24 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATION_H
-#define LEDGER_CORE_OPERATION_H
+#ifndef LEDGER_CORE_BLOCKDATABASEHELPER_H
+#define LEDGER_CORE_BLOCKDATABASEHELPER_H
 
+#include <wallet/common/Block.h>
 #include <string>
-#include <api/WalletType.hpp>
-#include <chrono>
-#include <vector>
-#include <math/BigInt.h>
-#include <utils/Option.hpp>
-#include "TrustIndicator.h"
-#include <memory>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <api/OperationType.hpp>
-#include <api/Operation.hpp>
-#include "Block.h"
+#include <soci.h>
 
 namespace ledger {
     namespace core {
-        struct Operation {
-            std::string uid;
-            std::string accountUid;
-            std::string walletUid;
-            api::WalletType walletType;
-            std::chrono::system_clock::time_point date;
-            std::vector<std::string> senders;
-            std::vector<std::string> recipients;
-            BigInt amount;
-            Option<BigInt> fees;
-            Option<Block> block;
-            std::string currencyName;
-            api::OperationType type;
-            std::shared_ptr<TrustIndicator> trust;
-            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
-
-            Operation() {};
-            void refreshUid();
-        private:
-
+        class BlockDatabaseHelper {
+        public:
+            static inline std::string createBlockUid(const Block& block);
+            static inline std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
+            static void putBlock(soci::session& sql, const Block& block);
+            static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
         };
     }
-
 }
 
 
-#endif //LEDGER_CORE_OPERATION_H
+#endif //LEDGER_CORE_BLOCKDATABASEHELPER_H

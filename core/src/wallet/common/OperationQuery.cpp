@@ -99,11 +99,17 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::Operation>>>
         OperationQuery::execute() {
+            auto self = shared_from_this();
             return async<std::vector<std::shared_ptr<api::Operation>>>([=] () {
                 std::vector<std::shared_ptr<api::Operation>> out;
-
+                self->performExecute(out);
                 return out;
             });
+        }
+
+        void OperationQuery::performExecute(std::vector<std::shared_ptr<api::Operation>> &operations) {
+            soci::session sql(_pool->getPool());
+            _builder.select("").from("operations");
         }
 
     }

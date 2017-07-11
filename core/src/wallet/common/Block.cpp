@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeBlockDatabaseHelper
+ * Block
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/06/2017.
+ * Created by Pierre Pollastri on 07/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,24 +28,15 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeBlockDatabaseHelper.h"
-#include <database/soci-date.h>
-
-using namespace soci;
+#include "Block.h"
+#include "database/BlockDatabaseHelper.h"
 
 namespace ledger {
     namespace core {
 
-        void BitcoinLikeBlockDatabaseHelper::putBlock(soci::session &sql,
-                                                      const BitcoinLikeBlockchainExplorer::Block &block) {
-            if (!blockExists(sql, block.hash)) {
-                sql << "INSERT INTO bitcoin_blocks VALUES(:hash, :height, :time)",
-                        use(block.hash), use(block.height), use(block.time);
-            }
+        std::string Block::getUid() const {
+            return BlockDatabaseHelper::createBlockUid(*this);
         }
 
-        bool BitcoinLikeBlockDatabaseHelper::blockExists(soci::session &sql, const std::string &blockHash) {
-            return false;
-        }
     }
 }

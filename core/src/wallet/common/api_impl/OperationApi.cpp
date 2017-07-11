@@ -95,8 +95,8 @@ namespace ledger {
         }
 
         optional<int64_t> OperationApi::getBlockHeight() {
-            return _backend.blockHeight.map<int64_t>([] (const uint64_t& v) {
-                return (int64_t) v;
+            return _backend.block.map<int64_t>([] (const Block& block) {
+                return (int64_t) block.height;
             });
         }
 

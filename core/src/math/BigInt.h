@@ -203,10 +203,11 @@ namespace ledger {
 
             template <typename T>
             BigInt& assignScalar(T value) {
-              auto bytes = endianness::scalar_type_to_array<T>(std::abs(value), endianness::Endianness::BIG);
-              bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
-              std::free(bytes);
-              _negative = value < 0LL;
+                auto bytes = endianness::scalar_type_to_array<T>(std::abs(value), endianness::Endianness::BIG);
+                bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
+                std::free(bytes);
+                _negative = value < 0LL;
+                return *this;
             }
 
             virtual ~BigInt();

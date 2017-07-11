@@ -53,14 +53,15 @@ namespace ledger {
                                              const std::shared_ptr<const AbstractWallet>& wallet,
                                              const BitcoinLikeBlockchainExplorer::Transaction &tx) {
             out.accountUid = getAccountUid();
-            out.blockHeight = tx.block.map<uint64_t>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
-                                                   return block.height;
-                                               });
+            out.block = tx.block;
             out.bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
             out.currencyName = getWallet()->getCurrency().name;
             out.walletType = getWalletType();
             out.walletUid = wallet->getWalletUid();
             out.date = tx.receivedAt;
+            if (out.block.nonEmpty())
+                out.block.getValue().currencyName = wallet->getCurrency().name;
+            out.bitcoinTransaction.getValue().block = out.block;
         }
 
         int BitcoinLikeAccount::putTransaction(soci::session &sql,

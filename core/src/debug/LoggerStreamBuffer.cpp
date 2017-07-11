@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeAccountDatabase
+ * LoggerStreamBuffer
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 10/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,21 +28,20 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
-#include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
-#include <database/soci-date.h>
+#include "LoggerStreamBuffer.h"
 
-using namespace soci;
-
-namespace ledger {
-    namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-        }
-
-
+int ledger::core::LoggerStreamBuffer::overflow(int c) {
+    if (c == '\n') {
+        _logger->info("[{}] {}", _tag, _buffer.str());
+        std::stringstream().swap(_buffer);
+    } else {
+        _buffer.put((char_type) c);
     }
+    return c;
+}
+
+ledger::core::LoggerStreamBuffer::LoggerStreamBuffer(const std::string &tag,
+                                                     const std::shared_ptr<spdlog::logger> &logger) {
+    _tag = tag;
+    _logger = logger;
 }

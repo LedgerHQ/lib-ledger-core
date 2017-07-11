@@ -30,7 +30,7 @@
  */
 #include <crypto/SHA256.hpp>
 #include "BitcoinLikeTransactionDatabaseHelper.h"
-#include "BitcoinLikeBlockDatabaseHelper.h"
+#include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-option.h>
 #include <database/soci-date.h>
 #include <database/soci-number.h>
@@ -48,8 +48,8 @@ namespace ledger {
 
         bool BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
-            auto blockHash = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
-                                   return block.hash;
+            auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
+                                   return block.getUid();
                                });
             if (transactionExists(sql, tx.hash)) {
                 // UPDATE (we only update block information)
@@ -58,14 +58,14 @@ namespace ledger {
             } else {
                 // Insert
                 if (tx.block.nonEmpty()) {
-                    BitcoinLikeBlockDatabaseHelper::putBlock(sql, tx.block.getValue());
+                    BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
                 sql << "INSERT INTO bitcoin_transactions VALUES("
-                        ":hash, :version, :block_hash, :time, :locktime"
+                        ":hash, :version, :block_uid, :time, :locktime"
                         ")",
                         use(tx.hash),
                         use(tx.version),
-                        use(blockHash),
+                        use(blockUid),
                         use(tx.receivedAt),
                         use(tx.lockTime);
                 // Insert outputs
@@ -114,10 +114,10 @@ namespace ledger {
         bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql, const std::string &hash,
                                                                         BitcoinLikeBlockchainExplorer::Transaction &out) {
             rowset<row> rows = (sql.prepare <<
-                    "SELECT  tx.hash, tx.version, tx.block_hash, "
-                            "tx.time, tx.locktime, block.height, block.time "
+                    "SELECT  tx.hash, tx.version, tx.time, tx.locktime, "
+                            "block.hash, block.height, block.time, block.currency_name "
                             "FROM bitcoin_transactions AS tx "
-                            "LEFT JOIN bitcoin_blocks AS block ON tx.block_hash = block.hash "
+                            "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                             "WHERE tx.hash = :hash", use(hash)
             );
             for (auto& row : rows) {
@@ -131,13 +131,14 @@ namespace ledger {
                                                                       BitcoinLikeBlockchainExplorer::Transaction &out) {
             out.hash = row.get<std::string>(0);
             out.version = (uint32_t) row.get<int32_t>(1);
-            out.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
-            out.lockTime = (uint64_t) row.get<int>(4);
-            if (row.get_indicator(2) != i_null) {
+            out.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
+            out.lockTime = (uint64_t) row.get<int>(3);
+            if (row.get_indicator(4) != i_null) {
                 BitcoinLikeBlockchainExplorer::Block block;
-                block.hash = row.get<std::string>(2);
+                block.hash = row.get<std::string>(4);
                 block.height = (uint64_t) row.get<long long>(5);
                 block.time = row.get<std::chrono::system_clock::time_point>(6);
+                block.currencyName = row.get<std::string>(7);
                 out.block = block;
             }
             // Fetch inputs

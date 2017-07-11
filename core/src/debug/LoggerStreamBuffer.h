@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeBlockDatabaseHelper
+ * LoggerStreamBuffer
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/06/2017.
+ * Created by Pierre Pollastri on 10/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,21 +28,27 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
-#define LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#ifndef LEDGER_CORE_LOGGERSTREAMBUFFER_H
+#define LEDGER_CORE_LOGGERSTREAMBUFFER_H
 
-#include <soci.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <sstream>
+#include "logger.hpp"
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeBlockDatabaseHelper {
+        class LoggerStreamBuffer : public std::streambuf {
         public:
-            static void putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
-            static bool blockExists(soci::session& sql, const std::string& blockHash);
+            LoggerStreamBuffer(const std::string& tag, const std::shared_ptr<spdlog::logger>& logger);
+        protected:
+            int overflow(int c) override;
+
+        private:
+            std::stringstream _buffer;
+            std::shared_ptr<spdlog::logger> _logger;
+            std::string _tag;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#endif //LEDGER_CORE_LOGGERSTREAMBUFFER_H

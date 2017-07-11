@@ -40,10 +40,11 @@ namespace ledger {
         DatabaseSessionPool::getSessionPool(const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<DatabaseBackend>& backend,
                                             const std::shared_ptr<api::PathResolver>& resolver,
+                                            const std::shared_ptr<spdlog::logger>& logger,
                                             const std::string& dbName) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName] () {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger] () {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, dbName, POOL_SIZE
+                    backend, resolver, logger, dbName, POOL_SIZE
                 ));
 
                 return pool;
@@ -67,12 +68,28 @@ namespace ledger {
             tr.commit();
         }
 
+        DatabaseSessionPool::~DatabaseSessionPool() {
+            if (_logger != nullptr) {
+                delete _logger;
+            }
+        }
+
         DatabaseSessionPool::DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
                                                  const std::shared_ptr<api::PathResolver> &resolver,
-                                                 const std::string &dbName, int poolSize) : _pool((size_t) poolSize) {
+                                                 const std::shared_ptr<spdlog::logger>& logger,
+                                                 const std::string &dbName, int poolSize) : _pool((size_t) poolSize),
+            _buffer("SQL", logger)
+        {
+            if (logger != nullptr) {
+                _logger = new std::ostream(&_buffer);
+            } else {
+                _logger = nullptr;
+            }
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
                 backend->init(resolver, dbName, session);
+                if (_logger != nullptr)
+                    session.set_log_stream(_logger);
             }
             // Migrate database
             performDatabaseMigration();
