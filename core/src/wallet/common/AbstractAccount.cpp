@@ -46,6 +46,7 @@ namespace ledger {
             _wallet = std::const_pointer_cast<const AbstractWallet>(wallet);
             _mainExecutionContext = wallet->getMainExecutionContext();
             _logger = wallet->logger();
+            _type = wallet->getWalletType();
         }
 
         int32_t AbstractAccount::getIndex() {

@@ -11,8 +11,6 @@
 
 - (int32_t)getOutputIndex;
 
-- (nullable NSString *)getAddressDerivationPath;
-
 - (nullable LGAmount *)getValue;
 
 - (nonnull NSData *)getScript;

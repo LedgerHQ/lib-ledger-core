@@ -9,16 +9,14 @@
 
 - (nullable NSString *)getAddress;
 
-- (nullable NSString *)getAddressDerivationPath;
-
 - (nullable LGAmount *)getValue;
 
 - (BOOL)isCoinbase;
 
 - (nullable NSString *)getCoinbase;
 
-- (nonnull NSString *)getPreviousTxHash;
+- (nullable NSString *)getPreviousTxHash;
 
-- (int32_t)getPreviousOutputIndex;
+- (nullable NSNumber *)getPreviousOutputIndex;
 
 @end

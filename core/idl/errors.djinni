@@ -19,6 +19,7 @@ ErrorCode = enum {
     unsupported_currency;
     currency_already_exists;
     currency_not_found;
+    currency_unit_not_found;
 
     # Others
     invalid_base58_format;

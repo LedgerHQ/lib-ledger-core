@@ -29,3 +29,59 @@
  *
  */
 #include "Amount.h"
+#include <utils/Exception.hpp>
+
+namespace ledger {
+    namespace core {
+
+        Amount::Amount(const api::Currency &currency, int32_t unitIndex, const BigInt &value) {
+            _currency = currency;
+            _unitIndex = unitIndex;
+            _value = value;
+        }
+
+        std::shared_ptr<api::BigInt> Amount::toBigInt() {
+            return std::make_shared<api::BigIntImpl>(_value);
+        }
+
+        api::Currency Amount::getCurrency() {
+            return _currency;
+        }
+
+        api::CurrencyUnit Amount::getUnit() {
+            return _currency.units[_unitIndex];
+        }
+
+        std::shared_ptr<api::Amount> Amount::toUnit(const api::CurrencyUnit &unit) {
+            auto index = 0;
+            for (auto& u : _currency.units) {
+                if (u.code == unit.code && u.name == unit.name && u.numberOfDecimal == unit.numberOfDecimal &&
+                    u.symbol == unit.symbol) {
+                    return std::make_shared<Amount>(
+                            _currency,
+                            index,
+                            _value
+                    );
+                }
+                index += 1;
+            }
+            throw make_exception(api::ErrorCode::CURRENCY_UNIT_NOT_FOUND, "Cannot find currency {}", unit.name);
+        }
+
+        std::string Amount::toString() {
+            return "";
+        }
+
+        int64_t Amount::toLong() {
+            return 0;
+        }
+
+        double Amount::toDouble() {
+            return 0;
+        }
+
+        std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules) {
+            return "";
+        }
+    }
+}

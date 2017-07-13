@@ -242,7 +242,14 @@ namespace ledger {
         }
 
         std::shared_ptr<api::OperationQuery> BitcoinLikeAccount::queryOperations() {
-            return nullptr;
+            auto query = std::make_shared<OperationQuery>(
+                    api::QueryFilter::accountEq(getAccountUid()),
+                    getWallet()->getDatabase(),
+                    getWallet()->getContext(),
+                    getWallet()->getMainExecutionContext()
+            );
+            query->registerAccount(shared_from_this());
+            return query;
         }
 
     }

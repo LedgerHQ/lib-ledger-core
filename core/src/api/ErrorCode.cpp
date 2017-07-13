@@ -17,6 +17,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::UNSUPPORTED_CURRENCY: return "UNSUPPORTED_CURRENCY";
         case ErrorCode::CURRENCY_ALREADY_EXISTS: return "CURRENCY_ALREADY_EXISTS";
         case ErrorCode::CURRENCY_NOT_FOUND: return "CURRENCY_NOT_FOUND";
+        case ErrorCode::CURRENCY_UNIT_NOT_FOUND: return "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT: return "INVALID_BASE58_FORMAT";
         case ErrorCode::INVALID_CHECKSUM: return "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION: return "INVALID_VERSION";
@@ -66,6 +67,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "UNSUPPORTED_CURRENCY") return ErrorCode::UNSUPPORTED_CURRENCY;
     else if (errorCode == "CURRENCY_ALREADY_EXISTS") return ErrorCode::CURRENCY_ALREADY_EXISTS;
     else if (errorCode == "CURRENCY_NOT_FOUND") return ErrorCode::CURRENCY_NOT_FOUND;
+    else if (errorCode == "CURRENCY_UNIT_NOT_FOUND") return ErrorCode::CURRENCY_UNIT_NOT_FOUND;
     else if (errorCode == "INVALID_BASE58_FORMAT") return ErrorCode::INVALID_BASE58_FORMAT;
     else if (errorCode == "INVALID_CHECKSUM") return ErrorCode::INVALID_CHECKSUM;
     else if (errorCode == "INVALID_VERSION") return ErrorCode::INVALID_VERSION;
@@ -116,6 +118,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::UNSUPPORTED_CURRENCY:  return os << "UNSUPPORTED_CURRENCY";
         case ErrorCode::CURRENCY_ALREADY_EXISTS:  return os << "CURRENCY_ALREADY_EXISTS";
         case ErrorCode::CURRENCY_NOT_FOUND:  return os << "CURRENCY_NOT_FOUND";
+        case ErrorCode::CURRENCY_UNIT_NOT_FOUND:  return os << "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT:  return os << "INVALID_BASE58_FORMAT";
         case ErrorCode::INVALID_CHECKSUM:  return os << "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION:  return os << "INVALID_VERSION";

@@ -10,8 +10,6 @@ public abstract class BitcoinLikeOutput {
 
     public abstract int getOutputIndex();
 
-    public abstract String getAddressDerivationPath();
-
     public abstract Amount getValue();
 
     public abstract byte[] getScript();
@@ -56,14 +54,6 @@ public abstract class BitcoinLikeOutput {
             return native_getOutputIndex(this.nativeRef);
         }
         private native int native_getOutputIndex(long _nativeRef);
-
-        @Override
-        public String getAddressDerivationPath()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAddressDerivationPath(this.nativeRef);
-        }
-        private native String native_getAddressDerivationPath(long _nativeRef);
 
         @Override
         public Amount getValue()

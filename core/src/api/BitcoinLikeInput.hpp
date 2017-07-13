@@ -19,17 +19,15 @@ public:
 
     virtual std::experimental::optional<std::string> getAddress() = 0;
 
-    virtual std::experimental::optional<std::string> getAddressDerivationPath() = 0;
-
     virtual std::shared_ptr<Amount> getValue() = 0;
 
     virtual bool isCoinbase() = 0;
 
     virtual std::experimental::optional<std::string> getCoinbase() = 0;
 
-    virtual std::string getPreviousTxHash() = 0;
+    virtual std::experimental::optional<std::string> getPreviousTxHash() = 0;
 
-    virtual int32_t getPreviousOutputIndex() = 0;
+    virtual std::experimental::optional<int32_t> getPreviousOutputIndex() = 0;
 };
 
 } } }  // namespace ledger::core::api

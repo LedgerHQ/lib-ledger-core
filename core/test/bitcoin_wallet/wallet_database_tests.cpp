@@ -49,6 +49,11 @@
 #include <BitcoinLikeStringXpubProvider.h>
 #include <api/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/BitcoinLikeInput.hpp>
+#include <api/BitcoinLikeOutput.hpp>
+#include <api/BigInt.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -367,9 +372,52 @@ TEST(BitcoinWalletDatabase, PutOperations) {
             account->putTransaction(sql, tx);
         }
         sql.commit();
-        auto operations = wait(std::static_pointer_cast<OperationQuery>(account->queryOperations())->execute());
-
+        auto query = account->queryOperations()->complete()->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);
+        auto operations = wait(std::static_pointer_cast<OperationQuery>(query)->execute());
         EXPECT_EQ(operations.size(), 5);
+
+        auto expectation_0 = std::make_tuple("666613fd82459f94c74211974e74ffcb4a4b96b62980a6ecaee16af7702bbbe5", 15, 1,
+                                             890000, "1KMbwcH1sGpHetLwwQVNMt4cEZB5u8Uk4b", 182593500, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7",
+                                             182593500, api::OperationType::RECEIVE, 362035);
+        auto expectation_1 = std::make_tuple("a5fb8b23c1131850569874b8d8592800211b3d0392753b84d2d5f9f53b7e09fc", 1, 2,
+                                             182593500, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7", 182483500, "18BkSm7P2wQJfQhV7B5st14t13mzHRJ2o1",
+                                             100000, api::OperationType::RECEIVE, 362055);
+
+        auto expectation_2 = std::make_tuple("a5fb8b23c1131850569874b8d8592800211b3d0392753b84d2d5f9f53b7e09fc", 1, 2,
+                                             182593500, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7", 182483500, "18BkSm7P2wQJfQhV7B5st14t13mzHRJ2o1",
+                                             100000, api::OperationType::SEND, 362055);
+
+        auto expectation_3 = std::make_tuple("4450e70656888bd7f5240a9b532eac54db7d72f3b48bfef09fb45a185bb9c570", 1, 2,
+                                             182483500, "18BkSm7P2wQJfQhV7B5st14t13mzHRJ2o1", 182373500, "139dJmHhFuuhrgbNAPehpokjYHNEtvkxot",
+                                             100000, api::OperationType::RECEIVE, 362058);
+
+        auto expectation_4 = std::make_tuple("4450e70656888bd7f5240a9b532eac54db7d72f3b48bfef09fb45a185bb9c570", 1, 2,
+                                             182483500, "18BkSm7P2wQJfQhV7B5st14t13mzHRJ2o1", 182373500, "139dJmHhFuuhrgbNAPehpokjYHNEtvkxot",
+                                             100000, api::OperationType::SEND, 362058);
+
+        #define ASSERT_EXPECTATION(it) \
+        { \
+            auto& op = operations[it]; \
+            auto tx = op->asBitcoinLikeOperation()->getTransaction(); \
+            auto& expect = expectation_##it; \
+            EXPECT_EQ(tx->getHash(), std::get<0>(expect)); \
+            EXPECT_EQ(tx->getInputs().size(), std::get<1>(expect)); \
+            EXPECT_EQ(tx->getOutputs().size(), std::get<2>(expect)); \
+            EXPECT_EQ(tx->getInputs()[0]->getValue()->toBigInt()->intValue(), std::get<3>(expect)); \
+            EXPECT_EQ(tx->getInputs()[0]->getAddress().value(), std::get<4>(expect)); \
+            EXPECT_EQ(tx->getOutputs()[0]->getValue()->toBigInt()->intValue(), std::get<5>(expect)); \
+            EXPECT_EQ(tx->getOutputs()[0]->getAddress().value(), std::get<6>(expect)); \
+            EXPECT_EQ(op->getAmount()->toBigInt()->intValue(), std::get<7>(expect)); \
+            EXPECT_EQ(op->getOperationType(), std::get<8>(expect)); \
+            EXPECT_EQ(op->getBlockHeight().value(), std::get<9>(expect)); \
+        }
+
+
+        ASSERT_EXPECTATION(0);
+        ASSERT_EXPECTATION(1);
+        ASSERT_EXPECTATION(2);
+        ASSERT_EXPECTATION(3);
+        ASSERT_EXPECTATION(4);
     }
     resolver->clean();
 }

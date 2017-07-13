@@ -175,7 +175,7 @@ add_library(
         database/query/QueryBuilder.cpp database/query/QueryBuilder.h database/query/QueryFilter.cpp
         database/query/QueryFilter.h database/query/CompoundQueryFilter.cpp database/query/CompoundQueryFilter.h
         database/query/filters_impl.cpp database/query/ConditionQueryFilter.cpp database/query/ConditionQueryFilter.h
-        wallet/common/Amount.cpp wallet/common/Amount.h wallet/common/OperationQuery.cpp wallet/common/OperationQuery.h wallet/common/api_impl/OperationApi.cpp wallet/common/api_impl/OperationApi.h wallet/common/database/BlockDatabaseHelper.cpp wallet/common/database/BlockDatabaseHelper.h wallet/common/Block.cpp wallet/common/Block.h debug/LoggerStreamBuffer.cpp debug/LoggerStreamBuffer.h)
+        wallet/common/Amount.cpp wallet/common/Amount.h wallet/common/OperationQuery.cpp wallet/common/OperationQuery.h wallet/common/api_impl/OperationApi.cpp wallet/common/api_impl/OperationApi.h wallet/common/database/BlockDatabaseHelper.cpp wallet/common/database/BlockDatabaseHelper.h wallet/common/Block.cpp wallet/common/Block.h debug/LoggerStreamBuffer.cpp debug/LoggerStreamBuffer.h wallet/bitcoin/api_impl/BitcoinLikeOperation.cpp wallet/bitcoin/api_impl/BitcoinLikeOperation.h wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.cpp wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h wallet/bitcoin/api_impl/BitcoinLikeInputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeInputApi.h wallet/bitcoin/api_impl/BitcoinLikeOutputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h)
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 

@@ -38,13 +38,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable NSString *)getAddressDerivationPath {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getAddressDerivationPath();
-        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGAmount *)getValue {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getValue();
@@ -66,17 +59,17 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nonnull NSString *)getPreviousTxHash {
+- (nullable NSString *)getPreviousTxHash {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreviousTxHash();
-        return ::djinni::String::fromCpp(objcpp_result_);
+        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (int32_t)getPreviousOutputIndex {
+- (nullable NSNumber *)getPreviousOutputIndex {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreviousOutputIndex();
-        return ::djinni::I32::fromCpp(objcpp_result_);
+        return ::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

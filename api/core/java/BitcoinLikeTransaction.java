@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeTransaction {
+    public abstract String getHash();
+
     public abstract ArrayList<BitcoinLikeInput> getInputs();
 
     public abstract ArrayList<BitcoinLikeOutput> getOutputs();
@@ -42,6 +44,14 @@ public abstract class BitcoinLikeTransaction {
             destroy();
             super.finalize();
         }
+
+        @Override
+        public String getHash()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getHash(this.nativeRef);
+        }
+        private native String native_getHash(long _nativeRef);
 
         @Override
         public ArrayList<BitcoinLikeInput> getInputs()

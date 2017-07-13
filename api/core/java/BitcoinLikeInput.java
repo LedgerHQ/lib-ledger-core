@@ -8,8 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BitcoinLikeInput {
     public abstract String getAddress();
 
-    public abstract String getAddressDerivationPath();
-
     public abstract Amount getValue();
 
     public abstract boolean isCoinbase();
@@ -18,7 +16,7 @@ public abstract class BitcoinLikeInput {
 
     public abstract String getPreviousTxHash();
 
-    public abstract int getPreviousOutputIndex();
+    public abstract Integer getPreviousOutputIndex();
 
     private static final class CppProxy extends BitcoinLikeInput
     {
@@ -50,14 +48,6 @@ public abstract class BitcoinLikeInput {
             return native_getAddress(this.nativeRef);
         }
         private native String native_getAddress(long _nativeRef);
-
-        @Override
-        public String getAddressDerivationPath()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getAddressDerivationPath(this.nativeRef);
-        }
-        private native String native_getAddressDerivationPath(long _nativeRef);
 
         @Override
         public Amount getValue()
@@ -92,11 +82,11 @@ public abstract class BitcoinLikeInput {
         private native String native_getPreviousTxHash(long _nativeRef);
 
         @Override
-        public int getPreviousOutputIndex()
+        public Integer getPreviousOutputIndex()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getPreviousOutputIndex(this.nativeRef);
         }
-        private native int native_getPreviousOutputIndex(long _nativeRef);
+        private native Integer native_getPreviousOutputIndex(long _nativeRef);
     }
 }

@@ -22,8 +22,6 @@ public:
 
     virtual int32_t getOutputIndex() = 0;
 
-    virtual std::experimental::optional<std::string> getAddressDerivationPath() = 0;
-
     virtual std::shared_ptr<Amount> getValue() = 0;
 
     virtual std::vector<uint8_t> getScript() = 0;

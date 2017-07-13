@@ -1,9 +1,9 @@
 /*
  *
- * Amount
+ * BitcoinLikeOperation
  * ledger-core
  *
- * Created by Pierre Pollastri on 30/06/2017.
+ * Created by Pierre Pollastri on 12/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,35 +28,26 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_AMOUNT_H
-#define LEDGER_CORE_AMOUNT_H
+#ifndef LEDGER_CORE_BITCOINLIKEOPERATION_H
+#define LEDGER_CORE_BITCOINLIKEOPERATION_H
 
-#include <api/Amount.hpp>
-#include <api/Currency.hpp>
-#include <math/BigInt.h>
-#include <api_impl/BigIntImpl.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <wallet/common/Operation.h>
+#include <wallet/common/api_impl/OperationApi.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
-        class Amount : public api::Amount {
+        class BitcoinLikeOperation : public api::BitcoinLikeOperation {
         public:
-            Amount(const api::Currency& currency, int32_t unitIndex, const BigInt& value);
-            std::shared_ptr<api::BigInt> toBigInt() override;
-            api::Currency getCurrency() override;
-            api::CurrencyUnit getUnit() override;
-            std::shared_ptr<api::Amount> toUnit(const api::CurrencyUnit &unit) override;
-            std::string toString() override;
-            int64_t toLong() override;
-            double toDouble() override;
-            std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
+            BitcoinLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
+            std::shared_ptr<api::BitcoinLikeTransaction> getTransaction() override;
 
         private:
-            BigInt _value;
-            int32_t _unitIndex;
-            api::Currency _currency;
+            std::shared_ptr<BitcoinLikeTransactionApi> _transaction;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_AMOUNT_H
+#endif //LEDGER_CORE_BITCOINLIKEOPERATION_H

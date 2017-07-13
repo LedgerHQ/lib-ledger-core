@@ -40,16 +40,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_BitcoinLikeOutput_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeOutput_00024CppProxy_native_1getAddressDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeOutput>(nativeRef);
-        auto r = ref->getAddressDerivationPath();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeOutput_00024CppProxy_native_1getValue(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

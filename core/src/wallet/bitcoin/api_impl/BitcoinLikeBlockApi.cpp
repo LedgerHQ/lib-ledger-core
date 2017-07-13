@@ -1,9 +1,9 @@
 /*
  *
- * Amount
+ * BitcoinLikeBlockApi
  * ledger-core
  *
- * Created by Pierre Pollastri on 30/06/2017.
+ * Created by Pierre Pollastri on 12/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,35 +28,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_AMOUNT_H
-#define LEDGER_CORE_AMOUNT_H
+#include "BitcoinLikeBlockApi.h"
 
-#include <api/Amount.hpp>
-#include <api/Currency.hpp>
-#include <math/BigInt.h>
-#include <api_impl/BigIntImpl.hpp>
-
-namespace ledger {
-    namespace core {
-        class Amount : public api::Amount {
-        public:
-            Amount(const api::Currency& currency, int32_t unitIndex, const BigInt& value);
-            std::shared_ptr<api::BigInt> toBigInt() override;
-            api::Currency getCurrency() override;
-            api::CurrencyUnit getUnit() override;
-            std::shared_ptr<api::Amount> toUnit(const api::CurrencyUnit &unit) override;
-            std::string toString() override;
-            int64_t toLong() override;
-            double toDouble() override;
-            std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
-
-        private:
-            BigInt _value;
-            int32_t _unitIndex;
-            api::Currency _currency;
-        };
-    }
+std::string ledger::core::BitcoinLikeBlockApi::getHash() {
+    return _block.hash;
 }
 
+int64_t ledger::core::BitcoinLikeBlockApi::getHeight() {
+    return _block.height;
+}
 
-#endif //LEDGER_CORE_AMOUNT_H
+std::chrono::system_clock::time_point ledger::core::BitcoinLikeBlockApi::getTime() {
+    return _block.time;
+}
+
+ledger::core::BitcoinLikeBlockApi::BitcoinLikeBlockApi(const ledger::core::Block &block) {
+    _block = block;
+}

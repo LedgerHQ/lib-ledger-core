@@ -48,7 +48,7 @@ namespace ledger {
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
                     auto& order = *it;
-                    query << std::get<0>(order) << (std::get<1>(order) ? "DESC" : "ASC");
+                    query << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
 
                     if (std::distance(it, _order.end()) > 1) {
                         query << ",";

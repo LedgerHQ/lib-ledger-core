@@ -34,6 +34,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
+- (nonnull NSString *)getHash {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getHash();
+        return ::djinni::String::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nonnull NSArray<LGBitcoinLikeInput *> *)getInputs {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getInputs();

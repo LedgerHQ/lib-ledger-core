@@ -17,18 +17,16 @@ BitcoinLikeWalletConfiguration = interface +c {
 
 BitcoinLikeInput = interface +c {
     getAddress(): optional<string>;
-    getAddressDerivationPath(): optional<string>;
     getValue(): optional<Amount>;
     isCoinbase(): bool;
     getCoinbase(): optional<string>;
-    getPreviousTxHash(): string;
-    getPreviousOutputIndex(): i32;
+    getPreviousTxHash(): optional<string>;
+    getPreviousOutputIndex(): optional<i32>;
 }
 
 BitcoinLikeOutput = interface +c {
     getTransactionHash(): string;
     getOutputIndex(): i32;
-    getAddressDerivationPath(): optional<string>;
     getValue(): Amount;
     getScript(): binary;
     getAddress(): optional<string>;
@@ -41,6 +39,7 @@ BitcoinLikeBlock = interface +c {
 }
 
 BitcoinLikeTransaction = interface +c {
+    getHash(): string;
     getInputs(): list<BitcoinLikeInput>;
     getOutputs(): list<BitcoinLikeOutput>;
     getBlock(): optional<BitcoinLikeBlock>;

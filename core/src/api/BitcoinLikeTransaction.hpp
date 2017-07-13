@@ -8,6 +8,7 @@
 #include <chrono>
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
@@ -20,6 +21,8 @@ class BitcoinLikeOutput;
 class BitcoinLikeTransaction {
 public:
     virtual ~BitcoinLikeTransaction() {}
+
+    virtual std::string getHash() = 0;
 
     virtual std::vector<std::shared_ptr<BitcoinLikeInput>> getInputs() = 0;
 

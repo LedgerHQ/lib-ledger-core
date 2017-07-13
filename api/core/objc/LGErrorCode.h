@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnsupportedCurrency,
     LGErrorCodeCurrencyAlreadyExists,
     LGErrorCodeCurrencyNotFound,
+    LGErrorCodeCurrencyUnitNotFound,
     /** Others */
     LGErrorCodeInvalidBase58Format,
     LGErrorCodeInvalidChecksum,

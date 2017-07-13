@@ -31,6 +31,8 @@
 #include "OperationApi.h"
 #include <wallet/common/Amount.h>
 #include "../AbstractAccount.hpp"
+#include <wallet/common/Amount.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
 
 namespace ledger {
     namespace core {
@@ -102,15 +104,21 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> OperationApi::getFees() {
-            return nullptr;
+            if (getBackend().fees.nonEmpty())
+                return std::make_shared<Amount>(_account->getWallet()->getCurrency(), 0, getBackend().fees.getValue());
+            else
+                return nullptr;
         }
 
         std::shared_ptr<api::Amount> OperationApi::getAmount() {
-            return nullptr;
+            return std::make_shared<Amount>(_account->getWallet()->getCurrency(), 0, getBackend().amount);
         }
 
         std::shared_ptr<api::BitcoinLikeOperation> OperationApi::asBitcoinLikeOperation() {
-            return nullptr;
+            if (getWalletType() != api::WalletType::BITCOIN) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Bitcoin type.");
+            }
+            return std::make_shared<BitcoinLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

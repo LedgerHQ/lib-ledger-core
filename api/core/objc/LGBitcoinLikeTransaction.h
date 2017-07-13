@@ -10,6 +10,8 @@
 
 @interface LGBitcoinLikeTransaction : NSObject
 
+- (nonnull NSString *)getHash;
+
 - (nonnull NSArray<LGBitcoinLikeInput *> *)getInputs;
 
 - (nonnull NSArray<LGBitcoinLikeOutput *> *)getOutputs;

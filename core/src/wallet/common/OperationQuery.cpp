@@ -34,6 +34,7 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <database/soci-number.h>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -53,20 +54,28 @@ namespace ledger {
             switch (key) {
                 case api::OperationOrderKey::AMOUNT:
                     _builder.order("amount", std::move(descending));
+                    break;
                 case api::OperationOrderKey::DATE:
                     _builder.order("date", std::move(descending));
+                    break;
                 case api::OperationOrderKey::SENDERS:
                     _builder.order("senders", std::move(descending));
+                    break;
                 case api::OperationOrderKey::RECIPIENTS:
                     _builder.order("recipients", std::move(descending));
+                    break;
                 case api::OperationOrderKey::TYPE:
                     _builder.order("type", std::move(descending));
+                    break;
                 case api::OperationOrderKey::CURRENCY_NAME:
                     _builder.order("currency_name", std::move(descending));
+                    break;
                 case api::OperationOrderKey::FEES:
                     _builder.order("fees", std::move(descending));
+                    break;
                 case api::OperationOrderKey::BLOCK_HEIGHT:
                     _builder.order("block_height", std::move(descending));
+                    break;
             }
             return shared_from_this();
         }
@@ -139,20 +148,23 @@ namespace ledger {
                 operation.fees = row.get<Option<BigInt>>(8);
                 operation.currencyName = row.get<std::string>(9);
                 operation.trust = nullptr;
+                operation.walletType = account->second->getWalletType();
 
                 if (row.get_indicator(11) != soci::i_null) {
                     // The operation has a block, inflate the block
                     Block block;
                     block.hash = row.get<std::string>(11);
-                    block.height = row.get<int64_t>(12);
+                    block.height = (uint64_t) row.get<int64_t>(12);
                     block.time = row.get<std::chrono::system_clock::time_point>(13);
                     block.currencyName = operation.currencyName;
+                    operation.block = Option<Block>(std::move(block));
                 }
 
                 // End of inflate
                 if (_fetchCompleteOperation) {
                     inflateCompleteTransaction(sql, *operationApi);
                 }
+                operations.push_back(operationApi);
             }
         }
 
@@ -172,7 +184,11 @@ namespace ledger {
         }
 
         void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, OperationApi &operation) {
-
+            BitcoinLikeBlockchainExplorer::Transaction tx;
+            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().bitcoinTransaction.getValue());
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {
