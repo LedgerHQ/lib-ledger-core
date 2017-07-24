@@ -77,14 +77,14 @@ namespace ledger {
                         return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
                     }
                     throw exception;
-                }).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection> c) {
+                }).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection>& c) -> Either<Failure, std::shared_ptr<Success>> {
                     Handler h = handler;
                     std::shared_ptr<api::HttpUrlConnection> connection = c;
                     h.attach(connection);
                     HttpUrlConnectionInputStream is(connection);
                     rapidjson::Reader reader;
                     reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
-                    return h.build();
+                    return (Either<Failure, std::shared_ptr<Success>>) h.build();
                 });
             }
 

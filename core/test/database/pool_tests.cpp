@@ -62,7 +62,7 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, "test")
+    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
     .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<DatabaseSessionPool>& result) {
         EXPECT_TRUE(result.isSuccess());
         if (result.isFailure()) {

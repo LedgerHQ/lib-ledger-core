@@ -45,7 +45,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/wait.h>
+#include <async/async_wait.h>
 #include <BitcoinLikeStringXpubProvider.h>
 #include <api/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>

@@ -36,24 +36,31 @@
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <preferences/Preferences.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <async/DedicatedContext.hpp>
 
 namespace ledger {
     namespace core {
-        class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer {
+        class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer, public DedicatedContext {
         public:
             BlockchainExplorerAccountSynchronizer(
+                    const std::shared_ptr<WalletPool>& pool,
                     const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer
             );
-
-            void reset(const std::chrono::system_clock::time_point &toDate) override;
-
+            void reset(const std::shared_ptr<BitcoinLikeAccount> &account,
+                       const std::chrono::system_clock::time_point &toDate) override;
             const ProgressNotifier<Unit> &synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) override;
 
             bool isSynchronizing() const override;
 
         private:
+            void performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account);
+
+        private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<ProgressNotifier<Unit>> _notifier;
+            std::shared_ptr<Preferences> _internalPreferences;
+            std::shared_ptr<BitcoinLikeAccount> _currentAccount;
+            std::mutex _lock;
         };
     }
 }

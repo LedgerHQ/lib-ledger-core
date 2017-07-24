@@ -39,6 +39,7 @@
 #include <MongooseSimpleRestServer.hpp>
 #include <ledger/core/net/HttpClient.hpp>
 #include <ledger/core/net/HttpJsonHandler.hpp>
+#include <boost/lexical_cast.hpp>
 
 static std::string BIG_TEXT =
         "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
@@ -200,42 +201,37 @@ TEST(HttpClient, GETWithSax) {
         bool not_here;
     };
 
-    struct Handler : public HttpJsonHandler<Success, Failure, Handler> {
+    struct Handler : public HttpJsonHandler<std::shared_ptr<Success>, Failure, Handler> {
         Handler() {};
 
         bool Bool(bool b) {
             return true;
         };
 
-        bool Uint(unsigned int i) {
+        bool RawNumber(const Ch *str, rapidjson::SizeType len, bool copy) {
             if (_currentKey == std::string("the_answer"))
-                _result.getRight().the_answer = i;
-            return true;
-        }
-
-        bool Int(int i) {
-            if (_currentKey == std::string("the_answer"))
-                _result.getRight().the_answer = i;
+                _result.getRight()->the_answer = boost::lexical_cast<int>(std::string(str, len));
             return true;
         }
 
         bool Key(const Ch *str, rapidjson::SizeType len, bool copy) {
             _currentKey = std::string(str, len);
             if (getStatusCode() >= 200 && getStatusCode() < 300) {
-                _result = Success();
+                _result = std::make_shared<Success>();
             } else {
                 _result = Failure();
             }
             return true;
         }
 
-        Either<Failure, Success> build() {
+        Either<Failure, std::shared_ptr<Success>> build() {
             return _result;
         }
 
     private:
         std::string _currentKey;
-        Either<Failure, Success> _result;
+        Either<Failure, std::shared_ptr<Success>> _result;
+
     };
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
@@ -277,7 +273,7 @@ TEST(HttpClient, GETWithSaxError) {
         bool not_here;
     };
 
-    struct Handler : public HttpJsonHandler<Success, Failure, Handler> {
+    struct Handler : public HttpJsonHandler<std::shared_ptr<Success>, Failure, Handler> {
         Handler() {};
 
         bool Bool(bool b) {
@@ -288,33 +284,34 @@ TEST(HttpClient, GETWithSaxError) {
 
         bool Uint(unsigned int i) {
             if (_currentKey == std::string("the_answer"))
-                _result.getRight().the_answer = i;
+                _result.getRight()->the_answer = i;
             return true;
         }
 
         bool Int(int i) {
             if (_currentKey == std::string("the_answer"))
-                _result.getRight().the_answer = i;
+                _result.getRight()->the_answer = i;
             return true;
         }
 
         bool Key(const Ch *str, rapidjson::SizeType len, bool copy) {
             _currentKey = std::string(str, len);
             if (getStatusCode() >= 200 && getStatusCode() < 300) {
-                _result = Success();
+                _result = std::make_shared<Success>();
+
             } else {
                 _result = Failure();
             }
             return true;
         }
 
-        Either<Failure, Success> build() {
+        Either<Failure, std::shared_ptr<Success>> build() {
             return _result;
         }
 
     private:
         std::string _currentKey;
-        Either<Failure, Success> _result;
+        Either<Failure, std::shared_ptr<Success>> _result;
     };
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();

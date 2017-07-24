@@ -80,8 +80,8 @@ namespace ledger {
                 auto engine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
                                            .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
-                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([explorer]() {
-                        return std::make_shared<BlockchainExplorerAccountSynchronizer>(explorer);
+                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([pool, explorer]() {
+                        return std::make_shared<BlockchainExplorerAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

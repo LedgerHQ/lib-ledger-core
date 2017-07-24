@@ -3,7 +3,7 @@
  * wait
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/06/2017.
+ * Created by Pierre Pollastri on 24/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -31,24 +31,34 @@
 #ifndef LEDGER_CORE_WAIT_H
 #define LEDGER_CORE_WAIT_H
 
-#include <async/Future.hpp>
-#include <QEventLoop>
-#include "QtThreadPoolExecutionContext.hpp"
+#include "Future.hpp"
+#include <utils/ImmediateExecutionContext.hpp>
+#include <condition_variable>
 
-template <typename T>
-T wait(ledger::core::Future<T> future) {
-    auto signaler = std::make_shared<ledger::qt::QtThreadPoolExecutionContext>(1);
-    QEventLoop looper;
+namespace ledger {
+    namespace core {
+        namespace async {
 
-    future.onComplete(signaler, [&] (const ledger::core::Try<T>& result) {
-       looper.quit();
-    });
-    looper.exec();
-    ledger::core::Try<T> result = future.getValue().getValue();
-    if (result.isFailure()) {
-        throw result.getFailure();
+            template <typename T>
+            T wait(Future<T> future) {
+                std::mutex mutex;
+                std::unique_lock<std::mutex> lock(mutex);
+                std::condition_variable barrier;
+                Try<T> res;
+                future.onComplete(ImmediateExecutionContext::INSTANCE, [&] (const Try<T>& result) {
+                    res = result;
+                    barrier.notify_all();
+                });
+                barrier.wait(lock);
+                if (res.isSuccess()) {
+                    return res.getValue();
+                } else {
+                    throw res.getFailure();
+                }
+            }
+
+        }
     }
-    return result.getValue();
-};
+}
 
 #endif //LEDGER_CORE_WAIT_H

@@ -69,19 +69,19 @@ namespace ledger {
         }
 
         std::string Amount::toString() {
-            return "";
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::string Amount::toString()");
         }
 
         int64_t Amount::toLong() {
-            return 0;
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "int64_t Amount::toLong()");
         }
 
         double Amount::toDouble() {
-            return 0;
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "double Amount::toDouble()");
         }
 
         std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules) {
-            return "";
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules)");
         }
     }
 }

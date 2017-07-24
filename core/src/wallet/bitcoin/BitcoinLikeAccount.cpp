@@ -208,6 +208,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
+            _synchronizer->synchronize(std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this()));
             return nullptr;
         }
 

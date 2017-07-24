@@ -29,25 +29,34 @@
  *
  */
 #include "BlockchainExplorerAccountSynchronizer.h"
+#include <mutex>
+#include <async/wait.h>
+#include <utils/DateUtils.hpp>
 
 namespace ledger {
     namespace core {
 
-
         BlockchainExplorerAccountSynchronizer::BlockchainExplorerAccountSynchronizer(
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer) {
+                const std::shared_ptr<WalletPool> &pool,
+                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer) :
+            DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
             _explorer = explorer;
-        }
-
-        void BlockchainExplorerAccountSynchronizer::reset(const std::chrono::system_clock::time_point &toDate) {
-
         }
 
         const ProgressNotifier<Unit> &
         BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) {
+            std::lock_guard<std::mutex> lock(_lock);
             if (!_notifier) {
+                _currentAccount = account;
                 _notifier = std::make_shared<ProgressNotifier<Unit>>();
-
+                run([=] () {
+                   performSynchronization(account);
+                    std::lock_guard<std::mutex> l(_lock);
+                    _notifier = nullptr;
+                    _currentAccount = nullptr;
+                });
+            } else if (account != _currentAccount) {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "This synchronizer is already in use");
             }
             return *_notifier;
         }
@@ -55,5 +64,26 @@ namespace ledger {
         bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {
             return _notifier != nullptr;
         }
+
+        void BlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<BitcoinLikeAccount> &account,
+                                                          const std::chrono::system_clock::time_point &toDate) {
+
+        }
+
+        void BlockchainExplorerAccountSynchronizer::performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account) {
+            auto logger = account->logger();
+            auto startDate = DateUtils::now();
+            auto wallet = account->getWallet();
+
+            logger->info("Starting synchronization for account#{} ({}) of wallet {} at {}", account->getIndex(),
+                         account->getKeychain()->getRestoreKey(),
+                        account->getWallet()->getName(), DateUtils::toJSON(startDate));
+
+            auto duration = DateUtils::now().time_since_epoch() - startDate.time_since_epoch();
+            logger->info("End synchronization for account#{} of wallet {} in {} ms", account->getIndex(),
+                         account->getWallet()->getName(), duration.count());
+        }
+
+
     }
 }

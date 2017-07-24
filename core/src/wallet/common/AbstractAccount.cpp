@@ -43,7 +43,7 @@ namespace ledger {
             _internalPreferences = wallet->getAccountInternalPreferences(index);
             _externalPreferences = wallet->getAccountExternalPreferences(index);
             _loggerApi = wallet->getLogger();
-            _wallet = std::const_pointer_cast<const AbstractWallet>(wallet);
+            _wallet = wallet;
             _mainExecutionContext = wallet->getMainExecutionContext();
             _logger = wallet->logger();
             _type = wallet->getWalletType();
@@ -97,7 +97,12 @@ namespace ledger {
             return _uid;
         }
 
-        std::shared_ptr<const AbstractWallet> AbstractAccount::getWallet() const {
+        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() const {
+            return _wallet.lock();
+        }
+
+        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
+
             return _wallet.lock();
         }
 

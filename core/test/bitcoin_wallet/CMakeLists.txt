@@ -11,7 +11,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-bitcoin-wallet-tests main.cpp initialization_test.cpp p2pkh_keychain_test.cpp ledger_api_blockchain_explorer_tests.cpp wallet_database_tests.cpp)
+add_executable(ledger-core-bitcoin-wallet-tests main.cpp initialization_test.cpp p2pkh_keychain_test.cpp ledger_api_blockchain_explorer_tests.cpp wallet_database_tests.cpp synchronization_tests.cpp)
 
 target_link_libraries(ledger-core-bitcoin-wallet-tests gtest gtest_main)
 target_link_libraries(ledger-core-bitcoin-wallet-tests ledger-core)

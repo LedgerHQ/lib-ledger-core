@@ -1,9 +1,9 @@
 /*
  *
- * query_builder_tests
+ * synchronization_tests
  * ledger-core
  *
- * Created by Pierre Pollastri on 03/07/2017.
+ * Created by Pierre Pollastri on 24/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -30,6 +30,8 @@
  */
 
 #include <gtest/gtest.h>
+
+#include <gtest/gtest.h>
 #include <async/QtThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
@@ -49,14 +51,53 @@
 #include <BitcoinLikeStringXpubProvider.h>
 #include <api/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include "../fixtures/fixtures_1.h"
-#include <database/query/QueryBuilder.h>
-#include <api/QueryFilter.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/BitcoinLikeInput.hpp>
+#include <api/BitcoinLikeOutput.hpp>
+#include <api/BigInt.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
 
-TEST(QueryBuilder, SimpleOperationQuery) {
+
+#include "../fixtures/fixtures_1.h"
+
+static void createWallet(const std::shared_ptr<WalletPool>& pool, const std::string& walletName) {
+    soci::session sql(pool->getDatabaseSessionPool()
+                          ->getPool());
+    WalletDatabaseEntry entry;
+    entry.configuration = std::static_pointer_cast<DynamicObject>(DynamicObject::newInstance());
+    entry.name = "my_wallet";
+    entry.poolName = pool->getName();
+    entry.currencyName = "bitcoin";
+    entry.updateUid();
+    PoolDatabaseHelper::putWallet(sql, entry);
+}
+
+static void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index) {
+    soci::session sql(pool->getDatabaseSessionPool()
+                          ->getPool());
+    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName, "bitcoin");
+    if (!AccountDatabaseHelper::accountExists(sql, walletUid, index))
+        AccountDatabaseHelper::createAccount(sql, walletUid, index);
+}
+
+static BitcoinLikeWalletDatabase newAccount(const std::shared_ptr<WalletPool>& pool,
+                                            const std::string& walletName,
+                                            int32_t index,
+                                            const std::string& xpub) {
+    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
+    if (!db.accountExists(index)) {
+        createWallet(pool, walletName);
+        createAccount(pool, walletName, index);
+        db.createAccount(index, xpub);
+    }
+    return db;
+}
+
+
+TEST(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
@@ -82,29 +123,9 @@ TEST(QueryBuilder, SimpleOperationQuery) {
         EXPECT_EQ(nextIndex, 0);
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet->asBitcoinLikeWallet())->createNewAccount(nextIndex, XPUB_PROVIDER)));
 
-        std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
-                *JSONUtils::parse<TransactionParser>(TX_1),
-                *JSONUtils::parse<TransactionParser>(TX_2),
-                *JSONUtils::parse<TransactionParser>(TX_3),
-                *JSONUtils::parse<TransactionParser>(TX_4)
-        };
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.begin();
-        for (auto& tx : transactions) {
-            account->putTransaction(sql, tx);
-        }
-        sql.commit();
-        soci::rowset<soci::row> rows = QueryBuilder()
-                .select("uid")
-                .from("operations")
-                .where(api::QueryFilter::operationUidEq("0fc7d7b13426e218352ee081379a9e2137ce126bc16c7659f2a090be903089e4"))
-                .execute(sql);
-        auto count = 0;
-        for (auto& row : rows) {
-            EXPECT_EQ(row.get<std::string>(0), "0fc7d7b13426e218352ee081379a9e2137ce126bc16c7659f2a090be903089e4");
-            count += 1;
-        }
-        EXPECT_EQ(count, 1);
+        account->synchronize();
+
+        dispatcher->waitUntilStopped();
     }
     resolver->clean();
 }

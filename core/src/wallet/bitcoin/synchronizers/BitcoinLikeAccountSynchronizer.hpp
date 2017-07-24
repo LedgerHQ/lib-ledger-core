@@ -38,7 +38,7 @@ namespace ledger {
         class BitcoinLikeAccount;
         class BitcoinLikeAccountSynchronizer {
         public:
-            virtual void reset(const std::chrono::system_clock::time_point& toDate) = 0;
+            virtual void reset(const std::shared_ptr<BitcoinLikeAccount>& account, const std::chrono::system_clock::time_point& toDate) = 0;
             virtual const ProgressNotifier<Unit>& synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) = 0;
             virtual bool isSynchronizing() const = 0;
         };
