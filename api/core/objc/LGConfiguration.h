@@ -17,6 +17,8 @@ extern NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT;
 extern NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE;
 /** Selects the synchronization engine */
 extern NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE;
+/** Sets the half batch size (default: 20) */
+extern NSString * __nonnull const LGConfigurationSYNCHRONIZATIONHALFBATCHSIZE;
 /** Operation trust */
 extern NSString * __nonnull const LGConfigurationTRUSTLIMIT;
 

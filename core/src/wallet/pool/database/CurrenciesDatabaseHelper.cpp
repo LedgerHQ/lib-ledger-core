@@ -57,8 +57,9 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             case api::WalletType::BITCOIN: {
                 auto &params = currency.bitcoinLikeNetworkParameters.value();
                 sql
-                << "INSERT INTO bitcoin_currencies VALUES(:name, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction)",
+                << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction)",
                 use(currency.name),
+                use(params.Identifier),
                 use(hex::toString(params.P2PKHVersion)),
                 use(hex::toString(params.P2SHVersion)),
                 use(hex::toString(params.XPUBVersion)),
@@ -84,7 +85,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
         "SELECT currencies.name, currencies.type, currencies.bip44_coin_type, currencies.payment_uri_scheme, "
         "       bitcoin_currencies.p2pkh_version, bitcoin_currencies.p2sh_version, bitcoin_currencies.xpub_version,"
         "       bitcoin_currencies.dust_amount, bitcoin_currencies.fee_policy, bitcoin_currencies.has_timestamped_transaction,"
-        "       bitcoin_currencies.message_prefix "
+        "       bitcoin_currencies.message_prefix, bitcoin_currencies.identifier "
         "FROM currencies "
         "LEFT OUTER JOIN bitcoin_currencies ON bitcoin_currencies.name = currencies.name");
     for (auto& row : rows) {
@@ -104,6 +105,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(row.get<std::string>(8));
                 params.UsesTimestampedTransaction = row.get<int>(9) == 1;
                 params.MessagePrefix = row.get<std::string>(10);
+                params.Identifier = row.get<std::string>(11);
                 currency.bitcoinLikeNetworkParameters = params;
                 break;
             }

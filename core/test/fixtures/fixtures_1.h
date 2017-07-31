@@ -36,7 +36,7 @@
 #include <BitcoinLikeStringXpubProvider.h>
 
 static std::vector<std::pair<std::string, std::string>> XPUBS = {
-        {"main", "xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
+        {"main", "xpub6CThYZbX4PTeA7KRYZ8YXP3F6HwT2eVKPQap3Avieds3p1eos35UzSsJtTbJ3vQ8d3fjRwk4bCEz4m4H6mkFW49q29ZZ6gS8tvahs4WCZ9X"}
 };
 static auto XPUB_PROVIDER = ledger::core::api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(
         std::make_shared<BitcoinLikeStringXpubProvider>(XPUBS)

@@ -7,6 +7,13 @@
 @import "../../bitcoin/addresses.djinni"
 @import "currency.djinni"
 
+SynchronizationStatus = interface +c {
+    const STATUS_DONE: i32 = 1;
+    const STATUS_ERROR: i32 = 2;
+    const STATUS_DONE_SYNCHRONIZE_NEXT_ACCOUNT: i32 = 3;
+}
+
+
 OperationType = enum {
     send; receive;
 }

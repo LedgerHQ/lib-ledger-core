@@ -18,4 +18,6 @@ NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE = @"BLOCKCHAI
 
 NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE = @"SYNCHRONIZATION_ENGINE";
 
+NSString * __nonnull const LGConfigurationSYNCHRONIZATIONHALFBATCHSIZE = @"SYNCHRONIZATION_HALF_BATCH_SIZE";
+
 NSString * __nonnull const LGConfigurationTRUSTLIMIT = @"TRUST_LIMIT";

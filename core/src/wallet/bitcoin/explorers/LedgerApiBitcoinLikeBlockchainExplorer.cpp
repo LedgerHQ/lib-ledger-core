@@ -111,6 +111,7 @@ namespace ledger {
                 }
                 params = params + "blockHash=" + fromBlockHash.getValue();
             }
+            fmt::print("Query {}, {}, {} \n", _parameters.Identifier, joinedAddresses, params);
             return _http
             ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
             .json<BitcoinLikeBlockchainExplorer::TransactionsBulk, Exception>(LedgerApiParser<BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsBulkParser>())
@@ -138,7 +139,6 @@ namespace ledger {
 
         FuturePtr<BitcoinLikeBlockchainExplorer::Transaction>
         LedgerApiBitcoinLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) {
-            Promise<BitcoinLikeBlockchainExplorer::Transaction> promise;
             return _http
                 ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash.str()))
                 .json<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, Exception>(LedgerApiParser<std::vector<BitcoinLikeBlockchainExplorer::Transaction>, TransactionsParser>())

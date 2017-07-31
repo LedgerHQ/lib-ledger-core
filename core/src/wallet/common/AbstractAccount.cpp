@@ -119,5 +119,13 @@ namespace ledger {
             );
         }
 
+        std::shared_ptr<Preferences> AbstractAccount::getInternalPreferences() const {
+            return _internalPreferences;
+        }
+
+        std::shared_ptr<Preferences> AbstractAccount::getExternalPreferences() const {
+            return _externalPreferences;
+        }
+
     }
 }

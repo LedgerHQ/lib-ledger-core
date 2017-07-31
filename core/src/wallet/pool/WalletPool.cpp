@@ -199,6 +199,8 @@ namespace ledger {
                     getDispatcher()->getThreadPoolExecutionContext(fmt::format("http_clients"))
                 );
                 _httpClients[baseUrl] = client;
+                client->setLogger(logger());
+                return client;
             }
             return _httpClients[baseUrl].lock();
         }

@@ -184,7 +184,7 @@ add_library(
         wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.cpp wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h
         wallet/bitcoin/api_impl/BitcoinLikeInputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeInputApi.h
         wallet/bitcoin/api_impl/BitcoinLikeOutputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h
-        wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h async/wait.h)
+        wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h async/wait.h async/algorithm.h)
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 

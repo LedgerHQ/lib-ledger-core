@@ -88,7 +88,6 @@ namespace ledger {
             for (auto& input : transaction.inputs) {
 
                 if (input.address.nonEmpty()) {
-                    fmt::print("HAS {}\n", input.address.getValue());
                     senders.push_back(input.address.getValue());
                 }
                 // Extend input with derivation paths
@@ -193,8 +192,8 @@ namespace ledger {
             operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
         }
 
-        std::shared_ptr<const BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
-            return std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain);
+        std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
+            return _keychain;
         }
 
         // REVIEW

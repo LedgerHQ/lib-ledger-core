@@ -46,6 +46,9 @@ Configuration = interface +c {
     # Selects the synchronization engine
     const SYNCHRONIZATION_ENGINE: string = "SYNCHRONIZATION_ENGINE";
 
+    # Sets the half batch size (default: 20)
+    const SYNCHRONIZATION_HALF_BATCH_SIZE: string = "SYNCHRONIZATION_HALF_BATCH_SIZE";
+
     # Operation trust
     const TRUST_LIMIT: string = "TRUST_LIMIT";
 }

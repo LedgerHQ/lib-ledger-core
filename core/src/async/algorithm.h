@@ -1,9 +1,9 @@
 /*
  *
- * wait
+ * algorithm
  * ledger-core
  *
- * Created by Pierre Pollastri on 24/07/2017.
+ * Created by Pierre Pollastri on 25/07/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,39 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_WAIT_H
-#define LEDGER_CORE_WAIT_H
+#ifndef LEDGER_CORE_ALGORITHM_H
+#define LEDGER_CORE_ALGORITHM_H
 
 #include "Future.hpp"
-#include <utils/ImmediateExecutionContext.hpp>
-#include <condition_variable>
 
 namespace ledger {
     namespace core {
         namespace async {
 
-            template <typename T>
-            T wait(Future<T> future) {
-                std::mutex mutex;
-                std::unique_lock<std::mutex> lock(mutex);
-                std::condition_variable barrier;
-                Try<T> res;
-                future.onComplete(ImmediateExecutionContext::INSTANCE, [&] (const Try<T>& result) {
-                    fmt::print("HELLO WORLD");
-                    res = result;
-                    barrier.notify_all();
-                });
-                fmt::print("WAITING");
-                barrier.wait(lock);
-                if (res.isSuccess()) {
-                    return res.getValue();
-                } else {
-                    throw res.getFailure();
-                }
-            }
-
         }
     }
 }
 
-#endif //LEDGER_CORE_WAIT_H
+#define BEGIN_ASYNC_WHILE()
+
+#define ASYNC_FOREACH()
+
+#endif //LEDGER_CORE_ALGORITHM_H

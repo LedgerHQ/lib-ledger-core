@@ -39,7 +39,9 @@ struct BitcoinLikeNetworkParameters final {
     , DustAmount(std::move(DustAmount_))
     , MessagePrefix(std::move(MessagePrefix_))
     , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
-    {}
+    {
+
+    }
 
     BitcoinLikeNetworkParameters(const BitcoinLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;

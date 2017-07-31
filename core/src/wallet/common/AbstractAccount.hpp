@@ -50,6 +50,8 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
+            virtual std::shared_ptr<Preferences> getInternalPreferences() const;
+            virtual std::shared_ptr<Preferences> getExternalPreferences() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
             virtual const std::string& getAccountUid() const;
             virtual std::shared_ptr<AbstractWallet> getWallet() const;

@@ -117,6 +117,7 @@ namespace ledger {
 
             sql << "CREATE TABLE bitcoin_currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "identifier VARCHAR(255) NOT NULL,"
                 "p2pkh_version VARCHAR(255) NOT NULL,"
                 "p2sh_version VARCHAR(255) NOT NULL,"
                 "xpub_version VARACHAR(255) NOT NULL,"

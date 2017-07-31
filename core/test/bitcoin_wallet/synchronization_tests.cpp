@@ -56,6 +56,7 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
+#include <net/QtHttpClient.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -102,11 +103,12 @@ TEST(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
+    auto http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    auto newPool = [=]() -> std::shared_ptr<WalletPool> {
         return WalletPool::newInstance(
                 "my_pool",
                 Option<std::string>::NONE,
-                nullptr,
+                http,
                 nullptr,
                 resolver,
                 printer,

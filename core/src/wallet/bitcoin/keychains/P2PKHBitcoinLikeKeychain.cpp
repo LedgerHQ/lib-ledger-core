@@ -107,15 +107,12 @@ namespace ledger {
         }
 
         std::vector<std::string> P2PKHBitcoinLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            auto maxObservableChangeIndex = _state.maxConsecutiveChangeIndex + _observableRange + _state.nonConsecutiveChangeIndexes.size();
-            auto maxObservableReceiveIndex = _state.maxConsecutiveReceiveIndex + _observableRange + _state.nonConsecutiveReceiveIndexes.size();
             auto length = to - from;
             std::vector<std::string> result;
-            for (auto i = 0; i < length && ((from + i) < maxObservableChangeIndex || (from + i) < maxObservableReceiveIndex); i++) {
-                if ((from + i) < maxObservableReceiveIndex)
-                    result.push_back(derive(KeyPurpose::RECEIVE, from + i));
-                if ((from + i) < maxObservableChangeIndex)
-                    result.push_back(derive(KeyPurpose::CHANGE, from + i));
+            result.reserve((length + 1) * 2);
+            for (auto i = 0; i <= length; i++) {
+                result.push_back(derive(KeyPurpose::RECEIVE, from + i));
+                result.push_back(derive(KeyPurpose::CHANGE, from + i));
             }
             return result;
         }
@@ -157,8 +154,8 @@ namespace ledger {
                                                             uint32_t to) {
             auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
-            std::vector<std::string> result(length);
-            for (auto i = 0; i < length; i++) {
+            std::vector<std::string> result(length +1);
+            for (auto i = 0; i <= length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
                 } else {

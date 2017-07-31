@@ -33,6 +33,9 @@ public:
     /** Selects the synchronization engine */
     static std::string const SYNCHRONIZATION_ENGINE;
 
+    /** Sets the half batch size (default: 20) */
+    static std::string const SYNCHRONIZATION_HALF_BATCH_SIZE;
+
     /** Operation trust */
     static std::string const TRUST_LIMIT;
 };

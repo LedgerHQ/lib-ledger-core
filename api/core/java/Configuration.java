@@ -27,6 +27,9 @@ public abstract class Configuration {
     /** Selects the synchronization engine */
     public static final String SYNCHRONIZATION_ENGINE = "SYNCHRONIZATION_ENGINE";
 
+    /** Sets the half batch size (default: 20) */
+    public static final String SYNCHRONIZATION_HALF_BATCH_SIZE = "SYNCHRONIZATION_HALF_BATCH_SIZE";
+
     /** Operation trust */
     public static final String TRUST_LIMIT = "TRUST_LIMIT";
 
