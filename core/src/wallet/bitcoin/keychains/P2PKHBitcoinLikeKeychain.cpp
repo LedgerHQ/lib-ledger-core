@@ -40,6 +40,7 @@
 #include "../../../api/Configuration.hpp"
 #include "../../../utils/DerivationPath.hpp"
 #include "../../../collections/strings.hpp"
+#include <debug/Benchmarker.h>
 
 namespace ledger {
     namespace core {

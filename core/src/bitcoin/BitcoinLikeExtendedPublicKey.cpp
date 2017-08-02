@@ -29,6 +29,7 @@
  *
  */
 #include <src/utils/DerivationPath.hpp>
+#include <debug/Benchmarker.h>
 #include "../bytes/BytesWriter.h"
 #include "BitcoinLikeExtendedPublicKey.hpp"
 #include "../utils/djinni_helpers.hpp"
@@ -57,7 +58,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeAddress> BitcoinLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
+            Benchmarker benchmarker("Derivation", nullptr);
+            benchmarker.start();
             auto key = _derive(0, p.toVector(), _key);
+            benchmarker.stop();
             return std::make_shared<BitcoinLikeAddress>(_params, key.getPublicKeyHash160(), _params.P2PKHVersion, optional<std::string>((_path + p).toString()));
         }
 

@@ -35,6 +35,7 @@
 #include <cereal/types/vector.hpp>
 #include <algorithm>
 #include <async/algorithm.h>
+#include <debug/Benchmarker.h>
 
 namespace ledger {
     namespace core {
@@ -135,7 +136,7 @@ namespace ledger {
                                                                                      ->getConfiguration();
             buddy->halfBatchSize = (uint32_t) buddy->configuration
                                                    ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
-                                                   .value_or(20);
+                                                   .value_or(50);
             buddy->keychain = account->getKeychain();
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
@@ -182,7 +183,10 @@ namespace ledger {
             }
             auto self = shared_from_this();
             auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
+            auto benchmark = std::make_shared<Benchmarker>(fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
+            benchmark->start();
             return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) {
+                benchmark->stop();
                 buddy->preferences->editor()->putObject("state", buddy->savedState.getValue())->commit();
                 if (!done || (done && hadTransactions)) {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
@@ -199,13 +203,21 @@ namespace ledger {
             auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
             if (batchState.blockHeight > 0)
                 blockHash = Option<std::string>(batchState.blockHash);
+            auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
+            derivationBenchmark->start();
             auto batch = buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
                                                                     (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
+            derivationBenchmark->stop();
             fmt::print("Batch bounds {}:{}\n", (uint32_t) (currentBatchIndex * buddy->halfBatchSize), (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
             fmt::print("Batch size: {}, Block is empty: {}\n", batch.size(), blockHash.isEmpty());
+            auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
+            benchmark->start();
             return _explorer
                     ->getTransactions(batch, blockHash, buddy->token)
-                    .flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) {
+                    .flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) {
+                        benchmark->stop();
+                        auto insertionBenchmark = std::make_shared<Benchmarker>("Transaction computation", buddy->logger);
+                        insertionBenchmark->start();
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
                         sql.begin();
@@ -226,6 +238,7 @@ namespace ledger {
                                                                 .hash;
                             }
                         }
+                        insertionBenchmark->stop();
                         auto hadTX = hadTransactions || bulk->transactions.size() > 0;
                         if (bulk->hasNext) {
                             return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);

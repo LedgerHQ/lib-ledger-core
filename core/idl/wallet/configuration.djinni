@@ -51,6 +51,8 @@ Configuration = interface +c {
 
     # Operation trust
     const TRUST_LIMIT: string = "TRUST_LIMIT";
+
+
 }
 
 PoolConfiguration = interface +c {
