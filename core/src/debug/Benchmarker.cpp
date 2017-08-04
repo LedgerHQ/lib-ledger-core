@@ -41,7 +41,7 @@ namespace ledger {
         }
 
         Benchmarker &Benchmarker::start() {
-            _startDate = DateUtils::now();
+            _startDate = std::chrono::steady_clock::now();
             if (_logger) {
                 _logger->info("{} started.", _name);
             }
@@ -49,7 +49,7 @@ namespace ledger {
         }
 
         Benchmarker &Benchmarker::stop() {
-            _stopDate = DateUtils::now();
+            _stopDate = std::chrono::steady_clock::now();
             if (_logger) {
                 _logger->info("{} took {}.", _name, DurationUtils::formatDuration(getDuration()));
             } else {
@@ -58,7 +58,7 @@ namespace ledger {
             return *this;
         }
 
-        std::chrono::system_clock::duration Benchmarker::getDuration() const {
+        std::chrono::steady_clock::duration Benchmarker::getDuration() const {
             return _stopDate - _startDate;
         }
 

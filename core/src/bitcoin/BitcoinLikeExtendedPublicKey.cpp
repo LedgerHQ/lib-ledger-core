@@ -58,11 +58,14 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeAddress> BitcoinLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
-            Benchmarker benchmarker("Derivation", nullptr);
-            benchmarker.start();
             auto key = _derive(0, p.toVector(), _key);
-            benchmarker.stop();
             return std::make_shared<BitcoinLikeAddress>(_params, key.getPublicKeyHash160(), _params.P2PKHVersion, optional<std::string>((_path + p).toString()));
+        }
+
+        std::shared_ptr<BitcoinLikeExtendedPublicKey> BitcoinLikeExtendedPublicKey::derive(
+                const DerivationPath &path) {
+            auto dpk = _derive(0, path.toVector(), _key);
+            return std::make_shared<BitcoinLikeExtendedPublicKey>(_params, dpk, _path + path);
         }
 
         std::string BitcoinLikeExtendedPublicKey::toBase58() {

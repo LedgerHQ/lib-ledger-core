@@ -39,8 +39,8 @@ namespace ledger {
     namespace core {
         class BlockDatabaseHelper {
         public:
-            static inline std::string createBlockUid(const Block& block);
-            static inline std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
+            static std::string createBlockUid(const Block& block);
+            static std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
             static void putBlock(soci::session& sql, const Block& block);
             static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
         };

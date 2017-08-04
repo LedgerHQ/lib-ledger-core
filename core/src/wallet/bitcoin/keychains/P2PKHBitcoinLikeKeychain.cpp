@@ -52,6 +52,22 @@ namespace ledger {
                                                            const std::shared_ptr<Preferences> &preferences)
                 : BitcoinLikeKeychain(configuration, params, account, preferences) {
             _xpub = xpub;
+
+            {
+                auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(getCurrency().bip44CoinType)
+                        .setNode(RECEIVE).getPath();
+                _publicNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
+            }
+            {
+                auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
+                                                      .setAccountIndex(getAccountIndex())
+                                                      .setCoinType(getCurrency().bip44CoinType)
+                                                      .setNode(CHANGE).getPath();
+                _internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
+            }
+
             // Try to restore the state from preferences
             auto state = preferences->getData("state", {});
             if (!state.empty()) {
@@ -176,7 +192,13 @@ namespace ledger {
             auto cacheKey = fmt::format("path:{}", localPath);
             auto address = getPreferences()->getString(cacheKey, "");
             if (address.empty()) {
-                address = getExtendedPublicKey()->derive(localPath)->toBase58();
+                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(getCurrency().bip44CoinType)
+                        .setNode(iPurpose)
+                        .setAddressIndex((int) index).getPath().toString();
+                auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                address = xpub->derive(p)->toBase58();
                 // Feed path -> address cache
                 // Feed address -> path cache
                 getPreferences()

@@ -1,9 +1,9 @@
 /*
  *
- * DurationUtils
+ * VectorUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 01/08/2017.
+ * Created by Pierre Pollastri on 03/08/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,12 +28,4 @@
  * SOFTWARE.
  *
  */
-#include "DurationUtils.h"
-
-namespace ledger {
-    namespace core {
-
-
-
-    }
-}
+#include "VectorUtils.h"

@@ -31,10 +31,7 @@
 #ifndef LEDGER_CORE_SECP256K1POINT_HPP
 #define LEDGER_CORE_SECP256K1POINT_HPP
 
-#include <openssl/bn.h>
-#include <openssl/ec.h>
-#include <openssl/ecdsa.h>
-#include <openssl/evp.h>
+#include <include/secp256k1.h>
 #include "../math/BigInt.h"
 #include <cstdint>
 
@@ -52,11 +49,11 @@ namespace ledger {
             ~SECP256k1Point();
         protected:
             SECP256k1Point();
+            void ensurePubkeyIsNotNull() const;
 
         private:
-            EC_GROUP* _group;
-            EC_POINT* _point;
-            BN_CTX*   _ctx;
+            secp256k1_context* _context;
+            secp256k1_pubkey* _pubKey;
         };
     }
 }

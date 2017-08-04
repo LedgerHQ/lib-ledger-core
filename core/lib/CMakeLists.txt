@@ -7,7 +7,6 @@ add_subdirectory(sqlite3)
 add_subdirectory(openssl)
 add_subdirectory(snappy)
 add_subdirectory(leveldb)
-add_subdirectory(libwally-core)
 
 # SOCI configuration
 

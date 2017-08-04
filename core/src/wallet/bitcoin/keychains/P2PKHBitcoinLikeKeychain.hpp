@@ -83,6 +83,8 @@ namespace ledger {
         private:
             P2PKHKeychainPersistentState _state;
             uint32_t _observableRange;
+            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
+            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
         };
     }

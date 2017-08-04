@@ -9,3 +9,4 @@ CTestTestfile.cmake
 build/
 .DS_Store
 .idea/
+externals/build/

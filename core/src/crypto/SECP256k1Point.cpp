@@ -30,33 +30,33 @@
  */
 #include "SECP256k1Point.hpp"
 #include "../utils/Exception.hpp"
+#include <utils/VectorUtils.h>
+#include <secp256k1.h>
+#include <include/secp256k1.h>
+#include <debug/Benchmarker.h>
 
 namespace ledger {
     namespace core {
 
-
         SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
-            BIGNUM* bn = BN_bin2bn(p.data(), p.size(), NULL);
-            EC_POINT_bn2point(_group, bn, _point, _ctx);
-            BN_clear_free(bn);
+            _pubKey = new secp256k1_pubkey();
+            secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size());
         }
 
         SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const {
-            SECP256k1Point result;
-            EC_POINT_add(_group, result._point, _point, p._point, _ctx);
-            return result;
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const");
         }
 
         SECP256k1Point::SECP256k1Point() {
-            _group = EC_GROUP_new_by_curve_name(NID_secp256k1);
-            _point = EC_POINT_new(_group);
-            _ctx = BN_CTX_new();
+            _context = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+            _pubKey = nullptr;
         }
 
         SECP256k1Point::~SECP256k1Point() {
-            EC_POINT_free(_point);
-            EC_GROUP_free(_group);
-            BN_CTX_free(_ctx);
+            secp256k1_context_destroy(_context);
+            if (_pubKey) {
+                delete _pubKey;
+            }
         }
 
         SECP256k1Point::SECP256k1Point(const SECP256k1Point &p) : SECP256k1Point() {
@@ -64,35 +64,47 @@ namespace ledger {
         }
 
         SECP256k1Point &SECP256k1Point::operator=(const SECP256k1Point &p) {
-            EC_POINT_copy(_point, p._point);
+            _pubKey = new secp256k1_pubkey();
+            ::memcpy(_pubKey, p._pubKey, sizeof(*p._pubKey));
             return *this;
         }
 
         bool SECP256k1Point::isAtInfinity() const {
-            return EC_POINT_is_at_infinity(_group, _point) == 1;
+            ensurePubkeyIsNotNull();
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "bool SECP256k1Point::isAtInfinity() const");
         }
 
         SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) const {
-            SECP256k1Point result;
-            BIGNUM* bn = BN_bin2bn(n.data(), n.size(), NULL);
+            ensurePubkeyIsNotNull();
+            // Pad the number to 32 bytes with 0
+            auto num = n;
+            VectorUtils::padOnLeft<uint8_t>(num, 0, 32);
 
-            int flag = EC_POINT_mul(_group, result._point, bn, _point, BN_value_one(), _ctx);
-            BN_clear_free(bn);
-
+            secp256k1_pubkey* pubKey = new secp256k1_pubkey();
+            memcpy(pubKey, _pubKey, sizeof(*pubKey));
+            std::vector<uint8_t> serializedKey(33);
+            auto len = serializedKey.size();
+            auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, n.data());
             if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
-            return result;
+            secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, pubKey, SECP256K1_EC_COMPRESSED);
+            return SECP256k1Point(serializedKey);
         }
 
         std::vector<uint8_t> SECP256k1Point::toByteArray(bool compressed) const {
-            BIGNUM* result = BN_new();
-            auto conversion = compressed ? POINT_CONVERSION_COMPRESSED : POINT_CONVERSION_UNCOMPRESSED;
-            EC_POINT_point2bn(_group, _point, conversion, result, _ctx);
-            auto size = BN_num_bytes(result);
-            std::vector<uint8_t> bytes;
-            bytes.resize(size);
-            BN_bn2bin(result, bytes.data());
-            return bytes;
+            ensurePubkeyIsNotNull();
+            if (compressed) {
+                std::vector<uint8_t> result(33);
+                size_t len = 33;
+                secp256k1_ec_pubkey_serialize(_context, result.data(), &len, _pubKey, SECP256K1_EC_COMPRESSED);
+                return result;
+            }
+            return std::vector<uint8_t>(_pubKey->data, _pubKey->data + sizeof(_pubKey->data));
 
+        }
+
+        void SECP256k1Point::ensurePubkeyIsNotNull() const {
+            if (_pubKey == nullptr)
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Public key is null, cannot do any computation on the point.");
         }
 
     }

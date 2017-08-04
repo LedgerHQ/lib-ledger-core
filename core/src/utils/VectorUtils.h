@@ -1,9 +1,9 @@
 /*
  *
- * DurationUtils
+ * VectorUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 01/08/2017.
+ * Created by Pierre Pollastri on 03/08/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,12 +28,35 @@
  * SOFTWARE.
  *
  */
-#include "DurationUtils.h"
+#ifndef LEDGER_CORE_VECTORUTILS_H
+#define LEDGER_CORE_VECTORUTILS_H
+
+#include <vector>
 
 namespace ledger {
     namespace core {
-
-
-
+        class VectorUtils {
+        public:
+            template <typename T>
+            static void padOnLeft(std::vector<T>& vector, T elem, std::size_t length) {
+                if (vector.size() < length) {
+                    auto maxPadAddress = length - vector.size();
+                    std::vector<T> result(length);
+                    auto j = 0;
+                    for (auto i = 0; i < length; i++) {
+                        if (i < maxPadAddress) {
+                            result[i] = elem;
+                        } else {
+                            result[i] = vector[j];
+                            j += 1;
+                        }
+                    }
+                    result.swap(vector);
+                }
+            }
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_VECTORUTILS_H

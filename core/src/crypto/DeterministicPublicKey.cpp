@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+#include <debug/Benchmarker.h>
 #include "../bytes/BytesWriter.h"
 #include "DeterministicPublicKey.hpp"
 #include "RIPEMD160.hpp"
@@ -90,7 +91,6 @@ namespace ledger {
             }
 
             SECP256k1Point K = SECP256k1Point(_key).generatorMultiply(IL.toByteArray());
-
             return DeterministicPublicKey(
                     K.toByteArray(),
                     IR,

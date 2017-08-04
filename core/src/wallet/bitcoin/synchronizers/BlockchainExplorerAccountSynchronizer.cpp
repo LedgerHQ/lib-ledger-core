@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <async/algorithm.h>
 #include <debug/Benchmarker.h>
+#include <utils/DurationUtils.h>
 
 namespace ledger {
     namespace core {
@@ -136,7 +137,7 @@ namespace ledger {
                                                                                      ->getConfiguration();
             buddy->halfBatchSize = (uint32_t) buddy->configuration
                                                    ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
-                                                   .value_or(50);
+                                                   .value_or(10);
             buddy->keychain = account->getKeychain();
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
@@ -162,8 +163,8 @@ namespace ledger {
             }).map<Unit>(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Unit&) {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                         (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
-                buddy->logger->info("End synchronization for account#{} of wallet {} in {} ms", buddy->account->getIndex(),
-                             buddy->account->getWallet()->getName(), duration.count());
+                buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
+                             buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
                 return unit;
             }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
