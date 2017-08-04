@@ -31,7 +31,6 @@
 #include "SECP256k1Point.hpp"
 #include "../utils/Exception.hpp"
 #include <utils/VectorUtils.h>
-#include <secp256k1.h>
 #include <include/secp256k1.h>
 #include <debug/Benchmarker.h>
 

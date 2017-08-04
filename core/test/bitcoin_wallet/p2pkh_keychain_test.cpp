@@ -31,19 +31,20 @@
 
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
 #include <src/wallet/bitcoin/networks.hpp>
 #include <src/wallet/currencies.hpp>
+#include <async/QtThreadDispatcher.hpp>
 
 using namespace ledger::core;
+using namespace ledger::qt;
 
 const std::string XPUB = "xpub6DCi5iJ57ZPd5qPzvTm5hUt6X23TJdh9H4NjNsNbt7t7UuTMJfawQWsdWRFhfLwkiMkB1rQ4ZJWLB9YBnzR7kbs9N8b2PsKZgKUHQm1X4or";
 
 static void testKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeKeychain&)> f) {
     auto resolver = std::make_shared<NativePathResolver>();
     {
-        auto dispatcher = std::make_shared<NativeThreadDispatcher>();
+        auto dispatcher = std::make_shared<QtThreadDispatcher>();
         auto preferencesLock = dispatcher->newLock();
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
         "/preferences/tests.db",
@@ -52,7 +53,7 @@ static void testKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeK
         );
         auto configuration = std::make_shared<DynamicObject>();
 
-        dispatcher->getMainExecutionContext()->execute(make_runnable([=]() {
+        dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=]() {
             P2PKHBitcoinLikeKeychain keychain(
             configuration,
             ledger::core::currencies::BITCOIN,

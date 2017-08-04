@@ -44,6 +44,8 @@ if (TARGET_JNI)
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
 endif ()
 
+link_directories(${CMAKE_BINARY_DIR}/lib)
+
 add_library(
         ledger-core SHARED
         ${ledger-core-sources}
@@ -186,9 +188,6 @@ add_library(
         wallet/bitcoin/api_impl/BitcoinLikeOutputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h
         wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h async/wait.h async/algorithm.h debug/Benchmarker.cpp debug/Benchmarker.h utils/DurationUtils.cpp utils/DurationUtils.h utils/VectorUtils.cpp utils/VectorUtils.h)
 
-link_directories(${CMAKE_BINARY_DIR}/lib)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../externals/build/)
-
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
 target_link_libraries(ledger-core crypto)
@@ -196,7 +195,8 @@ target_link_libraries(ledger-core sqlite3)
 target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 target_link_libraries(ledger-core leveldb)
-target_link_libraries(ledger-core secp256k1)
+find_library(SECP256K1_LIB secp256k1 HINTS ../../externals/build)
+target_link_libraries(ledger-core ${SECP256K1_LIB})
 
 
 

@@ -209,8 +209,6 @@ namespace ledger {
             auto batch = buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
                                                                     (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
             derivationBenchmark->stop();
-            fmt::print("Batch bounds {}:{}\n", (uint32_t) (currentBatchIndex * buddy->halfBatchSize), (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
-            fmt::print("Batch size: {}, Block is empty: {}\n", batch.size(), blockHash.isEmpty());
             auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
             benchmark->start();
             return _explorer
@@ -227,7 +225,6 @@ namespace ledger {
                         }
                         sql.commit();
                         // Get the last block
-                        fmt::print("Array size: {}, Current Index: {}\n", buddy->savedState.getValue().batches.size(), currentBatchIndex);
                         if (bulk->transactions.size() > 0) {
                             auto &lastBlock = bulk->transactions
                                                   .back()

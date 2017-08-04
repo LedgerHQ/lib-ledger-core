@@ -111,7 +111,6 @@ namespace ledger {
                 }
                 params = params + "blockHash=" + fromBlockHash.getValue();
             }
-            fmt::print("Query {}, {}, {} \n", _parameters.Identifier, joinedAddresses, params);
             return _http
             ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
             .json<BitcoinLikeBlockchainExplorer::TransactionsBulk, Exception>(LedgerApiParser<BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsBulkParser>())
