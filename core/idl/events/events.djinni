@@ -4,7 +4,8 @@ EventCode = enum {
 
     new_operation;
 
-    synchronization_start;
-    synchronization_stop;
-    synchronization_done;
+    synchronization_started;
+    synchronization_failed;
+    synchronization_succeed;
+    synchronization_succeed_on_previously_empty_account;
 }

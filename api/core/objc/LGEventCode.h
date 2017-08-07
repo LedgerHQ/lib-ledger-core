@@ -7,7 +7,8 @@ typedef NS_ENUM(NSInteger, LGEventCode)
 {
     LGEventCodeUndefined,
     LGEventCodeNewOperation,
-    LGEventCodeSynchronizationStart,
-    LGEventCodeSynchronizationStop,
-    LGEventCodeSynchronizationDone,
+    LGEventCodeSynchronizationStarted,
+    LGEventCodeSynchronizationFailed,
+    LGEventCodeSynchronizationSucceed,
+    LGEventCodeSynchronizationSucceedOnPreviouslyEmptyAccount,
 };

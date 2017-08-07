@@ -10,18 +10,20 @@ std::string to_string(const EventCode& eventCode) {
     switch (eventCode) {
         case EventCode::UNDEFINED: return "UNDEFINED";
         case EventCode::NEW_OPERATION: return "NEW_OPERATION";
-        case EventCode::SYNCHRONIZATION_START: return "SYNCHRONIZATION_START";
-        case EventCode::SYNCHRONIZATION_STOP: return "SYNCHRONIZATION_STOP";
-        case EventCode::SYNCHRONIZATION_DONE: return "SYNCHRONIZATION_DONE";
+        case EventCode::SYNCHRONIZATION_STARTED: return "SYNCHRONIZATION_STARTED";
+        case EventCode::SYNCHRONIZATION_FAILED: return "SYNCHRONIZATION_FAILED";
+        case EventCode::SYNCHRONIZATION_SUCCEED: return "SYNCHRONIZATION_SUCCEED";
+        case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: return "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
     };
 };
 template <>
 EventCode from_string(const std::string& eventCode) {
     if (eventCode == "UNDEFINED") return EventCode::UNDEFINED;
     else if (eventCode == "NEW_OPERATION") return EventCode::NEW_OPERATION;
-    else if (eventCode == "SYNCHRONIZATION_START") return EventCode::SYNCHRONIZATION_START;
-    else if (eventCode == "SYNCHRONIZATION_STOP") return EventCode::SYNCHRONIZATION_STOP;
-    else return EventCode::SYNCHRONIZATION_DONE;
+    else if (eventCode == "SYNCHRONIZATION_STARTED") return EventCode::SYNCHRONIZATION_STARTED;
+    else if (eventCode == "SYNCHRONIZATION_FAILED") return EventCode::SYNCHRONIZATION_FAILED;
+    else if (eventCode == "SYNCHRONIZATION_SUCCEED") return EventCode::SYNCHRONIZATION_SUCCEED;
+    else return EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT;
 };
 
 std::ostream &operator<<(std::ostream &os, const EventCode &o)
@@ -29,9 +31,10 @@ std::ostream &operator<<(std::ostream &os, const EventCode &o)
     switch (o) {
         case EventCode::UNDEFINED:  return os << "UNDEFINED";
         case EventCode::NEW_OPERATION:  return os << "NEW_OPERATION";
-        case EventCode::SYNCHRONIZATION_START:  return os << "SYNCHRONIZATION_START";
-        case EventCode::SYNCHRONIZATION_STOP:  return os << "SYNCHRONIZATION_STOP";
-        case EventCode::SYNCHRONIZATION_DONE:  return os << "SYNCHRONIZATION_DONE";
+        case EventCode::SYNCHRONIZATION_STARTED:  return os << "SYNCHRONIZATION_STARTED";
+        case EventCode::SYNCHRONIZATION_FAILED:  return os << "SYNCHRONIZATION_FAILED";
+        case EventCode::SYNCHRONIZATION_SUCCEED:  return os << "SYNCHRONIZATION_SUCCEED";
+        case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:  return os << "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
     }
 }
 

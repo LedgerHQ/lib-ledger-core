@@ -13,9 +13,10 @@ namespace ledger { namespace core { namespace api {
 enum class EventCode : int {
     UNDEFINED,
     NEW_OPERATION,
-    SYNCHRONIZATION_START,
-    SYNCHRONIZATION_STOP,
-    SYNCHRONIZATION_DONE,
+    SYNCHRONIZATION_STARTED,
+    SYNCHRONIZATION_FAILED,
+    SYNCHRONIZATION_SUCCEED,
+    SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT,
 };
 std::string to_string(const EventCode& eventCode);
 std::ostream &operator<<(std::ostream &os, const EventCode &o);

@@ -7,6 +7,18 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Account {
+    /**
+     * Key of the synchronization duration time in the synchronize event payload.
+     * The value is stored in a int 64 time expressed in miliseconds.
+     */
+    public static final String EV_SYNC_DURATION_MS = "EV_SYNC_DURATION_MS";
+
+    /** Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
+    public static final String EV_SYNC_ERROR_CODE = "EV_SYNC_ERROR_CODE";
+
+    /** Key of the synchronization error message. The message is stored as a string. */
+    public static final String EV_SYNC_ERROR_MESSAGE = "EV_SYNC_ERROR_MESSAGE";
+
     public abstract int getIndex();
 
     public abstract OperationQuery queryOperations();

@@ -10,6 +10,15 @@
 @class LGPreferences;
 @protocol LGAmountCallback;
 
+/**
+ * Key of the synchronization duration time in the synchronize event payload.
+ * The value is stored in a int 64 time expressed in miliseconds.
+ */
+extern NSString * __nonnull const LGAccountEVSYNCDURATIONMS;
+/** Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
+extern NSString * __nonnull const LGAccountEVSYNCERRORCODE;
+/** Key of the synchronization error message. The message is stored as a string. */
+extern NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE;
 
 @interface LGAccount : NSObject
 

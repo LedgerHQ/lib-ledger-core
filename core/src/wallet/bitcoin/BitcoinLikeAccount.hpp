@@ -101,6 +101,9 @@ namespace ledger {
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
             Future<int32_t> getUTXOCount();
 
+        protected:
+            bool checkIfWalletIsEmpty();
+
         private:
             inline void inflateOperation(Operation& out,
                                          const std::shared_ptr<const AbstractWallet>& wallet,
@@ -116,6 +119,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
+            std::shared_ptr<api::EventBus> _currentSyncEventBus;
         };
     }
 }

@@ -67,8 +67,8 @@ namespace ledger {
             };
 
             void success(const T& result) {
-                std::lock_guard<std::mutex> lock(_mutex);
                 setProgress(_lastStep, 1.0);
+                std::lock_guard<std::mutex> lock(_mutex);
                 _promise.success(result);
             }
 

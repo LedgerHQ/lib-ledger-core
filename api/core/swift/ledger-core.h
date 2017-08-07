@@ -9,6 +9,7 @@
 #import "../objc/LGEventReceiver.h"
 #import "../objc/LGEventBus.h"
 #import "../objc/LGEventPublisher.h"
+#import "../objc/LGSynchronizationStatus.h"
 #import "../objc/LGOperationType.h"
 #import "../objc/LGTrustLevel.h"
 #import "../objc/LGTrustIndicator.h"

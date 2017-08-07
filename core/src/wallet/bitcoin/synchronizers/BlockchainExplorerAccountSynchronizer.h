@@ -80,7 +80,7 @@ namespace ledger {
             );
             void reset(const std::shared_ptr<BitcoinLikeAccount> &account,
                        const std::chrono::system_clock::time_point &toDate) override;
-            const ProgressNotifier<Unit> &synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) override;
+            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) override;
 
             bool isSynchronizing() const override;
 

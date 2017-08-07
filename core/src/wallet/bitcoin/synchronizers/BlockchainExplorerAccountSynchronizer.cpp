@@ -49,29 +49,28 @@ namespace ledger {
             _explorer = explorer;
         }
 
-        const ProgressNotifier<Unit> &
+        std::shared_ptr<ProgressNotifier<Unit>>
         BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) {
             std::lock_guard<std::mutex> lock(_lock);
             if (!_notifier) {
                 _currentAccount = account;
                 _notifier = std::make_shared<ProgressNotifier<Unit>>();
-                performSynchronization(account).onComplete(getContext(), [=](const Try<Unit> &result) {
-                    std::lock_guard<std::mutex> l(_lock);
-
+                auto self = shared_from_this();
+                performSynchronization(account).onComplete(getContext(), [self] (const Try<Unit> &result) {
+                    std::lock_guard<std::mutex> l(self->_lock);
                     if (result.isFailure()) {
-                        _notifier->failure(result.getFailure());
+                        self->_notifier->failure(result.getFailure());
                     } else {
-                        _notifier->success(unit);
+                        self->_notifier->success(unit);
                     }
-
-                    _notifier = nullptr;
-                    _currentAccount = nullptr;
+                    self->_notifier = nullptr;
+                    self->_currentAccount = nullptr;
                 });
 
             } else if (account != _currentAccount) {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "This synchronizer is already in use");
             }
-            return *_notifier;
+            return _notifier;
         }
 
         bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {
@@ -186,7 +185,7 @@ namespace ledger {
             auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
             auto benchmark = std::make_shared<Benchmarker>(fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
             benchmark->start();
-            return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) {
+            return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) -> Future<Unit> {
                 benchmark->stop();
                 buddy->preferences->editor()->putObject("state", buddy->savedState.getValue())->commit();
                 if (!done || (done && hadTransactions)) {
@@ -213,7 +212,7 @@ namespace ledger {
             benchmark->start();
             return _explorer
                     ->getTransactions(batch, blockHash, buddy->token)
-                    .flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) {
+                    .flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
                         benchmark->stop();
                         auto insertionBenchmark = std::make_shared<Benchmarker>("Transaction computation", buddy->logger);
                         insertionBenchmark->start();

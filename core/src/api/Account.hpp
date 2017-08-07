@@ -23,6 +23,18 @@ class Account {
 public:
     virtual ~Account() {}
 
+    /**
+     * Key of the synchronization duration time in the synchronize event payload.
+     * The value is stored in a int 64 time expressed in miliseconds.
+     */
+    static std::string const EV_SYNC_DURATION_MS;
+
+    /** Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
+    static std::string const EV_SYNC_ERROR_CODE;
+
+    /** Key of the synchronization error message. The message is stored as a string. */
+    static std::string const EV_SYNC_ERROR_MESSAGE;
+
     virtual int32_t getIndex() = 0;
 
     virtual std::shared_ptr<OperationQuery> queryOperations() = 0;

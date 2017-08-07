@@ -32,6 +32,8 @@
 #include <wallet/common/Operation.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <database/query/QueryBuilder.h>
+#include <api/EventCode.hpp>
+#include <utils/DateUtils.hpp>
 
 namespace ledger {
     namespace core {
@@ -207,8 +209,31 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
-            _synchronizer->synchronize(std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this()));
-            return nullptr;
+            if (_currentSyncEventBus)
+                return _currentSyncEventBus;
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto wasEmpty = checkIfWalletIsEmpty();
+            _currentSyncEventBus = eventPublisher->getEventBus();
+            auto future = _synchronizer->synchronize(std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this()))->getFuture();
+            auto self = std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            auto startTime = DateUtils::now();
+            eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
+            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime] (const Try<Unit>& result) {
+                auto isEmpty = self->checkIfWalletIsEmpty();
+                api::EventCode code;
+                auto payload = std::make_shared<DynamicObject>();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
+                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                if (result.isSuccess()) {
+                    code = !isEmpty && wasEmpty ? api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT
+                                                : api::EventCode::SYNCHRONIZATION_SUCCEED;
+                } else {
+                    code = api::EventCode::SYNCHRONIZATION_FAILED;
+                    payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
+                }
+                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+            });
+            return eventPublisher->getEventBus();
         }
 
         void BitcoinLikeAccount::computeFees(const std::shared_ptr<api::Amount> &amount, int32_t priority,
@@ -250,6 +275,10 @@ namespace ledger {
             );
             query->registerAccount(shared_from_this());
             return query;
+        }
+
+        bool BitcoinLikeAccount::checkIfWalletIsEmpty() {
+            return _keychain->isEmpty();
         }
 
     }

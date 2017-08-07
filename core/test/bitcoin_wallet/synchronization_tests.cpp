@@ -57,6 +57,7 @@
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
 #include <net/QtHttpClient.hpp>
+#include <events/LambdaEventReceiver.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -125,7 +126,16 @@ TEST(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         EXPECT_EQ(nextIndex, 0);
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet->asBitcoinLikeWallet())->createNewAccount(nextIndex, XPUB_PROVIDER)));
 
-        account->synchronize();
+        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([=] (const std::shared_ptr<api::Event>& event) {
+            fmt::print("Received event {}\n", api::to_string(event->getCode()));
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                return ;
+            EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT) {
+
+            }
+            dispatcher->stop();
+        }));
 
         dispatcher->waitUntilStopped();
     }
