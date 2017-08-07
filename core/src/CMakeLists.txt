@@ -35,7 +35,7 @@ list(APPEND ledger-core-sources ${ledger-core-djinni-api-sources})
 
 if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
-    #find_package(JNI REQUIRED)
+    find_package(JNI REQUIRED)
     file(GLOB ledger-core-jni-sources
             "jni/*.cpp"
             "jni/*.hpp"
@@ -212,8 +212,8 @@ file(GLOB LEDGER_CORE_API_HEADERS
 include_directories(ledger-core ../lib/bigd)
 
 if (TARGET_JNI)
-    # include_directories(ledger-core ${JNI_INCLUDE_DIRS})
-    # target_link_libraries(ledger-core ${JNI_LIBRARIES})
+    include_directories(ledger-core ${JNI_INCLUDE_DIRS})
+    target_link_libraries(ledger-core ${JNI_LIBRARIES})
 endif ()
 
 file(GLOB ledger-core-header
