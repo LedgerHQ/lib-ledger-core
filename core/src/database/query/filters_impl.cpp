@@ -178,5 +178,14 @@ namespace ledger {
             return std::make_shared<PlainTextConditionQueryFilter>("block_height IS NULL");
         }
 
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeEq(api::OperationType type) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("type", "=", api::to_string(type));
+        }
+
+        std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeNeq(api::
+                                                                             OperationType type) {
+            return std::make_shared<ConditionQueryFilter<std::string>>("type", "<>", api::to_string(type));
+        }
+
     }
 }

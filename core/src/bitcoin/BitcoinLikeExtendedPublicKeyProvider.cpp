@@ -39,5 +39,11 @@ namespace ledger {
             return std::make_shared<ledger::core::BitcoinLikeBase58Provider>(provider);
         }
 
+        std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(
+                const std::shared_ptr<BitcoinLikePublicKeyProvider> &provider) {
+            //TODO: IMPLEMENT XPUB COMPUTATION FROM PUBLIC KEYS
+            return nullptr;
+        }
+
     }
 }

@@ -121,6 +121,10 @@ namespace ledger { namespace core { namespace api {
                 }
             }
 
+            std::shared_ptr<BigInt> BigInt::fromLong(long long value) {
+                return std::make_shared<BigIntImpl>(ledger::core::BigInt::fromScalar(value));
+            }
+
         }
     }
 }

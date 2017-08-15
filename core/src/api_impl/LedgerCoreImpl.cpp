@@ -34,3 +34,7 @@
 std::string ledger::core::api::LedgerCore::getStringVersion() {
     return "1.0.0";
 }
+
+int32_t ledger::core::api::LedgerCore::getIntVersion() {
+    return (1 << 16) + (0 << 8) + 0;
+}

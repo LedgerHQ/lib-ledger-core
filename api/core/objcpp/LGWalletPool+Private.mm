@@ -5,8 +5,16 @@
 #import "LGWalletPool.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
+#import "DJIMarshal+Private.h"
+#import "LGCurrency+Private.h"
+#import "LGCurrencyCallback+Private.h"
+#import "LGCurrencyListCallback+Private.h"
+#import "LGDynamicObject+Private.h"
+#import "LGI32Callback+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGWalletCallback+Private.h"
+#import "LGWalletListCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -42,6 +50,56 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreferences();
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getWalletCount:(nullable id<LGI32Callback>)callback {
+    try {
+        _cppRefHandle.get()->getWalletCount(::djinni_generated::I32Callback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getWallets:(int32_t)from
+              size:(int32_t)size
+          callback:(nullable id<LGWalletListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getWallets(::djinni::I32::toCpp(from),
+                                        ::djinni::I32::toCpp(size),
+                                        ::djinni_generated::WalletListCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getWallet:(nonnull NSString *)name
+         callback:(nullable id<LGWalletCallback>)callback {
+    try {
+        _cppRefHandle.get()->getWallet(::djinni::String::toCpp(name),
+                                       ::djinni_generated::WalletCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)createWallet:(nonnull NSString *)name
+            currency:(nonnull LGCurrency *)currency
+       configuration:(nullable LGDynamicObject *)configuration
+            callback:(nullable id<LGWalletCallback>)callback {
+    try {
+        _cppRefHandle.get()->createWallet(::djinni::String::toCpp(name),
+                                          ::djinni_generated::Currency::toCpp(currency),
+                                          ::djinni_generated::DynamicObject::toCpp(configuration),
+                                          ::djinni_generated::WalletCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getCurrencies:(nullable id<LGCurrencyListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getCurrencies(::djinni_generated::CurrencyListCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getCurrency:(nonnull NSString *)name
+           callback:(nullable id<LGCurrencyCallback>)callback {
+    try {
+        _cppRefHandle.get()->getCurrency(::djinni::String::toCpp(name),
+                                         ::djinni_generated::CurrencyCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

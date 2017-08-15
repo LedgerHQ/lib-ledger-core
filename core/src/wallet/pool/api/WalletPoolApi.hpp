@@ -47,9 +47,24 @@ namespace ledger {
             std::shared_ptr<api::Logger> getLogger() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
 
+            void getWalletCount(const std::shared_ptr<api::I32Callback> &callback) override;
+
+            void getWallet(const std::string &name, const std::shared_ptr<api::WalletCallback> &callback) override;
+
+            void getWallets(int32_t from, int32_t size, const std::shared_ptr<api::WalletListCallback> &callback) override;
+
+            void createWallet(const std::string &name, const api::Currency &currency,
+                              const std::shared_ptr<api::DynamicObject> &configuration,
+                              const std::shared_ptr<api::WalletCallback> &callback) override;
+
+            void getCurrencies(const std::shared_ptr <api::CurrencyListCallback> &callback) override;
+
+            void getCurrency(const std::string &name, const std::shared_ptr<api::CurrencyCallback> &callback) override;
+
         private:
             std::shared_ptr<ledger::core::WalletPool> _pool;
             std::shared_ptr<LoggerApi> _logger;
+            std::shared_ptr<api::ExecutionContext> _mainContext;
 
         public:
             static void open( const std::string &name,

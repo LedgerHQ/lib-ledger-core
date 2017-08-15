@@ -20,6 +20,12 @@
 WalletPool = interface +c {
     getLogger(): Logger;
     getPreferences(): Preferences;
+    getWalletCount(callback: Callback<i32>);
+    getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);
+    getWallet(name: string, callback: Callback<Wallet>);
+    createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
+    getCurrencies(callback: ListCallback<Currency>);
+    getCurrency(name: string, callback: Callback<Currency>);
 }
 
 WalletPoolBuilder = interface +c {
