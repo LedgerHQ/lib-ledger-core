@@ -44,7 +44,7 @@ namespace ledger {
         /**
          * Based on spdlog::sinks::rotating_file_sink
          */
-        class RotatingEncryptableSink : public spdlog::sinks::sink {
+        class RotatingEncryptableSink : public spdlog::sinks::sink, public std::enable_shared_from_this<RotatingEncryptableSink> {
         public:
             RotatingEncryptableSink(
                     const std::shared_ptr<api::ExecutionContext> &context,
@@ -67,7 +67,7 @@ namespace ledger {
             void _rotate();
 
         private:
-            std::weak_ptr<api::ExecutionContext> _context;
+            std::shared_ptr<api::ExecutionContext> _context;
             std::weak_ptr<api::PathResolver> _resolver;
             std::string _name;
             std::experimental::optional<std::string> _password;

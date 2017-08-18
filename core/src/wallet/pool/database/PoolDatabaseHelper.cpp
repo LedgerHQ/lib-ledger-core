@@ -85,10 +85,11 @@ namespace ledger {
 
         void
         PoolDatabaseHelper::inflateWalletEntry(soci::row &row, const WalletPool &pool, WalletDatabaseEntry &entry) {
-            entry.name = row.get<std::string>(0);
-            entry.currencyName = row.get<std::string>(1);
+            entry.uid = row.get<std::string>(0);
+            entry.name = row.get<std::string>(1);
+            entry.currencyName = row.get<std::string>(2);
             entry.poolName = pool.getName();
-            auto serializedConfig = hex::toByteArray(row.get<std::string>(2));
+            auto serializedConfig = hex::toByteArray(row.get<std::string>(3));
             entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(DynamicObject::load(serializedConfig));
         }
 

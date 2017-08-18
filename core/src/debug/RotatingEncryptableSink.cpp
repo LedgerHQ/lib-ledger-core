@@ -53,16 +53,17 @@ namespace ledger {
         }
 
         void RotatingEncryptableSink::log(const spdlog::details::log_msg &msg) {
-            auto context = _context.lock();
+            auto context = _context;
             std::string message = msg.formatted.data();
             auto size = msg.formatted.size();
-            context->execute(make_runnable([this, message, size] () {
-                _sink_it(message, size);
+            auto self = shared_from_this();
+            context->execute(make_runnable([self, message, size] () {
+                self->_sink_it(message, size);
             }));
         }
 
         void RotatingEncryptableSink::flush() {
-            auto context = _context.lock();
+            auto context = _context;
             context->execute(make_runnable([this] () {
                _file_helper.flush();
             }));

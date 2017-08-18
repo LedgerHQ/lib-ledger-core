@@ -256,7 +256,7 @@ namespace ledger {
         std::shared_ptr<AbstractWallet> WalletPool::buildWallet(const WalletDatabaseEntry &entry) {
             // Check if the wallet already exists
             auto it = _wallets.find(entry.uid);
-            if (it == _wallets.end()) {
+            if (it != _wallets.end()) {
                 return it->second;
             } else {
                 auto factory = getFactory(entry.currencyName);
