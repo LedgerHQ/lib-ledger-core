@@ -3,6 +3,12 @@ ErrorCode = enum {
     # Pool errors
     unknown_network_parameters;
 
+    # Crypto errors
+    ec_priv_key_invalid_format;
+    ec_pub_key_invalid;
+    ec_der_signature_invalid;
+    ec_sign_failed;
+
     # Device errors
 
     # Wallet errors
@@ -36,6 +42,7 @@ ErrorCode = enum {
     runtime_error;
     out_of_range;
     illegal_argument;
+    invalid_argument;
     illegal_state;
     null_pointer;
     unsupported_operation;

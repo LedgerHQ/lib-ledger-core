@@ -9,6 +9,10 @@ namespace ledger { namespace core { namespace api {
 std::string to_string(const ErrorCode& errorCode) {
     switch (errorCode) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS: return "UNKNOWN_NETWORK_PARAMETERS";
+        case ErrorCode::EC_PRIV_KEY_INVALID_FORMAT: return "EC_PRIV_KEY_INVALID_FORMAT";
+        case ErrorCode::EC_PUB_KEY_INVALID: return "EC_PUB_KEY_INVALID";
+        case ErrorCode::EC_DER_SIGNATURE_INVALID: return "EC_DER_SIGNATURE_INVALID";
+        case ErrorCode::EC_SIGN_FAILED: return "EC_SIGN_FAILED";
         case ErrorCode::WALLET_NOT_FOUND: return "WALLET_NOT_FOUND";
         case ErrorCode::WALLET_ALREADY_EXISTS: return "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND: return "RAW_TRANSACTION_NOT_FOUND";
@@ -26,6 +30,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::RUNTIME_ERROR: return "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE: return "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT: return "ILLEGAL_ARGUMENT";
+        case ErrorCode::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
         case ErrorCode::ILLEGAL_STATE: return "ILLEGAL_STATE";
         case ErrorCode::NULL_POINTER: return "NULL_POINTER";
         case ErrorCode::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
@@ -59,6 +64,10 @@ std::string to_string(const ErrorCode& errorCode) {
 template <>
 ErrorCode from_string(const std::string& errorCode) {
     if (errorCode == "UNKNOWN_NETWORK_PARAMETERS") return ErrorCode::UNKNOWN_NETWORK_PARAMETERS;
+    else if (errorCode == "EC_PRIV_KEY_INVALID_FORMAT") return ErrorCode::EC_PRIV_KEY_INVALID_FORMAT;
+    else if (errorCode == "EC_PUB_KEY_INVALID") return ErrorCode::EC_PUB_KEY_INVALID;
+    else if (errorCode == "EC_DER_SIGNATURE_INVALID") return ErrorCode::EC_DER_SIGNATURE_INVALID;
+    else if (errorCode == "EC_SIGN_FAILED") return ErrorCode::EC_SIGN_FAILED;
     else if (errorCode == "WALLET_NOT_FOUND") return ErrorCode::WALLET_NOT_FOUND;
     else if (errorCode == "WALLET_ALREADY_EXISTS") return ErrorCode::WALLET_ALREADY_EXISTS;
     else if (errorCode == "RAW_TRANSACTION_NOT_FOUND") return ErrorCode::RAW_TRANSACTION_NOT_FOUND;
@@ -76,6 +85,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "RUNTIME_ERROR") return ErrorCode::RUNTIME_ERROR;
     else if (errorCode == "OUT_OF_RANGE") return ErrorCode::OUT_OF_RANGE;
     else if (errorCode == "ILLEGAL_ARGUMENT") return ErrorCode::ILLEGAL_ARGUMENT;
+    else if (errorCode == "INVALID_ARGUMENT") return ErrorCode::INVALID_ARGUMENT;
     else if (errorCode == "ILLEGAL_STATE") return ErrorCode::ILLEGAL_STATE;
     else if (errorCode == "NULL_POINTER") return ErrorCode::NULL_POINTER;
     else if (errorCode == "UNSUPPORTED_OPERATION") return ErrorCode::UNSUPPORTED_OPERATION;
@@ -110,6 +120,10 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
 {
     switch (o) {
         case ErrorCode::UNKNOWN_NETWORK_PARAMETERS:  return os << "UNKNOWN_NETWORK_PARAMETERS";
+        case ErrorCode::EC_PRIV_KEY_INVALID_FORMAT:  return os << "EC_PRIV_KEY_INVALID_FORMAT";
+        case ErrorCode::EC_PUB_KEY_INVALID:  return os << "EC_PUB_KEY_INVALID";
+        case ErrorCode::EC_DER_SIGNATURE_INVALID:  return os << "EC_DER_SIGNATURE_INVALID";
+        case ErrorCode::EC_SIGN_FAILED:  return os << "EC_SIGN_FAILED";
         case ErrorCode::WALLET_NOT_FOUND:  return os << "WALLET_NOT_FOUND";
         case ErrorCode::WALLET_ALREADY_EXISTS:  return os << "WALLET_ALREADY_EXISTS";
         case ErrorCode::RAW_TRANSACTION_NOT_FOUND:  return os << "RAW_TRANSACTION_NOT_FOUND";
@@ -127,6 +141,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::RUNTIME_ERROR:  return os << "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE:  return os << "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT:  return os << "ILLEGAL_ARGUMENT";
+        case ErrorCode::INVALID_ARGUMENT:  return os << "INVALID_ARGUMENT";
         case ErrorCode::ILLEGAL_STATE:  return os << "ILLEGAL_STATE";
         case ErrorCode::NULL_POINTER:  return os << "NULL_POINTER";
         case ErrorCode::UNSUPPORTED_OPERATION:  return os << "UNSUPPORTED_OPERATION";

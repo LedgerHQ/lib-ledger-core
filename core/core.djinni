@@ -9,6 +9,7 @@
 @import "idl/math/random.djinni"
 @import "idl/bitcoin/addresses.djinni"
 @import "idl/networks.djinni"
+@import "idl/crypto/secp256k1.djinni"
 
 LedgerCore = interface +c {
     # Gets the version of the library as a human readable string.

@@ -47,7 +47,7 @@ namespace ledger {
     namespace core {
 
         class WalletPool;
-
+        class AbstractAccount;
         class AbstractWallet : public virtual api::Wallet, public DedicatedContext, public virtual std::enable_shared_from_this<AbstractWallet> {
         public:
             AbstractWallet(const std::string& walletName,
@@ -73,6 +73,10 @@ namespace ledger {
 
             void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;
             Future<int32_t> getNextAccountIndex();
+            Future<int32_t> getAccountCount();
+            void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
+
+            
 
             template <typename T>
             std::shared_ptr<T> asInstanceOf() {

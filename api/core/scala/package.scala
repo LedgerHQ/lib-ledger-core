@@ -11,6 +11,10 @@ import scala.concurrent.{Future, Promise}
 package object implicits {
     class LedgerCoreWrappedException(val code: ErrorCode, message: String) extends Exception(message)
     class UnknownNetworkParametersException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_NETWORK_PARAMETERS, message)
+    class EcPrivKeyInvalidFormatException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PRIV_KEY_INVALID_FORMAT, message)
+    class EcPubKeyInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PUB_KEY_INVALID, message)
+    class EcDerSignatureInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_DER_SIGNATURE_INVALID, message)
+    class EcSignFailedException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_SIGN_FAILED, message)
     class WalletNotFoundException(message: String) extends LedgerCoreWrappedException(ErrorCode.WALLET_NOT_FOUND, message)
     class WalletAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.WALLET_ALREADY_EXISTS, message)
     class RawTransactionNotFoundException(message: String) extends LedgerCoreWrappedException(ErrorCode.RAW_TRANSACTION_NOT_FOUND, message)
@@ -28,6 +32,7 @@ package object implicits {
     class RuntimeErrorException(message: String) extends LedgerCoreWrappedException(ErrorCode.RUNTIME_ERROR, message)
     class OutOfRangeException(message: String) extends LedgerCoreWrappedException(ErrorCode.OUT_OF_RANGE, message)
     class IllegalArgumentException(message: String) extends LedgerCoreWrappedException(ErrorCode.ILLEGAL_ARGUMENT, message)
+    class InvalidArgumentException(message: String) extends LedgerCoreWrappedException(ErrorCode.INVALID_ARGUMENT, message)
     class IllegalStateException(message: String) extends LedgerCoreWrappedException(ErrorCode.ILLEGAL_STATE, message)
     class NullPointerException(message: String) extends LedgerCoreWrappedException(ErrorCode.NULL_POINTER, message)
     class UnsupportedOperationException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNSUPPORTED_OPERATION, message)
@@ -59,6 +64,10 @@ package object implicits {
     private def wrapLedgerCoreError(error: co.ledger.core.Error): LedgerCoreWrappedException = {
         error.getCode match {
             case ErrorCode.UNKNOWN_NETWORK_PARAMETERS => new UnknownNetworkParametersException(error.getMessage)
+            case ErrorCode.EC_PRIV_KEY_INVALID_FORMAT => new EcPrivKeyInvalidFormatException(error.getMessage)
+            case ErrorCode.EC_PUB_KEY_INVALID => new EcPubKeyInvalidException(error.getMessage)
+            case ErrorCode.EC_DER_SIGNATURE_INVALID => new EcDerSignatureInvalidException(error.getMessage)
+            case ErrorCode.EC_SIGN_FAILED => new EcSignFailedException(error.getMessage)
             case ErrorCode.WALLET_NOT_FOUND => new WalletNotFoundException(error.getMessage)
             case ErrorCode.WALLET_ALREADY_EXISTS => new WalletAlreadyExistsException(error.getMessage)
             case ErrorCode.RAW_TRANSACTION_NOT_FOUND => new RawTransactionNotFoundException(error.getMessage)
@@ -76,6 +85,7 @@ package object implicits {
             case ErrorCode.RUNTIME_ERROR => new RuntimeErrorException(error.getMessage)
             case ErrorCode.OUT_OF_RANGE => new OutOfRangeException(error.getMessage)
             case ErrorCode.ILLEGAL_ARGUMENT => new IllegalArgumentException(error.getMessage)
+            case ErrorCode.INVALID_ARGUMENT => new InvalidArgumentException(error.getMessage)
             case ErrorCode.ILLEGAL_STATE => new IllegalStateException(error.getMessage)
             case ErrorCode.NULL_POINTER => new NullPointerException(error.getMessage)
             case ErrorCode.UNSUPPORTED_OPERATION => new UnsupportedOperationException(error.getMessage)
@@ -107,6 +117,8 @@ package object implicits {
         }
     }
     private def arrayList2Array[T](a: Array[T]): java.util.ArrayList[T] = new java.util.ArrayList[T](a.toSeq.asInstanceOf[java.util.Collection[T]])
+    implicit class RichSecp256k1(val self: Secp256k1) {
+    }
     implicit class RichNetworks(val self: Networks) {
     }
     implicit class RichHashAlgorithmHelper(val self: HashAlgorithmHelper) {

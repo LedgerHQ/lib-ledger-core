@@ -1,0 +1,7 @@
+
+Secp256k1 = interface +c {
+    computePubKey(privKey: binary, compress: bool): binary;
+    sign(privKey: binary, data: binary): binary;
+    verify(data: binary, signature: binary, pubKey: binary): bool;
+    static newInstance(): Secp256k1;
+}

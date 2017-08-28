@@ -34,6 +34,7 @@
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <api/I32Callback.hpp>
+#include "AbstractAccount.hpp"
 
 namespace ledger {
     namespace core {
@@ -162,6 +163,15 @@ namespace ledger {
 
         const api::Currency &AbstractWallet::getCurrency() const {
             return _currency;
+        }
+
+        Future<int32_t> AbstractWallet::getAccountCount() {
+            Promise<int32_t> promise;
+            return promise.getFuture();
+        }
+
+        void AbstractWallet::getAccountCount(const std::shared_ptr<api::I32Callback> &callback) {
+
         }
 
 

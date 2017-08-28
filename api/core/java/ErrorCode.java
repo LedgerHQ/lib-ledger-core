@@ -6,6 +6,11 @@ package co.ledger.core;
 public enum ErrorCode {
     /** Pool errors */
     UNKNOWN_NETWORK_PARAMETERS,
+    /** Crypto errors */
+    EC_PRIV_KEY_INVALID_FORMAT,
+    EC_PUB_KEY_INVALID,
+    EC_DER_SIGNATURE_INVALID,
+    EC_SIGN_FAILED,
     /**
      * Device errors
      * Wallet errors
@@ -33,6 +38,7 @@ public enum ErrorCode {
     RUNTIME_ERROR,
     OUT_OF_RANGE,
     ILLEGAL_ARGUMENT,
+    INVALID_ARGUMENT,
     ILLEGAL_STATE,
     NULL_POINTER,
     UNSUPPORTED_OPERATION,

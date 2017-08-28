@@ -7,6 +7,11 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
 {
     /** Pool errors */
     LGErrorCodeUnknownNetworkParameters,
+    /** Crypto errors */
+    LGErrorCodeEcPrivKeyInvalidFormat,
+    LGErrorCodeEcPubKeyInvalid,
+    LGErrorCodeEcDerSignatureInvalid,
+    LGErrorCodeEcSignFailed,
     /**
      * Device errors
      * Wallet errors
@@ -34,6 +39,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeRuntimeError,
     LGErrorCodeOutOfRange,
     LGErrorCodeIllegalArgument,
+    LGErrorCodeInvalidArgument,
     LGErrorCodeIllegalState,
     LGErrorCodeNullPointer,
     LGErrorCodeUnsupportedOperation,
