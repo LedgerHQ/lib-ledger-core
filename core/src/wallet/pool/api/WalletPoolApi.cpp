@@ -128,5 +128,9 @@ namespace ledger {
                 return out;
             }).callback(_mainContext, callback);
         }
+
+        std::string WalletPoolApi::getName() {
+            return _pool->getName();
+        }
     }
 }

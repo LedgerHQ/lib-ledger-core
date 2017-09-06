@@ -41,6 +41,7 @@
 #include <src/api/BitcoinLikeNetworkParameters.hpp>
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <api/BitcoinLikeNextAccountInfo.hpp>
 
 namespace ledger {
     namespace core {
@@ -76,6 +77,9 @@ namespace ledger {
                              const std::shared_ptr<api::AccountListCallback> &callback) override;
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
+
+            void getNextAccountInfo(const std::shared_ptr<api::BitcoinLikeNextAccountInfoCallback> &callback) override;
+            Future<api::BitcoinLikeNextAccountInfo> getNextAccountInfo();
 
         private:
 

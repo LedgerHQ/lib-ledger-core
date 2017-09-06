@@ -38,6 +38,7 @@
 #include <api/KeychainEngines.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 #include "BitcoinLikeAccount.hpp"
+#include <api/BitcoinLikeNextAccountInfoCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -124,6 +125,27 @@ namespace ledger {
                     keychain
                 ));
             });
+        }
+
+        Future<api::BitcoinLikeNextAccountInfo> BitcoinLikeWallet::getNextAccountInfo() {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
+            return getNextAccountIndex().map<api::BitcoinLikeNextAccountInfo>(getContext(), [self] (const int32_t& index) {
+                api::BitcoinLikeNextAccountInfo info;
+                info.index = index;
+                auto scheme = self->getDerivationScheme();
+                scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(index);
+                auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+                auto parentNodePath = xpubPath.getParent();
+                info.xpubPath = xpubPath.toString();
+                info.parentNodePath = parentNodePath.toString();
+                info.accountNodePath = xpubPath.toString();
+                return info;
+            });
+        }
+
+        void BitcoinLikeWallet::getNextAccountInfo(
+                const std::shared_ptr<api::BitcoinLikeNextAccountInfoCallback> &callback) {
+            getNextAccountInfo().callback(getMainExecutionContext(), callback);
         }
 
     }

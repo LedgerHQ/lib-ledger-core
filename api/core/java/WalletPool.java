@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class WalletPool {
     public abstract Logger getLogger();
 
+    public abstract String getName();
+
     public abstract Preferences getPreferences();
 
     public abstract void getWalletCount(I32Callback callback);
@@ -52,6 +54,14 @@ public abstract class WalletPool {
             return native_getLogger(this.nativeRef);
         }
         private native Logger native_getLogger(long _nativeRef);
+
+        @Override
+        public String getName()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getName(this.nativeRef);
+        }
+        private native String native_getName(long _nativeRef);
 
         @Override
         public Preferences getPreferences()

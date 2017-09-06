@@ -65,39 +65,7 @@ static const std::string SAMPLE_TRANSACTION_2 = "{\"hash\":\"9585deb93fd3f769ad9
 static const std::string SAMPLE_TRANSACTION_3 = "{\"hash\":\"5d0fcab290dac66ee9da149a948d1e30d16d2f8f852eccaf4394021deeaa7b61\",\"received_at\":\"2017-06-07T16:05:33Z\",\"lock_time\":0,\"block\":null,\"inputs\":[{\"input_index\":0,\"output_hash\":\"bd8eabb80b020c5b05b0d2a69b64a81380049c6102477698ea7b73d13776458c\",\"output_index\":0,\"value\":5449257,\"address\":\"1DiKs1fV7HjcDdZNJTG7GFVyXbVe834uax\",\"script_signature\":\"4730440221009b37fa67b7320f597e0f4b2c1aaab705927e888e4c1b0fff45a3f7e394041b1c021f600cbea1955e6d57b38c737d52ca68a58eeb69d870f06c8cbbcaf2c0eefcc5012103fcc5efc0c3a0dd30b9f64d99ee372a43d9985791c49ed92b66e74a3315767c28\"}],\"outputs\":[{\"output_index\":0,\"value\":20000,\"address\":\"1TipsnxGEhPwNxhAwKouhHgTUnmmuYg9P\",\"script_hex\":\"76a914050dbaa82baeaa15ab5e31385fd880a8f25ef42288ac\"},{\"output_index\":1,\"value\":5350185,\"address\":\"1NkDgmWnuMYXrqXyFgQcAfaxJt93Sm5fHd\",\"script_hex\":\"76a914ee871e04c6f17f2e4bc73d73233c761544f3eefb88ac\"}],\"fees\":79072,\"amount\":5370185,\"confirmations\":0}";
 
 #include "../fixtures/fixtures_1.h"
-
-static void createWallet(const std::shared_ptr<WalletPool>& pool, const std::string& walletName) {
-    soci::session sql(pool->getDatabaseSessionPool()
-                          ->getPool());
-    WalletDatabaseEntry entry;
-    entry.configuration = std::static_pointer_cast<DynamicObject>(DynamicObject::newInstance());
-    entry.name = "my_wallet";
-    entry.poolName = pool->getName();
-    entry.currencyName = "bitcoin";
-    entry.updateUid();
-    PoolDatabaseHelper::putWallet(sql, entry);
-}
-
-static void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index) {
-    soci::session sql(pool->getDatabaseSessionPool()
-                          ->getPool());
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName, "bitcoin");
-    if (!AccountDatabaseHelper::accountExists(sql, walletUid, index))
-        AccountDatabaseHelper::createAccount(sql, walletUid, index);
-}
-
-static BitcoinLikeWalletDatabase newAccount(const std::shared_ptr<WalletPool>& pool,
-                                            const std::string& walletName,
-                                            int32_t index,
-                                            const std::string& xpub) {
-    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
-    if (!db.accountExists(index)) {
-        createWallet(pool, walletName);
-        createAccount(pool, walletName, index);
-        db.createAccount(index, xpub);
-    }
-    return db;
-}
+#include "../fixtures/bitcoin_helpers.h"
 
 TEST(BitcoinWalletDatabase, EmptyWallet) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();

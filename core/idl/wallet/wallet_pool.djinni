@@ -19,6 +19,7 @@
 
 WalletPool = interface +c {
     getLogger(): Logger;
+    getName(): string;
     getPreferences(): Preferences;
     getWalletCount(callback: Callback<i32>);
     getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);

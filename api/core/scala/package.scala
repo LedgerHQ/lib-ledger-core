@@ -376,6 +376,22 @@ package object implicits {
             })
             promise.future
         }
+        def getNextAccountInfo(): Future[BitcoinLikeNextAccountInfo] = {
+            val promise = Promise[BitcoinLikeNextAccountInfo]()
+            self.getNextAccountInfo(new BitcoinLikeNextAccountInfoCallback() {
+                override def onCallback(result: BitcoinLikeNextAccountInfo, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+    }
+    implicit class RichBitcoinLikeNextAccountInfoCallback(val self: BitcoinLikeNextAccountInfoCallback) {
     }
     implicit class RichWalletPool(val self: WalletPool) {
         def getWalletCount(): Future[Int] = {

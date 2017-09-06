@@ -17,6 +17,8 @@
 
 - (nullable LGLogger *)getLogger;
 
+- (nonnull NSString *)getName;
+
 - (nullable LGPreferences *)getPreferences;
 
 - (void)getWalletCount:(nullable id<LGI32Callback>)callback;

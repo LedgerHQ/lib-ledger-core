@@ -61,6 +61,8 @@ namespace ledger {
 
             void getCurrency(const std::string &name, const std::shared_ptr<api::CurrencyCallback> &callback) override;
 
+            std::string getName() override;
+
         private:
             std::shared_ptr<ledger::core::WalletPool> _pool;
             std::shared_ptr<LoggerApi> _logger;

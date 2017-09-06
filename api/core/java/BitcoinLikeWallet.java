@@ -10,6 +10,8 @@ public abstract class BitcoinLikeWallet {
 
     public abstract void createNextAccount(BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
 
+    public abstract void getNextAccountInfo(BitcoinLikeNextAccountInfoCallback callback);
+
     private static final class CppProxy extends BitcoinLikeWallet
     {
         private final long nativeRef;
@@ -48,5 +50,13 @@ public abstract class BitcoinLikeWallet {
             native_createNextAccount(this.nativeRef, xpubProvider, callback);
         }
         private native void native_createNextAccount(long _nativeRef, BitcoinLikeExtendedPublicKeyProvider xpubProvider, AccountCallback callback);
+
+        @Override
+        public void getNextAccountInfo(BitcoinLikeNextAccountInfoCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getNextAccountInfo(this.nativeRef, callback);
+        }
+        private native void native_getNextAccountInfo(long _nativeRef, BitcoinLikeNextAccountInfoCallback callback);
     }
 }

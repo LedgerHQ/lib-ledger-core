@@ -26,6 +26,8 @@ public:
 
     virtual std::shared_ptr<Logger> getLogger() = 0;
 
+    virtual std::string getName() = 0;
+
     virtual std::shared_ptr<Preferences> getPreferences() = 0;
 
     virtual void getWalletCount(const std::shared_ptr<I32Callback> & callback) = 0;

@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 @class LGBitcoinLikeExtendedPublicKeyProvider;
 @protocol LGAccountCallback;
+@protocol LGBitcoinLikeNextAccountInfoCallback;
 
 
 @interface LGBitcoinLikeWallet : NSObject
@@ -14,5 +15,7 @@
 
 - (void)createNextAccount:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)xpubProvider
                  callback:(nullable id<LGAccountCallback>)callback;
+
+- (void)getNextAccountInfo:(nullable id<LGBitcoinLikeNextAccountInfoCallback>)callback;
 
 @end
