@@ -10,7 +10,7 @@ public abstract class ConfigurationDefaults {
 
     public static final String BIP44_DERIVATION_SCHEME = "44'/<coin_type>'/<account>'/<node>/<address>";
 
-    public static final String DEFAULT_KEYCHAIN = "default";
+    public static final String DEFAULT_KEYCHAIN = "BIP32_P2PKH";
 
     public static final int DEFAULT_TRUST_LIMIT = 3;
 

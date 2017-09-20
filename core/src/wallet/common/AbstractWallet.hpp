@@ -42,6 +42,11 @@
 #include <src/database/DatabaseSessionPool.hpp>
 #include <collections/DynamicObject.hpp>
 #include <utils/DerivationScheme.hpp>
+#include <api/AccountCreationInfo.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/AccountCreationInfoCallback.hpp>
+#include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
+#include <api/AccountCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -86,6 +91,31 @@ namespace ledger {
                 }
                 throw make_exception(api::ErrorCode::BAD_CAST, "Wallet of type {} cannot be cast to {}", api::to_string(type), api::to_string(T::type));
             };
+
+
+            void getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) override;
+            void getNextExtendedKeyAccountCreationInfo(
+                    const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) override;
+
+            void getAccountCreationInfo(int32_t accountIndex,
+                                        const std::shared_ptr<api::AccountCreationInfoCallback> &callback) override;
+
+            void getExtendedKeyAccountCreationInfo(int32_t accountIndex,
+                                                   const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) override;
+
+            void newAccountWithInfo(const api::AccountCreationInfo &accountCreationInfo,
+                                    const std::shared_ptr<api::AccountCallback> &callback) override;
+
+            void
+            newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
+                                          const std::shared_ptr<api::AccountCallback> &callback) override;
+
+            virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
+            virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;
+            virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex) = 0;
+            virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) = 0;
+            virtual Future<api::AccountCreationInfo> getNextAccountCreationInfo();
+            virtual Future<api::ExtendedKeyAccountCreationInfo> getNextExtendedKeyAccountCreationInfo();
 
         public:
             virtual std::shared_ptr<Preferences> getAccountExternalPreferences(int32_t index);

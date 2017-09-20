@@ -246,12 +246,100 @@ package object implicits {
             })
             promise.future
         }
+        def getAccountCreationInfo(accountIndex: Int): Future[AccountCreationInfo] = {
+            val promise = Promise[AccountCreationInfo]()
+            self.getAccountCreationInfo(accountIndex, new AccountCreationInfoCallback() {
+                override def onCallback(result: AccountCreationInfo, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getExtendedKeyAccountCreationInfo(accountIndex: Int): Future[ExtendedKeyAccountCreationInfo] = {
+            val promise = Promise[ExtendedKeyAccountCreationInfo]()
+            self.getExtendedKeyAccountCreationInfo(accountIndex, new ExtendedKeyAccountCreationInfoCallback() {
+                override def onCallback(result: ExtendedKeyAccountCreationInfo, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getNextAccountCreationInfo(): Future[AccountCreationInfo] = {
+            val promise = Promise[AccountCreationInfo]()
+            self.getNextAccountCreationInfo(new AccountCreationInfoCallback() {
+                override def onCallback(result: AccountCreationInfo, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getNextExtendedKeyAccountCreationInfo(): Future[ExtendedKeyAccountCreationInfo] = {
+            val promise = Promise[ExtendedKeyAccountCreationInfo]()
+            self.getNextExtendedKeyAccountCreationInfo(new ExtendedKeyAccountCreationInfoCallback() {
+                override def onCallback(result: ExtendedKeyAccountCreationInfo, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def newAccountWithInfo(accountCreationInfo: AccountCreationInfo): Future[Account] = {
+            val promise = Promise[Account]()
+            self.newAccountWithInfo(accountCreationInfo, new AccountCallback() {
+                override def onCallback(result: Account, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo): Future[Account] = {
+            val promise = Promise[Account]()
+            self.newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo, new AccountCallback() {
+                override def onCallback(result: Account, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
     }
     implicit class RichAccountCallback(val self: AccountCallback) {
     }
     implicit class RichI32Callback(val self: I32Callback) {
     }
     implicit class RichAccountListCallback(val self: AccountListCallback) {
+    }
+    implicit class RichAccountCreationInfoCallback(val self: AccountCreationInfoCallback) {
+    }
+    implicit class RichExtendedKeyAccountCreationInfoCallback(val self: ExtendedKeyAccountCreationInfoCallback) {
     }
     implicit class RichDynamicArray(val self: DynamicArray) {
     }
@@ -376,22 +464,6 @@ package object implicits {
             })
             promise.future
         }
-        def getNextAccountInfo(): Future[BitcoinLikeNextAccountInfo] = {
-            val promise = Promise[BitcoinLikeNextAccountInfo]()
-            self.getNextAccountInfo(new BitcoinLikeNextAccountInfoCallback() {
-                override def onCallback(result: BitcoinLikeNextAccountInfo, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
-    }
-    implicit class RichBitcoinLikeNextAccountInfoCallback(val self: BitcoinLikeNextAccountInfoCallback) {
     }
     implicit class RichWalletPool(val self: WalletPool) {
         def getWalletCount(): Future[Int] = {

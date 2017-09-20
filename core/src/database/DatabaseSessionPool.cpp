@@ -80,7 +80,7 @@ namespace ledger {
                                                  const std::string &dbName, int poolSize) : _pool((size_t) poolSize),
             _buffer("SQL", logger)
         {
-            if (logger != nullptr && false) {
+            if (logger != nullptr) {
                 _logger = new std::ostream(&_buffer);
             } else {
                 _logger = nullptr;

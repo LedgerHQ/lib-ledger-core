@@ -45,6 +45,18 @@ public abstract class Wallet {
 
     public abstract WalletType getWalletType();
 
+    public abstract void getAccountCreationInfo(int accountIndex, AccountCreationInfoCallback callback);
+
+    public abstract void getExtendedKeyAccountCreationInfo(int accountIndex, ExtendedKeyAccountCreationInfoCallback callback);
+
+    public abstract void getNextAccountCreationInfo(AccountCreationInfoCallback callback);
+
+    public abstract void getNextExtendedKeyAccountCreationInfo(ExtendedKeyAccountCreationInfoCallback callback);
+
+    public abstract void newAccountWithInfo(AccountCreationInfo accountCreationInfo, AccountCallback callback);
+
+    public abstract void newAccountWithExtendedKeyInfo(ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback);
+
     private static final class CppProxy extends Wallet
     {
         private final long nativeRef;
@@ -203,5 +215,53 @@ public abstract class Wallet {
             return native_getWalletType(this.nativeRef);
         }
         private native WalletType native_getWalletType(long _nativeRef);
+
+        @Override
+        public void getAccountCreationInfo(int accountIndex, AccountCreationInfoCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getAccountCreationInfo(this.nativeRef, accountIndex, callback);
+        }
+        private native void native_getAccountCreationInfo(long _nativeRef, int accountIndex, AccountCreationInfoCallback callback);
+
+        @Override
+        public void getExtendedKeyAccountCreationInfo(int accountIndex, ExtendedKeyAccountCreationInfoCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getExtendedKeyAccountCreationInfo(this.nativeRef, accountIndex, callback);
+        }
+        private native void native_getExtendedKeyAccountCreationInfo(long _nativeRef, int accountIndex, ExtendedKeyAccountCreationInfoCallback callback);
+
+        @Override
+        public void getNextAccountCreationInfo(AccountCreationInfoCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getNextAccountCreationInfo(this.nativeRef, callback);
+        }
+        private native void native_getNextAccountCreationInfo(long _nativeRef, AccountCreationInfoCallback callback);
+
+        @Override
+        public void getNextExtendedKeyAccountCreationInfo(ExtendedKeyAccountCreationInfoCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getNextExtendedKeyAccountCreationInfo(this.nativeRef, callback);
+        }
+        private native void native_getNextExtendedKeyAccountCreationInfo(long _nativeRef, ExtendedKeyAccountCreationInfoCallback callback);
+
+        @Override
+        public void newAccountWithInfo(AccountCreationInfo accountCreationInfo, AccountCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_newAccountWithInfo(this.nativeRef, accountCreationInfo, callback);
+        }
+        private native void native_newAccountWithInfo(long _nativeRef, AccountCreationInfo accountCreationInfo, AccountCallback callback);
+
+        @Override
+        public void newAccountWithExtendedKeyInfo(ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_newAccountWithExtendedKeyInfo(this.nativeRef, extendedKeyAccountCreationInfo, callback);
+        }
+        private native void native_newAccountWithExtendedKeyInfo(long _nativeRef, ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback);
     }
 }

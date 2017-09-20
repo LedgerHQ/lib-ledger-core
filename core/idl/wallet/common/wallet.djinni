@@ -115,6 +115,20 @@ OperationQuery = interface +c {
     execute(callback: ListCallback<Operation>);
 }
 
+AccountCreationInfo = record {
+    index: i32;
+    owners: list<string>;
+    derivations: list<string>;
+    publicKeys: list<binary>;
+}
+
+ExtendedKeyAccountCreationInfo = record {
+    index: i32;
+    owners: list<string>;
+    derivations: list<string>;
+    extendedKeys: list<string>;
+}
+
 Account = interface +c {
     # Key of the synchronization duration time in the synchronize event payload.
     # The value is stored in a int 64 time expressed in miliseconds.
@@ -169,4 +183,11 @@ Wallet = interface +c {
     isInstanceOfEthereumLikeWallet(): bool;
     isInstanceOfRippleLikeWallet(): bool;
     getWalletType(): WalletType;
+
+    getAccountCreationInfo(accountIndex: i32, callback: Callback<AccountCreationInfo>);
+    getExtendedKeyAccountCreationInfo(accountIndex: i32, callback: Callback<ExtendedKeyAccountCreationInfo>);
+    getNextAccountCreationInfo(callback: Callback<AccountCreationInfo>);
+    getNextExtendedKeyAccountCreationInfo(callback: Callback<ExtendedKeyAccountCreationInfo>);
+    newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: Callback<Account>);
+    newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: Callback<Account>);
 }

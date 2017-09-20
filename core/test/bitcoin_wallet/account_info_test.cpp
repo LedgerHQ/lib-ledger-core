@@ -86,19 +86,21 @@ TEST(BitcoinLikeAccountInfo, FirstAccountInfo) {
         auto nextIndex = wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         {
-            auto info = wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet)->getNextAccountInfo());
-            EXPECT_EQ(info.xpubPath, "44'/0'/0'");
-            EXPECT_EQ(info.parentNodePath, "44'/0'");
-            EXPECT_EQ(info.index, 0);
-            EXPECT_EQ(info.accountNodePath, "44'/0'/0'");
+            auto info = wait(wallet->getNextAccountCreationInfo());
+            EXPECT_EQ(info.owners[0], "main");
+            EXPECT_EQ(info.derivations[0], "44'/0'");
+            EXPECT_EQ(info.owners[1], "main");
+            EXPECT_EQ(info.derivations[1], "44'/0'/0'");
         }
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet->asBitcoinLikeWallet())->createNewAccount(nextIndex, XPUB_PROVIDER)));
+        auto nextnextIndex = wait(wallet->getNextAccountIndex());
+        EXPECT_EQ(nextnextIndex, 1);
         {
-            auto info = wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet)->getNextAccountInfo());
-            EXPECT_EQ(info.xpubPath, "44'/0'/1'");
-            EXPECT_EQ(info.parentNodePath, "44'/0'");
-            EXPECT_EQ(info.index, 1);
-            EXPECT_EQ(info.accountNodePath, "44'/0'/1'");
+            auto info = wait(wallet->getNextAccountCreationInfo());
+            EXPECT_EQ(info.owners[0], "main");
+            EXPECT_EQ(info.derivations[0], "44'/0'");
+            EXPECT_EQ(info.owners[1], "main");
+            EXPECT_EQ(info.derivations[1], "44'/0'/1'");
         }
     }
     resolver->clean();

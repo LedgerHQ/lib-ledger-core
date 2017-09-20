@@ -7,10 +7,14 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAccountCallback+Private.h"
+#import "LGAccountCreationInfo+Private.h"
+#import "LGAccountCreationInfoCallback+Private.h"
 #import "LGAccountListCallback+Private.h"
 #import "LGBitcoinLikeWallet+Private.h"
 #import "LGCurrency+Private.h"
 #import "LGEventBus+Private.h"
+#import "LGExtendedKeyAccountCreationInfo+Private.h"
+#import "LGExtendedKeyAccountCreationInfoCallback+Private.h"
 #import "LGI32Callback+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
@@ -157,6 +161,50 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
         return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getAccountCreationInfo:(int32_t)accountIndex
+                      callback:(nullable id<LGAccountCreationInfoCallback>)callback {
+    try {
+        _cppRefHandle.get()->getAccountCreationInfo(::djinni::I32::toCpp(accountIndex),
+                                                    ::djinni_generated::AccountCreationInfoCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getExtendedKeyAccountCreationInfo:(int32_t)accountIndex
+                                 callback:(nullable id<LGExtendedKeyAccountCreationInfoCallback>)callback {
+    try {
+        _cppRefHandle.get()->getExtendedKeyAccountCreationInfo(::djinni::I32::toCpp(accountIndex),
+                                                               ::djinni_generated::ExtendedKeyAccountCreationInfoCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getNextAccountCreationInfo:(nullable id<LGAccountCreationInfoCallback>)callback {
+    try {
+        _cppRefHandle.get()->getNextAccountCreationInfo(::djinni_generated::AccountCreationInfoCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getNextExtendedKeyAccountCreationInfo:(nullable id<LGExtendedKeyAccountCreationInfoCallback>)callback {
+    try {
+        _cppRefHandle.get()->getNextExtendedKeyAccountCreationInfo(::djinni_generated::ExtendedKeyAccountCreationInfoCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)newAccountWithInfo:(nonnull LGAccountCreationInfo *)accountCreationInfo
+                  callback:(nullable id<LGAccountCallback>)callback {
+    try {
+        _cppRefHandle.get()->newAccountWithInfo(::djinni_generated::AccountCreationInfo::toCpp(accountCreationInfo),
+                                                ::djinni_generated::AccountCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)newAccountWithExtendedKeyInfo:(nonnull LGExtendedKeyAccountCreationInfo *)extendedKeyAccountCreationInfo
+                             callback:(nullable id<LGAccountCallback>)callback {
+    try {
+        _cppRefHandle.get()->newAccountWithExtendedKeyInfo(::djinni_generated::ExtendedKeyAccountCreationInfo::toCpp(extendedKeyAccountCreationInfo),
+                                                           ::djinni_generated::AccountCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

@@ -30,8 +30,10 @@
  */
 
 #include <gtest/gtest.h>
+#include <utils/FilesystemUtils.h>
 
 int main(int argc, char **argv) {
+    ledger::qt::FilesystemUtils::clearFs();
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

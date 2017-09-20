@@ -3,10 +3,14 @@
 
 #include "Wallet.hpp"  // my header
 #include "AccountCallback.hpp"
+#include "AccountCreationInfo.hpp"
+#include "AccountCreationInfoCallback.hpp"
 #include "AccountListCallback.hpp"
 #include "BitcoinLikeWallet.hpp"
 #include "Currency.hpp"
 #include "EventBus.hpp"
+#include "ExtendedKeyAccountCreationInfo.hpp"
+#include "ExtendedKeyAccountCreationInfoCallback.hpp"
 #include "I32Callback.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
@@ -195,6 +199,64 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getW
         auto r = ref->getWalletType();
         return ::djinni::release(::djinni_generated::WalletType::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getAccountCreationInfo(::djinni::I32::toCpp(jniEnv, j_accountIndex),
+                                    ::djinni_generated::AccountCreationInfoCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getExtendedKeyAccountCreationInfo(::djinni::I32::toCpp(jniEnv, j_accountIndex),
+                                               ::djinni_generated::ExtendedKeyAccountCreationInfoCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNextAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getNextAccountCreationInfo(::djinni_generated::AccountCreationInfoCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNextExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getNextExtendedKeyAccountCreationInfo(::djinni_generated::ExtendedKeyAccountCreationInfoCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAccountWithInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_accountCreationInfo, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->newAccountWithInfo(::djinni_generated::AccountCreationInfo::toCpp(jniEnv, j_accountCreationInfo),
+                                ::djinni_generated::AccountCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAccountWithExtendedKeyInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_extendedKeyAccountCreationInfo, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->newAccountWithExtendedKeyInfo(::djinni_generated::ExtendedKeyAccountCreationInfo::toCpp(jniEnv, j_extendedKeyAccountCreationInfo),
+                                           ::djinni_generated::AccountCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

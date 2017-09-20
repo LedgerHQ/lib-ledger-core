@@ -57,15 +57,8 @@ BitcoinLikeAccount = interface +c {
     getUTXOCount(callback: Callback<i32>);
 }
 
-BitcoinLikeNextAccountInfo = record {
-    xpubPath: string;
-    index: i32;
-    parentNodePath: string;
-    accountNodePath: string;
-}
 
 BitcoinLikeWallet = interface +c {
     createNewAccount(index: i32, xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
     createNextAccount(xpubProvider: BitcoinLikeExtendedPublicKeyProvider, callback: Callback<Account>);
-    getNextAccountInfo(callback: Callback<BitcoinLikeNextAccountInfo>);
 }

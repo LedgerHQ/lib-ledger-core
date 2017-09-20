@@ -63,6 +63,8 @@ namespace ledger {
 
             std::string getName() override;
 
+            ~WalletPoolApi();
+
         private:
             std::shared_ptr<ledger::core::WalletPool> _pool;
             std::shared_ptr<LoggerApi> _logger;

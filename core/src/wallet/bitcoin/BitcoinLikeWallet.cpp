@@ -38,7 +38,6 @@
 #include <api/KeychainEngines.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 #include "BitcoinLikeAccount.hpp"
-#include <api/BitcoinLikeNextAccountInfoCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -108,7 +107,7 @@ namespace ledger {
                                     getConfiguration(),
                                     provider,
                                     getAccountInternalPreferences(index),
-                                    getCurrency()).map<std::shared_ptr<api::Account>>(getContext(), [=] (const std::shared_ptr<BitcoinLikeKeychain>& keychain) {
+                                    getCurrency()).map<std::shared_ptr<api::Account>>(getContext(), [=] (const std::shared_ptr<BitcoinLikeKeychain>& keychain) -> std::shared_ptr<api::Account>{
                 soci::session sql(self->getDatabase()->getPool());
                 sql.begin();
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
@@ -127,25 +126,55 @@ namespace ledger {
             });
         }
 
-        Future<api::BitcoinLikeNextAccountInfo> BitcoinLikeWallet::getNextAccountInfo() {
+        FuturePtr<ledger::core::api::Account>
+        BitcoinLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
+            PromisePtr<api::Account> p;
+            return p.getFuture();
+        }
+
+        FuturePtr<ledger::core::api::Account>
+        BitcoinLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+            PromisePtr<api::Account> p;
+
+            return p.getFuture();
+        }
+
+        Future<api::ExtendedKeyAccountCreationInfo>
+        BitcoinLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
-            return getNextAccountIndex().map<api::BitcoinLikeNextAccountInfo>(getContext(), [self] (const int32_t& index) {
-                api::BitcoinLikeNextAccountInfo info;
-                info.index = index;
+            return async<api::ExtendedKeyAccountCreationInfo>([self, accountIndex] () -> api::ExtendedKeyAccountCreationInfo {
+                api::ExtendedKeyAccountCreationInfo info;
+                info.index = accountIndex;
                 auto scheme = self->getDerivationScheme();
-                scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(index);
-                auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-                auto parentNodePath = xpubPath.getParent();
-                info.xpubPath = xpubPath.toString();
-                info.parentNodePath = parentNodePath.toString();
-                info.accountNodePath = xpubPath.toString();
+                scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);;
+                auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
+                if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {
+                    auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+                    info.derivations.push_back(xpubPath.toString());
+                    info.owners.push_back(std::string("main"));
+                } else {
+                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "No implementation found found for keychain {}", keychainEngine);
+                }
+
                 return info;
             });
         }
 
-        void BitcoinLikeWallet::getNextAccountInfo(
-                const std::shared_ptr<api::BitcoinLikeNextAccountInfoCallback> &callback) {
-            getNextAccountInfo().callback(getMainExecutionContext(), callback);
+        Future<api::AccountCreationInfo> BitcoinLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
+            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self] (const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
+                api::AccountCreationInfo result;
+                auto length = info.derivations.size();
+                for (auto i = 0; i < length; i++) {
+                    DerivationPath path(info.derivations[i]);
+                    auto owner = info.owners[i];
+                    result.derivations.push_back(path.getParent().toString());
+                    result.derivations.push_back(path.toString());
+                    result.owners.push_back(owner);
+                    result.owners.push_back(owner);
+                }
+                return result;
+            });
         }
 
     }

@@ -40,6 +40,8 @@
 #include "../../../api/Configuration.hpp"
 #include "../../../api/DynamicObject.hpp"
 #include <api/Currency.hpp>
+#include <api/AccountCreationInfo.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
 
 namespace ledger {
     namespace core {

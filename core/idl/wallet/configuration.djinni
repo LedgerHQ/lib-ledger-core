@@ -23,7 +23,7 @@ SynchronizationEngines = interface +c {
 ConfigurationDefaults = interface +c {
     const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://api.ledgerwallet.com";
     const BIP44_DERIVATION_SCHEME: string = "44'/<coin_type>'/<account>'/<node>/<address>";
-    const DEFAULT_KEYCHAIN: string = "default";
+    const DEFAULT_KEYCHAIN: string = "BIP32_P2PKH";
     const DEFAULT_TRUST_LIMIT: i32 = 3;
 }
 

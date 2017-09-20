@@ -11,7 +11,6 @@ namespace ledger { namespace core { namespace api {
 
 class AccountCallback;
 class BitcoinLikeExtendedPublicKeyProvider;
-class BitcoinLikeNextAccountInfoCallback;
 
 class BitcoinLikeWallet {
 public:
@@ -20,8 +19,6 @@ public:
     virtual void createNewAccount(int32_t index, const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & xpubProvider, const std::shared_ptr<AccountCallback> & callback) = 0;
 
     virtual void createNextAccount(const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> & xpubProvider, const std::shared_ptr<AccountCallback> & callback) = 0;
-
-    virtual void getNextAccountInfo(const std::shared_ptr<BitcoinLikeNextAccountInfoCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

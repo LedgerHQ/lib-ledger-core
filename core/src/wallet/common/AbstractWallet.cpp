@@ -171,9 +171,51 @@ namespace ledger {
         }
 
         void AbstractWallet::getAccountCount(const std::shared_ptr<api::I32Callback> &callback) {
-
+            getAccountCount().callback(getMainExecutionContext(), callback);
         }
 
+        void AbstractWallet::getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) {
+            this->getNextAccountCreationInfo().callback(getMainExecutionContext(), callback);
+        }
 
+        void AbstractWallet::getNextExtendedKeyAccountCreationInfo(
+                    const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) {
+            this->getNextExtendedKeyAccountCreationInfo().callback(getMainExecutionContext(), callback);
+        }
+
+        Future<api::AccountCreationInfo> AbstractWallet::getNextAccountCreationInfo() {
+            auto self = shared_from_this();
+            return getNextAccountIndex().flatMap<api::AccountCreationInfo>(getContext(), [self] (const int32_t& index) -> Future<api::AccountCreationInfo> {
+                return self->getAccountCreationInfo(index);
+            });
+        }
+
+        Future<api::ExtendedKeyAccountCreationInfo> AbstractWallet::getNextExtendedKeyAccountCreationInfo() {
+            auto self = shared_from_this();
+            return getNextAccountIndex().flatMap<api::ExtendedKeyAccountCreationInfo>(getContext(), [self] (const int32_t& index) -> Future<api::ExtendedKeyAccountCreationInfo> {
+                return self->getExtendedKeyAccountCreationInfo(index);
+            });
+        }
+
+        void AbstractWallet::getAccountCreationInfo(int32_t accountIndex,
+                                                    const std::shared_ptr<api::AccountCreationInfoCallback> &callback) {
+            getAccountCreationInfo(accountIndex).callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex,
+                                                               const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) {
+            getExtendedKeyAccountCreationInfo(accountIndex).callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::newAccountWithInfo(const api::AccountCreationInfo &accountCreationInfo,
+                                                const std::shared_ptr<api::AccountCallback> &callback) {
+            newAccountWithInfo(accountCreationInfo).callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::newAccountWithExtendedKeyInfo(
+                const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
+                const std::shared_ptr<api::AccountCallback> &callback) {
+            newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
+        }
     }
 }

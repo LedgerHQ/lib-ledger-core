@@ -11,14 +11,18 @@
 namespace ledger { namespace core { namespace api {
 
 class AccountCallback;
+class AccountCreationInfoCallback;
 class AccountListCallback;
 class BitcoinLikeWallet;
 class EventBus;
+class ExtendedKeyAccountCreationInfoCallback;
 class I32Callback;
 class Logger;
 class Preferences;
 enum class WalletType;
+struct AccountCreationInfo;
 struct Currency;
+struct ExtendedKeyAccountCreationInfo;
 
 class Wallet {
 public:
@@ -62,6 +66,18 @@ public:
     virtual bool isInstanceOfRippleLikeWallet() = 0;
 
     virtual WalletType getWalletType() = 0;
+
+    virtual void getAccountCreationInfo(int32_t accountIndex, const std::shared_ptr<AccountCreationInfoCallback> & callback) = 0;
+
+    virtual void getExtendedKeyAccountCreationInfo(int32_t accountIndex, const std::shared_ptr<ExtendedKeyAccountCreationInfoCallback> & callback) = 0;
+
+    virtual void getNextAccountCreationInfo(const std::shared_ptr<AccountCreationInfoCallback> & callback) = 0;
+
+    virtual void getNextExtendedKeyAccountCreationInfo(const std::shared_ptr<ExtendedKeyAccountCreationInfoCallback> & callback) = 0;
+
+    virtual void newAccountWithInfo(const AccountCreationInfo & accountCreationInfo, const std::shared_ptr<AccountCallback> & callback) = 0;
+
+    virtual void newAccountWithExtendedKeyInfo(const ExtendedKeyAccountCreationInfo & extendedKeyAccountCreationInfo, const std::shared_ptr<AccountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

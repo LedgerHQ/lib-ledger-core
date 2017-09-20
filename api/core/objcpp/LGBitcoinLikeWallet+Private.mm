@@ -8,7 +8,6 @@
 #import "DJIMarshal+Private.h"
 #import "LGAccountCallback+Private.h"
 #import "LGBitcoinLikeExtendedPublicKeyProvider+Private.h"
-#import "LGBitcoinLikeNextAccountInfoCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -48,12 +47,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         _cppRefHandle.get()->createNextAccount(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(xpubProvider),
                                                ::djinni_generated::AccountCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)getNextAccountInfo:(nullable id<LGBitcoinLikeNextAccountInfoCallback>)callback {
-    try {
-        _cppRefHandle.get()->getNextAccountInfo(::djinni_generated::BitcoinLikeNextAccountInfoCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
