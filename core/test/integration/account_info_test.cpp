@@ -29,15 +29,28 @@
  *
  */
 
-//#define TEST_SUITE_NAME BitcoinLikeAccountInfo
-#include "../fixtures/fixtures_1.h"
-#include "../fixtures/bitcoin_helpers.h"
+#include "BaseFixture.h"
 
-TEST_F(TEST_SUITE_NAME, FirstAccountInfo) {
-    /*
-     *  EXPECT_EQ(info.owners[0], "main");
-            EXPECT_EQ(info.derivations[0], "44'/0'");
-            EXPECT_EQ(info.owners[1], "main");
-            EXPECT_EQ(info.derivations[1], "44'/0'/0'");
-     */
+class AccountInfoTests : public BaseFixture {
+
+};
+
+TEST_F(AccountInfoTests, FirstAccountInfo) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/0'");
+    EXPECT_EQ(info.owners[1], "main");
+    EXPECT_EQ(info.derivations[1], "44'/0'/0'");
+}
+
+TEST_F(AccountInfoTests, AnotherAccountInfo) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto info = wait(wallet->getAccountCreationInfo(20));
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/0'");
+    EXPECT_EQ(info.owners[1], "main");
+    EXPECT_EQ(info.derivations[1], "44'/0'/20'");
 }

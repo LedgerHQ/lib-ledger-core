@@ -29,56 +29,17 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
-#include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include "BaseFixture.h"
 
-using namespace ledger::core;
-using namespace ledger::qt;
+class WalletTests : public BaseFixture {
 
-TEST(Wallets, CreateNewWallet) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
-        return WalletPool::newInstance(
-            "my_pool",
-            Option<std::string>::NONE,
-            nullptr,
-            nullptr,
-            resolver,
-            printer,
-            dispatcher,
-            nullptr,
-            backend,
-            api::DynamicObject::newInstance()
-        );
-    };
-    {
-        auto pool = newPool();
-        pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance())
-            .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<AbstractWallet>& result) {
-                if (result.isFailure()) {
-                    std::cerr << result.getFailure().getMessage() << std::endl;
-                    FAIL();
-                } else {
-                    auto& wallet = result.getValue();
-                    EXPECT_EQ(wallet->getCurrency().name, "bitcoin");
-                    EXPECT_EQ(wallet->getWalletType(), api::WalletType::BITCOIN);
-                    auto bitcoinWallet = std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet);
-                    EXPECT_TRUE(bitcoinWallet != nullptr);
-                }
-                dispatcher->stop();
-            });
-        dispatcher->waitUntilStopped();
-    }
-    resolver->clean();
+};
+
+TEST_F(WalletTests, CreateNewWallet) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    EXPECT_EQ(wallet->getCurrency().name, "bitcoin");
+    EXPECT_EQ(wallet->getWalletType(), api::WalletType::BITCOIN);
+    auto bitcoinWallet = std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet);
+    EXPECT_TRUE(bitcoinWallet != nullptr);
 }

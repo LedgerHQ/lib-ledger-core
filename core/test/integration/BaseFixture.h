@@ -58,6 +58,8 @@
 #include <net/QtHttpClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
+#include <api/Account.hpp>
+#include <api/BitcoinLikeAccount.hpp>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
@@ -65,6 +67,11 @@ using namespace ledger::qt; // Djeez
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
+extern const std::string TX_1;
+extern const std::string TX_2;
+extern const std::string TX_3;
+extern const std::string TX_4;
+
 
 class BaseFixture : public ::testing::Test {
 public:
