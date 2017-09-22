@@ -10,12 +10,14 @@
                                owners:(nonnull NSArray<NSString *> *)owners
                           derivations:(nonnull NSArray<NSString *> *)derivations
                            publicKeys:(nonnull NSArray<NSData *> *)publicKeys
+                           chainCodes:(nonnull NSArray<NSData *> *)chainCodes
 {
     if (self = [super init]) {
         _index = index;
         _owners = [owners copy];
         _derivations = [derivations copy];
         _publicKeys = [publicKeys copy];
+        _chainCodes = [chainCodes copy];
     }
     return self;
 }
@@ -24,16 +26,18 @@
                                               owners:(nonnull NSArray<NSString *> *)owners
                                          derivations:(nonnull NSArray<NSString *> *)derivations
                                           publicKeys:(nonnull NSArray<NSData *> *)publicKeys
+                                          chainCodes:(nonnull NSArray<NSData *> *)chainCodes
 {
     return [[self alloc] initWithIndex:index
                                 owners:owners
                            derivations:derivations
-                            publicKeys:publicKeys];
+                            publicKeys:publicKeys
+                            chainCodes:chainCodes];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p index:%@ owners:%@ derivations:%@ publicKeys:%@>", self.class, (void *)self, @(self.index), self.owners, self.derivations, self.publicKeys];
+    return [NSString stringWithFormat:@"<%@ %p index:%@ owners:%@ derivations:%@ publicKeys:%@ chainCodes:%@>", self.class, (void *)self, @(self.index), self.owners, self.derivations, self.publicKeys, self.chainCodes];
 }
 
 @end

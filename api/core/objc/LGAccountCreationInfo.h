@@ -7,11 +7,13 @@
 - (nonnull instancetype)initWithIndex:(int32_t)index
                                owners:(nonnull NSArray<NSString *> *)owners
                           derivations:(nonnull NSArray<NSString *> *)derivations
-                           publicKeys:(nonnull NSArray<NSData *> *)publicKeys;
+                           publicKeys:(nonnull NSArray<NSData *> *)publicKeys
+                           chainCodes:(nonnull NSArray<NSData *> *)chainCodes;
 + (nonnull instancetype)AccountCreationInfoWithIndex:(int32_t)index
                                               owners:(nonnull NSArray<NSString *> *)owners
                                          derivations:(nonnull NSArray<NSString *> *)derivations
-                                          publicKeys:(nonnull NSArray<NSData *> *)publicKeys;
+                                          publicKeys:(nonnull NSArray<NSData *> *)publicKeys
+                                          chainCodes:(nonnull NSArray<NSData *> *)chainCodes;
 
 @property (nonatomic, readonly) int32_t index;
 
@@ -20,5 +22,7 @@
 @property (nonatomic, readonly, nonnull) NSArray<NSString *> * derivations;
 
 @property (nonatomic, readonly, nonnull) NSArray<NSData *> * publicKeys;
+
+@property (nonatomic, readonly, nonnull) NSArray<NSData *> * chainCodes;
 
 @end

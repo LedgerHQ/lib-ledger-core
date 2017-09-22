@@ -5,9 +5,6 @@
 #import "LGBitcoinLikeWallet.h"
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
-#import "DJIMarshal+Private.h"
-#import "LGAccountCallback+Private.h"
-#import "LGBitcoinLikeExtendedPublicKeyProvider+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -30,24 +27,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.assign(cppRef);
     }
     return self;
-}
-
-- (void)createNewAccount:(int32_t)index
-            xpubProvider:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)xpubProvider
-                callback:(nullable id<LGAccountCallback>)callback {
-    try {
-        _cppRefHandle.get()->createNewAccount(::djinni::I32::toCpp(index),
-                                              ::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(xpubProvider),
-                                              ::djinni_generated::AccountCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)createNextAccount:(nullable LGBitcoinLikeExtendedPublicKeyProvider *)xpubProvider
-                 callback:(nullable id<LGAccountCallback>)callback {
-    try {
-        _cppRefHandle.get()->createNextAccount(::djinni_generated::BitcoinLikeExtendedPublicKeyProvider::toCpp(xpubProvider),
-                                               ::djinni_generated::AccountCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 namespace djinni_generated {

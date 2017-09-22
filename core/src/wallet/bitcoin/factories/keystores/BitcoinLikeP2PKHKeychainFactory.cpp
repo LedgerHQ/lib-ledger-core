@@ -40,18 +40,30 @@ namespace ledger {
                                                int32_t index,
                                                const DerivationPath &path,
                                                const std::shared_ptr<DynamicObject> &configuration,
-                                               const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> &provider,
+                                               const api::ExtendedKeyAccountCreationInfo& info,
                                                const std::shared_ptr<Preferences> &accountPreferences,
                                                const api::Currency &currency) {
-            return provider->get(context,
-                          "main",
-                          path.toString(),
-                          currency.bitcoinLikeNetworkParameters.value()
-            ).mapPtr<BitcoinLikeKeychain>(context, [=] (const std::shared_ptr<BitcoinLikeExtendedPublicKey>& xpub) {
-               return std::make_shared<P2PKHBitcoinLikeKeychain>(
-                        configuration, currency, index, xpub, accountPreferences
-                );
-            });
+            PromisePtr<BitcoinLikeKeychain> p;
+            if (!info.extendedKeys.empty()) {
+                auto xpub = make_try<std::shared_ptr<BitcoinLikeExtendedPublicKey>>([&] () -> std::shared_ptr<BitcoinLikeExtendedPublicKey> {
+                    return BitcoinLikeExtendedPublicKey::fromBase58(
+                            currency.bitcoinLikeNetworkParameters.value(),
+                            info.extendedKeys[0],
+                            Option<std::string>(path.toString())
+                    );
+                });
+                if (xpub.isFailure()) {
+                    p.failure(xpub.getFailure());
+                } else {
+                    auto keychain = std::make_shared<P2PKHBitcoinLikeKeychain>(
+                            configuration, currency, index, xpub.getValue(), accountPreferences
+                    );
+                    p.success(keychain);
+                }
+            } else {
+                p.failure(make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString()));
+            }
+            return p.getFuture();
         }
 
         FuturePtr<ledger::core::BitcoinLikeKeychain>

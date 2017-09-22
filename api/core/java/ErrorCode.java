@@ -20,6 +20,7 @@ public enum ErrorCode {
     RAW_TRANSACTION_NOT_FOUND,
     /** Account errors */
     ACCOUNT_ALREADY_EXISTS,
+    MISSING_DERIVATION,
     /** User land errors */
     CANCELLED_BY_USER,
     UNSUPPORTED_CURRENCY,

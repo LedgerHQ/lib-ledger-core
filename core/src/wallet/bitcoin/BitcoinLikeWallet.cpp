@@ -32,8 +32,6 @@
 #include <api/ErrorCode.hpp>
 #include <api/AccountCallback.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
-#include <api/BitcoinLikeExtendedPublicKeyProvider.hpp>
-#include <bitcoin/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <api/KeychainEngines.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
@@ -79,35 +77,28 @@ namespace ledger {
             return nullptr;
         }
 
-        void BitcoinLikeWallet::createNewAccount(int32_t index,
-                                                 const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
-                                                 const std::shared_ptr<api::AccountCallback> &callback) {
-            createNewAccount(index, xpubProvider).callback(getMainExecutionContext(), callback);
+        FuturePtr<ledger::core::api::Account>
+        BitcoinLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
+            PromisePtr<api::Account> p;
+
+            return p.getFuture();
         }
 
-        void BitcoinLikeWallet::createNextAccount(
-                const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
-                const std::shared_ptr<api::AccountCallback> &callback) {
-            auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
-            getNextAccountIndex().flatMapPtr<ledger::core::api::Account>(getContext(), [=] (const int32_t& index) {
-                return self->createNewAccount(index, xpubProvider);
-            });
-        }
-
-        FuturePtr<ledger::core::api::Account> BitcoinLikeWallet::createNewAccount(int32_t index,
-                                                                                  const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider) {
-            auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
-            auto provider = std::dynamic_pointer_cast<BitcoinLikeExtendedPublicKeyProvider>(xpubProvider);
+        FuturePtr<ledger::core::api::Account>
+        BitcoinLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+            auto self = getSelf();
             auto scheme = getDerivationScheme();
-            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(index);
+            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto index = info.index;
             return _keychainFactory->build(getContext(),
-                                           index,
+                                    index,
                                     xpubPath,
                                     getConfiguration(),
-                                    provider,
+                                    info,
                                     getAccountInternalPreferences(index),
-                                    getCurrency()).map<std::shared_ptr<api::Account>>(getContext(), [=] (const std::shared_ptr<BitcoinLikeKeychain>& keychain) -> std::shared_ptr<api::Account>{
+                                    getCurrency()
+            ).mapPtr<api::Account>(getContext(), [=] (const std::shared_ptr<BitcoinLikeKeychain>& keychain) -> std::shared_ptr<api::Account> {
                 soci::session sql(self->getDatabase()->getPool());
                 sql.begin();
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
@@ -116,27 +107,14 @@ namespace ledger {
                 BitcoinLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, keychain->getRestoreKey());
                 sql.commit();
                 return std::static_pointer_cast<api::Account>(std::make_shared<BitcoinLikeAccount>(
-                    self->shared_from_this(),
-                    index,
-                    self->_explorer,
-                    self->_observer,
-                    self->_synchronizerFactory(),
-                    keychain
+                        self->shared_from_this(),
+                        index,
+                        self->_explorer,
+                        self->_observer,
+                        self->_synchronizerFactory(),
+                        keychain
                 ));
             });
-        }
-
-        FuturePtr<ledger::core::api::Account>
-        BitcoinLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-            PromisePtr<api::Account> p;
-            return p.getFuture();
-        }
-
-        FuturePtr<ledger::core::api::Account>
-        BitcoinLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-            PromisePtr<api::Account> p;
-
-            return p.getFuture();
         }
 
         Future<api::ExtendedKeyAccountCreationInfo>
@@ -175,6 +153,10 @@ namespace ledger {
                 }
                 return result;
             });
+        }
+
+        std::shared_ptr<BitcoinLikeWallet> BitcoinLikeWallet::getSelf() {
+            return std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
         }
 
     }

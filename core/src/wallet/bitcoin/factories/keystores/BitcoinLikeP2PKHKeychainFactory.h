@@ -42,7 +42,7 @@ namespace ledger {
                   int32_t index,
                   const DerivationPath &path,
                   const std::shared_ptr<DynamicObject> &configuration,
-                  const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider> &provider,
+                  const api::ExtendedKeyAccountCreationInfo& info,
                   const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) override;
 
             FuturePtr<ledger::core::BitcoinLikeKeychain>

@@ -1,13 +1,13 @@
 /*
  *
- * BitcoinLikeExtendedPublicKeyProvider
+ * bitcoin_like_account_info_test.cpp.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 01/03/2017.
+ * Created by Pierre Pollastri on 06/09/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,22 +28,16 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeExtendedPublicKeyProvider.hpp"
-#include "BitcoinLikeBase58Provider.hpp"
 
-namespace ledger {
-    namespace core {
+//#define TEST_SUITE_NAME BitcoinLikeAccountInfo
+#include "../fixtures/fixtures_1.h"
+#include "../fixtures/bitcoin_helpers.h"
 
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikeBase58ExtendedPublicKeyProvider(
-        const std::shared_ptr<BitcoinLikeBase58ExtendedPublicKeyProvider> &provider) {
-            return std::make_shared<ledger::core::BitcoinLikeBase58Provider>(provider);
-        }
-
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> api::BitcoinLikeExtendedPublicKeyProvider::fromBitcoinLikePublicKeyProvider(
-                const std::shared_ptr<BitcoinLikePublicKeyProvider> &provider) {
-            //TODO: IMPLEMENT XPUB COMPUTATION FROM PUBLIC KEYS
-            return nullptr;
-        }
-
-    }
+TEST_F(TEST_SUITE_NAME, FirstAccountInfo) {
+    /*
+     *  EXPECT_EQ(info.owners[0], "main");
+            EXPECT_EQ(info.derivations[0], "44'/0'");
+            EXPECT_EQ(info.owners[1], "main");
+            EXPECT_EQ(info.derivations[1], "44'/0'/0'");
+     */
 }

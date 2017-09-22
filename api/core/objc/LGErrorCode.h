@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeRawTransactionNotFound,
     /** Account errors */
     LGErrorCodeAccountAlreadyExists,
+    LGErrorCodeMissingDerivation,
     /** User land errors */
     LGErrorCodeCancelledByUser,
     LGErrorCodeUnsupportedCurrency,

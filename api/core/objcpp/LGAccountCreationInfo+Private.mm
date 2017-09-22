@@ -13,7 +13,8 @@ auto AccountCreationInfo::toCpp(ObjcType obj) -> CppType
     return {::djinni::I32::toCpp(obj.index),
             ::djinni::List<::djinni::String>::toCpp(obj.owners),
             ::djinni::List<::djinni::String>::toCpp(obj.derivations),
-            ::djinni::List<::djinni::Binary>::toCpp(obj.publicKeys)};
+            ::djinni::List<::djinni::Binary>::toCpp(obj.publicKeys),
+            ::djinni::List<::djinni::Binary>::toCpp(obj.chainCodes)};
 }
 
 auto AccountCreationInfo::fromCpp(const CppType& cpp) -> ObjcType
@@ -21,7 +22,8 @@ auto AccountCreationInfo::fromCpp(const CppType& cpp) -> ObjcType
     return [[LGAccountCreationInfo alloc] initWithIndex:(::djinni::I32::fromCpp(cpp.index))
                                                  owners:(::djinni::List<::djinni::String>::fromCpp(cpp.owners))
                                             derivations:(::djinni::List<::djinni::String>::fromCpp(cpp.derivations))
-                                             publicKeys:(::djinni::List<::djinni::Binary>::fromCpp(cpp.publicKeys))];
+                                             publicKeys:(::djinni::List<::djinni::Binary>::fromCpp(cpp.publicKeys))
+                                             chainCodes:(::djinni::List<::djinni::Binary>::fromCpp(cpp.chainCodes))];
 }
 
 }  // namespace djinni_generated

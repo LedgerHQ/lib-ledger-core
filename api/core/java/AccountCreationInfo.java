@@ -16,15 +16,19 @@ public final class AccountCreationInfo {
 
     /*package*/ final ArrayList<byte[]> publicKeys;
 
+    /*package*/ final ArrayList<byte[]> chainCodes;
+
     public AccountCreationInfo(
             int index,
             ArrayList<String> owners,
             ArrayList<String> derivations,
-            ArrayList<byte[]> publicKeys) {
+            ArrayList<byte[]> publicKeys,
+            ArrayList<byte[]> chainCodes) {
         this.index = index;
         this.owners = owners;
         this.derivations = derivations;
         this.publicKeys = publicKeys;
+        this.chainCodes = chainCodes;
     }
 
     public int getIndex() {
@@ -43,6 +47,10 @@ public final class AccountCreationInfo {
         return publicKeys;
     }
 
+    public ArrayList<byte[]> getChainCodes() {
+        return chainCodes;
+    }
+
     @Override
     public String toString() {
         return "AccountCreationInfo{" +
@@ -50,6 +58,7 @@ public final class AccountCreationInfo {
                 "," + "owners=" + owners +
                 "," + "derivations=" + derivations +
                 "," + "publicKeys=" + publicKeys +
+                "," + "chainCodes=" + chainCodes +
         "}";
     }
 

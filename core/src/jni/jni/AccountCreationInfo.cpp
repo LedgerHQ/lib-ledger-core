@@ -16,19 +16,21 @@ auto AccountCreationInfo::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni:
                                                            ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.index)),
                                                            ::djinni::get(::djinni::List<::djinni::String>::fromCpp(jniEnv, c.owners)),
                                                            ::djinni::get(::djinni::List<::djinni::String>::fromCpp(jniEnv, c.derivations)),
-                                                           ::djinni::get(::djinni::List<::djinni::Binary>::fromCpp(jniEnv, c.publicKeys)))};
+                                                           ::djinni::get(::djinni::List<::djinni::Binary>::fromCpp(jniEnv, c.publicKeys)),
+                                                           ::djinni::get(::djinni::List<::djinni::Binary>::fromCpp(jniEnv, c.chainCodes)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto AccountCreationInfo::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 5);
+    ::djinni::JniLocalScope jscope(jniEnv, 6);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<AccountCreationInfo>::get();
     return {::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_index)),
             ::djinni::List<::djinni::String>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_owners)),
             ::djinni::List<::djinni::String>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_derivations)),
-            ::djinni::List<::djinni::Binary>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_publicKeys))};
+            ::djinni::List<::djinni::Binary>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_publicKeys)),
+            ::djinni::List<::djinni::Binary>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_chainCodes))};
 }
 
 }  // namespace djinni_generated

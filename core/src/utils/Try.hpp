@@ -125,6 +125,11 @@ namespace ledger {
 
         template <typename T>
         using TryPtr = Try<std::shared_ptr<T>>;
+
+        template<typename T>
+        Try<T> make_try(std::function<T ()> lambda) {
+            return Try<T>::from(lambda);
+        }
     }
 }
 

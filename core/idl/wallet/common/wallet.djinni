@@ -120,6 +120,7 @@ AccountCreationInfo = record {
     owners: list<string>;
     derivations: list<string>;
     publicKeys: list<binary>;
+    chainCodes: list<binary>;
 }
 
 ExtendedKeyAccountCreationInfo = record {

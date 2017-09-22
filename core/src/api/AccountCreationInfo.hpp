@@ -17,15 +17,18 @@ struct AccountCreationInfo final {
     std::vector<std::string> owners;
     std::vector<std::string> derivations;
     std::vector<std::vector<uint8_t>> publicKeys;
+    std::vector<std::vector<uint8_t>> chainCodes;
 
     AccountCreationInfo(int32_t index_,
                         std::vector<std::string> owners_,
                         std::vector<std::string> derivations_,
-                        std::vector<std::vector<uint8_t>> publicKeys_)
+                        std::vector<std::vector<uint8_t>> publicKeys_,
+                        std::vector<std::vector<uint8_t>> chainCodes_)
     : index(std::move(index_))
     , owners(std::move(owners_))
     , derivations(std::move(derivations_))
     , publicKeys(std::move(publicKeys_))
+    , chainCodes(std::move(chainCodes_))
     {}
 
     AccountCreationInfo(const AccountCreationInfo& cpy) {
@@ -33,6 +36,7 @@ struct AccountCreationInfo final {
        this->owners = cpy.owners;
        this->derivations = cpy.derivations;
        this->publicKeys = cpy.publicKeys;
+       this->chainCodes = cpy.chainCodes;
     }
 
     AccountCreationInfo() = default;
@@ -43,17 +47,18 @@ struct AccountCreationInfo final {
        this->owners = cpy.owners;
        this->derivations = cpy.derivations;
        this->publicKeys = cpy.publicKeys;
+       this->chainCodes = cpy.chainCodes;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(index, owners, derivations, publicKeys);
+        archive(index, owners, derivations, publicKeys, chainCodes);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(index, owners, derivations, publicKeys);
+        archive(index, owners, derivations, publicKeys, chainCodes);
     }
 };
 

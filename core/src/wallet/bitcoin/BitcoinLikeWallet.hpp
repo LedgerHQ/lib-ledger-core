@@ -59,15 +59,6 @@ namespace ledger {
                 const DerivationScheme& scheme
             );
 
-            FuturePtr<api::Account> createNewAccount(int32_t index, const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider);
-
-            void createNewAccount(int32_t index,
-                                  const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
-                                  const std::shared_ptr<api::AccountCallback> &callback) override;
-
-            void createNextAccount(const std::shared_ptr<api::BitcoinLikeExtendedPublicKeyProvider> &xpubProvider,
-                                   const std::shared_ptr<api::AccountCallback> &callback) override;
-
             // API methods
 
             void getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) override;
@@ -88,6 +79,7 @@ namespace ledger {
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
         private:
+            std::shared_ptr<BitcoinLikeWallet> getSelf();
 
         private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;

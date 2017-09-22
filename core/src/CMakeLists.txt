@@ -117,8 +117,6 @@ add_library(
         net/HttpUrlConnectionInputStream.cpp net/HttpUrlConnectionInputStream.hpp
         utils/Either.cpp utils/Either.hpp
         utils/Lazy.cpp utils/Lazy.hpp
-        bitcoin/BitcoinLikeBase58Provider.cpp bitcoin/BitcoinLikeBase58Provider.hpp
-        bitcoin/BitcoinLikeExtendedPublicKeyProvider.cpp bitcoin/BitcoinLikeExtendedPublicKeyProvider.hpp
         async/CompletionBlock.cpp async/CompletionBlock.hpp
         traits/shared_ptr_traits.hpp collections/collections.hpp
         collections/MapLike.hpp utils/optional.cpp collections/DynamicObject.cpp collections/DynamicObject.hpp
@@ -186,7 +184,12 @@ add_library(
         wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.cpp wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h
         wallet/bitcoin/api_impl/BitcoinLikeInputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeInputApi.h
         wallet/bitcoin/api_impl/BitcoinLikeOutputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h
-        wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h async/wait.h async/algorithm.h debug/Benchmarker.cpp debug/Benchmarker.h utils/DurationUtils.cpp utils/DurationUtils.h utils/VectorUtils.cpp utils/VectorUtils.h crypto/Secp256k1Api.cpp crypto/Secp256k1Api.h)
+        wallet/bitcoin/api_impl/BitcoinLikeBlockApi.cpp wallet/bitcoin/api_impl/BitcoinLikeBlockApi.h async/wait.h
+        async/algorithm.h debug/Benchmarker.cpp
+        debug/Benchmarker.h utils/DurationUtils.cpp
+        utils/DurationUtils.h utils/VectorUtils.cpp utils/VectorUtils.h
+        crypto/Secp256k1Api.cpp crypto/Secp256k1Api.h
+)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

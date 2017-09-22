@@ -26,11 +26,12 @@ private:
     friend ::djinni::JniClass<AccountCreationInfo>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AccountCreationInfo") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(ILjava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(ILjava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)V") };
     const jfieldID field_index { ::djinni::jniGetFieldID(clazz.get(), "index", "I") };
     const jfieldID field_owners { ::djinni::jniGetFieldID(clazz.get(), "owners", "Ljava/util/ArrayList;") };
     const jfieldID field_derivations { ::djinni::jniGetFieldID(clazz.get(), "derivations", "Ljava/util/ArrayList;") };
     const jfieldID field_publicKeys { ::djinni::jniGetFieldID(clazz.get(), "publicKeys", "Ljava/util/ArrayList;") };
+    const jfieldID field_chainCodes { ::djinni::jniGetFieldID(clazz.get(), "chainCodes", "Ljava/util/ArrayList;") };
 };
 
 }  // namespace djinni_generated

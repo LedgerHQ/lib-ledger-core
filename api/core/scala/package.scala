@@ -19,6 +19,7 @@ package object implicits {
     class WalletAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.WALLET_ALREADY_EXISTS, message)
     class RawTransactionNotFoundException(message: String) extends LedgerCoreWrappedException(ErrorCode.RAW_TRANSACTION_NOT_FOUND, message)
     class AccountAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.ACCOUNT_ALREADY_EXISTS, message)
+    class MissingDerivationException(message: String) extends LedgerCoreWrappedException(ErrorCode.MISSING_DERIVATION, message)
     class CancelledByUserException(message: String) extends LedgerCoreWrappedException(ErrorCode.CANCELLED_BY_USER, message)
     class UnsupportedCurrencyException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNSUPPORTED_CURRENCY, message)
     class CurrencyAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.CURRENCY_ALREADY_EXISTS, message)
@@ -72,6 +73,7 @@ package object implicits {
             case ErrorCode.WALLET_ALREADY_EXISTS => new WalletAlreadyExistsException(error.getMessage)
             case ErrorCode.RAW_TRANSACTION_NOT_FOUND => new RawTransactionNotFoundException(error.getMessage)
             case ErrorCode.ACCOUNT_ALREADY_EXISTS => new AccountAlreadyExistsException(error.getMessage)
+            case ErrorCode.MISSING_DERIVATION => new MissingDerivationException(error.getMessage)
             case ErrorCode.CANCELLED_BY_USER => new CancelledByUserException(error.getMessage)
             case ErrorCode.UNSUPPORTED_CURRENCY => new UnsupportedCurrencyException(error.getMessage)
             case ErrorCode.CURRENCY_ALREADY_EXISTS => new CurrencyAlreadyExistsException(error.getMessage)
@@ -371,16 +373,6 @@ package object implicits {
     }
     implicit class RichEthereumLikeWallet(val self: EthereumLikeWallet) {
     }
-    implicit class RichBitcoinLikePublicKeyProvider(val self: BitcoinLikePublicKeyProvider) {
-    }
-    implicit class RichBitcoinLikePublicKeyCompletionBlock(val self: BitcoinLikePublicKeyCompletionBlock) {
-    }
-    implicit class RichBitcoinLikeBase58ExtendedPublicKeyProvider(val self: BitcoinLikeBase58ExtendedPublicKeyProvider) {
-    }
-    implicit class RichStringCompletionBlock(val self: StringCompletionBlock) {
-    }
-    implicit class RichBitcoinLikeExtendedPublicKeyProvider(val self: BitcoinLikeExtendedPublicKeyProvider) {
-    }
     implicit class RichBitcoinLikeAddress(val self: BitcoinLikeAddress) {
     }
     implicit class RichBitcoinLikeExtendedPublicKey(val self: BitcoinLikeExtendedPublicKey) {
@@ -436,34 +428,6 @@ package object implicits {
     implicit class RichBitcoinLikeOutputListCallback(val self: BitcoinLikeOutputListCallback) {
     }
     implicit class RichBitcoinLikeWallet(val self: BitcoinLikeWallet) {
-        def createNewAccount(index: Int, xpubProvider: BitcoinLikeExtendedPublicKeyProvider): Future[Account] = {
-            val promise = Promise[Account]()
-            self.createNewAccount(index, xpubProvider, new AccountCallback() {
-                override def onCallback(result: Account, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
-        def createNextAccount(xpubProvider: BitcoinLikeExtendedPublicKeyProvider): Future[Account] = {
-            val promise = Promise[Account]()
-            self.createNextAccount(xpubProvider, new AccountCallback() {
-                override def onCallback(result: Account, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
     }
     implicit class RichWalletPool(val self: WalletPool) {
         def getWalletCount(): Future[Int] = {

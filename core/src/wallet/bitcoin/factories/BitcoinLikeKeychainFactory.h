@@ -33,8 +33,9 @@
 
 #include <collections/DynamicObject.hpp>
 #include <api/Currency.hpp>
-#include <bitcoin/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <async/Future.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,7 +45,7 @@ namespace ledger {
                                                          int32_t index,
                                                          const DerivationPath &path,
                                                          const std::shared_ptr<DynamicObject>& configuration,
-                                                         const std::shared_ptr<BitcoinLikeExtendedPublicKeyProvider>& provider,
+                                                         const api::ExtendedKeyAccountCreationInfo& info,
                                                          const std::shared_ptr<Preferences>& accountPreferences,
                                                          const api::Currency& currency
             ) = 0;
