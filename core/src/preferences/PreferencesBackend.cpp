@@ -54,21 +54,19 @@ namespace ledger {
 
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
             auto db = _db;
-            _context->execute(make_runnable([changes, db] () {
-                leveldb::WriteBatch batch;
-                leveldb::WriteOptions options;
-                options.sync = true;
-                for (auto& item : changes) {
-                    leveldb::Slice k((const char *)item.key.data(), item.key.size());
-                    if (item.type == PreferencesChangeType::PUT) {
-                        leveldb::Slice v((const char *)item.value.data(), item.value.size());
-                        batch.Put(k, v);
-                    } else {
-                        batch.Delete(k);
-                    }
+            leveldb::WriteBatch batch;
+            leveldb::WriteOptions options;
+            options.sync = true;
+            for (auto& item : changes) {
+                leveldb::Slice k((const char *)item.key.data(), item.key.size());
+                if (item.type == PreferencesChangeType::PUT) {
+                    leveldb::Slice v((const char *)item.value.data(), item.value.size());
+                    batch.Put(k, v);
+                } else {
+                    batch.Delete(k);
                 }
-                db->Write(options, &batch);
-            }));
+            }
+            db->Write(options, &batch);
         }
 
         optional<std::string>  PreferencesBackend::get(const std::vector<uint8_t> &key) const {

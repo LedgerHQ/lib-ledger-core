@@ -29,6 +29,7 @@
  *
  */
 
+#include <utils/FilesystemUtils.h>
 #include "BaseFixture.h"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
@@ -41,6 +42,7 @@ api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO(
 
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
+    ledger::qt::FilesystemUtils::clearFs();
     dispatcher = std::make_shared<QtThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>();
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());

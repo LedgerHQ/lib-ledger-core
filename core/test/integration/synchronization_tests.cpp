@@ -35,40 +35,6 @@
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
-//
-//static void createWallet(const std::shared_ptr<WalletPool>& pool, const std::string& walletName) {
-//    soci::session sql(pool->getDatabaseSessionPool()
-//                          ->getPool());
-//    WalletDatabaseEntry entry;
-//    entry.configuration = std::static_pointer_cast<DynamicObject>(DynamicObject::newInstance());
-//    entry.name = "my_wallet";
-//    entry.poolName = pool->getName();
-//    entry.currencyName = "bitcoin";
-//    entry.updateUid();
-//    PoolDatabaseHelper::putWallet(sql, entry);
-//}
-//
-//static void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index) {
-//    soci::session sql(pool->getDatabaseSessionPool()
-//                          ->getPool());
-//    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName, "bitcoin");
-//    if (!AccountDatabaseHelper::accountExists(sql, walletUid, index))
-//        AccountDatabaseHelper::createAccount(sql, walletUid, index);
-//}
-//
-//static BitcoinLikeWalletDatabase newAccount(const std::shared_ptr<WalletPool>& pool,
-//                                            const std::string& walletName,
-//                                            int32_t index,
-//                                            const std::string& xpub) {
-//    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
-//    if (!db.accountExists(index)) {
-//        createWallet(pool, walletName);
-//        createAccount(pool, walletName, index);
-//        db.createAccount(index, xpub);
-//    }
-//    return db;
-//}
-
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool();
@@ -88,44 +54,4 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
               }));
         dispatcher->waitUntilStopped();
     }
-//    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-//    auto resolver = std::make_shared<NativePathResolver>();
-//    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-//    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-//    auto http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
-//    auto newPool = [=]() -> std::shared_ptr<WalletPool> {
-//        return WalletPool::newInstance(
-//                "my_pool",
-//                Option<std::string>::NONE,
-//                http,
-//                nullptr,
-//                resolver,
-//                printer,
-//                dispatcher,
-//                nullptr,
-//                backend,
-//                api::DynamicObject::newInstance()
-//        );
-//    };
-//    {
-//        auto pool = newPool();
-//        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-//        auto nextIndex = wait(wallet->getNextAccountIndex());
-//        EXPECT_EQ(nextIndex, 0);
-//        auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet->asBitcoinLikeWallet())->createNewAccount(nextIndex, XPUB_PROVIDER)));
-//
-//        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([=] (const std::shared_ptr<api::Event>& event) {
-//            fmt::print("Received event {}\n", api::to_string(event->getCode()));
-//            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-//                return ;
-//            EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-//            if (event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT) {
-//
-//            }
-//            dispatcher->stop();
-//        }));
-//
-//        dispatcher->waitUntilStopped();
-//    }
-//    resolver->clean();
 }
