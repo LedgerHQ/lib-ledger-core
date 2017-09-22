@@ -19,6 +19,7 @@ add_executable(ledger-core-integration-tests
         #  wallet_database_tests.cpp
         synchronization_tests.cpp
         # account_info_test.cpp
+        pool_tests.cpp
         BaseFixture.cpp BaseFixture.h)
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)

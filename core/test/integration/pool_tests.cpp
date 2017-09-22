@@ -30,36 +30,18 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include "BaseFixture.h"
 #include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
 #include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
-#include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
 
-using namespace ledger::core;
-using namespace ledger::qt;
+class WalletPoolTest : public BaseFixture {
 
-TEST(WalletPool, InitializeCurrencies) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto pool = WalletPool::newInstance(
-    "my_pool",
-    Option<std::string>::NONE,
-    nullptr,
-    nullptr,
-    resolver,
-    printer,
-    dispatcher,
-    nullptr,
-    backend,
-    api::DynamicObject::newInstance()
-    );
+};
 
+TEST_F(WalletPoolTest, InitializeCurrencies) {
+    auto pool = newDefaultPool();
     api::Currency bitcoin;
 
     for (auto& currency : pool->getCurrencies()) {
@@ -85,29 +67,9 @@ TEST(WalletPool, InitializeCurrencies) {
             EXPECT_EQ(unit.numberOfDecimal, 5);
         }
     }
-
-    resolver->clean();
 }
 
-TEST(WalletPool, AddCurrency) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
-        return WalletPool::newInstance(
-        "my_pool",
-        Option<std::string>::NONE,
-        nullptr,
-        nullptr,
-        resolver,
-        printer,
-        dispatcher,
-        nullptr,
-        backend,
-        api::DynamicObject::newInstance()
-        );
-    };
+TEST_F(WalletPoolTest, AddCurrency) {
     api::BitcoinLikeNetworkParameters params(
     "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
     "Wonder Coin Signed Message:\n", false
@@ -115,7 +77,7 @@ TEST(WalletPool, AddCurrency) {
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");
     {
-        auto firstPool = newPool();
+        auto firstPool = newDefaultPool();
         bool found = false;
         bool foundInSecond = false;
         firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(),
@@ -134,7 +96,7 @@ TEST(WalletPool, AddCurrency) {
         EXPECT_TRUE(found);
     }
     {
-        auto secondPool = newPool();
+        auto secondPool = newDefaultPool();
         bool found = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
@@ -149,25 +111,7 @@ TEST(WalletPool, AddCurrency) {
    resolver->clean();
 }
 
-TEST(WalletPool, RemoveCurrency) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
-        return WalletPool::newInstance(
-        "my_pool",
-        Option<std::string>::NONE,
-        nullptr,
-        nullptr,
-        resolver,
-        printer,
-        dispatcher,
-        nullptr,
-        backend,
-        api::DynamicObject::newInstance()
-        );
-    };
+TEST_F(WalletPoolTest, RemoveCurrency) {
     api::BitcoinLikeNetworkParameters params(
     "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
     "Wonder Coin Signed Message:\n", false
@@ -175,7 +119,7 @@ TEST(WalletPool, RemoveCurrency) {
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");
     {
-        auto firstPool = newPool();
+        auto firstPool = newDefaultPool();
         bool found = false;
         bool foundInSecond = false;
         firstPool
@@ -200,7 +144,7 @@ TEST(WalletPool, RemoveCurrency) {
         EXPECT_TRUE(found);
     }
     {
-        auto secondPool = newPool();
+        auto secondPool = newDefaultPool();
         bool found = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
