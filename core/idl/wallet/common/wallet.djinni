@@ -153,7 +153,7 @@ Account = interface +c {
     isInstanceOfBitcoinLikeAccount(): bool;
     isInstanceOfEthereumLikeAccount(): bool;
     isInstanceOfRippleLikeAccount(): bool;
-
+    getFreshPublicAddresses(callback: ListCallback<string>);
     getWalletType(): WalletType;
 
     computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);

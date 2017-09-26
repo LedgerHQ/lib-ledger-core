@@ -17,6 +17,7 @@ class EventBus;
 class Logger;
 class OperationQuery;
 class Preferences;
+class StringListCallback;
 enum class WalletType;
 
 class Account {
@@ -61,6 +62,8 @@ public:
     virtual bool isInstanceOfEthereumLikeAccount() = 0;
 
     virtual bool isInstanceOfRippleLikeAccount() = 0;
+
+    virtual void getFreshPublicAddresses(const std::shared_ptr<StringListCallback> & callback) = 0;
 
     virtual WalletType getWalletType() = 0;
 

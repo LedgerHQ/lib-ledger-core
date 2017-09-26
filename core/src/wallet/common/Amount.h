@@ -50,6 +50,11 @@ namespace ledger {
             double toDouble() override;
             std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
 
+            std::shared_ptr<api::Amount> toMagnitude(int32_t magnitude) override;
+
+        private:
+            int32_t getMagnitude() const;
+
         private:
             BigInt _value;
             int32_t _unitIndex;

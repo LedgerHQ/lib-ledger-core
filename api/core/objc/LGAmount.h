@@ -20,6 +20,8 @@
 
 - (nullable LGAmount *)toUnit:(nonnull LGCurrencyUnit *)unit;
 
+- (nullable LGAmount *)toMagnitude:(int32_t)magnitude;
+
 - (nonnull NSString *)toString;
 
 - (int64_t)toLong;

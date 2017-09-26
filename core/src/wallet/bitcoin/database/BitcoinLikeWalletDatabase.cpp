@@ -42,7 +42,7 @@ namespace ledger {
         BitcoinLikeWalletDatabase::BitcoinLikeWalletDatabase(const std::shared_ptr<WalletPool> &pool,
                                                      const std::string &walletName,
                                                      const std::string& currencyName)
-                : _walletUid(WalletDatabaseEntry::createWalletUid(pool->getName(), walletName, currencyName)) {
+                : _walletUid(WalletDatabaseEntry::createWalletUid(pool->getName(), walletName)) {
             _database = pool->getDatabaseSessionPool();
         }
 

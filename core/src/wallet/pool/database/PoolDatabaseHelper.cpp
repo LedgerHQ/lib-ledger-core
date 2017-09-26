@@ -72,15 +72,13 @@ namespace ledger {
 
         bool PoolDatabaseHelper::getWallet(soci::session &sql, const WalletPool &pool, const std::string &walletName,
                                            WalletDatabaseEntry &entry) {
-            auto walletUid = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName, entry.currencyName);
-            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration WHERE uid = :uid", use(walletUid));
-            if (rows.begin() == rows.end()) {
-                return false;
-            } else {
-                auto& row = *rows.begin();
+            auto walletUid = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName);
+            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE uid = :uid", use(walletUid));
+            for (auto& row : rows) {
                 inflateWalletEntry(row, pool, entry);
                 return true;
             }
+            return false;
         }
 
         void

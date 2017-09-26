@@ -45,9 +45,7 @@ namespace ledger {
 
             void updateUid();
 
-            static std::string createWalletUid(const std::string &poolName, const std::string &walletName,
-                const std::string& currencyName
-            );
+            static std::string createWalletUid(const std::string &poolName, const std::string &walletName);
         };
     }
 }

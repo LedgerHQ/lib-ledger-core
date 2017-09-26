@@ -47,6 +47,7 @@ namespace ledger {
         }
 
         bool BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
+                                                                  const std::string& accountUid,
                                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
@@ -70,7 +71,7 @@ namespace ledger {
                         use(tx.lockTime);
                 // Insert outputs
                 for (const auto& output : tx.outputs) {
-                    insertOutput(sql, tx.hash, output);
+                    insertOutput(sql, accountUid, tx.hash, output);
                 }
                 // Insert inputs
                 for (const auto& input : tx.inputs) {
@@ -81,11 +82,12 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
+                                                                const std::string& accountUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorer::Output &output) {
-            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :hash, :amount, :script, :address)",
+            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :hash, :amount, :script, :address, :account_uid)",
                     use(output.index), use(transactionHash), use(output.value.toUint64()), use(output.script),
-                    use(output.address);
+                    use(output.address), use(accountUid);
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertInput(soci::session &sql,

@@ -47,7 +47,7 @@ namespace ledger {
             : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))), _scheme(derivationScheme)
         {
             _name = walletName;
-            _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name, currency.name);
+            _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
             _currency = currency;
             _configuration = configuration;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(fmt::format("wallet_{}", walletName));

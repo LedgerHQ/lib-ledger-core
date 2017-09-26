@@ -73,7 +73,13 @@ namespace ledger {
         }
 
         int64_t Amount::toLong() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "int64_t Amount::toLong()");
+            auto magnitude = getMagnitude();
+            BigInt value = _value;
+            while (magnitude > 0) {
+                value = value / BigInt(10);
+                magnitude -= 1;
+            }
+            return value.toInt64();
         }
 
         double Amount::toDouble() {
@@ -82,6 +88,19 @@ namespace ledger {
 
         std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules)");
+        }
+
+        std::shared_ptr<api::Amount> Amount::toMagnitude(int32_t magnitude) {
+            for (auto& unit : getCurrency().units) {
+                if (unit.numberOfDecimal == magnitude) {
+                    return toUnit(unit);
+                }
+            }
+            throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Cannot find currency with magnitude {}", magnitude);
+        }
+
+        int32_t Amount::getMagnitude() const {
+            return _currency.units[_unitIndex].numberOfDecimal;
         }
     }
 }

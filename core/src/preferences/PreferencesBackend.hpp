@@ -43,6 +43,7 @@
 #include <functional>
 #include "../utils/optional.hpp"
 #include "Preferences.hpp"
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
@@ -72,6 +73,10 @@ namespace ledger {
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
+
+            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
+            static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
+            static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;
         };
     }
 }

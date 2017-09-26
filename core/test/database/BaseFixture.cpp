@@ -103,7 +103,7 @@ void BaseFixture::createWallet(const std::shared_ptr<WalletPool> &pool, const st
 void BaseFixture::createAccount(const std::shared_ptr<WalletPool> &pool, const std::string &walletName, int32_t index) {
     soci::session sql(pool->getDatabaseSessionPool()
                               ->getPool());
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName);
+    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName, "bitcoin");
     if (!AccountDatabaseHelper::accountExists(sql, walletUid, index))
         AccountDatabaseHelper::createAccount(sql, walletUid, index);
 }

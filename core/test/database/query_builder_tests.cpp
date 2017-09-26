@@ -46,17 +46,17 @@
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
 #include <async/async_wait.h>
-#include <BitcoinLikeStringXpubProvider.h>
-#include <api/BitcoinLikeExtendedPublicKeyProvider.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include "../fixtures/fixtures_1.h"
 #include <database/query/QueryBuilder.h>
 #include <api/QueryFilter.hpp>
 
-using namespace ledger::core;
-using namespace ledger::qt;
+#include "BaseFixture.h"
 
-TEST(QueryBuilder, SimpleOperationQuery) {
+class QueryBuilderTest : public BaseFixture {
+
+};
+
+TEST_F(QueryBuilderTest, SimpleOperationQuery) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
@@ -80,8 +80,7 @@ TEST(QueryBuilder, SimpleOperationQuery) {
         auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
         auto nextIndex = wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
-        auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet->asBitcoinLikeWallet())->createNewAccount(nextIndex, XPUB_PROVIDER)));
-
+        auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
         std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
                 *JSONUtils::parse<TransactionParser>(TX_1),
                 *JSONUtils::parse<TransactionParser>(TX_2),

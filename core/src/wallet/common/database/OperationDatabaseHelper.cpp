@@ -92,7 +92,7 @@ namespace ledger {
         void
         OperationDatabaseHelper::updateBitcoinOperation(soci::session &sql, const Operation &operation, bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
-                BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.bitcoinTransaction
+                BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction
                                                                                    .getValue());
                 if (insert)
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_hash)", use(operation.uid)

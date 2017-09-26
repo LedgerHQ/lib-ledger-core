@@ -14,6 +14,8 @@ public abstract class Amount {
 
     public abstract Amount toUnit(CurrencyUnit unit);
 
+    public abstract Amount toMagnitude(int magnitude);
+
     public abstract String toString();
 
     public abstract long toLong();
@@ -76,6 +78,14 @@ public abstract class Amount {
             return native_toUnit(this.nativeRef, unit);
         }
         private native Amount native_toUnit(long _nativeRef, CurrencyUnit unit);
+
+        @Override
+        public Amount toMagnitude(int magnitude)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_toMagnitude(this.nativeRef, magnitude);
+        }
+        private native Amount native_toMagnitude(long _nativeRef, int magnitude);
 
         @Override
         public String toString()

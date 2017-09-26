@@ -34,6 +34,8 @@
 #include <src/api/Account.hpp>
 #include "AbstractWallet.hpp"
 #include "OperationQuery.h"
+#include <async/Future.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
@@ -58,6 +60,11 @@ namespace ledger {
             virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
+            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+            virtual FuturePtr<Amount> getBalance() = 0;
+
+            void getFreshPublicAddresses(const std::shared_ptr <api::StringListCallback> &callback) override;
+            virtual Future<std::vector<std::string>> getFreshPublicAddresses() = 0;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
         private:

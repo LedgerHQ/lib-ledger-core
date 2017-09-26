@@ -19,6 +19,7 @@ Amount = interface +c {
     getCurrency(): Currency;
     getUnit(): CurrencyUnit;
     toUnit(unit: CurrencyUnit): Amount;
+    toMagnitude(magnitude: i32): Amount;
     toString(): string;
     toLong(): i64;
     toDouble(): f64;

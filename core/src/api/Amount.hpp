@@ -29,6 +29,8 @@ public:
 
     virtual std::shared_ptr<Amount> toUnit(const CurrencyUnit & unit) = 0;
 
+    virtual std::shared_ptr<Amount> toMagnitude(int32_t magnitude) = 0;
+
     virtual std::string toString() = 0;
 
     virtual int64_t toLong() = 0;

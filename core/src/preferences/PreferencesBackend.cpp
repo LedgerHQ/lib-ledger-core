@@ -38,18 +38,35 @@
 namespace ledger {
     namespace core {
 
+        std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
+        std::mutex PreferencesBackend::LEVELDB_INSTANCE_POOL_MUTEX;
+
+        std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
+            std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
+            auto it = LEVELDB_INSTANCE_POOL.find(path);
+            if (it != LEVELDB_INSTANCE_POOL.end()) {
+                auto db = it->second.lock();
+                if (db != nullptr)
+                    return db;
+            }
+            leveldb::DB *db;
+            leveldb::Options options;
+            options.create_if_missing = true;
+            auto status = leveldb::DB::Open(options, path, &db);
+            if (!status.ok()) {
+                throw Exception(api::ErrorCode::UNABLE_TO_OPEN_LEVELDB, status.ToString());
+            }
+            auto instance = std::shared_ptr<leveldb::DB>(db);
+            std::weak_ptr<leveldb::DB> weakInstance = instance;
+            LEVELDB_INSTANCE_POOL[path] = weakInstance;
+            return instance;
+        }
+
         PreferencesBackend::PreferencesBackend(const std::string &path,
                                                const std::shared_ptr<api::ExecutionContext> &writingContext,
                                                const std::shared_ptr<api::PathResolver> &resolver) {
             _context = writingContext;
-            leveldb::DB* db;
-            leveldb::Options options;
-            options.create_if_missing = true;
-            auto status = leveldb::DB::Open(options, resolver->resolvePreferencesPath(path), &db);
-            if (!status.ok()) {
-                throw Exception(api::ErrorCode::UNABLE_TO_OPEN_LEVELDB, status.ToString());
-            }
-            _db = std::shared_ptr<leveldb::DB>(db);
+            _db = obtainInstance(resolver->resolvePreferencesPath(path));
         }
 
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
@@ -97,5 +114,6 @@ namespace ledger {
         std::shared_ptr<Preferences> PreferencesBackend::getPreferences(const std::string &name) {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
+
     }
 }

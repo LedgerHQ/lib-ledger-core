@@ -82,7 +82,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
 
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
 
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet", "bitcoin");
+    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
     EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
     AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
     EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
@@ -97,7 +97,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     auto transaction = JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION);
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
-    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, *transaction);
+    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", *transaction);
 
     BitcoinLikeBlockchainExplorer::Transaction dbTransaction;
     if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, dbTransaction)) {
@@ -126,7 +126,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     sql.begin();
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
     for (auto& transaction : transactions) {
-        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, transaction);
+        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", transaction);
     }
     sql.commit();
 

@@ -23,6 +23,7 @@
 #import "../objc/LGExtendedKeyAccountCreationInfo.h"
 #import "../objc/LGAccount.h"
 #import "../objc/LGAmountCallback.h"
+#import "../objc/LGStringListCallback.h"
 #import "../objc/LGWallet.h"
 #import "../objc/LGAccountCallback.h"
 #import "../objc/LGI32Callback.h"

@@ -1,13 +1,13 @@
 /*
  *
- * WalletDatabaseEntry
+ * BitcoinLikeUTXODatabaseHelper.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 16/05/2017.
+ * Created by Pierre Pollastri on 25/09/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,28 @@
  * SOFTWARE.
  *
  */
-#include "WalletDatabaseEntry.hpp"
-#include <crypto/SHA256.hpp>
 
-std::string
-ledger::core::WalletDatabaseEntry::createWalletUid(const std::string &poolName, const std::string &walletName) {
-    return SHA256::stringToHexHash(fmt::format("uid:{}+{}", poolName, walletName));
+#ifndef LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+#define LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+
+#include <soci.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+
+namespace ledger {
+    namespace core {
+        class BitcoinLikeUTXODatabaseHelper {
+            BitcoinLikeUTXODatabaseHelper() = delete;
+
+            ~BitcoinLikeUTXODatabaseHelper() = delete;
+
+        public:
+            static std::size_t queryUTXO(soci::session &sql, const std::string &accountUid,
+                           int32_t offset,
+                           int32_t count,
+                           std::vector<BitcoinLikeBlockchainExplorer::Output>& out);
+            static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid);
+        };
+    }
 }
 
-void ledger::core::WalletDatabaseEntry::updateUid() {
-    uid = createWalletUid(poolName, name);
-}
+#endif //LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H

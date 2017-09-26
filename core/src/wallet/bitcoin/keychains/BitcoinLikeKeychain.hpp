@@ -82,6 +82,7 @@ namespace ledger {
             const DerivationScheme& getFullDerivationScheme() const;
 
             virtual std::string getRestoreKey() const = 0;
+            virtual int32_t getObservableRangeSize() const = 0;
 
         protected:
             std::shared_ptr<Preferences> getPreferences() const;

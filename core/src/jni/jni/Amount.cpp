@@ -64,6 +64,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toUn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toMagnitude(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_magnitude)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
+        auto r = ref->toMagnitude(::djinni::I32::toCpp(jniEnv, j_magnitude));
+        return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

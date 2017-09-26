@@ -41,6 +41,7 @@
 #include <api/Amount.hpp>
 #include <api/AmountCallback.hpp>
 #include <api/OperationListCallback.hpp>
+#include <api/BitcoinLikeOutput.hpp>
 
 namespace ledger {
     namespace core {
@@ -82,10 +83,11 @@ namespace ledger {
             /***
              * REVIEW
              */
-            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
-            FuturePtr<api::Amount> getBalance();
+
 
             bool isSynchronizing() override;
+
+            FuturePtr<ledger::core::Amount> getBalance() override;
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
@@ -97,9 +99,11 @@ namespace ledger {
 
             void getUTXO(int32_t from, int32_t to,
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
-
+            Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
             Future<int32_t> getUTXOCount();
+
+            Future<std::vector<std::string>> getFreshPublicAddresses() override;
 
         protected:
             bool checkIfWalletIsEmpty();

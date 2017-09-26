@@ -12,6 +12,7 @@
 #import "LGLogger+Private.h"
 #import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGStringListCallback+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -110,6 +111,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isInstanceOfRippleLikeAccount();
         return ::djinni::Bool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getFreshPublicAddresses(::djinni_generated::StringListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

@@ -34,6 +34,7 @@
 #include <database/query/QueryBuilder.h>
 #include <api/EventCode.hpp>
 #include <utils/DateUtils.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -198,11 +199,6 @@ namespace ledger {
             return _keychain;
         }
 
-        // REVIEW
-
-        void BitcoinLikeAccount::getBalance(const std::shared_ptr<api::AmountCallback> &callback) {
-
-        }
 
         bool BitcoinLikeAccount::isSynchronizing() {
             return false;
@@ -256,11 +252,6 @@ namespace ledger {
             return false;
         }
 
-        FuturePtr<api::Amount> BitcoinLikeAccount::getBalance() {
-            PromisePtr<api::Amount> p;
-            return p.getFuture();
-        }
-
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
             Promise<int32_t> p;
             return p.getFuture();
@@ -279,6 +270,39 @@ namespace ledger {
 
         bool BitcoinLikeAccount::checkIfWalletIsEmpty() {
             return _keychain->isEmpty();
+        }
+
+        Future<std::vector<std::string>> BitcoinLikeAccount::getFreshPublicAddresses() {
+            auto keychain = getKeychain();
+            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
+                return keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
+            });
+        }
+
+        Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> BitcoinLikeAccount::getUTXO() {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=] () -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+
+            });
+        }
+
+        FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
+                const int32_t BATCH_SIZE = 100;
+                const auto& uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<BitcoinLikeBlockchainExplorer::Output> utxos;
+                auto offset = 0;
+                std::size_t count = 0;
+                BigInt sum(0);
+                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, offset, BATCH_SIZE, utxos)) == BATCH_SIZE; offset += count) {}
+                for (const auto& utxo : utxos) {
+                    sum = sum + utxo.value;
+                }
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+            });
         }
 
     }

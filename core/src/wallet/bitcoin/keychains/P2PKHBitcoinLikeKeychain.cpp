@@ -139,7 +139,7 @@ namespace ledger {
             auto startOffset = (purpose == KeyPurpose::RECEIVE) ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex;
             std::vector<std::string> result(n);
             for (auto i = 0; i < n; i++) {
-                result.push_back(derive(purpose, startOffset + i));
+                result[i] = derive(purpose, startOffset + i);
             }
             return result;
         }
@@ -232,6 +232,10 @@ namespace ledger {
 
         std::string P2PKHBitcoinLikeKeychain::getRestoreKey() const {
             return _xpub->toBase58();
+        }
+
+        int32_t P2PKHBitcoinLikeKeychain::getObservableRangeSize() const {
+            return _observableRange;
         }
 
     }

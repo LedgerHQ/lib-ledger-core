@@ -9,6 +9,7 @@
 @class LGOperationQuery;
 @class LGPreferences;
 @protocol LGAmountCallback;
+@protocol LGStringListCallback;
 
 /**
  * Key of the synchronization duration time in the synchronize event payload.
@@ -48,6 +49,8 @@ extern NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE;
 - (BOOL)isInstanceOfEthereumLikeAccount;
 
 - (BOOL)isInstanceOfRippleLikeAccount;
+
+- (void)getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback;
 
 - (LGWalletType)getWalletType;
 

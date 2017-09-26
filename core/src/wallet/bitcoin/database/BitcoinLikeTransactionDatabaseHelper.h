@@ -39,8 +39,8 @@ namespace ledger {
         class BitcoinLikeTransactionDatabaseHelper {
         public:
             static bool transactionExists(soci::session& sql, const std::string& transactionHash);
-            static bool putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorer::Transaction& tx);
-            static inline void insertOutput(soci::session& sql, const std::string& transactionHash,
+            static bool putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorer::Transaction& tx);
+            static inline void insertOutput(soci::session& sql, const std::string& accountUid, const std::string& transactionHash,
                                             const BitcoinLikeBlockchainExplorer::Output& output);
             static inline void insertInput(soci::session& sql,
                                            const std::string& transactionHash,

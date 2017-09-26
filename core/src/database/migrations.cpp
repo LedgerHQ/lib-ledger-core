@@ -154,7 +154,8 @@ namespace ledger {
                 "amount BIGINT NOT NULL,"
                 "script TEXT NOT NULL,"
                 "address VARCHAR(255),"
-                "PRIMARY KEY (idx, transaction_hash)"
+                "account_uid VARCHAR(255),"
+                "PRIMARY KEY (idx, transaction_hash, account_uid)"
             ")";
 
             // Bitcoin transaction <-> input table

@@ -341,7 +341,7 @@ namespace ledger {
                 entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(configuration);
                 entry.currencyName = currencyName;
                 entry.poolName = self->getName();
-                entry.uid = WalletDatabaseEntry::createWalletUid(self->getName(), name, currencyName);
+                entry.uid = WalletDatabaseEntry::createWalletUid(self->getName(), name);
                 if (PoolDatabaseHelper::walletExists(sql, entry))
                     throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}' already exists", name, currencyName);
                 PoolDatabaseHelper::putWallet(sql, entry);
