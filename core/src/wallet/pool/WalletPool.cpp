@@ -345,7 +345,7 @@ namespace ledger {
                 if (PoolDatabaseHelper::walletExists(sql, entry))
                     throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}' already exists", name, currencyName);
                 PoolDatabaseHelper::putWallet(sql, entry);
-                auto wallet = factory->build(entry);
+                auto wallet = buildWallet(entry);
                 sql.commit();
                 return wallet;
             });
