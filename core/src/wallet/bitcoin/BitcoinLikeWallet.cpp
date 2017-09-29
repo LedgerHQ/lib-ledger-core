@@ -36,6 +36,7 @@
 #include <api/KeychainEngines.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 #include "BitcoinLikeAccount.hpp"
+#include <algorithm>
 
 namespace ledger {
     namespace core {
@@ -79,9 +80,65 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         BitcoinLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-            PromisePtr<api::Account> p;
+            //TODO: Update data structure to be able to do P2SH with mixed HD and Solo keys.
+            // Right now we only handle Full HD P2SH wallet.
+            // For each owner
+                // Get the pair of keys
+                // Create extended key
+                // Serialize and store
+            auto self = getSelf();
+            return async<api::ExtendedKeyAccountCreationInfo>([self, info] () -> api::ExtendedKeyAccountCreationInfo {
+                if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
+                    info.publicKeys.size() != info.owners.size())
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
+                api::ExtendedKeyAccountCreationInfo result;
+                std::set<std::string> ownersSet(info.owners.begin(), info.owners.end());
+                auto ownersIterator = ownersSet.begin();
+                auto ownersEndIterator = ownersSet.end();
+                auto size = info.owners.size();
+                while (ownersIterator != ownersEndIterator) {
+                    int32_t firstOccurence = -1;
+                    int32_t secondOccurence = -1;
 
-            return p.getFuture();
+                    for (auto i = 0; i < size; i++) {
+                        if (info.owners[i] != *ownersIterator) continue;
+                        if (info.publicKeys[i].size() != 33 && info.publicKeys[i].size() != 65)
+                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
+                        if (firstOccurence == -1)
+                            firstOccurence = i;
+                        else {
+                            secondOccurence = i;
+                            break;
+                        }
+                    }
+                    ownersIterator++;
+                    if (firstOccurence == -1 || secondOccurence == -1)
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (missing derivation(s))");
+                    DerivationPath firstOccurencePath(info.derivations[firstOccurence]);
+                    DerivationPath secondOccurencePath(info.derivations[secondOccurence]);
+                    if (secondOccurencePath.getParent() != firstOccurencePath) {
+                        std::swap(firstOccurencePath, secondOccurencePath);
+                        std::swap(firstOccurence, secondOccurence);
+                    }
+                    if (secondOccurencePath.getParent() != firstOccurencePath)
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (wrong paths)");
+                    auto xpub = BitcoinLikeExtendedPublicKey::fromRaw(
+                            self->getCurrency().bitcoinLikeNetworkParameters.value(),
+                            Option<std::vector<uint8_t>>(info.publicKeys[firstOccurence]).toOptional(),
+                            info.publicKeys[secondOccurence],
+                            info.chainCodes[secondOccurence],
+                            info.derivations[secondOccurence]
+                    );
+                    result.owners.push_back(*ownersIterator);
+                    result.derivations.push_back(info.derivations[secondOccurence]);
+                    fmt::print("Hello you {}\n", xpub->toBase58());
+                    result.extendedKeys.push_back(xpub->toBase58());
+                }
+                result.index = info.index;
+                return result;
+            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(), [self] (const api::ExtendedKeyAccountCreationInfo& info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
+                return self->newAccountWithExtendedKeyInfo(info);
+            });
         }
 
         FuturePtr<ledger::core::api::Account>

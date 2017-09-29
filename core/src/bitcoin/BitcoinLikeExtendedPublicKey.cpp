@@ -37,6 +37,7 @@
 #include "../math/Base58.hpp"
 #include "../bytes/BytesReader.h"
 #include "BitcoinLikeAddress.hpp"
+#include <crypto/SECP256k1Point.hpp>
 
 namespace ledger {
     namespace core {
@@ -80,17 +81,20 @@ namespace ledger {
                                               const std::string &path) {
             uint32_t parentFingerprint = 0;
 
+            SECP256k1Point pk(publicKey);
             if (parentPublicKey) {
-                auto hash160 = HASH160::hash(parentPublicKey.value());
-                parentFingerprint = ((hash160[0] & 0xFFU) << 24) |
-                                    ((hash160[1] & 0xFFU) << 16) |
-                                    ((hash160[2] & 0xFFU) << 8) |
-                                    (hash160[3] & 0xFFU);
+                SECP256k1Point ppp(parentPublicKey.value());
+                auto hash = SHA256::bytesToBytesHash(ppp.toByteArray(true));
+                hash = RIPEMD160::hash(hash);
+                parentFingerprint = ((hash[0] & 0xFFU) << 24) |
+                                    ((hash[1] & 0xFFU) << 16) |
+                                    ((hash[2] & 0xFFU) << 8) |
+                                     (hash[3] & 0xFFU);
             }
             DerivationPath p(path);
 
             DeterministicPublicKey k(
-                    publicKey, chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
+                    pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
             );
             return std::make_shared<BitcoinLikeExtendedPublicKey>(params, k, p);
         }

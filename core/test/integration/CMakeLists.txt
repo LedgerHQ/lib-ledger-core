@@ -21,7 +21,8 @@ add_executable(ledger-core-integration-tests
         account_info_test.cpp
         wallet_tests.cpp
         pool_tests.cpp
-        BaseFixture.cpp BaseFixture.h accounts_public_interfaces_test.cpp)
+        BaseFixture.cpp BaseFixture.h accounts_public_interfaces_test.cpp
+        account_creation_tests.cpp)
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
 target_link_libraries(ledger-core-integration-tests ledger-core)

@@ -35,6 +35,7 @@
 #include <sstream>
 #include <fmt/format.h>
 #include <src/collections/strings.hpp>
+#include <algorithm>
 
 namespace ledger {
     namespace core {
@@ -143,11 +144,13 @@ namespace ledger {
         }
 
         bool DerivationPath::operator==(const DerivationPath &path) const {
-            return _path == path._path;
+            if (this->getDepth() != path.getDepth())
+                return false;
+            return std::equal(_path.begin(), _path.end(), path._path.begin());
         }
 
         bool DerivationPath::operator!=(const DerivationPath &path) const {
-            return (*this) == path;
+            return !((*this) == path);
         }
 
         DerivationPath DerivationPath::getParent() const throw(ledger::core::Exception) {
