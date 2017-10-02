@@ -11,6 +11,10 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
+file(GLOB ledger-core-fixtures-srcs
+        "../fixtures/*.cpp"
+        "../fixtures/*.h"
+        )
 add_executable(ledger-core-integration-tests
         main.cpp
         initialization_test.cpp
@@ -22,7 +26,8 @@ add_executable(ledger-core-integration-tests
         wallet_tests.cpp
         pool_tests.cpp
         BaseFixture.cpp BaseFixture.h accounts_public_interfaces_test.cpp
-        account_creation_tests.cpp)
+        account_creation_tests.cpp
+        ${ledger-core-fixtures-srcs})
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
 target_link_libraries(ledger-core-integration-tests ledger-core)

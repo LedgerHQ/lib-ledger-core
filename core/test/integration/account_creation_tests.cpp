@@ -36,7 +36,7 @@ class AccountCreationTest : public BaseFixture {};
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfo) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
-    auto account = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
+    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
     auto address = wait(account->getFreshPublicAddresses())[0];
     EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
 }
