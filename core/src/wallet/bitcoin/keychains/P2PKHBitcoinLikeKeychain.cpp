@@ -97,6 +97,7 @@ namespace ledger {
                         _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
                     _state.empty = false;
                     saveState();
+                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
                     return true;
                 }
             } else {
@@ -110,6 +111,7 @@ namespace ledger {
                         _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
                     _state.empty = false;
                     saveState();
+                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
                     return true;
                 }
             }
@@ -236,6 +238,10 @@ namespace ledger {
 
         int32_t P2PKHBitcoinLikeKeychain::getObservableRangeSize() const {
             return _observableRange;
+        }
+
+        bool P2PKHBitcoinLikeKeychain::contains(const std::string &address) const {
+            return getAddressDerivationPath(address).nonEmpty();
         }
 
     }

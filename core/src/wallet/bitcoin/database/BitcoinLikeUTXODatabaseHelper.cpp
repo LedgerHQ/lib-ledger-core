@@ -31,6 +31,8 @@
 
 #include "BitcoinLikeUTXODatabaseHelper.h"
 
+using namespace soci;
+
 namespace ledger {
     namespace core {
 
@@ -39,11 +41,29 @@ namespace ledger {
         BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset,
                                                  int32_t count,
                                                  std::vector<BitcoinLikeBlockchainExplorer::Output> &out) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT * FROM bitcoin_outputs AS o "
+                                            " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_hash = o.transaction_hash "
+                                                                                 "AND i.previous_output_idx = o.idx"
+                                            " WHERE  i.previous_tx_hash IS NULL");
+
             return 0;
         }
 
-        std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid) {
-            return 0;
+        std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid,
+                                                             std::function<bool(const std::string &address)> filter) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT o.address FROM bitcoin_outputs AS o "
+                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_hash = o.transaction_hash "
+                                                    " AND i.previous_output_idx = o.idx"
+                                                    " WHERE i.previous_tx_hash IS NULL");
+            std::size_t count = 0;
+            for (auto& row : rows) {
+                if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0)))
+                    count += 1;
+            }
+            return count;
         }
+
     }
 }

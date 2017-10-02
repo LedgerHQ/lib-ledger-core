@@ -109,6 +109,7 @@ namespace ledger {
             bool checkIfWalletIsEmpty();
 
         private:
+            std::shared_ptr<BitcoinLikeAccount> getSelf();
             inline void inflateOperation(Operation& out,
                                          const std::shared_ptr<const AbstractWallet>& wallet,
                                          const BitcoinLikeBlockchainExplorer::Transaction& tx);

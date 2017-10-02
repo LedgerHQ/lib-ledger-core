@@ -47,7 +47,8 @@ namespace ledger {
                            int32_t offset,
                            int32_t count,
                            std::vector<BitcoinLikeBlockchainExplorer::Output>& out);
-            static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid);
+            static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid,
+                                         std::function<bool (const std::string& address)> filter);
         };
     }
 }

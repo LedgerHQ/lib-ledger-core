@@ -30,6 +30,7 @@
  */
 
 #include "BaseFixture.h"
+#include "../fixtures/medium_xpub_fixtures.h"
 
 class AccountsPublicInterfaceTest : public BaseFixture {
 public:
@@ -41,36 +42,31 @@ public:
     void recreate() {
         pool = newDefaultPool();
         wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
-        account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     }
 
     std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<BitcoinLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
 };
 
 TEST_F(AccountsPublicInterfaceTest, GetAddressOnEmptyAccount) {
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto addresses = wait(account->getFreshPublicAddresses());
     EXPECT_EQ(addresses.size(), 20);
     EXPECT_EQ(addresses.front(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetBalanceOnEmptyAccount) {
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto balance = wait(account->getBalance());
     EXPECT_EQ(balance->toMagnitude(0)->toLong(), 0);
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
-    std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
-            *JSONUtils::parse<TransactionParser>(TX_1),
-            *JSONUtils::parse<TransactionParser>(TX_2),
-            *JSONUtils::parse<TransactionParser>(TX_3),
-            *JSONUtils::parse<TransactionParser>(TX_4)
-    };
-    soci::session sql(pool->getDatabaseSessionPool()->getPool());
-    sql.begin();
-    for (auto& tx : transactions) {
-        account->putTransaction(sql, tx);
-    }
-    sql.commit();
+    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto balance = wait(account->getBalance());
+    auto utxos = wait(account->getUTXO());
+    auto uxtoCount = wait(account->getUTXOCount());
+    EXPECT_EQ(balance->toLong(), 143590816L);
+    EXPECT_EQ(utxos.size(), 8);
+    EXPECT_EQ(uxtoCount, 8);
 }

@@ -77,6 +77,8 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
             std::string getRestoreKey() const override;
 
+            bool contains(const std::string &address) const override;
+
             int32_t getObservableRangeSize() const override;
 
         private:

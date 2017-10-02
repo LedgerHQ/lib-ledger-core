@@ -35,6 +35,7 @@
 #include <api/EventCode.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
+#include <api/I32Callback.hpp>
 
 namespace ledger {
     namespace core {
@@ -245,7 +246,7 @@ namespace ledger {
         }
 
         void BitcoinLikeAccount::getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) {
-
+            getUTXOCount().callback(getMainExecutionContext(), callback);
         }
 
         bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block block) {
@@ -253,8 +254,14 @@ namespace ledger {
         }
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
-            Promise<int32_t> p;
-            return p.getFuture();
+            auto self = getSelf();
+            return async<int32_t>([=] () -> int32_t {
+                auto keychain = self->getKeychain();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                return BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain] (const std::string& addr) -> bool {
+                    return keychain->contains(addr);
+                });
+            });
         }
 
         std::shared_ptr<api::OperationQuery> BitcoinLikeAccount::queryOperations() {
@@ -303,6 +310,10 @@ namespace ledger {
                 }
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
             });
+        }
+
+        std::shared_ptr<BitcoinLikeAccount> BitcoinLikeAccount::getSelf() {
+            return std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
         }
 
     }
