@@ -32,14 +32,17 @@
 #define LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H
 
 #include <api/BitcoinLikeOutput.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
-
+#include <utils/Either.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeOutputApi : public api::BitcoinLikeOutput {
         public:
             BitcoinLikeOutputApi(const std::shared_ptr<OperationApi>& operation, int32_t outputIndex);
+            BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output& output, const api::Currency& currency);
             std::string getTransactionHash() override;
             int32_t getOutputIndex() override;
             std::shared_ptr<api::Amount> getValue() override;
@@ -50,8 +53,9 @@ namespace ledger {
             BitcoinLikeBlockchainExplorer::Output& getOuput();
 
         private:
-            std::shared_ptr<OperationApi> _operation;
+            Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorer::Output>  _backend;
             int32_t _outputIndex;
+            api::Currency _currency;
         };
     }
 }

@@ -36,6 +36,9 @@
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
 #include <api/I32Callback.hpp>
+#include <collections/functional.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
+#include <api/BitcoinLikeOutputListCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -242,8 +245,26 @@ namespace ledger {
 
         void BitcoinLikeAccount::getUTXO(int32_t from, int32_t to,
                                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) {
-
+            getUTXO(from, to).callback(getMainExecutionContext(), callback);
         }
+
+        Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>
+        BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
+            auto self = getSelf();
+            return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=] () -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
+                auto keychain = self->getKeychain();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<BitcoinLikeBlockchainExplorer::Output> utxo;
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [&keychain] (const std::string& addr) {
+                    return keychain->contains(addr);
+                });
+                auto currency = self->getWallet()->getCurrency();
+                return functional::map<BitcoinLikeBlockchainExplorer::Output, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency] (const BitcoinLikeBlockchainExplorer::Output& output) -> std::shared_ptr<api::BitcoinLikeOutput> {
+                    return std::make_shared<BitcoinLikeOutputApi>(output, currency);
+                });
+            });
+        }
+
 
         void BitcoinLikeAccount::getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) {
             getUTXOCount().callback(getMainExecutionContext(), callback);
@@ -258,7 +279,7 @@ namespace ledger {
             return async<int32_t>([=] () -> int32_t {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                return BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain] (const std::string& addr) -> bool {
+                return (int32_t) BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain] (const std::string& addr) -> bool {
                     return keychain->contains(addr);
                 });
             });
@@ -288,9 +309,8 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> BitcoinLikeAccount::getUTXO() {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=] () -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-
+            return getUTXOCount().flatMap<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [=] (const int32_t& count) -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
+                return self->getUTXO(0, count);
             });
         }
 
@@ -304,7 +324,11 @@ namespace ledger {
                 auto offset = 0;
                 std::size_t count = 0;
                 BigInt sum(0);
-                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, offset, BATCH_SIZE, utxos)) == BATCH_SIZE; offset += count) {}
+                auto keychain = self->getKeychain();
+                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, offset, BATCH_SIZE, utxos, filter)) == BATCH_SIZE; offset += count) {}
                 for (const auto& utxo : utxos) {
                     sum = sum + utxo.value;
                 }

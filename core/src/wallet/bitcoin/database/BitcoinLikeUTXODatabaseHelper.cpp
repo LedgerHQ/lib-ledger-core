@@ -29,26 +29,15 @@
  *
  */
 
+#include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include "BitcoinLikeUTXODatabaseHelper.h"
+#include <database/soci-number.h>
+#include <database/soci-option.h>
 
 using namespace soci;
 
 namespace ledger {
     namespace core {
-
-
-        std::size_t
-        BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset,
-                                                 int32_t count,
-                                                 std::vector<BitcoinLikeBlockchainExplorer::Output> &out) {
-            rowset<row> rows = (sql.prepare <<
-                                            "SELECT * FROM bitcoin_outputs AS o "
-                                            " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_hash = o.transaction_hash "
-                                                                                 "AND i.previous_output_idx = o.idx"
-                                            " WHERE  i.previous_tx_hash IS NULL");
-
-            return 0;
-        }
 
         std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid,
                                                              std::function<bool(const std::string &address)> filter) {
@@ -56,13 +45,45 @@ namespace ledger {
                                             "SELECT o.address FROM bitcoin_outputs AS o "
                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_hash = o.transaction_hash "
                                                     " AND i.previous_output_idx = o.idx"
-                                                    " WHERE i.previous_tx_hash IS NULL");
+                                                    " WHERE i.previous_tx_hash IS NULL AND o.account_uid = :uid", use(accountUid));
             std::size_t count = 0;
             for (auto& row : rows) {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0)))
                     count += 1;
             }
             return count;
+        }
+
+        std::size_t
+        BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset,
+                                                 int32_t count, std::vector<BitcoinLikeBlockchainExplorer::Output> &out,
+                                                 std::function<bool(const std::string &address)> filter) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script"
+                                                    " FROM bitcoin_outputs AS o "
+                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_hash = o.transaction_hash "
+                                                    " AND i.previous_output_idx = o.idx"
+                                                    " WHERE  i.previous_tx_hash IS NULL AND o.account_uid = :uid", use(accountUid));
+            std::size_t c = 0;
+            std::size_t o = 0;
+            for (auto& row : rows) {
+                if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
+                    if (o >= offset) {
+                        out.resize(out.size() + 1);
+                        auto& output = out[out.size() - 1];
+                        output.address = row.get<Option<std::string>>(0);
+                        output.index = static_cast<uint64_t>(row.get<int32_t>(1));
+                        output.transactionHash = row.get<std::string>(2);
+                        output.value = row.get<BigInt>(3);
+                        output.script = row.get<std::string>(4);
+                        c += 1;
+                    }
+                    o += 1;
+                }
+                if (c >= count)
+                    break;
+            }
+            return c;
         }
 
     }

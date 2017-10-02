@@ -66,6 +66,7 @@ namespace ledger {
 
             struct Output {
                 uint64_t index;
+                std::string transactionHash;
                 BigInt value;
                 Option<std::string> address;
                 std::string script;

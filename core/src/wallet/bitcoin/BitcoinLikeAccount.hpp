@@ -100,6 +100,7 @@ namespace ledger {
             void getUTXO(int32_t from, int32_t to,
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();
+            Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO(int32_t from, int32_t to);
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
             Future<int32_t> getUTXOCount();
 

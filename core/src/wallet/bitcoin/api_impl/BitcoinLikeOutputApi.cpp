@@ -37,13 +37,21 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const std::shared_ptr<OperationApi> &operation,
-                                                   int32_t outputIndex) {
-            _operation = operation;
+                                                   int32_t outputIndex) : _backend(operation) {
             _outputIndex = outputIndex;
+            _currency = operation->getAccount()->getWallet()->getCurrency();
+        }
+
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output, const api::Currency& currency) : _backend(output) {
+            _outputIndex = output.index;
+            _currency = currency;
         }
 
         std::string BitcoinLikeOutputApi::getTransactionHash() {
-            return _operation->getBackend().bitcoinTransaction.getValue().hash;
+            if (_backend.isLeft())
+                return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().hash;
+            else
+                return _backend.getRight().transactionHash;
         }
 
         int32_t BitcoinLikeOutputApi::getOutputIndex() {
@@ -51,7 +59,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> BitcoinLikeOutputApi::getValue() {
-            return std::make_shared<Amount>(_operation->getAccount()->getWallet()->getCurrency(), 0, getOuput().value);
+            return std::make_shared<Amount>(_currency, 0, getOuput().value);
         }
 
         std::vector<uint8_t> BitcoinLikeOutputApi::getScript() {
@@ -63,7 +71,11 @@ namespace ledger {
         }
 
         BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOuput() {
-            return _operation->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
+            if (_backend.isLeft())
+                return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
+            else
+                return _backend.getRight();
         }
+
     }
 }
