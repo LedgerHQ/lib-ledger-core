@@ -67,3 +67,27 @@ TEST_F(WalletTests, GetMultipleAccounts) {
     auto accounts = wait(wallet->getAccounts(0, 5));
     EXPECT_EQ(accounts.size(), 5);
 }
+
+TEST_F(WalletTests, GetTooManyMultipleAccounts) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    for (auto i = 0; i < 5; i++)
+        createBitcoinLikeAccount(wallet, i, P2PKH_MEDIUM_XPUB_INFO);
+    EXPECT_THROW(wait(wallet->getAccounts(0, 10)), Exception);
+}
+
+TEST_F(WalletTests, GetAccountAfterPoolReopen) {
+    std::string addr;
+    {
+        auto pool = newDefaultPool();
+        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+        auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+        addr = wait(account->getFreshPublicAddresses())[0];
+    }
+    {
+        auto pool = newDefaultPool();
+        auto wallet = wait(pool->getWallet("my_wallet"));
+        auto account = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(0)));
+        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], addr);
+    }
+}

@@ -70,7 +70,14 @@ namespace ledger {
                                                  const std::string &databaseXpubEntry,
                                                  const std::shared_ptr<Preferences> &accountPreferences,
                                                  const api::Currency &currency) {
-            return nullptr;
+            auto keychain = std::make_shared<P2PKHBitcoinLikeKeychain>(
+                    configuration, currency, index, BitcoinLikeExtendedPublicKey::fromBase58(
+                            currency.bitcoinLikeNetworkParameters.value(),
+                            databaseXpubEntry, Option<std::string>(path.toString())
+                    ),
+                    accountPreferences
+            );
+            return keychain;
         }
 
     }
