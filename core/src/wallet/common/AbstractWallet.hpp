@@ -81,8 +81,6 @@ namespace ledger {
             Future<int32_t> getAccountCount();
             void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
 
-            
-
             template <typename T>
             std::shared_ptr<T> asInstanceOf() {
                 auto type = getWalletType();
@@ -92,6 +90,11 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::BAD_CAST, "Wallet of type {} cannot be cast to {}", api::to_string(type), api::to_string(T::type));
             };
 
+            void getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) override;
+            FuturePtr<api::Account> getAccount(int32_t index);
+            void
+            getAccounts(int32_t offset, int32_t count, const std::shared_ptr<api::AccountListCallback> &callback) override;
+            Future<std::vector<std::shared_ptr<api::Account>>> getAccounts(int32_t offset, int32_t count);
 
             void getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) override;
             void getNextExtendedKeyAccountCreationInfo(
@@ -130,6 +133,10 @@ namespace ledger {
             virtual std::shared_ptr<DynamicObject> getConfiguration() const;
             virtual const DerivationScheme& getDerivationScheme() const;
 
+        protected:
+            virtual std::shared_ptr<AbstractAccount> createAccountInstance(soci::session& sql, const std::string& accountUid) = 0;
+            void addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount>& account);
+
         private:
             std::string _name;
             std::string _uid;
@@ -143,6 +150,7 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
             std::shared_ptr<DynamicObject> _configuration;
             DerivationScheme _scheme;
+            std::unordered_map<int32_t, std::weak_ptr<AbstractAccount>> _accounts;
         };
     }
 }

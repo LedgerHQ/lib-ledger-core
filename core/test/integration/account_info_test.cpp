@@ -39,6 +39,7 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/0'");
     EXPECT_EQ(info.owners[1], "main");
@@ -49,6 +50,7 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getAccountCreationInfo(20));
+    EXPECT_EQ(info.index, 20);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/0'");
     EXPECT_EQ(info.owners[1], "main");

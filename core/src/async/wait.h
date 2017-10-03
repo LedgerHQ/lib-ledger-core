@@ -46,11 +46,9 @@ namespace ledger {
                 std::condition_variable barrier;
                 Try<T> res;
                 future.onComplete(ImmediateExecutionContext::INSTANCE, [&] (const Try<T>& result) {
-                    fmt::print("HELLO WORLD");
                     res = result;
                     barrier.notify_all();
                 });
-                fmt::print("WAITING");
                 barrier.wait(lock);
                 if (res.isSuccess()) {
                     return res.getValue();

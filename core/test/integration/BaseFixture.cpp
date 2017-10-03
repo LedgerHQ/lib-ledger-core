@@ -128,6 +128,6 @@ BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wal
                                       const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(info)));
+    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(i)));
 }
 

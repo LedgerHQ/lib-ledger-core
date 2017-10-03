@@ -32,12 +32,14 @@
 #define LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEHELPER_H
 
 #include <soci.h>
+#include "BitcoinLikeAccountDatabaseEntry.h"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeAccountDatabaseHelper {
         public:
             static void createAccount(soci::session& sql, const std::string walletUid, int32_t index, const std::string& xpub);
+            static bool queryAccount(soci::session& sql, const std::string& accountUid, BitcoinLikeAccountDatabaseEntry& entry);
         };
     }
 }

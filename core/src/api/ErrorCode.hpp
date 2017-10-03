@@ -27,6 +27,7 @@ enum class ErrorCode : int {
     RAW_TRANSACTION_NOT_FOUND,
     /** Account errors */
     ACCOUNT_ALREADY_EXISTS,
+    ACCOUNT_NOT_FOUND,
     MISSING_DERIVATION,
     /** User land errors */
     CANCELLED_BY_USER,

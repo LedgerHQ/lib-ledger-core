@@ -18,6 +18,7 @@ ErrorCode = enum {
 
     # Account errors
     account_already_exists;
+    account_not_found;
     missing_derivation;
 
     # User land errors

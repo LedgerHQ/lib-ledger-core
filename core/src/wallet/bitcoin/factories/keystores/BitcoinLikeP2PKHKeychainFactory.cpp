@@ -35,15 +35,13 @@
 namespace ledger {
     namespace core {
 
-        FuturePtr<ledger::core::BitcoinLikeKeychain>
-        BitcoinLikeP2PKHKeychainFactory::build(const std::shared_ptr<api::ExecutionContext> &context,
-                                               int32_t index,
+        std::shared_ptr<ledger::core::BitcoinLikeKeychain>
+        BitcoinLikeP2PKHKeychainFactory::build(int32_t index,
                                                const DerivationPath &path,
                                                const std::shared_ptr<DynamicObject> &configuration,
                                                const api::ExtendedKeyAccountCreationInfo& info,
                                                const std::shared_ptr<Preferences> &accountPreferences,
                                                const api::Currency &currency) {
-            PromisePtr<BitcoinLikeKeychain> p;
             if (!info.extendedKeys.empty()) {
                 auto xpub = make_try<std::shared_ptr<BitcoinLikeExtendedPublicKey>>([&] () -> std::shared_ptr<BitcoinLikeExtendedPublicKey> {
                     return BitcoinLikeExtendedPublicKey::fromBase58(
@@ -53,30 +51,27 @@ namespace ledger {
                     );
                 });
                 if (xpub.isFailure()) {
-                    p.failure(xpub.getFailure());
+                    throw xpub.getFailure();
                 } else {
                     auto keychain = std::make_shared<P2PKHBitcoinLikeKeychain>(
                             configuration, currency, index, xpub.getValue(), accountPreferences
                     );
-                    p.success(keychain);
+                    return keychain;
                 }
             } else {
-                p.failure(make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString()));
+                throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString());
             }
-            return p.getFuture();
         }
 
-        FuturePtr<ledger::core::BitcoinLikeKeychain>
-        BitcoinLikeP2PKHKeychainFactory::restore(const std::shared_ptr<api::ExecutionContext> &context,
-                                                 int32_t index,
+        std::shared_ptr<ledger::core::BitcoinLikeKeychain>
+        BitcoinLikeP2PKHKeychainFactory::restore(int32_t index,
                                                  const DerivationPath &path,
                                                  const std::shared_ptr<DynamicObject> &configuration,
                                                  const std::string &databaseXpubEntry,
                                                  const std::shared_ptr<Preferences> &accountPreferences,
                                                  const api::Currency &currency) {
-            PromisePtr<BitcoinLikeKeychain> promise;
-
-            return promise.getFuture();
+            return nullptr;
         }
+
     }
 }

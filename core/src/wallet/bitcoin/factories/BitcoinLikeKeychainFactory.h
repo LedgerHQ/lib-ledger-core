@@ -41,16 +41,14 @@ namespace ledger {
     namespace core {
         class BitcoinLikeKeychainFactory {
         public:
-            virtual FuturePtr<BitcoinLikeKeychain> build(const std::shared_ptr<api::ExecutionContext>& context,
-                                                         int32_t index,
+            virtual std::shared_ptr<BitcoinLikeKeychain> build(int32_t index,
                                                          const DerivationPath &path,
                                                          const std::shared_ptr<DynamicObject>& configuration,
                                                          const api::ExtendedKeyAccountCreationInfo& info,
                                                          const std::shared_ptr<Preferences>& accountPreferences,
                                                          const api::Currency& currency
             ) = 0;
-            virtual FuturePtr<BitcoinLikeKeychain> restore(const std::shared_ptr<api::ExecutionContext>& context,
-                                                           int32_t index,
+            virtual std::shared_ptr<BitcoinLikeKeychain> restore(int32_t index,
                                                            const DerivationPath &path,
                                                            const std::shared_ptr<DynamicObject>& configuration,
                                                            const std::string& databaseXpubEntry,

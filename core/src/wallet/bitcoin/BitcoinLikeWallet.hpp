@@ -60,11 +60,6 @@ namespace ledger {
             );
 
             // API methods
-
-            void getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) override;
-            void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
-            void getAccounts(int32_t offset, int32_t count,
-                             const std::shared_ptr<api::AccountListCallback> &callback) override;
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
 
@@ -77,6 +72,10 @@ namespace ledger {
             getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
 
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
+
+        protected:
+            std::shared_ptr<AbstractAccount>
+            createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
         private:
             std::shared_ptr<BitcoinLikeWallet> getSelf();

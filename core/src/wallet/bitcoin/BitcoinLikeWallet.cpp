@@ -37,6 +37,7 @@
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 #include "BitcoinLikeAccount.hpp"
 #include <algorithm>
+#include <async/wait.h>
 
 namespace ledger {
     namespace core {
@@ -55,19 +56,6 @@ namespace ledger {
             _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
-        }
-
-        void BitcoinLikeWallet::getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) {
-
-        }
-
-        void BitcoinLikeWallet::getAccountCount(const std::shared_ptr<api::I32Callback> &callback) {
-
-        }
-
-        void BitcoinLikeWallet::getAccounts(int32_t offset, int32_t count,
-                                            const std::shared_ptr<api::AccountListCallback> &callback) {
-
         }
 
         bool BitcoinLikeWallet::isSynchronizing() {
@@ -131,7 +119,6 @@ namespace ledger {
                     );
                     result.owners.push_back(*ownersIterator);
                     result.derivations.push_back(info.derivations[secondOccurence]);
-                    fmt::print("Hello you {}\n", xpub->toBase58());
                     result.extendedKeys.push_back(xpub->toBase58());
                 }
                 result.index = info.index;
@@ -148,22 +135,22 @@ namespace ledger {
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             auto index = info.index;
-            return _keychainFactory->build(getContext(),
-                                    index,
-                                    xpubPath,
-                                    getConfiguration(),
-                                    info,
-                                    getAccountInternalPreferences(index),
-                                    getCurrency()
-            ).mapPtr<api::Account>(getContext(), [=] (const std::shared_ptr<BitcoinLikeKeychain>& keychain) -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account> >([=] () -> std::shared_ptr<api::Account> {
+                auto keychain = self->_keychainFactory->build(
+                        index,
+                        xpubPath,
+                        getConfiguration(),
+                        info,
+                        getAccountInternalPreferences(index),
+                        getCurrency()
+                );
                 soci::session sql(self->getDatabase()->getPool());
                 sql.begin();
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
                 AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
-
                 BitcoinLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, keychain->getRestoreKey());
                 sql.commit();
-                return std::static_pointer_cast<api::Account>(std::make_shared<BitcoinLikeAccount>(
+                auto account = std::static_pointer_cast<api::Account>(std::make_shared<BitcoinLikeAccount>(
                         self->shared_from_this(),
                         index,
                         self->_explorer,
@@ -171,6 +158,8 @@ namespace ledger {
                         self->_synchronizerFactory(),
                         keychain
                 ));
+                self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
+                return account;
             });
         }
 
@@ -197,8 +186,9 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> BitcoinLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
-            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self] (const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
+            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex] (const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
                 api::AccountCreationInfo result;
+                result.index = accountIndex;
                 auto length = info.derivations.size();
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
@@ -214,6 +204,23 @@ namespace ledger {
 
         std::shared_ptr<BitcoinLikeWallet> BitcoinLikeWallet::getSelf() {
             return std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
+        }
+
+        std::shared_ptr<AbstractAccount>
+        BitcoinLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
+            BitcoinLikeAccountDatabaseEntry entry;
+            BitcoinLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
+            auto scheme = getDerivationScheme();
+            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
+            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfiguration(), entry.xpub,
+            getAccountInternalPreferences(entry.index), getCurrency());
+            return std::make_shared<BitcoinLikeAccount>(shared_from_this(),
+                                                        entry.index,
+                                                        _explorer,
+                                                        _observer,
+                                                        _synchronizerFactory(),
+                                                        keychain);
         }
 
     }
