@@ -85,6 +85,30 @@ namespace ledger {
             }
 
         private:
+            template<typename T>
+            optional<T> getNumber(const std::string& key) const {
+                auto v = _values.lift(key);
+                if (_values.empty())
+                    return optional<T>();
+                switch (v.getValue().type) {
+                    case api::DynamicType::INT32:
+                        return optional<T>((T) v.getValue().int32);
+                    case api::DynamicType::INT64:
+                        return optional<T>((T) v.getValue().int64);
+                    case api::DynamicType::DOUBLE:
+                        return optional<T>((T) v.getValue().doubleFloat);
+                    case api::DynamicType::BOOLEAN:
+                        return optional<T>((T) v.getValue().boolean);
+                    case api::DynamicType::OBJECT:
+                    case api::DynamicType::DATA:
+                    case api::DynamicType::ARRAY:
+                    case api::DynamicType::STRING:
+                    case api::DynamicType::UNDEFINED:
+                        return optional<T>();
+                }
+            };
+
+        private:
             Map<std::string, DynamicValue> _values;
             bool _readOnly;
         };

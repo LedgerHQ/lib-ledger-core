@@ -103,24 +103,15 @@ namespace ledger {
         }
 
         optional<int32_t> DynamicObject::getInt(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::INT32)
-                return optional<int32_t>();
-            return optional<int32_t>(v.getValue().int32);
+            return getNumber<int32_t>(key);
         }
 
         optional<int64_t> DynamicObject::getLong(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::INT64)
-                return optional<int64_t>();
-            return optional<int64_t>(v.getValue().int64);
+            return getNumber<int64_t>(key);
         }
 
         optional<double> DynamicObject::getDouble(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::DOUBLE)
-                return optional<double >();
-            return optional<double>(v.getValue().doubleFloat);
+            return getNumber<double>(key);
         }
 
         optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
@@ -131,10 +122,7 @@ namespace ledger {
         }
 
         optional<bool> DynamicObject::getBoolean(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::BOOLEAN)
-                return optional<bool>();
-            return optional<bool>(v.getValue().boolean);
+            return getNumber<bool>(key);
         }
 
         std::shared_ptr<api::DynamicObject>
