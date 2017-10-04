@@ -100,3 +100,18 @@ TEST(Events, Relay) {
     }), 20);
     dispatcher->waitUntilStopped();
 }
+
+TEST(Events, EventFilter) {
+    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
+    eventPublisher->setFilter([] (const std::shared_ptr<api::Event>& event) -> bool {
+        return event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED;
+    });
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+       EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
+        dispatcher->stop();
+    }));
+    eventPublisher->post(api::Event::newInstance(api::EventCode::SYNCHRONIZATION_FAILED, DynamicObject::newInstance()));
+    eventPublisher->post(api::Event::newInstance(api::EventCode::SYNCHRONIZATION_STARTED, DynamicObject::newInstance()));
+    dispatcher->waitUntilStopped();
+}

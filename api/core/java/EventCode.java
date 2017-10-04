@@ -6,6 +6,7 @@ package co.ledger.core;
 public enum EventCode {
     UNDEFINED,
     NEW_OPERATION,
+    NEW_BLOCK,
     SYNCHRONIZATION_STARTED,
     SYNCHRONIZATION_FAILED,
     SYNCHRONIZATION_SUCCEED,

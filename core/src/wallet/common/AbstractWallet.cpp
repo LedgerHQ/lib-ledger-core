@@ -49,6 +49,7 @@ namespace ledger {
                 : DedicatedContext(
                 pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))),
                   _scheme(derivationScheme) {
+            _pool = pool;
             _name = walletName;
             _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
             _currency = currency;
@@ -63,7 +64,6 @@ namespace ledger {
             _database = pool->getDatabaseSessionPool();
             _mainExecutionContext = pool->getDispatcher()->getMainExecutionContext();
             _logger = pool->logger();
-            //pool->getEventPublisher()->relay(_publisher->getEventBus());
         }
 
         std::shared_ptr<api::EventBus> AbstractWallet::getEventBus() {
@@ -247,7 +247,7 @@ namespace ledger {
                 }
                 soci::session sql(self->getDatabase()->getPool());
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
-                    throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet {}, doesn't exist", self->getWalletUid(), index);
+                    throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
                 }
                 auto account = self->createAccountInstance(sql, AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index));
                 self->addAccountInstanceToInstanceCache(account);
@@ -270,6 +270,14 @@ namespace ledger {
 
         void AbstractWallet::addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount> &account) {
             _accounts[account->getIndex()] = account;
+            _publisher->relay(account->getEventBus());
+        }
+
+        std::shared_ptr<WalletPool> AbstractWallet::getPool() const {
+            auto pool = _pool.lock();
+            if (!pool)
+                throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Wallet pool was released");
+            return pool;
         }
 
     }

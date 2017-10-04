@@ -1,13 +1,13 @@
 /*
  *
- * BlockDatabaseHelper
+ * BitcoinLikeBlockDatabaseHelper.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 07/07/2017.
+ * Created by Pierre Pollastri on 04/10/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,24 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BLOCKDATABASEHELPER_H
-#define LEDGER_CORE_BLOCKDATABASEHELPER_H
 
-#include <wallet/common/Block.h>
-#include <string>
+#ifndef LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#define LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+
 #include <soci.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
-        class BlockDatabaseHelper {
+        class BitcoinLikeBlockDatabaseHelper {
         public:
-            static std::string createBlockUid(const Block& block);
-            static std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
-            static bool putBlock(soci::session& sql, const Block& block);
-            static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
+            static bool blockExists(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+            static bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
         };
     }
 }
 
-
-#endif //LEDGER_CORE_BLOCKDATABASEHELPER_H
+#endif //LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H

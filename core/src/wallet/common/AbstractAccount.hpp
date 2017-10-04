@@ -36,6 +36,7 @@
 #include "OperationQuery.h"
 #include <async/Future.hpp>
 #include <wallet/common/Amount.h>
+#include <events/EventPublisher.hpp>
 
 namespace ledger {
     namespace core {
@@ -67,6 +68,15 @@ namespace ledger {
             virtual Future<std::vector<std::string>> getFreshPublicAddresses() = 0;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            std::shared_ptr<api::EventBus> getEventBus() override;
+
+            void emitEventsNow();
+
+        protected:
+            void emitNewOperationEvent(const Operation& operation);
+            void emitNewBlockEvent(const Block& block);
+            void pushEvent(const std::shared_ptr<api::Event>& event);
+
         private:
             api::WalletType  _type;
             int32_t  _index;
@@ -77,6 +87,8 @@ namespace ledger {
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
             std::weak_ptr<AbstractWallet> _wallet;
+            std::shared_ptr<EventPublisher> _publisher;
+            std::list<std::shared_ptr<api::Event>> _events;
         };
     }
 }

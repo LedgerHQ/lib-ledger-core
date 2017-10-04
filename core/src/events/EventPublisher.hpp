@@ -43,6 +43,7 @@
 namespace ledger {
     namespace core {
         class EventBus;
+        typedef std::function<bool (const std::shared_ptr<api::Event>&)> EventFilter;
         class EventPublisher : public api::EventPublisher, public DedicatedContext, public std::enable_shared_from_this<EventPublisher> {
         public:
             EventPublisher(std::shared_ptr<api::ExecutionContext> context);
@@ -50,10 +51,13 @@ namespace ledger {
             void post(const std::shared_ptr<api::Event> &event) override;
             void postSticky(const std::shared_ptr<api::Event> &event, int32_t tag) override;
             void relay(const std::shared_ptr<api::EventBus> &bus) override;
+            void setFilter(const EventFilter& filter);
+
 
         private:
             std::shared_ptr<EventBus> _bus;
             std::shared_ptr<api::EventReceiver> _receiver;
+            EventFilter _filter;
         };
     }
 }

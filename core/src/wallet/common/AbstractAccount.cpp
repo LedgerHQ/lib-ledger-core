@@ -33,6 +33,7 @@
 #include <wallet/common/OperationQuery.h>
 #include <api/StringListCallback.hpp>
 #include <api/AmountCallback.hpp>
+#include <events/Event.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,6 +50,7 @@ namespace ledger {
             _mainExecutionContext = wallet->getMainExecutionContext();
             _logger = wallet->logger();
             _type = wallet->getWalletType();
+            _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
         int32_t AbstractAccount::getIndex() {
@@ -135,6 +137,39 @@ namespace ledger {
 
         void AbstractAccount::getBalance(const std::shared_ptr<api::AmountCallback> &callback) {
             getBalance().callback(getMainExecutionContext(), callback);
+        }
+
+        std::shared_ptr<api::EventBus> AbstractAccount::getEventBus() {
+            return _publisher->getEventBus();
+        }
+
+        void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
+            auto payload = DynamicObject::newInstance();
+            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
+            pushEvent(event);
+        }
+
+        void AbstractAccount::emitNewBlockEvent(const Block &block) {
+            auto payload = DynamicObject::newInstance();
+            auto event = Event::newInstance(api::EventCode::NEW_BLOCK, payload);
+            pushEvent(event);
+        }
+
+        void AbstractAccount::emitEventsNow() {
+            auto self = shared_from_this();
+            run([self] () {
+                for (auto& event : self->_events) {
+                    self->_publisher->post(event);
+                }
+                self->_events.clear();
+            });
+        }
+
+        void AbstractAccount::pushEvent(const std::shared_ptr<api::Event> &event) {
+            auto self = shared_from_this();
+            run([event, self] () {
+                self->_events.push_back(std::move(event));
+            });
         }
 
     }

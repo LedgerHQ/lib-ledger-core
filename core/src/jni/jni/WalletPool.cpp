@@ -6,6 +6,7 @@
 #include "CurrencyCallback.hpp"
 #include "CurrencyListCallback.hpp"
 #include "DynamicObject.hpp"
+#include "EventBus.hpp"
 #include "I32Callback.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
@@ -117,6 +118,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
         ref->getCurrency(::djinni::String::toCpp(jniEnv, j_name),
                          ::djinni_generated::CurrencyCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
+        auto r = ref->getEventBus();
+        return ::djinni::release(::djinni_generated::EventBus::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

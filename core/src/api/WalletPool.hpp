@@ -13,6 +13,7 @@ namespace ledger { namespace core { namespace api {
 class CurrencyCallback;
 class CurrencyListCallback;
 class DynamicObject;
+class EventBus;
 class I32Callback;
 class Logger;
 class Preferences;
@@ -41,6 +42,8 @@ public:
     virtual void getCurrencies(const std::shared_ptr<CurrencyListCallback> & callback) = 0;
 
     virtual void getCurrency(const std::string & name, const std::shared_ptr<CurrencyCallback> & callback) = 0;
+
+    virtual std::shared_ptr<EventBus> getEventBus() = 0;
 };
 
 } } }  // namespace ledger::core::api

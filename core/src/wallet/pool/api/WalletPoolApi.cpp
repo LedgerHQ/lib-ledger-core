@@ -136,5 +136,9 @@ namespace ledger {
         WalletPoolApi::~WalletPoolApi() {
 
         }
+
+        std::shared_ptr<api::EventBus> WalletPoolApi::getEventBus() {
+            return _pool->getEventBus();
+        }
     }
 }

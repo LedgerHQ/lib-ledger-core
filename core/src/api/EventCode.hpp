@@ -13,6 +13,7 @@ namespace ledger { namespace core { namespace api {
 enum class EventCode : int {
     UNDEFINED,
     NEW_OPERATION,
+    NEW_BLOCK,
     SYNCHRONIZATION_STARTED,
     SYNCHRONIZATION_FAILED,
     SYNCHRONIZATION_SUCCEED,

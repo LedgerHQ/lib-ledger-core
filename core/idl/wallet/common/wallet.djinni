@@ -139,6 +139,14 @@ Account = interface +c {
     # Key of the synchronization error message. The message is stored as a string.
     const EV_SYNC_ERROR_MESSAGE: string = "EV_SYNC_ERROR_MESSAGE";
 
+    const EV_NEW_BLOCK_CURRENCY_NAME: string = "EV_NEW_BLOCK_CURRENCY_NAME";
+    const EV_NEW_BLOCK_HASH: string = "EV_NEW_BLOCK_HASH";
+    const EV_NEW_BLOCK_HEIGHT: string = "EV_NEW_BLOCK_HEIGHT";
+
+    const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
+    const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
+    const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
+
     getIndex(): i32;
     queryOperations(): OperationQuery;
     getBalance(callback: Callback<Amount>);
@@ -155,6 +163,7 @@ Account = interface +c {
     isInstanceOfRippleLikeAccount(): bool;
     getFreshPublicAddresses(callback: ListCallback<string>);
     getWalletType(): WalletType;
+    getEventBus(): EventBus;
 
     computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }

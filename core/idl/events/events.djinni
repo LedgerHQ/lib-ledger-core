@@ -3,6 +3,7 @@ EventCode = enum {
     undefined;
 
     new_operation;
+    new_block;
 
     synchronization_started;
     synchronization_failed;

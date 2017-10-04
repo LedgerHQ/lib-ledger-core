@@ -63,6 +63,8 @@ namespace ledger {
 
             std::string getName() override;
 
+            std::shared_ptr<api::EventBus> getEventBus() override;
+
             ~WalletPoolApi();
 
         private:

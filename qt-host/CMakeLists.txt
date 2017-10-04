@@ -6,7 +6,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 # Find the QtWidgets library
-find_package(Qt5 COMPONENTS Core Widgets Network Gui Concurrent)
+find_package(Qt5 COMPONENTS Core Widgets Network Gui Concurrent WebSockets)
 
 # Tell CMake to create the helloworld executable
 add_library(ledger-qt-host STATIC
@@ -17,4 +17,5 @@ add_library(ledger-qt-host STATIC
 target_link_libraries(ledger-qt-host Qt5::Core)
 target_link_libraries(ledger-qt-host Qt5::Concurrent)
 target_link_libraries(ledger-qt-host Qt5::Network)
+target_link_libraries(ledger-qt-host Qt5::WebSockets)
 target_link_libraries(ledger-qt-host ledger-core)

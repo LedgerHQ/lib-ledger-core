@@ -54,6 +54,8 @@ extern NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE;
 
 - (LGWalletType)getWalletType;
 
+- (nullable LGEventBus *)getEventBus;
+
 - (void)computeFees:(nullable LGAmount *)amount
            priority:(int32_t)priority
          recipients:(nonnull NSArray<NSString *> *)recipients

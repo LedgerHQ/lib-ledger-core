@@ -59,6 +59,7 @@ namespace ledger {
 
         EventPublisher::EventPublisher(std::shared_ptr<api::ExecutionContext> context) : DedicatedContext(context) {
             _bus = std::shared_ptr<EventBus>(new EventBus(context));
+            _filter = [] (const std::shared_ptr<api::Event>& event) {return true;};
         }
 
         std::shared_ptr<api::EventBus> EventPublisher::getEventBus() {
@@ -66,6 +67,7 @@ namespace ledger {
         }
 
         void EventPublisher::post(const std::shared_ptr<api::Event> &event) {
+            if (!_filter(event)) return;
             auto ev = std::static_pointer_cast<Event>(event);
             if (ev->getPayload() != nullptr) {
                 std::static_pointer_cast<DynamicObject>(ev->getPayload())->setReadOnly(true);
@@ -74,6 +76,7 @@ namespace ledger {
         }
 
         void EventPublisher::postSticky(const std::shared_ptr<api::Event> &event, int32_t tag) {
+            if (!_filter(event)) return;
             auto ev = std::static_pointer_cast<Event>(event);
             if (ev->getPayload() != nullptr) {
                 std::static_pointer_cast<DynamicObject>(ev->getPayload())->setReadOnly(true);
@@ -92,6 +95,10 @@ namespace ledger {
                 }
                 bus->subscribe(self->getContext(), self->_receiver);
             });
+        }
+
+        void EventPublisher::setFilter(const EventFilter &filter) {
+            _filter = filter;
         }
 
         namespace api {

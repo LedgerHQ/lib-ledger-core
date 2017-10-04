@@ -4,6 +4,7 @@
 #import "LGCurrency.h"
 #import <Foundation/Foundation.h>
 @class LGDynamicObject;
+@class LGEventBus;
 @class LGLogger;
 @class LGPreferences;
 @protocol LGCurrencyCallback;
@@ -39,5 +40,7 @@
 
 - (void)getCurrency:(nonnull NSString *)name
            callback:(nullable id<LGCurrencyCallback>)callback;
+
+- (nullable LGEventBus *)getEventBus;
 
 @end

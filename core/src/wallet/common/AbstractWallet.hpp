@@ -69,7 +69,7 @@ namespace ledger {
             std::shared_ptr<api::Logger> getLogger() override;
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getAccountPreferences(int32_t index) override;
-
+            std::shared_ptr<WalletPool> getPool() const;
             std::shared_ptr<api::BitcoinLikeWallet> asBitcoinLikeWallet() override;
 
             api::Currency getCurrency() override;
@@ -150,6 +150,7 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
             std::shared_ptr<DynamicObject> _configuration;
             DerivationScheme _scheme;
+            std::weak_ptr<WalletPool> _pool;
             std::unordered_map<int32_t, std::weak_ptr<AbstractAccount>> _accounts;
         };
     }

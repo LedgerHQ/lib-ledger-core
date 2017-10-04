@@ -67,6 +67,8 @@ public:
 
     virtual WalletType getWalletType() = 0;
 
+    virtual std::shared_ptr<EventBus> getEventBus() = 0;
+
     virtual void computeFees(const std::shared_ptr<Amount> & amount, int32_t priority, const std::vector<std::string> & recipients, const std::vector<std::vector<uint8_t>> & data, const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 

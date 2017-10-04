@@ -223,6 +223,7 @@ namespace ledger {
                             buddy->account->putTransaction(sql, tx);
                         }
                         sql.commit();
+                        buddy->account->emitEventsNow();
                         // Get the last block
                         if (bulk->transactions.size() > 0) {
                             auto &lastBlock = bulk->transactions

@@ -50,6 +50,8 @@ public abstract class Account {
 
     public abstract WalletType getWalletType();
 
+    public abstract EventBus getEventBus();
+
     public abstract void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
 
     private static final class CppProxy extends Account
@@ -178,6 +180,14 @@ public abstract class Account {
             return native_getWalletType(this.nativeRef);
         }
         private native WalletType native_getWalletType(long _nativeRef);
+
+        @Override
+        public EventBus getEventBus()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getEventBus(this.nativeRef);
+        }
+        private native EventBus native_getEventBus(long _nativeRef);
 
         @Override
         public void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback)

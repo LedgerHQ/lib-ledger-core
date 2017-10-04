@@ -39,6 +39,8 @@
 #include <collections/functional.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -78,6 +80,8 @@ namespace ledger {
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
+            if (transaction.block.nonEmpty())
+                putBlock(sql, transaction.block.getValue());
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorer::Input *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorer::Output *, DerivationPath>> accountOutputs;
@@ -172,6 +176,7 @@ namespace ledger {
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
+                emitNewOperationEvent(operation);
             }
 
             if (accountOutputs.size() > 0) {
@@ -188,6 +193,7 @@ namespace ledger {
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
+                emitNewOperationEvent(operation);
             }
 
             return result;
@@ -205,10 +211,12 @@ namespace ledger {
 
 
         bool BitcoinLikeAccount::isSynchronizing() {
-            return false;
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+            return _currentSyncEventBus != nullptr;
         }
 
         std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
             auto eventPublisher = std::make_shared<EventPublisher>(getContext());
@@ -270,7 +278,17 @@ namespace ledger {
             getUTXOCount().callback(getMainExecutionContext(), callback);
         }
 
-        bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block block) {
+        bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block& block) {
+            Block abstractBlock;
+            abstractBlock.hash = block.hash;
+            abstractBlock.currencyName = getWallet()->getCurrency().name;
+            abstractBlock.height = block.height;
+            abstractBlock.time = block.time;
+            if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
+                BitcoinLikeBlockDatabaseHelper::putBlock(sql, block);
+                emitNewBlockEvent(abstractBlock);
+                return true;
+            }
             return false;
         }
 

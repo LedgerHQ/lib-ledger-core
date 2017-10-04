@@ -38,12 +38,14 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
-        void BlockDatabaseHelper::putBlock(soci::session &sql, const Block &block) {
+        bool BlockDatabaseHelper::putBlock(soci::session &sql, const Block &block) {
             if (!blockExists(sql, block.hash, block.currencyName)) {
                 auto uid = createBlockUid(block);
                 sql << "INSERT INTO blocks VALUES(:uid, :hash, :height, :time, :currency_name)",
                         use(uid), use(block.hash), use(block.height), use(block.time), use(block.currencyName);
+                return true;
             }
+            return false;
         }
 
 

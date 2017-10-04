@@ -10,6 +10,7 @@
 #import "LGCurrencyCallback+Private.h"
 #import "LGCurrencyListCallback+Private.h"
 #import "LGDynamicObject+Private.h"
+#import "LGEventBus+Private.h"
 #import "LGI32Callback+Private.h"
 #import "LGLogger+Private.h"
 #import "LGPreferences+Private.h"
@@ -107,6 +108,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         _cppRefHandle.get()->getCurrency(::djinni::String::toCpp(name),
                                          ::djinni_generated::CurrencyCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGEventBus *)getEventBus {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getEventBus();
+        return ::djinni_generated::EventBus::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

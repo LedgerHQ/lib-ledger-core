@@ -53,6 +53,7 @@
 #include <collections/DynamicObject.hpp>
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include <wallet/common/AbstractWalletFactory.hpp>
+#include <events/EventPublisher.hpp>
 
 namespace ledger {
     namespace core {
@@ -69,6 +70,7 @@ namespace ledger {
             std::shared_ptr<spdlog::logger> logger() const;
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
+            std::shared_ptr<api::EventBus> getEventBus() const;
             const std::string& getName() const;
             const Option<std::string> getPassword() const;
 
@@ -89,12 +91,13 @@ namespace ledger {
             // Delete wallet
             Future<Unit> deleteWallet(const std::string& name);
 
+
+
             // Currencies management
             Option<api::Currency> getCurrency(const std::string& name) const;
             const std::vector<api::Currency>& getCurrencies() const;
             Future<Unit> addCurrency(const api::Currency& currency);
             Future<Unit> removeCurrency(const std::string& currencyName);
-
             static std::shared_ptr<WalletPool> newInstance(const std::string &name,
                                                            const Option<std::string> &password,
                                                            const std::shared_ptr<api::HttpClient> &httpClient,
@@ -105,6 +108,7 @@ namespace ledger {
                                                            const std::shared_ptr<api::RandomNumberGenerator>& rng,
                                                            const std::shared_ptr<api::DatabaseBackend> &backend,
                                                            const std::shared_ptr<api::DynamicObject>& configuration);
+
 
         private:
             WalletPool(const std::string &name,
@@ -157,6 +161,9 @@ namespace ledger {
 
             // Currencies management
             std::vector<api::Currency> _currencies;
+
+            // Event publisher
+            std::shared_ptr<EventPublisher> _publisher;
 
             // Factories management
             std::vector<std::shared_ptr<AbstractWalletFactory>> _factories;

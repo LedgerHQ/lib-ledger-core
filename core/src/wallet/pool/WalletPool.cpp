@@ -93,6 +93,8 @@ namespace ledger {
 
             // Threading management
             _threadDispatcher = dispatcher;
+
+            _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
         std::shared_ptr<WalletPool>
@@ -267,6 +269,7 @@ namespace ledger {
                     );
                 }
                 auto wallet = factory->build(entry);
+                _publisher->relay(wallet->getEventBus());
                 _wallets[entry.uid] = wallet;
                 return wallet;
             }
@@ -357,6 +360,10 @@ namespace ledger {
                     return Option<api::Currency>(currency);
             }
             return Option<api::Currency>();
+        }
+
+        std::shared_ptr<api::EventBus> WalletPool::getEventBus() const {
+            return _publisher->getEventBus();
         }
 
     }
