@@ -19,6 +19,18 @@ public abstract class Account {
     /** Key of the synchronization error message. The message is stored as a string. */
     public static final String EV_SYNC_ERROR_MESSAGE = "EV_SYNC_ERROR_MESSAGE";
 
+    public static final String EV_NEW_BLOCK_CURRENCY_NAME = "EV_NEW_BLOCK_CURRENCY_NAME";
+
+    public static final String EV_NEW_BLOCK_HASH = "EV_NEW_BLOCK_HASH";
+
+    public static final String EV_NEW_BLOCK_HEIGHT = "EV_NEW_BLOCK_HEIGHT";
+
+    public static final String EV_NEW_OP_WALLET_NAME = "EV_NEW_OP_WALLET_NAME";
+
+    public static final String EV_NEW_OP_ACCOUNT_INDEX = "EV_NEW_OP_ACCOUNT_INDEX";
+
+    public static final String EV_NEW_OP_UID = "EV_NEW_OP_UID";
+
     public abstract int getIndex();
 
     public abstract OperationQuery queryOperations();

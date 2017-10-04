@@ -20,6 +20,12 @@ extern NSString * __nonnull const LGAccountEVSYNCDURATIONMS;
 extern NSString * __nonnull const LGAccountEVSYNCERRORCODE;
 /** Key of the synchronization error message. The message is stored as a string. */
 extern NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE;
+extern NSString * __nonnull const LGAccountEVNEWBLOCKCURRENCYNAME;
+extern NSString * __nonnull const LGAccountEVNEWBLOCKHASH;
+extern NSString * __nonnull const LGAccountEVNEWBLOCKHEIGHT;
+extern NSString * __nonnull const LGAccountEVNEWOPWALLETNAME;
+extern NSString * __nonnull const LGAccountEVNEWOPACCOUNTINDEX;
+extern NSString * __nonnull const LGAccountEVNEWOPUID;
 
 @interface LGAccount : NSObject
 

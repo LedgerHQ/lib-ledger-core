@@ -36,6 +36,18 @@ public:
     /** Key of the synchronization error message. The message is stored as a string. */
     static std::string const EV_SYNC_ERROR_MESSAGE;
 
+    static std::string const EV_NEW_BLOCK_CURRENCY_NAME;
+
+    static std::string const EV_NEW_BLOCK_HASH;
+
+    static std::string const EV_NEW_BLOCK_HEIGHT;
+
+    static std::string const EV_NEW_OP_WALLET_NAME;
+
+    static std::string const EV_NEW_OP_ACCOUNT_INDEX;
+
+    static std::string const EV_NEW_OP_UID;
+
     virtual int32_t getIndex() = 0;
 
     virtual std::shared_ptr<OperationQuery> queryOperations() = 0;

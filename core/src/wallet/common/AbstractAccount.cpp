@@ -145,12 +145,18 @@ namespace ledger {
 
         void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
             auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
+            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
             auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
             pushEvent(event);
         }
 
         void AbstractAccount::emitNewBlockEvent(const Block &block) {
             auto payload = DynamicObject::newInstance();
+            payload->putLong(api::Account::EV_NEW_BLOCK_HEIGHT, block.height);
+            payload->putString(api::Account::EV_NEW_BLOCK_HASH, block.hash);
+            payload->putString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME, block.currencyName);
             auto event = Event::newInstance(api::EventCode::NEW_BLOCK, payload);
             pushEvent(event);
         }

@@ -170,6 +170,10 @@ namespace ledger {
 
             // Wallets
             std::unordered_map<std::string, std::shared_ptr<AbstractWallet>> _wallets;
+
+            // Event filter variables
+            std::mutex _eventFilterMutex;
+            std::unordered_map<std::string, int64_t> _lastEmittedBlocks;
         };
     }
 }

@@ -9,3 +9,15 @@ NSString * __nonnull const LGAccountEVSYNCDURATIONMS = @"EV_SYNC_DURATION_MS";
 NSString * __nonnull const LGAccountEVSYNCERRORCODE = @"EV_SYNC_ERROR_CODE";
 
 NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE = @"EV_SYNC_ERROR_MESSAGE";
+
+NSString * __nonnull const LGAccountEVNEWBLOCKCURRENCYNAME = @"EV_NEW_BLOCK_CURRENCY_NAME";
+
+NSString * __nonnull const LGAccountEVNEWBLOCKHASH = @"EV_NEW_BLOCK_HASH";
+
+NSString * __nonnull const LGAccountEVNEWBLOCKHEIGHT = @"EV_NEW_BLOCK_HEIGHT";
+
+NSString * __nonnull const LGAccountEVNEWOPWALLETNAME = @"EV_NEW_OP_WALLET_NAME";
+
+NSString * __nonnull const LGAccountEVNEWOPACCOUNTINDEX = @"EV_NEW_OP_ACCOUNT_INDEX";
+
+NSString * __nonnull const LGAccountEVNEWOPUID = @"EV_NEW_OP_UID";
