@@ -152,6 +152,7 @@ namespace ledger {
             DerivationScheme _scheme;
             std::weak_ptr<WalletPool> _pool;
             std::unordered_map<int32_t, std::weak_ptr<AbstractAccount>> _accounts;
+
         };
     }
 }

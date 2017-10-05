@@ -354,7 +354,7 @@ namespace ledger {
                 }
                 // Create the entry
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
-                sql.begin();
+                soci::transaction tr(sql);
 
                 WalletDatabaseEntry entry;
                 entry.name = name;
@@ -366,7 +366,7 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}' already exists", name, currencyName);
                 PoolDatabaseHelper::putWallet(sql, entry);
                 auto wallet = buildWallet(entry);
-                sql.commit();
+                tr.commit();
                 return wallet;
             });
         }
