@@ -75,6 +75,7 @@
 #import "../objc/LGCurrencyCallback.h"
 #import "../objc/LGWalletPoolBuilder.h"
 #import "../objc/LGWalletPoolCallback.h"
+#import "../objc/LGWebSocketConnection.h"
 #import "../objc/LGWebSocketClient.h"
 #import "../objc/LGErrorCode.h"
 #import "../objc/LGError.h"

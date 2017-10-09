@@ -3,7 +3,9 @@
 
 #import "LGWebSocketClient+Private.h"
 #import "LGWebSocketClient.h"
+#import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "LGWebSocketConnection+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -16,6 +18,26 @@ class WebSocketClient::ObjcProxy final
 {
 public:
     using Handle::Handle;
+    void connect(const std::string & c_url, const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection) override
+    {
+        @autoreleasepool {
+            [Handle::get() connect:(::djinni::String::fromCpp(c_url))
+                        connection:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
+        }
+    }
+    void send(const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection, const std::string & c_data) override
+    {
+        @autoreleasepool {
+            [Handle::get() send:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))
+                           data:(::djinni::String::fromCpp(c_data))];
+        }
+    }
+    void disconnect(const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection) override
+    {
+        @autoreleasepool {
+            [Handle::get() disconnect:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
+        }
+    }
 };
 
 }  // namespace djinni_generated

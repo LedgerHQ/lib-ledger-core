@@ -20,7 +20,7 @@ public abstract class BitcoinLikeTransaction {
 
     public abstract Amount getFees();
 
-    public abstract Date geTime();
+    public abstract Date getTime();
 
     private static final class CppProxy extends BitcoinLikeTransaction
     {
@@ -94,11 +94,11 @@ public abstract class BitcoinLikeTransaction {
         private native Amount native_getFees(long _nativeRef);
 
         @Override
-        public Date geTime()
+        public Date getTime()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_geTime(this.nativeRef);
+            return native_getTime(this.nativeRef);
         }
-        private native Date native_geTime(long _nativeRef);
+        private native Date native_getTime(long _nativeRef);
     }
 }

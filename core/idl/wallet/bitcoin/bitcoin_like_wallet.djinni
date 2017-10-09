@@ -44,7 +44,7 @@ BitcoinLikeTransaction = interface +c {
     getBlock(): optional<BitcoinLikeBlock>;
     getLockTime(): i64;
     getFees(): Amount;
-    geTime(): date;
+    getTime(): date;
 }
 
 BitcoinLikeOperation = interface +c {

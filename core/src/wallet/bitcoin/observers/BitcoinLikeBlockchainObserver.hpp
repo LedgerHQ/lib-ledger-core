@@ -31,30 +31,35 @@
 #ifndef LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
 #define LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
 
-#include <src/events/EventPublisher.hpp>
-#include <src/async/DedicatedContext.hpp>
-#include <src/events/EventBus.hpp>
+#include <async/DedicatedContext.hpp>
+#include <api/Currency.hpp>
+#include <api/ExecutionContext.hpp>
 
 namespace ledger {
     namespace core {
+        class BitcoinLikeAccount;
         class BitcoinLikeBlockchainObserver : public DedicatedContext {
         public:
-            BitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext>& context) : DedicatedContext(context) {
-                _publisher = std::make_shared<EventPublisher>(context);
-            };
-            virtual void start() = 0;
-            virtual void stop() = 0;
-            virtual bool isObserving() const = 0;
-            std::shared_ptr<EventBus> getEventBus() const {
-                return std::static_pointer_cast<EventBus>(_publisher->getEventBus());
-            };
+            BitcoinLikeBlockchainObserver(  const std::shared_ptr<api::ExecutionContext>& context,
+                                            const api::Currency& currency
+            );
+            virtual bool registerAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
+            virtual bool unregisterAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
+            virtual bool isRegistered(const std::shared_ptr<BitcoinLikeAccount>& account);
+            virtual bool isObserving() const;
+            const api::Currency& getCurrency() const;
 
         protected:
-            virtual std::shared_ptr<EventPublisher> getEventPublisher() const {
-                return _publisher;
-            }
+            virtual void onStart() = 0;
+            virtual void onStop() = 0;
+
         private:
-            std::shared_ptr<EventPublisher> _publisher;
+            bool _isRegistered(std::lock_guard<std::mutex>& lock, const std::shared_ptr<BitcoinLikeAccount>& account);
+
+        private:
+            mutable std::mutex _lock;
+            std::list<std::shared_ptr<BitcoinLikeAccount>> _accounts;
+            api::Currency _currency;
         };
     }
 }

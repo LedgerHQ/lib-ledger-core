@@ -41,6 +41,8 @@
 #include <api/BitcoinLikeOutputListCallback.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
+#include <events/EventPublisher.hpp>
+#include <events/Event.hpp>
 
 namespace ledger {
     namespace core {

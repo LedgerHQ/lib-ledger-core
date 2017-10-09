@@ -228,6 +228,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
         EXPECT_EQ(op->getAmount()->toBigInt()->intValue(), std::get<7>(expect)); \
         EXPECT_EQ(op->getOperationType(), std::get<8>(expect)); \
         EXPECT_EQ(op->getBlockHeight().value(), std::get<9>(expect)); \
+        EXPECT_EQ(op->getFees()->toBigInt()->intValue(), 10000); \
     }
 
 

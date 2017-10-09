@@ -31,6 +31,7 @@
 
 #include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
+#include <wallet/common/OperationQuery.h>
 
 class AccountsPublicInterfaceTest : public BaseFixture {
 public:
@@ -69,4 +70,18 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
     EXPECT_EQ(balance->toLong(), 143590816L);
     EXPECT_EQ(utxos.size(), 8);
     EXPECT_EQ(uxtoCount, 8);
+}
+
+TEST_F(AccountsPublicInterfaceTest, QueryOperations) {
+    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
+    auto operations = wait(query->execute());
+    EXPECT_EQ(operations.size(), 100);
+}
+
+TEST_F(AccountsPublicInterfaceTest, QueryOperationsOnEmptyAccount) {
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
+    auto operations = wait(query->execute());
+    EXPECT_EQ(operations.size(), 0);
 }

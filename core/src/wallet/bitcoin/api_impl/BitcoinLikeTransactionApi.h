@@ -49,8 +49,10 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeBlock> getBlock() override;
             int64_t getLockTime() override;
             std::shared_ptr<api::Amount> getFees() override;
-            std::chrono::system_clock::time_point geTime() override;
             std::string getHash() override;
+
+            std::chrono::system_clock::time_point getTime() override;
+
 
         private:
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> _inputs;

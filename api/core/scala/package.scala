@@ -559,6 +559,8 @@ package object implicits {
     }
     implicit class RichWalletPoolCallback(val self: WalletPoolCallback) {
     }
+    implicit class RichWebSocketConnection(val self: WebSocketConnection) {
+    }
     implicit class RichWebSocketClient(val self: WebSocketClient) {
     }
     implicit class RichHttpUrlConnection(val self: HttpUrlConnection) {

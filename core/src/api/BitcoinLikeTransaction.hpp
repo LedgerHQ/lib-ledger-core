@@ -34,7 +34,7 @@ public:
 
     virtual std::shared_ptr<Amount> getFees() = 0;
 
-    virtual std::chrono::system_clock::time_point geTime() = 0;
+    virtual std::chrono::system_clock::time_point getTime() = 0;
 };
 
 } } }  // namespace ledger::core::api

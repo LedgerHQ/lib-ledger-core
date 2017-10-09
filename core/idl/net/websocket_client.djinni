@@ -1,4 +1,15 @@
+@import "../errors.djinni"
+
+WebSocketConnection = interface +c {
+    onConnect(connectionId: i32);
+    onClose();
+    onMessage(data: string);
+    onError(code: ErrorCode, message: string);
+    getConnectionId(): i32;
+}
 
 WebSocketClient = interface +j +o +n {
-
+    connect(url: string, connection: WebSocketConnection);
+    send(connection: WebSocketConnection, data: string);
+    disconnect(connection: WebSocketConnection);
 }

@@ -83,7 +83,7 @@ namespace ledger {
             return _fees;
         }
 
-        std::chrono::system_clock::time_point BitcoinLikeTransactionApi::geTime() {
+        std::chrono::system_clock::time_point BitcoinLikeTransactionApi::getTime() {
             return _time;
         }
 

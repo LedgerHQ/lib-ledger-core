@@ -145,11 +145,13 @@ namespace ledger {
                         getCurrency()
                 );
                 soci::session sql(self->getDatabase()->getPool());
-                sql.begin();
+                soci::transaction tr(sql);
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
+                if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index))
+                    throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
                 AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
                 BitcoinLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, keychain->getRestoreKey());
-                sql.commit();
+                tr.commit();
                 auto account = std::static_pointer_cast<api::Account>(std::make_shared<BitcoinLikeAccount>(
                         self->shared_from_this(),
                         index,

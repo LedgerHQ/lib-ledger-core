@@ -22,6 +22,6 @@
 
 - (nullable LGAmount *)getFees;
 
-- (nonnull NSDate *)geTime;
+- (nonnull NSDate *)getTime;
 
 @end
