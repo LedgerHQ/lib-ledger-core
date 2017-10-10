@@ -136,7 +136,7 @@ namespace ledger {
             };
 
         private:
-            std::mutex _lock;
+            mutable std::mutex _lock;
             Option<Try<T>> _value;
             std::queue<std::tuple<Callback, std::shared_ptr<api::ExecutionContext>>> _callbacks;
         };

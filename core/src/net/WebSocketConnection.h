@@ -32,11 +32,27 @@
 #ifndef LEDGER_CORE_WEBSOCKETCONNECTION_H
 #define LEDGER_CORE_WEBSOCKETCONNECTION_H
 
+#include <string>
+#include <api/WebSocketConnection.hpp>
+#include <api/WebSocketClient.hpp>
+#include "WebSocketClient.h"
+
 namespace ledger {
+    namespace core {
+        class WebSocketConnection : public std::enable_shared_from_this<WebSocketConnection> {
+        public:
+            WebSocketConnection(const std::shared_ptr<api::WebSocketClient>& client, const WebSocketEventHandler& handler);
+            std::shared_ptr<api::WebSocketConnection> getApiConnection();
+            void send(const std::string& message);
+            void close();
 
-    class WebSocketConnection {
-
-    };
+        private:
+            std::shared_ptr<api::WebSocketConnection> _connection;
+            std::shared_ptr<api::WebSocketClient> _client;
+            WebSocketEventHandler _handler;
+            std::shared_ptr<api::WebSocketConnection> _api;
+        };
+    }
 }
 
 

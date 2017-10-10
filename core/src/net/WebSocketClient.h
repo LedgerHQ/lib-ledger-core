@@ -34,13 +34,25 @@
 
 #include <api/WebSocketClient.hpp>
 #include <api/WebSocketConnection.hpp>
+#include <async/Future.hpp>
 
 namespace ledger {
     namespace core {
+        class WebSocketConnection;
+        enum class WebSocketEventType {
+            CONNECT,
+            RECEIVE,
+            CLOSE
+        };
+        using WebSocketEventHandler = std::function<void (WebSocketEventType,
+                                                          const std::shared_ptr<WebSocketConnection>& connection,
+                                                          const Option<std::string>& message, Option<api::ErrorCode>)>;
         class WebSocketClient {
         public:
             WebSocketClient(const std::shared_ptr<api::WebSocketClient>& client);
-
+            FuturePtr<WebSocketConnection> connect(const std::string& url, const WebSocketEventHandler& handler);
+        private:
+            std::shared_ptr<api::WebSocketClient> _client;
         };
     }
 }

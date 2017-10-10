@@ -30,3 +30,67 @@
  */
 
 #include "WebSocketConnection.h"
+
+namespace ledger {
+    namespace core {
+        class WebSocketConnImpl : public api::WebSocketConnection {
+        public:
+            WebSocketConnImpl(const WebSocketEventHandler& handler, const std::shared_ptr<ledger::core::WebSocketConnection>& conn) {
+                _conn = conn;
+                _handler = handler;
+            }
+
+            void onConnect(int32_t connectionId) override {
+                _id = connectionId;
+                _handler(WebSocketEventType::CONNECT, _conn, Option<std::string>(), Option<api::ErrorCode>());
+            }
+
+            void onClose() override {
+                _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(), Option<api::ErrorCode>());
+                _conn = nullptr;
+            }
+
+            void onMessage(const std::string &data) override {
+                if (_conn)
+                    _handler(WebSocketEventType::RECEIVE, _conn, Option<std::string>(data), Option<api::ErrorCode>());
+            }
+
+            void onError(api::ErrorCode code, const std::string &message) override {
+                if (_conn)
+                    _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(message), Option<api::ErrorCode>(code));
+            }
+
+            int32_t getConnectionId() override {
+                return _id;
+            }
+
+        private:
+            int32_t _id;
+            WebSocketEventHandler _handler;
+            std::shared_ptr<ledger::core::WebSocketConnection> _conn;
+        };
+
+        WebSocketConnection::WebSocketConnection(const std::shared_ptr<api::WebSocketClient> &client,
+                                                 const WebSocketEventHandler &handler) {
+            _client = client;
+            _handler = handler;
+        }
+
+        std::shared_ptr<api::WebSocketConnection> WebSocketConnection::getApiConnection() {
+            if (!_api)
+                _api = std::make_shared<WebSocketConnImpl>(_handler, shared_from_this());
+            return _api;
+        }
+
+        void WebSocketConnection::send(const std::string &message) {
+            _client->send(_api, message);
+        }
+
+        void WebSocketConnection::close() {
+            if (_api) {
+                _client->disconnect(_api);
+                _api = nullptr;
+            }
+        }
+    }
+}

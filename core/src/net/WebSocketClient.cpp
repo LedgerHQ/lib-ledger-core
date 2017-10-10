@@ -30,3 +30,31 @@
  */
 
 #include "WebSocketClient.h"
+#include <async/Promise.hpp>
+#include "WebSocketConnection.h"
+
+namespace ledger {
+    namespace core {
+
+        WebSocketClient::WebSocketClient(const std::shared_ptr<api::WebSocketClient> &client) {
+            _client = client;
+        }
+
+        FuturePtr<WebSocketConnection>
+        WebSocketClient::connect(const std::string &url, const WebSocketEventHandler &handler) {
+            Promise<std::shared_ptr<WebSocketConnection>> p;
+            auto conn = std::make_shared<WebSocketConnection>(_client,  [handler, p] (WebSocketEventType type,
+                                                                                  const std::shared_ptr<WebSocketConnection>& connection,
+                                                                                  const Option<std::string>& message, Option<api::ErrorCode> error) mutable {
+                handler(type, connection, message, error);
+                if (!p.isCompleted() && type == WebSocketEventType::CONNECT) {
+                    p.success(connection);
+                } else if (!p.isCompleted() && type == WebSocketEventType::CLOSE) {
+                    p.failure(make_exception(error.getValueOr(api::ErrorCode::UNKNOWN), message.getValueOr("Undefined error")));
+                }
+            });
+            _client->connect(url, conn->getApiConnection());
+            return p.getFuture();
+        }
+    }
+}
