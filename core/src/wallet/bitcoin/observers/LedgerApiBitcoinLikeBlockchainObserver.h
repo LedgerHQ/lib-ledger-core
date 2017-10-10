@@ -34,15 +34,37 @@
 
 #include "BitcoinLikeBlockchainObserver.hpp"
 #include <net/WebSocketClient.h>
+#include <net/WebSocketConnection.h>
+
 namespace ledger {
     namespace core {
-        class LedgerApiBitcoinLikeBlockchainObserver : public BitcoinLikeBlockchainObserver {
+        class LedgerApiBitcoinLikeBlockchainObserver : public BitcoinLikeBlockchainObserver,
+                                                       public std::enable_shared_from_this<LedgerApiBitcoinLikeBlockchainObserver> {
         public:
             LedgerApiBitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
+                                                   const std::shared_ptr<WebSocketClient>& client,
+                                                   const std::shared_ptr<api::DynamicObject>& configuration,
+                                                   const std::shared_ptr<spdlog::logger>& logger,
                                                    const api::Currency &currency);
 
-        public:
+        protected:
+            void onStart() override;
+            void onStop() override;
 
+        private:
+            void connect();
+            void reconnect();
+            void onSocketEvent(WebSocketEventType event,
+                               const std::shared_ptr<WebSocketConnection>& connection,
+                               const Option<std::string>& message, Option<api::ErrorCode> code);
+            void onMessage(const std::string& message);
+
+        private:
+            std::shared_ptr<WebSocketClient> _client;
+            std::shared_ptr<WebSocketConnection> _socket;
+            WebSocketEventHandler _handler;
+            int32_t _attempt;
+            std::string _url;
         };
     }
 }

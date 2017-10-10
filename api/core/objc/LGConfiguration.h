@@ -15,6 +15,7 @@ extern NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERENGINE;
 extern NSString * __nonnull const LGConfigurationBLOCKCHAINEXPLORERAPIENDPOINT;
 /** Selects the blockchain observer engine (Ledger's API) */
 extern NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERENGINE;
+extern NSString * __nonnull const LGConfigurationBLOCKCHAINOBSERVERWSENDPOINT;
 /** Selects the synchronization engine */
 extern NSString * __nonnull const LGConfigurationSYNCHRONIZATIONENGINE;
 /** Sets the half batch size (default: 20) */

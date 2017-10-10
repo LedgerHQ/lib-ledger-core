@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class ConfigurationDefaults {
     public static final String BLOCKCHAIN_DEFAULT_API_ENDPOINT = "https://api.ledgerwallet.com";
 
+    public static final String BLOCKCHAIN_OBSERVER_WS_ENDPOINT = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
+
     public static final String BIP44_DERIVATION_SCHEME = "44'/<coin_type>'/<account>'/<node>/<address>";
 
     public static final String DEFAULT_KEYCHAIN = "BIP32_P2PKH";

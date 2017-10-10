@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT;
+extern NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINOBSERVERWSENDPOINT;
 extern NSString * __nonnull const LGConfigurationDefaultsBIP44DERIVATIONSCHEME;
 extern NSString * __nonnull const LGConfigurationDefaultsDEFAULTKEYCHAIN;
 extern int32_t const LGConfigurationDefaultsDEFAULTTRUSTLIMIT;

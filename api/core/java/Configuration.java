@@ -24,6 +24,8 @@ public abstract class Configuration {
     /** Selects the blockchain observer engine (Ledger's API) */
     public static final String BLOCKCHAIN_OBSERVER_ENGINE = "BLOCKCHAIN_OBSERVER_ENGINE";
 
+    public static final String BLOCKCHAIN_OBSERVER_WS_ENDPOINT = "BLOCKCHAIN_OBSERVER_WS_ENDPOINT";
+
     /** Selects the synchronization engine */
     public static final String SYNCHRONIZATION_ENGINE = "SYNCHRONIZATION_ENGINE";
 

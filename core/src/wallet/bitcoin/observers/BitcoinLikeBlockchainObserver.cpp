@@ -30,14 +30,19 @@
  */
 
 #include "BitcoinLikeBlockchainObserver.hpp"
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 
 namespace ledger {
     namespace core {
 
         BitcoinLikeBlockchainObserver::BitcoinLikeBlockchainObserver(
-                const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency) :
-                DedicatedContext(context) {
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<api::DynamicObject>& configuration,
+                const std::shared_ptr<spdlog::logger>& logger,
+                const api::Currency &currency) : DedicatedContext(context) {
             _currency = currency;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         bool BitcoinLikeBlockchainObserver::registerAccount(const std::shared_ptr<BitcoinLikeAccount> &account) {
@@ -85,6 +90,34 @@ namespace ledger {
         bool BitcoinLikeBlockchainObserver::isObserving() const {
             std::lock_guard<std::mutex> lock(_lock);
             return _accounts.size() > 0;
+        }
+
+        std::shared_ptr<api::DynamicObject> BitcoinLikeBlockchainObserver::getConfiguration() const {
+            return _configuration;
+        }
+
+        std::shared_ptr<spdlog::logger> BitcoinLikeBlockchainObserver::logger() const {
+            return _logger;
+        }
+
+        void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+            std::lock_guard<std::mutex> lock(_lock);
+            for (auto account : _accounts) {
+                account->run([account, tx] () {
+                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                    account->putTransaction(sql, tx);
+                });
+            }
+        }
+
+        void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block &block) {
+            std::lock_guard<std::mutex> lock(_lock);
+            for (auto account : _accounts) {
+                account->run([account, block] () {
+                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                    account->putBlock(sql, block);
+                });
+            }
         }
     }
 }

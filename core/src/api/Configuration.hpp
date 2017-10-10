@@ -30,6 +30,8 @@ public:
     /** Selects the blockchain observer engine (Ledger's API) */
     static std::string const BLOCKCHAIN_OBSERVER_ENGINE;
 
+    static std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
+
     /** Selects the synchronization engine */
     static std::string const SYNCHRONIZATION_ENGINE;
 
