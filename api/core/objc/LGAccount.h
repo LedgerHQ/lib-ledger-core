@@ -62,6 +62,12 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
 
 - (nullable LGEventBus *)getEventBus;
 
+- (void)startBlockchainObservation;
+
+- (void)stopBlockchainObservation;
+
+- (BOOL)isObservingBlockchain;
+
 - (void)computeFees:(nullable LGAmount *)amount
            priority:(int32_t)priority
          recipients:(nonnull NSArray<NSString *> *)recipients

@@ -58,7 +58,7 @@ namespace ledger {
             std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningExplorers;
 
             // Observers
-            std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningObservers;
+            std::list<std::weak_ptr<BitcoinLikeBlockchainObserver>> _runningObservers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<BitcoinLikeKeychainFactory>> _keychainFactories;

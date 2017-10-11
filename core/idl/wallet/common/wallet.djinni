@@ -165,6 +165,10 @@ Account = interface +c {
     getWalletType(): WalletType;
     getEventBus(): EventBus;
 
+    startBlockchainObservation();
+    stopBlockchainObservation();
+    isObservingBlockchain(): bool;
+
     computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }
 

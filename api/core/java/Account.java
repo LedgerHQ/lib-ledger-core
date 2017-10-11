@@ -64,6 +64,12 @@ public abstract class Account {
 
     public abstract EventBus getEventBus();
 
+    public abstract void startBlockchainObservation();
+
+    public abstract void stopBlockchainObservation();
+
+    public abstract boolean isObservingBlockchain();
+
     public abstract void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
 
     private static final class CppProxy extends Account
@@ -200,6 +206,30 @@ public abstract class Account {
             return native_getEventBus(this.nativeRef);
         }
         private native EventBus native_getEventBus(long _nativeRef);
+
+        @Override
+        public void startBlockchainObservation()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_startBlockchainObservation(this.nativeRef);
+        }
+        private native void native_startBlockchainObservation(long _nativeRef);
+
+        @Override
+        public void stopBlockchainObservation()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_stopBlockchainObservation(this.nativeRef);
+        }
+        private native void native_stopBlockchainObservation(long _nativeRef);
+
+        @Override
+        public boolean isObservingBlockchain()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isObservingBlockchain(this.nativeRef);
+        }
+        private native boolean native_isObservingBlockchain(long _nativeRef);
 
         @Override
         public void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback)

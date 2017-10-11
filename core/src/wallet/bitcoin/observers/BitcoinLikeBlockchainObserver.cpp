@@ -39,16 +39,18 @@ namespace ledger {
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<api::DynamicObject>& configuration,
                 const std::shared_ptr<spdlog::logger>& logger,
-                const api::Currency &currency) : DedicatedContext(context) {
+                const api::Currency &currency,
+                const std::vector<std::string>& matchableKeys) : DedicatedContext(context), ConfigurationMatchable(matchableKeys) {
             _currency = currency;
             _configuration = configuration;
+            setConfiguration(configuration);
             _logger = logger;
         }
 
         bool BitcoinLikeBlockchainObserver::registerAccount(const std::shared_ptr<BitcoinLikeAccount> &account) {
             std::lock_guard<std::mutex> lock(_lock);
             if (!_isRegistered(lock, account)) {
-                bool needsStart = _accounts.size() == 0;
+                bool needsStart = _accounts.empty();
                 _accounts.push_front(account);
                 if (needsStart)
                     onStart();
@@ -102,7 +104,7 @@ namespace ledger {
 
         void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorer::Transaction &tx) {
             std::lock_guard<std::mutex> lock(_lock);
-            for (auto account : _accounts) {
+            for (const auto& account : _accounts) {
                 account->run([account, tx] () {
                     soci::session sql(account->getWallet()->getDatabase()->getPool());
                     account->putTransaction(sql, tx);
@@ -112,7 +114,7 @@ namespace ledger {
 
         void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block &block) {
             std::lock_guard<std::mutex> lock(_lock);
-            for (auto account : _accounts) {
+            for (const auto& account : _accounts) {
                 account->run([account, block] () {
                     soci::session sql(account->getWallet()->getDatabase()->getPool());
                     account->putBlock(sql, block);

@@ -41,6 +41,8 @@
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <api/SynchronizationEngines.hpp>
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h>
+#include <api/BlockchainExplorerEngines.hpp>
+#include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -109,17 +111,23 @@ namespace ledger {
         std::shared_ptr<BitcoinLikeBlockchainExplorer>
         BitcoinLikeWalletFactory::getExplorer(const std::string &currencyName,
                                               const std::shared_ptr<api::DynamicObject> &configuration) {
-            for (auto& weakExplorer : _runningExplorers) {
-                auto explorer = weakExplorer.lock();
-                if (explorer->match(configuration))
-                    return explorer;
+            auto it = _runningExplorers.begin();
+            while (it != _runningExplorers.end()) {
+                auto explorer = it->lock();
+                if (explorer != nullptr) {
+                    if (explorer->match(configuration))
+                        return explorer;
+                    it++;
+                } else {
+                    it = _runningExplorers.erase(it);
+                }
             }
 
             auto pool = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
-                                       .value_or(api::BlockchainObserverEngines::LEDGER_API);
+                                       .value_or(api::BlockchainExplorerEngines::LEDGER_API);
             std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer = nullptr;
-            if (engine == api::BlockchainObserverEngines::LEDGER_API) {
+            if (engine == api::BlockchainExplorerEngines::LEDGER_API) {
                 auto http = pool->getHttpClient(
                         configuration->getString(
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
@@ -137,7 +145,39 @@ namespace ledger {
         std::shared_ptr<BitcoinLikeBlockchainObserver>
         BitcoinLikeWalletFactory::getObserver(const std::string &currencyName,
                                               const std::shared_ptr<api::DynamicObject> &configuration) {
-            return nullptr;
+            auto it = _runningObservers.begin();
+            while (it != _runningObservers.end()) {
+                auto observer = it->lock();
+                if (observer != nullptr) {
+                    if (observer->match(configuration)) {
+                        return observer;
+                    }
+                    it++;
+                } else {
+                    it = _runningObservers.erase(it);
+                }
+            }
+
+            auto pool = getPool();
+            auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE)
+                                        .value_or(api::BlockchainObserverEngines::LEDGER_API);
+            std::shared_ptr<BitcoinLikeBlockchainObserver> observer;
+            if (engine == api::BlockchainObserverEngines::LEDGER_API) {
+                auto ws = pool->getWebSocketClient();
+                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
+                auto logger = pool->logger();
+                const auto& currency = getCurrency();
+                observer = std::make_shared<LedgerApiBitcoinLikeBlockchainObserver>(
+                        context,
+                        ws,
+                        configuration,
+                        logger,
+                        currency
+                );
+            }
+            if (observer)
+                _runningObservers.push_back(observer);
+            return observer;
         }
 
     }

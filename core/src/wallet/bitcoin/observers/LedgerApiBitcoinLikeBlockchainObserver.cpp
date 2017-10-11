@@ -33,6 +33,8 @@
 #include <api/ConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
 #include <math/Fibonacci.h>
+#include <utils/JSONUtils.h>
+#include <wallet/bitcoin/explorers/api/WebSocketNotificationParser.h>
 
 namespace ledger {
     namespace core {
@@ -43,7 +45,7 @@ namespace ledger {
                 const std::shared_ptr<api::DynamicObject>& configuration,
                 const std::shared_ptr<spdlog::logger>& logger,
                 const api::Currency &currency) :
-            BitcoinLikeBlockchainObserver(context, configuration, logger, currency) {
+            BitcoinLikeBlockchainObserver(context, configuration, logger, currency, {api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT}) {
             _client = client;
             auto baseUrl = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
                     .value_or(api::ConfigurationDefaults::BLOCKCHAIN_OBSERVER_WS_ENDPOINT);
@@ -112,7 +114,14 @@ namespace ledger {
         }
 
         void LedgerApiBitcoinLikeBlockchainObserver::onMessage(const std::string &message) {
-
+            run([message] () {
+                auto result = JSONUtils::parse<WebSocketNotificationParser>(message);
+                if (result->type == "new-transaction") {
+                    putTransaction(result->transaction);
+                } else if (result->type == "new-block") {
+                    putBlock(result->block);
+                }
+            });
         }
 
     }

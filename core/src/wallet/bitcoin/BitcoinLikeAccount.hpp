@@ -79,11 +79,13 @@ namespace ledger {
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 
+            void startBlockchainObservation() override;
+            void stopBlockchainObservation() override;
+            bool isObservingBlockchain() override;
 
             /***
              * REVIEW
              */
-
 
             bool isSynchronizing() override;
 

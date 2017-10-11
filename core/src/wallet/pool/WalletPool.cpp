@@ -59,7 +59,7 @@ namespace ledger {
             _httpEngine = httpClient;
 
             // WS management
-            _wsEngine = webSocketClient;
+            _wsClient = std::make_shared<WebSocketClient>(webSocketClient);
 
             // Preferences management
             _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
@@ -381,6 +381,10 @@ namespace ledger {
 
         std::shared_ptr<api::EventBus> WalletPool::getEventBus() const {
             return _publisher->getEventBus();
+        }
+
+        std::shared_ptr<WebSocketClient> WalletPool::getWebSocketClient() const {
+            return _wsClient;
         }
 
     }

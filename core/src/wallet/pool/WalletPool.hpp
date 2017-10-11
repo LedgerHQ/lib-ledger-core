@@ -54,6 +54,7 @@
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <events/EventPublisher.hpp>
+#include <net/WebSocketClient.h>
 
 namespace ledger {
     namespace core {
@@ -62,6 +63,7 @@ namespace ledger {
         class WalletPool : public DedicatedContext, public std::enable_shared_from_this<WalletPool> {
         public:
             std::shared_ptr<HttpClient> getHttpClient(const std::string& baseUrl);
+            std::shared_ptr<WebSocketClient> getWebSocketClient() const;
             std::shared_ptr<Preferences> getExternalPreferences() const;
             std::shared_ptr<Preferences> getInternalPreferences() const;
             std::shared_ptr<api::PathResolver> getPathResolver() const;
@@ -141,7 +143,7 @@ namespace ledger {
             std::unordered_map<std::string, std::weak_ptr<HttpClient>> _httpClients;
 
             // WS management
-            std::shared_ptr<api::WebSocketClient> _wsEngine;
+            std::shared_ptr<WebSocketClient> _wsClient;
 
             // Preferences management
             std::shared_ptr<PreferencesBackend> _externalPreferencesBackend;

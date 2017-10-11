@@ -360,5 +360,17 @@ namespace ledger {
             return std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
         }
 
+        void BitcoinLikeAccount::startBlockchainObservation() {
+            _observer->registerAccount(getSelf());
+        }
+
+        void BitcoinLikeAccount::stopBlockchainObservation() {
+            _observer->unregisterAccount(getSelf());
+        }
+
+        bool BitcoinLikeAccount::isObservingBlockchain() {
+            return _observer->isRegistered(getSelf());
+        }
+
     }
 }
