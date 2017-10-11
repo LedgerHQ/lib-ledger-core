@@ -189,7 +189,14 @@ add_library(
         debug/Benchmarker.h utils/DurationUtils.cpp
         utils/DurationUtils.h utils/VectorUtils.cpp utils/VectorUtils.h
         crypto/Secp256k1Api.cpp crypto/Secp256k1Api.h
-        wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.cpp wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.cpp net/WebSocketClient.cpp net/WebSocketClient.h net/WebSocketConnection.cpp net/WebSocketConnection.h math/Fibonacci.cpp math/Fibonacci.h)
+        wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h
+        wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h
+        wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.cpp wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h
+        wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.cpp
+        net/WebSocketClient.cpp net/WebSocketClient.h
+        net/WebSocketConnection.cpp net/WebSocketConnection.h
+        math/Fibonacci.cpp math/Fibonacci.h
+        wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)
