@@ -71,6 +71,7 @@ namespace ledger {
         }
 
         void LedgerApiBitcoinLikeBlockchainObserver::connect() {
+            logger()->info("Connect {} observer", getCurrency().name);
             auto self = shared_from_this();
             _handler = [self] (WebSocketEventType event,
                                const std::shared_ptr<WebSocketConnection>& connection,
@@ -83,7 +84,7 @@ namespace ledger {
         void LedgerApiBitcoinLikeBlockchainObserver::reconnect() {
             auto self = shared_from_this();
             auto delay = std::min(std::max(Fibonacci::compute(_attempt) * 500, 30000), 500);
-            logger()->info("Attempt reconnection in {}ms to {}", delay, _url);
+            logger()->info("Attempt reconnection in {}ms for {} observer", delay, getCurrency().name);
             getContext()->delay(LambdaRunnable::make([self] () {
                 self->connect();
             }), delay);
@@ -114,12 +115,14 @@ namespace ledger {
         }
 
         void LedgerApiBitcoinLikeBlockchainObserver::onMessage(const std::string &message) {
-            run([message] () {
+            auto self = shared_from_this();
+            run([message, self] () {
                 auto result = JSONUtils::parse<WebSocketNotificationParser>(message);
+                result->block.currencyName = self->getCurrency().name;
                 if (result->type == "new-transaction") {
-                    putTransaction(result->transaction);
+                    self->putTransaction(result->transaction);
                 } else if (result->type == "new-block") {
-                    putBlock(result->block);
+                    self->putBlock(result->block);
                 }
             });
         }

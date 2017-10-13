@@ -61,6 +61,7 @@ void BaseFixture::SetUp() {
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    ws = std::make_shared<FakeWebSocketClient>();
 }
 
 void BaseFixture::TearDown() {
@@ -73,7 +74,7 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
             poolName,
             Option<std::string>::NONE,
             http,
-            nullptr,
+            ws,
             resolver,
             printer,
             dispatcher,

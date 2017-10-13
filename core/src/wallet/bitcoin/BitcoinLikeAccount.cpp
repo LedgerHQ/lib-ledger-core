@@ -57,6 +57,7 @@ namespace ledger {
             _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
+            _keychain->getAllObservableAddresses(0, 40);
         }
 
         void
@@ -77,7 +78,6 @@ namespace ledger {
 
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                const BitcoinLikeBlockchainExplorer::Transaction &transaction) {
-
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -94,7 +94,6 @@ namespace ledger {
             senders.reserve(transaction.inputs.size());
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
-
             int result = 0x00;
 
             // Find inputs
@@ -143,13 +142,17 @@ namespace ledger {
                             receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
+                        if (_keychain->markPathAsUsed(path.getValue())) {
+                            result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
+                        } else {
+                            result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
+                        }
                     } else {
                         recipients.push_back(output.address.getValue());
                     }
                 }
                 fees = fees - output.value.toUint64();
             }
-
             std::stringstream snds;
             strings::join(senders, snds, ",");
 

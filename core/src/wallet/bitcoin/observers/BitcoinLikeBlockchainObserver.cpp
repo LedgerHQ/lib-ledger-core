@@ -107,7 +107,8 @@ namespace ledger {
             for (const auto& account : _accounts) {
                 account->run([account, tx] () {
                     soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    account->putTransaction(sql, tx);
+                    if (account->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED)
+                        account->emitEventsNow();
                 });
             }
         }
@@ -117,7 +118,8 @@ namespace ledger {
             for (const auto& account : _accounts) {
                 account->run([account, block] () {
                     soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    account->putBlock(sql, block);
+                    if (account->putBlock(sql, block))
+                        account->emitEventsNow();
                 });
             }
         }

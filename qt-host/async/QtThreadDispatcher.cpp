@@ -37,7 +37,7 @@ ledger::qt::QtThreadDispatcher::getSerialExecutionContext(const std::string &nam
     QMutexLocker locker(&_mutex);
     auto serialQueueName = name + "_";
     if (!_contexts.contains(serialQueueName)) {
-        _contexts[serialQueueName] = std::make_shared<QtThreadPoolExecutionContext>(1);
+       _contexts[serialQueueName] = std::make_shared<QtThreadPoolExecutionContext>(1, getMainExecutionContext());
     }
     return _contexts[serialQueueName];
 }
@@ -47,7 +47,7 @@ ledger::qt::QtThreadDispatcher::getThreadPoolExecutionContext(const std::string 
     QMutexLocker locker(&_mutex);
     auto contextName = name + "$";
     if (!_contexts.contains(contextName)) {
-        _contexts[contextName] = std::make_shared<QtThreadPoolExecutionContext>(_maxThreads);
+       _contexts[contextName] = std::make_shared<QtThreadPoolExecutionContext>(_maxThreads, getMainExecutionContext());
     }
     return _contexts[contextName];
 }

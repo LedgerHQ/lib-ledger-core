@@ -90,7 +90,7 @@ namespace ledger {
             DerivationScheme& getDerivationScheme();
 
         private:
-            const api::Currency& _currency;
+            const api::Currency _currency;
             DerivationScheme _scheme;
             DerivationScheme _fullScheme;
             int _account;

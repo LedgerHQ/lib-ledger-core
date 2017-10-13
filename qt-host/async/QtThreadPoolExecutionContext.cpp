@@ -29,6 +29,7 @@
  *
  */
 #include <iostream>
+#include <src/utils/LambdaRunnable.hpp>
 #include "QtThreadPoolExecutionContext.hpp"
 
 void ledger::qt::QtThreadPoolExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable> &runnable) {
@@ -40,15 +41,17 @@ void ledger::qt::QtThreadPoolExecutionContext::execute(const std::shared_ptr<led
 void ledger::qt::QtThreadPoolExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable> &runnable,
                                                      int64_t millis) {
     auto self = this;
-    QTimer::singleShot((int) millis, this, [=] () -> void {
+    _main->delay(ledger::core::make_runnable([=] () {
         self->execute(runnable);
-    });
-}
-
-ledger::qt::QtThreadPoolExecutionContext::QtThreadPoolExecutionContext(int maxThreads) {
-    _pool.setMaxThreadCount(maxThreads);
+    }), millis);
 }
 
 void ledger::qt::QtThreadPoolExecutionContext::performDelayedCall(std::shared_ptr<ledger::core::api::Runnable> runnable) {
     execute(runnable);
+}
+
+ledger::qt::QtThreadPoolExecutionContext::QtThreadPoolExecutionContext(int maxThreads,
+                                                                       const std::shared_ptr<ledger::core::api::ExecutionContext> &main) {
+    _pool.setMaxThreadCount(maxThreads);
+    _main = main;
 }

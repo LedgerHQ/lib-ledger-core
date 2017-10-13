@@ -70,7 +70,7 @@ TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
     }), 1000);
 
     dispatcher->waitUntilStopped();
-    EXPECT_GT(after, before + 1000);
+    EXPECT_TRUE(after >= (before + 1000));
     EXPECT_EQ(dispatcher->getSerialExecutionContext("worker"), dispatcher->getSerialExecutionContext("worker"));
 }
 

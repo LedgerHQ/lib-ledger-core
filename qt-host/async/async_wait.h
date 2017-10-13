@@ -37,7 +37,7 @@
 
 template <typename T>
 T wait(ledger::core::Future<T> future) {
-    auto signaler = std::make_shared<ledger::qt::QtThreadPoolExecutionContext>(1);
+    auto signaler = std::make_shared<ledger::qt::QtThreadPoolExecutionContext>(1, nullptr);
     QEventLoop looper;
 
     future.onComplete(signaler, [&] (const ledger::core::Try<T>& result) {

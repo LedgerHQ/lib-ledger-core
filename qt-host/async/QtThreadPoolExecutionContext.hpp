@@ -43,7 +43,7 @@ namespace ledger {
         class QtThreadPoolExecutionContext : public QObject, public core::api::ExecutionContext {
             Q_OBJECT
         public:
-            QtThreadPoolExecutionContext(int maxThreads);
+            QtThreadPoolExecutionContext(int maxThreads, const std::shared_ptr<core::api::ExecutionContext>& main);
             void execute(const std::shared_ptr<core::api::Runnable> &runnable) override;
             void delay(const std::shared_ptr<core::api::Runnable> &runnable, int64_t millis) override;
 
@@ -52,6 +52,7 @@ namespace ledger {
 
         private:
             QThreadPool _pool;
+            std::shared_ptr<core::api::ExecutionContext> _main;
         };
     }
 }

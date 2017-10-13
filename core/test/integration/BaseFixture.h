@@ -60,6 +60,7 @@
 #include <soci.h>
 #include <api/Account.hpp>
 #include <api/BitcoinLikeAccount.hpp>
+#include <FakeWebSocketClient.h>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
@@ -98,6 +99,7 @@ public:
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
     std::shared_ptr<QtHttpClient> http;
+    std::shared_ptr<FakeWebSocketClient> ws;
 };
 
 #endif //LEDGER_CORE_BASEFIXTURE_H

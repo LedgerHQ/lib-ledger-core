@@ -35,7 +35,7 @@ namespace ledger {
     namespace core {
         class WebSocketConnImpl : public api::WebSocketConnection {
         public:
-            WebSocketConnImpl(const WebSocketEventHandler& handler, const std::shared_ptr<ledger::core::WebSocketConnection>& conn) {
+            WebSocketConnImpl(const WebSocketEventHandler& handler, const std::shared_ptr<ledger::core::WebSocketConnection>& conn) : _id(-1) {
                 _conn = conn;
                 _handler = handler;
             }
@@ -46,8 +46,10 @@ namespace ledger {
             }
 
             void onClose() override {
-                _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(), Option<api::ErrorCode>());
-                _conn = nullptr;
+                if (_conn) {
+                    _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(), Option<api::ErrorCode>());
+                    _conn = nullptr;
+                }
             }
 
             void onMessage(const std::string &data) override {
@@ -56,8 +58,11 @@ namespace ledger {
             }
 
             void onError(api::ErrorCode code, const std::string &message) override {
-                if (_conn)
-                    _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(message), Option<api::ErrorCode>(code));
+                if (_conn) {
+                    _handler(WebSocketEventType::CLOSE, _conn, Option<std::string>(message),
+                             Option<api::ErrorCode>(code));
+                    _conn = nullptr;
+                }
             }
 
             int32_t getConnectionId() override {
