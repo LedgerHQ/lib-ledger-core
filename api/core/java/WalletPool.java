@@ -24,6 +24,8 @@ public abstract class WalletPool {
 
     public abstract void getCurrency(String name, CurrencyCallback callback);
 
+    public abstract void getLastBlock(String currencyName, BlockCallback callback);
+
     public abstract EventBus getEventBus();
 
     private static final class CppProxy extends WalletPool
@@ -120,6 +122,14 @@ public abstract class WalletPool {
             native_getCurrency(this.nativeRef, name, callback);
         }
         private native void native_getCurrency(long _nativeRef, String name, CurrencyCallback callback);
+
+        @Override
+        public void getLastBlock(String currencyName, BlockCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getLastBlock(this.nativeRef, currencyName, callback);
+        }
+        private native void native_getLastBlock(long _nativeRef, String currencyName, BlockCallback callback);
 
         @Override
         public EventBus getEventBus()

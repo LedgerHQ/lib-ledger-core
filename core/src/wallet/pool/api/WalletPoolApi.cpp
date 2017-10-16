@@ -140,5 +140,10 @@ namespace ledger {
         std::shared_ptr<api::EventBus> WalletPoolApi::getEventBus() {
             return _pool->getEventBus();
         }
+
+        void WalletPoolApi::getLastBlock(const std::string &currencyName,
+                                         const std::shared_ptr<api::BlockCallback> &callback) {
+            _pool->getLastBlock(currencyName).callback(_mainContext, callback);
+        }
     }
 }

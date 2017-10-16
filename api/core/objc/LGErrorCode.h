@@ -23,6 +23,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeAccountAlreadyExists,
     LGErrorCodeAccountNotFound,
     LGErrorCodeMissingDerivation,
+    /** Block error */
+    LGErrorCodeBlockNotFound,
     /** User land errors */
     LGErrorCodeCancelledByUser,
     LGErrorCodeUnsupportedCurrency,

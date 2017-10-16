@@ -27,6 +27,7 @@ WalletPool = interface +c {
     createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
     getCurrencies(callback: ListCallback<Currency>);
     getCurrency(name: string, callback: Callback<Currency>);
+    getLastBlock(currencyName: string, callback: Callback<Block>);
     getEventBus(): EventBus;
 }
 

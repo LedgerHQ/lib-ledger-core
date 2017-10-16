@@ -32,6 +32,7 @@
 #include <crypto/SHA256.hpp>
 #include <fmt/format.h>
 #include <database/soci-date.h>
+#include <database/soci-number.h>
 
 using namespace soci;
 
@@ -63,6 +64,21 @@ namespace ledger {
 
         std::string BlockDatabaseHelper::createBlockUid(const std::string &blockhash, const std::string &currencyName) {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", blockhash, currencyName));
+        }
+
+        Option<api::Block> BlockDatabaseHelper::getLastBlock(soci::session &sql, const std::string &currencyName) {
+            rowset<row> rows = (sql.prepare << "SELECT uid, hash, height, time FROM blocks WHERE "
+                    "currency_name = :name ORDER BY height DESC LIMIT 1", use(currencyName));
+            for (auto& row : rows) {
+                auto uid = row.get<std::string>(0);
+                auto hash = row.get<std::string>(1);
+                auto height = get_number<int64_t>(row, 2);
+                auto time = row.get<std::chrono::system_clock::time_point>(3);
+                return Option<api::Block>(
+                        api::Block(hash, uid, time, currencyName, height)
+                );
+            }
+            return Option<api::Block>();
         }
     }
 }

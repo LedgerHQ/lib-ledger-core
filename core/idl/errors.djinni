@@ -21,6 +21,9 @@ ErrorCode = enum {
     account_not_found;
     missing_derivation;
 
+    # Block error
+    block_not_found;
+
     # User land errors
     cancelled_by_user;
 

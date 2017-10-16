@@ -66,7 +66,6 @@ namespace ledger {
                                const Option<std::string>& message, Option<api::ErrorCode> code) {
 
                 };
-                self->_socket = nullptr;
             });
         }
 
@@ -96,6 +95,7 @@ namespace ledger {
                                                                    Option<api::ErrorCode> code) {
             switch (event) {
                 case WebSocketEventType::CONNECT:
+                    _socket = connection;
                     _attempt = 0;
                     logger()->info("Connected to websocket {}", _url);
                     break;

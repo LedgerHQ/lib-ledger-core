@@ -21,6 +21,7 @@ package object implicits {
     class AccountAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.ACCOUNT_ALREADY_EXISTS, message)
     class AccountNotFoundException(message: String) extends LedgerCoreWrappedException(ErrorCode.ACCOUNT_NOT_FOUND, message)
     class MissingDerivationException(message: String) extends LedgerCoreWrappedException(ErrorCode.MISSING_DERIVATION, message)
+    class BlockNotFoundException(message: String) extends LedgerCoreWrappedException(ErrorCode.BLOCK_NOT_FOUND, message)
     class CancelledByUserException(message: String) extends LedgerCoreWrappedException(ErrorCode.CANCELLED_BY_USER, message)
     class UnsupportedCurrencyException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNSUPPORTED_CURRENCY, message)
     class CurrencyAlreadyExistsException(message: String) extends LedgerCoreWrappedException(ErrorCode.CURRENCY_ALREADY_EXISTS, message)
@@ -76,6 +77,7 @@ package object implicits {
             case ErrorCode.ACCOUNT_ALREADY_EXISTS => new AccountAlreadyExistsException(error.getMessage)
             case ErrorCode.ACCOUNT_NOT_FOUND => new AccountNotFoundException(error.getMessage)
             case ErrorCode.MISSING_DERIVATION => new MissingDerivationException(error.getMessage)
+            case ErrorCode.BLOCK_NOT_FOUND => new BlockNotFoundException(error.getMessage)
             case ErrorCode.CANCELLED_BY_USER => new CancelledByUserException(error.getMessage)
             case ErrorCode.UNSUPPORTED_CURRENCY => new UnsupportedCurrencyException(error.getMessage)
             case ErrorCode.CURRENCY_ALREADY_EXISTS => new CurrencyAlreadyExistsException(error.getMessage)
@@ -190,6 +192,20 @@ package object implicits {
             })
             promise.future
         }
+        def getLastBlock(): Future[Block] = {
+            val promise = Promise[Block]()
+            self.getLastBlock(new BlockCallback() {
+                override def onCallback(result: Block, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
         def computeFees(amount: Amount, priority: Int, recipients: Array[String], data: Array[Array[Byte]]): Future[Amount] = {
             val promise = Promise[Amount]()
             self.computeFees(amount, priority, arrayList2Array(recipients), arrayList2Array(data), new AmountCallback() {
@@ -208,6 +224,8 @@ package object implicits {
     implicit class RichAmountCallback(val self: AmountCallback) {
     }
     implicit class RichStringListCallback(val self: StringListCallback) {
+    }
+    implicit class RichBlockCallback(val self: BlockCallback) {
     }
     implicit class RichWallet(val self: Wallet) {
         def getAccount(index: Int): Future[Account] = {
@@ -256,6 +274,20 @@ package object implicits {
             val promise = Promise[Int]()
             self.getNextAccountIndex(new I32Callback() {
                 override def onCallback(result: java.lang.Integer, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getLastBlock(): Future[Block] = {
+            val promise = Promise[Block]()
+            self.getLastBlock(new BlockCallback() {
+                override def onCallback(result: Block, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -522,6 +554,20 @@ package object implicits {
             val promise = Promise[Currency]()
             self.getCurrency(name, new CurrencyCallback() {
                 override def onCallback(result: Currency, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getLastBlock(currencyName: String): Future[Block] = {
+            val promise = Promise[Block]()
+            self.getLastBlock(currencyName, new BlockCallback() {
+                override def onCallback(result: Block, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }

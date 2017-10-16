@@ -13,6 +13,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class AmountCallback;
+class BlockCallback;
 class EventBus;
 class Logger;
 class OperationQuery;
@@ -86,6 +87,8 @@ public:
     virtual void stopBlockchainObservation() = 0;
 
     virtual bool isObservingBlockchain() = 0;
+
+    virtual void getLastBlock(const std::shared_ptr<BlockCallback> & callback) = 0;
 
     virtual void computeFees(const std::shared_ptr<Amount> & amount, int32_t priority, const std::vector<std::string> & recipients, const std::vector<std::vector<uint8_t>> & data, const std::shared_ptr<AmountCallback> & callback) = 0;
 };

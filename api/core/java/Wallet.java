@@ -45,6 +45,8 @@ public abstract class Wallet {
 
     public abstract WalletType getWalletType();
 
+    public abstract void getLastBlock(BlockCallback callback);
+
     public abstract void getAccountCreationInfo(int accountIndex, AccountCreationInfoCallback callback);
 
     public abstract void getExtendedKeyAccountCreationInfo(int accountIndex, ExtendedKeyAccountCreationInfoCallback callback);
@@ -215,6 +217,14 @@ public abstract class Wallet {
             return native_getWalletType(this.nativeRef);
         }
         private native WalletType native_getWalletType(long _nativeRef);
+
+        @Override
+        public void getLastBlock(BlockCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getLastBlock(this.nativeRef, callback);
+        }
+        private native void native_getLastBlock(long _nativeRef, BlockCallback callback);
 
         @Override
         public void getAccountCreationInfo(int accountIndex, AccountCreationInfoCallback callback)

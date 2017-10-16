@@ -32,6 +32,7 @@
 #include <wallet/currencies.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 #include "WalletPool.hpp"
 
 namespace ledger {
@@ -385,6 +386,18 @@ namespace ledger {
 
         std::shared_ptr<WebSocketClient> WalletPool::getWebSocketClient() const {
             return _wsClient;
+        }
+
+        Future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
+            auto self = shared_from_this();
+            return async<api::Block>([self, currencyName] () -> api::Block {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
+                if (block.isEmpty()) {
+                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
+                }
+                return block.getValue();
+            });
         }
 
     }

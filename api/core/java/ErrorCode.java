@@ -22,6 +22,8 @@ public enum ErrorCode {
     ACCOUNT_ALREADY_EXISTS,
     ACCOUNT_NOT_FOUND,
     MISSING_DERIVATION,
+    /** Block error */
+    BLOCK_NOT_FOUND,
     /** User land errors */
     CANCELLED_BY_USER,
     UNSUPPORTED_CURRENCY,

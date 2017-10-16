@@ -7,6 +7,7 @@
 @class LGEventBus;
 @class LGLogger;
 @class LGPreferences;
+@protocol LGBlockCallback;
 @protocol LGCurrencyCallback;
 @protocol LGCurrencyListCallback;
 @protocol LGI32Callback;
@@ -40,6 +41,9 @@
 
 - (void)getCurrency:(nonnull NSString *)name
            callback:(nullable id<LGCurrencyCallback>)callback;
+
+- (void)getLastBlock:(nonnull NSString *)currencyName
+            callback:(nullable id<LGBlockCallback>)callback;
 
 - (nullable LGEventBus *)getEventBus;
 

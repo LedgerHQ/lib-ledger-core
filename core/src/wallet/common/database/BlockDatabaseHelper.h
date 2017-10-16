@@ -34,6 +34,8 @@
 #include <wallet/common/Block.h>
 #include <string>
 #include <soci.h>
+#include <api/Block.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,6 +45,7 @@ namespace ledger {
             static std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
             static bool putBlock(soci::session& sql, const Block& block);
             static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
+            static Option<api::Block> getLastBlock(soci::session& sql, const std::string& currencyName);
         };
     }
 }

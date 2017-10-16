@@ -47,6 +47,8 @@
 #include <api/AccountCreationInfoCallback.hpp>
 #include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
 #include <api/AccountCallback.hpp>
+#include <api/Block.hpp>
+#include <api/BlockCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -80,6 +82,9 @@ namespace ledger {
             Future<int32_t> getNextAccountIndex();
             Future<int32_t> getAccountCount();
             void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
+
+            void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
+            Future<api::Block> getLastBlock();
 
             template <typename T>
             std::shared_ptr<T> asInstanceOf() {

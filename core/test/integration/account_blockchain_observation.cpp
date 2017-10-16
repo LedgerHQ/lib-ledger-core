@@ -87,3 +87,30 @@ TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
     account->startBlockchainObservation();
     dispatcher->waitUntilStopped();
 }
+
+TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+        if (event->getCode() == api::EventCode::NEW_BLOCK) {
+            try {
+                auto height = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT).value_or(0);
+                auto hash = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_HASH).value_or("");
+                auto block = wait(pool->getLastBlock("bitcoin"));
+                EXPECT_EQ(height, block.height);
+                EXPECT_EQ(hash, block.hash);
+            } catch (const std::exception& ex) {
+                fmt::print("{}", ex.what());
+                FAIL();
+            }
+            dispatcher->stop();
+        }
+    });
+    ws->setOnConnectCallback([&] () {
+        ws->push(NOTIF_WITH_BLOCK);
+    });
+    account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    account->startBlockchainObservation();
+    dispatcher->waitUntilStopped();
+}

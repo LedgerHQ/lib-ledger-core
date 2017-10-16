@@ -4,6 +4,7 @@
 #include "Account.hpp"  // my header
 #include "Amount.hpp"
 #include "AmountCallback.hpp"
+#include "BlockCallback.hpp"
 #include "EventBus.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
@@ -191,6 +192,15 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
         auto r = ref->isObservingBlockchain();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        ref->getLastBlock(::djinni_generated::BlockCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1computeFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jint j_priority, jobject j_recipients, jobject j_data, jobject j_callback)

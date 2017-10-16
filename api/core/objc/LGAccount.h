@@ -9,6 +9,7 @@
 @class LGOperationQuery;
 @class LGPreferences;
 @protocol LGAmountCallback;
+@protocol LGBlockCallback;
 @protocol LGStringListCallback;
 
 /**
@@ -67,6 +68,8 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
 - (void)stopBlockchainObservation;
 
 - (BOOL)isObservingBlockchain;
+
+- (void)getLastBlock:(nullable id<LGBlockCallback>)callback;
 
 - (void)computeFees:(nullable LGAmount *)amount
            priority:(int32_t)priority

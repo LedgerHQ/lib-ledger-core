@@ -14,6 +14,7 @@ class AccountCallback;
 class AccountCreationInfoCallback;
 class AccountListCallback;
 class BitcoinLikeWallet;
+class BlockCallback;
 class EventBus;
 class ExtendedKeyAccountCreationInfoCallback;
 class I32Callback;
@@ -66,6 +67,8 @@ public:
     virtual bool isInstanceOfRippleLikeWallet() = 0;
 
     virtual WalletType getWalletType() = 0;
+
+    virtual void getLastBlock(const std::shared_ptr<BlockCallback> & callback) = 0;
 
     virtual void getAccountCreationInfo(int32_t accountIndex, const std::shared_ptr<AccountCreationInfoCallback> & callback) = 0;
 

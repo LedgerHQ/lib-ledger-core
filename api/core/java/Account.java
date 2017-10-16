@@ -70,6 +70,8 @@ public abstract class Account {
 
     public abstract boolean isObservingBlockchain();
 
+    public abstract void getLastBlock(BlockCallback callback);
+
     public abstract void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
 
     private static final class CppProxy extends Account
@@ -230,6 +232,14 @@ public abstract class Account {
             return native_isObservingBlockchain(this.nativeRef);
         }
         private native boolean native_isObservingBlockchain(long _nativeRef);
+
+        @Override
+        public void getLastBlock(BlockCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getLastBlock(this.nativeRef, callback);
+        }
+        private native void native_getLastBlock(long _nativeRef, BlockCallback callback);
 
         @Override
         public void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback)

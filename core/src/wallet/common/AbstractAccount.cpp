@@ -34,6 +34,7 @@
 #include <api/StringListCallback.hpp>
 #include <api/AmountCallback.hpp>
 #include <events/Event.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -177,6 +178,17 @@ namespace ledger {
                 self->_events.push_back(std::move(event));
             });
         }
+
+        Future<api::Block> AbstractAccount::getLastBlock() {
+            auto self = shared_from_this();
+            return  getWallet()->getLastBlock();
+        }
+
+        void AbstractAccount::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
+            getLastBlock().callback(getMainExecutionContext(), callback);
+        }
+
+
 
     }
 }

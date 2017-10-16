@@ -7,6 +7,7 @@
 #include "AccountCreationInfoCallback.hpp"
 #include "AccountListCallback.hpp"
 #include "BitcoinLikeWallet.hpp"
+#include "BlockCallback.hpp"
 #include "Currency.hpp"
 #include "EventBus.hpp"
 #include "ExtendedKeyAccountCreationInfo.hpp"
@@ -199,6 +200,15 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getW
         auto r = ref->getWalletType();
         return ::djinni::release(::djinni_generated::WalletType::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        ref->getLastBlock(::djinni_generated::BlockCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)

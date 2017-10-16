@@ -37,6 +37,7 @@
 #include "AbstractAccount.hpp"
 #include <api/AccountListCallback.hpp>
 #include <async/algorithm.h>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -278,6 +279,21 @@ namespace ledger {
             if (!pool)
                 throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Wallet pool was released");
             return pool;
+        }
+
+        Future<api::Block> AbstractWallet::getLastBlock() {
+            auto self = shared_from_this();
+            return async<api::Block>([self] () -> api::Block {
+                soci::session sql(self->getDatabase()->getPool());
+                auto block = BlockDatabaseHelper::getLastBlock(sql, self->getCurrency().name);
+                if (block.isEmpty())
+                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "No block for this currency");
+                return block.getValue();
+            });
+        }
+
+        void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
+            getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
     }

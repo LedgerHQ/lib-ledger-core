@@ -65,6 +65,9 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
+            void
+            getLastBlock(const std::string &currencyName, const std::shared_ptr<api::BlockCallback> &callback) override;
+
             ~WalletPoolApi();
 
         private:

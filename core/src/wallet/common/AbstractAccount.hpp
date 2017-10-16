@@ -37,6 +37,8 @@
 #include <async/Future.hpp>
 #include <wallet/common/Amount.h>
 #include <events/EventPublisher.hpp>
+#include <api/Block.hpp>
+#include <api/BlockCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,6 +62,9 @@ namespace ledger {
             virtual std::shared_ptr<AbstractWallet> getWallet() const;
             virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
+
+            void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
+            Future<api::Block> getLastBlock();
 
             void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
             virtual FuturePtr<Amount> getBalance() = 0;

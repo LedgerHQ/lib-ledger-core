@@ -214,7 +214,6 @@ namespace ledger {
                         break;
                 }
                 conn->api->onError(api::ErrorCode::HTTP_ERROR, message.toStdString());
-                close(conn.get());
             }
         }
     }

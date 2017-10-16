@@ -13,6 +13,7 @@
 @protocol LGAccountCallback;
 @protocol LGAccountCreationInfoCallback;
 @protocol LGAccountListCallback;
+@protocol LGBlockCallback;
 @protocol LGExtendedKeyAccountCreationInfoCallback;
 @protocol LGI32Callback;
 
@@ -60,6 +61,8 @@
 - (BOOL)isInstanceOfRippleLikeWallet;
 
 - (LGWalletType)getWalletType;
+
+- (void)getLastBlock:(nullable id<LGBlockCallback>)callback;
 
 - (void)getAccountCreationInfo:(int32_t)accountIndex
                       callback:(nullable id<LGAccountCreationInfoCallback>)callback;

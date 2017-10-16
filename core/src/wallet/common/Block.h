@@ -33,6 +33,7 @@
 
 #include <chrono>
 #include <string>
+#include <api/Block.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,6 +45,7 @@ namespace ledger {
 
             Block() {};
             std::string getUid() const;
+            api::Block toApiBlock() const;
         };
     }
 }

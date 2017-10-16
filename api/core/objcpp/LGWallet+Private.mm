@@ -11,6 +11,7 @@
 #import "LGAccountCreationInfoCallback+Private.h"
 #import "LGAccountListCallback+Private.h"
 #import "LGBitcoinLikeWallet+Private.h"
+#import "LGBlockCallback+Private.h"
 #import "LGCurrency+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGExtendedKeyAccountCreationInfo+Private.h"
@@ -161,6 +162,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
         return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getLastBlock:(nullable id<LGBlockCallback>)callback {
+    try {
+        _cppRefHandle.get()->getLastBlock(::djinni_generated::BlockCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

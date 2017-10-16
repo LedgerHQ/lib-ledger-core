@@ -32,6 +32,14 @@ TrustIndicator = interface +c {
     getOrigin(): string;
 }
 
+Block = record {
+    hash: string;
+    uid: string;
+    time: date;
+    currencyName: string;
+    height: i64;
+}
+
 Operation = interface +c {
     getUid(): string;
     getAccountIndex(): i32;
@@ -168,7 +176,7 @@ Account = interface +c {
     startBlockchainObservation();
     stopBlockchainObservation();
     isObservingBlockchain(): bool;
-
+    getLastBlock(callback: Callback<Block>);
     computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }
 
@@ -197,7 +205,7 @@ Wallet = interface +c {
     isInstanceOfEthereumLikeWallet(): bool;
     isInstanceOfRippleLikeWallet(): bool;
     getWalletType(): WalletType;
-
+    getLastBlock(callback: Callback<Block>);
     getAccountCreationInfo(accountIndex: i32, callback: Callback<AccountCreationInfo>);
     getExtendedKeyAccountCreationInfo(accountIndex: i32, callback: Callback<ExtendedKeyAccountCreationInfo>);
     getNextAccountCreationInfo(callback: Callback<AccountCreationInfo>);

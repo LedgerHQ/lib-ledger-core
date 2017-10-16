@@ -6,6 +6,7 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGBlockCallback+Private.h"
 #import "LGCurrency+Private.h"
 #import "LGCurrencyCallback+Private.h"
 #import "LGCurrencyListCallback+Private.h"
@@ -108,6 +109,14 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         _cppRefHandle.get()->getCurrency(::djinni::String::toCpp(name),
                                          ::djinni_generated::CurrencyCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getLastBlock:(nonnull NSString *)currencyName
+            callback:(nullable id<LGBlockCallback>)callback {
+    try {
+        _cppRefHandle.get()->getLastBlock(::djinni::String::toCpp(currencyName),
+                                          ::djinni_generated::BlockCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
