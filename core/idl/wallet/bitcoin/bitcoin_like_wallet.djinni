@@ -51,9 +51,42 @@ BitcoinLikeOperation = interface +c {
     getTransaction(): BitcoinLikeTransaction;
 }
 
+BitcoinLikeTransactionRequest = record {
+    utxo: list<BitcoinLikeOutput>;
+    outputs: list<BitcoinLikeOutput>;
+    baseFees: optional<Amount>;
+    totalFees: optional<Amount>;
+    lockTime: optional<i32>;
+
+}
+
+BitcoinLikePreparedTransaction = record {
+    version: i32;
+    inputs: list<BitcoinLikeOutput>;
+    paths: list<string>;
+    outputs: list<BitcoinLikeOutput>;
+    lockTime: i32;
+}
+
+BitcoinLikeHelper = interface +c {
+    static addressToOutput(address: string, amount: Amount): BitcoinLikeOutput;
+    static serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): binary;
+    static parseTransaction(transaction: binary): BitcoinLikeTransaction;
+}
+
+BitcoinLikePickingStrategy = enum {
+    deep_outputs_first;
+    optimize_size;
+    merge_outputs;
+}
+
 BitcoinLikeAccount = interface +c {
     getUTXO(from: i32, to: i32, callback: ListCallback<BitcoinLikeOutput>);
     getUTXOCount(callback: Callback<i32>);
+    pickUTXO(baseFees: Amount, outputs: list<BitcoinLikeOutput>, strategy: BitcoinLikePickingStrategy, callback: Callback<BitcoinLikeTransactionRequest>);
+    estimateFees(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikeTransactionRequest>);
+    prepareTransaction(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikePreparedTransaction>);
+    broadcastTransaction(transaction: binary, callback: Callback<string>);
 }
 
 

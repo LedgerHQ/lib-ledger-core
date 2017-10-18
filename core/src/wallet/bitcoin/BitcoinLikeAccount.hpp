@@ -42,6 +42,9 @@
 #include <api/AmountCallback.hpp>
 #include <api/OperationListCallback.hpp>
 #include <api/BitcoinLikeOutput.hpp>
+#include <api/BitcoinLikePickingStrategy.hpp>
+#include <api/BitcoinLikeTransactionRequest.hpp>
+#include <api/BitcoinLikePreparedTransaction.hpp>
 
 namespace ledger {
     namespace core {
@@ -107,6 +110,32 @@ namespace ledger {
             Future<int32_t> getUTXOCount();
 
             Future<std::vector<std::string>> getFreshPublicAddresses() override;
+
+            void pickUTXO(
+                    const std::shared_ptr<Amount> & baseFees,
+                    const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> & outputs,
+                    api::BitcoinLikePickingStrategy strategy,
+                    const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> & callback
+            ) override;
+
+            Future<api::BitcoinLikeTransactionRequest> pickUTXO(
+                    const std::shared_ptr<api::Amount>& baseFees,
+                    const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& outputs,
+                    api::BitcoinLikePickingStrategy strategy
+            );
+
+            void estimateFees(const api::BitcoinLikeTransactionRequest &request,
+                              const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> &callback) override;
+            Future<api::BitcoinLikeTransactionRequest> estimateFees(const api::BitcoinLikeTransactionRequest& request);
+
+            void prepareTransaction(const api::BitcoinLikeTransactionRequest &utxo,
+                                    const std::shared_ptr<api::BitcoinLikePreparedTransactionCallback> &callback) override;
+            Future<api::BitcoinLikeTransactionRequest> prepareTransaction(const api::BitcoinLikeTransactionRequest& request);
+
+
+            void broadcastTransaction(const std::vector<uint8_t> &transaction,
+                                      const std::shared_ptr<api::StringCallback> &callback) override;
+            Future<std::string> broadcastTransaction(const std::vector<uint8_t>& transaction);
 
         protected:
             bool checkIfWalletIsEmpty();

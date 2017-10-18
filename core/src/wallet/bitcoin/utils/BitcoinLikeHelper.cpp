@@ -1,13 +1,13 @@
 /*
  *
- * BitcoinLikeAccountDatabaseEntry
+ * BitcoinLikeHelper.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/05/2017.
+ * Created by Pierre Pollastri on 18/10/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,5 +28,27 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabaseEntry.h"
 
+#include <api/BitcoinLikeHelper.hpp>
+
+namespace ledger {
+    namespace core {
+        namespace api {
+
+            std::shared_ptr<BitcoinLikeOutput> BitcoinLikeHelper::addressToOutput(const std::string &address,
+                                                                                  const std::shared_ptr<Amount> &amount) {
+                return nullptr;
+            }
+
+            std::vector<uint8_t> BitcoinLikeHelper::serializeTransaction(
+                    const BitcoinLikePreparedTransaction &preparedTransaction) {
+                return {};
+            }
+
+            std::shared_ptr<BitcoinLikeTransaction> parseTransaction(const std::vector<uint8_t>& transaction) {
+                return nullptr;
+            }
+
+        }
+    }
+}

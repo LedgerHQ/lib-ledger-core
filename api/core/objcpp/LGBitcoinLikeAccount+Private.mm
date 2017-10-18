@@ -6,8 +6,15 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGAmount+Private.h"
+#import "LGBitcoinLikeOutput+Private.h"
 #import "LGBitcoinLikeOutputListCallback+Private.h"
+#import "LGBitcoinLikePickingStrategy+Private.h"
+#import "LGBitcoinLikePreparedTransactionCallback+Private.h"
+#import "LGBitcoinLikeTransactionRequest+Private.h"
+#import "LGBitcoinLikeTransactionRequestCallback+Private.h"
 #import "LGI32Callback+Private.h"
+#import "LGStringCallback+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -45,6 +52,42 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getUTXOCount:(nullable id<LGI32Callback>)callback {
     try {
         _cppRefHandle.get()->getUTXOCount(::djinni_generated::I32Callback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)pickUTXO:(nullable LGAmount *)baseFees
+         outputs:(nonnull NSArray<LGBitcoinLikeOutput *> *)outputs
+        strategy:(LGBitcoinLikePickingStrategy)strategy
+        callback:(nullable id<LGBitcoinLikeTransactionRequestCallback>)callback {
+    try {
+        _cppRefHandle.get()->pickUTXO(::djinni_generated::Amount::toCpp(baseFees),
+                                      ::djinni::List<::djinni_generated::BitcoinLikeOutput>::toCpp(outputs),
+                                      ::djinni::Enum<::ledger::core::api::BitcoinLikePickingStrategy, LGBitcoinLikePickingStrategy>::toCpp(strategy),
+                                      ::djinni_generated::BitcoinLikeTransactionRequestCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)estimateFees:(nonnull LGBitcoinLikeTransactionRequest *)request
+            callback:(nullable id<LGBitcoinLikeTransactionRequestCallback>)callback {
+    try {
+        _cppRefHandle.get()->estimateFees(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(request),
+                                          ::djinni_generated::BitcoinLikeTransactionRequestCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)utxo
+                  callback:(nullable id<LGBitcoinLikePreparedTransactionCallback>)callback {
+    try {
+        _cppRefHandle.get()->prepareTransaction(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(utxo),
+                                                ::djinni_generated::BitcoinLikePreparedTransactionCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)broadcastTransaction:(nonnull NSData *)transaction
+                    callback:(nullable id<LGStringCallback>)callback {
+    try {
+        _cppRefHandle.get()->broadcastTransaction(::djinni::Binary::toCpp(transaction),
+                                                  ::djinni_generated::StringCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
