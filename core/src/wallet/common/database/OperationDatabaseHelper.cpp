@@ -50,7 +50,7 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
         }
 
-        void OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
+        bool OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
             auto count = 0;
             std::string serializedTrust;
             serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
@@ -67,6 +67,8 @@ namespace ledger {
                         , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
+                updateBitcoinOperation(sql, operation, newOperation);
+                return false;
             } else {
                 auto type = api::to_string(operation.type);
                 std::stringstream senders;
@@ -85,8 +87,10 @@ namespace ledger {
                         , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
                         , use(operation.fees), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
+                updateBitcoinOperation(sql, operation, newOperation);
+                return true;
             }
-            updateBitcoinOperation(sql, operation, newOperation);
+
         }
 
         void

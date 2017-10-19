@@ -10,6 +10,9 @@
 
 @interface LGBitcoinLikeHelper : NSObject
 
++ (nullable LGBitcoinLikeOutput *)scriptToOutput:(nonnull NSData *)script
+                                          amount:(nullable LGAmount *)amount;
+
 + (nullable LGBitcoinLikeOutput *)addressToOutput:(nonnull NSString *)address
                                            amount:(nullable LGAmount *)amount;
 

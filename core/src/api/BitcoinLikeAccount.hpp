@@ -32,7 +32,7 @@ public:
 
     virtual void estimateFees(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikeTransactionRequestCallback> & callback) = 0;
 
-    virtual void prepareTransaction(const BitcoinLikeTransactionRequest & utxo, const std::shared_ptr<BitcoinLikePreparedTransactionCallback> & callback) = 0;
+    virtual void prepareTransaction(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikePreparedTransactionCallback> & callback) = 0;
 
     virtual void broadcastTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 };

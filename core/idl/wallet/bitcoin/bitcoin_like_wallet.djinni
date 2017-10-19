@@ -69,6 +69,7 @@ BitcoinLikePreparedTransaction = record {
 }
 
 BitcoinLikeHelper = interface +c {
+    static scriptToOutput(script: binary, amount: Amount): BitcoinLikeOutput;
     static addressToOutput(address: string, amount: Amount): BitcoinLikeOutput;
     static serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): binary;
     static parseTransaction(transaction: binary): BitcoinLikeTransaction;

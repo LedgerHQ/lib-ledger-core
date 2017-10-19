@@ -58,6 +58,25 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
     dispatcher->waitUntilStopped();
 }
 
+TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+        if (event->getCode() == api::EventCode::NEW_OPERATION) {
+            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
+            dispatcher->stop();
+        }
+    });
+    ws->setOnConnectCallback([&] () {
+        ws->push(NOTIF_WITH_TX);
+    });
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    account->startBlockchainObservation();
+    dispatcher->waitUntilStopped();
+}
+
 TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));

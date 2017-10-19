@@ -29,7 +29,7 @@
 - (void)estimateFees:(nonnull LGBitcoinLikeTransactionRequest *)request
             callback:(nullable id<LGBitcoinLikeTransactionRequestCallback>)callback;
 
-- (void)prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)utxo
+- (void)prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)request
                   callback:(nullable id<LGBitcoinLikePreparedTransactionCallback>)callback;
 
 - (void)broadcastTransaction:(nonnull NSData *)transaction

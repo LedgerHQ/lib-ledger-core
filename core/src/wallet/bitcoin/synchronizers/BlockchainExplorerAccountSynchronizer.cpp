@@ -52,7 +52,7 @@ namespace ledger {
         std::shared_ptr<ProgressNotifier<Unit>>
         BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) {
             std::lock_guard<std::mutex> lock(_lock);
-            if (!_notifier) {
+            if (!_currentAccount) {
                 _currentAccount = account;
                 _notifier = std::make_shared<ProgressNotifier<Unit>>();
                 auto self = shared_from_this();
@@ -82,7 +82,7 @@ namespace ledger {
 
         }
 
-        static inline void initializeSavedState(Option<BlockchainExplorerAccountSynchronizationSavedState> &savedState,
+        static void initializeSavedState(Option<BlockchainExplorerAccountSynchronizationSavedState> &savedState,
                                                 int32_t halfBatchSize) {
             if (savedState.hasValue() && savedState.getValue()
                                                    .halfBatchSize != halfBatchSize) {
@@ -113,7 +113,7 @@ namespace ledger {
                     s.blockHeight = block.blockHeight;
                     savedState.getValue().batches.push_back(s);
                 }
-            } else {
+            } else if (savedState.isEmpty()) {
                 savedState = Option<BlockchainExplorerAccountSynchronizationSavedState>(
                         BlockchainExplorerAccountSynchronizationSavedState());
                 savedState.getValue()
@@ -164,6 +164,7 @@ namespace ledger {
                         (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                 buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                              buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
+                self->_currentAccount = nullptr;
                 return unit;
             }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -177,7 +178,7 @@ namespace ledger {
         Future<Unit> BlockchainExplorerAccountSynchronizer::synchronizeBatches(uint32_t currentBatchIndex,
                                                                                std::shared_ptr<BlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy) {
 
-            auto done = (currentBatchIndex >= buddy->savedState.getValue().batches.size());
+            auto done = (currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1);
             if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
                 buddy->savedState.getValue().batches.push_back(BlockchainExplorerAccountSynchronizationBatchSavedState());
             }
@@ -187,7 +188,7 @@ namespace ledger {
             benchmark->start();
             return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) -> Future<Unit> {
                 benchmark->stop();
-                buddy->preferences->editor()->putObject("state", buddy->savedState.getValue())->commit();
+                buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                 if (!done || (done && hadTransactions)) {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
                 }

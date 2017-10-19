@@ -45,6 +45,7 @@
 #include <events/Event.hpp>
 #include <api/BitcoinLikePreparedTransactionCallback.hpp>
 #include <api/BitcoinLikeTransactionRequestCallback.hpp>
+#include <api/StringCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -182,8 +183,8 @@ namespace ledger {
                 operation.amount.assignI64(sentAmount);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
-                emitNewOperationEvent(operation);
+                if (OperationDatabaseHelper::putOperation(sql, operation))
+                    emitNewOperationEvent(operation);
             }
 
             if (accountOutputs.size() > 0) {
@@ -199,8 +200,8 @@ namespace ledger {
                 operation.amount.assignI64(receivedAmount);
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
-                emitNewOperationEvent(operation);
+                if(OperationDatabaseHelper::putOperation(sql, operation))
+                    emitNewOperationEvent(operation);
             }
 
             return result;
@@ -247,6 +248,9 @@ namespace ledger {
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
                 }
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                self->_currentSyncEventBus = nullptr;
+
             });
             return eventPublisher->getEventBus();
         }
@@ -377,7 +381,7 @@ namespace ledger {
             return _observer->isRegistered(getSelf());
         }
 
-        void BitcoinLikeAccount::pickUTXO(const std::shared_ptr<Amount> &baseFees,
+        void BitcoinLikeAccount::pickUTXO(const std::shared_ptr<api::Amount> &baseFees,
                                           const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &outputs,
                                           api::BitcoinLikePickingStrategy strategy,
                                           const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> &callback) {
@@ -408,9 +412,9 @@ namespace ledger {
             prepareTransaction(utxo).callback(getMainExecutionContext(), callback);
         }
 
-        Future<api::BitcoinLikeTransactionRequest>
+        Future<api::BitcoinLikePreparedTransaction>
         BitcoinLikeAccount::prepareTransaction(const api::BitcoinLikeTransactionRequest &request) {
-            Promise<api::BitcoinLikeTransactionRequest> p;
+            Promise<api::BitcoinLikePreparedTransaction> p;
 
             return p.getFuture();
         }

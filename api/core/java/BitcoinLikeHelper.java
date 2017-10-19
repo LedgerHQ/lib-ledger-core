@@ -6,6 +6,8 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeHelper {
+    public static native BitcoinLikeOutput scriptToOutput(byte[] script, Amount amount);
+
     public static native BitcoinLikeOutput addressToOutput(String address, Amount amount);
 
     public static native byte[] serializeTransaction(BitcoinLikePreparedTransaction preparedTransaction);

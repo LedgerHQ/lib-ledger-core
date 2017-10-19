@@ -111,13 +111,7 @@ namespace ledger {
 
             Future<std::vector<std::string>> getFreshPublicAddresses() override;
 
-            void pickUTXO(
-                    const std::shared_ptr<Amount> & baseFees,
-                    const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> & outputs,
-                    api::BitcoinLikePickingStrategy strategy,
-                    const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> & callback
-            ) override;
-
+            void pickUTXO(const std::shared_ptr<api::Amount> & baseFees, const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> & outputs, api::BitcoinLikePickingStrategy strategy, const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> & callback) override;
             Future<api::BitcoinLikeTransactionRequest> pickUTXO(
                     const std::shared_ptr<api::Amount>& baseFees,
                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& outputs,
@@ -130,7 +124,7 @@ namespace ledger {
 
             void prepareTransaction(const api::BitcoinLikeTransactionRequest &utxo,
                                     const std::shared_ptr<api::BitcoinLikePreparedTransactionCallback> &callback) override;
-            Future<api::BitcoinLikeTransactionRequest> prepareTransaction(const api::BitcoinLikeTransactionRequest& request);
+            Future<api::BitcoinLikePreparedTransaction> prepareTransaction(const api::BitcoinLikeTransactionRequest& request);
 
 
             void broadcastTransaction(const std::vector<uint8_t> &transaction,

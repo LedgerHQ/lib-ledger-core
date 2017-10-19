@@ -75,10 +75,10 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)utxo
+- (void)prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)request
                   callback:(nullable id<LGBitcoinLikePreparedTransactionCallback>)callback {
     try {
-        _cppRefHandle.get()->prepareTransaction(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(utxo),
+        _cppRefHandle.get()->prepareTransaction(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(request),
                                                 ::djinni_generated::BitcoinLikePreparedTransactionCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

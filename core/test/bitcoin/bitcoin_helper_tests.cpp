@@ -1,6 +1,6 @@
 /*
  *
- * BitcoinLikeHelper.cpp
+ * bitcoin_helper_tests.cpp
  * ledger-core
  *
  * Created by Pierre Pollastri on 18/10/2017.
@@ -29,26 +29,12 @@
  *
  */
 
+#include <gtest/gtest.h>
 #include <api/BitcoinLikeHelper.hpp>
 
-namespace ledger {
-    namespace core {
-        namespace api {
+using namespace ledger::core::api;
 
-            std::shared_ptr<BitcoinLikeOutput> BitcoinLikeHelper::addressToOutput(const std::string &address,
-                                                                                  const std::shared_ptr<Amount> &amount) {
-                return nullptr;
-            }
+TEST(BitcoinLikeHelper, CreateOutputToAddress) {
 
-            std::vector<uint8_t> BitcoinLikeHelper::serializeTransaction(
-                    const BitcoinLikePreparedTransaction &preparedTransaction) {
-                return {};
-            }
 
-            std::shared_ptr<BitcoinLikeTransaction> parseTransaction(const std::vector<uint8_t>& transaction) {
-                return nullptr;
-            }
-
-        }
-    }
 }

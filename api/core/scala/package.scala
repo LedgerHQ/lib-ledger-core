@@ -504,9 +504,9 @@ package object implicits {
             })
             promise.future
         }
-        def prepareTransaction(utxo: BitcoinLikeTransactionRequest): Future[BitcoinLikePreparedTransaction] = {
+        def prepareTransaction(request: BitcoinLikeTransactionRequest): Future[BitcoinLikePreparedTransaction] = {
             val promise = Promise[BitcoinLikePreparedTransaction]()
-            self.prepareTransaction(utxo, new BitcoinLikePreparedTransactionCallback() {
+            self.prepareTransaction(request, new BitcoinLikePreparedTransactionCallback() {
                 override def onCallback(result: BitcoinLikePreparedTransaction, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))

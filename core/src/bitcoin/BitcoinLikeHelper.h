@@ -1,13 +1,13 @@
 /*
  *
- * OperationDatabaseHelper
+ * BitcoinLikeHelper.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 31/05/2017.
+ * Created by Pierre Pollastri on 18/10/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,29 +28,23 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATIONDATABASEHELPER_H
-#define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
-#include <api/OperationType.hpp>
-#include <wallet/common/Operation.h>
-#include <soci.h>
-#include <string>
+#ifndef LEDGER_CORE_BITCOINLIKEHELPER_H
+#define LEDGER_CORE_BITCOINLIKEHELPER_H
+
+#include <api/BitcoinLikeHelper.hpp>
+#include <bytes/BytesWriter.h>
 
 namespace ledger {
     namespace core {
-        class OperationDatabaseHelper {
+
+        class BitcoinLikeHelper : public api::BitcoinLikeHelper {
         public:
-            static bool putOperation(soci::session& sql, const Operation& operation);
-            static std::string createUid(const std::string& accountUid,
-                                         const std::string& txId,
-                                         const api::OperationType type);
-            static void queryOperations(soci::session& sql, int32_t from, int32_t to,
-                                        bool complete, bool excludeDropped, std::vector<Operation>& out);
-        private:
-            static void updateBitcoinOperation(soci::session& sql, const Operation& operation, bool insert);
+            BitcoinLikeHelper() = delete;
+            ~BitcoinLikeHelper() = delete;
+            void serializeOutput(const api::BitcoinLikeOutput& output, BytesWriter& writer);
         };
     }
 }
 
-
-#endif //LEDGER_CORE_OPERATIONDATABASEHELPER_H
+#endif //LEDGER_CORE_BITCOINLIKEHELPER_H

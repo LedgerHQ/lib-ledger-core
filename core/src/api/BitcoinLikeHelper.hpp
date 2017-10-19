@@ -20,6 +20,8 @@ class BitcoinLikeHelper {
 public:
     virtual ~BitcoinLikeHelper() {}
 
+    static std::shared_ptr<BitcoinLikeOutput> scriptToOutput(const std::vector<uint8_t> & script, const std::shared_ptr<Amount> & amount);
+
     static std::shared_ptr<BitcoinLikeOutput> addressToOutput(const std::string & address, const std::shared_ptr<Amount> & amount);
 
     static std::vector<uint8_t> serializeTransaction(const BitcoinLikePreparedTransaction & preparedTransaction);

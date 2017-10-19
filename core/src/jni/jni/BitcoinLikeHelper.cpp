@@ -23,6 +23,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeHelper_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeHelper_scriptToOutput(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_script, jobject j_amount)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::BitcoinLikeHelper::scriptToOutput(::djinni::Binary::toCpp(jniEnv, j_script),
+                                                                        ::djinni_generated::Amount::toCpp(jniEnv, j_amount));
+        return ::djinni::release(::djinni_generated::BitcoinLikeOutput::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeHelper_addressToOutput(JNIEnv* jniEnv, jobject /*this*/, jstring j_address, jobject j_amount)
 {
     try {

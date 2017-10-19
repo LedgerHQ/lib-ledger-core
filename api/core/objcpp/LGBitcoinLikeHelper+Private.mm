@@ -34,6 +34,15 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
++ (nullable LGBitcoinLikeOutput *)scriptToOutput:(nonnull NSData *)script
+                                          amount:(nullable LGAmount *)amount {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeHelper::scriptToOutput(::djinni::Binary::toCpp(script),
+                                                                                     ::djinni_generated::Amount::toCpp(amount));
+        return ::djinni_generated::BitcoinLikeOutput::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 + (nullable LGBitcoinLikeOutput *)addressToOutput:(nonnull NSString *)address
                                            amount:(nullable LGAmount *)amount {
     try {

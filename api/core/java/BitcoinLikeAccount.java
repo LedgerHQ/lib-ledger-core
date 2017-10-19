@@ -15,7 +15,7 @@ public abstract class BitcoinLikeAccount {
 
     public abstract void estimateFees(BitcoinLikeTransactionRequest request, BitcoinLikeTransactionRequestCallback callback);
 
-    public abstract void prepareTransaction(BitcoinLikeTransactionRequest utxo, BitcoinLikePreparedTransactionCallback callback);
+    public abstract void prepareTransaction(BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback);
 
     public abstract void broadcastTransaction(byte[] transaction, StringCallback callback);
 
@@ -75,12 +75,12 @@ public abstract class BitcoinLikeAccount {
         private native void native_estimateFees(long _nativeRef, BitcoinLikeTransactionRequest request, BitcoinLikeTransactionRequestCallback callback);
 
         @Override
-        public void prepareTransaction(BitcoinLikeTransactionRequest utxo, BitcoinLikePreparedTransactionCallback callback)
+        public void prepareTransaction(BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_prepareTransaction(this.nativeRef, utxo, callback);
+            native_prepareTransaction(this.nativeRef, request, callback);
         }
-        private native void native_prepareTransaction(long _nativeRef, BitcoinLikeTransactionRequest utxo, BitcoinLikePreparedTransactionCallback callback);
+        private native void native_prepareTransaction(long _nativeRef, BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback);
 
         @Override
         public void broadcastTransaction(byte[] transaction, StringCallback callback)
