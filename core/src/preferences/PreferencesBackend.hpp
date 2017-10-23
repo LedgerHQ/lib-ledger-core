@@ -44,6 +44,7 @@
 #include "../utils/optional.hpp"
 #include "Preferences.hpp"
 #include <unordered_map>
+#include <mutex>
 
 namespace ledger {
     namespace core {
