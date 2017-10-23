@@ -32,8 +32,12 @@
 #ifndef LEDGER_CORE_OPCODES_H
 #define LEDGER_CORE_OPCODES_H
 
+#include <string>
+
 namespace ledger {
     namespace core {
+
+        // From bitcoin core sources
 
         enum opcodetype {
             // push value
@@ -180,6 +184,7 @@ namespace ledger {
             OP_INVALIDOPCODE = 0xff,
         };
 
+        std::string GetOpName(opcodetype opcode);
 
     }
 }

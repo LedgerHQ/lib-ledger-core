@@ -81,6 +81,7 @@ namespace ledger {
              * @return A vector of read bytes.
              */
             std::vector<uint8_t> read(unsigned long length);
+            void read(unsigned long length, std::vector<uint8_t>& out);
 
             /**
              * Reads a single byte.

@@ -30,3 +30,16 @@
  */
 
 #include "ScriptParser.h"
+
+namespace ledger {
+    namespace core {
+
+        ScriptParser::ScriptParser(const std::vector<uint8_t> &script) {
+
+        }
+
+        ScriptParser::ScriptParser(BytesReader &reader) {
+
+        }
+    }
+}

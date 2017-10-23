@@ -36,6 +36,8 @@
 #include <vector>
 #include <cstdint>
 #include <bytes/BytesReader.h>
+#include "BitcoinLikeAddress.hpp"
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,8 +47,15 @@ namespace ledger {
             ScriptParser(const std::vector<uint8_t>& script);
             ScriptParser(BytesReader& reader);
 
-        private:
+            bool isP2PKH() const;
+            bool isP2SH() const;
+            bool isP2WP() const;
 
+            Option<BitcoinLikeAddress> getAddress();
+
+
+        private:
+            std::vector<uint8_t> _script;
         };
     }
 }

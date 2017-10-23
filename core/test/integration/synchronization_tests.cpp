@@ -31,6 +31,7 @@
 
 #include <gtest/gtest.h>
 #include "BaseFixture.h"
+#include <set>
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
@@ -41,13 +42,18 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               api::DynamicObject::newInstance()));
+        std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
             pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),
-                                           make_receiver([](const std::shared_ptr<api::Event> &event) {
-                                               fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                                           make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                                               if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                                                   auto uid = event->getPayload()->getString(
+                                                           api::Account::EV_NEW_OP_UID).value();
+                                                   EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                                               }
                                            }));
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),
                                               make_receiver([=](const std::shared_ptr<api::Event> &event) {
