@@ -30,7 +30,7 @@
  */
 
 #include "QtWebSocketClient.h"
-#include "../../cmake-build-debug/include/ledger/core/api/ErrorCode.hpp"
+#include <api/ErrorCode.hpp>
 
 using namespace ledger::core;
 
