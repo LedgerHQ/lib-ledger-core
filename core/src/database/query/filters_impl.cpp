@@ -39,152 +39,152 @@ namespace ledger {
     namespace core {
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::accountEq(const std::string &accountUid) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid);
+            return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::accountNeq(const std::string &accountUid) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "<>", accountUid);
+            return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "<>", accountUid, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateEq(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", "=", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", "=", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateGt(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", ">", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", ">", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateGte(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", ">=", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", ">=", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateNeq(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<>", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<>", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateLt(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::dateLte(const std::chrono::system_clock::time_point &time) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<=", DateUtils::toJSON(time));
+            return std::make_shared<ConditionQueryFilter<std::string>>("date", "<=", DateUtils::toJSON(time), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::trustEq(TrustLevel trust) {
             auto string = api::to_string(trust);
             auto base64 = cereal::base64::encode((const unsigned char *)string.data(), string.size());
-            return std::make_shared<ConditionQueryFilter<std::string>>("trust", "LIKE", fmt::format("%{}%", base64));
+            return std::make_shared<ConditionQueryFilter<std::string>>("trust", "LIKE", fmt::format("%{}%", base64), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::trustNeq(TrustLevel trust) {
             auto string = api::to_string(trust);
             auto base64 = cereal::base64::encode((const unsigned char *)string.data(), string.size());
-            return std::make_shared<ConditionQueryFilter<std::string>>("trust", "NOT LIKE", fmt::format("%{}%", base64));
+            return std::make_shared<ConditionQueryFilter<std::string>>("trust", "NOT LIKE", fmt::format("%{}%", base64), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::containsSender(const std::string &senderAddress) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("senders", "LIKE", fmt::format("%{}%", senderAddress));
+            return std::make_shared<ConditionQueryFilter<std::string>>("senders", "LIKE", fmt::format("%{}%", senderAddress), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::containsRecipient(const std::string &recipientAddress) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("recipients", "LIKE", fmt::format("%{}%", recipientAddress));
+            return std::make_shared<ConditionQueryFilter<std::string>>("recipients", "LIKE", fmt::format("%{}%", recipientAddress), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::currencyEq(const std::string &currencyName) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("currency_name", "=", currencyName);
+            return std::make_shared<ConditionQueryFilter<std::string>>("currency_name", "=", currencyName, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationUidEq(const std::string &operationUid) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "=", operationUid);
+            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "=", operationUid, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationUidNeq(const std::string &operationUid) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "<>", operationUid);
+            return std::make_shared<ConditionQueryFilter<std::string>>("uid", "<>", operationUid, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesEq(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesNeq(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<>", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<>", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesGt(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesLt(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesGte(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", ">=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::feesLte(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("fees", "<=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountEq(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountNeq(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<>", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<>", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountGt(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountGte(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", ">=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountLt(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::amountLte(const std::shared_ptr<Amount> &amount) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<=", amount->toLong());
+            return std::make_shared<ConditionQueryFilter<int64_t>>("amount", "<=", amount->toLong(), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightEq(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "=", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "=", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightNeq(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<>", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<>", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLt(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLte(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<=", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<=", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGt(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGte(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">=", blockHeight);
+            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">=", blockHeight, "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightIsNull() {
-            return std::make_shared<PlainTextConditionQueryFilter>("block_height IS NULL");
+            return std::make_shared<PlainTextConditionQueryFilter>("o.block_height IS NULL");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeEq(api::OperationType type) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("type", "=", api::to_string(type));
+            return std::make_shared<ConditionQueryFilter<std::string>>("type", "=", api::to_string(type), "o");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeNeq(api::
                                                                              OperationType type) {
-            return std::make_shared<ConditionQueryFilter<std::string>>("type", "<>", api::to_string(type));
+            return std::make_shared<ConditionQueryFilter<std::string>>("type", "<>", api::to_string(type), "o");
         }
 
     }

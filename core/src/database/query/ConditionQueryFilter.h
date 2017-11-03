@@ -40,14 +40,20 @@ namespace ledger {
         template <typename T>
         class ConditionQueryFilter : public QueryFilter {
         public:
-            ConditionQueryFilter(const std::string fieldName, const std::string symbol, const T& value) {
+            ConditionQueryFilter(const std::string& fieldName, const std::string& symbol, const T& value,
+                                 const std::string& prefix) {
                 _fieldName = std::move(fieldName);
                 _symbol = std::move(symbol);
                 _value = value;
+                if (!prefix.empty()) {
+                    _prefixedName = fmt::format("{}.{}", prefix, _fieldName);
+                } else {
+                    _prefixedName = _fieldName;
+                }
             };
 
             void toString(std::stringstream &ss) const override {
-                ss << _fieldName << " " << _symbol << " :" << _fieldName;
+                ss << _prefixedName << " " << _symbol << " :" << _fieldName;
                 if (!isTail()) {
                     switch (getOperatorForNextFilter()) {
                         case QueryFilterOperator::OP_AND :
@@ -77,6 +83,7 @@ namespace ledger {
         private:
             std::string _fieldName;
             std::string _symbol;
+            std::string _prefixedName;
             T _value;
         };
 
