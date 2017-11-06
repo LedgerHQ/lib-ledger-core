@@ -76,7 +76,8 @@ namespace ledger {
                 "name VARCHAR(255),"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "configuration TEXT NOT NULL"
+                "configuration TEXT NOT NULL, "
+                "created_at TEXT NOT NULL"
             ")";
 
             // Abstract account table
@@ -84,7 +85,8 @@ namespace ledger {
             sql << "CREATE TABLE accounts("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "idx INTEGER NOT NULL,"
-                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE"
+                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE, "
+                "created_at TEXT NOT NULL"
             ")";
 
             // Abstract block table

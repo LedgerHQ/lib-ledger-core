@@ -262,11 +262,19 @@ namespace ledger {
         }
 
         Future<std::vector<std::shared_ptr<api::Account>>> AbstractWallet::getAccounts(int32_t offset, int32_t count) {
-            std::vector<Future<std::shared_ptr<api::Account>> > accounts;
-            for (auto index = 0; index < count; index++) {
-                accounts.push_back(getAccount(index + offset));
-            }
-            return core::async::sequence(getMainExecutionContext(), accounts);
+            auto self = shared_from_this();
+            return async<Unit>([=] () -> Unit {
+                return unit;
+            }).flatMap<std::vector<std::shared_ptr<api::Account>>>(getContext(), [=] (const Unit&) -> Future<std::vector<std::shared_ptr<api::Account>>> {
+                std::vector<Future<std::shared_ptr<api::Account>> > accounts;
+                std::list<int32_t> indexes;
+                soci::session sql(getDatabase()->getPool());
+                AccountDatabaseHelper::getAccountsIndexes(sql, getWalletUid(), offset, count, indexes);
+                for (auto& index : indexes) {
+                    accounts.push_back(getAccount(index));
+                }
+                return core::async::sequence(getMainExecutionContext(), accounts);
+            });
         }
 
         void AbstractWallet::addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount> &account) {

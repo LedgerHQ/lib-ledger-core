@@ -91,3 +91,14 @@ TEST_F(WalletTests, GetAccountAfterPoolReopen) {
         EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], addr);
     }
 }
+
+TEST_F(WalletTests, CreateNonContiguousAccount) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto account = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
+    auto fetchedAccount = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(6)));
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+    auto accountCount = wait(wallet->getAccountCount());
+    auto accounts = wait(wallet->getAccounts(0, accountCount));
+    EXPECT_EQ(wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+}

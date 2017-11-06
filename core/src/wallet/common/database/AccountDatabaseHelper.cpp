@@ -31,6 +31,9 @@
 #include "AccountDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
 #include <fmt/format.h>
+#include <list>
+#include <database/soci-date.h>
+#include <utils/DateUtils.hpp>
 
 using namespace soci;
 
@@ -43,7 +46,8 @@ namespace ledger {
 
         void AccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid, int32_t index) {
             auto uid = createAccountUid(walletUid, index);
-            sql << "INSERT INTO accounts VALUES(:uid, :idx, :wallet_uid)", use(uid), use(index), use(walletUid);
+            sql << "INSERT INTO accounts VALUES(:uid, :idx, :wallet_uid, :now)", use(uid), use(index), use(walletUid),
+                    use(DateUtils::now());
         }
 
         void AccountDatabaseHelper::removeAccount(soci::session &sql, const std::string &walletUid, int32_t index) {
@@ -64,6 +68,8 @@ namespace ledger {
             return count;
         }
 
+
+
         int32_t AccountDatabaseHelper::computeNextAccountIndex(soci::session &sql, const std::string &walletUid) {
             //TODO: Enhance performance for huge wallets by reducing the select range.
             int32_t currentIndex = 0;
@@ -76,6 +82,19 @@ namespace ledger {
                 }
             }
             return currentIndex;
+        }
+
+        std::__1::list<int32_t>&
+        AccountDatabaseHelper::getAccountsIndexes(soci::session &sql, const std::string &walletUid, int32_t from,
+                                                  int32_t count, std::list<int32_t>& out) {
+            rowset<int32_t> rows = (sql.prepare <<
+                    "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY created_at LIMIT :count OFFSET :off"
+                    "",
+                    use(walletUid), use(count), use(from));
+            for (auto& idx : rows) {
+                out.push_back(idx);
+            }
+            return out;
         }
 
 

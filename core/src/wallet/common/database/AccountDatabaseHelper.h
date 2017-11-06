@@ -33,6 +33,7 @@
 
 #include <string>
 #include <soci.h>
+#include <list>
 namespace ledger {
     namespace core {
 
@@ -44,6 +45,7 @@ namespace ledger {
             static void removeAccount(soci::session& sql, const std::string& walletUid, int32_t index);
             static std::string createAccountUid(const std::string& walletUid, int32_t accountIndex);
             static int32_t computeNextAccountIndex(soci::session& sql, const std::string& walletUid);
+            static std::list<int32_t>& getAccountsIndexes(soci::session& sql, const std::string& walletUid, int32_t from, int32_t count, std::list<int32_t>& out);
         };
     }
 }

@@ -30,6 +30,8 @@
  */
 #include "PoolDatabaseHelper.hpp"
 #include <utils/DateUtils.hpp>
+#include <database/soci-date.h>
+#include <utils/DateUtils.hpp>
 
 using namespace soci;
 
@@ -41,8 +43,9 @@ namespace ledger {
             auto serializeConfig = wallet.configuration->serialize();
             auto configuration = hex::toString(serializeConfig);
             if (!walletExists(sql, wallet)) {
-                sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration)",
-                        use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration);
+                sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration, :now)",
+                        use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration),
+                        use(DateUtils::now());
             } else {
                 sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
                 into(configuration), use(wallet.uid);
