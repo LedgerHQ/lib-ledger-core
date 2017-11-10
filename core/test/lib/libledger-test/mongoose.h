@@ -20,6 +20,7 @@
  * license, as set out in <https://www.cesanta.com/license>.
  */
 
+#define OPENSSL_NO_KRB5
 #ifndef CS_MONGOOSE_SRC_COMMON_H_
 #define CS_MONGOOSE_SRC_COMMON_H_
 

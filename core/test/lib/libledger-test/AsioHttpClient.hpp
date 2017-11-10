@@ -31,6 +31,7 @@
 #ifndef LEDGER_CORE_ASIOHTTPCLIENT_HPP
 #define LEDGER_CORE_ASIOHTTPCLIENT_HPP
 
+#define OPENSSL_NO_KRB5
 #include <asio.hpp>
 #include <asio/ssl.hpp>
 #include <ledger/core/api/HttpClient.hpp>

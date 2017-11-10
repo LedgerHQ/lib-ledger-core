@@ -84,7 +84,7 @@ namespace ledger {
             return currentIndex;
         }
 
-        std::__1::list<int32_t>&
+        std::list<int32_t>&
         AccountDatabaseHelper::getAccountsIndexes(soci::session &sql, const std::string &walletUid, int32_t from,
                                                   int32_t count, std::list<int32_t>& out) {
             rowset<int32_t> rows = (sql.prepare <<
