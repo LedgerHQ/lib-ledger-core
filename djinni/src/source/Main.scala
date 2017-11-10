@@ -81,6 +81,7 @@ object Main {
     var yamlOutFolder: Option[File] = None
     var yamlOutFile: Option[String] = None
     var yamlPrefix: String = ""
+    var traceMethodsCalls = false
 
     // Swift variables
     var swiftTypePrefix = ""
@@ -218,6 +219,10 @@ object Main {
         .text("The output folder for NodeJS files (Generator disabled if unspecified)")
       opt[String]("node-package").valueName("<package-name>").foreach(nodePackage = _)
         .text("The javascript object hierarchy (inserted in root object by default)")
+
+      // Debug opt
+      opt[Boolean]("trace").valueName("<enable>").foreach(x => traceMethodsCalls = x)
+          .text("If true, CPP calls will be printed on standard output")
 
       note("\nIdentifier styles (ex: \"FooBar\", \"fooBar\", \"foo_bar\", \"FOO_BAR\", \"m_fooBar\")\n")
       identStyle("ident-java-enum",      c => { javaIdentStyle = javaIdentStyle.copy(enum = c) })
@@ -362,7 +367,8 @@ object Main {
           swiftTypePrefix,
           swiftUmbrellaHeaderFilename,
           nodeOutFolder,
-          nodePackage
+          nodePackage,
+          traceMethodsCalls
         )
 
 

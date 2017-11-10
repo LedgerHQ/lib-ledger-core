@@ -23,6 +23,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_bitcoin(JNIEnv* jniEnv, 
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::Networks::bitcoin\n");
         auto r = ::ledger::core::api::Networks::bitcoin();
         return ::djinni::release(::djinni_generated::BitcoinLikeNetworkParameters::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

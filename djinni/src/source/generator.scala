@@ -86,7 +86,9 @@ package object generatorTools {
                    swiftTypePrefix: String,
                    swiftUmbrellaHeaderFilename: String,
                    nodeOutFolder: Option[File],
-                   nodePackage: String)
+                   nodePackage: String,
+                   traceMethodCalls: Boolean
+                 )
 
   def preComma(s: String) = {
     if (s.isEmpty) s else ", " + s

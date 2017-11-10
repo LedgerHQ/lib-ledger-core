@@ -27,6 +27,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventPublisher>(nativeRef);
+        fmt::print("::ledger::core::api::EventPublisher::getEventBus\n");
         auto r = ref->getEventBus();
         return ::djinni::release(::djinni_generated::EventBus::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -37,6 +38,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventPublisher>(nativeRef);
+        fmt::print("::ledger::core::api::EventPublisher::post\n");
         ref->post(::djinni_generated::Event::toCpp(jniEnv, j_event));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -46,6 +48,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventPublisher>(nativeRef);
+        fmt::print("::ledger::core::api::EventPublisher::postSticky\n");
         ref->postSticky(::djinni_generated::Event::toCpp(jniEnv, j_event),
                         ::djinni::I32::toCpp(jniEnv, j_tag));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -56,6 +59,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventPublisher>(nativeRef);
+        fmt::print("::ledger::core::api::EventPublisher::relay\n");
         ref->relay(::djinni_generated::EventBus::toCpp(jniEnv, j_bus));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -64,6 +68,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_newInstance(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::EventPublisher::newInstance\n");
         auto r = ::ledger::core::api::EventPublisher::newInstance(::djinni_generated::ExecutionContext::toCpp(jniEnv, j_context));
         return ::djinni::release(::djinni_generated::EventPublisher::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

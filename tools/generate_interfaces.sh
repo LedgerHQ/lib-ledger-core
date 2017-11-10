@@ -2,7 +2,12 @@
 # Generate library API with djinni
 
 echo "Generating core API"
-
+if [[ $# -gt 0 ]] ; then
+    trace="true";
+else
+    trace="false";
+fi
+echo "Enable debug compilation " $trace
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
 rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
@@ -19,7 +24,8 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --swift-umbrella-header ledger-core.h \
                     --objc-type-prefix LG \
                     --objc-out api/core/objc \
-                    --objcpp-out api/core/objcpp
+                    --objcpp-out api/core/objcpp \
+                    --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
 cp ./djinni/support-lib/*.hpp $CORE_CPP_JNI_DIRECTORY

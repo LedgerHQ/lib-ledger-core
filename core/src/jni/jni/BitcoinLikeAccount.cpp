@@ -33,6 +33,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::getUTXO\n");
         ref->getUTXO(::djinni::I32::toCpp(jniEnv, j_from),
                      ::djinni::I32::toCpp(jniEnv, j_to),
                      ::djinni_generated::BitcoinLikeOutputListCallback::toCpp(jniEnv, j_callback));
@@ -44,6 +45,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::getUTXOCount\n");
         ref->getUTXOCount(::djinni_generated::I32Callback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -53,6 +55,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::pickUTXO\n");
         ref->pickUTXO(::djinni_generated::Amount::toCpp(jniEnv, j_baseFees),
                       ::djinni::List<::djinni_generated::BitcoinLikeOutput>::toCpp(jniEnv, j_outputs),
                       ::djinni_generated::BitcoinLikePickingStrategy::toCpp(jniEnv, j_strategy),
@@ -65,6 +68,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::estimateFees\n");
         ref->estimateFees(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(jniEnv, j_request),
                           ::djinni_generated::BitcoinLikeTransactionRequestCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -75,6 +79,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::prepareTransaction\n");
         ref->prepareTransaction(::djinni_generated::BitcoinLikeTransactionRequest::toCpp(jniEnv, j_request),
                                 ::djinni_generated::BitcoinLikePreparedTransactionCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -85,6 +90,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeAccount::broadcastTransaction\n");
         ref->broadcastTransaction(::djinni::Binary::toCpp(jniEnv, j_transaction),
                                   ::djinni_generated::StringCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )

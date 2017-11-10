@@ -26,6 +26,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_0002
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeExtendedPublicKey>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeExtendedPublicKey::derive\n");
         auto r = ref->derive(::djinni::String::toCpp(jniEnv, j_path));
         return ::djinni::release(::djinni_generated::BitcoinLikeAddress::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -36,6 +37,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_0002
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeExtendedPublicKey>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeExtendedPublicKey::toBase58\n");
         auto r = ref->toBase58();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -46,6 +48,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_0002
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeExtendedPublicKey>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeExtendedPublicKey::getRootPath\n");
         auto r = ref->getRootPath();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -55,6 +58,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_from
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::BitcoinLikeExtendedPublicKey::fromBase58\n");
         auto r = ::ledger::core::api::BitcoinLikeExtendedPublicKey::fromBase58(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(jniEnv, j_params),
                                                                                ::djinni::String::toCpp(jniEnv, j_address),
                                                                                ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, j_path));

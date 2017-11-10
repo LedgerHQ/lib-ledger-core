@@ -26,6 +26,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getCo
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Event>(nativeRef);
+        fmt::print("::ledger::core::api::Event::getCode\n");
         auto r = ref->getCode();
         return ::djinni::release(::djinni_generated::EventCode::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -36,6 +37,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getPa
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Event>(nativeRef);
+        fmt::print("::ledger::core::api::Event::getPayload\n");
         auto r = ref->getPayload();
         return ::djinni::release(::djinni_generated::DynamicObject::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -46,6 +48,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1isSt
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Event>(nativeRef);
+        fmt::print("::ledger::core::api::Event::isSticky\n");
         auto r = ref->isSticky();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -56,6 +59,7 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getStick
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Event>(nativeRef);
+        fmt::print("::ledger::core::api::Event::getStickyTag\n");
         auto r = ref->getStickyTag();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -65,6 +69,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_newInstance(JNIEnv* jniEnv,
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::Event::newInstance\n");
         auto r = ::ledger::core::api::Event::newInstance(::djinni_generated::EventCode::toCpp(jniEnv, j_code),
                                                          ::djinni_generated::DynamicObject::toCpp(jniEnv, j_payload));
         return ::djinni::release(::djinni_generated::Event::fromCpp(jniEnv, r));

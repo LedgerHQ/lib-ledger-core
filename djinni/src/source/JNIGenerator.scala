@@ -42,6 +42,8 @@ class JNIGenerator(spec: Spec) extends Generator(spec) {
     val cppPrefix = cppPrefixOverride.getOrElse(spec.jniIncludeCppPrefix)
     jniHpp.add("#include " + q(cppPrefix + spec.cppFileIdentStyle(name) + "." + spec.cppHeaderExt))
     jniHpp.add("#include " + q(spec.jniBaseLibIncludePrefix + "djinni_support.hpp"))
+    if (spec.traceMethodCalls)
+      jniHpp.add("#include <fmt/format.h>")
     spec.cppNnHeader match {
       case Some(nnHdr) => jniHpp.add("#include " + nnHdr)
       case _ =>
@@ -359,6 +361,8 @@ class JNIGenerator(spec: Spec) extends Generator(spec) {
               }
             })
             val methodName = idCpp.method(m.ident)
+            if (spec.traceMethodCalls)
+              w.wl(s"""fmt::print("$cppSelf::$methodName\\n");""")
             val ret = m.ret.fold("")(r => "auto r = ")
             val call = if (m.static) s"$cppSelf::$methodName(" else s"ref->$methodName("
             writeAlignedCall(w, ret + call, m.params, ")", p => jniMarshal.toCpp(p.ty, "j_" + idJava.local(p.ident)))

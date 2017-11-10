@@ -24,6 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1d(JNIEn
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Logger>(nativeRef);
+        fmt::print("::ledger::core::api::Logger::d\n");
         ref->d(::djinni::String::toCpp(jniEnv, j_tag),
                ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -34,6 +35,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1i(JNIEn
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Logger>(nativeRef);
+        fmt::print("::ledger::core::api::Logger::i\n");
         ref->i(::djinni::String::toCpp(jniEnv, j_tag),
                ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -44,6 +46,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1e(JNIEn
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Logger>(nativeRef);
+        fmt::print("::ledger::core::api::Logger::e\n");
         ref->e(::djinni::String::toCpp(jniEnv, j_tag),
                ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -54,6 +57,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1w(JNIEn
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Logger>(nativeRef);
+        fmt::print("::ledger::core::api::Logger::w\n");
         ref->w(::djinni::String::toCpp(jniEnv, j_tag),
                ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -64,6 +68,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1c(JNIEn
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Logger>(nativeRef);
+        fmt::print("::ledger::core::api::Logger::c\n");
         ref->c(::djinni::String::toCpp(jniEnv, j_tag),
                ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )

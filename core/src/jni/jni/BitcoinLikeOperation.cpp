@@ -24,6 +24,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeOperation_00024CppProx
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeOperation>(nativeRef);
+        fmt::print("::ledger::core::api::BitcoinLikeOperation::getTransaction\n");
         auto r = ref->getTransaction();
         return ::djinni::release(::djinni_generated::BitcoinLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

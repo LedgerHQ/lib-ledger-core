@@ -27,6 +27,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
+        fmt::print("::ledger::core::api::HttpRequest::getMethod\n");
         auto r = ref->getMethod();
         return ::djinni::release(::djinni_generated::HttpMethod::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -37,6 +38,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
+        fmt::print("::ledger::core::api::HttpRequest::getHeaders\n");
         auto r = ref->getHeaders();
         return ::djinni::release(::djinni::Map<::djinni::String, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -47,6 +49,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
+        fmt::print("::ledger::core::api::HttpRequest::getBody\n");
         auto r = ref->getBody();
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -57,6 +60,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
+        fmt::print("::ledger::core::api::HttpRequest::getUrl\n");
         auto r = ref->getUrl();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -67,6 +71,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1co
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
+        fmt::print("::ledger::core::api::HttpRequest::complete\n");
         ref->complete(::djinni::Optional<std::experimental::optional, ::djinni_generated::HttpUrlConnection>::toCpp(jniEnv, j_response),
                       ::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::toCpp(jniEnv, j_error));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )

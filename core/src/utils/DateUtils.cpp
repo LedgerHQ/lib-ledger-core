@@ -59,7 +59,7 @@ std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const st
         time.tm_hour = hours;
         time.tm_min = minutes;
         time.tm_sec = seconds;
-        return std::chrono::system_clock::from_time_t(timegm(&time));
+        return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(timegm(&time)));
     } else {
         throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot convert {} to date", str);
     }
@@ -73,5 +73,5 @@ std::string ledger::core::DateUtils::toJSON(const std::chrono::system_clock::tim
 }
 
 std::chrono::system_clock::time_point ledger::core::DateUtils::now() {
-    return std::chrono::system_clock::now();
+    return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
 }

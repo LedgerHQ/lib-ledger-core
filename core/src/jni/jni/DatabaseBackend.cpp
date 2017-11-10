@@ -24,6 +24,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setUsername\n");
         auto r = ref->setUsername(::djinni::String::toCpp(jniEnv, j_username));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -34,6 +35,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setPassword\n");
         auto r = ref->setPassword(::djinni::String::toCpp(jniEnv, j_pwd));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -44,6 +46,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setHost\n");
         auto r = ref->setHost(::djinni::String::toCpp(jniEnv, j_host));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -54,6 +57,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setHostAddr\n");
         auto r = ref->setHostAddr(::djinni::String::toCpp(jniEnv, j_hostAddr));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -64,6 +68,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setPort\n");
         auto r = ref->setPort(::djinni::String::toCpp(jniEnv, j_port));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -74,6 +79,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setOptions\n");
         auto r = ref->setOptions(::djinni::String::toCpp(jniEnv, j_opts));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -84,6 +90,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setSslMode\n");
         auto r = ref->setSslMode(::djinni::String::toCpp(jniEnv, j_mode));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -94,6 +101,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setKerberosName\n");
         auto r = ref->setKerberosName(::djinni::String::toCpp(jniEnv, j_name));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -104,6 +112,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        fmt::print("::ledger::core::api::DatabaseBackend::setService\n");
         auto r = ref->setService(::djinni::String::toCpp(jniEnv, j_service));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -113,6 +122,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getSqlite3Backend
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::DatabaseBackend::getSqlite3Backend\n");
         auto r = ::ledger::core::api::DatabaseBackend::getSqlite3Backend();
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -122,6 +132,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBack
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::DatabaseBackend::getPostgreSQLBackend\n");
         auto r = ::ledger::core::api::DatabaseBackend::getPostgreSQLBackend();
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

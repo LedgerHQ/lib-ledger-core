@@ -24,6 +24,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Secp256k1>(nativeRef);
+        fmt::print("::ledger::core::api::Secp256k1::computePubKey\n");
         auto r = ref->computePubKey(::djinni::Binary::toCpp(jniEnv, j_privKey),
                                     ::djinni::Bool::toCpp(jniEnv, j_compress));
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
@@ -35,6 +36,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Secp256k1>(nativeRef);
+        fmt::print("::ledger::core::api::Secp256k1::sign\n");
         auto r = ref->sign(::djinni::Binary::toCpp(jniEnv, j_privKey),
                            ::djinni::Binary::toCpp(jniEnv, j_data));
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
@@ -46,6 +48,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Secp256k1>(nativeRef);
+        fmt::print("::ledger::core::api::Secp256k1::verify\n");
         auto r = ref->verify(::djinni::Binary::toCpp(jniEnv, j_data),
                              ::djinni::Binary::toCpp(jniEnv, j_signature),
                              ::djinni::Binary::toCpp(jniEnv, j_pubKey));
@@ -57,6 +60,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Secp256k1_newInstance(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::Secp256k1::newInstance\n");
         auto r = ::ledger::core::api::Secp256k1::newInstance();
         return ::djinni::release(::djinni_generated::Secp256k1::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

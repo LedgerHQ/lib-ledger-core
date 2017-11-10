@@ -23,6 +23,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_LedgerCore_getStringVersion(JNIEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::LedgerCore::getStringVersion\n");
         auto r = ::ledger::core::api::LedgerCore::getStringVersion();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -32,6 +33,7 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_LedgerCore_getIntVersion(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        fmt::print("::ledger::core::api::LedgerCore::getIntVersion\n");
         auto r = ::ledger::core::api::LedgerCore::getIntVersion();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
