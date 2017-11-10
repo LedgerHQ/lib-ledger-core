@@ -45,6 +45,12 @@ public:
         wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     }
 
+    void TearDown() override {
+        BaseFixture::TearDown();
+        pool = nullptr;
+        wallet = nullptr;
+    }
+
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
 };

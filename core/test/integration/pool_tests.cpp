@@ -167,5 +167,7 @@ TEST_F(WalletPoolTest, CreateAndGetWallet) {
         auto pool = newDefaultPool();
         auto getWallet = wait(pool->getWallet("my_wallet"));
         EXPECT_TRUE(getWallet->getName() == "my_wallet");
+        auto wallets = wait(pool->getWallets(0, 1));
+        EXPECT_TRUE(wallets.front()->getName() == "my_wallet");
     }
 }

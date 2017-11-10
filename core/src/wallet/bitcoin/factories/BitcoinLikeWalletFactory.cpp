@@ -75,7 +75,9 @@ namespace ledger {
                 auto engine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
                                            .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
-                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([pool, explorer]() {
+                    std::weak_ptr<WalletPool> p = pool;
+                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
+                        auto pool = p.lock();
                         return std::make_shared<BlockchainExplorerAccountSynchronizer>(pool, explorer);
                     });
                 }

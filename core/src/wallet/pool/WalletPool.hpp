@@ -111,6 +111,7 @@ namespace ledger {
                                                            const std::shared_ptr<api::DatabaseBackend> &backend,
                                                            const std::shared_ptr<api::DynamicObject>& configuration);
 
+            ~WalletPool();
 
         private:
             WalletPool(const std::string &name,

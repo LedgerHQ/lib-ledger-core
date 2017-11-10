@@ -61,6 +61,7 @@ namespace ledger {
         int64_t PoolDatabaseHelper::getWallets(soci::session &sql, const WalletPool &pool, int64_t offset,
                                                std::vector<WalletDatabaseEntry> &wallets) {
             rowset<row> rows = (sql.prepare <<  "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool "
+                                                "ORDER BY created_at "
                                                 "LIMIT :count OFFSET :offset", use(pool.getName()), use(wallets.size()), use(offset)
             );
             int64_t index = 0;

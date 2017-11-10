@@ -115,5 +115,8 @@ namespace ledger {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
 
+        PreferencesBackend::~PreferencesBackend() {
+        }
+
     }
 }

@@ -73,7 +73,7 @@ TEST_F(WalletTests, GetTooManyMultipleAccounts) {
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     for (auto i = 0; i < 5; i++)
         createBitcoinLikeAccount(wallet, i, P2PKH_MEDIUM_XPUB_INFO);
-    EXPECT_THROW(wait(wallet->getAccounts(0, 10)), Exception);
+    EXPECT_EQ(wait(wallet->getAccounts(0, 10)).size(), 5);
 }
 
 TEST_F(WalletTests, GetAccountAfterPoolReopen) {
@@ -101,4 +101,19 @@ TEST_F(WalletTests, CreateNonContiguousAccount) {
     auto accountCount = wait(wallet->getAccountCount());
     auto accounts = wait(wallet->getAccounts(0, accountCount));
     EXPECT_EQ(wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+}
+
+
+TEST_F(WalletTests, CreateNonContiguousAccountBis) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto account1 = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    account1->startBlockchainObservation();
+    auto account2 = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
+    account2->startBlockchainObservation();
+    auto account3 = createBitcoinLikeAccount(wallet, 4, P2PKH_MEDIUM_XPUB_INFO);
+    account3->startBlockchainObservation();
+    account1->stopBlockchainObservation();
+    account2->stopBlockchainObservation();
+    account3->stopBlockchainObservation();
 }

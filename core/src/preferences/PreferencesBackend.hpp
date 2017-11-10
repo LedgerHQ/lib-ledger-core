@@ -70,7 +70,7 @@ namespace ledger {
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
             optional<std::string> get(const std::vector<uint8_t>& key) const;
             void commit(const std::vector<PreferencesChange>& changes);
-
+            ~PreferencesBackend();
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;

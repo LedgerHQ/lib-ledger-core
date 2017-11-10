@@ -400,5 +400,8 @@ namespace ledger {
             });
         }
 
+        WalletPool::~WalletPool() {
+        }
+
     }
 }
