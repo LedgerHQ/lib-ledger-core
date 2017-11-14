@@ -29,53 +29,110 @@
  *
  */
 #include "SQLite3Backend.hpp"
+#include <soci-sqlite3.h>
+#include <utils/Exception.hpp>
+
+using namespace soci;
 
 std::shared_ptr<ledger::core::api::DatabaseBackend>
 ledger::core::SQLite3Backend::setUsername(const std::string &username) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setPassword(const std::string &pwd) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setHost(const std::string &host) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend>
 ledger::core::SQLite3Backend::setHostAddr(const std::string &hostAddr) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setPort(const std::string &port) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setOptions(const std::string &opts) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setSslMode(const std::string &mode) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend>
 ledger::core::SQLite3Backend::setKerberosName(const std::string &name) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend>
 ledger::core::SQLite3Backend::setService(const std::string &service) {
-    return nullptr;
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
 }
-
-#include <soci-sqlite3.h>
-
-using namespace soci;
 
 void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
                                         const std::string &dbName, soci::session &session) {
     session.open(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
     session << "PRAGMA foreign_keys = ON";
+}
+
+std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::setConnectionPoolSize(int32_t size) {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getUsername() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getPassword() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getHost() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getHostAddr() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getPort() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getOptions() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getSslMode() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getKerberosName() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+std::string ledger::core::SQLite3Backend::getService() {
+    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "This operation is not supported by this backend");
+}
+
+int32_t ledger::core::SQLite3Backend::getConnectionPoolSize() {
+    return 1;
+}
+
+std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::enableQueryLogging(bool enable) {
+    _logging = enable;
+    return shared_from_this();
+}
+
+bool ledger::core::SQLite3Backend::isLoggingEnabled() {
+    return _logging;
+}
+
+ledger::core::SQLite3Backend::SQLite3Backend() {
+    _logging = false;
 }

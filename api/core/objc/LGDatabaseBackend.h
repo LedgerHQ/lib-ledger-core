@@ -25,6 +25,32 @@
 
 - (nullable LGDatabaseBackend *)setService:(nonnull NSString *)service;
 
+- (nullable LGDatabaseBackend *)setConnectionPoolSize:(int32_t)size;
+
+- (nullable LGDatabaseBackend *)enableQueryLogging:(BOOL)enable;
+
+- (nonnull NSString *)getUsername;
+
+- (nonnull NSString *)getPassword;
+
+- (nonnull NSString *)getHost;
+
+- (nonnull NSString *)getHostAddr;
+
+- (nonnull NSString *)getPort;
+
+- (nonnull NSString *)getOptions;
+
+- (nonnull NSString *)getSslMode;
+
+- (nonnull NSString *)getKerberosName;
+
+- (nonnull NSString *)getService;
+
+- (int32_t)getConnectionPoolSize;
+
+- (BOOL)isLoggingEnabled;
+
 + (nullable LGDatabaseBackend *)getSqlite3Backend;
 
 + (nullable LGDatabaseBackend *)getPostgreSQLBackend;

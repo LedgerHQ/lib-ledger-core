@@ -25,7 +25,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WebSocketConnection>(nativeRef);
-        fmt::print("::ledger::core::api::WebSocketConnection::onConnect\n");
         ref->onConnect(::djinni::I32::toCpp(jniEnv, j_connectionId));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -35,7 +34,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WebSocketConnection>(nativeRef);
-        fmt::print("::ledger::core::api::WebSocketConnection::onClose\n");
         ref->onClose();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -45,7 +43,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WebSocketConnection>(nativeRef);
-        fmt::print("::ledger::core::api::WebSocketConnection::onMessage\n");
         ref->onMessage(::djinni::String::toCpp(jniEnv, j_data));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -55,7 +52,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WebSocketConnection>(nativeRef);
-        fmt::print("::ledger::core::api::WebSocketConnection::onError\n");
         ref->onError(::djinni_generated::ErrorCode::toCpp(jniEnv, j_code),
                      ::djinni::String::toCpp(jniEnv, j_message));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -66,7 +62,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WebSocketConnection>(nativeRef);
-        fmt::print("::ledger::core::api::WebSocketConnection::getConnectionId\n");
         auto r = ref->getConnectionId();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

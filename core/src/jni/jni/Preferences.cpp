@@ -25,7 +25,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getString\n");
         auto r = ref->getString(::djinni::String::toCpp(jniEnv, j_key),
                                 ::djinni::String::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
@@ -37,7 +36,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1ge
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getInt\n");
         auto r = ref->getInt(::djinni::String::toCpp(jniEnv, j_key),
                              ::djinni::I32::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
@@ -49,7 +47,6 @@ CJNIEXPORT jlong JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getLong\n");
         auto r = ref->getLong(::djinni::String::toCpp(jniEnv, j_key),
                               ::djinni::I64::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::I64::fromCpp(jniEnv, r));
@@ -61,7 +58,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getBoolean\n");
         auto r = ref->getBoolean(::djinni::String::toCpp(jniEnv, j_key),
                                  ::djinni::Bool::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
@@ -73,7 +69,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getStringArray\n");
         auto r = ref->getStringArray(::djinni::String::toCpp(jniEnv, j_key),
                                      ::djinni::List<::djinni::String>::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
@@ -85,7 +80,6 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Preferences_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::getData\n");
         auto r = ref->getData(::djinni::String::toCpp(jniEnv, j_key),
                               ::djinni::Binary::toCpp(jniEnv, j_fallbackValue));
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
@@ -97,7 +91,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::contains\n");
         auto r = ref->contains(::djinni::String::toCpp(jniEnv, j_key));
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -108,7 +101,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Preferences>(nativeRef);
-        fmt::print("::ledger::core::api::Preferences::edit\n");
         auto r = ref->edit();
         return ::djinni::release(::djinni_generated::PreferencesEditor::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

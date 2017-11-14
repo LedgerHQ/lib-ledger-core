@@ -33,9 +33,6 @@
 
 namespace ledger {
     namespace core {
-
-        const int DatabaseSessionPool::POOL_SIZE = 24;
-
         FuturePtr<DatabaseSessionPool>
         DatabaseSessionPool::getSessionPool(const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<DatabaseBackend>& backend,
@@ -44,7 +41,7 @@ namespace ledger {
                                             const std::string& dbName) {
             return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger] () {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName, POOL_SIZE
+                    backend, resolver, logger, dbName
                 ));
 
                 return pool;
@@ -77,14 +74,15 @@ namespace ledger {
         DatabaseSessionPool::DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
                                                  const std::shared_ptr<api::PathResolver> &resolver,
                                                  const std::shared_ptr<spdlog::logger>& logger,
-                                                 const std::string &dbName, int poolSize) : _pool((size_t) poolSize),
+                                                 const std::string &dbName) : _pool((size_t) backend->getConnectionPoolSize()),
             _buffer("SQL", logger)
         {
-            if (logger != nullptr && false) {
+            if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
                 _logger = nullptr;
             }
+            auto poolSize = backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
                 backend->init(resolver, dbName, session);

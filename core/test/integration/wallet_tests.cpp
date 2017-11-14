@@ -117,3 +117,37 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
     account2->stopBlockchainObservation();
     account3->stopBlockchainObservation();
 }
+
+TEST_F(WalletTests, CreateAccountBug) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto list = [pool, this] () -> Future<Unit> {
+        return pool->getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(dispatcher->getMainExecutionContext(), [pool] (const int64_t& count) -> Future<std::vector<std::shared_ptr<AbstractWallet>>> {
+            return pool->getWallets(0, count);
+        }).flatMap<Unit>(dispatcher->getMainExecutionContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) -> Future<Unit> {
+            return Future<Unit>::successful(unit);
+        });
+    };
+    std::function<void (int)> loop;
+    loop = [&loop, &wallet, this, list] (int index) {
+        if (index >= 250) {
+            dispatcher->stop();
+            return ;
+        }
+        auto info = P2PKH_MEDIUM_XPUB_INFO;
+        info.index = index;
+        wallet->newAccountWithExtendedKeyInfo(info).onComplete(dispatcher->getMainExecutionContext(), [&loop, index, list, this] (const TryPtr<api::Account>& res) {
+            list().onComplete(dispatcher->getMainExecutionContext(), [res, &loop, list, index] (const Try<Unit>&) {
+                if (res.isSuccess()) {
+                    res.getValue()->synchronize();
+                    loop(index + 1);
+                } else {
+                    fmt::print("Failure {}\n", res.getFailure().getMessage());
+                    loop(index);
+                }
+            });
+        });
+    };
+    loop(0);
+    dispatcher->waitUntilStopped();
+}

@@ -219,11 +219,11 @@ namespace ledger {
                         insertionBenchmark->start();
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
-                        sql.begin();
+                        soci::transaction tr(sql);
                         for (const auto& tx : bulk->transactions) {
                             buddy->account->putTransaction(sql, tx);
                         }
-                        sql.commit();
+                        tr.commit();
                         buddy->account->emitEventsNow();
                         // Get the last block
                         if (bulk->transactions.size() > 0) {

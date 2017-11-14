@@ -6,7 +6,6 @@
 
 #include "../../api/Networks.hpp"
 #include "djinni_support.hpp"
-#include <fmt/format.h>
 
 namespace djinni_generated {
 

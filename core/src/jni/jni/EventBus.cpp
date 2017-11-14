@@ -25,7 +25,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventBus_00024CppProxy_native_1subsc
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventBus>(nativeRef);
-        fmt::print("::ledger::core::api::EventBus::subscribe\n");
         ref->subscribe(::djinni_generated::ExecutionContext::toCpp(jniEnv, j_context),
                        ::djinni_generated::EventReceiver::toCpp(jniEnv, j_receiver));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -36,7 +35,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EventBus_00024CppProxy_native_1unsub
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EventBus>(nativeRef);
-        fmt::print("::ledger::core::api::EventBus::unsubscribe\n");
         ref->unsubscribe(::djinni_generated::EventReceiver::toCpp(jniEnv, j_receiver));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }

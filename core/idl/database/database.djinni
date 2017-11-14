@@ -10,6 +10,19 @@ DatabaseBackend = interface +c {
     setSslMode(mode: string): DatabaseBackend;
     setKerberosName(name: string): DatabaseBackend;
     setService(service: string): DatabaseBackend;
+    setConnectionPoolSize(size: i32): DatabaseBackend;
+    enableQueryLogging(enable: bool): DatabaseBackend;
+    getUsername(): string;
+    getPassword(): string;
+    getHost(): string;
+    getHostAddr(): string;
+    getPort(): string;
+    getOptions(): string;
+    getSslMode(): string;
+    getKerberosName(): string;
+    getService(): string;
+    getConnectionPoolSize(): i32;
+    isLoggingEnabled(): bool;
 
     static getSqlite3Backend(): DatabaseBackend;
     static getPostgreSQLBackend(): DatabaseBackend;

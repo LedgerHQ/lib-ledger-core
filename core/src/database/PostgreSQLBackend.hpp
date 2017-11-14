@@ -47,6 +47,32 @@ namespace ledger {
             virtual std::shared_ptr<api::DatabaseBackend> setKerberosName(const std::string &name) override;
             virtual std::shared_ptr<api::DatabaseBackend> setService(const std::string &service) override;
 
+            std::shared_ptr<api::DatabaseBackend> setConnectionPoolSize(int32_t size) override;
+
+            std::shared_ptr<api::DatabaseBackend> enableQueryLogging(bool enable) override;
+
+            std::string getUsername() override;
+
+            std::string getPassword() override;
+
+            std::string getHost() override;
+
+            std::string getHostAddr() override;
+
+            std::string getPort() override;
+
+            std::string getOptions() override;
+
+            std::string getSslMode() override;
+
+            std::string getKerberosName() override;
+
+            std::string getService() override;
+
+            int32_t getConnectionPoolSize() override;
+
+            bool isLoggingEnabled() override;
+
             void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
                       soci::session &session) override;
         };

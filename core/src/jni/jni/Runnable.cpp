@@ -23,7 +23,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Runnable_00024CppProxy_native_1run(J
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Runnable>(nativeRef);
-        fmt::print("::ledger::core::api::Runnable::run\n");
         ref->run();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }

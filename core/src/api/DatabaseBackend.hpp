@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_DATABASEBACKEND_HPP
 #define DJINNI_GENERATED_DATABASEBACKEND_HPP
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -30,6 +31,32 @@ public:
     virtual std::shared_ptr<DatabaseBackend> setKerberosName(const std::string & name) = 0;
 
     virtual std::shared_ptr<DatabaseBackend> setService(const std::string & service) = 0;
+
+    virtual std::shared_ptr<DatabaseBackend> setConnectionPoolSize(int32_t size) = 0;
+
+    virtual std::shared_ptr<DatabaseBackend> enableQueryLogging(bool enable) = 0;
+
+    virtual std::string getUsername() = 0;
+
+    virtual std::string getPassword() = 0;
+
+    virtual std::string getHost() = 0;
+
+    virtual std::string getHostAddr() = 0;
+
+    virtual std::string getPort() = 0;
+
+    virtual std::string getOptions() = 0;
+
+    virtual std::string getSslMode() = 0;
+
+    virtual std::string getKerberosName() = 0;
+
+    virtual std::string getService() = 0;
+
+    virtual int32_t getConnectionPoolSize() = 0;
+
+    virtual bool isLoggingEnabled() = 0;
 
     static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
 

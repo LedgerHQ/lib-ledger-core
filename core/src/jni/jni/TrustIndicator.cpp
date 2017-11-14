@@ -25,7 +25,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TrustIndicator>(nativeRef);
-        fmt::print("::ledger::core::api::TrustIndicator::getTrustWeight\n");
         auto r = ref->getTrustWeight();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -36,7 +35,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TrustIndicator>(nativeRef);
-        fmt::print("::ledger::core::api::TrustIndicator::getTrustLevel\n");
         auto r = ref->getTrustLevel();
         return ::djinni::release(::djinni_generated::TrustLevel::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -47,7 +45,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TrustIndicator>(nativeRef);
-        fmt::print("::ledger::core::api::TrustIndicator::getConflictingOperationUids\n");
         auto r = ref->getConflictingOperationUids();
         return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -58,7 +55,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TrustIndicator>(nativeRef);
-        fmt::print("::ledger::core::api::TrustIndicator::getOrigin\n");
         auto r = ref->getOrigin();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

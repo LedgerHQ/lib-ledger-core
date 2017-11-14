@@ -26,7 +26,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_accountEq(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::accountEq\n");
         auto r = ::ledger::core::api::QueryFilter::accountEq(::djinni::String::toCpp(jniEnv, j_accountUid));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -36,7 +35,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_accountNeq(JNIEnv* jn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::accountNeq\n");
         auto r = ::ledger::core::api::QueryFilter::accountNeq(::djinni::String::toCpp(jniEnv, j_accountUid));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -46,7 +44,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateLte(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateLte\n");
         auto r = ::ledger::core::api::QueryFilter::dateLte(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -56,7 +53,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateLt(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateLt\n");
         auto r = ::ledger::core::api::QueryFilter::dateLt(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -66,7 +62,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateGt(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateGt\n");
         auto r = ::ledger::core::api::QueryFilter::dateGt(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -76,7 +71,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateGte(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateGte\n");
         auto r = ::ledger::core::api::QueryFilter::dateGte(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -86,7 +80,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateEq(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateEq\n");
         auto r = ::ledger::core::api::QueryFilter::dateEq(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -96,7 +89,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateNeq(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::dateNeq\n");
         auto r = ::ledger::core::api::QueryFilter::dateNeq(::djinni::Date::toCpp(jniEnv, j_time));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -106,7 +98,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_containsRecipient(JNI
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::containsRecipient\n");
         auto r = ::ledger::core::api::QueryFilter::containsRecipient(::djinni::String::toCpp(jniEnv, j_recipientAddress));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -116,7 +107,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_containsSender(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::containsSender\n");
         auto r = ::ledger::core::api::QueryFilter::containsSender(::djinni::String::toCpp(jniEnv, j_senderAddress));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -126,7 +116,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_currencyEq(JNIEnv* jn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::currencyEq\n");
         auto r = ::ledger::core::api::QueryFilter::currencyEq(::djinni::String::toCpp(jniEnv, j_currencyName));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -136,7 +125,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationUidEq(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::operationUidEq\n");
         auto r = ::ledger::core::api::QueryFilter::operationUidEq(::djinni::String::toCpp(jniEnv, j_operationUid));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -146,7 +134,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationUidNeq(JNIEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::operationUidNeq\n");
         auto r = ::ledger::core::api::QueryFilter::operationUidNeq(::djinni::String::toCpp(jniEnv, j_operationUid));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -156,7 +143,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_trustEq(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::trustEq\n");
         auto r = ::ledger::core::api::QueryFilter::trustEq(::djinni_generated::TrustLevel::toCpp(jniEnv, j_trust));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -166,7 +152,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_trustNeq(JNIEnv* jniE
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::trustNeq\n");
         auto r = ::ledger::core::api::QueryFilter::trustNeq(::djinni_generated::TrustLevel::toCpp(jniEnv, j_trust));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -176,7 +161,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesEq(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesEq\n");
         auto r = ::ledger::core::api::QueryFilter::feesEq(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -186,7 +170,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesNeq(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesNeq\n");
         auto r = ::ledger::core::api::QueryFilter::feesNeq(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -196,7 +179,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesGte(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesGte\n");
         auto r = ::ledger::core::api::QueryFilter::feesGte(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -206,7 +188,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesGt(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesGt\n");
         auto r = ::ledger::core::api::QueryFilter::feesGt(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -216,7 +197,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesLte(JNIEnv* jniEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesLte\n");
         auto r = ::ledger::core::api::QueryFilter::feesLte(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -226,7 +206,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesLt(JNIEnv* jniEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::feesLt\n");
         auto r = ::ledger::core::api::QueryFilter::feesLt(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -236,7 +215,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountEq(JNIEnv* jniE
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountEq\n");
         auto r = ::ledger::core::api::QueryFilter::amountEq(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -246,7 +224,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountNeq(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountNeq\n");
         auto r = ::ledger::core::api::QueryFilter::amountNeq(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -256,7 +233,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountGte(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountGte\n");
         auto r = ::ledger::core::api::QueryFilter::amountGte(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -266,7 +242,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountGt(JNIEnv* jniE
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountGt\n");
         auto r = ::ledger::core::api::QueryFilter::amountGt(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -276,7 +251,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountLte(JNIEnv* jni
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountLte\n");
         auto r = ::ledger::core::api::QueryFilter::amountLte(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -286,7 +260,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountLt(JNIEnv* jniE
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::amountLt\n");
         auto r = ::ledger::core::api::QueryFilter::amountLt(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -296,7 +269,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightEq(JNIEnv*
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightEq\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightEq(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -306,7 +278,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightNeq(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightNeq\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightNeq(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -316,7 +287,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightGte(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightGte\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightGte(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -326,7 +296,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightGt(JNIEnv*
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightGt\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightGt(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -336,7 +305,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightLte(JNIEnv
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightLte\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightLte(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -346,7 +314,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightLt(JNIEnv*
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightLt\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightLt(::djinni::I64::toCpp(jniEnv, j_blockHeight));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -356,7 +323,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightIsNull(JNI
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::blockHeightIsNull\n");
         auto r = ::ledger::core::api::QueryFilter::blockHeightIsNull();
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -366,7 +332,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationTypeEq(JNIEn
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::operationTypeEq\n");
         auto r = ::ledger::core::api::QueryFilter::operationTypeEq(::djinni_generated::OperationType::toCpp(jniEnv, j_operationType));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -376,7 +341,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationTypeNeq(JNIE
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::QueryFilter::operationTypeNeq\n");
         auto r = ::ledger::core::api::QueryFilter::operationTypeNeq(::djinni_generated::OperationType::toCpp(jniEnv, j_operationType));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -387,7 +351,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::QueryFilter>(nativeRef);
-        fmt::print("::ledger::core::api::QueryFilter::op_and\n");
         auto r = ref->op_and(::djinni_generated::QueryFilter::toCpp(jniEnv, j_filter));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -398,7 +361,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::QueryFilter>(nativeRef);
-        fmt::print("::ledger::core::api::QueryFilter::op_or\n");
         auto r = ref->op_or(::djinni_generated::QueryFilter::toCpp(jniEnv, j_filter));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -409,7 +371,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::QueryFilter>(nativeRef);
-        fmt::print("::ledger::core::api::QueryFilter::op_and_not\n");
         auto r = ref->op_and_not(::djinni_generated::QueryFilter::toCpp(jniEnv, j_filter));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -420,7 +381,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::QueryFilter>(nativeRef);
-        fmt::print("::ledger::core::api::QueryFilter::op_or_not\n");
         auto r = ref->op_or_not(::djinni_generated::QueryFilter::toCpp(jniEnv, j_filter));
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

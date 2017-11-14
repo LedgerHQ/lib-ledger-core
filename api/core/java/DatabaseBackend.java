@@ -24,6 +24,32 @@ public abstract class DatabaseBackend {
 
     public abstract DatabaseBackend setService(String service);
 
+    public abstract DatabaseBackend setConnectionPoolSize(int size);
+
+    public abstract DatabaseBackend enableQueryLogging(boolean enable);
+
+    public abstract String getUsername();
+
+    public abstract String getPassword();
+
+    public abstract String getHost();
+
+    public abstract String getHostAddr();
+
+    public abstract String getPort();
+
+    public abstract String getOptions();
+
+    public abstract String getSslMode();
+
+    public abstract String getKerberosName();
+
+    public abstract String getService();
+
+    public abstract int getConnectionPoolSize();
+
+    public abstract boolean isLoggingEnabled();
+
     public static native DatabaseBackend getSqlite3Backend();
 
     public static native DatabaseBackend getPostgreSQLBackend();
@@ -122,5 +148,109 @@ public abstract class DatabaseBackend {
             return native_setService(this.nativeRef, service);
         }
         private native DatabaseBackend native_setService(long _nativeRef, String service);
+
+        @Override
+        public DatabaseBackend setConnectionPoolSize(int size)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setConnectionPoolSize(this.nativeRef, size);
+        }
+        private native DatabaseBackend native_setConnectionPoolSize(long _nativeRef, int size);
+
+        @Override
+        public DatabaseBackend enableQueryLogging(boolean enable)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_enableQueryLogging(this.nativeRef, enable);
+        }
+        private native DatabaseBackend native_enableQueryLogging(long _nativeRef, boolean enable);
+
+        @Override
+        public String getUsername()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getUsername(this.nativeRef);
+        }
+        private native String native_getUsername(long _nativeRef);
+
+        @Override
+        public String getPassword()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPassword(this.nativeRef);
+        }
+        private native String native_getPassword(long _nativeRef);
+
+        @Override
+        public String getHost()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getHost(this.nativeRef);
+        }
+        private native String native_getHost(long _nativeRef);
+
+        @Override
+        public String getHostAddr()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getHostAddr(this.nativeRef);
+        }
+        private native String native_getHostAddr(long _nativeRef);
+
+        @Override
+        public String getPort()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPort(this.nativeRef);
+        }
+        private native String native_getPort(long _nativeRef);
+
+        @Override
+        public String getOptions()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getOptions(this.nativeRef);
+        }
+        private native String native_getOptions(long _nativeRef);
+
+        @Override
+        public String getSslMode()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getSslMode(this.nativeRef);
+        }
+        private native String native_getSslMode(long _nativeRef);
+
+        @Override
+        public String getKerberosName()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getKerberosName(this.nativeRef);
+        }
+        private native String native_getKerberosName(long _nativeRef);
+
+        @Override
+        public String getService()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getService(this.nativeRef);
+        }
+        private native String native_getService(long _nativeRef);
+
+        @Override
+        public int getConnectionPoolSize()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getConnectionPoolSize(this.nativeRef);
+        }
+        private native int native_getConnectionPoolSize(long _nativeRef);
+
+        @Override
+        public boolean isLoggingEnabled()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isLoggingEnabled(this.nativeRef);
+        }
+        private native boolean native_isLoggingEnabled(long _nativeRef);
     }
 }

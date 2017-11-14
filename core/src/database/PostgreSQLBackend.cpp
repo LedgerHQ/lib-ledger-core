@@ -77,3 +77,56 @@ void ledger::core::PostgreSQLBackend::init(const std::shared_ptr<ledger::core::a
                                            const std::string &dbName, soci::session &session) {
 
 }
+
+std::shared_ptr<ledger::core::api::DatabaseBackend>
+ledger::core::PostgreSQLBackend::setConnectionPoolSize(int32_t size) {
+    return nullptr;
+}
+
+std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::PostgreSQLBackend::enableQueryLogging(bool enable) {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getUsername() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getPassword() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getHost() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getHostAddr() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getPort() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getOptions() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getSslMode() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getKerberosName() {
+    return nullptr;
+}
+
+std::string ledger::core::PostgreSQLBackend::getService() {
+    return nullptr;
+}
+
+int32_t ledger::core::PostgreSQLBackend::getConnectionPoolSize() {
+    return 0;
+}
+
+bool ledger::core::PostgreSQLBackend::isLoggingEnabled() {
+    return false;
+}

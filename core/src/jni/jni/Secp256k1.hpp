@@ -6,7 +6,6 @@
 
 #include "../../api/Secp256k1.hpp"
 #include "djinni_support.hpp"
-#include <fmt/format.h>
 
 namespace djinni_generated {
 

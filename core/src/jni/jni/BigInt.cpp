@@ -24,7 +24,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1add(
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::add\n");
         auto r = ref->add(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -35,7 +34,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1subt
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::subtract\n");
         auto r = ref->subtract(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -46,7 +44,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1mult
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::multiply\n");
         auto r = ref->multiply(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -57,7 +54,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1divi
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::divide\n");
         auto r = ref->divide(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -68,7 +64,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1divi
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::divideAndRemainder\n");
         auto r = ref->divideAndRemainder(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni::List<::djinni_generated::BigInt>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -79,7 +74,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1pow(
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::pow\n");
         auto r = ref->pow(::djinni::I32::toCpp(jniEnv, j_exponent));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -90,7 +84,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1toDe
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::toDecimalString\n");
         auto r = ref->toDecimalString(::djinni::I32::toCpp(jniEnv, j_precision),
                                       ::djinni::String::toCpp(jniEnv, j_decimalSeparator),
                                       ::djinni::String::toCpp(jniEnv, j_thousandSeparator));
@@ -103,7 +96,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1toSt
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::toString\n");
         auto r = ref->toString(::djinni::I32::toCpp(jniEnv, j_radix));
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -114,7 +106,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1intValu
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::intValue\n");
         auto r = ref->intValue();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -125,7 +116,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1compare
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BigInt>(nativeRef);
-        fmt::print("::ledger::core::api::BigInt::compare\n");
         auto r = ref->compare(::djinni_generated::BigInt::toCpp(jniEnv, j_i));
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -135,7 +125,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromDecimalString(JNIEnv* 
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BigInt::fromDecimalString\n");
         auto r = ::ledger::core::api::BigInt::fromDecimalString(::djinni::String::toCpp(jniEnv, j_s),
                                                                 ::djinni::I32::toCpp(jniEnv, j_precision),
                                                                 ::djinni::String::toCpp(jniEnv, j_decimalSeparator));
@@ -147,7 +136,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromIntegerString(JNIEnv* 
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BigInt::fromIntegerString\n");
         auto r = ::ledger::core::api::BigInt::fromIntegerString(::djinni::String::toCpp(jniEnv, j_s),
                                                                 ::djinni::I32::toCpp(jniEnv, j_radix));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
@@ -158,7 +146,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromLong(JNIEnv* jniEnv, j
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BigInt::fromLong\n");
         auto r = ::ledger::core::api::BigInt::fromLong(::djinni::I64::toCpp(jniEnv, j_l));
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

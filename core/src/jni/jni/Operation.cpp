@@ -30,7 +30,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getUid\n");
         auto r = ref->getUid();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -41,7 +40,6 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getA
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getAccountIndex\n");
         auto r = ref->getAccountIndex();
         return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -52,7 +50,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getOperationType\n");
         auto r = ref->getOperationType();
         return ::djinni::release(::djinni_generated::OperationType::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -63,7 +60,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getDate\n");
         auto r = ref->getDate();
         return ::djinni::release(::djinni::Date::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -74,7 +70,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getSenders\n");
         auto r = ref->getSenders();
         return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -85,7 +80,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getRecipients\n");
         auto r = ref->getRecipients();
         return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -96,7 +90,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getAmount\n");
         auto r = ref->getAmount();
         return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -107,7 +100,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getFees\n");
         auto r = ref->getFees();
         return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::Amount>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -118,7 +110,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getPreferences\n");
         auto r = ref->getPreferences();
         return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -129,7 +120,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getTrust\n");
         auto r = ref->getTrust();
         return ::djinni::release(::djinni_generated::TrustIndicator::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -140,7 +130,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getBlockHeight\n");
         auto r = ref->getBlockHeight();
         return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -151,7 +140,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1a
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::asBitcoinLikeOperation\n");
         auto r = ref->asBitcoinLikeOperation();
         return ::djinni::release(::djinni_generated::BitcoinLikeOperation::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -162,7 +150,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::isInstanceOfBitcoinLikeOperation\n");
         auto r = ref->isInstanceOfBitcoinLikeOperation();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -173,7 +160,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::isInstanceOfEthereumLikeOperation\n");
         auto r = ref->isInstanceOfEthereumLikeOperation();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -184,7 +170,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::isInstanceOfRippleLikeOperation\n");
         auto r = ref->isInstanceOfRippleLikeOperation();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -195,7 +180,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::isComplete\n");
         auto r = ref->isComplete();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -206,7 +190,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
-        fmt::print("::ledger::core::api::Operation::getWalletType\n");
         auto r = ref->getWalletType();
         return ::djinni::release(::djinni_generated::WalletType::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

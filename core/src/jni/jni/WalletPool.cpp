@@ -35,7 +35,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getLogger\n");
         auto r = ref->getLogger();
         return ::djinni::release(::djinni_generated::Logger::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -46,7 +45,6 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getName\n");
         auto r = ref->getName();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -57,7 +55,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getPreferences\n");
         auto r = ref->getPreferences();
         return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -68,7 +65,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getWalletCount\n");
         ref->getWalletCount(::djinni_generated::I32Callback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -78,7 +74,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getWallets\n");
         ref->getWallets(::djinni::I32::toCpp(jniEnv, j_from),
                         ::djinni::I32::toCpp(jniEnv, j_size),
                         ::djinni_generated::WalletListCallback::toCpp(jniEnv, j_callback));
@@ -90,7 +85,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getWallet\n");
         ref->getWallet(::djinni::String::toCpp(jniEnv, j_name),
                        ::djinni_generated::WalletCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -101,7 +95,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1cre
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::createWallet\n");
         ref->createWallet(::djinni::String::toCpp(jniEnv, j_name),
                           ::djinni_generated::Currency::toCpp(jniEnv, j_currency),
                           ::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration),
@@ -114,7 +107,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getCurrencies\n");
         ref->getCurrencies(::djinni_generated::CurrencyListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -124,7 +116,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getCurrency\n");
         ref->getCurrency(::djinni::String::toCpp(jniEnv, j_name),
                          ::djinni_generated::CurrencyCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -135,7 +126,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1get
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getLastBlock\n");
         ref->getLastBlock(::djinni::String::toCpp(jniEnv, j_currencyName),
                           ::djinni_generated::BlockCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
@@ -146,7 +136,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        fmt::print("::ledger::core::api::WalletPool::getEventBus\n");
         auto r = ref->getEventBus();
         return ::djinni::release(::djinni_generated::EventBus::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

@@ -27,7 +27,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeHelper_scriptToOutput(
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BitcoinLikeHelper::scriptToOutput\n");
         auto r = ::ledger::core::api::BitcoinLikeHelper::scriptToOutput(::djinni::Binary::toCpp(jniEnv, j_script),
                                                                         ::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::BitcoinLikeOutput::fromCpp(jniEnv, r));
@@ -38,7 +37,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeHelper_addressToOutput
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BitcoinLikeHelper::addressToOutput\n");
         auto r = ::ledger::core::api::BitcoinLikeHelper::addressToOutput(::djinni::String::toCpp(jniEnv, j_address),
                                                                          ::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::BitcoinLikeOutput::fromCpp(jniEnv, r));
@@ -49,7 +47,6 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeHelper_serializeTra
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BitcoinLikeHelper::serializeTransaction\n");
         auto r = ::ledger::core::api::BitcoinLikeHelper::serializeTransaction(::djinni_generated::BitcoinLikePreparedTransaction::toCpp(jniEnv, j_preparedTransaction));
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -59,7 +56,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeHelper_parseTransactio
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        fmt::print("::ledger::core::api::BitcoinLikeHelper::parseTransaction\n");
         auto r = ::ledger::core::api::BitcoinLikeHelper::parseTransaction(::djinni::Binary::toCpp(jniEnv, j_transaction));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)

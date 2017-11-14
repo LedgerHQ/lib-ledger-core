@@ -44,8 +44,7 @@ namespace ledger {
             DatabaseSessionPool(const std::shared_ptr<DatabaseBackend>& backend,
                                 const std::shared_ptr<api::PathResolver>& resolver,
                                 const std::shared_ptr<spdlog::logger>& logger,
-                                const std::string& dbName,
-                                int poolSize);
+                                const std::string& dbName);
             soci::connection_pool& getPool();
             ~DatabaseSessionPool();
 
@@ -57,7 +56,6 @@ namespace ledger {
                 const std::string& dbName
             );
 
-            static const int POOL_SIZE;
             static const int CURRENT_DATABASE_SCHEME_VERSION = 1;
         private:
             void performDatabaseMigration();

@@ -27,7 +27,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::addOrder\n");
         auto r = ref->addOrder(::djinni_generated::OperationOrderKey::toCpp(jniEnv, j_key),
                                ::djinni::Bool::toCpp(jniEnv, j_descending));
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
@@ -39,7 +38,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::filter\n");
         auto r = ref->filter();
         return ::djinni::release(::djinni_generated::QueryFilter::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -50,7 +48,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::offset\n");
         auto r = ref->offset(::djinni::I64::toCpp(jniEnv, j_from));
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -61,7 +58,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::limit\n");
         auto r = ref->limit(::djinni::I64::toCpp(jniEnv, j_count));
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -72,7 +68,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::complete\n");
         auto r = ref->complete();
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -83,7 +78,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::partial\n");
         auto r = ref->partial();
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
@@ -94,7 +88,6 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        fmt::print("::ledger::core::api::OperationQuery::execute\n");
         ref->execute(::djinni_generated::OperationListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
