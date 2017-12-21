@@ -53,7 +53,7 @@ namespace ledger {
                 input->read((char *)buffer, maxRead);
                 uint32_t read = input->gcount();
 
-                // Create an IV
+                // Create an IVt
                 auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
                 // Encrypt
                 auto encrypted = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));

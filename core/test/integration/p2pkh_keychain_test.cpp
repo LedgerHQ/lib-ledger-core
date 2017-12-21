@@ -42,7 +42,7 @@ public:
     void testP2PKHKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeKeychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
+            dispatcher->getMainExecutionContext(),
             resolver
         );
         auto configuration = std::make_shared<DynamicObject>();
