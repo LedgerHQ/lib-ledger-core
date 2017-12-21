@@ -169,7 +169,7 @@ TEST(Preferences, IterateThroughObjectMembers) {
     dispatcher->getSerialExecutionContext("worker"),
     resolver
     );
-    auto preferences = backend->getPreferences("my_test_preferences");
+    auto preferences = backend->getPreferences("my_test_preferences_array");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
 
     MyClass obj1;

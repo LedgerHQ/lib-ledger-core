@@ -118,8 +118,13 @@ namespace ledger {
         void
         Preferences::iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice &&)> f, Option<std::string> begin) {
             auto start = wrapKey(begin.getValueOr(""));
+            auto startSize = start.size();
             _backend.iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
-                return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())), std::move(value));
+                if (startSize < k.size()) {
+                    return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())),
+                             std::move(value));
+                }
+                return true;
             });
         }
 
