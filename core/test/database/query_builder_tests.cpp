@@ -96,11 +96,11 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
         soci::rowset<soci::row> rows = QueryBuilder()
                 .select("uid")
                 .from("operations")
-                .where(api::QueryFilter::operationUidEq("0fc7d7b13426e218352ee081379a9e2137ce126bc16c7659f2a090be903089e4"))
+                .where(api::QueryFilter::operationUidEq("1770fe39ddeef5ee97ad0ef19c1a26c0350316bb743b3a7d9f93c3fbadf3111e"))
                 .execute(sql);
         auto count = 0;
         for (auto& row : rows) {
-            EXPECT_EQ(row.get<std::string>(0), "0fc7d7b13426e218352ee081379a9e2137ce126bc16c7659f2a090be903089e4");
+            EXPECT_EQ(row.get<std::string>(0), "1770fe39ddeef5ee97ad0ef19c1a26c0350316bb743b3a7d9f93c3fbadf3111e");
             count += 1;
         }
         EXPECT_EQ(count, 1);
