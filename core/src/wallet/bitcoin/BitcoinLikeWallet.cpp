@@ -68,7 +68,7 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         BitcoinLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-            //TODO: Update data structure to be able to do P2SH with mixed HD and Solo keys.
+            // TODO: Update data structure to be able to do P2SH with mixed HD and Solo keys.
             // Right now we only handle Full HD P2SH wallet.
             // For each owner
                 // Get the pair of keys

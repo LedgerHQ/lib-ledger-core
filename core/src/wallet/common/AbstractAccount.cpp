@@ -107,7 +107,6 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
-
             return _wallet.lock();
         }
 

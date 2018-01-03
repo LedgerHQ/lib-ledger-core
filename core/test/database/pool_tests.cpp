@@ -43,19 +43,21 @@ using namespace ledger::qt;
 
 static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "__database_meta__",
+    "pools",
     "currencies",
     "units",
     "wallets",
     "accounts",
     "operations",
+    "blocks",
     "bitcoin_currencies",
-    "bitcoin_blocks",
     "bitcoin_transactions",
     "bitcoin_inputs",
     "bitcoin_outputs",
     "bitcoin_operations",
     "bitcoin_transaction_inputs",
-    "bitcoin_accounts"
+    "bitcoin_accounts",
+    "bitcoin_operations"
 };
 
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
