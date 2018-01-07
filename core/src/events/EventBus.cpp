@@ -32,34 +32,45 @@
 
 void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::ExecutionContext> &context,
                                        const std::shared_ptr<ledger::core::api::EventReceiver> &receiver) {
-    auto self = shared_from_this();
+
+    std::weak_ptr<EventBus> weak_self(shared_from_this());
+    std::weak_ptr<ledger::core::api::ExecutionContext> weak_context(context);
+    std::weak_ptr<ledger::core::api::EventReceiver> weak_receiver(receiver);
+
     async<Unit>([=] () {
-        for (auto& i : self->_subscribers) {
+
+        auto local_self = weak_self.lock();
+        auto local_context = weak_context.lock();
+        auto local_receiver = weak_receiver.lock();
+
+        for (auto& i : local_self->_subscribers) {
             auto& r = std::get<1>(i);
-            if (r == receiver)
+            if (r == local_receiver)
                 return unit;
         }
-        std::shared_ptr<ledger::core::api::ExecutionContext> c = context;
-        std::shared_ptr<ledger::core::api::EventReceiver> r = receiver;
-        self->_subscribers.push_back(std::make_tuple<std::shared_ptr<api::ExecutionContext>, std::shared_ptr<api::EventReceiver>>(std::move(c), std::move(r)));
+        
         // Post all sticky event to the receiver
-        for (auto& event : self->_stickies) {
-            Future<Unit>::async(context, [=] () {
-                receiver->onEvent(event.second);
+        for (auto& event : local_self->_stickies) {
+            auto lambda = [=] () {
+                local_receiver->onEvent(event.second);
                 return unit;
-            });
+            };
+            Future<Unit>::async(local_context, lambda);
         }
+
+        local_self->_subscribers.push_back(std::make_tuple<std::shared_ptr<api::ExecutionContext>, std::shared_ptr<api::EventReceiver>>(std::move(local_context), std::move(local_receiver)));
         return unit;
     });
 }
 
 void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api::EventReceiver> &receiver) {
-    auto self = shared_from_this();
+    std::weak_ptr<EventBus> weak_self(shared_from_this());
     async<Unit>([=] () {
-        for (auto it = _subscribers.begin(); it != _subscribers.end(); it++) {
+        auto local_self = weak_self.lock();
+        for (auto it = local_self->_subscribers.begin(); it != local_self->_subscribers.end(); it++) {
             auto& r = std::get<1>(*it);
             if (r == receiver) {
-                self->_subscribers.erase(it);
+                local_self->_subscribers.erase(it);
                 return unit;
             }
         }
@@ -68,14 +79,17 @@ void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api
 }
 
 void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event> event) {
-    auto self = shared_from_this();
+    std::weak_ptr<EventBus> weak_self(shared_from_this());
     run([=] () {
+        auto local_self = weak_self.lock();
         if (event->isSticky()) {
-            self->_stickies[event->getStickyTag()] = event;
+            local_self->_stickies[event->getStickyTag()] = event;
         }
-        for (auto& subscriber : self->_subscribers) {
+        for (auto& subscriber : local_self->_subscribers) {
             auto& c = std::get<0>(subscriber);
             auto& r = std::get<1>(subscriber);
+
+
             Future<Unit>::async(c, [=] () {
                 r->onEvent(event);
                 return unit;
