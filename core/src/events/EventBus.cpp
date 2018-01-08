@@ -50,9 +50,13 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
         }
         
         // Post all sticky event to the receiver
+        //local_receiver is moved below when pushed in _subscribers, we need a new local_receiver
+        //lambda passed to Future<Unit>::async
+        std::weak_ptr<ledger::core::api::EventReceiver> local_weak_receiver(receiver);
         for (auto& event : local_self->_stickies) {
             auto lambda = [=] () {
-                local_receiver->onEvent(event.second);
+                auto local_r = local_weak_receiver.lock();
+                local_r->onEvent(event.second);
                 return unit;
             };
             Future<Unit>::async(local_context, lambda);
@@ -89,9 +93,11 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event> eve
             auto& c = std::get<0>(subscriber);
             auto& r = std::get<1>(subscriber);
 
+            std::weak_ptr<ledger::core::api::EventReceiver> weak_receiver(r);
 
             Future<Unit>::async(c, [=] () {
-                r->onEvent(event);
+                auto local_receiver = weak_receiver.lock();
+                local_receiver->onEvent(event);
                 return unit;
             });
         }

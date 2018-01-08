@@ -80,7 +80,8 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
     }
     EXPECT_EQ(db.getAccountsCount(), 100);
 
-    soci::session sql(pool->getDatabaseSessionPool()->getPool());
+    auto database = pool->getDatabaseSessionPool();
+    soci::session sql(database->getPool());
 
     auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
     EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
@@ -190,8 +191,11 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
         account->putTransaction(sql, tx);
     }
     sql.commit();
-    auto query = account->queryOperations()->complete()->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);
-    auto operations = wait(std::static_pointer_cast<OperationQuery>(query)->execute());
+
+    auto query = account->queryOperations()->complete();
+    auto queryWithOrders = query->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);
+
+    auto operations = wait(std::static_pointer_cast<OperationQuery>(queryWithOrders)->execute());
     EXPECT_EQ(operations.size(), 5);
 
     auto expectation_0 = std::make_tuple("666613fd82459f94c74211974e74ffcb4a4b96b62980a6ecaee16af7702bbbe5", 15, 1,
