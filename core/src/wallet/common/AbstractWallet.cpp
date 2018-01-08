@@ -242,7 +242,7 @@ namespace ledger {
             return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
                 auto it = self->_accounts.find(index);
                 if (it != self->_accounts.end()) {
-                    auto ptr = it->second.lock();
+                    auto ptr = it->second;
                     if (ptr != nullptr)
                         return ptr;
                 }

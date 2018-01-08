@@ -36,14 +36,19 @@ namespace ledger {
 
         soci::details::prepare_temp_type QueryBuilder::execute(soci::session &sql) {
             std::stringstream query;
-            query << "SELECT " << _keys << " FROM " << _table << " AS " << _table[0];
+            query << "SELECT " << _keys << " FROM " << _table<< " AS " << _output;
             if (_outerJoin.nonEmpty()) {
                 query << " LEFT OUTER JOIN " << std::get<0>(_outerJoin.getValue()) << " ON " << std::get<1>(_outerJoin.getValue());
             }
+
             if (_filter) {
                 query << " WHERE ";
-                _filter->getHead()->toString(query);
+                std::string sFilter = _filter->getHead()->toString();
+                query << sFilter;
             }
+
+            std::cout<<query.str()<<std::endl;
+
             if (_order.size() > 0) {
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
@@ -55,12 +60,15 @@ namespace ledger {
                     }
                 }
             }
+
             if (_limit.nonEmpty()) {
                 query << " LIMIT " << _limit.getValue();
             }
             if (_offset.nonEmpty()) {
                 query << " OFFSET " << _offset.getValue();
             }
+
+
             soci::details::prepare_temp_type statement = sql.prepare << query.str();
             if (_filter) {
                 _filter->getHead()->bindValue(statement);
@@ -85,6 +93,16 @@ namespace ledger {
 
         QueryBuilder &QueryBuilder::from(std::string &&table) {
             _table = table;
+            return *this;
+        }
+
+        QueryBuilder &QueryBuilder::to(const std::string &output) {
+            _output = std::move(output);
+            return *this;
+        }
+
+        QueryBuilder &QueryBuilder::to(std::string &&output) {
+            _output = output;
             return *this;
         }
 

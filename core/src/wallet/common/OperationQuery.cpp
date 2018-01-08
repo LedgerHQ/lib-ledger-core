@@ -125,7 +125,7 @@ namespace ledger {
                       "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
                       "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time"
                     )
-                    .from("operations AS o")
+                    .from("operations").to("o")
                     .outerJoin("blocks AS b", "o.block_uid = b.uid")
                     .execute(sql);
             for (auto& row : rows) {

@@ -48,6 +48,8 @@ namespace ledger {
             QueryBuilder& select(std::string&& keys);
             QueryBuilder& from(const std::string& table);
             QueryBuilder& from(std::string&& table);
+            QueryBuilder& to(const std::string& output);
+            QueryBuilder& to(std::string&& output);
             QueryBuilder& where(const std::shared_ptr<api::QueryFilter>& filter);
             QueryBuilder& outerJoin(const std::string& table, const std::string& condition);
             QueryBuilder& order(std::string&& keys, bool&& descending);
@@ -60,6 +62,7 @@ namespace ledger {
 
             std::string _keys;
             std::string _table;
+            std::string _output;
             std::list<std::tuple<std::string, bool>> _order;
             Option<LeftOuterJoin> _outerJoin;
             std::shared_ptr<QueryFilter> _filter;

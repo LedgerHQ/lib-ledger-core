@@ -43,10 +43,13 @@ TEST(Events, SimpleCase) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
-        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
-        dispatcher->stop();
-    }));
+    auto receiver = make_receiver(
+            [&] (const std::shared_ptr<api::Event>& event) {
+                EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
+                dispatcher->stop();
+            }
+    );
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
     eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
     dispatcher->waitUntilStopped();
@@ -56,14 +59,16 @@ TEST(Events, SimpleCaseWithPayload) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         EXPECT_EQ(event->getPayload()->getString("hello"), Option<std::string>("world").toOptional());
         auto before = event->getPayload()->dump();
         event->getPayload()->putString("world", "hello"); // Payload should be read-only
         EXPECT_EQ(before, event->getPayload()->dump());
         dispatcher->stop();
-    }));
+    });
+
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
     auto payload = std::make_shared<DynamicObject>();
     payload->putString("hello", "world");
@@ -76,10 +81,11 @@ TEST(Events, StickyEvent) {
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     eventPublisher->postSticky(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr), 0);
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
-    }));
+    });
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
     dispatcher->waitUntilStopped();
 }
@@ -90,10 +96,11 @@ TEST(Events, Relay) {
     auto relay = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     relay->relay(eventPublisher->getEventBus());
-    relay->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
-    }));
+    });
+    relay->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
     dispatcher->getMainExecutionContext()->delay(ledger::qt::make_runnable([=] () {
         eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
@@ -107,10 +114,13 @@ TEST(Events, EventFilter) {
     eventPublisher->setFilter([] (const std::shared_ptr<api::Event>& event) -> bool {
         return event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED;
     });
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), make_receiver([&] (const std::shared_ptr<api::Event>& event) {
-       EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
+
+    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
-    }));
+    });
+
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
     eventPublisher->post(api::Event::newInstance(api::EventCode::SYNCHRONIZATION_FAILED, DynamicObject::newInstance()));
     eventPublisher->post(api::Event::newInstance(api::EventCode::SYNCHRONIZATION_STARTED, DynamicObject::newInstance()));
     dispatcher->waitUntilStopped();
