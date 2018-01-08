@@ -47,8 +47,6 @@ namespace ledger {
                 query << sFilter;
             }
 
-            std::cout<<query.str()<<std::endl;
-
             if (_order.size() > 0) {
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
