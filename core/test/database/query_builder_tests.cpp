@@ -96,6 +96,7 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
         soci::rowset<soci::row> rows = QueryBuilder()
                 .select("uid")
                 .from("operations")
+                .to("o")
                 .where(api::QueryFilter::operationUidEq("1770fe39ddeef5ee97ad0ef19c1a26c0350316bb743b3a7d9f93c3fbadf3111e"))
                 .execute(sql);
         auto count = 0;

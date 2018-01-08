@@ -46,25 +46,32 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
+
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),
-                                           make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                                               if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                                                   auto uid = event->getPayload()->getString(
-                                                           api::Account::EV_NEW_OP_UID).value();
-                                                   EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                                               }
-                                           }));
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),
-                                              make_receiver([=](const std::shared_ptr<api::Event> &event) {
-                                                  fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                                                  if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-                                                      return;
-                                                  EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                                                  EXPECT_EQ(event->getCode(),
-                                                            api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
-                                                  dispatcher->stop();
-                                              }));
+
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                    auto uid = event->getPayload()->getString(
+                            api::Account::EV_NEW_OP_UID).value();
+                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                }
+            });
+
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
+            receiver.reset();
+            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_EQ(event->getCode(),
+                          api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                dispatcher->stop();
+            });
+
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
             dispatcher->waitUntilStopped();
         }
     }
@@ -109,20 +116,25 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeFromLastBlock) {
         auto synchronize = [wallet, pool, this] (bool expectNewOp) {
             auto account = wait(wallet->getAccount(0));
             auto numberOfOp = 0;
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),
-                                           make_receiver([&numberOfOp](const std::shared_ptr<api::Event> &event) {
-                                                numberOfOp += 1;
-                                           }));
+
+            auto receiverNumberOp = make_receiver([&numberOfOp](const std::shared_ptr<api::Event> &event) {
+                numberOfOp += 1;
+            });
+
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiverNumberOp);
+
             auto bus = account->synchronize();
-            bus->subscribe(dispatcher->getMainExecutionContext(),
-                           make_receiver([=, &numberOfOp](const std::shared_ptr<api::Event> &event) {
-                               fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                               if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-                                   return;
-                               EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                               EXPECT_EQ(expectNewOp, (numberOfOp > 0));
-                               dispatcher->stop();
-                           }));
+
+            auto receiver = make_receiver([=, &numberOfOp](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_EQ(expectNewOp, (numberOfOp > 0));
+                dispatcher->stop();
+            });
+
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
             EXPECT_EQ(bus, account->synchronize());
             dispatcher->waitUntilStopped();
             return bus;
