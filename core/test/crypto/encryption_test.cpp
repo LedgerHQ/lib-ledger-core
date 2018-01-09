@@ -36,6 +36,8 @@
 #include <ledger/core/crypto/AESCipher.hpp>
 #include <OpenSSLRandomNumberGenerator.hpp>
 #include <sstream>
+#include <ledger/core/bytes/BytesReader.h>
+#include <ledger/core/bytes/BytesWriter.h>
 
 using namespace ledger::core;
 
@@ -103,39 +105,50 @@ TEST(Encryption, EncryptDecryptWithAES256CBCAndPBKDF2) {
 }
 
 TEST(Encryption, EncryptDecryptWithCipher) {
+
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    std::stringstream input;
-    input << BIG_TEXT;
 
-    std::stringstream encrypted;
+    //Init reader
+    std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
+    BytesReader input(vec);
 
+    //Encrypt data
+    BytesWriter encrypted;
     AESCipher cipher(rng, "A very strong password", "Awesome salt", 10000);
-    cipher.encrypt(&input, &encrypted);
-    EXPECT_NE(input.str(), encrypted.str());
+    cipher.encrypt(input, encrypted);
+    EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
-    std::stringstream destination;
-
-    cipher.decrypt(&encrypted, &destination);
-
-    EXPECT_EQ(destination.str(), BIG_TEXT);
+    //Decrypt data
+    BytesWriter destination;
+    BytesReader encryptedReader(encrypted.toByteArray());
+    cipher.decrypt(encryptedReader, destination);
+    EXPECT_EQ(destination.toByteArray(), input.readUntilEnd());
 }
 
 TEST(Encryption, EncryptDecryptWithCipherHugeText) {
+
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    std::stringstream input;
+
+    //Init reader
+    std::vector<uint8_t> Bigvec;
     for (auto i = 0; i < 10; i++) {
-        input << BIG_TEXT;
+        std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
+        Bigvec.insert(Bigvec.end(), vec.begin(), vec.end());
     }
 
-    std::stringstream encrypted;
 
+    BytesReader input(Bigvec);
+
+    //Encrypt data
+    BytesWriter encrypted;
     AESCipher cipher(rng, "A very strong password", "Awesome salt", 10000);
-    cipher.encrypt(&input, &encrypted);
-    EXPECT_NE(input.str(), encrypted.str());
+    cipher.encrypt(input, encrypted);
+    EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
-    std::stringstream destination;
+    //Decrypt data
+    BytesWriter destination;
+    BytesReader encryptedReader(encrypted.toByteArray());
+    cipher.decrypt(encryptedReader, destination);
 
-    cipher.decrypt(&encrypted, &destination);
-
-    EXPECT_EQ(destination.str(), input.str());
+    EXPECT_EQ(destination.toByteArray(), input.readUntilEnd());
 }
