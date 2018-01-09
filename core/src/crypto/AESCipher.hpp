@@ -36,14 +36,20 @@
 #include <string>
 #include <ostream>
 #include <istream>
+#include "../bytes/BytesReader.h"
+#include "../bytes/BytesWriter.h"
 
 namespace ledger {
  namespace core {
      class AESCipher {
      public:
          AESCipher(const std::shared_ptr<api::RandomNumberGenerator>& rng, const std::string& password, const std::string &salt, uint32_t iter);
+
          void encrypt(std::istream *input, std::ostream *output);
          void decrypt(std::istream *input, std::ostream *output);
+
+         void encrypt(BytesReader& input, BytesWriter& output);
+         void decrypt(BytesReader& input, BytesWriter& output);
 
      private:
          std::shared_ptr<api::RandomNumberGenerator> _rng;
