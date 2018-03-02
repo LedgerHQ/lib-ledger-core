@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="SOCI"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\core\;CMake Files\core\lib\;CMake Files\core\lib\fmt-3.0.0\;CMake Files\core\lib\fmt-3.0.0\support\;CMake Files\core\lib\fmt-3.0.0\support\cmake\;CMake Files\core\lib\fmt-3.0.0\fmt\;CMake Files\core\lib\soci\;CMake Files\core\lib\soci\cmake\;CMake Files\core\lib\soci\cmake\dependencies\;CMake Files\core\lib\soci\cmake\modules\;CMake Files\core\lib\soci\core\;CMake Files\core\lib\soci\backends\;CMake Files\core\lib\bigd\;CMake Files\core\lib\sqlite3\;CMake Files\core\lib\openssl\;CMake Files\core\lib\openssl\crypto\;CMake Files\core\lib\openssl\ssl\;CMake Files\core\lib\snappy\;CMake Files\core\lib\leveldb\;CMake Files\core\lib\soci_sqlite3\;CMake Files\core\test\;CMake Files\core\test\lib\;CMake Files\core\test\lib\gtest-1.8.0\;CMake Files\core\test\lib\gtest-1.8.0\googlemock\;CMake Files\core\test\lib\gtest-1.8.0\googletest\;CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\;CMake Files\core\test\lib\libledger-test\;CMake Files\core\test\bytes\;CMake Files\core\test\math\;CMake Files\core\test\utils\;CMake Files\core\test\async\;CMake Files\core\test\preferences\;CMake Files\core\test\debug\;CMake Files\core\test\net\;CMake Files\core\test\crypto\;CMake Files\core\test\bitcoin\;CMake Files\core\test\collections\;CMake Files\core\test\integration\;CMake Files\core\test\database\;CMake Files\core\test\events\;CMake Files\core\test\parsers\;CMake Files\core\src\;CMake Files\cmake\;CMake Files\cmake\cmake-4.0.0-modules\;CMake Files\doc\;CMake Files\cmake-build-debug\;CMake Files\cmake-build-debug\tmp\;CMake Files\cmake-build-debug\core\;CMake Files\cmake-build-debug\core\lib\;CMake Files\cmake-build-debug\core\lib\openssl\;CMake Files\cmake-build-debug\core\lib\openssl\crypto\;CMake Files\qt-host\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="check">
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 check"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="soci_core_static">
+				<Option output="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/lib/libsoci_core.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DSOCI_ABI_VERSION=&quot;3.2&quot;"/>
+					<Add option="-DHAVE_DL=1"/>
+					<Add option="-DSOCI_LIB_PREFIX=&quot;libsoci_&quot;"/>
+					<Add option="-DSOCI_LIB_SUFFIX=&quot;.dylib&quot;"/>
+					<Add directory="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 soci_core_static"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="soci_core_static/fast">
+				<Option output="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/lib/libsoci_core.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DSOCI_ABI_VERSION=&quot;3.2&quot;"/>
+					<Add option="-DHAVE_DL=1"/>
+					<Add option="-DSOCI_LIB_PREFIX=&quot;libsoci_&quot;"/>
+					<Add option="-DSOCI_LIB_SUFFIX=&quot;.dylib&quot;"/>
+					<Add directory="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 soci_core_static/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="soci_core">
+				<Option output="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/lib/libsoci_core.dylib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DSOCI_ABI_VERSION=&quot;3.2&quot;"/>
+					<Add option="-DHAVE_DL=1"/>
+					<Add option="-DSOCI_LIB_PREFIX=&quot;libsoci_&quot;"/>
+					<Add option="-DSOCI_LIB_SUFFIX=&quot;.dylib&quot;"/>
+					<Add directory="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 soci_core"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="soci_core/fast">
+				<Option output="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/lib/libsoci_core.dylib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DSOCI_ABI_VERSION=&quot;3.2&quot;"/>
+					<Add option="-DHAVE_DL=1"/>
+					<Add option="-DSOCI_LIB_PREFIX=&quot;libsoci_&quot;"/>
+					<Add option="-DSOCI_LIB_SUFFIX=&quot;.dylib&quot;"/>
+					<Add directory="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 soci_core/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/soci/core/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/backend-loader.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/backend-loader.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/bind-values.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/blob-exchange.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/blob.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/blob.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/boost-fusion.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/boost-gregorian-date.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/boost-optional.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/boost-tuple.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/connection-parameters.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/connection-parameters.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/connection-pool.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/connection-pool.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/error.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/error.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/exchange-traits.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/into-type.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/into-type.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/into.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/once-temp-type.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/once-temp-type.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/prepare-temp-type.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/prepare-temp-type.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/procedure.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/procedure.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/query_transformation.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/ref-counted-prepare-info.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/ref-counted-prepare-info.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/ref-counted-statement.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/ref-counted-statement.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/row-exchange.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/row.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/row.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/rowid-exchange.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/rowid.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/rowid.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/rowset.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/session.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/session.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci-backend.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci-config.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci-platform.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci-simple.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci-simple.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/statement.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/statement.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/transaction.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/transaction.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/type-conversion-traits.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/type-conversion.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/type-holder.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/type-ptr.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/unsigned-types.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/use-type.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/use-type.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/use.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/values-exchange.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/values.cpp">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/values.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/version.h">
+			<Option target="soci_core_static"/>
+			<Option target="soci_core"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/ProjectSecp256k1.cmake">
+			<Option virtualFolder="CMake Files\core\lib\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/support/cmake/cxx11.cmake">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\support\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/support/cmake/cxx11.cmake">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\support\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/fmt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\fmt\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/fmt-3.0.0/fmt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\fmt-3.0.0\fmt\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociUtilities.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociVersion.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociSystemInfo.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociConfig.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociDependencies.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociBackend.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociUtilities.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociVersion.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociSystemInfo.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociConfig.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociDependencies.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/SociBackend.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Boost.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/MySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/ODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Oracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/PostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/SQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Firebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/DB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Boost.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/MySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/ODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Oracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/PostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/SQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/Firebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/dependencies/DB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\dependencies\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindMySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindOracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindPostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindSQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindFirebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindMySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindOracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindPostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindSQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindFirebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindMySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindOracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindPostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindSQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindFirebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindMySQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindODBC.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindOracle.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindPostgreSQL.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindSQLite3.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindFirebird.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/cmake/modules/FindDB2.cmake">
+			<Option virtualFolder="CMake Files\core\lib\soci\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\core\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci_backends_config.h.in">
+			<Option virtualFolder="CMake Files\core\lib\soci\core\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\core\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/core/soci_backends_config.h.in">
+			<Option virtualFolder="CMake Files\core\lib\soci\core\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/backends/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\backends\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci/backends/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci\backends\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/bigd/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\bigd\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/sqlite3/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\sqlite3\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/crypto/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/crypto/buildinf.h.cmake">
+			<Option virtualFolder="CMake Files\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/crypto/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/crypto/buildinf.h.cmake">
+			<Option virtualFolder="CMake Files\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/ssl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\ssl\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/openssl/ssl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\openssl\ssl\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/snappy/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\snappy\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/leveldb/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\leveldb\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/soci_sqlite3/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\lib\soci_sqlite3\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googlemock\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googlemock\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googlemock\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googlemock\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/gtest-1.8.0/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\core\test\lib\gtest-1.8.0\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/libledger-test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\libledger-test\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/lib/libledger-test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\lib\libledger-test\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/bytes/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\bytes\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/bytes/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\bytes\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/math/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\math\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/math/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\math\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/utils/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\utils\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/utils/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\utils\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/async/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\async\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/async/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\async\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/preferences/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\preferences\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/preferences/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\preferences\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/debug/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\debug\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/debug/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\debug\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/net/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\net\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/net/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\net\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/crypto/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/crypto/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/bitcoin/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\bitcoin\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/bitcoin/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\bitcoin\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/collections/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\collections\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/collections/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\collections\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/integration/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\integration\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/integration/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\integration\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/database/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\database\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/database/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\database\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/events/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\events\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/events/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\events\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/parsers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\parsers\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/test/parsers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\test\parsers\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\core\src\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake/UseBackportedModules.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake/CleanDirectoryList.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake/cmake-4.0.0-modules/autoinclude.cmake">
+			<Option virtualFolder="CMake Files\cmake\cmake-4.0.0-modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake/cmake-4.0.0-modules/RequireOutOfSourceBuild.cmake">
+			<Option virtualFolder="CMake Files\cmake\cmake-4.0.0-modules\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/doc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\doc\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/tmp/secp256k1-cfgcmd.txt.in">
+			<Option virtualFolder="CMake Files\cmake-build-debug\tmp\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/openssl/crypto/opensslconf.h.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/cmake-build-debug/core/lib/openssl/crypto/opensslconf.h.cmake">
+			<Option virtualFolder="CMake Files\cmake-build-debug\core\lib\openssl\crypto\"/>
+		</Unit>
+		<Unit filename="/Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/qt-host/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\qt-host\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

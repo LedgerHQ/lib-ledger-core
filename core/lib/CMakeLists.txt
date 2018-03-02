@@ -1,6 +1,5 @@
-
 include(ExternalProject)
-
+include(ProjectSecp256k1.cmake)
 add_subdirectory(bigd)
 add_subdirectory(fmt-3.0.0)
 add_subdirectory(sqlite3)
@@ -15,4 +14,3 @@ set(SOCI_SHARED OFF)
 
 add_subdirectory(soci)
 add_subdirectory(soci_sqlite3)
-add_subdirectory(secp256k1)
