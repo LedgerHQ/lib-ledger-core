@@ -34,5 +34,5 @@ target_include_directories(secp256k1 PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_
 target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 add_dependencies(secp256k1 ecmult_static_context)
 
-install(TARGETS secp256k1 ARCHIVE DESTINATION lib)
-install(DIRECTORY include/ DESTINATION secp256k1)
+install(TARGETS secp256k1 ARCHIVE DESTINATION secp256k1/lib)
+install(DIRECTORY include/ DESTINATION secp256k1/include)

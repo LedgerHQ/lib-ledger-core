@@ -242,7 +242,7 @@ target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)
 target_include_directories(ledger-core PUBLIC ../test/lib/boost)
 target_include_directories(ledger-core PUBLIC ../lib/cereal/)
 target_include_directories(ledger-core PUBLIC ../lib/date/)
-#target_include_directories(ledger-core PUBLIC ../lib/secp256k1)
+target_include_directories(ledger-core PUBLIC ../lib/secp256k1/secp256k1)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

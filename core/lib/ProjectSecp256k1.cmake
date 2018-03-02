@@ -5,8 +5,7 @@ if (MSVC)
     set(_overwrite_install_command INSTALL_COMMAND cmake --build <BINARY_DIR> --config Release --target install)
 endif()
 
-#set(prefix "${CMAKE_BINARY_DIR}")
-set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/core/lib")
+set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/secp256k1")
 
 set(SECP256K1_LIBRARY "${CMAKE_BINARY_DIR}/core/lib/secp256k1/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
 set(SECP256K1_INCLUDE_DIR "${prefix}/secp256k1/include")
