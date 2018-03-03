@@ -13,7 +13,9 @@ set(SECP256K1_INCLUDE_DIR "${prefix}/secp256k1/include")
 #set(prefix "${CMAKE_BINARY_DIR}/deps")
 #set(SECP256K1_LIBRARY "${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
 #set(SECP256K1_INCLUDE_DIR "${prefix}/include")
-
+message(STATUS "================")
+message(STATUS "Adding external project")
+message(STATUS "================")
 ExternalProject_Add(
         secp256k1
         PREFIX "${prefix}"
@@ -22,7 +24,7 @@ ExternalProject_Add(
         URL https://github.com/chfast/secp256k1/archive/ac8ccf29b8c6b2b793bc734661ce43d1f952977a.tar.gz
         URL_HASH SHA256=02f8f05c9e9d2badc91be8e229a07ad5e4984c1e77193d6b00e549df129e7c3a
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_LIST_DIR}/secp256k1/CMakeLists.txt <SOURCE_DIR>
+        ${CMAKE_CURRENT_LIST_DIR}/../secp256k1/CMakeLists.txt <SOURCE_DIR>
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
         -DCMAKE_POSITION_INDEPENDENT_CODE=${BUILD_SHARED_LIBS}
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
@@ -35,6 +37,9 @@ ExternalProject_Add(
         BUILD_BYPRODUCTS "${SECP256K1_LIBRARY}"
 )
 
+message(STATUS "================")
+message(STATUS "Adding library")
+message(STATUS "================")
 # Create imported library
 add_library(Secp256k1 STATIC IMPORTED)
 file(MAKE_DIRECTORY "${SECP256K1_INCLUDE_DIR}")  # Must exist.
@@ -42,3 +47,5 @@ set_property(TARGET Secp256k1 PROPERTY IMPORTED_CONFIGURATIONS Release)
 set_property(TARGET Secp256k1 PROPERTY IMPORTED_LOCATION_RELEASE "${SECP256K1_LIBRARY}")
 set_property(TARGET Secp256k1 PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${SECP256K1_INCLUDE_DIR}")
 add_dependencies(Secp256k1 secp256k1)
+#set_target_properties(Secp256k1 PROPERTIES OUTPUT_NAME "secp256k1")
+#install(TARGETS Secp256k1 ARCHIVE DESTINATION secp256k1/lib)

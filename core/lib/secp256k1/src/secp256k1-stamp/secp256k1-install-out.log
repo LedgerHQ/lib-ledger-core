@@ -1,0 +1,14 @@
+[ 50%] Built target gen_context
+[ 50%] Built target ecmult_static_context
+Scanning dependencies of target secp256k1
+[ 75%] Building C object CMakeFiles/secp256k1.dir/src/secp256k1.c.o
+[100%] Linking C static library libsecp256k1.a
+[100%] Built target secp256k1
+Install the project...
+-- Install configuration: ""
+-- Installing: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/lib/libsecp256k1.a
+-- Up-to-date: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/include
+-- Up-to-date: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/include/secp256k1_ecdh.h
+-- Up-to-date: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/include/secp256k1_recovery.h
+-- Up-to-date: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/include/secp256k1_sha256.h
+-- Up-to-date: /Users/elkhalilbellakrid/Desktop/Playground_03/lib-ledger-core/core/lib/secp256k1/secp256k1/include/secp256k1.h

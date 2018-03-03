@@ -11,3 +11,4 @@ build/
 .idea/
 externals/build/
 build_jni/
+cmake-build-debug/
