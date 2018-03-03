@@ -13,35 +13,36 @@ namespace djinni_generated {
 
 class RandomNumberGenerator::ObjcProxy final
 : public ::ledger::core::api::RandomNumberGenerator
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::RandomNumberGenerator;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     std::vector<uint8_t> getRandomBytes(int32_t c_size) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getRandomBytes:(::djinni::I32::fromCpp(c_size))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getRandomBytes:(::djinni::I32::fromCpp(c_size))];
             return ::djinni::Binary::toCpp(objcpp_result_);
         }
     }
     int32_t getRandomInt() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getRandomInt];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getRandomInt];
             return ::djinni::I32::toCpp(objcpp_result_);
         }
     }
     int64_t getRandomLong() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getRandomLong];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getRandomLong];
             return ::djinni::I64::toCpp(objcpp_result_);
         }
     }
     int8_t getRandomByte() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getRandomByte];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getRandomByte];
             return ::djinni::I8::toCpp(objcpp_result_);
         }
     }
@@ -64,7 +65,7 @@ auto RandomNumberGenerator::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

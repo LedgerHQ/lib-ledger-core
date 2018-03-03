@@ -14,50 +14,51 @@ namespace djinni_generated {
 
 class LogPrinter::ObjcProxy final
 : public ::ledger::core::api::LogPrinter
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::LogPrinter;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void printError(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printError:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printError:(::djinni::String::fromCpp(c_message))];
         }
     }
     void printInfo(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printInfo:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printInfo:(::djinni::String::fromCpp(c_message))];
         }
     }
     void printDebug(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printDebug:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printDebug:(::djinni::String::fromCpp(c_message))];
         }
     }
     void printWarning(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printWarning:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printWarning:(::djinni::String::fromCpp(c_message))];
         }
     }
     void printApdu(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printApdu:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printApdu:(::djinni::String::fromCpp(c_message))];
         }
     }
     void printCriticalError(const std::string & c_message) override
     {
         @autoreleasepool {
-            [Handle::get() printCriticalError:(::djinni::String::fromCpp(c_message))];
+            [djinni_private_get_proxied_objc_object() printCriticalError:(::djinni::String::fromCpp(c_message))];
         }
     }
     std::shared_ptr<::ledger::core::api::ExecutionContext> getContext() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getContext];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getContext];
             return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
         }
     }
@@ -80,7 +81,7 @@ auto LogPrinter::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

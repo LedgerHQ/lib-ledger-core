@@ -14,35 +14,36 @@ namespace djinni_generated {
 
 class HttpUrlConnection::ObjcProxy final
 : public ::ledger::core::api::HttpUrlConnection
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::HttpUrlConnection;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     int32_t getStatusCode() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getStatusCode];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getStatusCode];
             return ::djinni::I32::toCpp(objcpp_result_);
         }
     }
     std::string getStatusText() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getStatusText];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getStatusText];
             return ::djinni::String::toCpp(objcpp_result_);
         }
     }
     std::unordered_map<std::string, std::string> getHeaders() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getHeaders];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getHeaders];
             return ::djinni::Map<::djinni::String, ::djinni::String>::toCpp(objcpp_result_);
         }
     }
     ::ledger::core::api::HttpReadBodyResult readBody() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() readBody];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() readBody];
             return ::djinni_generated::HttpReadBodyResult::toCpp(objcpp_result_);
         }
     }
@@ -65,7 +66,7 @@ auto HttpUrlConnection::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

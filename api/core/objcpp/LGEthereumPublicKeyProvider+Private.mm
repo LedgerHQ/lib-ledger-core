@@ -12,10 +12,11 @@ namespace djinni_generated {
 
 class EthereumPublicKeyProvider::ObjcProxy final
 : public ::ledger::core::api::EthereumPublicKeyProvider
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::EthereumPublicKeyProvider;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
 };
 
 }  // namespace djinni_generated
@@ -35,7 +36,7 @@ auto EthereumPublicKeyProvider::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

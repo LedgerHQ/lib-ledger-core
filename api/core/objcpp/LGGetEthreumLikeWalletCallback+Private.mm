@@ -15,21 +15,22 @@ namespace djinni_generated {
 
 class GetEthreumLikeWalletCallback::ObjcProxy final
 : public ::ledger::core::api::GetEthreumLikeWalletCallback
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::GetEthreumLikeWalletCallback;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void onSuccess(const std::shared_ptr<::ledger::core::api::EthereumLikeWallet> & c_wallet, bool c_isCreated) override
     {
         @autoreleasepool {
-            [Handle::get() onSuccess:(::djinni_generated::EthereumLikeWallet::fromCpp(c_wallet))
-                           isCreated:(::djinni::Bool::fromCpp(c_isCreated))];
+            [djinni_private_get_proxied_objc_object() onSuccess:(::djinni_generated::EthereumLikeWallet::fromCpp(c_wallet))
+                                                      isCreated:(::djinni::Bool::fromCpp(c_isCreated))];
         }
     }
     void onError(const ::ledger::core::api::Error & c_error) override
     {
         @autoreleasepool {
-            [Handle::get() onError:(::djinni_generated::Error::fromCpp(c_error))];
+            [djinni_private_get_proxied_objc_object() onError:(::djinni_generated::Error::fromCpp(c_error))];
         }
     }
 };
@@ -51,7 +52,7 @@ auto GetEthreumLikeWalletCallback::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

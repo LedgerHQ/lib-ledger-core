@@ -14,28 +14,29 @@ namespace djinni_generated {
 
 class WebSocketClient::ObjcProxy final
 : public ::ledger::core::api::WebSocketClient
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::WebSocketClient;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void connect(const std::string & c_url, const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection) override
     {
         @autoreleasepool {
-            [Handle::get() connect:(::djinni::String::fromCpp(c_url))
-                        connection:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
+            [djinni_private_get_proxied_objc_object() connect:(::djinni::String::fromCpp(c_url))
+                                                   connection:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
         }
     }
     void send(const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection, const std::string & c_data) override
     {
         @autoreleasepool {
-            [Handle::get() send:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))
-                           data:(::djinni::String::fromCpp(c_data))];
+            [djinni_private_get_proxied_objc_object() send:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))
+                                                      data:(::djinni::String::fromCpp(c_data))];
         }
     }
     void disconnect(const std::shared_ptr<::ledger::core::api::WebSocketConnection> & c_connection) override
     {
         @autoreleasepool {
-            [Handle::get() disconnect:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
+            [djinni_private_get_proxied_objc_object() disconnect:(::djinni_generated::WebSocketConnection::fromCpp(c_connection))];
         }
     }
 };
@@ -57,7 +58,7 @@ auto WebSocketClient::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

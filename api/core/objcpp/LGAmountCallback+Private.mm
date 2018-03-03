@@ -15,15 +15,16 @@ namespace djinni_generated {
 
 class AmountCallback::ObjcProxy final
 : public ::ledger::core::api::AmountCallback
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::AmountCallback;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void onCallback(const std::shared_ptr<::ledger::core::api::Amount> & c_result, const std::experimental::optional<::ledger::core::api::Error> & c_error) override
     {
         @autoreleasepool {
-            [Handle::get() onCallback:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Amount>::fromCpp(c_result))
-                                error:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(c_error))];
+            [djinni_private_get_proxied_objc_object() onCallback:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Amount>::fromCpp(c_result))
+                                                           error:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(c_error))];
         }
     }
 };
@@ -45,7 +46,7 @@ auto AmountCallback::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

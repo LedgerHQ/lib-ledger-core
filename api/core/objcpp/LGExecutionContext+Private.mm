@@ -14,21 +14,22 @@ namespace djinni_generated {
 
 class ExecutionContext::ObjcProxy final
 : public ::ledger::core::api::ExecutionContext
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::ExecutionContext;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void execute(const std::shared_ptr<::ledger::core::api::Runnable> & c_runnable) override
     {
         @autoreleasepool {
-            [Handle::get() execute:(::djinni_generated::Runnable::fromCpp(c_runnable))];
+            [djinni_private_get_proxied_objc_object() execute:(::djinni_generated::Runnable::fromCpp(c_runnable))];
         }
     }
     void delay(const std::shared_ptr<::ledger::core::api::Runnable> & c_runnable, int64_t c_millis) override
     {
         @autoreleasepool {
-            [Handle::get() delay:(::djinni_generated::Runnable::fromCpp(c_runnable))
-                          millis:(::djinni::I64::fromCpp(c_millis))];
+            [djinni_private_get_proxied_objc_object() delay:(::djinni_generated::Runnable::fromCpp(c_runnable))
+                                                     millis:(::djinni::I64::fromCpp(c_millis))];
         }
     }
 };
@@ -50,7 +51,7 @@ auto ExecutionContext::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

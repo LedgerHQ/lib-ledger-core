@@ -13,28 +13,29 @@ namespace djinni_generated {
 
 class HashAlgorithmHelper::ObjcProxy final
 : public ::ledger::core::api::HashAlgorithmHelper
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::HashAlgorithmHelper;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     std::vector<uint8_t> ripemd160(const std::vector<uint8_t> & c_data) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() ripemd160:(::djinni::Binary::fromCpp(c_data))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() ripemd160:(::djinni::Binary::fromCpp(c_data))];
             return ::djinni::Binary::toCpp(objcpp_result_);
         }
     }
     std::vector<uint8_t> sha256(const std::vector<uint8_t> & c_data) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() sha256:(::djinni::Binary::fromCpp(c_data))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() sha256:(::djinni::Binary::fromCpp(c_data))];
             return ::djinni::Binary::toCpp(objcpp_result_);
         }
     }
     std::vector<uint8_t> keccak256(const std::vector<uint8_t> & c_data) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() keccak256:(::djinni::Binary::fromCpp(c_data))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() keccak256:(::djinni::Binary::fromCpp(c_data))];
             return ::djinni::Binary::toCpp(objcpp_result_);
         }
     }
@@ -57,7 +58,7 @@ auto HashAlgorithmHelper::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated
