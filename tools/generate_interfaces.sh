@@ -25,6 +25,10 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --objc-type-prefix LG \
                     --objc-out api/core/objc \
                     --objcpp-out api/core/objcpp \
+                    --node-out api/core/nodejs \
+					--node-type-prefix NJS \
+        			--node-include-cpp ../../../../$CORE_CPP_API_DIRECTORY \
+        			--node-package ledgerapp_nodejs \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
