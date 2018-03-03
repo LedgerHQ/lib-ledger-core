@@ -26,9 +26,6 @@ endif()
 add_executable(gen_context src/gen_context.c)
 target_include_directories(gen_context PRIVATE ${CMAKE_SOURCE_DIR})
 
-message(STATUS "===================")
-message(STATUS "${WORKING_DIRECTORY}")
-message(STATUS "===================")
 add_custom_target(ecmult_static_context gen_context WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 add_library(secp256k1 STATIC src/secp256k1.c)
@@ -37,5 +34,5 @@ target_include_directories(secp256k1 PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_
 target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 add_dependencies(secp256k1 ecmult_static_context)
 
-install(TARGETS secp256k1 ARCHIVE DESTINATION secp256k1/lib)
-install(DIRECTORY include/ DESTINATION secp256k1/include)
+install(TARGETS secp256k1 ARCHIVE DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include)

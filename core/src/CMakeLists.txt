@@ -205,9 +205,9 @@ target_link_libraries(ledger-core sqlite3)
 target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 target_link_libraries(ledger-core leveldb)
-target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/secp256k1/lib/libsecp256k1.a")
+target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/libsecp256k1.a")
 
-link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/secp256k1/lib")
+link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
         "*.h"
@@ -242,7 +242,7 @@ target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)
 target_include_directories(ledger-core PUBLIC ../test/lib/boost)
 target_include_directories(ledger-core PUBLIC ../lib/cereal/)
 target_include_directories(ledger-core PUBLIC ../lib/date/)
-target_include_directories(ledger-core PUBLIC ../lib/secp256k1/secp256k1)
+target_include_directories(ledger-core PUBLIC ../lib/secp256k1)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
