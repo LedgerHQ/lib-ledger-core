@@ -15,8 +15,8 @@ void NJSBlockCallback::onCallback(const std::experimental::optional<Block> & res
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("hash").ToLocalChecked(), arg_0_1);
     auto arg_0_2 = Nan::New<String>((*result).uid).ToLocalChecked();
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("uid").ToLocalChecked(), arg_0_2);
-    auto date_(*result).time = chrono::duration_cast<chrono::seconds>((*result).time.time_since_epoch()).count();
-    auto arg_0_3 = Nan::New<Date>(date_(*result).time).ToLocalChecked();
+    auto date_arg_0_3 = chrono::duration_cast<chrono::seconds>((*result).time.time_since_epoch()).count();
+    auto arg_0_3 = Nan::New<Date>(date_arg_0_3).ToLocalChecked();
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("time").ToLocalChecked(), arg_0_3);
     auto arg_0_4 = Nan::New<String>((*result).currencyName).ToLocalChecked();
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("currencyName").ToLocalChecked(), arg_0_4);

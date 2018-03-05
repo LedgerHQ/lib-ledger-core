@@ -106,8 +106,8 @@ NAN_METHOD(NJSOperation::getDate) {
     auto result = cpp_impl->getDate();
 
     //Wrap result in node object
-    auto date_result = chrono::duration_cast<chrono::seconds>(result.time_since_epoch()).count();
-    auto arg_0 = Nan::New<Date>(date_result).ToLocalChecked();
+    auto date_arg_0 = chrono::duration_cast<chrono::seconds>(result.time_since_epoch()).count();
+    auto arg_0 = Nan::New<Date>(date_arg_0).ToLocalChecked();
 
     //Return result
     info.GetReturnValue().Set(arg_0);
