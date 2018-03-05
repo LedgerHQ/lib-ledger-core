@@ -10,7 +10,7 @@ using namespace std;
 void NJSAccountCallback::onCallback(const std::shared_ptr<Account> & result, const std::experimental::optional<Error> & error)
 {
     //Wrap parameters
-    auto arg_0 = NJSAccount::wrap((*result));
+    auto arg_0 = NJSAccount::wrap(result);
 
     auto arg_1 = Nan::New<Object>();
     auto arg_1_1 = Nan::New<Integer>((int)(*error).code);

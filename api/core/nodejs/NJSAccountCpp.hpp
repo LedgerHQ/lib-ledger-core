@@ -18,11 +18,11 @@
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/WalletType.hpp"
+#include "../../../core/src/api/WalletType.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Account.hpp"
+#include "../../../core/src/api/Account.hpp"
 
 using namespace v8;
 using namespace node;

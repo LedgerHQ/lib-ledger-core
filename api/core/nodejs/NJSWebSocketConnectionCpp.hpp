@@ -8,11 +8,11 @@
 #include <cstdint>
 #include <string>
 
-#include "../../../../core/src/api/ErrorCode.hpp"
+#include "../../../core/src/api/ErrorCode.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/WebSocketConnection.hpp"
+#include "../../../core/src/api/WebSocketConnection.hpp"
 
 using namespace v8;
 using namespace node;

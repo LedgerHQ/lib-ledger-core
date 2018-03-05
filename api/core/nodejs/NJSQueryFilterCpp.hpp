@@ -11,12 +11,12 @@
 #include <memory>
 #include <string>
 
-#include "../../../../core/src/api/OperationType.hpp"
-#include "../../../../core/src/api/TrustLevel.hpp"
+#include "../../../core/src/api/OperationType.hpp"
+#include "../../../core/src/api/TrustLevel.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/QueryFilter.hpp"
+#include "../../../core/src/api/QueryFilter.hpp"
 
 using namespace v8;
 using namespace node;

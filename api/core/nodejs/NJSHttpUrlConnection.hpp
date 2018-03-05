@@ -9,11 +9,11 @@
 #include <string>
 #include <unordered_map>
 
-#include "../../../../core/src/api/HttpReadBodyResult.hpp"
+#include "../../../core/src/api/HttpReadBodyResult.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/HttpUrlConnection.hpp"
+#include "../../../core/src/api/HttpUrlConnection.hpp"
 
 using namespace v8;
 using namespace node;

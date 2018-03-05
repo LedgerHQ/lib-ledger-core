@@ -5,14 +5,14 @@
 #define DJINNI_GENERATED_NJSI32CALLBACK_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include <cstdint>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/I32Callback.hpp"
+#include "../../../core/src/api/I32Callback.hpp"
 
 using namespace v8;
 using namespace node;

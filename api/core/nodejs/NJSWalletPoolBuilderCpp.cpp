@@ -283,7 +283,11 @@ NAN_METHOD(NJSWalletPoolBuilder::setDatabaseBackend) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSDatabaseBackend *njs_ptr_arg_0 = static_cast<NJSDatabaseBackend *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSDatabaseBackend> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDatabaseBackend failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -317,7 +321,11 @@ NAN_METHOD(NJSWalletPoolBuilder::setConfiguration) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_0 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSDynamicObject> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -402,19 +410,15 @@ NAN_METHOD(NJSWalletPoolBuilder::New) {
     Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSWalletPoolBuilder::New called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWalletPoolBuilder::New needs same number of arguments as ledger::core::api::WalletPoolBuilder::setHttpClient method");
+        return Nan::ThrowError("NJSWalletPoolBuilder::New needs same number of arguments as ledger::core::api::WalletPoolBuilder::createInstance method");
     }
 
     //Unwrap objects to get C++ classes
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
-    NJSHttpClient *njs_ptr_arg_0 = static_cast<NJSHttpClient *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSHttpClient> arg_0(njs_ptr_arg_0);
-
 
     //Call factory
-    auto cpp_instance = ledger::core::api::WalletPoolBuilder::setHttpClient(arg_0);
+    auto cpp_instance = ledger::core::api::WalletPoolBuilder::createInstance();
     NJSWalletPoolBuilder *node_instance = new NJSWalletPoolBuilder(cpp_instance);
 
     if(node_instance)

@@ -5,13 +5,13 @@
 #define DJINNI_GENERATED_NJSEVENTRECEIVER_HPP
 
 
-#include "../../../../core/src/api/Event.hpp"
+#include "../../../core/src/api/Event.hpp"
 #include "NJSEventCpp.hpp"
 #include <memory>
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/EventReceiver.hpp"
+#include "../../../core/src/api/EventReceiver.hpp"
 
 using namespace v8;
 using namespace node;

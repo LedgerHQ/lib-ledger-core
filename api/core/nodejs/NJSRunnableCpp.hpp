@@ -7,7 +7,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Runnable.hpp"
+#include "../../../core/src/api/Runnable.hpp"
 
 using namespace v8;
 using namespace node;

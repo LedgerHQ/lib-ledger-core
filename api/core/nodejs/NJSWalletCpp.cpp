@@ -677,7 +677,7 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
     {
         if(arg_0_2_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_0_2_elem(arg_0_2_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_0_2_elem(arg_0_2_container->Get(i)->ToString());
             auto arg_0_2_elem = std::string(*string_arg_0_2_elem);
             arg_0_2.emplace_back(arg_0_2_elem);
         }
@@ -691,7 +691,7 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
     {
         if(arg_0_3_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(i)->ToString());
             auto arg_0_3_elem = std::string(*string_arg_0_3_elem);
             arg_0_3.emplace_back(arg_0_3_elem);
         }
@@ -706,12 +706,12 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
         if(arg_0_4_container->Get(i)->IsObject())
         {
             vector<uint8_t> arg_0_4_elem;
-            Local<Array> arg_0_4_elem_container = Local<Array>::Cast(arg_0_4_container->Get(i)->ToObject());
+            Local<Array> arg_0_4_elem_container = Local<Array>::Cast(arg_0_4_container->Get(i));
             for(uint32_t i = 0; i < arg_0_4_elem_container->Length(); i++)
             {
                 if(arg_0_4_elem_container->Get(i)->IsUint32())
                 {
-                    auto arg_0_4_elem_elem = Nan::To<uint32_t>(arg_0_4_elem_container->Get(i)->ToUint32()).FromJust();
+                    auto arg_0_4_elem_elem = Nan::To<uint32_t>(arg_0_4_elem_container->Get(i)).FromJust();
                     arg_0_4_elem.emplace_back(arg_0_4_elem_elem);
                 }
             }
@@ -729,12 +729,12 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
         if(arg_0_5_container->Get(i)->IsObject())
         {
             vector<uint8_t> arg_0_5_elem;
-            Local<Array> arg_0_5_elem_container = Local<Array>::Cast(arg_0_5_container->Get(i)->ToObject());
+            Local<Array> arg_0_5_elem_container = Local<Array>::Cast(arg_0_5_container->Get(i));
             for(uint32_t i = 0; i < arg_0_5_elem_container->Length(); i++)
             {
                 if(arg_0_5_elem_container->Get(i)->IsUint32())
                 {
-                    auto arg_0_5_elem_elem = Nan::To<uint32_t>(arg_0_5_elem_container->Get(i)->ToUint32()).FromJust();
+                    auto arg_0_5_elem_elem = Nan::To<uint32_t>(arg_0_5_elem_container->Get(i)).FromJust();
                     arg_0_5_elem.emplace_back(arg_0_5_elem_elem);
                 }
             }
@@ -782,7 +782,7 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     {
         if(arg_0_2_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_0_2_elem(arg_0_2_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_0_2_elem(arg_0_2_container->Get(i)->ToString());
             auto arg_0_2_elem = std::string(*string_arg_0_2_elem);
             arg_0_2.emplace_back(arg_0_2_elem);
         }
@@ -796,7 +796,7 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     {
         if(arg_0_3_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(i)->ToString());
             auto arg_0_3_elem = std::string(*string_arg_0_3_elem);
             arg_0_3.emplace_back(arg_0_3_elem);
         }
@@ -810,7 +810,7 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     {
         if(arg_0_4_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_0_4_elem(arg_0_4_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_0_4_elem(arg_0_4_container->Get(i)->ToString());
             auto arg_0_4_elem = std::string(*string_arg_0_4_elem);
             arg_0_4.emplace_back(arg_0_4_elem);
         }

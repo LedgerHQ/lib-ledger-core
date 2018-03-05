@@ -676,17 +676,15 @@ NAN_METHOD(NJSDatabaseBackend::New) {
     Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSDatabaseBackend::New called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSDatabaseBackend::New needs same number of arguments as ledger::core::api::DatabaseBackend::setUsername method");
+        return Nan::ThrowError("NJSDatabaseBackend::New needs same number of arguments as ledger::core::api::DatabaseBackend::getSqlite3Backend method");
     }
 
     //Unwrap objects to get C++ classes
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
 
     //Call factory
-    auto cpp_instance = ledger::core::api::DatabaseBackend::setUsername(arg_0);
+    auto cpp_instance = ledger::core::api::DatabaseBackend::getSqlite3Backend();
     NJSDatabaseBackend *node_instance = new NJSDatabaseBackend(cpp_instance);
 
     if(node_instance)

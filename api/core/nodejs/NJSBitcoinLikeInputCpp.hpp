@@ -5,7 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEINPUT_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include <cstdint>
 #include <memory>
@@ -13,7 +13,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeInput.hpp"
+#include "../../../core/src/api/BitcoinLikeInput.hpp"
 
 using namespace v8;
 using namespace node;

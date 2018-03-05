@@ -75,17 +75,25 @@ NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
     for(uint32_t i = 0; i < arg_1_container->Length(); i++)
     {
-        if(arg_1_container->Get(i)->IsNJSBitcoinLikeOutput())
+        if(arg_1_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_1_elem = arg_1_container->Get(i)->ToNJSBitcoinLikeOutput()->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_1_elem = arg_1_container->Get(i)->ToObject(context).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_1_elem,0));
-            std::shared_ptr<NJSBitcoinLikeOutput> arg_1_elem(njs_ptr_arg_1_elem);
+            if(!njs_ptr_arg_1_elem)
+            {
+                return Nan::ThrowError("NodeJs Object to NJSBitcoinLikeOutput failed");
+            }
+            auto arg_1_elem = njs_ptr_arg_1_elem->getCppImpl();
 
             arg_1.emplace_back(arg_1_elem);
         }
@@ -124,11 +132,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     Local<Array> arg_0_1_container = Local<Array>::Cast(field_arg_0_1);
     for(uint32_t i = 0; i < arg_0_1_container->Length(); i++)
     {
-        if(arg_0_1_container->Get(i)->IsNJSBitcoinLikeOutput())
+        if(arg_0_1_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToNJSBitcoinLikeOutput()->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToObject(context).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_1_elem,0));
-            std::shared_ptr<NJSBitcoinLikeOutput> arg_0_1_elem(njs_ptr_arg_0_1_elem);
+            if(!njs_ptr_arg_0_1_elem)
+            {
+                return Nan::ThrowError("NodeJs Object to NJSBitcoinLikeOutput failed");
+            }
+            auto arg_0_1_elem = njs_ptr_arg_0_1_elem->getCppImpl();
 
             arg_0_1.emplace_back(arg_0_1_elem);
         }
@@ -140,11 +152,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
     for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
     {
-        if(arg_0_2_container->Get(i)->IsNJSBitcoinLikeOutput())
+        if(arg_0_2_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToNJSBitcoinLikeOutput()->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(context).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
-            std::shared_ptr<NJSBitcoinLikeOutput> arg_0_2_elem(njs_ptr_arg_0_2_elem);
+            if(!njs_ptr_arg_0_2_elem)
+            {
+                return Nan::ThrowError("NodeJs Object to NJSBitcoinLikeOutput failed");
+            }
+            auto arg_0_2_elem = njs_ptr_arg_0_2_elem->getCppImpl();
 
             arg_0_2.emplace_back(arg_0_2_elem);
         }
@@ -152,13 +168,27 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
 
 
     auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("baseFees").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    Local<Object> njs_arg_0_3 = field_arg_0_3->ToObject(context).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0_3 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0_3,0));
+    if(!njs_ptr_arg_0_3)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0_3 = njs_ptr_arg_0_3->getCppImpl();
+
 
     auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("totalFees").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    Local<Object> njs_arg_0_4 = field_arg_0_4->ToObject(context).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0_4 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0_4,0));
+    if(!njs_ptr_arg_0_4)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0_4 = njs_ptr_arg_0_4->getCppImpl();
+
 
     auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("lockTime").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    auto arg_0_5 = Nan::To<int32_t>(field_arg_0_5).FromJust();
     BitcoinLikeTransactionRequest arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5);
 
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
@@ -193,11 +223,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     Local<Array> arg_0_1_container = Local<Array>::Cast(field_arg_0_1);
     for(uint32_t i = 0; i < arg_0_1_container->Length(); i++)
     {
-        if(arg_0_1_container->Get(i)->IsNJSBitcoinLikeOutput())
+        if(arg_0_1_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToNJSBitcoinLikeOutput()->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToObject(context).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_1_elem,0));
-            std::shared_ptr<NJSBitcoinLikeOutput> arg_0_1_elem(njs_ptr_arg_0_1_elem);
+            if(!njs_ptr_arg_0_1_elem)
+            {
+                return Nan::ThrowError("NodeJs Object to NJSBitcoinLikeOutput failed");
+            }
+            auto arg_0_1_elem = njs_ptr_arg_0_1_elem->getCppImpl();
 
             arg_0_1.emplace_back(arg_0_1_elem);
         }
@@ -209,11 +243,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
     for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
     {
-        if(arg_0_2_container->Get(i)->IsNJSBitcoinLikeOutput())
+        if(arg_0_2_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToNJSBitcoinLikeOutput()->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(context).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
-            std::shared_ptr<NJSBitcoinLikeOutput> arg_0_2_elem(njs_ptr_arg_0_2_elem);
+            if(!njs_ptr_arg_0_2_elem)
+            {
+                return Nan::ThrowError("NodeJs Object to NJSBitcoinLikeOutput failed");
+            }
+            auto arg_0_2_elem = njs_ptr_arg_0_2_elem->getCppImpl();
 
             arg_0_2.emplace_back(arg_0_2_elem);
         }
@@ -221,13 +259,27 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
 
 
     auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("baseFees").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    Local<Object> njs_arg_0_3 = field_arg_0_3->ToObject(context).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0_3 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0_3,0));
+    if(!njs_ptr_arg_0_3)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0_3 = njs_ptr_arg_0_3->getCppImpl();
+
 
     auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("totalFees").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    Local<Object> njs_arg_0_4 = field_arg_0_4->ToObject(context).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0_4 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0_4,0));
+    if(!njs_ptr_arg_0_4)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0_4 = njs_ptr_arg_0_4->getCppImpl();
+
 
     auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("lockTime").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    auto arg_0_5 = Nan::To<int32_t>(field_arg_0_5).FromJust();
     BitcoinLikeTransactionRequest arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5);
 
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
@@ -262,7 +314,7 @@ NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }

@@ -5,17 +5,17 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEADDRESS_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeAddress.hpp"
+#include "../../../core/src/api/BitcoinLikeAddress.hpp"
 
 using namespace v8;
 using namespace node;

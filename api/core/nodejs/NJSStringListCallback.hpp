@@ -5,15 +5,15 @@
 #define DJINNI_GENERATED_NJSSTRINGLISTCALLBACK_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/StringListCallback.hpp"
+#include "../../../core/src/api/StringListCallback.hpp"
 
 using namespace v8;
 using namespace node;

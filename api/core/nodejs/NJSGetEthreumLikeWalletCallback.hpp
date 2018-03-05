@@ -5,15 +5,15 @@
 #define DJINNI_GENERATED_NJSGETETHREUMLIKEWALLETCALLBACK_HPP
 
 
-#include "../../../../core/src/api/EthereumLikeWallet.hpp"
+#include "../../../core/src/api/EthereumLikeWallet.hpp"
 #include "NJSEthereumLikeWalletCpp.hpp"
 #include <memory>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/GetEthreumLikeWalletCallback.hpp"
+#include "../../../core/src/api/GetEthreumLikeWalletCallback.hpp"
 
 using namespace v8;
 using namespace node;

@@ -29,10 +29,10 @@ void NJSBitcoinLikeTransactionRequestCallback::onCallback(const std::experimenta
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("outputs").ToLocalChecked(), arg_0_2);
-    auto arg_0_3 = NJSAmount::wrap((*(*result).baseFees));
+    auto arg_0_3 = NJSAmount::wrap((*result).baseFees);
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("baseFees").ToLocalChecked(), arg_0_3);
-    auto arg_0_4 = NJSAmount::wrap((*(*result).totalFees));
+    auto arg_0_4 = NJSAmount::wrap((*result).totalFees);
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("totalFees").ToLocalChecked(), arg_0_4);
     auto arg_0_5 = Nan::New<Int32>((*(*result).lockTime));

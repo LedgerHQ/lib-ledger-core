@@ -9,11 +9,11 @@
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/TrustLevel.hpp"
+#include "../../../core/src/api/TrustLevel.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/TrustIndicator.hpp"
+#include "../../../core/src/api/TrustIndicator.hpp"
 
 using namespace v8;
 using namespace node;

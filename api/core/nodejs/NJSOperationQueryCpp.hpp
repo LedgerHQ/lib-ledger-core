@@ -10,11 +10,11 @@
 #include <cstdint>
 #include <memory>
 
-#include "../../../../core/src/api/OperationOrderKey.hpp"
+#include "../../../core/src/api/OperationOrderKey.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/OperationQuery.hpp"
+#include "../../../core/src/api/OperationQuery.hpp"
 
 using namespace v8;
 using namespace node;

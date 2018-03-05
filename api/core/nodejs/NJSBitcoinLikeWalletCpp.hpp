@@ -7,7 +7,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeWallet.hpp"
+#include "../../../core/src/api/BitcoinLikeWallet.hpp"
 
 using namespace v8;
 using namespace node;

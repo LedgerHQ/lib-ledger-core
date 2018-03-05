@@ -5,8 +5,8 @@
 #define DJINNI_GENERATED_NJSTHREADDISPATCHER_HPP
 
 
-#include "../../../../core/src/api/ExecutionContext.hpp"
-#include "../../../../core/src/api/Lock.hpp"
+#include "../../../core/src/api/ExecutionContext.hpp"
+#include "../../../core/src/api/Lock.hpp"
 #include "NJSExecutionContext.hpp"
 #include "NJSLock.hpp"
 #include <memory>
@@ -14,7 +14,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/ThreadDispatcher.hpp"
+#include "../../../core/src/api/ThreadDispatcher.hpp"
 
 using namespace v8;
 using namespace node;

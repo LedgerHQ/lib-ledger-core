@@ -13,11 +13,11 @@
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
+#include "../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeHelper.hpp"
+#include "../../../core/src/api/BitcoinLikeHelper.hpp"
 
 using namespace v8;
 using namespace node;

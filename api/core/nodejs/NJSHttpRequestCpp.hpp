@@ -5,7 +5,7 @@
 #define DJINNI_GENERATED_NJSHTTPREQUEST_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSHttpUrlConnection.hpp"
 #include <cstdint>
 #include <memory>
@@ -13,12 +13,12 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../../../../core/src/api/Error.hpp"
-#include "../../../../core/src/api/HttpMethod.hpp"
+#include "../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/HttpMethod.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/HttpRequest.hpp"
+#include "../../../core/src/api/HttpRequest.hpp"
 
 using namespace v8;
 using namespace node;

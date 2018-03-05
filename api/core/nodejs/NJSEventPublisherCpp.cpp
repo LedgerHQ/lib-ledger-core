@@ -48,7 +48,11 @@ NAN_METHOD(NJSEventPublisher::post) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSEvent *njs_ptr_arg_0 = static_cast<NJSEvent *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSEvent> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSEvent failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -74,7 +78,11 @@ NAN_METHOD(NJSEventPublisher::postSticky) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSEvent *njs_ptr_arg_0 = static_cast<NJSEvent *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSEvent> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSEvent failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
     auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
 
@@ -101,7 +109,11 @@ NAN_METHOD(NJSEventPublisher::relay) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSEventBus *njs_ptr_arg_0 = static_cast<NJSEventBus *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSEventBus> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSEventBus failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation

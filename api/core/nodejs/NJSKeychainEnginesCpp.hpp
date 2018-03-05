@@ -7,7 +7,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/KeychainEngines.hpp"
+#include "../../../core/src/api/KeychainEngines.hpp"
 
 using namespace v8;
 using namespace node;

@@ -483,7 +483,11 @@ NAN_METHOD(NJSAccount::computeFees) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
     auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
     vector<std::string> arg_2;
@@ -492,7 +496,7 @@ NAN_METHOD(NJSAccount::computeFees) {
     {
         if(arg_2_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_2_elem(arg_2_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_2_elem(arg_2_container->Get(i)->ToString());
             auto arg_2_elem = std::string(*string_arg_2_elem);
             arg_2.emplace_back(arg_2_elem);
         }
@@ -505,12 +509,12 @@ NAN_METHOD(NJSAccount::computeFees) {
         if(arg_3_container->Get(i)->IsObject())
         {
             vector<uint8_t> arg_3_elem;
-            Local<Array> arg_3_elem_container = Local<Array>::Cast(arg_3_container->Get(i)->ToObject());
+            Local<Array> arg_3_elem_container = Local<Array>::Cast(arg_3_container->Get(i));
             for(uint32_t i = 0; i < arg_3_elem_container->Length(); i++)
             {
                 if(arg_3_elem_container->Get(i)->IsUint32())
                 {
-                    auto arg_3_elem_elem = Nan::To<uint32_t>(arg_3_elem_container->Get(i)->ToUint32()).FromJust();
+                    auto arg_3_elem_elem = Nan::To<uint32_t>(arg_3_elem_container->Get(i)).FromJust();
                     arg_3_elem.emplace_back(arg_3_elem_elem);
                 }
             }

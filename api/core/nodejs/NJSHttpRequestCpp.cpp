@@ -133,8 +133,19 @@ NAN_METHOD(NJSHttpRequest::complete) {
     }
 
     //Check if parameters have correct types
-    std::experimental::optional
-    std::experimental::optional
+    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    NJSHttpUrlConnection *njs_ptr_arg_0 = static_cast<NJSHttpUrlConnection *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
+    std::shared_ptr<NJSHttpUrlConnection> arg_0(njs_ptr_arg_0);
+
+
+    auto field_arg_1_1 = Nan::Get(info[1]->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_arg_1_1).FromJust();
+
+    auto field_arg_1_2 = Nan::Get(info[1]->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_1_2(field_arg_1_2->ToString());
+    auto arg_1_2 = std::string(*string_arg_1_2);
+    Error arg_1(arg_1_1, arg_1_2);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSHttpRequest* obj = Nan::ObjectWrap::Unwrap<NJSHttpRequest>(info.This());

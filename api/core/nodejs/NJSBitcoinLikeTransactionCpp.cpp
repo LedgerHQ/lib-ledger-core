@@ -120,7 +120,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getBlock) {
     auto result = cpp_impl->getBlock();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeBlock::wrap((*result));
+    auto arg_0 = NJSBitcoinLikeBlock::wrap(result);
 
 
     //Return result
@@ -200,7 +200,8 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getTime) {
     auto result = cpp_impl->getTime();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Date>(result).ToLocalChecked();
+    auto date_result = chrono::duration_cast<chrono::seconds>(result.time_since_epoch()).count();
+    auto arg_0 = Nan::New<Date>(date_result).ToLocalChecked();
 
     //Return result
     info.GetReturnValue().Set(arg_0);

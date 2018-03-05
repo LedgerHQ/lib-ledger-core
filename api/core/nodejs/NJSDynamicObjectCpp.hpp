@@ -5,18 +5,18 @@
 #define DJINNI_GENERATED_NJSDYNAMICOBJECT_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSDynamicArrayCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/DynamicType.hpp"
+#include "../../../core/src/api/DynamicType.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/DynamicObject.hpp"
+#include "../../../core/src/api/DynamicObject.hpp"
 
 using namespace v8;
 using namespace node;

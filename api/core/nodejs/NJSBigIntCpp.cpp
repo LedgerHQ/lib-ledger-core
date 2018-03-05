@@ -21,7 +21,11 @@ NAN_METHOD(NJSBigInt::add) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -55,7 +59,11 @@ NAN_METHOD(NJSBigInt::subtract) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -89,7 +97,11 @@ NAN_METHOD(NJSBigInt::multiply) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -123,7 +135,11 @@ NAN_METHOD(NJSBigInt::divide) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -157,7 +173,11 @@ NAN_METHOD(NJSBigInt::divideAndRemainder) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -309,7 +329,11 @@ NAN_METHOD(NJSBigInt::compare) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSBigInt failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -430,19 +454,20 @@ NAN_METHOD(NJSBigInt::New) {
     Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSBigInt::New called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 3)
     {
-        return Nan::ThrowError("NJSBigInt::New needs same number of arguments as ledger::core::api::BigInt::add method");
+        return Nan::ThrowError("NJSBigInt::New needs same number of arguments as ledger::core::api::BigInt::fromDecimalString method");
     }
 
     //Unwrap objects to get C++ classes
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
-    NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBigInt> arg_0(njs_ptr_arg_0);
-
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
+    String::Utf8Value string_arg_2(info[2]->ToString());
+    auto arg_2 = std::string(*string_arg_2);
 
     //Call factory
-    auto cpp_instance = ledger::core::api::BigInt::add(arg_0);
+    auto cpp_instance = ledger::core::api::BigInt::fromDecimalString(arg_0,arg_1,arg_2);
     NJSBigInt *node_instance = new NJSBigInt(cpp_instance);
 
     if(node_instance)

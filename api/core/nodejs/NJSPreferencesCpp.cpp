@@ -141,7 +141,7 @@ NAN_METHOD(NJSPreferences::getStringArray) {
     {
         if(arg_1_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_1_elem(arg_1_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_1_elem(arg_1_container->Get(i)->ToString());
             auto arg_1_elem = std::string(*string_arg_1_elem);
             arg_1.emplace_back(arg_1_elem);
         }
@@ -187,7 +187,7 @@ NAN_METHOD(NJSPreferences::getData) {
     {
         if(arg_1_container->Get(i)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)->ToUint32()).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }

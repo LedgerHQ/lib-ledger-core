@@ -13,7 +13,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Preferences.hpp"
+#include "../../../core/src/api/Preferences.hpp"
 
 using namespace v8;
 using namespace node;

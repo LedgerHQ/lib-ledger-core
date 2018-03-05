@@ -5,16 +5,16 @@
 #define DJINNI_GENERATED_NJSACCOUNTCALLBACK_HPP
 
 
-#include "../../../../core/src/api/Account.hpp"
-#include "../utils/optional.hpp"
+#include "../../../core/src/api/Account.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSAccountCpp.hpp"
 #include <memory>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/AccountCallback.hpp"
+#include "../../../core/src/api/AccountCallback.hpp"
 
 using namespace v8;
 using namespace node;

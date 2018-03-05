@@ -329,7 +329,7 @@ NAN_METHOD(NJSDynamicArray::pushData) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -402,7 +402,7 @@ NAN_METHOD(NJSDynamicArray::getObject) {
     auto result = cpp_impl->getObject(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap((*result));
+    auto arg_1 = NJSDynamicObject::wrap(result);
 
 
     //Return result
@@ -430,7 +430,7 @@ NAN_METHOD(NJSDynamicArray::getArray) {
     auto result = cpp_impl->getArray(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap((*result));
+    auto arg_1 = NJSDynamicArray::wrap(result);
 
 
     //Return result
@@ -450,7 +450,11 @@ NAN_METHOD(NJSDynamicArray::pushObject) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_0 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSDynamicObject> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -484,7 +488,11 @@ NAN_METHOD(NJSDynamicArray::pushArray) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_0 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSDynamicArray> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicArray failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -518,7 +526,11 @@ NAN_METHOD(NJSDynamicArray::concat) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_0 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSDynamicArray> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicArray failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -718,7 +730,7 @@ NAN_METHOD(NJSDynamicArray::load) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -735,7 +747,7 @@ NAN_METHOD(NJSDynamicArray::load) {
     auto result = cpp_impl->load(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap((*result));
+    auto arg_1 = NJSDynamicArray::wrap(result);
 
 
     //Return result
@@ -753,16 +765,15 @@ NAN_METHOD(NJSDynamicArray::New) {
     Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSDynamicArray::New called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSDynamicArray::New needs same number of arguments as ledger::core::api::DynamicArray::pushInt method");
+        return Nan::ThrowError("NJSDynamicArray::New needs same number of arguments as ledger::core::api::DynamicArray::newInstance method");
     }
 
     //Unwrap objects to get C++ classes
-    auto arg_0 = Nan::To<int32_t>(info[0]).FromJust();
 
     //Call factory
-    auto cpp_instance = ledger::core::api::DynamicArray::pushInt(arg_0);
+    auto cpp_instance = ledger::core::api::DynamicArray::newInstance();
     NJSDynamicArray *node_instance = new NJSDynamicArray(cpp_instance);
 
     if(node_instance)

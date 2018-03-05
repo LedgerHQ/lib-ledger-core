@@ -5,13 +5,13 @@
 #define DJINNI_GENERATED_NJSHTTPCLIENT_HPP
 
 
-#include "../../../../core/src/api/HttpRequest.hpp"
+#include "../../../core/src/api/HttpRequest.hpp"
 #include "NJSHttpRequestCpp.hpp"
 #include <memory>
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/HttpClient.hpp"
+#include "../../../core/src/api/HttpClient.hpp"
 
 using namespace v8;
 using namespace node;

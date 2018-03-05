@@ -13,7 +13,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/EventPublisher.hpp"
+#include "../../../core/src/api/EventPublisher.hpp"
 
 using namespace v8;
 using namespace node;

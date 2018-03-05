@@ -54,7 +54,7 @@ NAN_METHOD(NJSBitcoinLikeInput::getValue) {
     auto result = cpp_impl->getValue();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap((*result));
+    auto arg_0 = NJSAmount::wrap(result);
 
 
     //Return result

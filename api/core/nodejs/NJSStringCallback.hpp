@@ -5,14 +5,14 @@
 #define DJINNI_GENERATED_NJSSTRINGCALLBACK_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include <string>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/StringCallback.hpp"
+#include "../../../core/src/api/StringCallback.hpp"
 
 using namespace v8;
 using namespace node;

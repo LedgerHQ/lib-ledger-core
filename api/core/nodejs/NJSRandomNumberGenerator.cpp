@@ -31,7 +31,7 @@ std::vector<uint8_t> NJSRandomNumberGenerator::getRandomBytes(int32_t size)
     {
         if(fResult_getRandomBytes_container->Get(i)->IsUint32())
         {
-            auto fResult_getRandomBytes_elem = Nan::To<uint32_t>(fResult_getRandomBytes_container->Get(i)->ToUint32()).FromJust();
+            auto fResult_getRandomBytes_elem = Nan::To<uint32_t>(fResult_getRandomBytes_container->Get(i)).FromJust();
             fResult_getRandomBytes.emplace_back(fResult_getRandomBytes_elem);
         }
     }

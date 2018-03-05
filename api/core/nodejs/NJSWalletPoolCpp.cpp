@@ -203,22 +203,22 @@ NAN_METHOD(NJSWalletPool::createWallet) {
     Local<Array> arg_1_5_container = Local<Array>::Cast(field_arg_1_5);
     for(uint32_t i = 0; i < arg_1_5_container->Length(); i++)
     {
-        if(arg_1_5_container->Get(i)->IsCurrencyUnit())
+        if(arg_1_5_container->Get(i)->IsObject())
         {
 
-            auto field_arg_1_5_elem_1 = Nan::Get(arg_1_5_container->Get(i)->ToCurrencyUnit()->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_1 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_1(field_arg_1_5_elem_1->ToString());
             auto arg_1_5_elem_1 = std::string(*string_arg_1_5_elem_1);
 
-            auto field_arg_1_5_elem_2 = Nan::Get(arg_1_5_container->Get(i)->ToCurrencyUnit()->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_2 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_2(field_arg_1_5_elem_2->ToString());
             auto arg_1_5_elem_2 = std::string(*string_arg_1_5_elem_2);
 
-            auto field_arg_1_5_elem_3 = Nan::Get(arg_1_5_container->Get(i)->ToCurrencyUnit()->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_3 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_3(field_arg_1_5_elem_3->ToString());
             auto arg_1_5_elem_3 = std::string(*string_arg_1_5_elem_3);
 
-            auto field_arg_1_5_elem_4 = Nan::Get(arg_1_5_container->Get(i)->ToCurrencyUnit()->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_4 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
             auto arg_1_5_elem_4 = Nan::To<int32_t>(field_arg_1_5_elem_4).FromJust();
             CurrencyUnit arg_1_5_elem(arg_1_5_elem_1, arg_1_5_elem_2, arg_1_5_elem_3, arg_1_5_elem_4);
 
@@ -228,12 +228,73 @@ NAN_METHOD(NJSWalletPool::createWallet) {
 
 
     auto field_arg_1_6 = Nan::Get(info[1]->ToObject(), Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+
+    auto field_arg_1_6_1 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_1_6_1(field_arg_1_6_1->ToString());
+    auto arg_1_6_1 = std::string(*string_arg_1_6_1);
+
+    auto field_arg_1_6_2 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_1_6_2;
+    Local<Array> arg_1_6_2_container = Local<Array>::Cast(field_arg_1_6_2);
+    for(uint32_t i = 0; i < arg_1_6_2_container->Length(); i++)
+    {
+        if(arg_1_6_2_container->Get(i)->IsUint32())
+        {
+            auto arg_1_6_2_elem = Nan::To<uint32_t>(arg_1_6_2_container->Get(i)).FromJust();
+            arg_1_6_2.emplace_back(arg_1_6_2_elem);
+        }
+    }
+
+
+    auto field_arg_1_6_3 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_1_6_3;
+    Local<Array> arg_1_6_3_container = Local<Array>::Cast(field_arg_1_6_3);
+    for(uint32_t i = 0; i < arg_1_6_3_container->Length(); i++)
+    {
+        if(arg_1_6_3_container->Get(i)->IsUint32())
+        {
+            auto arg_1_6_3_elem = Nan::To<uint32_t>(arg_1_6_3_container->Get(i)).FromJust();
+            arg_1_6_3.emplace_back(arg_1_6_3_elem);
+        }
+    }
+
+
+    auto field_arg_1_6_4 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_1_6_4;
+    Local<Array> arg_1_6_4_container = Local<Array>::Cast(field_arg_1_6_4);
+    for(uint32_t i = 0; i < arg_1_6_4_container->Length(); i++)
+    {
+        if(arg_1_6_4_container->Get(i)->IsUint32())
+        {
+            auto arg_1_6_4_elem = Nan::To<uint32_t>(arg_1_6_4_container->Get(i)).FromJust();
+            arg_1_6_4.emplace_back(arg_1_6_4_elem);
+        }
+    }
+
+
+    auto field_arg_1_6_5 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_1_6_5).FromJust();
+
+    auto field_arg_1_6_6 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_6_6 = Nan::To<int64_t>(field_arg_1_6_6).FromJust();
+
+    auto field_arg_1_6_7 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_1_6_7(field_arg_1_6_7->ToString());
+    auto arg_1_6_7 = std::string(*string_arg_1_6_7);
+
+    auto field_arg_1_6_8 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_6_8 = Nan::To<bool>(field_arg_1_6_8).FromJust();
+    BitcoinLikeNetworkParameters arg_1_6(arg_1_6_1, arg_1_6_2, arg_1_6_3, arg_1_6_4, arg_1_6_5, arg_1_6_6, arg_1_6_7, arg_1_6_8);
+
     Currency arg_1(arg_1_1, arg_1_2, arg_1_3, arg_1_4, arg_1_5, arg_1_6);
 
     Local<Object> njs_arg_2 = info[2]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_2 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
-    std::shared_ptr<NJSDynamicObject> arg_2(njs_ptr_arg_2);
+    if(!njs_ptr_arg_2)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_2 = njs_ptr_arg_2->getCppImpl();
 
     Local<Object> njs_arg_3 = info[3]->ToObject(context).ToLocalChecked();
     NJSWalletCallback *njs_ptr_arg_3 = static_cast<NJSWalletCallback *>(Nan::GetInternalFieldPointer(njs_arg_3,0));

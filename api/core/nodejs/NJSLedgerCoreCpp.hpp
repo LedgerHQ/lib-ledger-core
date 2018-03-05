@@ -10,7 +10,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/LedgerCore.hpp"
+#include "../../../core/src/api/LedgerCore.hpp"
 
 using namespace v8;
 using namespace node;

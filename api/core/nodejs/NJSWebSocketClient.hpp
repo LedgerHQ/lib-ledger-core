@@ -5,14 +5,14 @@
 #define DJINNI_GENERATED_NJSWEBSOCKETCLIENT_HPP
 
 
-#include "../../../../core/src/api/WebSocketConnection.hpp"
+#include "../../../core/src/api/WebSocketConnection.hpp"
 #include "NJSWebSocketConnectionCpp.hpp"
 #include <memory>
 #include <string>
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/WebSocketClient.hpp"
+#include "../../../core/src/api/WebSocketClient.hpp"
 
 using namespace v8;
 using namespace node;

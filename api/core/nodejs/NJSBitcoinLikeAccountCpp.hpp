@@ -16,12 +16,12 @@
 #include <memory>
 #include <vector>
 
-#include "../../../../core/src/api/BitcoinLikePickingStrategy.hpp"
-#include "../../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
+#include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
+#include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeAccount.hpp"
+#include "../../../core/src/api/BitcoinLikeAccount.hpp"
 
 using namespace v8;
 using namespace node;

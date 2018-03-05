@@ -5,14 +5,14 @@
 #define DJINNI_GENERATED_NJSEXECUTIONCONTEXT_HPP
 
 
-#include "../../../../core/src/api/Runnable.hpp"
+#include "../../../core/src/api/Runnable.hpp"
 #include "NJSRunnableCpp.hpp"
 #include <cstdint>
 #include <memory>
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/ExecutionContext.hpp"
+#include "../../../core/src/api/ExecutionContext.hpp"
 
 using namespace v8;
 using namespace node;

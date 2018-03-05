@@ -206,23 +206,7 @@ NAN_METHOD(NJSOperationQuery::New) {
     {
         return Nan::ThrowError("NJSOperationQuery function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
-    //Check if NJSOperationQuery::New called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSOperationQuery::New needs same number of arguments as ledger::core::api::OperationQuery::addOrder method");
-    }
-
-    //Unwrap objects to get C++ classes
-    auto arg_0 = (ledger::core::api::OperationOrderKey)Nan::To<int>(info[0]).FromJust();
-    auto arg_1 = Nan::To<bool>(info[1]).FromJust();
-
-    //Call factory
-    auto cpp_instance = ledger::core::api::OperationQuery::addOrder(arg_0,arg_1);
-    NJSOperationQuery *node_instance = new NJSOperationQuery(cpp_instance);
+    NJSOperationQuery *node_instance = new NJSOperationQuery(nullptr);
 
     if(node_instance)
     {

@@ -12,7 +12,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BigInt.hpp"
+#include "../../../core/src/api/BigInt.hpp"
 
 using namespace v8;
 using namespace node;

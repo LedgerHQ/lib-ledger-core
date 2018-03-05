@@ -257,7 +257,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     {
         if(arg_0_2_container->Get(i)->IsUint32())
         {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)).FromJust();
             arg_0_2.emplace_back(arg_0_2_elem);
         }
     }
@@ -270,7 +270,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     {
         if(arg_0_3_container->Get(i)->IsUint32())
         {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)).FromJust();
             arg_0_3.emplace_back(arg_0_3_elem);
         }
     }
@@ -283,7 +283,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     {
         if(arg_0_4_container->Get(i)->IsUint32())
         {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)).FromJust();
             arg_0_4.emplace_back(arg_0_4_elem);
         }
     }
@@ -344,7 +344,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
     {
         if(arg_0_2_container->Get(i)->IsUint32())
         {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)).FromJust();
             arg_0_2.emplace_back(arg_0_2_elem);
         }
     }
@@ -357,7 +357,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
     {
         if(arg_0_3_container->Get(i)->IsUint32())
         {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)).FromJust();
             arg_0_3.emplace_back(arg_0_3_elem);
         }
     }
@@ -370,7 +370,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
     {
         if(arg_0_4_container->Get(i)->IsUint32())
         {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)).FromJust();
             arg_0_4.emplace_back(arg_0_4_elem);
         }
     }
@@ -439,7 +439,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
     {
         if(arg_0_2_container->Get(i)->IsUint32())
         {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)).FromJust();
             arg_0_2.emplace_back(arg_0_2_elem);
         }
     }
@@ -452,7 +452,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
     {
         if(arg_0_3_container->Get(i)->IsUint32())
         {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)).FromJust();
             arg_0_3.emplace_back(arg_0_3_elem);
         }
     }
@@ -465,7 +465,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
     {
         if(arg_0_4_container->Get(i)->IsUint32())
         {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)).FromJust();
             arg_0_4.emplace_back(arg_0_4_elem);
         }
     }

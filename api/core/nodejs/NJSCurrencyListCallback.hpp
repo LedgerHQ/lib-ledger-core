@@ -5,15 +5,15 @@
 #define DJINNI_GENERATED_NJSCURRENCYLISTCALLBACK_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include <vector>
 
-#include "../../../../core/src/api/Currency.hpp"
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/CurrencyListCallback.hpp"
+#include "../../../core/src/api/CurrencyListCallback.hpp"
 
 using namespace v8;
 using namespace node;

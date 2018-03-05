@@ -9,11 +9,11 @@
 #include <cstdint>
 #include <memory>
 
-#include "../../../../core/src/api/EventCode.hpp"
+#include "../../../core/src/api/EventCode.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Event.hpp"
+#include "../../../core/src/api/Event.hpp"
 
 using namespace v8;
 using namespace node;

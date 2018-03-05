@@ -19,11 +19,11 @@
 #include <memory>
 #include <string>
 
-#include "../../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/Currency.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/WalletPool.hpp"
+#include "../../../core/src/api/WalletPool.hpp"
 
 using namespace v8;
 using namespace node;

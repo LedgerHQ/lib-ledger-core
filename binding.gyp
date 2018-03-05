@@ -5,9 +5,17 @@
       'sources': [
             "<!@(python glob.py api/core/nodejs *.cpp *.hpp)"
        ],
-       'libraries': [ "/usr/local/lib/mylib.a" ],
+       'link_settings': {
+       	'libraries': [
+       		'-Wl,-rpath,../lib-ledger-core-build/core/src'
+       	],
+       },
+       'libraries': [
+       	'../lib-ledger-core-build/core/src/libledger-core.dylib'
+       ],
        'include_dirs': [
-			"<!(node -e \"require('nan')\")"
+			"<!(node -e \"require('nan')\")",
+			"../lib-ledger-core-build/include/ledger/core",
         ],
 		  'all_dependent_settings': {
 			'include_dirs': [

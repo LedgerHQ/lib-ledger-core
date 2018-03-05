@@ -10,7 +10,7 @@ using namespace std;
 void NJSWalletPoolCallback::onCallback(const std::shared_ptr<WalletPool> & result, const std::experimental::optional<Error> & error)
 {
     //Wrap parameters
-    auto arg_0 = NJSWalletPool::wrap((*result));
+    auto arg_0 = NJSWalletPool::wrap(result);
 
     auto arg_1 = Nan::New<Object>();
     auto arg_1_1 = Nan::New<Integer>((int)(*error).code);

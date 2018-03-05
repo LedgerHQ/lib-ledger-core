@@ -10,7 +10,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeOperation.hpp"
+#include "../../../core/src/api/BitcoinLikeOperation.hpp"
 
 using namespace v8;
 using namespace node;

@@ -22,7 +22,7 @@ NAN_METHOD(NJSSecp256k1::computePubKey) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -66,7 +66,7 @@ NAN_METHOD(NJSSecp256k1::sign) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -77,7 +77,7 @@ NAN_METHOD(NJSSecp256k1::sign) {
     {
         if(arg_1_container->Get(i)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)->ToUint32()).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -120,7 +120,7 @@ NAN_METHOD(NJSSecp256k1::verify) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -131,7 +131,7 @@ NAN_METHOD(NJSSecp256k1::verify) {
     {
         if(arg_1_container->Get(i)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)->ToUint32()).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -142,7 +142,7 @@ NAN_METHOD(NJSSecp256k1::verify) {
     {
         if(arg_2_container->Get(i)->IsUint32())
         {
-            auto arg_2_elem = Nan::To<uint32_t>(arg_2_container->Get(i)->ToUint32()).FromJust();
+            auto arg_2_elem = Nan::To<uint32_t>(arg_2_container->Get(i)).FromJust();
             arg_2.emplace_back(arg_2_elem);
         }
     }

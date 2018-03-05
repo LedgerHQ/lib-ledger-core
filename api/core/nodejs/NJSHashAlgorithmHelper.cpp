@@ -37,7 +37,7 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::ripemd160(const std::vector<uint8_t
     {
         if(fResult_ripemd160_container->Get(i)->IsUint32())
         {
-            auto fResult_ripemd160_elem = Nan::To<uint32_t>(fResult_ripemd160_container->Get(i)->ToUint32()).FromJust();
+            auto fResult_ripemd160_elem = Nan::To<uint32_t>(fResult_ripemd160_container->Get(i)).FromJust();
             fResult_ripemd160.emplace_back(fResult_ripemd160_elem);
         }
     }
@@ -75,7 +75,7 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::sha256(const std::vector<uint8_t> &
     {
         if(fResult_sha256_container->Get(i)->IsUint32())
         {
-            auto fResult_sha256_elem = Nan::To<uint32_t>(fResult_sha256_container->Get(i)->ToUint32()).FromJust();
+            auto fResult_sha256_elem = Nan::To<uint32_t>(fResult_sha256_container->Get(i)).FromJust();
             fResult_sha256.emplace_back(fResult_sha256_elem);
         }
     }
@@ -113,7 +113,7 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::keccak256(const std::vector<uint8_t
     {
         if(fResult_keccak256_container->Get(i)->IsUint32())
         {
-            auto fResult_keccak256_elem = Nan::To<uint32_t>(fResult_keccak256_container->Get(i)->ToUint32()).FromJust();
+            auto fResult_keccak256_elem = Nan::To<uint32_t>(fResult_keccak256_container->Get(i)).FromJust();
             fResult_keccak256.emplace_back(fResult_keccak256_elem);
         }
     }

@@ -5,7 +5,7 @@
 #define DJINNI_GENERATED_NJSOPERATION_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeOperationCpp.hpp"
 #include "NJSPreferencesCpp.hpp"
@@ -16,12 +16,12 @@
 #include <string>
 #include <vector>
 
-#include "../../../../core/src/api/OperationType.hpp"
-#include "../../../../core/src/api/WalletType.hpp"
+#include "../../../core/src/api/OperationType.hpp"
+#include "../../../core/src/api/WalletType.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Operation.hpp"
+#include "../../../core/src/api/Operation.hpp"
 
 using namespace v8;
 using namespace node;

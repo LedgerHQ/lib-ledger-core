@@ -171,7 +171,7 @@ NAN_METHOD(NJSDynamicObject::putData) {
     {
         if(arg_1_container->Get(i)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)->ToUint32()).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -414,7 +414,11 @@ NAN_METHOD(NJSDynamicObject::putObject) {
     auto arg_0 = std::string(*string_arg_0);
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    std::shared_ptr<NJSDynamicObject> arg_1(njs_ptr_arg_1);
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -450,7 +454,11 @@ NAN_METHOD(NJSDynamicObject::putArray) {
     auto arg_0 = std::string(*string_arg_0);
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_1 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    std::shared_ptr<NJSDynamicArray> arg_1(njs_ptr_arg_1);
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicArray failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -493,7 +501,7 @@ NAN_METHOD(NJSDynamicObject::getObject) {
     auto result = cpp_impl->getObject(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap((*result));
+    auto arg_1 = NJSDynamicObject::wrap(result);
 
 
     //Return result
@@ -522,7 +530,7 @@ NAN_METHOD(NJSDynamicObject::getArray) {
     auto result = cpp_impl->getArray(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap((*result));
+    auto arg_1 = NJSDynamicArray::wrap(result);
 
 
     //Return result
@@ -770,7 +778,7 @@ NAN_METHOD(NJSDynamicObject::load) {
     {
         if(arg_0_container->Get(i)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)->ToUint32()).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -787,7 +795,7 @@ NAN_METHOD(NJSDynamicObject::load) {
     auto result = cpp_impl->load(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap((*result));
+    auto arg_1 = NJSDynamicObject::wrap(result);
 
 
     //Return result
@@ -805,19 +813,15 @@ NAN_METHOD(NJSDynamicObject::New) {
     Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSDynamicObject::New called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSDynamicObject::New needs same number of arguments as ledger::core::api::DynamicObject::putString method");
+        return Nan::ThrowError("NJSDynamicObject::New needs same number of arguments as ledger::core::api::DynamicObject::newInstance method");
     }
 
     //Unwrap objects to get C++ classes
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-    String::Utf8Value string_arg_1(info[1]->ToString());
-    auto arg_1 = std::string(*string_arg_1);
 
     //Call factory
-    auto cpp_instance = ledger::core::api::DynamicObject::putString(arg_0,arg_1);
+    auto cpp_instance = ledger::core::api::DynamicObject::newInstance();
     NJSDynamicObject *node_instance = new NJSDynamicObject(cpp_instance);
 
     if(node_instance)

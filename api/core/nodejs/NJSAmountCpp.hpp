@@ -5,20 +5,20 @@
 #define DJINNI_GENERATED_NJSAMOUNT_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSBigIntCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
 
-#include "../../../../core/src/api/Currency.hpp"
-#include "../../../../core/src/api/CurrencyUnit.hpp"
-#include "../../../../core/src/api/FormatRules.hpp"
-#include "../../../../core/src/api/Locale.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
+#include "../../../core/src/api/FormatRules.hpp"
+#include "../../../core/src/api/Locale.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Amount.hpp"
+#include "../../../core/src/api/Amount.hpp"
 
 using namespace v8;
 using namespace node;

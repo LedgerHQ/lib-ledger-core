@@ -5,17 +5,17 @@
 #define DJINNI_GENERATED_NJSOPERATIONLISTCALLBACK_HPP
 
 
-#include "../../../../core/src/api/Operation.hpp"
-#include "../utils/optional.hpp"
+#include "../../../core/src/api/Operation.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSOperationCpp.hpp"
 #include <memory>
 #include <vector>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/OperationListCallback.hpp"
+#include "../../../core/src/api/OperationListCallback.hpp"
 
 using namespace v8;
 using namespace node;

@@ -127,7 +127,11 @@ NAN_METHOD(NJSEvent::newInstance) {
     auto arg_0 = (ledger::core::api::EventCode)Nan::To<int>(info[0]).FromJust();
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    std::shared_ptr<NJSDynamicObject> arg_1(njs_ptr_arg_1);
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -168,7 +172,11 @@ NAN_METHOD(NJSEvent::New) {
     auto arg_0 = (ledger::core::api::EventCode)Nan::To<int>(info[0]).FromJust();
     Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    std::shared_ptr<NJSDynamicObject> arg_1(njs_ptr_arg_1);
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
     //Call factory

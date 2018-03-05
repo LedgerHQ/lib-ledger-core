@@ -5,14 +5,14 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEPREPAREDTRANSACTIONCALLBACK_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 
-#include "../../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikePreparedTransactionCallback.hpp"
+#include "../../../core/src/api/BitcoinLikePreparedTransactionCallback.hpp"
 
 using namespace v8;
 using namespace node;

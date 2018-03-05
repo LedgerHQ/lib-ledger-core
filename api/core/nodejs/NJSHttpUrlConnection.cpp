@@ -75,9 +75,9 @@ std::unordered_map<std::string, std::string> NJSHttpUrlConnection::getHeaders()
         auto key = fResult_getHeaders_prop_names->Get(i);
         if(key->IsString() && fResult_getHeaders_container->Get(key)->IsString())
         {
-            String::Utf8Value string_fResult_getHeaders_key(key->ToString()->ToString());
+            String::Utf8Value string_fResult_getHeaders_key(key->ToString());
             auto fResult_getHeaders_key = std::string(*string_fResult_getHeaders_key);
-            String::Utf8Value string_fResult_getHeaders_value(fResult_getHeaders_container->Get(key)->ToString()->ToString());
+            String::Utf8Value string_fResult_getHeaders_value(fResult_getHeaders_container->Get(key)->ToString());
             auto fResult_getHeaders_value = std::string(*string_fResult_getHeaders_value);
             fResult_getHeaders.emplace(fResult_getHeaders_key,fResult_getHeaders_value);
         }
@@ -105,10 +105,28 @@ HttpReadBodyResult NJSHttpUrlConnection::readBody()
     auto checkedResult_readBody = result_readBody.ToLocalChecked();
 
     auto field_fResult_readBody_1 = Nan::Get(checkedResult_readBody->ToObject(), Nan::New<String>("error").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+
+    auto field_fResult_readBody_1_1 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+    auto fResult_readBody_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_fResult_readBody_1_1).FromJust();
+
+    auto field_fResult_readBody_1_2 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_fResult_readBody_1_2(field_fResult_readBody_1_2->ToString());
+    auto fResult_readBody_1_2 = std::string(*string_fResult_readBody_1_2);
+    Error fResult_readBody_1(fResult_readBody_1_1, fResult_readBody_1_2);
+
 
     auto field_fResult_readBody_2 = Nan::Get(checkedResult_readBody->ToObject(), Nan::New<String>("data").ToLocalChecked()).ToLocalChecked();
-    std::experimental::optional
+    vector<uint8_t> fResult_readBody_2;
+    Local<Array> fResult_readBody_2_container = Local<Array>::Cast(field_fResult_readBody_2);
+    for(uint32_t i = 0; i < fResult_readBody_2_container->Length(); i++)
+    {
+        if(fResult_readBody_2_container->Get(i)->IsUint32())
+        {
+            auto fResult_readBody_2_elem = Nan::To<uint32_t>(fResult_readBody_2_container->Get(i)).FromJust();
+            fResult_readBody_2.emplace_back(fResult_readBody_2_elem);
+        }
+    }
+
     HttpReadBodyResult fResult_readBody(fResult_readBody_1, fResult_readBody_2);
 
     return fResult_readBody;

@@ -145,7 +145,7 @@ NAN_METHOD(NJSPreferencesEditor::putStringArray) {
     {
         if(arg_1_container->Get(i)->IsString())
         {
-            String::Utf8Value string_arg_1_elem(arg_1_container->Get(i)->ToString()->ToString());
+            String::Utf8Value string_arg_1_elem(arg_1_container->Get(i)->ToString());
             auto arg_1_elem = std::string(*string_arg_1_elem);
             arg_1.emplace_back(arg_1_elem);
         }
@@ -186,7 +186,7 @@ NAN_METHOD(NJSPreferencesEditor::putData) {
     {
         if(arg_1_container->Get(i)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)->ToUint32()).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -264,25 +264,7 @@ NAN_METHOD(NJSPreferencesEditor::New) {
     {
         return Nan::ThrowError("NJSPreferencesEditor function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
-    //Check if NJSPreferencesEditor::New called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSPreferencesEditor::New needs same number of arguments as ledger::core::api::PreferencesEditor::putString method");
-    }
-
-    //Unwrap objects to get C++ classes
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-    String::Utf8Value string_arg_1(info[1]->ToString());
-    auto arg_1 = std::string(*string_arg_1);
-
-    //Call factory
-    auto cpp_instance = ledger::core::api::PreferencesEditor::putString(arg_0,arg_1);
-    NJSPreferencesEditor *node_instance = new NJSPreferencesEditor(cpp_instance);
+    NJSPreferencesEditor *node_instance = new NJSPreferencesEditor(nullptr);
 
     if(node_instance)
     {

@@ -27,7 +27,7 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --objcpp-out api/core/objcpp \
                     --node-out api/core/nodejs \
 					--node-type-prefix NJS \
-        			--node-include-cpp ../../../../$CORE_CPP_API_DIRECTORY \
+        			--node-include-cpp ../../../$CORE_CPP_API_DIRECTORY \
         			--node-package ledgerapp_nodejs \
                     --trace $trace
 

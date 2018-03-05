@@ -330,7 +330,14 @@ NAN_METHOD(NJSAmount::format) {
     auto arg_0_3 = Nan::To<bool>(field_arg_0_3).FromJust();
     Locale arg_0(arg_0_1, arg_0_2, arg_0_3);
 
-    std::experimental::optional
+
+    auto field_arg_1_1 = Nan::Get(info[1]->ToObject(), Nan::New<String>("roundingMode").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_1 = (ledger::core::api::RoundingMode)Nan::To<int>(field_arg_1_1).FromJust();
+
+    auto field_arg_1_2 = Nan::Get(info[1]->ToObject(), Nan::New<String>("maxNumberOfDecimals").ToLocalChecked()).ToLocalChecked();
+    auto arg_1_2 = Nan::To<int32_t>(field_arg_1_2).FromJust();
+    FormatRules arg_1(arg_1_1, arg_1_2);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSAmount* obj = Nan::ObjectWrap::Unwrap<NJSAmount>(info.This());
@@ -355,38 +362,7 @@ NAN_METHOD(NJSAmount::New) {
     {
         return Nan::ThrowError("NJSAmount function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
-    //Check if NJSAmount::New called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSAmount::New needs same number of arguments as ledger::core::api::Amount::toUnit method");
-    }
-
-    //Unwrap objects to get C++ classes
-
-    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_1(field_arg_0_1->ToString());
-    auto arg_0_1 = std::string(*string_arg_0_1);
-
-    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_2(field_arg_0_2->ToString());
-    auto arg_0_2 = std::string(*string_arg_0_2);
-
-    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_3(field_arg_0_3->ToString());
-    auto arg_0_3 = std::string(*string_arg_0_3);
-
-    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_4 = Nan::To<int32_t>(field_arg_0_4).FromJust();
-    CurrencyUnit arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4);
-
-
-    //Call factory
-    auto cpp_instance = ledger::core::api::Amount::toUnit(arg_0);
-    NJSAmount *node_instance = new NJSAmount(cpp_instance);
+    NJSAmount *node_instance = new NJSAmount(nullptr);
 
     if(node_instance)
     {

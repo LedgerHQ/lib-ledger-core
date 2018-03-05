@@ -448,7 +448,11 @@ NAN_METHOD(NJSQueryFilter::feesEq) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -482,7 +486,11 @@ NAN_METHOD(NJSQueryFilter::feesNeq) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -516,7 +524,11 @@ NAN_METHOD(NJSQueryFilter::feesGte) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -550,7 +562,11 @@ NAN_METHOD(NJSQueryFilter::feesGt) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -584,7 +600,11 @@ NAN_METHOD(NJSQueryFilter::feesLte) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -618,7 +638,11 @@ NAN_METHOD(NJSQueryFilter::feesLt) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -652,7 +676,11 @@ NAN_METHOD(NJSQueryFilter::amountEq) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -686,7 +714,11 @@ NAN_METHOD(NJSQueryFilter::amountNeq) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -720,7 +752,11 @@ NAN_METHOD(NJSQueryFilter::amountGte) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -754,7 +790,11 @@ NAN_METHOD(NJSQueryFilter::amountGt) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -788,7 +828,11 @@ NAN_METHOD(NJSQueryFilter::amountLte) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -822,7 +866,11 @@ NAN_METHOD(NJSQueryFilter::amountLt) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmount> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -1107,7 +1155,11 @@ NAN_METHOD(NJSQueryFilter::op_and) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSQueryFilter> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSQueryFilter failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -1141,7 +1193,11 @@ NAN_METHOD(NJSQueryFilter::op_or) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSQueryFilter> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSQueryFilter failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -1175,7 +1231,11 @@ NAN_METHOD(NJSQueryFilter::op_and_not) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSQueryFilter> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSQueryFilter failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -1209,7 +1269,11 @@ NAN_METHOD(NJSQueryFilter::op_or_not) {
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSQueryFilter> arg_0(njs_ptr_arg_0);
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSQueryFilter failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
     //Unwrap current object and retrieve its Cpp Implementation

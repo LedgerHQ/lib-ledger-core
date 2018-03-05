@@ -5,16 +5,16 @@
 #define DJINNI_GENERATED_NJSAMOUNTCALLBACK_HPP
 
 
-#include "../../../../core/src/api/Amount.hpp"
-#include "../utils/optional.hpp"
+#include "../../../core/src/api/Amount.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include <memory>
 
-#include "../../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/AmountCallback.hpp"
+#include "../../../core/src/api/AmountCallback.hpp"
 
 using namespace v8;
 using namespace node;

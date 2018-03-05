@@ -7,7 +7,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/SynchronizationStatus.hpp"
+#include "../../../core/src/api/SynchronizationStatus.hpp"
 
 using namespace v8;
 using namespace node;

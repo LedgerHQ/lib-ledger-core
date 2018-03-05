@@ -19,7 +19,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/WalletPoolBuilder.hpp"
+#include "../../../core/src/api/WalletPoolBuilder.hpp"
 
 using namespace v8;
 using namespace node;

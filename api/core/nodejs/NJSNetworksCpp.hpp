@@ -5,11 +5,11 @@
 #define DJINNI_GENERATED_NJSNETWORKS_HPP
 
 
-#include "../../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/Networks.hpp"
+#include "../../../core/src/api/Networks.hpp"
 
 using namespace v8;
 using namespace node;

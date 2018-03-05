@@ -5,7 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTION_HPP
 
 
-#include "../utils/optional.hpp"
+#include "../../../core/src/utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeInputCpp.hpp"
@@ -18,7 +18,7 @@
 
 #include <nan.h>
 #include <node.h>
-#include "../../../../core/src/api/BitcoinLikeTransaction.hpp"
+#include "../../../core/src/api/BitcoinLikeTransaction.hpp"
 
 using namespace v8;
 using namespace node;
