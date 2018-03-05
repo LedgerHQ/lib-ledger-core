@@ -199,9 +199,6 @@ NAN_METHOD(NJSSecp256k1::New) {
         return Nan::ThrowError("NJSSecp256k1 function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSSecp256k1::New called with right number of arguments
     if(info.Length() != 0)
     {

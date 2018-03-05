@@ -54,12 +54,12 @@ NAN_METHOD(NJSHttpRequest::getHeaders) {
     auto result = cpp_impl->getHeaders();
 
     //Wrap result in node object
-    Local<Map> arg_0 = Nan::New<Map>();
+    Local<Map> arg_0 = Map::New((Nan::GetCurrentContext())->GetIsolate());
     for(auto const& elem : result)
     {
         auto arg_0_first = Nan::New<String>(elem.first).ToLocalChecked();
         auto arg_0_second = Nan::New<String>(elem.second).ToLocalChecked();
-        arg_0->Set(context, arg_0_first, arg_0_second});
+        arg_0->Set(Nan::GetCurrentContext(), arg_0_first, arg_0_second);
     }
 
 
@@ -133,7 +133,7 @@ NAN_METHOD(NJSHttpRequest::complete) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSHttpUrlConnection *njs_ptr_arg_0 = static_cast<NJSHttpUrlConnection *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSHttpUrlConnection> arg_0(njs_ptr_arg_0);
 

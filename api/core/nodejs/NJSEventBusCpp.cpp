@@ -15,15 +15,12 @@ NAN_METHOD(NJSEventBus::subscribe) {
         return Nan::ThrowError("NJSEventBus::subscribe needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_arg_0 = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSExecutionContext> arg_0(njs_ptr_arg_0);
 
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSEventReceiver *njs_ptr_arg_1 = static_cast<NJSEventReceiver *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSEventReceiver> arg_1(njs_ptr_arg_1);
 
@@ -45,11 +42,8 @@ NAN_METHOD(NJSEventBus::unsubscribe) {
         return Nan::ThrowError("NJSEventBus::unsubscribe needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSEventReceiver *njs_ptr_arg_0 = static_cast<NJSEventReceiver *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSEventReceiver> arg_0(njs_ptr_arg_0);
 

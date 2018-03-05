@@ -15,9 +15,6 @@ NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
         return Nan::ThrowError("NJSBitcoinLikeHelper::scriptToOutput needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
@@ -30,7 +27,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
         }
     }
 
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_1 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {
@@ -64,13 +61,10 @@ NAN_METHOD(NJSBitcoinLikeHelper::addressToOutput) {
         return Nan::ThrowError("NJSBitcoinLikeHelper::addressToOutput needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_1 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {
@@ -104,9 +98,6 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
         return Nan::ThrowError("NJSBitcoinLikeHelper::serializeTransaction needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
 
     auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("version").ToLocalChecked()).ToLocalChecked();
@@ -119,7 +110,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     {
         if(arg_0_2_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
             if(!njs_ptr_arg_0_2_elem)
             {
@@ -153,7 +144,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     {
         if(arg_0_4_container->Get(i)->IsObject())
         {
-            Local<Object> njs_arg_0_4_elem = arg_0_4_container->Get(i)->ToObject(context).ToLocalChecked();
+            Local<Object> njs_arg_0_4_elem = arg_0_4_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_4_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_4_elem,0));
             if(!njs_ptr_arg_0_4_elem)
             {

@@ -15,11 +15,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setHttpClient) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setHttpClient needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSHttpClient *njs_ptr_arg_0 = static_cast<NJSHttpClient *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSHttpClient> arg_0(njs_ptr_arg_0);
 
@@ -49,11 +46,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setWebsocketClient) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setWebsocketClient needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSWebSocketClient *njs_ptr_arg_0 = static_cast<NJSWebSocketClient *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSWebSocketClient> arg_0(njs_ptr_arg_0);
 
@@ -83,11 +77,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setPathResolver) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setPathResolver needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSPathResolver *njs_ptr_arg_0 = static_cast<NJSPathResolver *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSPathResolver> arg_0(njs_ptr_arg_0);
 
@@ -117,11 +108,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setLogPrinter) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setLogPrinter needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSLogPrinter *njs_ptr_arg_0 = static_cast<NJSLogPrinter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSLogPrinter> arg_0(njs_ptr_arg_0);
 
@@ -151,11 +139,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setThreadDispatcher) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setThreadDispatcher needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSThreadDispatcher *njs_ptr_arg_0 = static_cast<NJSThreadDispatcher *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSThreadDispatcher> arg_0(njs_ptr_arg_0);
 
@@ -243,11 +228,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setRandomNumberGenerator) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setRandomNumberGenerator needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSRandomNumberGenerator *njs_ptr_arg_0 = static_cast<NJSRandomNumberGenerator *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSRandomNumberGenerator> arg_0(njs_ptr_arg_0);
 
@@ -277,11 +259,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setDatabaseBackend) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setDatabaseBackend needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDatabaseBackend *njs_ptr_arg_0 = static_cast<NJSDatabaseBackend *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -315,11 +294,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setConfiguration) {
         return Nan::ThrowError("NJSWalletPoolBuilder::setConfiguration needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_0 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -353,11 +329,8 @@ NAN_METHOD(NJSWalletPoolBuilder::build) {
         return Nan::ThrowError("NJSWalletPoolBuilder::build needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSWalletPoolCallback *njs_ptr_arg_0 = static_cast<NJSWalletPoolCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSWalletPoolCallback> arg_0(njs_ptr_arg_0);
 
@@ -405,9 +378,6 @@ NAN_METHOD(NJSWalletPoolBuilder::New) {
     {
         return Nan::ThrowError("NJSWalletPoolBuilder function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSWalletPoolBuilder::New called with right number of arguments
     if(info.Length() != 0)

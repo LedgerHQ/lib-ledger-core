@@ -181,11 +181,8 @@ NAN_METHOD(NJSOperationQuery::execute) {
         return Nan::ThrowError("NJSOperationQuery::execute needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSOperationListCallback *njs_ptr_arg_0 = static_cast<NJSOperationListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSOperationListCallback> arg_0(njs_ptr_arg_0);
 

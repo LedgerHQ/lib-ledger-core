@@ -417,9 +417,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
         return Nan::ThrowError("NJSBitcoinLikeAddress function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSBitcoinLikeAddress::New called with right number of arguments
     if(info.Length() != 2)
     {

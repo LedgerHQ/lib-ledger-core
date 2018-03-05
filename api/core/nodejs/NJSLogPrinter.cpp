@@ -123,9 +123,6 @@ void NJSLogPrinter::printCriticalError(const std::string & message)
 
 std::shared_ptr<ExecutionContext> NJSLogPrinter::getContext()
 {
-
-    Nan::HandleScope scope;
-    Local<Context> context = Nan::GetCurrentContext();
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -141,7 +138,7 @@ std::shared_ptr<ExecutionContext> NJSLogPrinter::getContext()
         Nan::ThrowError("NJSLogPrinter::getContext call failed");
     }
     auto checkedResult_getContext = result_getContext.ToLocalChecked();
-    Local<Object> njs_fResult_getContext = checkedResult_getContext->ToObject(context).ToLocalChecked();
+    Local<Object> njs_fResult_getContext = checkedResult_getContext->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_fResult_getContext = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_fResult_getContext,0));
     std::shared_ptr<NJSExecutionContext> fResult_getContext(njs_ptr_fResult_getContext);
 

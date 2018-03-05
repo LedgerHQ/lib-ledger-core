@@ -185,9 +185,6 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::New) {
         return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSBitcoinLikeExtendedPublicKey::New called with right number of arguments
     if(info.Length() != 3)
     {

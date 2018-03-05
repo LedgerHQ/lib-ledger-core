@@ -672,9 +672,6 @@ NAN_METHOD(NJSDatabaseBackend::New) {
         return Nan::ThrowError("NJSDatabaseBackend function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSDatabaseBackend::New called with right number of arguments
     if(info.Length() != 0)
     {

@@ -42,11 +42,8 @@ NAN_METHOD(NJSEventPublisher::post) {
         return Nan::ThrowError("NJSEventPublisher::post needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSEvent *njs_ptr_arg_0 = static_cast<NJSEvent *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -72,11 +69,8 @@ NAN_METHOD(NJSEventPublisher::postSticky) {
         return Nan::ThrowError("NJSEventPublisher::postSticky needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSEvent *njs_ptr_arg_0 = static_cast<NJSEvent *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -103,11 +97,8 @@ NAN_METHOD(NJSEventPublisher::relay) {
         return Nan::ThrowError("NJSEventPublisher::relay needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSEventBus *njs_ptr_arg_0 = static_cast<NJSEventBus *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -133,11 +124,8 @@ NAN_METHOD(NJSEventPublisher::newInstance) {
         return Nan::ThrowError("NJSEventPublisher::newInstance needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_arg_0 = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSExecutionContext> arg_0(njs_ptr_arg_0);
 
@@ -167,9 +155,6 @@ NAN_METHOD(NJSEventPublisher::New) {
         return Nan::ThrowError("NJSEventPublisher function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSEventPublisher::New called with right number of arguments
     if(info.Length() != 1)
     {
@@ -177,7 +162,7 @@ NAN_METHOD(NJSEventPublisher::New) {
     }
 
     //Unwrap objects to get C++ classes
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_arg_0 = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSExecutionContext> arg_0(njs_ptr_arg_0);
 

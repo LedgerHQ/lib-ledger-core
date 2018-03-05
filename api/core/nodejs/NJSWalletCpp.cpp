@@ -41,12 +41,9 @@ NAN_METHOD(NJSWallet::getAccount) {
         return Nan::ThrowError("NJSWallet::getAccount needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int32_t>(info[0]).FromJust();
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
 
@@ -68,11 +65,8 @@ NAN_METHOD(NJSWallet::getAccountCount) {
         return Nan::ThrowError("NJSWallet::getAccountCount needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSI32Callback *njs_ptr_arg_0 = static_cast<NJSI32Callback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSI32Callback> arg_0(njs_ptr_arg_0);
 
@@ -94,13 +88,10 @@ NAN_METHOD(NJSWallet::getAccounts) {
         return Nan::ThrowError("NJSWallet::getAccounts needs 3 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
-    Local<Object> njs_arg_2 = info[2]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_2 = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountListCallback *njs_ptr_arg_2 = static_cast<NJSAccountListCallback *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
     std::shared_ptr<NJSAccountListCallback> arg_2(njs_ptr_arg_2);
 
@@ -122,11 +113,8 @@ NAN_METHOD(NJSWallet::getNextAccountIndex) {
         return Nan::ThrowError("NJSWallet::getNextAccountIndex needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSI32Callback *njs_ptr_arg_0 = static_cast<NJSI32Callback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSI32Callback> arg_0(njs_ptr_arg_0);
 
@@ -530,11 +518,8 @@ NAN_METHOD(NJSWallet::getLastBlock) {
         return Nan::ThrowError("NJSWallet::getLastBlock needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBlockCallback *njs_ptr_arg_0 = static_cast<NJSBlockCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
 
@@ -556,12 +541,9 @@ NAN_METHOD(NJSWallet::getAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getAccountCreationInfo needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int32_t>(info[0]).FromJust();
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCreationInfoCallback *njs_ptr_arg_1 = static_cast<NJSAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCreationInfoCallback> arg_1(njs_ptr_arg_1);
 
@@ -583,12 +565,9 @@ NAN_METHOD(NJSWallet::getExtendedKeyAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getExtendedKeyAccountCreationInfo needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int32_t>(info[0]).FromJust();
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExtendedKeyAccountCreationInfoCallback *njs_ptr_arg_1 = static_cast<NJSExtendedKeyAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSExtendedKeyAccountCreationInfoCallback> arg_1(njs_ptr_arg_1);
 
@@ -610,11 +589,8 @@ NAN_METHOD(NJSWallet::getNextAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getNextAccountCreationInfo needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCreationInfoCallback *njs_ptr_arg_0 = static_cast<NJSAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSAccountCreationInfoCallback> arg_0(njs_ptr_arg_0);
 
@@ -636,11 +612,8 @@ NAN_METHOD(NJSWallet::getNextExtendedKeyAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getNextExtendedKeyAccountCreationInfo needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExtendedKeyAccountCreationInfoCallback *njs_ptr_arg_0 = static_cast<NJSExtendedKeyAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSExtendedKeyAccountCreationInfoCallback> arg_0(njs_ptr_arg_0);
 
@@ -661,9 +634,6 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
     {
         return Nan::ThrowError("NJSWallet::newAccountWithInfo needs 2 arguments");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if parameters have correct types
 
@@ -745,7 +715,7 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
 
     AccountCreationInfo arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5);
 
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
 
@@ -766,9 +736,6 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     {
         return Nan::ThrowError("NJSWallet::newAccountWithExtendedKeyInfo needs 2 arguments");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if parameters have correct types
 
@@ -818,7 +785,7 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
 
     ExtendedKeyAccountCreationInfo arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4);
 
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
 

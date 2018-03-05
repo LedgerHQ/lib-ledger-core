@@ -444,11 +444,8 @@ NAN_METHOD(NJSDynamicArray::pushObject) {
         return Nan::ThrowError("NJSDynamicArray::pushObject needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_0 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -482,11 +479,8 @@ NAN_METHOD(NJSDynamicArray::pushArray) {
         return Nan::ThrowError("NJSDynamicArray::pushArray needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_0 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -520,11 +514,8 @@ NAN_METHOD(NJSDynamicArray::concat) {
         return Nan::ThrowError("NJSDynamicArray::concat needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_0 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -760,9 +751,6 @@ NAN_METHOD(NJSDynamicArray::New) {
     {
         return Nan::ThrowError("NJSDynamicArray function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSDynamicArray::New called with right number of arguments
     if(info.Length() != 0)

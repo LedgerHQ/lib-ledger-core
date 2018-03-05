@@ -67,17 +67,18 @@ std::unordered_map<std::string, std::string> NJSHttpUrlConnection::getHeaders()
         Nan::ThrowError("NJSHttpUrlConnection::getHeaders call failed");
     }
     auto checkedResult_getHeaders = result_getHeaders.ToLocalChecked();
-    map<std::string, std::string> fResult_getHeaders;
+    unordered_map<std::string, std::string> fResult_getHeaders;
     Local<Map> fResult_getHeaders_container = Local<Map>::Cast(checkedResult_getHeaders);
     auto fResult_getHeaders_prop_names = fResult_getHeaders_container->GetPropertyNames();
     for(uint32_t i = 0; i < fResult_getHeaders_prop_names->Length(); i++)
     {
         auto key = fResult_getHeaders_prop_names->Get(i);
-        if(key->IsString() && fResult_getHeaders_container->Get(key)->IsString())
+        auto fResult_getHeaders_key_ctx = fResult_getHeaders_container->Get(Nan::GetCurrentContext(), key).ToLocalChecked();
+        if(key->IsString() && fResult_getHeaders_key_ctx->IsString())
         {
             String::Utf8Value string_fResult_getHeaders_key(key->ToString());
             auto fResult_getHeaders_key = std::string(*string_fResult_getHeaders_key);
-            String::Utf8Value string_fResult_getHeaders_value(fResult_getHeaders_container->Get(key)->ToString());
+            String::Utf8Value string_fResult_getHeaders_value(fResult_getHeaders_key_ctx->ToString());
             auto fResult_getHeaders_value = std::string(*string_fResult_getHeaders_value);
             fResult_getHeaders.emplace(fResult_getHeaders_key,fResult_getHeaders_value);
         }

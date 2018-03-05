@@ -9,9 +9,6 @@ using namespace std;
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getSerialExecutionContext(const std::string & name)
 {
-
-    Nan::HandleScope scope;
-    Local<Context> context = Nan::GetCurrentContext();
     //Wrap parameters
     auto arg_0 = Nan::New<String>(name).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -28,7 +25,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getSerialExecutionContext
         Nan::ThrowError("NJSThreadDispatcher::getSerialExecutionContext call failed");
     }
     auto checkedResult_getSerialExecutionContext = result_getSerialExecutionContext.ToLocalChecked();
-    Local<Object> njs_fResult_getSerialExecutionContext = checkedResult_getSerialExecutionContext->ToObject(context).ToLocalChecked();
+    Local<Object> njs_fResult_getSerialExecutionContext = checkedResult_getSerialExecutionContext->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_fResult_getSerialExecutionContext = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_fResult_getSerialExecutionContext,0));
     std::shared_ptr<NJSExecutionContext> fResult_getSerialExecutionContext(njs_ptr_fResult_getSerialExecutionContext);
 
@@ -37,9 +34,6 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getSerialExecutionContext
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getThreadPoolExecutionContext(const std::string & name)
 {
-
-    Nan::HandleScope scope;
-    Local<Context> context = Nan::GetCurrentContext();
     //Wrap parameters
     auto arg_0 = Nan::New<String>(name).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -56,7 +50,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getThreadPoolExecutionCon
         Nan::ThrowError("NJSThreadDispatcher::getThreadPoolExecutionContext call failed");
     }
     auto checkedResult_getThreadPoolExecutionContext = result_getThreadPoolExecutionContext.ToLocalChecked();
-    Local<Object> njs_fResult_getThreadPoolExecutionContext = checkedResult_getThreadPoolExecutionContext->ToObject(context).ToLocalChecked();
+    Local<Object> njs_fResult_getThreadPoolExecutionContext = checkedResult_getThreadPoolExecutionContext->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_fResult_getThreadPoolExecutionContext = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_fResult_getThreadPoolExecutionContext,0));
     std::shared_ptr<NJSExecutionContext> fResult_getThreadPoolExecutionContext(njs_ptr_fResult_getThreadPoolExecutionContext);
 
@@ -65,9 +59,6 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getThreadPoolExecutionCon
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getMainExecutionContext()
 {
-
-    Nan::HandleScope scope;
-    Local<Context> context = Nan::GetCurrentContext();
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -83,7 +74,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getMainExecutionContext()
         Nan::ThrowError("NJSThreadDispatcher::getMainExecutionContext call failed");
     }
     auto checkedResult_getMainExecutionContext = result_getMainExecutionContext.ToLocalChecked();
-    Local<Object> njs_fResult_getMainExecutionContext = checkedResult_getMainExecutionContext->ToObject(context).ToLocalChecked();
+    Local<Object> njs_fResult_getMainExecutionContext = checkedResult_getMainExecutionContext->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExecutionContext *njs_ptr_fResult_getMainExecutionContext = static_cast<NJSExecutionContext *>(Nan::GetInternalFieldPointer(njs_fResult_getMainExecutionContext,0));
     std::shared_ptr<NJSExecutionContext> fResult_getMainExecutionContext(njs_ptr_fResult_getMainExecutionContext);
 
@@ -92,9 +83,6 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getMainExecutionContext()
 
 std::shared_ptr<Lock> NJSThreadDispatcher::newLock()
 {
-
-    Nan::HandleScope scope;
-    Local<Context> context = Nan::GetCurrentContext();
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -110,7 +98,7 @@ std::shared_ptr<Lock> NJSThreadDispatcher::newLock()
         Nan::ThrowError("NJSThreadDispatcher::newLock call failed");
     }
     auto checkedResult_newLock = result_newLock.ToLocalChecked();
-    Local<Object> njs_fResult_newLock = checkedResult_newLock->ToObject(context).ToLocalChecked();
+    Local<Object> njs_fResult_newLock = checkedResult_newLock->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSLock *njs_ptr_fResult_newLock = static_cast<NJSLock *>(Nan::GetInternalFieldPointer(njs_fResult_newLock,0));
     std::shared_ptr<NJSLock> fResult_newLock(njs_ptr_fResult_newLock);
 

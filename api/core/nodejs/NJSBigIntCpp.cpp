@@ -15,11 +15,8 @@ NAN_METHOD(NJSBigInt::add) {
         return Nan::ThrowError("NJSBigInt::add needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -53,11 +50,8 @@ NAN_METHOD(NJSBigInt::subtract) {
         return Nan::ThrowError("NJSBigInt::subtract needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -91,11 +85,8 @@ NAN_METHOD(NJSBigInt::multiply) {
         return Nan::ThrowError("NJSBigInt::multiply needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -129,11 +120,8 @@ NAN_METHOD(NJSBigInt::divide) {
         return Nan::ThrowError("NJSBigInt::divide needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -167,11 +155,8 @@ NAN_METHOD(NJSBigInt::divideAndRemainder) {
         return Nan::ThrowError("NJSBigInt::divideAndRemainder needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -323,11 +308,8 @@ NAN_METHOD(NJSBigInt::compare) {
         return Nan::ThrowError("NJSBigInt::compare needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBigInt *njs_ptr_arg_0 = static_cast<NJSBigInt *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -449,9 +431,6 @@ NAN_METHOD(NJSBigInt::New) {
     {
         return Nan::ThrowError("NJSBigInt function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSBigInt::New called with right number of arguments
     if(info.Length() != 3)

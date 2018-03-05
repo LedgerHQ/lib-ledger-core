@@ -74,7 +74,8 @@ NAN_METHOD(NJSQueryFilter::dateLte) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -102,7 +103,8 @@ NAN_METHOD(NJSQueryFilter::dateLt) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -130,7 +132,8 @@ NAN_METHOD(NJSQueryFilter::dateGt) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -158,7 +161,8 @@ NAN_METHOD(NJSQueryFilter::dateGte) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -186,7 +190,8 @@ NAN_METHOD(NJSQueryFilter::dateEq) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -214,7 +219,8 @@ NAN_METHOD(NJSQueryFilter::dateNeq) {
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<std::chrono::system_clock::time_point>(info[0]).FromJust();
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
@@ -442,11 +448,8 @@ NAN_METHOD(NJSQueryFilter::feesEq) {
         return Nan::ThrowError("NJSQueryFilter::feesEq needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -480,11 +483,8 @@ NAN_METHOD(NJSQueryFilter::feesNeq) {
         return Nan::ThrowError("NJSQueryFilter::feesNeq needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -518,11 +518,8 @@ NAN_METHOD(NJSQueryFilter::feesGte) {
         return Nan::ThrowError("NJSQueryFilter::feesGte needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -556,11 +553,8 @@ NAN_METHOD(NJSQueryFilter::feesGt) {
         return Nan::ThrowError("NJSQueryFilter::feesGt needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -594,11 +588,8 @@ NAN_METHOD(NJSQueryFilter::feesLte) {
         return Nan::ThrowError("NJSQueryFilter::feesLte needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -632,11 +623,8 @@ NAN_METHOD(NJSQueryFilter::feesLt) {
         return Nan::ThrowError("NJSQueryFilter::feesLt needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -670,11 +658,8 @@ NAN_METHOD(NJSQueryFilter::amountEq) {
         return Nan::ThrowError("NJSQueryFilter::amountEq needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -708,11 +693,8 @@ NAN_METHOD(NJSQueryFilter::amountNeq) {
         return Nan::ThrowError("NJSQueryFilter::amountNeq needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -746,11 +728,8 @@ NAN_METHOD(NJSQueryFilter::amountGte) {
         return Nan::ThrowError("NJSQueryFilter::amountGte needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -784,11 +763,8 @@ NAN_METHOD(NJSQueryFilter::amountGt) {
         return Nan::ThrowError("NJSQueryFilter::amountGt needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -822,11 +798,8 @@ NAN_METHOD(NJSQueryFilter::amountLte) {
         return Nan::ThrowError("NJSQueryFilter::amountLte needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -860,11 +833,8 @@ NAN_METHOD(NJSQueryFilter::amountLt) {
         return Nan::ThrowError("NJSQueryFilter::amountLt needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -1149,11 +1119,8 @@ NAN_METHOD(NJSQueryFilter::op_and) {
         return Nan::ThrowError("NJSQueryFilter::op_and needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -1187,11 +1154,8 @@ NAN_METHOD(NJSQueryFilter::op_or) {
         return Nan::ThrowError("NJSQueryFilter::op_or needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -1225,11 +1189,8 @@ NAN_METHOD(NJSQueryFilter::op_and_not) {
         return Nan::ThrowError("NJSQueryFilter::op_and_not needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -1263,11 +1224,8 @@ NAN_METHOD(NJSQueryFilter::op_or_not) {
         return Nan::ThrowError("NJSQueryFilter::op_or_not needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSQueryFilter *njs_ptr_arg_0 = static_cast<NJSQueryFilter *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -1300,9 +1258,6 @@ NAN_METHOD(NJSQueryFilter::New) {
     {
         return Nan::ThrowError("NJSQueryFilter function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSQueryFilter::New called with right number of arguments
     if(info.Length() != 1)

@@ -406,13 +406,10 @@ NAN_METHOD(NJSDynamicObject::putObject) {
         return Nan::ThrowError("NJSDynamicObject::putObject needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {
@@ -446,13 +443,10 @@ NAN_METHOD(NJSDynamicObject::putArray) {
         return Nan::ThrowError("NJSDynamicObject::putArray needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicArray *njs_ptr_arg_1 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {
@@ -808,9 +802,6 @@ NAN_METHOD(NJSDynamicObject::New) {
     {
         return Nan::ThrowError("NJSDynamicObject function can only be called as constructor (use New)");
     }
-
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
 
     //Check if NJSDynamicObject::New called with right number of arguments
     if(info.Length() != 0)

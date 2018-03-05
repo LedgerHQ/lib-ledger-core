@@ -120,12 +120,9 @@ NAN_METHOD(NJSEvent::newInstance) {
         return Nan::ThrowError("NJSEvent::newInstance needs 2 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
     auto arg_0 = (ledger::core::api::EventCode)Nan::To<int>(info[0]).FromJust();
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {
@@ -159,9 +156,6 @@ NAN_METHOD(NJSEvent::New) {
         return Nan::ThrowError("NJSEvent function can only be called as constructor (use New)");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if NJSEvent::New called with right number of arguments
     if(info.Length() != 2)
     {
@@ -170,7 +164,7 @@ NAN_METHOD(NJSEvent::New) {
 
     //Unwrap objects to get C++ classes
     auto arg_0 = (ledger::core::api::EventCode)Nan::To<int>(info[0]).FromJust();
-    Local<Object> njs_arg_1 = info[1]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     if(!njs_ptr_arg_1)
     {

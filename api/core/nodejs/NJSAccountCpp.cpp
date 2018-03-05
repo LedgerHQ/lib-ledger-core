@@ -68,11 +68,8 @@ NAN_METHOD(NJSAccount::getBalance) {
         return Nan::ThrowError("NJSAccount::getBalance needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmountCallback *njs_ptr_arg_0 = static_cast<NJSAmountCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSAmountCallback> arg_0(njs_ptr_arg_0);
 
@@ -308,11 +305,8 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
         return Nan::ThrowError("NJSAccount::getFreshPublicAddresses needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSStringListCallback *njs_ptr_arg_0 = static_cast<NJSStringListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
 
@@ -451,11 +445,8 @@ NAN_METHOD(NJSAccount::getLastBlock) {
         return Nan::ThrowError("NJSAccount::getLastBlock needs 1 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBlockCallback *njs_ptr_arg_0 = static_cast<NJSBlockCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
 
@@ -477,11 +468,8 @@ NAN_METHOD(NJSAccount::computeFees) {
         return Nan::ThrowError("NJSAccount::computeFees needs 5 arguments");
     }
 
-    Isolate *isolate = info.GetIsolate();
-    Local<Context> context = isolate->GetCurrentContext();
-
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     if(!njs_ptr_arg_0)
     {
@@ -523,7 +511,7 @@ NAN_METHOD(NJSAccount::computeFees) {
         }
     }
 
-    Local<Object> njs_arg_4 = info[4]->ToObject(context).ToLocalChecked();
+    Local<Object> njs_arg_4 = info[4]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmountCallback *njs_ptr_arg_4 = static_cast<NJSAmountCallback *>(Nan::GetInternalFieldPointer(njs_arg_4,0));
     std::shared_ptr<NJSAmountCallback> arg_4(njs_ptr_arg_4);
 
