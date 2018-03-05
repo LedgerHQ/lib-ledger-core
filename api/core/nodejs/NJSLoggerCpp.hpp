@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_NJSLOGGER_HPP
 
 
+#include <memory>
 #include <string>
 
 #include <nan.h>

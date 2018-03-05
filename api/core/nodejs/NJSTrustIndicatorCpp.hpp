@@ -7,6 +7,7 @@
 
 #include "../../../core/src/api/TrustLevel.hpp"
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 

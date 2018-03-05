@@ -5,6 +5,8 @@
 #define DJINNI_GENERATED_NJSBLOCKCHAINEXPLORERENGINES_HPP
 
 
+#include <memory>
+
 #include <nan.h>
 #include <node.h>
 #include "../../../core/src/api/BlockchainExplorerEngines.hpp"

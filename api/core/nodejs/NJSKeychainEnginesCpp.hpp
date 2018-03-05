@@ -5,6 +5,8 @@
 #define DJINNI_GENERATED_NJSKEYCHAINENGINES_HPP
 
 
+#include <memory>
+
 #include <nan.h>
 #include <node.h>
 #include "../../../core/src/api/KeychainEngines.hpp"
