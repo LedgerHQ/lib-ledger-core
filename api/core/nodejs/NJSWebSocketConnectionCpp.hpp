@@ -5,10 +5,9 @@
 #define DJINNI_GENERATED_NJSWEBSOCKETCONNECTION_HPP
 
 
+#include "../../../core/src/api/ErrorCode.hpp"
 #include <cstdint>
 #include <string>
-
-#include "../../../core/src/api/ErrorCode.hpp"
 
 #include <nan.h>
 #include <node.h>

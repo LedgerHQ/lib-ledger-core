@@ -5,11 +5,12 @@
 #define DJINNI_GENERATED_NJSCURRENCYLISTCALLBACK_HPP
 
 
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
+#include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/utils/optional.hpp"
 #include <vector>
-
-#include "../../../core/src/api/Currency.hpp"
-#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
@@ -19,9 +20,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSCurrency;
-struct NJSError;
 
 class NJSCurrencyListCallback: public Nan::ObjectWrap, public ledger::core::api::CurrencyListCallback {
 public:

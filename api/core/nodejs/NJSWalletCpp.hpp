@@ -5,6 +5,12 @@
 #define DJINNI_GENERATED_NJSWALLET_HPP
 
 
+#include "../../../core/src/api/AccountCreationInfo.hpp"
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
+#include "../../../core/src/api/ExtendedKeyAccountCreationInfo.hpp"
+#include "../../../core/src/api/WalletType.hpp"
 #include "NJSAccountCallback.hpp"
 #include "NJSAccountCreationInfoCallback.hpp"
 #include "NJSAccountListCallback.hpp"
@@ -18,11 +24,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include "../../../core/src/api/AccountCreationInfo.hpp"
-#include "../../../core/src/api/Currency.hpp"
-#include "../../../core/src/api/ExtendedKeyAccountCreationInfo.hpp"
-#include "../../../core/src/api/WalletType.hpp"
+#include <vector>
 
 #include <nan.h>
 #include <node.h>

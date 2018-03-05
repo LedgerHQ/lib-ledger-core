@@ -5,11 +5,10 @@
 #define DJINNI_GENERATED_NJSTRUSTINDICATOR_HPP
 
 
+#include "../../../core/src/api/TrustLevel.hpp"
 #include <cstdint>
 #include <string>
 #include <vector>
-
-#include "../../../core/src/api/TrustLevel.hpp"
 
 #include <nan.h>
 #include <node.h>

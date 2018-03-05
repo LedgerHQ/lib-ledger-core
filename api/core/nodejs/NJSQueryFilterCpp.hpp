@@ -5,14 +5,13 @@
 #define DJINNI_GENERATED_NJSQUERYFILTER_HPP
 
 
+#include "../../../core/src/api/OperationType.hpp"
+#include "../../../core/src/api/TrustLevel.hpp"
 #include "NJSAmountCpp.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include "../../../core/src/api/OperationType.hpp"
-#include "../../../core/src/api/TrustLevel.hpp"
 
 #include <nan.h>
 #include <node.h>

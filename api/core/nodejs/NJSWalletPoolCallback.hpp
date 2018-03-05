@@ -5,12 +5,11 @@
 #define DJINNI_GENERATED_NJSWALLETPOOLCALLBACK_HPP
 
 
+#include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/WalletPool.hpp"
 #include "../../../core/src/utils/optional.hpp"
 #include "NJSWalletPoolCpp.hpp"
 #include <memory>
-
-#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
@@ -20,8 +19,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSError;
 
 class NJSWalletPoolCallback: public Nan::ObjectWrap, public ledger::core::api::WalletPoolCallback {
 public:

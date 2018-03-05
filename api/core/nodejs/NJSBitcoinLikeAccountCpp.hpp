@@ -5,6 +5,8 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEACCOUNT_HPP
 
 
+#include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
+#include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeOutputListCallback.hpp"
@@ -15,9 +17,6 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
-
-#include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
-#include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
 
 #include <nan.h>
 #include <node.h>

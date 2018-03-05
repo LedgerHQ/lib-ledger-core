@@ -5,11 +5,10 @@
 #define DJINNI_GENERATED_NJSEVENT_HPP
 
 
+#include "../../../core/src/api/EventCode.hpp"
 #include "NJSDynamicObjectCpp.hpp"
 #include <cstdint>
 #include <memory>
-
-#include "../../../core/src/api/EventCode.hpp"
 
 #include <nan.h>
 #include <node.h>

@@ -5,11 +5,12 @@
 #define DJINNI_GENERATED_NJSHTTPURLCONNECTION_HPP
 
 
+#include "../../../core/src/api/Error.hpp"
+#include "../../../core/src/api/HttpReadBodyResult.hpp"
 #include <cstdint>
 #include <string>
 #include <unordered_map>
-
-#include "../../../core/src/api/HttpReadBodyResult.hpp"
+#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -19,8 +20,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSHttpReadBodyResult;
 
 class NJSHttpUrlConnection: public Nan::ObjectWrap, public ledger::core::api::HttpUrlConnection {
 public:

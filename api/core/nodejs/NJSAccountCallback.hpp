@@ -6,11 +6,10 @@
 
 
 #include "../../../core/src/api/Account.hpp"
+#include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/utils/optional.hpp"
 #include "NJSAccountCpp.hpp"
 #include <memory>
-
-#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
@@ -20,8 +19,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSError;
 
 class NJSAccountCallback: public Nan::ObjectWrap, public ledger::core::api::AccountCallback {
 public:

@@ -5,10 +5,12 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTIONREQUESTCALLBACK_HPP
 
 
-#include "../../../core/src/utils/optional.hpp"
-
 #include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
 #include "../../../core/src/api/Error.hpp"
+#include "../../../core/src/utils/optional.hpp"
+#include "NJSAmountCpp.hpp"
+#include "NJSBitcoinLikeOutputCpp.hpp"
+#include <cstdint>
 
 #include <nan.h>
 #include <node.h>
@@ -18,9 +20,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSBitcoinLikeTransactionRequest;
-struct NJSError;
 
 class NJSBitcoinLikeTransactionRequestCallback: public Nan::ObjectWrap, public ledger::core::api::BitcoinLikeTransactionRequestCallback {
 public:

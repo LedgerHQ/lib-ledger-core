@@ -5,16 +5,16 @@
 #define DJINNI_GENERATED_NJSAMOUNT_HPP
 
 
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
+#include "../../../core/src/api/FormatRules.hpp"
+#include "../../../core/src/api/Locale.hpp"
 #include "../../../core/src/utils/optional.hpp"
 #include "NJSBigIntCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include "../../../core/src/api/Currency.hpp"
-#include "../../../core/src/api/CurrencyUnit.hpp"
-#include "../../../core/src/api/FormatRules.hpp"
-#include "../../../core/src/api/Locale.hpp"
 
 #include <nan.h>
 #include <node.h>

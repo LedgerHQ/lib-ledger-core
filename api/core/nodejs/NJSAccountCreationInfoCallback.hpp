@@ -5,10 +5,12 @@
 #define DJINNI_GENERATED_NJSACCOUNTCREATIONINFOCALLBACK_HPP
 
 
-#include "../../../core/src/utils/optional.hpp"
-
 #include "../../../core/src/api/AccountCreationInfo.hpp"
 #include "../../../core/src/api/Error.hpp"
+#include "../../../core/src/utils/optional.hpp"
+#include <cstdint>
+#include <string>
+#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -18,9 +20,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSAccountCreationInfo;
-struct NJSError;
 
 class NJSAccountCreationInfoCallback: public Nan::ObjectWrap, public ledger::core::api::AccountCreationInfoCallback {
 public:

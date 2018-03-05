@@ -5,11 +5,10 @@
 #define DJINNI_GENERATED_NJSGETETHREUMLIKEWALLETCALLBACK_HPP
 
 
+#include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/EthereumLikeWallet.hpp"
 #include "NJSEthereumLikeWalletCpp.hpp"
 #include <memory>
-
-#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
@@ -19,8 +18,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSError;
 
 class NJSGetEthreumLikeWalletCallback: public Nan::ObjectWrap, public ledger::core::api::GetEthreumLikeWalletCallback {
 public:

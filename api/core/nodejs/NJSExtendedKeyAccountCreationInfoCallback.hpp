@@ -5,10 +5,10 @@
 #define DJINNI_GENERATED_NJSEXTENDEDKEYACCOUNTCREATIONINFOCALLBACK_HPP
 
 
-#include "../../../core/src/utils/optional.hpp"
-
 #include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/ExtendedKeyAccountCreationInfo.hpp"
+#include "../../../core/src/utils/optional.hpp"
+#include <string>
 
 #include <nan.h>
 #include <node.h>
@@ -18,9 +18,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSError;
-struct NJSExtendedKeyAccountCreationInfo;
 
 class NJSExtendedKeyAccountCreationInfoCallback: public Nan::ObjectWrap, public ledger::core::api::ExtendedKeyAccountCreationInfoCallback {
 public:

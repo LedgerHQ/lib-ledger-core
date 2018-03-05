@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEHELPER_HPP
 
 
+#include "../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeTransactionCpp.hpp"
@@ -12,8 +13,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "../../../core/src/api/BitcoinLikePreparedTransaction.hpp"
 
 #include <nan.h>
 #include <node.h>

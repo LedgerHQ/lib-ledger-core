@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_NJSACCOUNT_HPP
 
 
+#include "../../../core/src/api/WalletType.hpp"
 #include "NJSAmountCallback.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBlockCallback.hpp"
@@ -17,8 +18,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "../../../core/src/api/WalletType.hpp"
 
 #include <nan.h>
 #include <node.h>

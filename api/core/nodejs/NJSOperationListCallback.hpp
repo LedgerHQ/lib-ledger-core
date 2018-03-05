@@ -5,13 +5,12 @@
 #define DJINNI_GENERATED_NJSOPERATIONLISTCALLBACK_HPP
 
 
+#include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/Operation.hpp"
 #include "../../../core/src/utils/optional.hpp"
 #include "NJSOperationCpp.hpp"
 #include <memory>
 #include <vector>
-
-#include "../../../core/src/api/Error.hpp"
 
 #include <nan.h>
 #include <node.h>
@@ -21,8 +20,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 using namespace ledger::core::api;
-
-struct NJSError;
 
 class NJSOperationListCallback: public Nan::ObjectWrap, public ledger::core::api::OperationListCallback {
 public:

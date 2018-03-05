@@ -5,12 +5,11 @@
 #define DJINNI_GENERATED_NJSOPERATIONQUERY_HPP
 
 
+#include "../../../core/src/api/OperationOrderKey.hpp"
 #include "NJSOperationListCallback.hpp"
 #include "NJSQueryFilterCpp.hpp"
 #include <cstdint>
 #include <memory>
-
-#include "../../../core/src/api/OperationOrderKey.hpp"
 
 #include <nan.h>
 #include <node.h>

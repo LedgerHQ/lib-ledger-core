@@ -5,6 +5,9 @@
 #define DJINNI_GENERATED_NJSWALLETPOOL_HPP
 
 
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSCurrencyCallback.hpp"
 #include "NJSCurrencyListCallback.hpp"
@@ -18,8 +21,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include "../../../core/src/api/Currency.hpp"
 
 #include <nan.h>
 #include <node.h>
