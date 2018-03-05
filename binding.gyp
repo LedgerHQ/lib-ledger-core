@@ -5,14 +5,6 @@
       'sources': [
             "<!@(python glob.py api/core/nodejs *.cpp *.hpp)"
        ],
-       'link_settings': {
-       	'libraries': [
-       		'-Wl,-rpath,../lib-ledger-core-build/core/src'
-       	],
-       },
-       'libraries': [
-       	'../lib-ledger-core-build/core/src/libledger-core.dylib'
-       ],
        'include_dirs': [
 			"<!(node -e \"require('nan')\")",
 			"../lib-ledger-core-build/include/ledger/core",

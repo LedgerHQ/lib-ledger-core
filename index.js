@@ -1,5 +1,3 @@
-const axios = require('axios')
-
 let binding = null
 function loadBinding() {
   if (!binding) {
@@ -8,4 +6,3 @@ function loadBinding() {
 }
 
 loadBinding()
-
