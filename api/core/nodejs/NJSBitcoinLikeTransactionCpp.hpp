@@ -5,7 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTION_HPP
 
 
-#include "../../../core/src/utils/optional.hpp"
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeInputCpp.hpp"

@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSWALLETCALLBACK_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/Wallet.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSWalletCpp.hpp"
 #include <memory>
 

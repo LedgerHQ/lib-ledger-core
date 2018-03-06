@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSHTTPREQUEST_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/HttpMethod.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSHttpUrlConnection.hpp"
 #include <cstdint>
 #include <memory>

@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTIONREQUESTCALLBACK_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
 #include "../../../core/src/api/Error.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include <cstdint>

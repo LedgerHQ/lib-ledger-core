@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSEXTENDEDKEYACCOUNTCREATIONINFOCALLBACK_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/ExtendedKeyAccountCreationInfo.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include <string>
 
 #include <nan.h>

@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSOPERATIONLISTCALLBACK_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/Error.hpp"
 #include "../../../core/src/api/Operation.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSOperationCpp.hpp"
 #include <memory>
 #include <vector>

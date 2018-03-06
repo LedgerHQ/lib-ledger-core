@@ -5,8 +5,8 @@
 #define DJINNI_GENERATED_NJSDYNAMICARRAY_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/DynamicType.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSDynamicObjectCpp.hpp"
 #include <cstdint>
 #include <memory>

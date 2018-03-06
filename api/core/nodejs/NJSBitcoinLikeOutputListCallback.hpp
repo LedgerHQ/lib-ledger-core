@@ -5,9 +5,9 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEOUTPUTLISTCALLBACK_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeOutput.hpp"
 #include "../../../core/src/api/Error.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include <memory>
 #include <vector>

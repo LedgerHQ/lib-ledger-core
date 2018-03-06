@@ -5,8 +5,8 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEADDRESS_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
-#include "../../../core/src/utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
