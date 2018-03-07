@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSHttpRequest::getMethod) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSHttpRequest::getMethod) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getHeaders) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -67,6 +69,7 @@ NAN_METHOD(NJSHttpRequest::getHeaders) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getBody) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -99,6 +102,7 @@ NAN_METHOD(NJSHttpRequest::getBody) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getUrl) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -125,6 +129,7 @@ NAN_METHOD(NJSHttpRequest::getUrl) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::complete) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -178,6 +183,7 @@ NAN_METHOD(NJSHttpRequest::New) {
 Nan::Persistent<ObjectTemplate> NJSHttpRequest::HttpRequest_prototype;
 
 Handle<Object> NJSHttpRequest::wrap(const std::shared_ptr<ledger::core::api::HttpRequest> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(HttpRequest_prototype);
 
     Handle<Object> obj;

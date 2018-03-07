@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSSecp256k1::computePubKey) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -52,6 +53,7 @@ NAN_METHOD(NJSSecp256k1::computePubKey) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSSecp256k1::sign) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -106,6 +108,7 @@ NAN_METHOD(NJSSecp256k1::sign) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSSecp256k1::verify) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)
@@ -165,6 +168,7 @@ NAN_METHOD(NJSSecp256k1::verify) {
     info.GetReturnValue().Set(arg_3);
 }
 NAN_METHOD(NJSSecp256k1::newInstance) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -224,6 +228,7 @@ NAN_METHOD(NJSSecp256k1::New) {
 Nan::Persistent<ObjectTemplate> NJSSecp256k1::Secp256k1_prototype;
 
 Handle<Object> NJSSecp256k1::wrap(const std::shared_ptr<ledger::core::api::Secp256k1> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Secp256k1_prototype);
 
     Handle<Object> obj;

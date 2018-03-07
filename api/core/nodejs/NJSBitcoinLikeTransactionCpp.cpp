@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeTransaction::getHash) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getHash) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getInputs) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -67,6 +69,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getInputs) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getOutputs) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -100,6 +103,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getOutputs) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getBlock) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -127,6 +131,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getBlock) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getLockTime) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -153,6 +158,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getLockTime) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getFees) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -180,6 +186,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getFees) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeTransaction::getTime) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -228,6 +235,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeTransaction::BitcoinLikeTransaction_prototype;
 
 Handle<Object> NJSBitcoinLikeTransaction::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeTransaction> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeTransaction_prototype);
 
     Handle<Object> obj;

@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSEventPublisher::getEventBus) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,6 +36,7 @@ NAN_METHOD(NJSEventPublisher::getEventBus) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEventPublisher::post) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -62,6 +64,7 @@ NAN_METHOD(NJSEventPublisher::post) {
     cpp_impl->post(arg_0);
 }
 NAN_METHOD(NJSEventPublisher::postSticky) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -90,6 +93,7 @@ NAN_METHOD(NJSEventPublisher::postSticky) {
     cpp_impl->postSticky(arg_0,arg_1);
 }
 NAN_METHOD(NJSEventPublisher::relay) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -117,6 +121,7 @@ NAN_METHOD(NJSEventPublisher::relay) {
     cpp_impl->relay(arg_0);
 }
 NAN_METHOD(NJSEventPublisher::newInstance) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -184,6 +189,7 @@ NAN_METHOD(NJSEventPublisher::New) {
 Nan::Persistent<ObjectTemplate> NJSEventPublisher::EventPublisher_prototype;
 
 Handle<Object> NJSEventPublisher::wrap(const std::shared_ptr<ledger::core::api::EventPublisher> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(EventPublisher_prototype);
 
     Handle<Object> obj;

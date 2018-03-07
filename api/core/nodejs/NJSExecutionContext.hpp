@@ -23,7 +23,10 @@ class NJSExecutionContext: public Nan::ObjectWrap, public ledger::core::api::Exe
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSExecutionContext() {njs_impl.Reset();};
+    ~NJSExecutionContext()
+    {
+        njs_impl.Reset();
+    };
     NJSExecutionContext(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     /** */
@@ -36,6 +39,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSEXECUTIONCONTEXT_HPP

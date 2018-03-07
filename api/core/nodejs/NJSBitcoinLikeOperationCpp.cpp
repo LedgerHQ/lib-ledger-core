@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeOperation::getTransaction) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -56,6 +57,7 @@ NAN_METHOD(NJSBitcoinLikeOperation::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeOperation::BitcoinLikeOperation_prototype;
 
 Handle<Object> NJSBitcoinLikeOperation::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeOperation> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeOperation_prototype);
 
     Handle<Object> obj;

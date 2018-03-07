@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSOperation::getUid) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSOperation::getUid) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getAccountIndex) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -60,6 +62,7 @@ NAN_METHOD(NJSOperation::getAccountIndex) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getOperationType) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -86,6 +89,7 @@ NAN_METHOD(NJSOperation::getOperationType) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getDate) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -113,6 +117,7 @@ NAN_METHOD(NJSOperation::getDate) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getSenders) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -145,6 +150,7 @@ NAN_METHOD(NJSOperation::getSenders) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getRecipients) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -177,6 +183,7 @@ NAN_METHOD(NJSOperation::getRecipients) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getAmount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -204,6 +211,7 @@ NAN_METHOD(NJSOperation::getAmount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getFees) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -231,6 +239,7 @@ NAN_METHOD(NJSOperation::getFees) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getPreferences) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -258,6 +267,7 @@ NAN_METHOD(NJSOperation::getPreferences) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getTrust) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -285,6 +295,7 @@ NAN_METHOD(NJSOperation::getTrust) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getBlockHeight) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -311,6 +322,7 @@ NAN_METHOD(NJSOperation::getBlockHeight) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::asBitcoinLikeOperation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -338,6 +350,7 @@ NAN_METHOD(NJSOperation::asBitcoinLikeOperation) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::isInstanceOfBitcoinLikeOperation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -364,6 +377,7 @@ NAN_METHOD(NJSOperation::isInstanceOfBitcoinLikeOperation) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::isInstanceOfEthereumLikeOperation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -390,6 +404,7 @@ NAN_METHOD(NJSOperation::isInstanceOfEthereumLikeOperation) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::isInstanceOfRippleLikeOperation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -416,6 +431,7 @@ NAN_METHOD(NJSOperation::isInstanceOfRippleLikeOperation) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::isComplete) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -442,6 +458,7 @@ NAN_METHOD(NJSOperation::isComplete) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperation::getWalletType) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -489,6 +506,7 @@ NAN_METHOD(NJSOperation::New) {
 Nan::Persistent<ObjectTemplate> NJSOperation::Operation_prototype;
 
 Handle<Object> NJSOperation::wrap(const std::shared_ptr<ledger::core::api::Operation> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Operation_prototype);
 
     Handle<Object> obj;

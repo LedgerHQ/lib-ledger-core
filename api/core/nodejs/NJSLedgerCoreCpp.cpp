@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSLedgerCore::getStringVersion) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSLedgerCore::getStringVersion) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSLedgerCore::getIntVersion) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -81,6 +83,7 @@ NAN_METHOD(NJSLedgerCore::New) {
 Nan::Persistent<ObjectTemplate> NJSLedgerCore::LedgerCore_prototype;
 
 Handle<Object> NJSLedgerCore::wrap(const std::shared_ptr<ledger::core::api::LedgerCore> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(LedgerCore_prototype);
 
     Handle<Object> obj;

@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSRunnable::run) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -48,6 +49,7 @@ NAN_METHOD(NJSRunnable::New) {
 Nan::Persistent<ObjectTemplate> NJSRunnable::Runnable_prototype;
 
 Handle<Object> NJSRunnable::wrap(const std::shared_ptr<ledger::core::api::Runnable> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Runnable_prototype);
 
     Handle<Object> obj;

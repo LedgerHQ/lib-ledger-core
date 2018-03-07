@@ -29,6 +29,7 @@ NAN_METHOD(NJSBlockchainExplorerEngines::New) {
 Nan::Persistent<ObjectTemplate> NJSBlockchainExplorerEngines::BlockchainExplorerEngines_prototype;
 
 Handle<Object> NJSBlockchainExplorerEngines::wrap(const std::shared_ptr<ledger::core::api::BlockchainExplorerEngines> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BlockchainExplorerEngines_prototype);
 
     Handle<Object> obj;

@@ -23,7 +23,10 @@ class NJSLogPrinter: public Nan::ObjectWrap, public ledger::core::api::LogPrinte
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSLogPrinter() {njs_impl.Reset();};
+    ~NJSLogPrinter()
+    {
+        njs_impl.Reset();
+    };
     NJSLogPrinter(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void printError(const std::string & message);
@@ -45,6 +48,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSLOGPRINTER_HPP

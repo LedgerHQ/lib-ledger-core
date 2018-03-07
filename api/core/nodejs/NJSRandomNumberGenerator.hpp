@@ -21,7 +21,10 @@ class NJSRandomNumberGenerator: public Nan::ObjectWrap, public ledger::core::api
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSRandomNumberGenerator() {njs_impl.Reset();};
+    ~NJSRandomNumberGenerator()
+    {
+        njs_impl.Reset();
+    };
     NJSRandomNumberGenerator(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     std::vector<uint8_t> getRandomBytes(int32_t size);
@@ -37,6 +40,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSRANDOMNUMBERGENERATOR_HPP

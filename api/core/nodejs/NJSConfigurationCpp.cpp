@@ -29,6 +29,7 @@ NAN_METHOD(NJSConfiguration::New) {
 Nan::Persistent<ObjectTemplate> NJSConfiguration::Configuration_prototype;
 
 Handle<Object> NJSConfiguration::wrap(const std::shared_ptr<ledger::core::api::Configuration> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Configuration_prototype);
 
     Handle<Object> obj;

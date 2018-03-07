@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSAmount::toBigInt) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,6 +36,7 @@ NAN_METHOD(NJSAmount::toBigInt) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::getCurrency) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -124,6 +126,7 @@ NAN_METHOD(NJSAmount::getCurrency) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::getUnit) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -159,6 +162,7 @@ NAN_METHOD(NJSAmount::getUnit) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::toUnit) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -203,6 +207,7 @@ NAN_METHOD(NJSAmount::toUnit) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSAmount::toMagnitude) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -231,6 +236,7 @@ NAN_METHOD(NJSAmount::toMagnitude) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSAmount::toString) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -257,6 +263,7 @@ NAN_METHOD(NJSAmount::toString) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::toLong) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -283,6 +290,7 @@ NAN_METHOD(NJSAmount::toLong) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::toDouble) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -309,6 +317,7 @@ NAN_METHOD(NJSAmount::toDouble) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAmount::format) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -377,6 +386,7 @@ NAN_METHOD(NJSAmount::New) {
 Nan::Persistent<ObjectTemplate> NJSAmount::Amount_prototype;
 
 Handle<Object> NJSAmount::wrap(const std::shared_ptr<ledger::core::api::Amount> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Amount_prototype);
 
     Handle<Object> obj;

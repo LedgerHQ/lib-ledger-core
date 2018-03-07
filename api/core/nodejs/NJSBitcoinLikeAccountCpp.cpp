@@ -8,11 +8,12 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeAccount::getUTXO) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 3)
+    if(info.Length() != 2)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXO needs 3 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXO needs 2 arguments");
     }
 
     //Check if parameters have correct types
@@ -21,6 +22,10 @@ NAN_METHOD(NJSBitcoinLikeAccount::getUTXO) {
     Local<Object> njs_arg_2 = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBitcoinLikeOutputListCallback *njs_ptr_arg_2 = static_cast<NJSBitcoinLikeOutputListCallback *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
     std::shared_ptr<NJSBitcoinLikeOutputListCallback> arg_2(njs_ptr_arg_2);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_2->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -31,19 +36,25 @@ NAN_METHOD(NJSBitcoinLikeAccount::getUTXO) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXO : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->getUTXO(arg_0,arg_1,arg_2);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::getUTXOCount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXOCount needs 1 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXOCount needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSI32Callback *njs_ptr_arg_0 = static_cast<NJSI32Callback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSI32Callback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -54,13 +65,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::getUTXOCount) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::getUTXOCount : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->getUTXOCount(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 4)
+    if(info.Length() != 3)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::pickUTXO needs 4 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::pickUTXO needs 3 arguments");
     }
 
     //Check if parameters have correct types
@@ -95,6 +108,10 @@ NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
     NJSBitcoinLikeTransactionRequestCallback *njs_ptr_arg_3 = static_cast<NJSBitcoinLikeTransactionRequestCallback *>(Nan::GetInternalFieldPointer(njs_arg_3,0));
     std::shared_ptr<NJSBitcoinLikeTransactionRequestCallback> arg_3(njs_ptr_arg_3);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_3->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSBitcoinLikeAccount* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAccount>(info.This());
@@ -104,13 +121,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::pickUTXO : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->pickUTXO(arg_0,arg_1,arg_2,arg_3);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::estimateFees needs 2 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::estimateFees needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -183,6 +202,10 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     NJSBitcoinLikeTransactionRequestCallback *njs_ptr_arg_1 = static_cast<NJSBitcoinLikeTransactionRequestCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSBitcoinLikeTransactionRequestCallback> arg_1(njs_ptr_arg_1);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSBitcoinLikeAccount* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAccount>(info.This());
@@ -192,13 +215,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::estimateFees : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->estimateFees(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::prepareTransaction needs 2 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::prepareTransaction needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -271,6 +296,10 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     NJSBitcoinLikePreparedTransactionCallback *njs_ptr_arg_1 = static_cast<NJSBitcoinLikePreparedTransactionCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSBitcoinLikePreparedTransactionCallback> arg_1(njs_ptr_arg_1);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSBitcoinLikeAccount* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAccount>(info.This());
@@ -280,13 +309,15 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::prepareTransaction : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->prepareTransaction(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSBitcoinLikeAccount::broadcastTransaction needs 2 arguments");
+        return Nan::ThrowError("NJSBitcoinLikeAccount::broadcastTransaction needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -305,6 +336,10 @@ NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
     NJSStringCallback *njs_ptr_arg_1 = static_cast<NJSStringCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSStringCallback> arg_1(njs_ptr_arg_1);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSBitcoinLikeAccount* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAccount>(info.This());
@@ -314,6 +349,7 @@ NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
         return Nan::ThrowError("NJSBitcoinLikeAccount::broadcastTransaction : implementation of BitcoinLikeAccount is not valid");
     }
     cpp_impl->broadcastTransaction(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 
 NAN_METHOD(NJSBitcoinLikeAccount::New) {
@@ -337,6 +373,7 @@ NAN_METHOD(NJSBitcoinLikeAccount::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeAccount::BitcoinLikeAccount_prototype;
 
 Handle<Object> NJSBitcoinLikeAccount::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeAccount> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeAccount_prototype);
 
     Handle<Object> obj;

@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSAccount::getIndex) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSAccount::getIndex) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::queryOperations) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -61,17 +63,22 @@ NAN_METHOD(NJSAccount::queryOperations) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getBalance) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSAccount::getBalance needs 1 arguments");
+        return Nan::ThrowError("NJSAccount::getBalance needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAmountCallback *njs_ptr_arg_0 = static_cast<NJSAmountCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSAmountCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -82,8 +89,10 @@ NAN_METHOD(NJSAccount::getBalance) {
         return Nan::ThrowError("NJSAccount::getBalance : implementation of Account is not valid");
     }
     cpp_impl->getBalance(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::isSynchronizing) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -110,6 +119,7 @@ NAN_METHOD(NJSAccount::isSynchronizing) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::synchronize) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -137,6 +147,7 @@ NAN_METHOD(NJSAccount::synchronize) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getPreferences) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -164,6 +175,7 @@ NAN_METHOD(NJSAccount::getPreferences) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getLogger) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -191,6 +203,7 @@ NAN_METHOD(NJSAccount::getLogger) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getOperationPreferences) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -220,6 +233,7 @@ NAN_METHOD(NJSAccount::getOperationPreferences) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSAccount::isInstanceOfBitcoinLikeAccount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -246,6 +260,7 @@ NAN_METHOD(NJSAccount::isInstanceOfBitcoinLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::isInstanceOfEthereumLikeAccount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -272,6 +287,7 @@ NAN_METHOD(NJSAccount::isInstanceOfEthereumLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::isInstanceOfRippleLikeAccount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -298,17 +314,22 @@ NAN_METHOD(NJSAccount::isInstanceOfRippleLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSAccount::getFreshPublicAddresses needs 1 arguments");
+        return Nan::ThrowError("NJSAccount::getFreshPublicAddresses needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSStringListCallback *njs_ptr_arg_0 = static_cast<NJSStringListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -319,8 +340,10 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
         return Nan::ThrowError("NJSAccount::getFreshPublicAddresses : implementation of Account is not valid");
     }
     cpp_impl->getFreshPublicAddresses(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::getWalletType) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -347,6 +370,7 @@ NAN_METHOD(NJSAccount::getWalletType) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getEventBus) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -374,6 +398,7 @@ NAN_METHOD(NJSAccount::getEventBus) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::startBlockchainObservation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -393,6 +418,7 @@ NAN_METHOD(NJSAccount::startBlockchainObservation) {
     cpp_impl->startBlockchainObservation();
 }
 NAN_METHOD(NJSAccount::stopBlockchainObservation) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -412,6 +438,7 @@ NAN_METHOD(NJSAccount::stopBlockchainObservation) {
     cpp_impl->stopBlockchainObservation();
 }
 NAN_METHOD(NJSAccount::isObservingBlockchain) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -438,17 +465,22 @@ NAN_METHOD(NJSAccount::isObservingBlockchain) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getLastBlock) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSAccount::getLastBlock needs 1 arguments");
+        return Nan::ThrowError("NJSAccount::getLastBlock needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBlockCallback *njs_ptr_arg_0 = static_cast<NJSBlockCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -459,13 +491,15 @@ NAN_METHOD(NJSAccount::getLastBlock) {
         return Nan::ThrowError("NJSAccount::getLastBlock : implementation of Account is not valid");
     }
     cpp_impl->getLastBlock(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::computeFees) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 5)
+    if(info.Length() != 4)
     {
-        return Nan::ThrowError("NJSAccount::computeFees needs 5 arguments");
+        return Nan::ThrowError("NJSAccount::computeFees needs 4 arguments");
     }
 
     //Check if parameters have correct types
@@ -515,6 +549,10 @@ NAN_METHOD(NJSAccount::computeFees) {
     NJSAmountCallback *njs_ptr_arg_4 = static_cast<NJSAmountCallback *>(Nan::GetInternalFieldPointer(njs_arg_4,0));
     std::shared_ptr<NJSAmountCallback> arg_4(njs_ptr_arg_4);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_4->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
@@ -524,6 +562,7 @@ NAN_METHOD(NJSAccount::computeFees) {
         return Nan::ThrowError("NJSAccount::computeFees : implementation of Account is not valid");
     }
     cpp_impl->computeFees(arg_0,arg_1,arg_2,arg_3,arg_4);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 
 NAN_METHOD(NJSAccount::New) {
@@ -547,6 +586,7 @@ NAN_METHOD(NJSAccount::New) {
 Nan::Persistent<ObjectTemplate> NJSAccount::Account_prototype;
 
 Handle<Object> NJSAccount::wrap(const std::shared_ptr<ledger::core::api::Account> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Account_prototype);
 
     Handle<Object> obj;

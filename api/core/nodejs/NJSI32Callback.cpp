@@ -17,18 +17,17 @@ void NJSI32Callback::onCallback(std::experimental::optional<int32_t> result, con
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Handle<Value> args[2] = {arg_0,arg_1};
-    Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
-    if(!local_njs_impl->IsObject())
+    Nan::HandleScope scope;
+    auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
+    if(error)
     {
-        Nan::ThrowError("NJSI32Callback::onCallback fail to retrieve node implementation");
+        auto rejected = local_resolver->Reject(Nan::GetCurrentContext(), arg_1);
+        rejected.FromJust();
     }
-    auto calling_funtion = Nan::Get(local_njs_impl,Nan::New<String>("onCallback").ToLocalChecked()).ToLocalChecked();
-    auto handle = this->handle();
-    auto result_onCallback = Nan::CallAsFunction(calling_funtion->ToObject(),handle,2,args);
-    if(result_onCallback.IsEmpty())
+    else
     {
-        Nan::ThrowError("NJSI32Callback::onCallback call failed");
+        auto resolve = local_resolver->Resolve(Nan::GetCurrentContext(), arg_0);
+        resolve.FromJust();
     }
 }
 

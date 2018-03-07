@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSWebSocketConnection::onConnect) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -28,6 +29,7 @@ NAN_METHOD(NJSWebSocketConnection::onConnect) {
     cpp_impl->onConnect(arg_0);
 }
 NAN_METHOD(NJSWebSocketConnection::onClose) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -47,6 +49,7 @@ NAN_METHOD(NJSWebSocketConnection::onClose) {
     cpp_impl->onClose();
 }
 NAN_METHOD(NJSWebSocketConnection::onMessage) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -68,6 +71,7 @@ NAN_METHOD(NJSWebSocketConnection::onMessage) {
     cpp_impl->onMessage(arg_0);
 }
 NAN_METHOD(NJSWebSocketConnection::onError) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -90,6 +94,7 @@ NAN_METHOD(NJSWebSocketConnection::onError) {
     cpp_impl->onError(arg_0,arg_1);
 }
 NAN_METHOD(NJSWebSocketConnection::getConnectionId) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -137,6 +142,7 @@ NAN_METHOD(NJSWebSocketConnection::New) {
 Nan::Persistent<ObjectTemplate> NJSWebSocketConnection::WebSocketConnection_prototype;
 
 Handle<Object> NJSWebSocketConnection::wrap(const std::shared_ptr<ledger::core::api::WebSocketConnection> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(WebSocketConnection_prototype);
 
     Handle<Object> obj;

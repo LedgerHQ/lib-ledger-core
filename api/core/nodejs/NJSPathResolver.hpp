@@ -20,7 +20,10 @@ class NJSPathResolver: public Nan::ObjectWrap, public ledger::core::api::PathRes
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSPathResolver() {njs_impl.Reset();};
+    ~NJSPathResolver()
+    {
+        njs_impl.Reset();
+    };
     NJSPathResolver(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     /**
@@ -49,6 +52,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSPATHRESOLVER_HPP

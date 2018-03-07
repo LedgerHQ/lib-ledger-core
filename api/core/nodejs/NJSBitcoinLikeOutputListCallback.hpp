@@ -25,16 +25,25 @@ class NJSBitcoinLikeOutputListCallback: public Nan::ObjectWrap, public ledger::c
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSBitcoinLikeOutputListCallback() {njs_impl.Reset();};
+    ~NJSBitcoinLikeOutputListCallback()
+    {
+        njs_impl.Reset();
+        pers_resolver.Reset();
+    };
     NJSBitcoinLikeOutputListCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void onCallback(const std::experimental::optional<std::vector<std::shared_ptr<BitcoinLikeOutput>>> & result, const std::experimental::optional<Error> & error);
+    void SetPromise(Local<Promise::Resolver> resolver)
+    {
+        pers_resolver.Reset(resolver);
+    }
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
+    Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEOUTPUTLISTCALLBACK_HPP

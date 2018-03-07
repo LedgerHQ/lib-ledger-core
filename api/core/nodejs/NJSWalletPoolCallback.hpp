@@ -24,16 +24,25 @@ class NJSWalletPoolCallback: public Nan::ObjectWrap, public ledger::core::api::W
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSWalletPoolCallback() {njs_impl.Reset();};
+    ~NJSWalletPoolCallback()
+    {
+        njs_impl.Reset();
+        pers_resolver.Reset();
+    };
     NJSWalletPoolCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void onCallback(const std::shared_ptr<WalletPool> & result, const std::experimental::optional<Error> & error);
+    void SetPromise(Local<Promise::Resolver> resolver)
+    {
+        pers_resolver.Reset(resolver);
+    }
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
+    Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSWALLETPOOLCALLBACK_HPP

@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSWallet::getName) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,11 +35,12 @@ NAN_METHOD(NJSWallet::getName) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getAccount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSWallet::getAccount needs 2 arguments");
+        return Nan::ThrowError("NJSWallet::getAccount needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -46,6 +48,10 @@ NAN_METHOD(NJSWallet::getAccount) {
     Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -56,19 +62,25 @@ NAN_METHOD(NJSWallet::getAccount) {
         return Nan::ThrowError("NJSWallet::getAccount : implementation of Wallet is not valid");
     }
     cpp_impl->getAccount(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getAccountCount) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWallet::getAccountCount needs 1 arguments");
+        return Nan::ThrowError("NJSWallet::getAccountCount needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSI32Callback *njs_ptr_arg_0 = static_cast<NJSI32Callback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSI32Callback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -79,13 +91,15 @@ NAN_METHOD(NJSWallet::getAccountCount) {
         return Nan::ThrowError("NJSWallet::getAccountCount : implementation of Wallet is not valid");
     }
     cpp_impl->getAccountCount(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getAccounts) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 3)
+    if(info.Length() != 2)
     {
-        return Nan::ThrowError("NJSWallet::getAccounts needs 3 arguments");
+        return Nan::ThrowError("NJSWallet::getAccounts needs 2 arguments");
     }
 
     //Check if parameters have correct types
@@ -94,6 +108,10 @@ NAN_METHOD(NJSWallet::getAccounts) {
     Local<Object> njs_arg_2 = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountListCallback *njs_ptr_arg_2 = static_cast<NJSAccountListCallback *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
     std::shared_ptr<NJSAccountListCallback> arg_2(njs_ptr_arg_2);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_2->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -104,19 +122,25 @@ NAN_METHOD(NJSWallet::getAccounts) {
         return Nan::ThrowError("NJSWallet::getAccounts : implementation of Wallet is not valid");
     }
     cpp_impl->getAccounts(arg_0,arg_1,arg_2);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getNextAccountIndex) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWallet::getNextAccountIndex needs 1 arguments");
+        return Nan::ThrowError("NJSWallet::getNextAccountIndex needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSI32Callback *njs_ptr_arg_0 = static_cast<NJSI32Callback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSI32Callback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -127,8 +151,10 @@ NAN_METHOD(NJSWallet::getNextAccountIndex) {
         return Nan::ThrowError("NJSWallet::getNextAccountIndex : implementation of Wallet is not valid");
     }
     cpp_impl->getNextAccountIndex(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getEventBus) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -156,6 +182,7 @@ NAN_METHOD(NJSWallet::getEventBus) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::isSynchronizing) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -182,6 +209,7 @@ NAN_METHOD(NJSWallet::isSynchronizing) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::synchronize) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -209,6 +237,7 @@ NAN_METHOD(NJSWallet::synchronize) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getPreferences) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -236,6 +265,7 @@ NAN_METHOD(NJSWallet::getPreferences) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getLogger) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -263,6 +293,7 @@ NAN_METHOD(NJSWallet::getLogger) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getAccountPreferences) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -291,6 +322,7 @@ NAN_METHOD(NJSWallet::getAccountPreferences) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWallet::asBitcoinLikeWallet) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -318,6 +350,7 @@ NAN_METHOD(NJSWallet::asBitcoinLikeWallet) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getCurrency) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -407,6 +440,7 @@ NAN_METHOD(NJSWallet::getCurrency) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::isInstanceOfBitcoinLikeWallet) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -433,6 +467,7 @@ NAN_METHOD(NJSWallet::isInstanceOfBitcoinLikeWallet) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::isInstanceOfEthereumLikeWallet) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -459,6 +494,7 @@ NAN_METHOD(NJSWallet::isInstanceOfEthereumLikeWallet) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::isInstanceOfRippleLikeWallet) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -485,6 +521,7 @@ NAN_METHOD(NJSWallet::isInstanceOfRippleLikeWallet) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getWalletType) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -511,17 +548,22 @@ NAN_METHOD(NJSWallet::getWalletType) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSWallet::getLastBlock) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWallet::getLastBlock needs 1 arguments");
+        return Nan::ThrowError("NJSWallet::getLastBlock needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSBlockCallback *njs_ptr_arg_0 = static_cast<NJSBlockCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -532,13 +574,15 @@ NAN_METHOD(NJSWallet::getLastBlock) {
         return Nan::ThrowError("NJSWallet::getLastBlock : implementation of Wallet is not valid");
     }
     cpp_impl->getLastBlock(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getAccountCreationInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSWallet::getAccountCreationInfo needs 2 arguments");
+        return Nan::ThrowError("NJSWallet::getAccountCreationInfo needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -546,6 +590,10 @@ NAN_METHOD(NJSWallet::getAccountCreationInfo) {
     Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCreationInfoCallback *njs_ptr_arg_1 = static_cast<NJSAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCreationInfoCallback> arg_1(njs_ptr_arg_1);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -556,13 +604,15 @@ NAN_METHOD(NJSWallet::getAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getAccountCreationInfo : implementation of Wallet is not valid");
     }
     cpp_impl->getAccountCreationInfo(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getExtendedKeyAccountCreationInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSWallet::getExtendedKeyAccountCreationInfo needs 2 arguments");
+        return Nan::ThrowError("NJSWallet::getExtendedKeyAccountCreationInfo needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -570,6 +620,10 @@ NAN_METHOD(NJSWallet::getExtendedKeyAccountCreationInfo) {
     Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExtendedKeyAccountCreationInfoCallback *njs_ptr_arg_1 = static_cast<NJSExtendedKeyAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSExtendedKeyAccountCreationInfoCallback> arg_1(njs_ptr_arg_1);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -580,19 +634,25 @@ NAN_METHOD(NJSWallet::getExtendedKeyAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getExtendedKeyAccountCreationInfo : implementation of Wallet is not valid");
     }
     cpp_impl->getExtendedKeyAccountCreationInfo(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getNextAccountCreationInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWallet::getNextAccountCreationInfo needs 1 arguments");
+        return Nan::ThrowError("NJSWallet::getNextAccountCreationInfo needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSAccountCreationInfoCallback *njs_ptr_arg_0 = static_cast<NJSAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSAccountCreationInfoCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -603,19 +663,25 @@ NAN_METHOD(NJSWallet::getNextAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getNextAccountCreationInfo : implementation of Wallet is not valid");
     }
     cpp_impl->getNextAccountCreationInfo(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::getNextExtendedKeyAccountCreationInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSWallet::getNextExtendedKeyAccountCreationInfo needs 1 arguments");
+        return Nan::ThrowError("NJSWallet::getNextExtendedKeyAccountCreationInfo needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSExtendedKeyAccountCreationInfoCallback *njs_ptr_arg_0 = static_cast<NJSExtendedKeyAccountCreationInfoCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSExtendedKeyAccountCreationInfoCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -626,13 +692,15 @@ NAN_METHOD(NJSWallet::getNextExtendedKeyAccountCreationInfo) {
         return Nan::ThrowError("NJSWallet::getNextExtendedKeyAccountCreationInfo : implementation of Wallet is not valid");
     }
     cpp_impl->getNextExtendedKeyAccountCreationInfo(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::newAccountWithInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSWallet::newAccountWithInfo needs 2 arguments");
+        return Nan::ThrowError("NJSWallet::newAccountWithInfo needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -719,6 +787,10 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSWallet* obj = Nan::ObjectWrap::Unwrap<NJSWallet>(info.This());
@@ -728,13 +800,15 @@ NAN_METHOD(NJSWallet::newAccountWithInfo) {
         return Nan::ThrowError("NJSWallet::newAccountWithInfo : implementation of Wallet is not valid");
     }
     cpp_impl->newAccountWithInfo(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 2)
+    if(info.Length() != 1)
     {
-        return Nan::ThrowError("NJSWallet::newAccountWithExtendedKeyInfo needs 2 arguments");
+        return Nan::ThrowError("NJSWallet::newAccountWithExtendedKeyInfo needs 1 arguments");
     }
 
     //Check if parameters have correct types
@@ -789,6 +863,10 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     NJSAccountCallback *njs_ptr_arg_1 = static_cast<NJSAccountCallback *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
     std::shared_ptr<NJSAccountCallback> arg_1(njs_ptr_arg_1);
 
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_1->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSWallet* obj = Nan::ObjectWrap::Unwrap<NJSWallet>(info.This());
@@ -798,6 +876,7 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
         return Nan::ThrowError("NJSWallet::newAccountWithExtendedKeyInfo : implementation of Wallet is not valid");
     }
     cpp_impl->newAccountWithExtendedKeyInfo(arg_0,arg_1);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 
 NAN_METHOD(NJSWallet::New) {
@@ -821,6 +900,7 @@ NAN_METHOD(NJSWallet::New) {
 Nan::Persistent<ObjectTemplate> NJSWallet::Wallet_prototype;
 
 Handle<Object> NJSWallet::wrap(const std::shared_ptr<ledger::core::api::Wallet> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Wallet_prototype);
 
     Handle<Object> obj;

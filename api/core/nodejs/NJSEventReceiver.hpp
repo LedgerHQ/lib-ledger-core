@@ -22,7 +22,10 @@ class NJSEventReceiver: public Nan::ObjectWrap, public ledger::core::api::EventR
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSEventReceiver() {njs_impl.Reset();};
+    ~NJSEventReceiver()
+    {
+        njs_impl.Reset();
+    };
     NJSEventReceiver(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void onEvent(const std::shared_ptr<Event> & event);
@@ -32,6 +35,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSEVENTRECEIVER_HPP

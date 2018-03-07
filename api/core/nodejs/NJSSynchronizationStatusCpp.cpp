@@ -29,6 +29,7 @@ NAN_METHOD(NJSSynchronizationStatus::New) {
 Nan::Persistent<ObjectTemplate> NJSSynchronizationStatus::SynchronizationStatus_prototype;
 
 Handle<Object> NJSSynchronizationStatus::wrap(const std::shared_ptr<ledger::core::api::SynchronizationStatus> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(SynchronizationStatus_prototype);
 
     Handle<Object> obj;

@@ -29,6 +29,7 @@ NAN_METHOD(NJSSynchronizationEngines::New) {
 Nan::Persistent<ObjectTemplate> NJSSynchronizationEngines::SynchronizationEngines_prototype;
 
 Handle<Object> NJSSynchronizationEngines::wrap(const std::shared_ptr<ledger::core::api::SynchronizationEngines> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(SynchronizationEngines_prototype);
 
     Handle<Object> obj;

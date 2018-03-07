@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeBlock::getHash) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSBitcoinLikeBlock::getHash) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeBlock::getHeight) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -60,6 +62,7 @@ NAN_METHOD(NJSBitcoinLikeBlock::getHeight) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeBlock::getTime) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -108,6 +111,7 @@ NAN_METHOD(NJSBitcoinLikeBlock::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeBlock::BitcoinLikeBlock_prototype;
 
 Handle<Object> NJSBitcoinLikeBlock::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeBlock> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeBlock_prototype);
 
     Handle<Object> obj;

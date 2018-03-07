@@ -21,7 +21,10 @@ class NJSHashAlgorithmHelper: public Nan::ObjectWrap, public ledger::core::api::
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSHashAlgorithmHelper() {njs_impl.Reset();};
+    ~NJSHashAlgorithmHelper()
+    {
+        njs_impl.Reset();
+    };
     NJSHashAlgorithmHelper(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     std::vector<uint8_t> ripemd160(const std::vector<uint8_t> & data);
@@ -35,6 +38,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSHASHALGORITHMHELPER_HPP

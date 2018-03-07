@@ -29,6 +29,7 @@ NAN_METHOD(NJSKeychainEngines::New) {
 Nan::Persistent<ObjectTemplate> NJSKeychainEngines::KeychainEngines_prototype;
 
 Handle<Object> NJSKeychainEngines::wrap(const std::shared_ptr<ledger::core::api::KeychainEngines> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(KeychainEngines_prototype);
 
     Handle<Object> obj;

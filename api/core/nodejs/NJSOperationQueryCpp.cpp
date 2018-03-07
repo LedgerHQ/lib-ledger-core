@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSOperationQuery::addOrder) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -37,6 +38,7 @@ NAN_METHOD(NJSOperationQuery::addOrder) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSOperationQuery::filter) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -64,6 +66,7 @@ NAN_METHOD(NJSOperationQuery::filter) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::offset) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -92,6 +95,7 @@ NAN_METHOD(NJSOperationQuery::offset) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSOperationQuery::limit) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -120,6 +124,7 @@ NAN_METHOD(NJSOperationQuery::limit) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSOperationQuery::complete) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -147,6 +152,7 @@ NAN_METHOD(NJSOperationQuery::complete) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::partial) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -174,17 +180,22 @@ NAN_METHOD(NJSOperationQuery::partial) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::execute) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSOperationQuery::execute needs 1 arguments");
+        return Nan::ThrowError("NJSOperationQuery::execute needs 0 arguments");
     }
 
     //Check if parameters have correct types
     Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
     NJSOperationListCallback *njs_ptr_arg_0 = static_cast<NJSOperationListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
     std::shared_ptr<NJSOperationListCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -195,6 +206,7 @@ NAN_METHOD(NJSOperationQuery::execute) {
         return Nan::ThrowError("NJSOperationQuery::execute : implementation of OperationQuery is not valid");
     }
     cpp_impl->execute(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 
 NAN_METHOD(NJSOperationQuery::New) {
@@ -218,6 +230,7 @@ NAN_METHOD(NJSOperationQuery::New) {
 Nan::Persistent<ObjectTemplate> NJSOperationQuery::OperationQuery_prototype;
 
 Handle<Object> NJSOperationQuery::wrap(const std::shared_ptr<ledger::core::api::OperationQuery> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(OperationQuery_prototype);
 
     Handle<Object> obj;

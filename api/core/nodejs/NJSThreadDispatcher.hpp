@@ -25,7 +25,10 @@ class NJSThreadDispatcher: public Nan::ObjectWrap, public ledger::core::api::Thr
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSThreadDispatcher() {njs_impl.Reset();};
+    ~NJSThreadDispatcher()
+    {
+        njs_impl.Reset();
+    };
     NJSThreadDispatcher(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     std::shared_ptr<ExecutionContext> getSerialExecutionContext(const std::string & name);
@@ -41,6 +44,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSTHREADDISPATCHER_HPP

@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSEvent::getCode) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSEvent::getCode) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::getPayload) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -61,6 +63,7 @@ NAN_METHOD(NJSEvent::getPayload) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::isSticky) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -87,6 +90,7 @@ NAN_METHOD(NJSEvent::isSticky) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::getStickyTag) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -113,6 +117,7 @@ NAN_METHOD(NJSEvent::getStickyTag) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::newInstance) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -190,6 +195,7 @@ NAN_METHOD(NJSEvent::New) {
 Nan::Persistent<ObjectTemplate> NJSEvent::Event_prototype;
 
 Handle<Object> NJSEvent::wrap(const std::shared_ptr<ledger::core::api::Event> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(Event_prototype);
 
     Handle<Object> obj;

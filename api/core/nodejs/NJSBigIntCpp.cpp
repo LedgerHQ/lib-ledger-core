@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBigInt::add) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -43,6 +44,7 @@ NAN_METHOD(NJSBigInt::add) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::subtract) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -78,6 +80,7 @@ NAN_METHOD(NJSBigInt::subtract) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::multiply) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -113,6 +116,7 @@ NAN_METHOD(NJSBigInt::multiply) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::divide) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -148,6 +152,7 @@ NAN_METHOD(NJSBigInt::divide) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::divideAndRemainder) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -189,6 +194,7 @@ NAN_METHOD(NJSBigInt::divideAndRemainder) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::pow) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -217,6 +223,7 @@ NAN_METHOD(NJSBigInt::pow) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::toDecimalString) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)
@@ -248,6 +255,7 @@ NAN_METHOD(NJSBigInt::toDecimalString) {
     info.GetReturnValue().Set(arg_3);
 }
 NAN_METHOD(NJSBigInt::toString) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -275,6 +283,7 @@ NAN_METHOD(NJSBigInt::toString) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::intValue) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -301,6 +310,7 @@ NAN_METHOD(NJSBigInt::intValue) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBigInt::compare) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -335,6 +345,7 @@ NAN_METHOD(NJSBigInt::compare) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBigInt::fromDecimalString) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)
@@ -367,6 +378,7 @@ NAN_METHOD(NJSBigInt::fromDecimalString) {
     info.GetReturnValue().Set(arg_3);
 }
 NAN_METHOD(NJSBigInt::fromIntegerString) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -397,6 +409,7 @@ NAN_METHOD(NJSBigInt::fromIntegerString) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSBigInt::fromLong) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -462,6 +475,7 @@ NAN_METHOD(NJSBigInt::New) {
 Nan::Persistent<ObjectTemplate> NJSBigInt::BigInt_prototype;
 
 Handle<Object> NJSBigInt::wrap(const std::shared_ptr<ledger::core::api::BigInt> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BigInt_prototype);
 
     Handle<Object> obj;

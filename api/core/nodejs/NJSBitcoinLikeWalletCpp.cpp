@@ -29,6 +29,7 @@ NAN_METHOD(NJSBitcoinLikeWallet::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeWallet::BitcoinLikeWallet_prototype;
 
 Handle<Object> NJSBitcoinLikeWallet::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeWallet> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeWallet_prototype);
 
     Handle<Object> obj;

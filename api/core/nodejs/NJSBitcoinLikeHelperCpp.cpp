@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -54,6 +55,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSBitcoinLikeHelper::addressToOutput) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -91,6 +93,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::addressToOutput) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -185,6 +188,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBitcoinLikeHelper::parseTransaction) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -244,6 +248,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeHelper::BitcoinLikeHelper_prototype;
 
 Handle<Object> NJSBitcoinLikeHelper::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeHelper> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeHelper_prototype);
 
     Handle<Object> obj;

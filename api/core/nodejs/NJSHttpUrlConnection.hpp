@@ -25,7 +25,10 @@ class NJSHttpUrlConnection: public Nan::ObjectWrap, public ledger::core::api::Ht
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSHttpUrlConnection() {njs_impl.Reset();};
+    ~NJSHttpUrlConnection()
+    {
+        njs_impl.Reset();
+    };
     NJSHttpUrlConnection(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     /**
@@ -57,6 +60,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSHTTPURLCONNECTION_HPP

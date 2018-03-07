@@ -23,16 +23,25 @@ class NJSExtendedKeyAccountCreationInfoCallback: public Nan::ObjectWrap, public 
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSExtendedKeyAccountCreationInfoCallback() {njs_impl.Reset();};
+    ~NJSExtendedKeyAccountCreationInfoCallback()
+    {
+        njs_impl.Reset();
+        pers_resolver.Reset();
+    };
     NJSExtendedKeyAccountCreationInfoCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void onCallback(const std::experimental::optional<ExtendedKeyAccountCreationInfo> & result, const std::experimental::optional<Error> & error);
+    void SetPromise(Local<Promise::Resolver> resolver)
+    {
+        pers_resolver.Reset(resolver);
+    }
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
+    Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSEXTENDEDKEYACCOUNTCREATIONINFOCALLBACK_HPP

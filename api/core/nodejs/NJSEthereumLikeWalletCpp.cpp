@@ -29,6 +29,7 @@ NAN_METHOD(NJSEthereumLikeWallet::New) {
 Nan::Persistent<ObjectTemplate> NJSEthereumLikeWallet::EthereumLikeWallet_prototype;
 
 Handle<Object> NJSEthereumLikeWallet::wrap(const std::shared_ptr<ledger::core::api::EthereumLikeWallet> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(EthereumLikeWallet_prototype);
 
     Handle<Object> obj;

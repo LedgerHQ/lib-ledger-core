@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSEventBus::subscribe) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -35,6 +36,7 @@ NAN_METHOD(NJSEventBus::subscribe) {
     cpp_impl->subscribe(arg_0,arg_1);
 }
 NAN_METHOD(NJSEventBus::unsubscribe) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -79,6 +81,7 @@ NAN_METHOD(NJSEventBus::New) {
 Nan::Persistent<ObjectTemplate> NJSEventBus::EventBus_prototype;
 
 Handle<Object> NJSEventBus::wrap(const std::shared_ptr<ledger::core::api::EventBus> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(EventBus_prototype);
 
     Handle<Object> obj;

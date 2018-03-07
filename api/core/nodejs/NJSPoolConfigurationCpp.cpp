@@ -29,6 +29,7 @@ NAN_METHOD(NJSPoolConfiguration::New) {
 Nan::Persistent<ObjectTemplate> NJSPoolConfiguration::PoolConfiguration_prototype;
 
 Handle<Object> NJSPoolConfiguration::wrap(const std::shared_ptr<ledger::core::api::PoolConfiguration> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(PoolConfiguration_prototype);
 
     Handle<Object> obj;

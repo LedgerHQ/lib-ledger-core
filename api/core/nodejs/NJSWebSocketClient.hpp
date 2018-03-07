@@ -23,7 +23,10 @@ class NJSWebSocketClient: public Nan::ObjectWrap, public ledger::core::api::WebS
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSWebSocketClient() {njs_impl.Reset();};
+    ~NJSWebSocketClient()
+    {
+        njs_impl.Reset();
+    };
     NJSWebSocketClient(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void connect(const std::string & url, const std::shared_ptr<WebSocketConnection> & connection);
@@ -37,6 +40,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSWEBSOCKETCLIENT_HPP

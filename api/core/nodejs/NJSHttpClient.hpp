@@ -22,7 +22,10 @@ class NJSHttpClient: public Nan::ObjectWrap, public ledger::core::api::HttpClien
 public:
 
     static void Initialize(Local<Object> target);
-    ~NJSHttpClient() {njs_impl.Reset();};
+    ~NJSHttpClient()
+    {
+        njs_impl.Reset();
+    };
     NJSHttpClient(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void execute(const std::shared_ptr<HttpRequest> & request);
@@ -32,6 +35,6 @@ private:
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent <Object> njs_impl;
+    Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSHTTPCLIENT_HPP

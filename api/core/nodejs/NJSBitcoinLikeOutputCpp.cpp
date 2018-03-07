@@ -8,6 +8,7 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeOutput::getTransactionHash) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -34,6 +35,7 @@ NAN_METHOD(NJSBitcoinLikeOutput::getTransactionHash) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeOutput::getOutputIndex) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -60,6 +62,7 @@ NAN_METHOD(NJSBitcoinLikeOutput::getOutputIndex) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeOutput::getValue) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -87,6 +90,7 @@ NAN_METHOD(NJSBitcoinLikeOutput::getValue) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeOutput::getScript) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -119,6 +123,7 @@ NAN_METHOD(NJSBitcoinLikeOutput::getScript) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeOutput::getAddress) {
+    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -166,6 +171,7 @@ NAN_METHOD(NJSBitcoinLikeOutput::New) {
 Nan::Persistent<ObjectTemplate> NJSBitcoinLikeOutput::BitcoinLikeOutput_prototype;
 
 Handle<Object> NJSBitcoinLikeOutput::wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeOutput> &object) {
+    Nan::HandleScope scope;
     Local<ObjectTemplate> local_prototype = Nan::New(BitcoinLikeOutput_prototype);
 
     Handle<Object> obj;
