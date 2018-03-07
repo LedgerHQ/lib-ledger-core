@@ -1,8 +1,8 @@
 {
-
 	'variables': {
     		'core_library%': "../../lib-ledger-core-build",
     		'core_library0%': "../../../lib-ledger-core-build",
+    		'run_path%': "../lib-ledger-core-build/core/src",
     		'core_library1%': "../",
     		'core_library2%': "../../",
     		'core_library3%': "../../../",
@@ -25,20 +25,7 @@
 				"<!(node -e \"require('nan')\")"
 			],
 		},
-		'library_dirs': [
-			'<@(core_library)/core/src',
-		],
-        'libraries': ['libledger-core.dylib',],
-      	'ldflags': [
-      	'-Wl,-rpath,<!(pwd)',
-      	'-Wl,-rpath,<@(core_library)',
-      	'-Wl,-rpath,<@(core_library1)',
-      	'-Wl,-rpath,<@(core_library2)',
-      	'-Wl,-rpath,<@(core_library3)',
-      	'-Wl,-rpath,<@(core_library5)',
-      	'-Wl,-rpath,<@(core_library5)',
-      	'-Wl,-rpath,<@(core_library5)',
-      	],
+      'libraries': ['-Wl,-rpath,<!(pwd)/<@(run_path)','-L<@(core_library)/core/src','-lledger-core'],
       'conditions': [
         [ 'OS=="mac"', {
               'LDFLAGS': [
