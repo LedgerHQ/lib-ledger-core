@@ -23,4 +23,6 @@ add_subdirectory(doc)
 add_subdirectory(core)
 add_subdirectory(qt-host)
 
+include("${CMAKE_CURRENT_LIST_DIR}/os/iphone.cmake")
+
 enable_testing()
