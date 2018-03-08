@@ -3,9 +3,9 @@
 
 declare class NJSSecp256k1
 {
-    declare function computePubKey(Object: privKey, Boolean: compress): Object;
-    declare function sign(Object: privKey, Object: data): Object;
-    declare function verify(Object: data, Object: signature, Object: pubKey): Boolean;
+    declare function computePubKey(privKey: Object, compress: Boolean): Object;
+    declare function sign(privKey: Object, data: Object): Object;
+    declare function verify(data: Object, signature: Object, pubKey: Object): Boolean;
     static declare function newInstance(): NJSSecp256k1;
 }
 declare class NJSNetworks
@@ -14,9 +14,9 @@ declare class NJSNetworks
 }
 declare class NJSHashAlgorithmHelper
 {
-    declare function ripemd160(Object: data): Object;
-    declare function sha256(Object: data): Object;
-    declare function keccak256(Object: data): Object;
+    declare function ripemd160(data: Object): Object;
+    declare function sha256(data: Object): Object;
+    declare function keccak256(data: Object): Object;
 }
 declare class NJSEvent
 {
@@ -24,24 +24,24 @@ declare class NJSEvent
     declare function getPayload(): NJSDynamicObject;
     declare function isSticky(): Boolean;
     declare function getStickyTag(): Int32;
-    static declare function newInstance(EventCode: code, NJSDynamicObject: payload): NJSEvent;
+    static declare function newInstance(code: EventCode, payload: NJSDynamicObject): NJSEvent;
 }
 declare class NJSEventReceiver
 {
-    declare function onEvent(NJSEvent: event)
+    declare function onEvent(event: NJSEvent)
 }
 declare class NJSEventBus
 {
-    declare function subscribe(NJSExecutionContext: context, NJSEventReceiver: receiver)
-    declare function unsubscribe(NJSEventReceiver: receiver)
+    declare function subscribe(context: NJSExecutionContext, receiver: NJSEventReceiver)
+    declare function unsubscribe(receiver: NJSEventReceiver)
 }
 declare class NJSEventPublisher
 {
     declare function getEventBus(): NJSEventBus;
-    declare function post(NJSEvent: event)
-    declare function postSticky(NJSEvent: event, Int32: tag)
-    declare function relay(NJSEventBus: bus)
-    static declare function newInstance(NJSExecutionContext: context): NJSEventPublisher;
+    declare function post(event: NJSEvent)
+    declare function postSticky(event: NJSEvent, tag: Int32)
+    declare function relay(bus: NJSEventBus)
+    static declare function newInstance(context: NJSExecutionContext): NJSEventPublisher;
 }
 declare class NJSSynchronizationStatus
 {
@@ -79,71 +79,71 @@ declare class NJSOperation
 }
 declare class NJSQueryFilter
 {
-    static declare function accountEq(String: accountUid): NJSQueryFilter;
-    static declare function accountNeq(String: accountUid): NJSQueryFilter;
-    static declare function dateLte(Date: time): NJSQueryFilter;
-    static declare function dateLt(Date: time): NJSQueryFilter;
-    static declare function dateGt(Date: time): NJSQueryFilter;
-    static declare function dateGte(Date: time): NJSQueryFilter;
-    static declare function dateEq(Date: time): NJSQueryFilter;
-    static declare function dateNeq(Date: time): NJSQueryFilter;
-    static declare function containsRecipient(String: recipientAddress): NJSQueryFilter;
-    static declare function containsSender(String: senderAddress): NJSQueryFilter;
-    static declare function currencyEq(String: currencyName): NJSQueryFilter;
-    static declare function operationUidEq(String: operationUid): NJSQueryFilter;
-    static declare function operationUidNeq(String: operationUid): NJSQueryFilter;
-    static declare function trustEq(TrustLevel: trust): NJSQueryFilter;
-    static declare function trustNeq(TrustLevel: trust): NJSQueryFilter;
-    static declare function feesEq(NJSAmount: amount): NJSQueryFilter;
-    static declare function feesNeq(NJSAmount: amount): NJSQueryFilter;
-    static declare function feesGte(NJSAmount: amount): NJSQueryFilter;
-    static declare function feesGt(NJSAmount: amount): NJSQueryFilter;
-    static declare function feesLte(NJSAmount: amount): NJSQueryFilter;
-    static declare function feesLt(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountEq(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountNeq(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountGte(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountGt(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountLte(NJSAmount: amount): NJSQueryFilter;
-    static declare function amountLt(NJSAmount: amount): NJSQueryFilter;
-    static declare function blockHeightEq(Number: blockHeight): NJSQueryFilter;
-    static declare function blockHeightNeq(Number: blockHeight): NJSQueryFilter;
-    static declare function blockHeightGte(Number: blockHeight): NJSQueryFilter;
-    static declare function blockHeightGt(Number: blockHeight): NJSQueryFilter;
-    static declare function blockHeightLte(Number: blockHeight): NJSQueryFilter;
-    static declare function blockHeightLt(Number: blockHeight): NJSQueryFilter;
+    static declare function accountEq(accountUid: String): NJSQueryFilter;
+    static declare function accountNeq(accountUid: String): NJSQueryFilter;
+    static declare function dateLte(time: Date): NJSQueryFilter;
+    static declare function dateLt(time: Date): NJSQueryFilter;
+    static declare function dateGt(time: Date): NJSQueryFilter;
+    static declare function dateGte(time: Date): NJSQueryFilter;
+    static declare function dateEq(time: Date): NJSQueryFilter;
+    static declare function dateNeq(time: Date): NJSQueryFilter;
+    static declare function containsRecipient(recipientAddress: String): NJSQueryFilter;
+    static declare function containsSender(senderAddress: String): NJSQueryFilter;
+    static declare function currencyEq(currencyName: String): NJSQueryFilter;
+    static declare function operationUidEq(operationUid: String): NJSQueryFilter;
+    static declare function operationUidNeq(operationUid: String): NJSQueryFilter;
+    static declare function trustEq(trust: TrustLevel): NJSQueryFilter;
+    static declare function trustNeq(trust: TrustLevel): NJSQueryFilter;
+    static declare function feesEq(amount: NJSAmount): NJSQueryFilter;
+    static declare function feesNeq(amount: NJSAmount): NJSQueryFilter;
+    static declare function feesGte(amount: NJSAmount): NJSQueryFilter;
+    static declare function feesGt(amount: NJSAmount): NJSQueryFilter;
+    static declare function feesLte(amount: NJSAmount): NJSQueryFilter;
+    static declare function feesLt(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountEq(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountNeq(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountGte(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountGt(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountLte(amount: NJSAmount): NJSQueryFilter;
+    static declare function amountLt(amount: NJSAmount): NJSQueryFilter;
+    static declare function blockHeightEq(blockHeight: Number): NJSQueryFilter;
+    static declare function blockHeightNeq(blockHeight: Number): NJSQueryFilter;
+    static declare function blockHeightGte(blockHeight: Number): NJSQueryFilter;
+    static declare function blockHeightGt(blockHeight: Number): NJSQueryFilter;
+    static declare function blockHeightLte(blockHeight: Number): NJSQueryFilter;
+    static declare function blockHeightLt(blockHeight: Number): NJSQueryFilter;
     static declare function blockHeightIsNull(): NJSQueryFilter;
-    static declare function operationTypeEq(OperationType: operationType): NJSQueryFilter;
-    static declare function operationTypeNeq(OperationType: operationType): NJSQueryFilter;
-    declare function op_and(NJSQueryFilter: filter): NJSQueryFilter;
-    declare function op_or(NJSQueryFilter: filter): NJSQueryFilter;
-    declare function op_and_not(NJSQueryFilter: filter): NJSQueryFilter;
-    declare function op_or_not(NJSQueryFilter: filter): NJSQueryFilter;
+    static declare function operationTypeEq(operationType: OperationType): NJSQueryFilter;
+    static declare function operationTypeNeq(operationType: OperationType): NJSQueryFilter;
+    declare function op_and(filter: NJSQueryFilter): NJSQueryFilter;
+    declare function op_or(filter: NJSQueryFilter): NJSQueryFilter;
+    declare function op_and_not(filter: NJSQueryFilter): NJSQueryFilter;
+    declare function op_or_not(filter: NJSQueryFilter): NJSQueryFilter;
 }
 declare class NJSOperationQuery
 {
-    declare function addOrder(OperationOrderKey: key, Boolean: descending): NJSOperationQuery;
+    declare function addOrder(key: OperationOrderKey, descending: Boolean): NJSOperationQuery;
     declare function filter(): NJSQueryFilter;
-    declare function offset(Number: from): NJSOperationQuery;
-    declare function limit(Number: count): NJSOperationQuery;
+    declare function offset(from: Number): NJSOperationQuery;
+    declare function limit(count: Number): NJSOperationQuery;
     declare function complete(): NJSOperationQuery;
     declare function partial(): NJSOperationQuery;
-    declare function execute(NJSOperationListCallback: callback)
+    declare function execute(callback: NJSOperationListCallback)
 }
 declare class NJSOperationListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSAccount
 {
     declare function getIndex(): Int32;
     declare function queryOperations(): NJSOperationQuery;
-    declare function getBalance(NJSAmountCallback: callback)
+    declare function getBalance(callback: NJSAmountCallback)
     declare function isSynchronizing(): Boolean;
     declare function synchronize(): NJSEventBus;
     declare function getPreferences(): NJSPreferences;
     declare function getLogger(): NJSLogger;
-    declare function getOperationPreferences(String: uid): NJSPreferences;
+    declare function getOperationPreferences(uid: String): NJSPreferences;
     /**
      * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
@@ -152,40 +152,40 @@ declare class NJSAccount
     declare function isInstanceOfBitcoinLikeAccount(): Boolean;
     declare function isInstanceOfEthereumLikeAccount(): Boolean;
     declare function isInstanceOfRippleLikeAccount(): Boolean;
-    declare function getFreshPublicAddresses(NJSStringListCallback: callback)
+    declare function getFreshPublicAddresses(callback: NJSStringListCallback)
     declare function getWalletType(): WalletType;
     declare function getEventBus(): NJSEventBus;
     declare function startBlockchainObservation()
     declare function stopBlockchainObservation()
     declare function isObservingBlockchain(): Boolean;
-    declare function getLastBlock(NJSBlockCallback: callback)
-    declare function computeFees(NJSAmount: amount, Int32: priority, Array: recipients, Array: data, NJSAmountCallback: callback)
+    declare function getLastBlock(callback: NJSBlockCallback)
+    declare function computeFees(amount: NJSAmount, priority: Int32, recipients: Array, data: Array, callback: NJSAmountCallback)
 }
 declare class NJSAmountCallback
 {
-    declare function onCallback(NJSAmount: result, MaybeLocal: error)
+    declare function onCallback(result: NJSAmount, error: MaybeLocal)
 }
 declare class NJSStringListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSBlockCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSWallet
 {
     declare function getName(): String;
-    declare function getAccount(Int32: index, NJSAccountCallback: callback)
-    declare function getAccountCount(NJSI32Callback: callback)
-    declare function getAccounts(Int32: offset, Int32: count, NJSAccountListCallback: callback)
-    declare function getNextAccountIndex(NJSI32Callback: callback)
+    declare function getAccount(index: Int32, callback: NJSAccountCallback)
+    declare function getAccountCount(callback: NJSI32Callback)
+    declare function getAccounts(offset: Int32, count: Int32, callback: NJSAccountListCallback)
+    declare function getNextAccountIndex(callback: NJSI32Callback)
     declare function getEventBus(): NJSEventBus;
     declare function isSynchronizing(): Boolean;
     declare function synchronize(): NJSEventBus;
     declare function getPreferences(): NJSPreferences;
     declare function getLogger(): NJSLogger;
-    declare function getAccountPreferences(Int32: index): NJSPreferences;
+    declare function getAccountPreferences(index: Int32): NJSPreferences;
     /**
      * asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
      * asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
@@ -197,90 +197,90 @@ declare class NJSWallet
     declare function isInstanceOfEthereumLikeWallet(): Boolean;
     declare function isInstanceOfRippleLikeWallet(): Boolean;
     declare function getWalletType(): WalletType;
-    declare function getLastBlock(NJSBlockCallback: callback)
-    declare function getAccountCreationInfo(Int32: accountIndex, NJSAccountCreationInfoCallback: callback)
-    declare function getExtendedKeyAccountCreationInfo(Int32: accountIndex, NJSExtendedKeyAccountCreationInfoCallback: callback)
-    declare function getNextAccountCreationInfo(NJSAccountCreationInfoCallback: callback)
-    declare function getNextExtendedKeyAccountCreationInfo(NJSExtendedKeyAccountCreationInfoCallback: callback)
-    declare function newAccountWithInfo(AccountCreationInfo: accountCreationInfo, NJSAccountCallback: callback)
-    declare function newAccountWithExtendedKeyInfo(ExtendedKeyAccountCreationInfo: extendedKeyAccountCreationInfo, NJSAccountCallback: callback)
+    declare function getLastBlock(callback: NJSBlockCallback)
+    declare function getAccountCreationInfo(accountIndex: Int32, callback: NJSAccountCreationInfoCallback)
+    declare function getExtendedKeyAccountCreationInfo(accountIndex: Int32, callback: NJSExtendedKeyAccountCreationInfoCallback)
+    declare function getNextAccountCreationInfo(callback: NJSAccountCreationInfoCallback)
+    declare function getNextExtendedKeyAccountCreationInfo(callback: NJSExtendedKeyAccountCreationInfoCallback)
+    declare function newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: NJSAccountCallback)
+    declare function newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: NJSAccountCallback)
 }
 declare class NJSAccountCallback
 {
-    declare function onCallback(NJSAccount: result, MaybeLocal: error)
+    declare function onCallback(result: NJSAccount, error: MaybeLocal)
 }
 declare class NJSI32Callback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSAccountListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSAccountCreationInfoCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSExtendedKeyAccountCreationInfoCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSDynamicArray
 {
     declare function size(): Number;
-    declare function getString(Number: index): MaybeLocal;
-    declare function getInt(Number: index): MaybeLocal;
-    declare function getLong(Number: index): MaybeLocal;
-    declare function getDouble(Number: index): MaybeLocal;
-    declare function getData(Number: index): MaybeLocal;
-    declare function getBoolean(Number: index): MaybeLocal;
-    declare function pushInt(Int32: value): NJSDynamicArray;
-    declare function pushLong(Number: value): NJSDynamicArray;
-    declare function pushString(String: value): NJSDynamicArray;
-    declare function pushDouble(Number: value): NJSDynamicArray;
-    declare function pushData(Object: value): NJSDynamicArray;
-    declare function pushBoolean(Boolean: value): NJSDynamicArray;
-    declare function getObject(Number: index): NJSDynamicObject;
-    declare function getArray(Number: index): NJSDynamicArray;
-    declare function pushObject(NJSDynamicObject: value): NJSDynamicArray;
-    declare function pushArray(NJSDynamicArray: value): NJSDynamicArray;
-    declare function concat(NJSDynamicArray: array): NJSDynamicArray;
-    declare function getType(Number: index): MaybeLocal;
-    declare function remove(Number: index): Boolean;
+    declare function getString(index: Number): MaybeLocal;
+    declare function getInt(index: Number): MaybeLocal;
+    declare function getLong(index: Number): MaybeLocal;
+    declare function getDouble(index: Number): MaybeLocal;
+    declare function getData(index: Number): MaybeLocal;
+    declare function getBoolean(index: Number): MaybeLocal;
+    declare function pushInt(value: Int32): NJSDynamicArray;
+    declare function pushLong(value: Number): NJSDynamicArray;
+    declare function pushString(value: String): NJSDynamicArray;
+    declare function pushDouble(value: Number): NJSDynamicArray;
+    declare function pushData(value: Object): NJSDynamicArray;
+    declare function pushBoolean(value: Boolean): NJSDynamicArray;
+    declare function getObject(index: Number): NJSDynamicObject;
+    declare function getArray(index: Number): NJSDynamicArray;
+    declare function pushObject(value: NJSDynamicObject): NJSDynamicArray;
+    declare function pushArray(value: NJSDynamicArray): NJSDynamicArray;
+    declare function concat(array: NJSDynamicArray): NJSDynamicArray;
+    declare function getType(index: Number): MaybeLocal;
+    declare function remove(index: Number): Boolean;
     declare function dump(): String;
     declare function serialize(): Object;
     declare function isReadOnly(): Boolean;
     static declare function newInstance(): NJSDynamicArray;
-    static declare function load(Object: serialized): NJSDynamicArray;
+    static declare function load(serialized: Object): NJSDynamicArray;
 }
 declare class NJSDynamicObject
 {
     declare function isReadOnly(): Boolean;
-    declare function putString(String: key, String: value): NJSDynamicObject;
-    declare function putInt(String: key, Int32: value): NJSDynamicObject;
-    declare function putLong(String: key, Number: value): NJSDynamicObject;
-    declare function putDouble(String: key, Number: value): NJSDynamicObject;
-    declare function putData(String: key, Object: value): NJSDynamicObject;
-    declare function putBoolean(String: key, Boolean: value): NJSDynamicObject;
-    declare function getString(String: key): MaybeLocal;
-    declare function getInt(String: key): MaybeLocal;
-    declare function getLong(String: key): MaybeLocal;
-    declare function getDouble(String: key): MaybeLocal;
-    declare function getData(String: key): MaybeLocal;
-    declare function getBoolean(String: key): MaybeLocal;
-    declare function putObject(String: key, NJSDynamicObject: value): NJSDynamicObject;
-    declare function putArray(String: key, NJSDynamicArray: value): NJSDynamicObject;
-    declare function getObject(String: key): NJSDynamicObject;
-    declare function getArray(String: key): NJSDynamicArray;
-    declare function contains(String: key): Boolean;
-    declare function remove(String: key): Boolean;
+    declare function putString(key: String, value: String): NJSDynamicObject;
+    declare function putInt(key: String, value: Int32): NJSDynamicObject;
+    declare function putLong(key: String, value: Number): NJSDynamicObject;
+    declare function putDouble(key: String, value: Number): NJSDynamicObject;
+    declare function putData(key: String, value: Object): NJSDynamicObject;
+    declare function putBoolean(key: String, value: Boolean): NJSDynamicObject;
+    declare function getString(key: String): MaybeLocal;
+    declare function getInt(key: String): MaybeLocal;
+    declare function getLong(key: String): MaybeLocal;
+    declare function getDouble(key: String): MaybeLocal;
+    declare function getData(key: String): MaybeLocal;
+    declare function getBoolean(key: String): MaybeLocal;
+    declare function putObject(key: String, value: NJSDynamicObject): NJSDynamicObject;
+    declare function putArray(key: String, value: NJSDynamicArray): NJSDynamicObject;
+    declare function getObject(key: String): NJSDynamicObject;
+    declare function getArray(key: String): NJSDynamicArray;
+    declare function contains(key: String): Boolean;
+    declare function remove(key: String): Boolean;
     declare function getKeys(): Array;
-    declare function getType(String: key): MaybeLocal;
+    declare function getType(key: String): MaybeLocal;
     declare function dump(): String;
     declare function serialize(): Object;
     declare function size(): Number;
     static declare function newInstance(): NJSDynamicObject;
-    static declare function load(Object: serialized): NJSDynamicObject;
+    static declare function load(serialized: Object): NJSDynamicObject;
 }
 declare class NJSBlockchainExplorerEngines
 {
@@ -308,17 +308,17 @@ declare class NJSPoolConfiguration
 }
 declare class NJSDatabaseBackend
 {
-    declare function setUsername(String: username): NJSDatabaseBackend;
-    declare function setPassword(String: pwd): NJSDatabaseBackend;
-    declare function setHost(String: host): NJSDatabaseBackend;
-    declare function setHostAddr(String: hostAddr): NJSDatabaseBackend;
-    declare function setPort(String: port): NJSDatabaseBackend;
-    declare function setOptions(String: opts): NJSDatabaseBackend;
-    declare function setSslMode(String: mode): NJSDatabaseBackend;
-    declare function setKerberosName(String: name): NJSDatabaseBackend;
-    declare function setService(String: service): NJSDatabaseBackend;
-    declare function setConnectionPoolSize(Int32: size): NJSDatabaseBackend;
-    declare function enableQueryLogging(Boolean: enable): NJSDatabaseBackend;
+    declare function setUsername(username: String): NJSDatabaseBackend;
+    declare function setPassword(pwd: String): NJSDatabaseBackend;
+    declare function setHost(host: String): NJSDatabaseBackend;
+    declare function setHostAddr(hostAddr: String): NJSDatabaseBackend;
+    declare function setPort(port: String): NJSDatabaseBackend;
+    declare function setOptions(opts: String): NJSDatabaseBackend;
+    declare function setSslMode(mode: String): NJSDatabaseBackend;
+    declare function setKerberosName(name: String): NJSDatabaseBackend;
+    declare function setService(service: String): NJSDatabaseBackend;
+    declare function setConnectionPoolSize(size: Int32): NJSDatabaseBackend;
+    declare function enableQueryLogging(enable: Boolean): NJSDatabaseBackend;
     declare function getUsername(): String;
     declare function getPassword(): String;
     declare function getHost(): String;
@@ -335,7 +335,7 @@ declare class NJSDatabaseBackend
 }
 declare class NJSRandomNumberGenerator
 {
-    declare function getRandomBytes(Int32: size): Object;
+    declare function getRandomBytes(size: Int32): Object;
     declare function getRandomInt(): Int32;
     declare function getRandomLong(): Number;
     declare function getRandomByte(): Int;
@@ -345,8 +345,8 @@ declare class NJSEthereumPublicKeyProvider
 }
 declare class NJSGetEthreumLikeWalletCallback
 {
-    declare function onSuccess(NJSEthereumLikeWallet: wallet, Boolean: isCreated)
-    declare function onError(Error: error)
+    declare function onSuccess(wallet: NJSEthereumLikeWallet, isCreated: Boolean)
+    declare function onError(error: Error)
 }
 declare class NJSEthereumLikeWallet
 {
@@ -396,31 +396,31 @@ declare class NJSBitcoinLikeAddress
      * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
      * @return A BitcoinLikeAddress
      */
-    static declare function fromBase58(BitcoinLikeNetworkParameters: params, String: address): NJSBitcoinLikeAddress;
+    static declare function fromBase58(params: BitcoinLikeNetworkParameters, address: String): NJSBitcoinLikeAddress;
     /**
      * Check if the given address is valid
      * @return true if the address is valid, false otherwise
      */
-    static declare function isAddressValid(BitcoinLikeNetworkParameters: params, String: address): Boolean;
+    static declare function isAddressValid(params: BitcoinLikeNetworkParameters, address: String): Boolean;
 }
 declare class NJSBitcoinLikeExtendedPublicKey
 {
-    declare function derive(String: path): NJSBitcoinLikeAddress;
+    declare function derive(path: String): NJSBitcoinLikeAddress;
     declare function toBase58(): String;
     declare function getRootPath(): String;
-    static declare function fromBase58(BitcoinLikeNetworkParameters: params, String: address, MaybeLocal: path): NJSBitcoinLikeExtendedPublicKey;
+    static declare function fromBase58(params: BitcoinLikeNetworkParameters, address: String, path: MaybeLocal): NJSBitcoinLikeExtendedPublicKey;
 }
 declare class NJSAmount
 {
     declare function toBigInt(): NJSBigInt;
     declare function getCurrency(): Currency;
     declare function getUnit(): CurrencyUnit;
-    declare function toUnit(CurrencyUnit: unit): NJSAmount;
-    declare function toMagnitude(Int32: magnitude): NJSAmount;
+    declare function toUnit(unit: CurrencyUnit): NJSAmount;
+    declare function toMagnitude(magnitude: Int32): NJSAmount;
     declare function toString(): String;
     declare function toLong(): Number;
     declare function toDouble(): Number;
-    declare function format(Locale: locale, MaybeLocal: rules): String;
+    declare function format(locale: Locale, rules: MaybeLocal): String;
 }
 declare class NJSPreferences
 {
@@ -428,37 +428,37 @@ declare class NJSPreferences
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getString(String: key, String: fallbackValue): String;
+    declare function getString(key: String, fallbackValue: String): String;
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getInt(String: key, Int32: fallbackValue): Int32;
+    declare function getInt(key: String, fallbackValue: Int32): Int32;
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getLong(String: key, Number: fallbackValue): Number;
+    declare function getLong(key: String, fallbackValue: Number): Number;
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getBoolean(String: key, Boolean: fallbackValue): Boolean;
+    declare function getBoolean(key: String, fallbackValue: Boolean): Boolean;
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getStringArray(String: key, Array: fallbackValue): Array;
+    declare function getStringArray(key: String, fallbackValue: Array): Array;
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    declare function getData(String: key, Object: fallbackValue): Object;
+    declare function getData(key: String, fallbackValue: Object): Object;
     /**
      * Checks whether the Preferences contains the given key.
      * @return true the preferences contains the key, false otherwise.
      */
-    declare function contains(String: key): Boolean;
+    declare function contains(key: String): Boolean;
     /**
      * Get a preferences editor in order to add/modify/remove data.
      * @return An interface for editting preferences.
@@ -473,48 +473,48 @@ declare class NJSPreferencesEditor
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putString(String: key, String: value): NJSPreferencesEditor;
+    declare function putString(key: String, value: String): NJSPreferencesEditor;
     /**
      * Sets the value to the given key in the Preferences.
      * @param key The data key.
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putInt(String: key, Int32: value): NJSPreferencesEditor;
+    declare function putInt(key: String, value: Int32): NJSPreferencesEditor;
     /**
      * Sets the value to the given key in the Preferences.
      * @param key The data key.
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putLong(String: key, Number: value): NJSPreferencesEditor;
+    declare function putLong(key: String, value: Number): NJSPreferencesEditor;
     /**
      * Sets the value to the given key in the Preferences.
      * @param key The data key.
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putBoolean(String: key, Boolean: value): NJSPreferencesEditor;
+    declare function putBoolean(key: String, value: Boolean): NJSPreferencesEditor;
     /**
      * Sets the value to the given key in the Preferences.
      * @param key The data key.
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putStringArray(String: key, Array: value): NJSPreferencesEditor;
+    declare function putStringArray(key: String, value: Array): NJSPreferencesEditor;
     /**
      * Sets the value to the given key in the Preferences.
      * @param key The data key.
      * @param value The value to store
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function putData(String: key, Object: value): NJSPreferencesEditor;
+    declare function putData(key: String, value: Object): NJSPreferencesEditor;
     /**
      * Removes the data associated with the given key.
      * @param key The key to remove from the Preferences
      * @return The reference of self in order to chain the call to the editor.
      */
-    declare function remove(String: key): NJSPreferencesEditor;
+    declare function remove(key: String): NJSPreferencesEditor;
     /** Persists the changes to the Preferences. */
     declare function commit()
 }
@@ -560,35 +560,35 @@ declare class NJSBitcoinLikeOperation
 }
 declare class NJSBitcoinLikeHelper
 {
-    static declare function scriptToOutput(Object: script, NJSAmount: amount): NJSBitcoinLikeOutput;
-    static declare function addressToOutput(String: address, NJSAmount: amount): NJSBitcoinLikeOutput;
-    static declare function serializeTransaction(BitcoinLikePreparedTransaction: preparedTransaction): Object;
-    static declare function parseTransaction(Object: transaction): NJSBitcoinLikeTransaction;
+    static declare function scriptToOutput(script: Object, amount: NJSAmount): NJSBitcoinLikeOutput;
+    static declare function addressToOutput(address: String, amount: NJSAmount): NJSBitcoinLikeOutput;
+    static declare function serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): Object;
+    static declare function parseTransaction(transaction: Object): NJSBitcoinLikeTransaction;
 }
 declare class NJSBitcoinLikeAccount
 {
-    declare function getUTXO(Int32: from, Int32: to, NJSBitcoinLikeOutputListCallback: callback)
-    declare function getUTXOCount(NJSI32Callback: callback)
-    declare function pickUTXO(NJSAmount: baseFees, Array: outputs, BitcoinLikePickingStrategy: strategy, NJSBitcoinLikeTransactionRequestCallback: callback)
-    declare function estimateFees(BitcoinLikeTransactionRequest: request, NJSBitcoinLikeTransactionRequestCallback: callback)
-    declare function prepareTransaction(BitcoinLikeTransactionRequest: request, NJSBitcoinLikePreparedTransactionCallback: callback)
-    declare function broadcastTransaction(Object: transaction, NJSStringCallback: callback)
+    declare function getUTXO(from: Int32, to: Int32, callback: NJSBitcoinLikeOutputListCallback)
+    declare function getUTXOCount(callback: NJSI32Callback)
+    declare function pickUTXO(baseFees: NJSAmount, outputs: Array, strategy: BitcoinLikePickingStrategy, callback: NJSBitcoinLikeTransactionRequestCallback)
+    declare function estimateFees(request: BitcoinLikeTransactionRequest, callback: NJSBitcoinLikeTransactionRequestCallback)
+    declare function prepareTransaction(request: BitcoinLikeTransactionRequest, callback: NJSBitcoinLikePreparedTransactionCallback)
+    declare function broadcastTransaction(transaction: Object, callback: NJSStringCallback)
 }
 declare class NJSBitcoinLikeOutputListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSBitcoinLikeTransactionRequestCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSBitcoinLikePreparedTransactionCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSStringCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSBitcoinLikeWallet
 {
@@ -598,63 +598,63 @@ declare class NJSWalletPool
     declare function getLogger(): NJSLogger;
     declare function getName(): String;
     declare function getPreferences(): NJSPreferences;
-    declare function getWalletCount(NJSI32Callback: callback)
-    declare function getWallets(Int32: from, Int32: size, NJSWalletListCallback: callback)
-    declare function getWallet(String: name, NJSWalletCallback: callback)
-    declare function createWallet(String: name, Currency: currency, NJSDynamicObject: configuration, NJSWalletCallback: callback)
-    declare function getCurrencies(NJSCurrencyListCallback: callback)
-    declare function getCurrency(String: name, NJSCurrencyCallback: callback)
-    declare function getLastBlock(String: currencyName, NJSBlockCallback: callback)
+    declare function getWalletCount(callback: NJSI32Callback)
+    declare function getWallets(from: Int32, size: Int32, callback: NJSWalletListCallback)
+    declare function getWallet(name: String, callback: NJSWalletCallback)
+    declare function createWallet(name: String, currency: Currency, configuration: NJSDynamicObject, callback: NJSWalletCallback)
+    declare function getCurrencies(callback: NJSCurrencyListCallback)
+    declare function getCurrency(name: String, callback: NJSCurrencyCallback)
+    declare function getLastBlock(currencyName: String, callback: NJSBlockCallback)
     declare function getEventBus(): NJSEventBus;
 }
 declare class NJSWalletListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSWalletCallback
 {
-    declare function onCallback(NJSWallet: result, MaybeLocal: error)
+    declare function onCallback(result: NJSWallet, error: MaybeLocal)
 }
 declare class NJSCurrencyListCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSCurrencyCallback
 {
-    declare function onCallback(MaybeLocal: result, MaybeLocal: error)
+    declare function onCallback(result: MaybeLocal, error: MaybeLocal)
 }
 declare class NJSWalletPoolBuilder
 {
-    declare function setHttpClient(NJSHttpClient: client): NJSWalletPoolBuilder;
-    declare function setWebsocketClient(NJSWebSocketClient: client): NJSWalletPoolBuilder;
-    declare function setPathResolver(NJSPathResolver: pathResolver): NJSWalletPoolBuilder;
-    declare function setLogPrinter(NJSLogPrinter: printer): NJSWalletPoolBuilder;
-    declare function setThreadDispatcher(NJSThreadDispatcher: dispatcher): NJSWalletPoolBuilder;
-    declare function setName(String: name): NJSWalletPoolBuilder;
-    declare function setPassword(String: password): NJSWalletPoolBuilder;
-    declare function setRandomNumberGenerator(NJSRandomNumberGenerator: rng): NJSWalletPoolBuilder;
-    declare function setDatabaseBackend(NJSDatabaseBackend: backend): NJSWalletPoolBuilder;
-    declare function setConfiguration(NJSDynamicObject: configuration): NJSWalletPoolBuilder;
-    declare function build(NJSWalletPoolCallback: listener)
+    declare function setHttpClient(client: NJSHttpClient): NJSWalletPoolBuilder;
+    declare function setWebsocketClient(client: NJSWebSocketClient): NJSWalletPoolBuilder;
+    declare function setPathResolver(pathResolver: NJSPathResolver): NJSWalletPoolBuilder;
+    declare function setLogPrinter(printer: NJSLogPrinter): NJSWalletPoolBuilder;
+    declare function setThreadDispatcher(dispatcher: NJSThreadDispatcher): NJSWalletPoolBuilder;
+    declare function setName(name: String): NJSWalletPoolBuilder;
+    declare function setPassword(password: String): NJSWalletPoolBuilder;
+    declare function setRandomNumberGenerator(rng: NJSRandomNumberGenerator): NJSWalletPoolBuilder;
+    declare function setDatabaseBackend(backend: NJSDatabaseBackend): NJSWalletPoolBuilder;
+    declare function setConfiguration(configuration: NJSDynamicObject): NJSWalletPoolBuilder;
+    declare function build(listener: NJSWalletPoolCallback)
     static declare function createInstance(): NJSWalletPoolBuilder;
 }
 declare class NJSWalletPoolCallback
 {
-    declare function onCallback(NJSWalletPool: result, MaybeLocal: error)
+    declare function onCallback(result: NJSWalletPool, error: MaybeLocal)
 }
 declare class NJSWebSocketConnection
 {
-    declare function onConnect(Int32: connectionId)
+    declare function onConnect(connectionId: Int32)
     declare function onClose()
-    declare function onMessage(String: data)
-    declare function onError(ErrorCode: code, String: message)
+    declare function onMessage(data: String)
+    declare function onError(code: ErrorCode, message: String)
     declare function getConnectionId(): Int32;
 }
 declare class NJSWebSocketClient
 {
-    declare function connect(String: url, NJSWebSocketConnection: connection)
-    declare function send(NJSWebSocketConnection: connection, String: data)
-    declare function disconnect(NJSWebSocketConnection: connection)
+    declare function connect(url: String, connection: NJSWebSocketConnection)
+    declare function send(connection: NJSWebSocketConnection, data: String)
+    declare function disconnect(connection: NJSWebSocketConnection)
 }
 declare class NJSHttpUrlConnection
 {
@@ -685,11 +685,11 @@ declare class NJSHttpRequest
     declare function getHeaders(): Map;
     declare function getBody(): Object;
     declare function getUrl(): String;
-    declare function complete(NJSHttpUrlConnection: response, MaybeLocal: error)
+    declare function complete(response: NJSHttpUrlConnection, error: MaybeLocal)
 }
 declare class NJSHttpClient
 {
-    declare function execute(NJSHttpRequest: request)
+    declare function execute(request: NJSHttpRequest)
 }
 declare class NJSBigInt
 {
@@ -698,37 +698,37 @@ declare class NJSBigInt
      * @params i Value to be added to this BigInt
      * @return The result of this + i
      */
-    declare function add(NJSBigInt: i): NJSBigInt;
+    declare function add(i: NJSBigInt): NJSBigInt;
     /**
      * Subtracts two BigInt and returns a new BigInt with result.
      * @params i Value to be subtracted to this BigInt
      * @return The result of this - i
      */
-    declare function subtract(NJSBigInt: i): NJSBigInt;
+    declare function subtract(i: NJSBigInt): NJSBigInt;
     /**
      * Multiplies two BigInt and returns a new BigInt with result.
      * @params i Value to be multiplied by this BigInt
      * @return The result of this * i
      */
-    declare function multiply(NJSBigInt: i): NJSBigInt;
+    declare function multiply(i: NJSBigInt): NJSBigInt;
     /**
      * Divides two BigInt and returns a new BigInt with result.
      * @params i Value by which this BigInt will be divided
      * @return The result of this / i
      */
-    declare function divide(NJSBigInt: i): NJSBigInt;
+    declare function divide(i: NJSBigInt): NJSBigInt;
     /**
      * Divides two BigInt and returns a new BigInt with result of the division and the remainder.
      * @params i Value by which this BigInteger is to be divided, and the remainder computed
      * @return A tuple of [this / i, this % i]
      */
-    declare function divideAndRemainder(NJSBigInt: i): Array;
+    declare function divideAndRemainder(i: NJSBigInt): Array;
     /**
      * Raises this BigInt with an interger value.
      * @params i The exponent to which thi BigInt is raised
      * @return The result of this ^ exponent
      */
-    declare function pow(Int32: exponent): NJSBigInt;
+    declare function pow(exponent: Int32): NJSBigInt;
     /**
      * Formats this BigInt to a decimal string (e.g. BigInt("12345").toDecimalString(1, ".", ",") => "1,234.5")
      * @params precision The power of ten by wich this BigInt is divided
@@ -736,12 +736,12 @@ declare class NJSBigInt
      * @params thousandSeparator The separator to use between each group of thousand units
      * @return The BigInt formatted as a decimal string
      */
-    declare function toDecimalString(Int32: precision, String: decimalSeparator, String: thousandSeparator): String;
+    declare function toDecimalString(precision: Int32, decimalSeparator: String, thousandSeparator: String): String;
     /**
      * Formats this BigInt to the interger representation of its internal value.
      * @params radix The radix of the number representation in which to format (right now 10 or 16)
      */
-    declare function toString(Int32: radix): String;
+    declare function toString(radix: Int32): String;
     /**
      * Returns the int representation of this BigInt. Note that if the BigInt is greater than 4 bytes the returned value
      * will be meaningless.
@@ -753,7 +753,7 @@ declare class NJSBigInt
      * @param i The value to compare with this BigInt
      * @return a positive value if this > i. A negative value if this < i. 0 if the two BigInts are equal
      */
-    declare function compare(NJSBigInt: i): Int32;
+    declare function compare(i: NJSBigInt): Int32;
     /**
      * Creates a BigInt with a decimal string (e.g. "1.2000"). Note that every non numeric characters (except the decimal separator)
      * are ignored (e.g. "1ledger000" will be equal to "1000")
@@ -762,20 +762,20 @@ declare class NJSBigInt
      * @params decimalSeparator The decimal separator used by this string representation
      * @return The created BigInt
      */
-    static declare function fromDecimalString(String: s, Int32: precision, String: decimalSeparator): NJSBigInt;
+    static declare function fromDecimalString(s: String, precision: Int32, decimalSeparator: String): NJSBigInt;
     /**
      * Creates a BigInt with an integer string expressed in hexadecimal or decimal radix.
      * @param s The string to parse
      * @param radix The radix of the number representation (right now 10 or 16)
      * @return The created BigInt
      */
-    static declare function fromIntegerString(String: s, Int32: radix): NJSBigInt;
+    static declare function fromIntegerString(s: String, radix: Int32): NJSBigInt;
     /**
      * Creates a BigInt from a int64 value
      * @param l The value to convert
      * @return The created BigInt
      */
-    static declare function fromLong(Number: l): NJSBigInt;
+    static declare function fromLong(l: Number): NJSBigInt;
 }
 declare class NJSPathResolver
 {
@@ -784,19 +784,19 @@ declare class NJSPathResolver
      * @param path The path to resolve.
      * @return The resolved path.
      */
-    declare function resolveDatabasePath(String: path): String;
+    declare function resolveDatabasePath(path: String): String;
     /**
      * Resolves the path of a single log file.
      * @param path The path to resolve.
      * @return The resolved path.
      */
-    declare function resolveLogFilePath(String: path): String;
+    declare function resolveLogFilePath(path: String): String;
     /**
      * Resolves the path for a json file.
      * @param path The path to resolve.
      * @return The resolved path.
      */
-    declare function resolvePreferencesPath(String: path): String;
+    declare function resolvePreferencesPath(path: String): String;
 }
 declare class NJSRunnable
 {
@@ -811,33 +811,33 @@ declare class NJSLock
 declare class NJSExecutionContext
 {
     /** */
-    declare function execute(NJSRunnable: runnable)
-    declare function delay(NJSRunnable: runnable, Number: millis)
+    declare function execute(runnable: NJSRunnable)
+    declare function delay(runnable: NJSRunnable, millis: Number)
 }
 declare class NJSThreadDispatcher
 {
-    declare function getSerialExecutionContext(String: name): NJSExecutionContext;
-    declare function getThreadPoolExecutionContext(String: name): NJSExecutionContext;
+    declare function getSerialExecutionContext(name: String): NJSExecutionContext;
+    declare function getThreadPoolExecutionContext(name: String): NJSExecutionContext;
     declare function getMainExecutionContext(): NJSExecutionContext;
     declare function newLock(): NJSLock;
 }
 declare class NJSLogPrinter
 {
-    declare function printError(String: message)
-    declare function printInfo(String: message)
-    declare function printDebug(String: message)
-    declare function printWarning(String: message)
-    declare function printApdu(String: message)
-    declare function printCriticalError(String: message)
+    declare function printError(message: String)
+    declare function printInfo(message: String)
+    declare function printDebug(message: String)
+    declare function printWarning(message: String)
+    declare function printApdu(message: String)
+    declare function printCriticalError(message: String)
     declare function getContext(): NJSExecutionContext;
 }
 declare class NJSLogger
 {
-    declare function d(String: tag, String: message)
-    declare function i(String: tag, String: message)
-    declare function e(String: tag, String: message)
-    declare function w(String: tag, String: message)
-    declare function c(String: tag, String: message)
+    declare function d(tag: String, message: String)
+    declare function i(tag: String, message: String)
+    declare function e(tag: String, message: String)
+    declare function w(tag: String, message: String)
+    declare function c(tag: String, message: String)
 }
 declare class NJSLedgerCore
 {
