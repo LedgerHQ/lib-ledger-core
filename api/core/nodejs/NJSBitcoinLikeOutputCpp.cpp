@@ -108,10 +108,10 @@ NAN_METHOD(NJSBitcoinLikeOutput::getScript) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(result[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(result[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 

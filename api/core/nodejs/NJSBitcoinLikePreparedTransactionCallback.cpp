@@ -15,28 +15,28 @@ void NJSBitcoinLikePreparedTransactionCallback::onCallback(const std::experiment
     auto arg_0_1 = Nan::New<Int32>((*result).version);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("version").ToLocalChecked(), arg_0_1);
     Local<Array> arg_0_2 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).inputs.size(); i++)
+    for(size_t arg_0_2_id = 0; arg_0_2_id < (*result).inputs.size(); arg_0_2_id++)
     {
-        auto arg_0_2_elem = NJSBitcoinLikeOutput::wrap((*result).inputs[i]);
+        auto arg_0_2_elem = NJSBitcoinLikeOutput::wrap((*result).inputs[arg_0_2_id]);
 
-        arg_0_2->Set((int)i,arg_0_2_elem);
+        arg_0_2->Set((int)arg_0_2_id,arg_0_2_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("inputs").ToLocalChecked(), arg_0_2);
     Local<Array> arg_0_3 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).paths.size(); i++)
+    for(size_t arg_0_3_id = 0; arg_0_3_id < (*result).paths.size(); arg_0_3_id++)
     {
-        auto arg_0_3_elem = Nan::New<String>((*result).paths[i]).ToLocalChecked();
-        arg_0_3->Set((int)i,arg_0_3_elem);
+        auto arg_0_3_elem = Nan::New<String>((*result).paths[arg_0_3_id]).ToLocalChecked();
+        arg_0_3->Set((int)arg_0_3_id,arg_0_3_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("paths").ToLocalChecked(), arg_0_3);
     Local<Array> arg_0_4 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).outputs.size(); i++)
+    for(size_t arg_0_4_id = 0; arg_0_4_id < (*result).outputs.size(); arg_0_4_id++)
     {
-        auto arg_0_4_elem = NJSBitcoinLikeOutput::wrap((*result).outputs[i]);
+        auto arg_0_4_elem = NJSBitcoinLikeOutput::wrap((*result).outputs[arg_0_4_id]);
 
-        arg_0_4->Set((int)i,arg_0_4_elem);
+        arg_0_4->Set((int)arg_0_4_id,arg_0_4_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("outputs").ToLocalChecked(), arg_0_4);

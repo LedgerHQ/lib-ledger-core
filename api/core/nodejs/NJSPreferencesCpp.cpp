@@ -137,11 +137,11 @@ NAN_METHOD(NJSPreferences::getStringArray) {
     auto arg_0 = std::string(*string_arg_0);
     vector<std::string> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsString())
+        if(arg_1_container->Get(arg_1_id)->IsString())
         {
-            String::Utf8Value string_arg_1_elem(arg_1_container->Get(i)->ToString());
+            String::Utf8Value string_arg_1_elem(arg_1_container->Get(arg_1_id)->ToString());
             auto arg_1_elem = std::string(*string_arg_1_elem);
             arg_1.emplace_back(arg_1_elem);
         }
@@ -160,10 +160,10 @@ NAN_METHOD(NJSPreferences::getStringArray) {
 
     //Wrap result in node object
     Local<Array> arg_2 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_2_id = 0; arg_2_id < result.size(); arg_2_id++)
     {
-        auto arg_2_elem = Nan::New<String>(result[i]).ToLocalChecked();
-        arg_2->Set((int)i,arg_2_elem);
+        auto arg_2_elem = Nan::New<String>(result[arg_2_id]).ToLocalChecked();
+        arg_2->Set((int)arg_2_id,arg_2_elem);
     }
 
 
@@ -183,11 +183,11 @@ NAN_METHOD(NJSPreferences::getData) {
     auto arg_0 = std::string(*string_arg_0);
     vector<uint8_t> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsUint32())
+        if(arg_1_container->Get(arg_1_id)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(arg_1_id)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -205,10 +205,10 @@ NAN_METHOD(NJSPreferences::getData) {
 
     //Wrap result in node object
     Local<Array> arg_2 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_2_id = 0; arg_2_id < result.size(); arg_2_id++)
     {
-        auto arg_2_elem = Nan::New<Uint32>(result[i]);
-        arg_2->Set((int)i,arg_2_elem);
+        auto arg_2_elem = Nan::New<Uint32>(result[arg_2_id]);
+        arg_2->Set((int)arg_2_id,arg_2_elem);
     }
 
 

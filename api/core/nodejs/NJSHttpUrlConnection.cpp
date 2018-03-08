@@ -73,9 +73,9 @@ std::unordered_map<std::string, std::string> NJSHttpUrlConnection::getHeaders()
     unordered_map<std::string, std::string> fResult_getHeaders;
     Local<Map> fResult_getHeaders_container = Local<Map>::Cast(checkedResult_getHeaders);
     auto fResult_getHeaders_prop_names = fResult_getHeaders_container->GetPropertyNames();
-    for(uint32_t i = 0; i < fResult_getHeaders_prop_names->Length(); i++)
+    for(uint32_t fResult_getHeaders_id = 0; fResult_getHeaders_id < fResult_getHeaders_prop_names->Length(); fResult_getHeaders_id++)
     {
-        auto key = fResult_getHeaders_prop_names->Get(i);
+        auto key = fResult_getHeaders_prop_names->Get(fResult_getHeaders_id);
         auto fResult_getHeaders_key_ctx = fResult_getHeaders_container->Get(Nan::GetCurrentContext(), key).ToLocalChecked();
         if(key->IsString() && fResult_getHeaders_key_ctx->IsString())
         {
@@ -123,11 +123,11 @@ HttpReadBodyResult NJSHttpUrlConnection::readBody()
     auto field_fResult_readBody_2 = Nan::Get(checkedResult_readBody->ToObject(), Nan::New<String>("data").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> fResult_readBody_2;
     Local<Array> fResult_readBody_2_container = Local<Array>::Cast(field_fResult_readBody_2);
-    for(uint32_t i = 0; i < fResult_readBody_2_container->Length(); i++)
+    for(uint32_t fResult_readBody_2_id = 0; fResult_readBody_2_id < fResult_readBody_2_container->Length(); fResult_readBody_2_id++)
     {
-        if(fResult_readBody_2_container->Get(i)->IsUint32())
+        if(fResult_readBody_2_container->Get(fResult_readBody_2_id)->IsUint32())
         {
-            auto fResult_readBody_2_elem = Nan::To<uint32_t>(fResult_readBody_2_container->Get(i)).FromJust();
+            auto fResult_readBody_2_elem = Nan::To<uint32_t>(fResult_readBody_2_container->Get(fResult_readBody_2_id)).FromJust();
             fResult_readBody_2.emplace_back(fResult_readBody_2_elem);
         }
     }

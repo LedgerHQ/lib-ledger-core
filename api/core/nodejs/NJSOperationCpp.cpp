@@ -134,10 +134,10 @@ NAN_METHOD(NJSOperation::getSenders) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<String>(result[i]).ToLocalChecked();
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<String>(result[arg_0_id]).ToLocalChecked();
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 
@@ -166,10 +166,10 @@ NAN_METHOD(NJSOperation::getRecipients) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<String>(result[i]).ToLocalChecked();
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<String>(result[arg_0_id]).ToLocalChecked();
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 

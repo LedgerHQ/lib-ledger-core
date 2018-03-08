@@ -32,26 +32,26 @@ NAN_METHOD(NJSNetworks::bitcoin) {
     auto arg_0_1 = Nan::New<String>(result.Identifier).ToLocalChecked();
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("Identifier").ToLocalChecked(), arg_0_1);
     Local<Array> arg_0_2 = Nan::New<Array>();
-    for(size_t i = 0; i < result.P2PKHVersion.size(); i++)
+    for(size_t arg_0_2_id = 0; arg_0_2_id < result.P2PKHVersion.size(); arg_0_2_id++)
     {
-        auto arg_0_2_elem = Nan::New<Uint32>(result.P2PKHVersion[i]);
-        arg_0_2->Set((int)i,arg_0_2_elem);
+        auto arg_0_2_elem = Nan::New<Uint32>(result.P2PKHVersion[arg_0_2_id]);
+        arg_0_2->Set((int)arg_0_2_id,arg_0_2_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("P2PKHVersion").ToLocalChecked(), arg_0_2);
     Local<Array> arg_0_3 = Nan::New<Array>();
-    for(size_t i = 0; i < result.P2SHVersion.size(); i++)
+    for(size_t arg_0_3_id = 0; arg_0_3_id < result.P2SHVersion.size(); arg_0_3_id++)
     {
-        auto arg_0_3_elem = Nan::New<Uint32>(result.P2SHVersion[i]);
-        arg_0_3->Set((int)i,arg_0_3_elem);
+        auto arg_0_3_elem = Nan::New<Uint32>(result.P2SHVersion[arg_0_3_id]);
+        arg_0_3->Set((int)arg_0_3_id,arg_0_3_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("P2SHVersion").ToLocalChecked(), arg_0_3);
     Local<Array> arg_0_4 = Nan::New<Array>();
-    for(size_t i = 0; i < result.XPUBVersion.size(); i++)
+    for(size_t arg_0_4_id = 0; arg_0_4_id < result.XPUBVersion.size(); arg_0_4_id++)
     {
-        auto arg_0_4_elem = Nan::New<Uint32>(result.XPUBVersion[i]);
-        arg_0_4->Set((int)i,arg_0_4_elem);
+        auto arg_0_4_elem = Nan::New<Uint32>(result.XPUBVersion[arg_0_4_id]);
+        arg_0_4->Set((int)arg_0_4_id,arg_0_4_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("XPUBVersion").ToLocalChecked(), arg_0_4);

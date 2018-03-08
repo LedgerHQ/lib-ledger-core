@@ -13,20 +13,20 @@ void NJSBitcoinLikeTransactionRequestCallback::onCallback(const std::experimenta
     //Wrap parameters
     auto arg_0 = Nan::New<Object>();
     Local<Array> arg_0_1 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).utxo.size(); i++)
+    for(size_t arg_0_1_id = 0; arg_0_1_id < (*result).utxo.size(); arg_0_1_id++)
     {
-        auto arg_0_1_elem = NJSBitcoinLikeOutput::wrap((*result).utxo[i]);
+        auto arg_0_1_elem = NJSBitcoinLikeOutput::wrap((*result).utxo[arg_0_1_id]);
 
-        arg_0_1->Set((int)i,arg_0_1_elem);
+        arg_0_1->Set((int)arg_0_1_id,arg_0_1_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("utxo").ToLocalChecked(), arg_0_1);
     Local<Array> arg_0_2 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).outputs.size(); i++)
+    for(size_t arg_0_2_id = 0; arg_0_2_id < (*result).outputs.size(); arg_0_2_id++)
     {
-        auto arg_0_2_elem = NJSBitcoinLikeOutput::wrap((*result).outputs[i]);
+        auto arg_0_2_elem = NJSBitcoinLikeOutput::wrap((*result).outputs[arg_0_2_id]);
 
-        arg_0_2->Set((int)i,arg_0_2_elem);
+        arg_0_2->Set((int)arg_0_2_id,arg_0_2_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("outputs").ToLocalChecked(), arg_0_2);

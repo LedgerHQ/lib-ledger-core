@@ -15,26 +15,26 @@ void NJSExtendedKeyAccountCreationInfoCallback::onCallback(const std::experiment
     auto arg_0_1 = Nan::New<Int32>((*result).index);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("index").ToLocalChecked(), arg_0_1);
     Local<Array> arg_0_2 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).owners.size(); i++)
+    for(size_t arg_0_2_id = 0; arg_0_2_id < (*result).owners.size(); arg_0_2_id++)
     {
-        auto arg_0_2_elem = Nan::New<String>((*result).owners[i]).ToLocalChecked();
-        arg_0_2->Set((int)i,arg_0_2_elem);
+        auto arg_0_2_elem = Nan::New<String>((*result).owners[arg_0_2_id]).ToLocalChecked();
+        arg_0_2->Set((int)arg_0_2_id,arg_0_2_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("owners").ToLocalChecked(), arg_0_2);
     Local<Array> arg_0_3 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).derivations.size(); i++)
+    for(size_t arg_0_3_id = 0; arg_0_3_id < (*result).derivations.size(); arg_0_3_id++)
     {
-        auto arg_0_3_elem = Nan::New<String>((*result).derivations[i]).ToLocalChecked();
-        arg_0_3->Set((int)i,arg_0_3_elem);
+        auto arg_0_3_elem = Nan::New<String>((*result).derivations[arg_0_3_id]).ToLocalChecked();
+        arg_0_3->Set((int)arg_0_3_id,arg_0_3_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("derivations").ToLocalChecked(), arg_0_3);
     Local<Array> arg_0_4 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).extendedKeys.size(); i++)
+    for(size_t arg_0_4_id = 0; arg_0_4_id < (*result).extendedKeys.size(); arg_0_4_id++)
     {
-        auto arg_0_4_elem = Nan::New<String>((*result).extendedKeys[i]).ToLocalChecked();
-        arg_0_4->Set((int)i,arg_0_4_elem);
+        auto arg_0_4_elem = Nan::New<String>((*result).extendedKeys[arg_0_4_id]).ToLocalChecked();
+        arg_0_4->Set((int)arg_0_4_id,arg_0_4_elem);
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("extendedKeys").ToLocalChecked(), arg_0_4);

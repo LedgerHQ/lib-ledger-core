@@ -18,11 +18,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -106,11 +106,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("inputs").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_2;
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
+    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
     {
-        if(arg_0_2_container->Get(i)->IsObject())
+        if(arg_0_2_container->Get(arg_0_2_id)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(arg_0_2_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
             if(!njs_ptr_arg_0_2_elem)
             {
@@ -126,11 +126,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("paths").ToLocalChecked()).ToLocalChecked();
     vector<std::string> arg_0_3;
     Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t i = 0; i < arg_0_3_container->Length(); i++)
+    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
     {
-        if(arg_0_3_container->Get(i)->IsString())
+        if(arg_0_3_container->Get(arg_0_3_id)->IsString())
         {
-            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(i)->ToString());
+            String::Utf8Value string_arg_0_3_elem(arg_0_3_container->Get(arg_0_3_id)->ToString());
             auto arg_0_3_elem = std::string(*string_arg_0_3_elem);
             arg_0_3.emplace_back(arg_0_3_elem);
         }
@@ -140,11 +140,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("outputs").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_4;
     Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t i = 0; i < arg_0_4_container->Length(); i++)
+    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
     {
-        if(arg_0_4_container->Get(i)->IsObject())
+        if(arg_0_4_container->Get(arg_0_4_id)->IsObject())
         {
-            Local<Object> njs_arg_0_4_elem = arg_0_4_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_4_elem = arg_0_4_container->Get(arg_0_4_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_4_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_4_elem,0));
             if(!njs_ptr_arg_0_4_elem)
             {
@@ -174,10 +174,10 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
 
     //Wrap result in node object
     Local<Array> arg_1 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_1_id = 0; arg_1_id < result.size(); arg_1_id++)
     {
-        auto arg_1_elem = Nan::New<Uint32>(result[i]);
-        arg_1->Set((int)i,arg_1_elem);
+        auto arg_1_elem = Nan::New<Uint32>(result[arg_1_id]);
+        arg_1->Set((int)arg_1_id,arg_1_elem);
     }
 
 
@@ -195,11 +195,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::parseTransaction) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }

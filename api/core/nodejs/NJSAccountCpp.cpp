@@ -495,11 +495,11 @@ NAN_METHOD(NJSAccount::computeFees) {
     auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
     vector<std::string> arg_2;
     Local<Array> arg_2_container = Local<Array>::Cast(info[2]);
-    for(uint32_t i = 0; i < arg_2_container->Length(); i++)
+    for(uint32_t arg_2_id = 0; arg_2_id < arg_2_container->Length(); arg_2_id++)
     {
-        if(arg_2_container->Get(i)->IsString())
+        if(arg_2_container->Get(arg_2_id)->IsString())
         {
-            String::Utf8Value string_arg_2_elem(arg_2_container->Get(i)->ToString());
+            String::Utf8Value string_arg_2_elem(arg_2_container->Get(arg_2_id)->ToString());
             auto arg_2_elem = std::string(*string_arg_2_elem);
             arg_2.emplace_back(arg_2_elem);
         }
@@ -507,17 +507,17 @@ NAN_METHOD(NJSAccount::computeFees) {
 
     vector<std::vector<uint8_t>> arg_3;
     Local<Array> arg_3_container = Local<Array>::Cast(info[3]);
-    for(uint32_t i = 0; i < arg_3_container->Length(); i++)
+    for(uint32_t arg_3_id = 0; arg_3_id < arg_3_container->Length(); arg_3_id++)
     {
-        if(arg_3_container->Get(i)->IsObject())
+        if(arg_3_container->Get(arg_3_id)->IsObject())
         {
             vector<uint8_t> arg_3_elem;
-            Local<Array> arg_3_elem_container = Local<Array>::Cast(arg_3_container->Get(i));
-            for(uint32_t i = 0; i < arg_3_elem_container->Length(); i++)
+            Local<Array> arg_3_elem_container = Local<Array>::Cast(arg_3_container->Get(arg_3_id));
+            for(uint32_t arg_3_elem_id = 0; arg_3_elem_id < arg_3_elem_container->Length(); arg_3_elem_id++)
             {
-                if(arg_3_elem_container->Get(i)->IsUint32())
+                if(arg_3_elem_container->Get(arg_3_elem_id)->IsUint32())
                 {
-                    auto arg_3_elem_elem = Nan::To<uint32_t>(arg_3_elem_container->Get(i)).FromJust();
+                    auto arg_3_elem_elem = Nan::To<uint32_t>(arg_3_elem_container->Get(arg_3_elem_id)).FromJust();
                     arg_3_elem.emplace_back(arg_3_elem_elem);
                 }
             }

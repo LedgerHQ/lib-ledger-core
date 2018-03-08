@@ -204,24 +204,24 @@ NAN_METHOD(NJSWalletPool::createWallet) {
     auto field_arg_1_5 = Nan::Get(info[1]->ToObject(), Nan::New<String>("units").ToLocalChecked()).ToLocalChecked();
     vector<CurrencyUnit> arg_1_5;
     Local<Array> arg_1_5_container = Local<Array>::Cast(field_arg_1_5);
-    for(uint32_t i = 0; i < arg_1_5_container->Length(); i++)
+    for(uint32_t arg_1_5_id = 0; arg_1_5_id < arg_1_5_container->Length(); arg_1_5_id++)
     {
-        if(arg_1_5_container->Get(i)->IsObject())
+        if(arg_1_5_container->Get(arg_1_5_id)->IsObject())
         {
 
-            auto field_arg_1_5_elem_1 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_1 = Nan::Get(arg_1_5_container->Get(arg_1_5_id)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_1(field_arg_1_5_elem_1->ToString());
             auto arg_1_5_elem_1 = std::string(*string_arg_1_5_elem_1);
 
-            auto field_arg_1_5_elem_2 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_2 = Nan::Get(arg_1_5_container->Get(arg_1_5_id)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_2(field_arg_1_5_elem_2->ToString());
             auto arg_1_5_elem_2 = std::string(*string_arg_1_5_elem_2);
 
-            auto field_arg_1_5_elem_3 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_3 = Nan::Get(arg_1_5_container->Get(arg_1_5_id)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
             String::Utf8Value string_arg_1_5_elem_3(field_arg_1_5_elem_3->ToString());
             auto arg_1_5_elem_3 = std::string(*string_arg_1_5_elem_3);
 
-            auto field_arg_1_5_elem_4 = Nan::Get(arg_1_5_container->Get(i)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
+            auto field_arg_1_5_elem_4 = Nan::Get(arg_1_5_container->Get(arg_1_5_id)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
             auto arg_1_5_elem_4 = Nan::To<int32_t>(field_arg_1_5_elem_4).FromJust();
             CurrencyUnit arg_1_5_elem(arg_1_5_elem_1, arg_1_5_elem_2, arg_1_5_elem_3, arg_1_5_elem_4);
 
@@ -239,11 +239,11 @@ NAN_METHOD(NJSWalletPool::createWallet) {
     auto field_arg_1_6_2 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_1_6_2;
     Local<Array> arg_1_6_2_container = Local<Array>::Cast(field_arg_1_6_2);
-    for(uint32_t i = 0; i < arg_1_6_2_container->Length(); i++)
+    for(uint32_t arg_1_6_2_id = 0; arg_1_6_2_id < arg_1_6_2_container->Length(); arg_1_6_2_id++)
     {
-        if(arg_1_6_2_container->Get(i)->IsUint32())
+        if(arg_1_6_2_container->Get(arg_1_6_2_id)->IsUint32())
         {
-            auto arg_1_6_2_elem = Nan::To<uint32_t>(arg_1_6_2_container->Get(i)).FromJust();
+            auto arg_1_6_2_elem = Nan::To<uint32_t>(arg_1_6_2_container->Get(arg_1_6_2_id)).FromJust();
             arg_1_6_2.emplace_back(arg_1_6_2_elem);
         }
     }
@@ -252,11 +252,11 @@ NAN_METHOD(NJSWalletPool::createWallet) {
     auto field_arg_1_6_3 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_1_6_3;
     Local<Array> arg_1_6_3_container = Local<Array>::Cast(field_arg_1_6_3);
-    for(uint32_t i = 0; i < arg_1_6_3_container->Length(); i++)
+    for(uint32_t arg_1_6_3_id = 0; arg_1_6_3_id < arg_1_6_3_container->Length(); arg_1_6_3_id++)
     {
-        if(arg_1_6_3_container->Get(i)->IsUint32())
+        if(arg_1_6_3_container->Get(arg_1_6_3_id)->IsUint32())
         {
-            auto arg_1_6_3_elem = Nan::To<uint32_t>(arg_1_6_3_container->Get(i)).FromJust();
+            auto arg_1_6_3_elem = Nan::To<uint32_t>(arg_1_6_3_container->Get(arg_1_6_3_id)).FromJust();
             arg_1_6_3.emplace_back(arg_1_6_3_elem);
         }
     }
@@ -265,11 +265,11 @@ NAN_METHOD(NJSWalletPool::createWallet) {
     auto field_arg_1_6_4 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_1_6_4;
     Local<Array> arg_1_6_4_container = Local<Array>::Cast(field_arg_1_6_4);
-    for(uint32_t i = 0; i < arg_1_6_4_container->Length(); i++)
+    for(uint32_t arg_1_6_4_id = 0; arg_1_6_4_id < arg_1_6_4_container->Length(); arg_1_6_4_id++)
     {
-        if(arg_1_6_4_container->Get(i)->IsUint32())
+        if(arg_1_6_4_container->Get(arg_1_6_4_id)->IsUint32())
         {
-            auto arg_1_6_4_elem = Nan::To<uint32_t>(arg_1_6_4_container->Get(i)).FromJust();
+            auto arg_1_6_4_elem = Nan::To<uint32_t>(arg_1_6_4_container->Get(arg_1_6_4_id)).FromJust();
             arg_1_6_4.emplace_back(arg_1_6_4_elem);
         }
     }

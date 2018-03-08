@@ -167,11 +167,11 @@ NAN_METHOD(NJSDynamicObject::putData) {
     auto arg_0 = std::string(*string_arg_0);
     vector<uint8_t> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsUint32())
+        if(arg_1_container->Get(arg_1_id)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(arg_1_id)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -360,10 +360,10 @@ NAN_METHOD(NJSDynamicObject::getData) {
 
     //Wrap result in node object
     Local<Array> arg_1 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).size(); i++)
+    for(size_t arg_1_id = 0; arg_1_id < (*result).size(); arg_1_id++)
     {
-        auto arg_1_elem = Nan::New<Uint32>((*result)[i]);
-        arg_1->Set((int)i,arg_1_elem);
+        auto arg_1_elem = Nan::New<Uint32>((*result)[arg_1_id]);
+        arg_1->Set((int)arg_1_id,arg_1_elem);
     }
 
 
@@ -608,10 +608,10 @@ NAN_METHOD(NJSDynamicObject::getKeys) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<String>(result[i]).ToLocalChecked();
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<String>(result[arg_0_id]).ToLocalChecked();
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 
@@ -694,10 +694,10 @@ NAN_METHOD(NJSDynamicObject::serialize) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(result[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(result[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 
@@ -768,11 +768,11 @@ NAN_METHOD(NJSDynamicObject::load) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }

@@ -18,11 +18,11 @@ NAN_METHOD(NJSSecp256k1::computePubKey) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
@@ -41,10 +41,10 @@ NAN_METHOD(NJSSecp256k1::computePubKey) {
 
     //Wrap result in node object
     Local<Array> arg_2 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_2_id = 0; arg_2_id < result.size(); arg_2_id++)
     {
-        auto arg_2_elem = Nan::New<Uint32>(result[i]);
-        arg_2->Set((int)i,arg_2_elem);
+        auto arg_2_elem = Nan::New<Uint32>(result[arg_2_id]);
+        arg_2->Set((int)arg_2_id,arg_2_elem);
     }
 
 
@@ -62,22 +62,22 @@ NAN_METHOD(NJSSecp256k1::sign) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
 
     vector<uint8_t> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsUint32())
+        if(arg_1_container->Get(arg_1_id)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(arg_1_id)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
@@ -95,10 +95,10 @@ NAN_METHOD(NJSSecp256k1::sign) {
 
     //Wrap result in node object
     Local<Array> arg_2 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_2_id = 0; arg_2_id < result.size(); arg_2_id++)
     {
-        auto arg_2_elem = Nan::New<Uint32>(result[i]);
-        arg_2->Set((int)i,arg_2_elem);
+        auto arg_2_elem = Nan::New<Uint32>(result[arg_2_id]);
+        arg_2->Set((int)arg_2_id,arg_2_elem);
     }
 
 
@@ -116,33 +116,33 @@ NAN_METHOD(NJSSecp256k1::verify) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }
 
     vector<uint8_t> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsUint32())
+        if(arg_1_container->Get(arg_1_id)->IsUint32())
         {
-            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(i)).FromJust();
+            auto arg_1_elem = Nan::To<uint32_t>(arg_1_container->Get(arg_1_id)).FromJust();
             arg_1.emplace_back(arg_1_elem);
         }
     }
 
     vector<uint8_t> arg_2;
     Local<Array> arg_2_container = Local<Array>::Cast(info[2]);
-    for(uint32_t i = 0; i < arg_2_container->Length(); i++)
+    for(uint32_t arg_2_id = 0; arg_2_id < arg_2_container->Length(); arg_2_id++)
     {
-        if(arg_2_container->Get(i)->IsUint32())
+        if(arg_2_container->Get(arg_2_id)->IsUint32())
         {
-            auto arg_2_elem = Nan::To<uint32_t>(arg_2_container->Get(i)).FromJust();
+            auto arg_2_elem = Nan::To<uint32_t>(arg_2_container->Get(arg_2_id)).FromJust();
             arg_2.emplace_back(arg_2_elem);
         }
     }

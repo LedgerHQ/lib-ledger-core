@@ -12,10 +12,10 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::ripemd160(const std::vector<uint8_t
     Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < data.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < data.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(data[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(data[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
     Handle<Value> args[1] = {arg_0};
@@ -34,11 +34,11 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::ripemd160(const std::vector<uint8_t
     auto checkedResult_ripemd160 = result_ripemd160.ToLocalChecked();
     vector<uint8_t> fResult_ripemd160;
     Local<Array> fResult_ripemd160_container = Local<Array>::Cast(checkedResult_ripemd160);
-    for(uint32_t i = 0; i < fResult_ripemd160_container->Length(); i++)
+    for(uint32_t fResult_ripemd160_id = 0; fResult_ripemd160_id < fResult_ripemd160_container->Length(); fResult_ripemd160_id++)
     {
-        if(fResult_ripemd160_container->Get(i)->IsUint32())
+        if(fResult_ripemd160_container->Get(fResult_ripemd160_id)->IsUint32())
         {
-            auto fResult_ripemd160_elem = Nan::To<uint32_t>(fResult_ripemd160_container->Get(i)).FromJust();
+            auto fResult_ripemd160_elem = Nan::To<uint32_t>(fResult_ripemd160_container->Get(fResult_ripemd160_id)).FromJust();
             fResult_ripemd160.emplace_back(fResult_ripemd160_elem);
         }
     }
@@ -51,10 +51,10 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::sha256(const std::vector<uint8_t> &
     Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < data.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < data.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(data[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(data[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
     Handle<Value> args[1] = {arg_0};
@@ -73,11 +73,11 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::sha256(const std::vector<uint8_t> &
     auto checkedResult_sha256 = result_sha256.ToLocalChecked();
     vector<uint8_t> fResult_sha256;
     Local<Array> fResult_sha256_container = Local<Array>::Cast(checkedResult_sha256);
-    for(uint32_t i = 0; i < fResult_sha256_container->Length(); i++)
+    for(uint32_t fResult_sha256_id = 0; fResult_sha256_id < fResult_sha256_container->Length(); fResult_sha256_id++)
     {
-        if(fResult_sha256_container->Get(i)->IsUint32())
+        if(fResult_sha256_container->Get(fResult_sha256_id)->IsUint32())
         {
-            auto fResult_sha256_elem = Nan::To<uint32_t>(fResult_sha256_container->Get(i)).FromJust();
+            auto fResult_sha256_elem = Nan::To<uint32_t>(fResult_sha256_container->Get(fResult_sha256_id)).FromJust();
             fResult_sha256.emplace_back(fResult_sha256_elem);
         }
     }
@@ -90,10 +90,10 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::keccak256(const std::vector<uint8_t
     Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < data.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < data.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(data[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(data[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
     Handle<Value> args[1] = {arg_0};
@@ -112,11 +112,11 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::keccak256(const std::vector<uint8_t
     auto checkedResult_keccak256 = result_keccak256.ToLocalChecked();
     vector<uint8_t> fResult_keccak256;
     Local<Array> fResult_keccak256_container = Local<Array>::Cast(checkedResult_keccak256);
-    for(uint32_t i = 0; i < fResult_keccak256_container->Length(); i++)
+    for(uint32_t fResult_keccak256_id = 0; fResult_keccak256_id < fResult_keccak256_container->Length(); fResult_keccak256_id++)
     {
-        if(fResult_keccak256_container->Get(i)->IsUint32())
+        if(fResult_keccak256_container->Get(fResult_keccak256_id)->IsUint32())
         {
-            auto fResult_keccak256_elem = Nan::To<uint32_t>(fResult_keccak256_container->Get(i)).FromJust();
+            auto fResult_keccak256_elem = Nan::To<uint32_t>(fResult_keccak256_container->Get(fResult_keccak256_id)).FromJust();
             fResult_keccak256.emplace_back(fResult_keccak256_elem);
         }
     }

@@ -12,11 +12,11 @@ void NJSAccountListCallback::onCallback(const std::experimental::optional<std::v
     Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < (*result).size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < (*result).size(); arg_0_id++)
     {
-        auto arg_0_elem = NJSAccount::wrap((*result)[i]);
+        auto arg_0_elem = NJSAccount::wrap((*result)[arg_0_id]);
 
-        arg_0->Set((int)i,arg_0_elem);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
     auto arg_1 = Nan::New<Object>();

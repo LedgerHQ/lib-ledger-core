@@ -177,11 +177,11 @@ NAN_METHOD(NJSBigInt::divideAndRemainder) {
 
     //Wrap result in node object
     Local<Array> arg_1 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_1_id = 0; arg_1_id < result.size(); arg_1_id++)
     {
-        auto arg_1_elem = NJSBigInt::wrap(result[i]);
+        auto arg_1_elem = NJSBigInt::wrap(result[arg_1_id]);
 
-        arg_1->Set((int)i,arg_1_elem);
+        arg_1->Set((int)arg_1_id,arg_1_elem);
     }
 
 

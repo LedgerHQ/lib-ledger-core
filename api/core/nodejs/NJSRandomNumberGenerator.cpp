@@ -28,11 +28,11 @@ std::vector<uint8_t> NJSRandomNumberGenerator::getRandomBytes(int32_t size)
     auto checkedResult_getRandomBytes = result_getRandomBytes.ToLocalChecked();
     vector<uint8_t> fResult_getRandomBytes;
     Local<Array> fResult_getRandomBytes_container = Local<Array>::Cast(checkedResult_getRandomBytes);
-    for(uint32_t i = 0; i < fResult_getRandomBytes_container->Length(); i++)
+    for(uint32_t fResult_getRandomBytes_id = 0; fResult_getRandomBytes_id < fResult_getRandomBytes_container->Length(); fResult_getRandomBytes_id++)
     {
-        if(fResult_getRandomBytes_container->Get(i)->IsUint32())
+        if(fResult_getRandomBytes_container->Get(fResult_getRandomBytes_id)->IsUint32())
         {
-            auto fResult_getRandomBytes_elem = Nan::To<uint32_t>(fResult_getRandomBytes_container->Get(i)).FromJust();
+            auto fResult_getRandomBytes_elem = Nan::To<uint32_t>(fResult_getRandomBytes_container->Get(fResult_getRandomBytes_id)).FromJust();
             fResult_getRandomBytes.emplace_back(fResult_getRandomBytes_elem);
         }
     }

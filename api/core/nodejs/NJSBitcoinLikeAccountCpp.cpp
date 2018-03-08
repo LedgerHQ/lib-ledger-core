@@ -84,11 +84,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
 
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_1;
     Local<Array> arg_1_container = Local<Array>::Cast(info[1]);
-    for(uint32_t i = 0; i < arg_1_container->Length(); i++)
+    for(uint32_t arg_1_id = 0; arg_1_id < arg_1_container->Length(); arg_1_id++)
     {
-        if(arg_1_container->Get(i)->IsObject())
+        if(arg_1_container->Get(arg_1_id)->IsObject())
         {
-            Local<Object> njs_arg_1_elem = arg_1_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_1_elem = arg_1_container->Get(arg_1_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_1_elem,0));
             if(!njs_ptr_arg_1_elem)
             {
@@ -133,11 +133,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("utxo").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_1;
     Local<Array> arg_0_1_container = Local<Array>::Cast(field_arg_0_1);
-    for(uint32_t i = 0; i < arg_0_1_container->Length(); i++)
+    for(uint32_t arg_0_1_id = 0; arg_0_1_id < arg_0_1_container->Length(); arg_0_1_id++)
     {
-        if(arg_0_1_container->Get(i)->IsObject())
+        if(arg_0_1_container->Get(arg_0_1_id)->IsObject())
         {
-            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(arg_0_1_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_1_elem,0));
             if(!njs_ptr_arg_0_1_elem)
             {
@@ -153,11 +153,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("outputs").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_2;
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
+    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
     {
-        if(arg_0_2_container->Get(i)->IsObject())
+        if(arg_0_2_container->Get(arg_0_2_id)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(arg_0_2_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
             if(!njs_ptr_arg_0_2_elem)
             {
@@ -226,11 +226,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("utxo").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_1;
     Local<Array> arg_0_1_container = Local<Array>::Cast(field_arg_0_1);
-    for(uint32_t i = 0; i < arg_0_1_container->Length(); i++)
+    for(uint32_t arg_0_1_id = 0; arg_0_1_id < arg_0_1_container->Length(); arg_0_1_id++)
     {
-        if(arg_0_1_container->Get(i)->IsObject())
+        if(arg_0_1_container->Get(arg_0_1_id)->IsObject())
         {
-            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_1_elem = arg_0_1_container->Get(arg_0_1_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_1_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_1_elem,0));
             if(!njs_ptr_arg_0_1_elem)
             {
@@ -246,11 +246,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("outputs").ToLocalChecked()).ToLocalChecked();
     vector<std::shared_ptr<BitcoinLikeOutput>> arg_0_2;
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
+    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
     {
-        if(arg_0_2_container->Get(i)->IsObject())
+        if(arg_0_2_container->Get(arg_0_2_id)->IsObject())
         {
-            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(i)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+            Local<Object> njs_arg_0_2_elem = arg_0_2_container->Get(arg_0_2_id)->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
             NJSBitcoinLikeOutput *njs_ptr_arg_0_2_elem = static_cast<NJSBitcoinLikeOutput *>(Nan::GetInternalFieldPointer(njs_arg_0_2_elem,0));
             if(!njs_ptr_arg_0_2_elem)
             {
@@ -317,11 +317,11 @@ NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
     //Check if parameters have correct types
     vector<uint8_t> arg_0;
     Local<Array> arg_0_container = Local<Array>::Cast(info[0]);
-    for(uint32_t i = 0; i < arg_0_container->Length(); i++)
+    for(uint32_t arg_0_id = 0; arg_0_id < arg_0_container->Length(); arg_0_id++)
     {
-        if(arg_0_container->Get(i)->IsUint32())
+        if(arg_0_container->Get(arg_0_id)->IsUint32())
         {
-            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(i)).FromJust();
+            auto arg_0_elem = Nan::To<uint32_t>(arg_0_container->Get(arg_0_id)).FromJust();
             arg_0.emplace_back(arg_0_elem);
         }
     }

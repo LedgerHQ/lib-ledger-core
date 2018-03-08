@@ -105,11 +105,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
     auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_2;
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
+    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
     {
-        if(arg_0_2_container->Get(i)->IsUint32())
+        if(arg_0_2_container->Get(arg_0_2_id)->IsUint32())
         {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)).FromJust();
+            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(arg_0_2_id)).FromJust();
             arg_0_2.emplace_back(arg_0_2_elem);
         }
     }
@@ -118,11 +118,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
     auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_3;
     Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t i = 0; i < arg_0_3_container->Length(); i++)
+    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
     {
-        if(arg_0_3_container->Get(i)->IsUint32())
+        if(arg_0_3_container->Get(arg_0_3_id)->IsUint32())
         {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)).FromJust();
+            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(arg_0_3_id)).FromJust();
             arg_0_3.emplace_back(arg_0_3_elem);
         }
     }
@@ -131,11 +131,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
     auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_4;
     Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t i = 0; i < arg_0_4_container->Length(); i++)
+    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
     {
-        if(arg_0_4_container->Get(i)->IsUint32())
+        if(arg_0_4_container->Get(arg_0_4_id)->IsUint32())
         {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)).FromJust();
+            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(arg_0_4_id)).FromJust();
             arg_0_4.emplace_back(arg_0_4_elem);
         }
     }
@@ -200,11 +200,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::New) {
     auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_2;
     Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t i = 0; i < arg_0_2_container->Length(); i++)
+    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
     {
-        if(arg_0_2_container->Get(i)->IsUint32())
+        if(arg_0_2_container->Get(arg_0_2_id)->IsUint32())
         {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(i)).FromJust();
+            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(arg_0_2_id)).FromJust();
             arg_0_2.emplace_back(arg_0_2_elem);
         }
     }
@@ -213,11 +213,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::New) {
     auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_3;
     Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t i = 0; i < arg_0_3_container->Length(); i++)
+    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
     {
-        if(arg_0_3_container->Get(i)->IsUint32())
+        if(arg_0_3_container->Get(arg_0_3_id)->IsUint32())
         {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(i)).FromJust();
+            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(arg_0_3_id)).FromJust();
             arg_0_3.emplace_back(arg_0_3_elem);
         }
     }
@@ -226,11 +226,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::New) {
     auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
     vector<uint8_t> arg_0_4;
     Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t i = 0; i < arg_0_4_container->Length(); i++)
+    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
     {
-        if(arg_0_4_container->Get(i)->IsUint32())
+        if(arg_0_4_container->Get(arg_0_4_id)->IsUint32())
         {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(i)).FromJust();
+            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(arg_0_4_id)).FromJust();
             arg_0_4.emplace_back(arg_0_4_elem);
         }
     }

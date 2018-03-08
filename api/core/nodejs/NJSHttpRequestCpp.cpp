@@ -55,10 +55,10 @@ NAN_METHOD(NJSHttpRequest::getHeaders) {
 
     //Wrap result in node object
     Local<Map> arg_0 = Map::New((Nan::GetCurrentContext())->GetIsolate());
-    for(auto const& elem : result)
+    for(auto const& arg_0_elem : result)
     {
-        auto arg_0_first = Nan::New<String>(elem.first).ToLocalChecked();
-        auto arg_0_second = Nan::New<String>(elem.second).ToLocalChecked();
+        auto arg_0_first = Nan::New<String>(arg_0_elem.first).ToLocalChecked();
+        auto arg_0_second = Nan::New<String>(arg_0_elem.second).ToLocalChecked();
         arg_0->Set(Nan::GetCurrentContext(), arg_0_first, arg_0_second);
     }
 
@@ -88,10 +88,10 @@ NAN_METHOD(NJSHttpRequest::getBody) {
 
     //Wrap result in node object
     Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t i = 0; i < result.size(); i++)
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = Nan::New<Uint32>(result[i]);
-        arg_0->Set((int)i,arg_0_elem);
+        auto arg_0_elem = Nan::New<Uint32>(result[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
     }
 
 
