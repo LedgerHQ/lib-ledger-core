@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSEvent::getCode) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSEvent::getCode) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::getPayload) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -63,7 +61,6 @@ NAN_METHOD(NJSEvent::getPayload) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::isSticky) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -90,7 +87,6 @@ NAN_METHOD(NJSEvent::isSticky) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::getStickyTag) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -117,7 +113,6 @@ NAN_METHOD(NJSEvent::getStickyTag) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSEvent::newInstance) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)

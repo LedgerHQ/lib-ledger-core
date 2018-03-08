@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSOperationQuery::addOrder) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -38,7 +37,6 @@ NAN_METHOD(NJSOperationQuery::addOrder) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSOperationQuery::filter) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -66,7 +64,6 @@ NAN_METHOD(NJSOperationQuery::filter) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::offset) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -95,7 +92,6 @@ NAN_METHOD(NJSOperationQuery::offset) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSOperationQuery::limit) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -124,7 +120,6 @@ NAN_METHOD(NJSOperationQuery::limit) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSOperationQuery::complete) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -152,7 +147,6 @@ NAN_METHOD(NJSOperationQuery::complete) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::partial) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -180,7 +174,6 @@ NAN_METHOD(NJSOperationQuery::partial) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSOperationQuery::execute) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

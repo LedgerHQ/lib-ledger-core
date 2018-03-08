@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSExecutionContext::execute(const std::shared_ptr<Runnable> & runnable)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSRunnable::wrap(runnable);
 
@@ -29,6 +30,7 @@ void NJSExecutionContext::execute(const std::shared_ptr<Runnable> & runnable)
 
 void NJSExecutionContext::delay(const std::shared_ptr<Runnable> & runnable, int64_t millis)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSRunnable::wrap(runnable);
 

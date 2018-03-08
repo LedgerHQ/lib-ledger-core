@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSAccount::getIndex) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSAccount::getIndex) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::queryOperations) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -63,7 +61,6 @@ NAN_METHOD(NJSAccount::queryOperations) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getBalance) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -92,7 +89,6 @@ NAN_METHOD(NJSAccount::getBalance) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::isSynchronizing) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -119,7 +115,6 @@ NAN_METHOD(NJSAccount::isSynchronizing) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::synchronize) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -147,7 +142,6 @@ NAN_METHOD(NJSAccount::synchronize) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getPreferences) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -175,7 +169,6 @@ NAN_METHOD(NJSAccount::getPreferences) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getLogger) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -203,7 +196,6 @@ NAN_METHOD(NJSAccount::getLogger) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getOperationPreferences) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -233,7 +225,6 @@ NAN_METHOD(NJSAccount::getOperationPreferences) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSAccount::isInstanceOfBitcoinLikeAccount) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -260,7 +251,6 @@ NAN_METHOD(NJSAccount::isInstanceOfBitcoinLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::isInstanceOfEthereumLikeAccount) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -287,7 +277,6 @@ NAN_METHOD(NJSAccount::isInstanceOfEthereumLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::isInstanceOfRippleLikeAccount) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -314,7 +303,6 @@ NAN_METHOD(NJSAccount::isInstanceOfRippleLikeAccount) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -343,7 +331,6 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::getWalletType) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -370,7 +357,6 @@ NAN_METHOD(NJSAccount::getWalletType) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getEventBus) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -398,7 +384,6 @@ NAN_METHOD(NJSAccount::getEventBus) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::startBlockchainObservation) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -418,7 +403,6 @@ NAN_METHOD(NJSAccount::startBlockchainObservation) {
     cpp_impl->startBlockchainObservation();
 }
 NAN_METHOD(NJSAccount::stopBlockchainObservation) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -438,7 +422,6 @@ NAN_METHOD(NJSAccount::stopBlockchainObservation) {
     cpp_impl->stopBlockchainObservation();
 }
 NAN_METHOD(NJSAccount::isObservingBlockchain) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -465,7 +448,6 @@ NAN_METHOD(NJSAccount::isObservingBlockchain) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSAccount::getLastBlock) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -494,7 +476,6 @@ NAN_METHOD(NJSAccount::getLastBlock) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::computeFees) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 4)

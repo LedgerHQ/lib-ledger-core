@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeAddress::getVersion) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -41,7 +40,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::getVersion) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::getHash160) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -74,7 +72,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::getHash160) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::getNetworkParameters) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -136,7 +133,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::getNetworkParameters) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::toBase58) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -163,7 +159,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::toBase58) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::isP2SH) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -190,7 +185,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::isP2SH) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::isP2PKH) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -217,7 +211,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::isP2PKH) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::getDerivationPath) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -244,7 +237,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::getDerivationPath) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -332,7 +324,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)

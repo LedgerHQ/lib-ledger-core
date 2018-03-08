@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSI32Callback::onCallback(std::experimental::optional<int32_t> result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<Int32>((*result));
     auto arg_1 = Nan::New<Object>();
@@ -17,7 +18,6 @@ void NJSI32Callback::onCallback(std::experimental::optional<int32_t> result, con
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

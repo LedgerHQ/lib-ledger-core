@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSLock::lock()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -27,6 +28,7 @@ void NJSLock::lock()
 
 bool NJSLock::tryLock()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -48,6 +50,7 @@ bool NJSLock::tryLock()
 
 void NJSLock::unlock()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

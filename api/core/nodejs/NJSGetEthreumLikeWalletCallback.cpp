@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSGetEthreumLikeWalletCallback::onSuccess(const std::shared_ptr<EthereumLikeWallet> & wallet, bool isCreated)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSEthereumLikeWallet::wrap(wallet);
 
@@ -30,6 +31,7 @@ void NJSGetEthreumLikeWalletCallback::onSuccess(const std::shared_ptr<EthereumLi
 
 void NJSGetEthreumLikeWalletCallback::onError(const Error & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<Object>();
     auto arg_0_1 = Nan::New<Integer>((int)error.code);

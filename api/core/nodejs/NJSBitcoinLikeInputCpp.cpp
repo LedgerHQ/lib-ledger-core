@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeInput::getAddress) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSBitcoinLikeInput::getAddress) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeInput::getValue) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -63,7 +61,6 @@ NAN_METHOD(NJSBitcoinLikeInput::getValue) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeInput::isCoinbase) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -90,7 +87,6 @@ NAN_METHOD(NJSBitcoinLikeInput::isCoinbase) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeInput::getCoinbase) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -117,7 +113,6 @@ NAN_METHOD(NJSBitcoinLikeInput::getCoinbase) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeInput::getPreviousTxHash) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -144,7 +139,6 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTxHash) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeInput::getPreviousOutputIndex) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

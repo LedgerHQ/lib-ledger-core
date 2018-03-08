@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSSecp256k1::computePubKey) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -53,7 +52,6 @@ NAN_METHOD(NJSSecp256k1::computePubKey) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSSecp256k1::sign) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -108,7 +106,6 @@ NAN_METHOD(NJSSecp256k1::sign) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSSecp256k1::verify) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)
@@ -168,7 +165,6 @@ NAN_METHOD(NJSSecp256k1::verify) {
     info.GetReturnValue().Set(arg_3);
 }
 NAN_METHOD(NJSSecp256k1::newInstance) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

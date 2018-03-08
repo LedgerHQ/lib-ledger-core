@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSEventReceiver::onEvent(const std::shared_ptr<Event> & event)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSEvent::wrap(event);
 

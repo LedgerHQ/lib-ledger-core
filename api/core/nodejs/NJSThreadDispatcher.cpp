@@ -9,6 +9,7 @@ using namespace std;
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getSerialExecutionContext(const std::string & name)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(name).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -34,6 +35,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getSerialExecutionContext
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getThreadPoolExecutionContext(const std::string & name)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(name).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -59,6 +61,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getThreadPoolExecutionCon
 
 std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getMainExecutionContext()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -83,6 +86,7 @@ std::shared_ptr<ExecutionContext> NJSThreadDispatcher::getMainExecutionContext()
 
 std::shared_ptr<Lock> NJSThreadDispatcher::newLock()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

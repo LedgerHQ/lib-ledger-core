@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::derive) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -38,7 +37,6 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::derive) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::toBase58) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -65,7 +63,6 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::toBase58) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::getRootPath) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -92,7 +89,6 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::getRootPath) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)

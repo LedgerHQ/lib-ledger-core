@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSWebSocketClient::connect(const std::string & url, const std::shared_ptr<WebSocketConnection> & connection)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(url).ToLocalChecked();
     auto arg_1 = NJSWebSocketConnection::wrap(connection);
@@ -30,6 +31,7 @@ void NJSWebSocketClient::connect(const std::string & url, const std::shared_ptr<
 
 void NJSWebSocketClient::send(const std::shared_ptr<WebSocketConnection> & connection, const std::string & data)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSWebSocketConnection::wrap(connection);
 
@@ -51,6 +53,7 @@ void NJSWebSocketClient::send(const std::shared_ptr<WebSocketConnection> & conne
 
 void NJSWebSocketClient::disconnect(const std::shared_ptr<WebSocketConnection> & connection)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSWebSocketConnection::wrap(connection);
 

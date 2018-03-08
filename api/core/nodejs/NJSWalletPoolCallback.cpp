@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSWalletPoolCallback::onCallback(const std::shared_ptr<WalletPool> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSWalletPool::wrap(result);
 
@@ -18,7 +19,6 @@ void NJSWalletPoolCallback::onCallback(const std::shared_ptr<WalletPool> & resul
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

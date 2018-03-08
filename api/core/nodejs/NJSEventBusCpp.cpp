@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSEventBus::subscribe) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -36,7 +35,6 @@ NAN_METHOD(NJSEventBus::subscribe) {
     cpp_impl->subscribe(arg_0,arg_1);
 }
 NAN_METHOD(NJSEventBus::unsubscribe) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)

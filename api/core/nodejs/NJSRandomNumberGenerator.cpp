@@ -9,6 +9,7 @@ using namespace std;
 
 std::vector<uint8_t> NJSRandomNumberGenerator::getRandomBytes(int32_t size)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<Int32>(size);
     Handle<Value> args[1] = {arg_0};
@@ -41,6 +42,7 @@ std::vector<uint8_t> NJSRandomNumberGenerator::getRandomBytes(int32_t size)
 
 int32_t NJSRandomNumberGenerator::getRandomInt()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -62,6 +64,7 @@ int32_t NJSRandomNumberGenerator::getRandomInt()
 
 int64_t NJSRandomNumberGenerator::getRandomLong()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -83,6 +86,7 @@ int64_t NJSRandomNumberGenerator::getRandomLong()
 
 int8_t NJSRandomNumberGenerator::getRandomByte()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

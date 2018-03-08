@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSPreferences::getString) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -39,7 +38,6 @@ NAN_METHOD(NJSPreferences::getString) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::getInt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -69,7 +67,6 @@ NAN_METHOD(NJSPreferences::getInt) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::getLong) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -99,7 +96,6 @@ NAN_METHOD(NJSPreferences::getLong) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::getBoolean) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -129,7 +125,6 @@ NAN_METHOD(NJSPreferences::getBoolean) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::getStringArray) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -176,7 +171,6 @@ NAN_METHOD(NJSPreferences::getStringArray) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::getData) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -222,7 +216,6 @@ NAN_METHOD(NJSPreferences::getData) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferences::contains) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -251,7 +244,6 @@ NAN_METHOD(NJSPreferences::contains) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSPreferences::edit) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

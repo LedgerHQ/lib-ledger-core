@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSHttpRequest::getMethod) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSHttpRequest::getMethod) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getHeaders) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -69,7 +67,6 @@ NAN_METHOD(NJSHttpRequest::getHeaders) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getBody) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -102,7 +99,6 @@ NAN_METHOD(NJSHttpRequest::getBody) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::getUrl) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -129,7 +125,6 @@ NAN_METHOD(NJSHttpRequest::getUrl) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSHttpRequest::complete) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)

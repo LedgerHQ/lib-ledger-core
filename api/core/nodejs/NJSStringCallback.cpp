@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSStringCallback::onCallback(const std::experimental::optional<std::string> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
     auto arg_1 = Nan::New<Object>();
@@ -17,7 +18,6 @@ void NJSStringCallback::onCallback(const std::experimental::optional<std::string
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

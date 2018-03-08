@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSQueryFilter::accountEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -38,7 +37,6 @@ NAN_METHOD(NJSQueryFilter::accountEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::accountNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -68,7 +66,6 @@ NAN_METHOD(NJSQueryFilter::accountNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateLte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -98,7 +95,6 @@ NAN_METHOD(NJSQueryFilter::dateLte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateLt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -128,7 +124,6 @@ NAN_METHOD(NJSQueryFilter::dateLt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateGt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -158,7 +153,6 @@ NAN_METHOD(NJSQueryFilter::dateGt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateGte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -188,7 +182,6 @@ NAN_METHOD(NJSQueryFilter::dateGte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -218,7 +211,6 @@ NAN_METHOD(NJSQueryFilter::dateEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::dateNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -248,7 +240,6 @@ NAN_METHOD(NJSQueryFilter::dateNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::containsRecipient) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -278,7 +269,6 @@ NAN_METHOD(NJSQueryFilter::containsRecipient) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::containsSender) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -308,7 +298,6 @@ NAN_METHOD(NJSQueryFilter::containsSender) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::currencyEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -338,7 +327,6 @@ NAN_METHOD(NJSQueryFilter::currencyEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::operationUidEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -368,7 +356,6 @@ NAN_METHOD(NJSQueryFilter::operationUidEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::operationUidNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -398,7 +385,6 @@ NAN_METHOD(NJSQueryFilter::operationUidNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::trustEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -427,7 +413,6 @@ NAN_METHOD(NJSQueryFilter::trustEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::trustNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -456,7 +441,6 @@ NAN_METHOD(NJSQueryFilter::trustNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -492,7 +476,6 @@ NAN_METHOD(NJSQueryFilter::feesEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -528,7 +511,6 @@ NAN_METHOD(NJSQueryFilter::feesNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesGte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -564,7 +546,6 @@ NAN_METHOD(NJSQueryFilter::feesGte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesGt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -600,7 +581,6 @@ NAN_METHOD(NJSQueryFilter::feesGt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesLte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -636,7 +616,6 @@ NAN_METHOD(NJSQueryFilter::feesLte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::feesLt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -672,7 +651,6 @@ NAN_METHOD(NJSQueryFilter::feesLt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -708,7 +686,6 @@ NAN_METHOD(NJSQueryFilter::amountEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -744,7 +721,6 @@ NAN_METHOD(NJSQueryFilter::amountNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountGte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -780,7 +756,6 @@ NAN_METHOD(NJSQueryFilter::amountGte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountGt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -816,7 +791,6 @@ NAN_METHOD(NJSQueryFilter::amountGt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountLte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -852,7 +826,6 @@ NAN_METHOD(NJSQueryFilter::amountLte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::amountLt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -888,7 +861,6 @@ NAN_METHOD(NJSQueryFilter::amountLt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -917,7 +889,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -946,7 +917,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightGte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -975,7 +945,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightGte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightGt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1004,7 +973,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightGt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightLte) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1033,7 +1001,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightLte) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightLt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1062,7 +1029,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightLt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::blockHeightIsNull) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -1090,7 +1056,6 @@ NAN_METHOD(NJSQueryFilter::blockHeightIsNull) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSQueryFilter::operationTypeEq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1119,7 +1084,6 @@ NAN_METHOD(NJSQueryFilter::operationTypeEq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::operationTypeNeq) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1148,7 +1112,6 @@ NAN_METHOD(NJSQueryFilter::operationTypeNeq) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::op_and) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1184,7 +1147,6 @@ NAN_METHOD(NJSQueryFilter::op_and) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::op_or) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1220,7 +1182,6 @@ NAN_METHOD(NJSQueryFilter::op_or) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::op_and_not) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -1256,7 +1217,6 @@ NAN_METHOD(NJSQueryFilter::op_and_not) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSQueryFilter::op_or_not) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)

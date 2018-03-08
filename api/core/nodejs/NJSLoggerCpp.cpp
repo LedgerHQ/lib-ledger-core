@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSLogger::d) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -32,7 +31,6 @@ NAN_METHOD(NJSLogger::d) {
     cpp_impl->d(arg_0,arg_1);
 }
 NAN_METHOD(NJSLogger::i) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -56,7 +54,6 @@ NAN_METHOD(NJSLogger::i) {
     cpp_impl->i(arg_0,arg_1);
 }
 NAN_METHOD(NJSLogger::e) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -80,7 +77,6 @@ NAN_METHOD(NJSLogger::e) {
     cpp_impl->e(arg_0,arg_1);
 }
 NAN_METHOD(NJSLogger::w) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -104,7 +100,6 @@ NAN_METHOD(NJSLogger::w) {
     cpp_impl->w(arg_0,arg_1);
 }
 NAN_METHOD(NJSLogger::c) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)

@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSStringListCallback::onCallback(const std::experimental::optional<std::vector<std::string>> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t i = 0; i < (*result).size(); i++)
@@ -23,7 +24,6 @@ void NJSStringListCallback::onCallback(const std::experimental::optional<std::ve
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

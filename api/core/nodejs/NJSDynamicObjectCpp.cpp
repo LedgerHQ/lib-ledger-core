@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSDynamicObject::isReadOnly) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSDynamicObject::isReadOnly) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::putString) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -67,7 +65,6 @@ NAN_METHOD(NJSDynamicObject::putString) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putInt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -98,7 +95,6 @@ NAN_METHOD(NJSDynamicObject::putInt) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putLong) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -129,7 +125,6 @@ NAN_METHOD(NJSDynamicObject::putLong) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putDouble) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -160,7 +155,6 @@ NAN_METHOD(NJSDynamicObject::putDouble) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putData) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -201,7 +195,6 @@ NAN_METHOD(NJSDynamicObject::putData) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putBoolean) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -232,7 +225,6 @@ NAN_METHOD(NJSDynamicObject::putBoolean) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::getString) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -261,7 +253,6 @@ NAN_METHOD(NJSDynamicObject::getString) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getInt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -290,7 +281,6 @@ NAN_METHOD(NJSDynamicObject::getInt) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getLong) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -319,7 +309,6 @@ NAN_METHOD(NJSDynamicObject::getLong) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getDouble) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -348,7 +337,6 @@ NAN_METHOD(NJSDynamicObject::getDouble) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getData) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -383,7 +371,6 @@ NAN_METHOD(NJSDynamicObject::getData) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getBoolean) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -412,7 +399,6 @@ NAN_METHOD(NJSDynamicObject::getBoolean) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::putObject) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -450,7 +436,6 @@ NAN_METHOD(NJSDynamicObject::putObject) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::putArray) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -488,7 +473,6 @@ NAN_METHOD(NJSDynamicObject::putArray) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::getObject) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -518,7 +502,6 @@ NAN_METHOD(NJSDynamicObject::getObject) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getArray) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -548,7 +531,6 @@ NAN_METHOD(NJSDynamicObject::getArray) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::contains) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -577,7 +559,6 @@ NAN_METHOD(NJSDynamicObject::contains) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::remove) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -606,7 +587,6 @@ NAN_METHOD(NJSDynamicObject::remove) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getKeys) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -639,7 +619,6 @@ NAN_METHOD(NJSDynamicObject::getKeys) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::getType) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -668,7 +647,6 @@ NAN_METHOD(NJSDynamicObject::getType) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::dump) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -695,7 +673,6 @@ NAN_METHOD(NJSDynamicObject::dump) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::serialize) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -728,7 +705,6 @@ NAN_METHOD(NJSDynamicObject::serialize) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::size) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -755,7 +731,6 @@ NAN_METHOD(NJSDynamicObject::size) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::newInstance) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -783,7 +758,6 @@ NAN_METHOD(NJSDynamicObject::newInstance) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDynamicObject::load) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)

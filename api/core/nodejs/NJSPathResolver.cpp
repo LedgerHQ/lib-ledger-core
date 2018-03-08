@@ -9,6 +9,7 @@ using namespace std;
 
 std::string NJSPathResolver::resolveDatabasePath(const std::string & path)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(path).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -32,6 +33,7 @@ std::string NJSPathResolver::resolveDatabasePath(const std::string & path)
 
 std::string NJSPathResolver::resolveLogFilePath(const std::string & path)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(path).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -55,6 +57,7 @@ std::string NJSPathResolver::resolveLogFilePath(const std::string & path)
 
 std::string NJSPathResolver::resolvePreferencesPath(const std::string & path)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(path).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};

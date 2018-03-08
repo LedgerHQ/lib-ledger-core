@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSDatabaseBackend::setUsername) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -38,7 +37,6 @@ NAN_METHOD(NJSDatabaseBackend::setUsername) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setPassword) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -68,7 +66,6 @@ NAN_METHOD(NJSDatabaseBackend::setPassword) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setHost) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -98,7 +95,6 @@ NAN_METHOD(NJSDatabaseBackend::setHost) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setHostAddr) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -128,7 +124,6 @@ NAN_METHOD(NJSDatabaseBackend::setHostAddr) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setPort) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -158,7 +153,6 @@ NAN_METHOD(NJSDatabaseBackend::setPort) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setOptions) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -188,7 +182,6 @@ NAN_METHOD(NJSDatabaseBackend::setOptions) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setSslMode) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -218,7 +211,6 @@ NAN_METHOD(NJSDatabaseBackend::setSslMode) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setKerberosName) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -248,7 +240,6 @@ NAN_METHOD(NJSDatabaseBackend::setKerberosName) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setService) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -278,7 +269,6 @@ NAN_METHOD(NJSDatabaseBackend::setService) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::setConnectionPoolSize) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -307,7 +297,6 @@ NAN_METHOD(NJSDatabaseBackend::setConnectionPoolSize) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::enableQueryLogging) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -336,7 +325,6 @@ NAN_METHOD(NJSDatabaseBackend::enableQueryLogging) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDatabaseBackend::getUsername) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -363,7 +351,6 @@ NAN_METHOD(NJSDatabaseBackend::getUsername) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getPassword) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -390,7 +377,6 @@ NAN_METHOD(NJSDatabaseBackend::getPassword) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getHost) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -417,7 +403,6 @@ NAN_METHOD(NJSDatabaseBackend::getHost) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getHostAddr) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -444,7 +429,6 @@ NAN_METHOD(NJSDatabaseBackend::getHostAddr) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getPort) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -471,7 +455,6 @@ NAN_METHOD(NJSDatabaseBackend::getPort) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getOptions) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -498,7 +481,6 @@ NAN_METHOD(NJSDatabaseBackend::getOptions) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getSslMode) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -525,7 +507,6 @@ NAN_METHOD(NJSDatabaseBackend::getSslMode) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getKerberosName) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -552,7 +533,6 @@ NAN_METHOD(NJSDatabaseBackend::getKerberosName) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getService) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -579,7 +559,6 @@ NAN_METHOD(NJSDatabaseBackend::getService) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getConnectionPoolSize) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -606,7 +585,6 @@ NAN_METHOD(NJSDatabaseBackend::getConnectionPoolSize) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::isLoggingEnabled) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -633,7 +611,6 @@ NAN_METHOD(NJSDatabaseBackend::isLoggingEnabled) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getSqlite3Backend) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -661,7 +638,6 @@ NAN_METHOD(NJSDatabaseBackend::getSqlite3Backend) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSDatabaseBackend::getPostgreSQLBackend) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

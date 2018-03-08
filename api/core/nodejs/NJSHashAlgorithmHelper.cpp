@@ -9,6 +9,7 @@ using namespace std;
 
 std::vector<uint8_t> NJSHashAlgorithmHelper::ripemd160(const std::vector<uint8_t> & data)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t i = 0; i < data.size(); i++)
@@ -47,6 +48,7 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::ripemd160(const std::vector<uint8_t
 
 std::vector<uint8_t> NJSHashAlgorithmHelper::sha256(const std::vector<uint8_t> & data)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t i = 0; i < data.size(); i++)
@@ -85,6 +87,7 @@ std::vector<uint8_t> NJSHashAlgorithmHelper::sha256(const std::vector<uint8_t> &
 
 std::vector<uint8_t> NJSHashAlgorithmHelper::keccak256(const std::vector<uint8_t> & data)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t i = 0; i < data.size(); i++)

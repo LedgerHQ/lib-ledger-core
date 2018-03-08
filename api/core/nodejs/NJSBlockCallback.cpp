@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSBlockCallback::onCallback(const std::experimental::optional<Block> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<Object>();
     auto arg_0_1 = Nan::New<String>((*result).hash).ToLocalChecked();
@@ -29,7 +30,6 @@ void NJSBlockCallback::onCallback(const std::experimental::optional<Block> & res
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

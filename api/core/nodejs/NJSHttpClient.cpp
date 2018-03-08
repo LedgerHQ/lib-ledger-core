@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSHttpClient::execute(const std::shared_ptr<HttpRequest> & request)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = NJSHttpRequest::wrap(request);
 

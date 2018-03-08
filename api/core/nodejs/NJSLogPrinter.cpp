@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSLogPrinter::printError(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -28,6 +29,7 @@ void NJSLogPrinter::printError(const std::string & message)
 
 void NJSLogPrinter::printInfo(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -47,6 +49,7 @@ void NJSLogPrinter::printInfo(const std::string & message)
 
 void NJSLogPrinter::printDebug(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -66,6 +69,7 @@ void NJSLogPrinter::printDebug(const std::string & message)
 
 void NJSLogPrinter::printWarning(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -85,6 +89,7 @@ void NJSLogPrinter::printWarning(const std::string & message)
 
 void NJSLogPrinter::printApdu(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -104,6 +109,7 @@ void NJSLogPrinter::printApdu(const std::string & message)
 
 void NJSLogPrinter::printCriticalError(const std::string & message)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(message).ToLocalChecked();
     Handle<Value> args[1] = {arg_0};
@@ -123,6 +129,7 @@ void NJSLogPrinter::printCriticalError(const std::string & message)
 
 std::shared_ptr<ExecutionContext> NJSLogPrinter::getContext()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

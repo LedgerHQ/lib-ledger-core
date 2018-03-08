@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSLedgerCore::getStringVersion) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSLedgerCore::getStringVersion) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSLedgerCore::getIntVersion) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSBitcoinLikeAccount::getUTXO) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -39,7 +38,6 @@ NAN_METHOD(NJSBitcoinLikeAccount::getUTXO) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::getUTXOCount) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -68,7 +66,6 @@ NAN_METHOD(NJSBitcoinLikeAccount::getUTXOCount) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 3)
@@ -124,7 +121,6 @@ NAN_METHOD(NJSBitcoinLikeAccount::pickUTXO) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -218,7 +214,6 @@ NAN_METHOD(NJSBitcoinLikeAccount::estimateFees) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -312,7 +307,6 @@ NAN_METHOD(NJSBitcoinLikeAccount::prepareTransaction) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeAccount::broadcastTransaction) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)

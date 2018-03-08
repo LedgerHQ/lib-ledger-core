@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSCurrencyListCallback::onCallback(const std::experimental::optional<std::vector<Currency>> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t i = 0; i < (*result).size(); i++)
@@ -86,7 +87,6 @@ void NJSCurrencyListCallback::onCallback(const std::experimental::optional<std::
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

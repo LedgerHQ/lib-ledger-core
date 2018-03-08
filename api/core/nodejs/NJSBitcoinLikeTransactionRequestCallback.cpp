@@ -9,6 +9,7 @@ using namespace std;
 
 void NJSBitcoinLikeTransactionRequestCallback::onCallback(const std::experimental::optional<BitcoinLikeTransactionRequest> & result, const std::experimental::optional<Error> & error)
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<Object>();
     Local<Array> arg_0_1 = Nan::New<Array>();
@@ -44,7 +45,6 @@ void NJSBitcoinLikeTransactionRequestCallback::onCallback(const std::experimenta
     auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
     Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
 
-    Nan::HandleScope scope;
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
     {

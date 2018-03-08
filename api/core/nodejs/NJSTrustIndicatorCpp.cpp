@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSTrustIndicator::getTrustWeight) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -35,7 +34,6 @@ NAN_METHOD(NJSTrustIndicator::getTrustWeight) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSTrustIndicator::getTrustLevel) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -62,7 +60,6 @@ NAN_METHOD(NJSTrustIndicator::getTrustLevel) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSTrustIndicator::getConflictingOperationUids) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -95,7 +92,6 @@ NAN_METHOD(NJSTrustIndicator::getConflictingOperationUids) {
     info.GetReturnValue().Set(arg_0);
 }
 NAN_METHOD(NJSTrustIndicator::getOrigin) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

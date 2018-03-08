@@ -9,6 +9,7 @@ using namespace std;
 
 int32_t NJSHttpUrlConnection::getStatusCode()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -30,6 +31,7 @@ int32_t NJSHttpUrlConnection::getStatusCode()
 
 std::string NJSHttpUrlConnection::getStatusText()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -52,6 +54,7 @@ std::string NJSHttpUrlConnection::getStatusText()
 
 std::unordered_map<std::string, std::string> NJSHttpUrlConnection::getHeaders()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -89,6 +92,7 @@ std::unordered_map<std::string, std::string> NJSHttpUrlConnection::getHeaders()
 
 HttpReadBodyResult NJSHttpUrlConnection::readBody()
 {
+    Nan::HandleScope scope;
     //Wrap parameters
     Handle<Value> args[0] = {};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

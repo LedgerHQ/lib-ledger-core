@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSPreferencesEditor::putString) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -40,7 +39,6 @@ NAN_METHOD(NJSPreferencesEditor::putString) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::putInt) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -71,7 +69,6 @@ NAN_METHOD(NJSPreferencesEditor::putInt) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::putLong) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -102,7 +99,6 @@ NAN_METHOD(NJSPreferencesEditor::putLong) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::putBoolean) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -133,7 +129,6 @@ NAN_METHOD(NJSPreferencesEditor::putBoolean) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::putStringArray) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -175,7 +170,6 @@ NAN_METHOD(NJSPreferencesEditor::putStringArray) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::putData) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 2)
@@ -216,7 +210,6 @@ NAN_METHOD(NJSPreferencesEditor::putData) {
     info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSPreferencesEditor::remove) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -246,7 +239,6 @@ NAN_METHOD(NJSPreferencesEditor::remove) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSPreferencesEditor::commit) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)

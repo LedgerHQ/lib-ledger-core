@@ -8,7 +8,6 @@ using namespace node;
 using namespace std;
 
 NAN_METHOD(NJSWalletPoolBuilder::setHttpClient) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -40,7 +39,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setHttpClient) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setWebsocketClient) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -72,7 +70,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setWebsocketClient) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setPathResolver) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -104,7 +101,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setPathResolver) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setLogPrinter) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -136,7 +132,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setLogPrinter) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setThreadDispatcher) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -168,7 +163,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setThreadDispatcher) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setName) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -198,7 +192,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setName) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setPassword) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -228,7 +221,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setPassword) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setRandomNumberGenerator) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -260,7 +252,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setRandomNumberGenerator) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setDatabaseBackend) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -296,7 +287,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setDatabaseBackend) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::setConfiguration) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 1)
@@ -332,7 +322,6 @@ NAN_METHOD(NJSWalletPoolBuilder::setConfiguration) {
     info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSWalletPoolBuilder::build) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
@@ -361,7 +350,6 @@ NAN_METHOD(NJSWalletPoolBuilder::build) {
     info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSWalletPoolBuilder::createInstance) {
-    Nan::HandleScope scope;
 
     //Check if method called with right number of arguments
     if(info.Length() != 0)
