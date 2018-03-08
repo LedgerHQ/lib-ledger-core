@@ -22,9 +22,9 @@ This project is based on **_cmake_** as a build system so you should install it 
 
 **_cmake_** is building out of source, you should create a build directory (e.g. `lib-ledger-core-build`):
 
-	.							# Directory where clone command was launched
-    ├── lib-ledger-core			# Source files directory
-    ├── lib-ledger-core-build	# Build directory
+	.                           # Directory where clone command was launched
+    ├── lib-ledger-core         # Source files directory
+    ├── lib-ledger-core-build   # Build directory
 
 If you respect this folder structure (and naming), after `cd lib-ledger-core-build`, you can build the library by running:
 
