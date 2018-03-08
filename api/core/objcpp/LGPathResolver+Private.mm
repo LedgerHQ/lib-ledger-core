@@ -13,28 +13,29 @@ namespace djinni_generated {
 
 class PathResolver::ObjcProxy final
 : public ::ledger::core::api::PathResolver
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::PathResolver;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     std::string resolveDatabasePath(const std::string & c_path) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() resolveDatabasePath:(::djinni::String::fromCpp(c_path))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() resolveDatabasePath:(::djinni::String::fromCpp(c_path))];
             return ::djinni::String::toCpp(objcpp_result_);
         }
     }
     std::string resolveLogFilePath(const std::string & c_path) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() resolveLogFilePath:(::djinni::String::fromCpp(c_path))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() resolveLogFilePath:(::djinni::String::fromCpp(c_path))];
             return ::djinni::String::toCpp(objcpp_result_);
         }
     }
     std::string resolvePreferencesPath(const std::string & c_path) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() resolvePreferencesPath:(::djinni::String::fromCpp(c_path))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() resolvePreferencesPath:(::djinni::String::fromCpp(c_path))];
             return ::djinni::String::toCpp(objcpp_result_);
         }
     }
@@ -57,7 +58,7 @@ auto PathResolver::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

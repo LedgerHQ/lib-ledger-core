@@ -13,14 +13,15 @@ namespace djinni_generated {
 
 class HttpClient::ObjcProxy final
 : public ::ledger::core::api::HttpClient
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::HttpClient;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void execute(const std::shared_ptr<::ledger::core::api::HttpRequest> & c_request) override
     {
         @autoreleasepool {
-            [Handle::get() execute:(::djinni_generated::HttpRequest::fromCpp(c_request))];
+            [djinni_private_get_proxied_objc_object() execute:(::djinni_generated::HttpRequest::fromCpp(c_request))];
         }
     }
 };
@@ -42,7 +43,7 @@ auto HttpClient::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

@@ -13,14 +13,15 @@ namespace djinni_generated {
 
 class EventReceiver::ObjcProxy final
 : public ::ledger::core::api::EventReceiver
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::EventReceiver;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void onEvent(const std::shared_ptr<::ledger::core::api::Event> & c_event) override
     {
         @autoreleasepool {
-            [Handle::get() onEvent:(::djinni_generated::Event::fromCpp(c_event))];
+            [djinni_private_get_proxied_objc_object() onEvent:(::djinni_generated::Event::fromCpp(c_event))];
         }
     }
 };
@@ -42,7 +43,7 @@ auto EventReceiver::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

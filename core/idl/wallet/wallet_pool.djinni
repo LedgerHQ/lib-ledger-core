@@ -5,7 +5,6 @@
 @import "../fs/path_resolver.djinni"
 @import "../debug/logger.djinni"
 @import "../async/thread_dispatcher.djinni"
-@import "bitcoin/bitcoin_public_key_provider.djinni"
 @import "ethereum/ethereum_public_key_provider.djinni"
 @import "../errors.djinni"
 @import "../preferences/preferences.djinni"

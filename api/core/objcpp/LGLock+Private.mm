@@ -13,27 +13,28 @@ namespace djinni_generated {
 
 class Lock::ObjcProxy final
 : public ::ledger::core::api::Lock
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::Lock;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void lock() override
     {
         @autoreleasepool {
-            [Handle::get() lock];
+            [djinni_private_get_proxied_objc_object() lock];
         }
     }
     bool tryLock() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() tryLock];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() tryLock];
             return ::djinni::Bool::toCpp(objcpp_result_);
         }
     }
     void unlock() override
     {
         @autoreleasepool {
-            [Handle::get() unlock];
+            [djinni_private_get_proxied_objc_object() unlock];
         }
     }
 };
@@ -55,7 +56,7 @@ auto Lock::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

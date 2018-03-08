@@ -15,35 +15,36 @@ namespace djinni_generated {
 
 class ThreadDispatcher::ObjcProxy final
 : public ::ledger::core::api::ThreadDispatcher
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::ThreadDispatcher;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     std::shared_ptr<::ledger::core::api::ExecutionContext> getSerialExecutionContext(const std::string & c_name) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getSerialExecutionContext:(::djinni::String::fromCpp(c_name))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getSerialExecutionContext:(::djinni::String::fromCpp(c_name))];
             return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
         }
     }
     std::shared_ptr<::ledger::core::api::ExecutionContext> getThreadPoolExecutionContext(const std::string & c_name) override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getThreadPoolExecutionContext:(::djinni::String::fromCpp(c_name))];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getThreadPoolExecutionContext:(::djinni::String::fromCpp(c_name))];
             return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
         }
     }
     std::shared_ptr<::ledger::core::api::ExecutionContext> getMainExecutionContext() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() getMainExecutionContext];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() getMainExecutionContext];
             return ::djinni_generated::ExecutionContext::toCpp(objcpp_result_);
         }
     }
     std::shared_ptr<::ledger::core::api::Lock> newLock() override
     {
         @autoreleasepool {
-            auto objcpp_result_ = [Handle::get() newLock];
+            auto objcpp_result_ = [djinni_private_get_proxied_objc_object() newLock];
             return ::djinni_generated::Lock::toCpp(objcpp_result_);
         }
     }
@@ -66,7 +67,7 @@ auto ThreadDispatcher::fromCppOpt(const CppOptType& cpp) -> ObjcType
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated

@@ -15,15 +15,16 @@ namespace djinni_generated {
 
 class ExtendedKeyAccountCreationInfoCallback::ObjcProxy final
 : public ::ledger::core::api::ExtendedKeyAccountCreationInfoCallback
-, public ::djinni::ObjcProxyCache::Handle<ObjcType>
+, private ::djinni::ObjcProxyBase<ObjcType>
 {
+    friend class ::djinni_generated::ExtendedKeyAccountCreationInfoCallback;
 public:
-    using Handle::Handle;
+    using ObjcProxyBase::ObjcProxyBase;
     void onCallback(const std::experimental::optional<::ledger::core::api::ExtendedKeyAccountCreationInfo> & c_result, const std::experimental::optional<::ledger::core::api::Error> & c_error) override
     {
         @autoreleasepool {
-            [Handle::get() onCallback:(::djinni::Optional<std::experimental::optional, ::djinni_generated::ExtendedKeyAccountCreationInfo>::fromCpp(c_result))
-                                error:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(c_error))];
+            [djinni_private_get_proxied_objc_object() onCallback:(::djinni::Optional<std::experimental::optional, ::djinni_generated::ExtendedKeyAccountCreationInfo>::fromCpp(c_result))
+                                                           error:(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(c_error))];
         }
     }
 };
@@ -45,7 +46,7 @@ auto ExtendedKeyAccountCreationInfoCallback::fromCppOpt(const CppOptType& cpp) -
     if (!cpp) {
         return nil;
     }
-    return dynamic_cast<ObjcProxy&>(*cpp).Handle::get();
+    return dynamic_cast<ObjcProxy&>(*cpp).djinni_private_get_proxied_objc_object();
 }
 
 }  // namespace djinni_generated
