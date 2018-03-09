@@ -46,9 +46,9 @@ namespace ledger {
             void unsubscribe(const std::shared_ptr<api::EventReceiver> &receiver) override;
 
         private:
-            EventBus(const std::shared_ptr<api::ExecutionContext>& context);
+            explicit EventBus(const std::shared_ptr<api::ExecutionContext>& context);
             friend class EventPublisher;
-            void post(const std::shared_ptr<Event> event);
+            void post(const std::shared_ptr<Event>& event);
 
 
         private:

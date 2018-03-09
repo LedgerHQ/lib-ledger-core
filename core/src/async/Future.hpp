@@ -279,6 +279,9 @@ namespace ledger {
             }
 
             static Future<T> async(const Context& context, std::function<T ()> f) {
+                if (!context) {
+                    throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Context has been released before async operation");
+                }
                 auto deffer = make_deffered();
                 context->execute(make_runnable([deffer, f] () {
                     auto result = Try<T>::from([&] () -> T {
@@ -290,6 +293,9 @@ namespace ledger {
             }
 
             static Future<T> async(const Context& context, std::function<Future<T> ()> f) {
+                if (!context) {
+                    throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Context has been released before async operation");
+                }
                 auto deffer = make_deffered();
                 context->execute(make_runnable([context, deffer, f] () {
                     auto result = Try<Future<T>>::from([&] () -> Future<T> {
