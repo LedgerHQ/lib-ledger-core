@@ -15,8 +15,16 @@
 @import "../utils/callback.djinni"
 @import "../collections/dynamic.djinni"
 @import "common/wallet.djinni"
+@import "../debug/logger.djinni"
 
 WalletPool = interface +c {
+
+    static newInstance(name: string, password: optional<string>, httpClient: HttpClient,
+                        webSocketClient: WebSocketClient, pathResolver: PathResolver,
+                        logPrinter: LogPrinter, dispatcher: ThreadDispatcher,
+                        rng: RandomNumberGenerator, backend: DatabaseBackend,
+                        configuration: DynamicObject): WalletPool;
+
     getLogger(): Logger;
     getName(): string;
     getPreferences(): Preferences;

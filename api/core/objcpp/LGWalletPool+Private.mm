@@ -10,13 +10,20 @@
 #import "LGCurrency+Private.h"
 #import "LGCurrencyCallback+Private.h"
 #import "LGCurrencyListCallback+Private.h"
+#import "LGDatabaseBackend+Private.h"
 #import "LGDynamicObject+Private.h"
 #import "LGEventBus+Private.h"
+#import "LGHttpClient+Private.h"
 #import "LGI32Callback+Private.h"
+#import "LGLogPrinter+Private.h"
 #import "LGLogger+Private.h"
+#import "LGPathResolver+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGRandomNumberGenerator+Private.h"
+#import "LGThreadDispatcher+Private.h"
 #import "LGWalletCallback+Private.h"
 #import "LGWalletListCallback+Private.h"
+#import "LGWebSocketClient+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -39,6 +46,31 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
         _cppRefHandle.assign(cppRef);
     }
     return self;
+}
+
++ (nullable LGWalletPool *)newInstance:(nonnull NSString *)name
+                              password:(nullable NSString *)password
+                            httpClient:(nullable id<LGHttpClient>)httpClient
+                       webSocketClient:(nullable id<LGWebSocketClient>)webSocketClient
+                          pathResolver:(nullable id<LGPathResolver>)pathResolver
+                            logPrinter:(nullable id<LGLogPrinter>)logPrinter
+                            dispatcher:(nullable id<LGThreadDispatcher>)dispatcher
+                                   rng:(nullable id<LGRandomNumberGenerator>)rng
+                               backend:(nullable LGDatabaseBackend *)backend
+                         configuration:(nullable LGDynamicObject *)configuration {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::WalletPool::newInstance(::djinni::String::toCpp(name),
+                                                                           ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(password),
+                                                                           ::djinni_generated::HttpClient::toCpp(httpClient),
+                                                                           ::djinni_generated::WebSocketClient::toCpp(webSocketClient),
+                                                                           ::djinni_generated::PathResolver::toCpp(pathResolver),
+                                                                           ::djinni_generated::LogPrinter::toCpp(logPrinter),
+                                                                           ::djinni_generated::ThreadDispatcher::toCpp(dispatcher),
+                                                                           ::djinni_generated::RandomNumberGenerator::toCpp(rng),
+                                                                           ::djinni_generated::DatabaseBackend::toCpp(backend),
+                                                                           ::djinni_generated::DynamicObject::toCpp(configuration));
+        return ::djinni_generated::WalletPool::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 - (nullable LGLogger *)getLogger {

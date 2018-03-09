@@ -6,14 +6,21 @@
 #include "Currency.hpp"
 #include "CurrencyCallback.hpp"
 #include "CurrencyListCallback.hpp"
+#include "DatabaseBackend.hpp"
 #include "DynamicObject.hpp"
 #include "EventBus.hpp"
+#include "HttpClient.hpp"
 #include "I32Callback.hpp"
+#include "LogPrinter.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
+#include "PathResolver.hpp"
 #include "Preferences.hpp"
+#include "RandomNumberGenerator.hpp"
+#include "ThreadDispatcher.hpp"
 #include "WalletCallback.hpp"
 #include "WalletListCallback.hpp"
+#include "WebSocketClient.hpp"
 
 namespace djinni_generated {
 
@@ -28,6 +35,24 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_nativeDestr
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         delete reinterpret_cast<::djinni::CppProxyHandle<::ledger::core::api::WalletPool>*>(nativeRef);
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_newInstance(JNIEnv* jniEnv, jobject /*this*/, jstring j_name, jstring j_password, jobject j_httpClient, jobject j_webSocketClient, jobject j_pathResolver, jobject j_logPrinter, jobject j_dispatcher, jobject j_rng, jobject j_backend, jobject j_configuration)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::WalletPool::newInstance(::djinni::String::toCpp(jniEnv, j_name),
+                                                              ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, j_password),
+                                                              ::djinni_generated::HttpClient::toCpp(jniEnv, j_httpClient),
+                                                              ::djinni_generated::WebSocketClient::toCpp(jniEnv, j_webSocketClient),
+                                                              ::djinni_generated::PathResolver::toCpp(jniEnv, j_pathResolver),
+                                                              ::djinni_generated::LogPrinter::toCpp(jniEnv, j_logPrinter),
+                                                              ::djinni_generated::ThreadDispatcher::toCpp(jniEnv, j_dispatcher),
+                                                              ::djinni_generated::RandomNumberGenerator::toCpp(jniEnv, j_rng),
+                                                              ::djinni_generated::DatabaseBackend::toCpp(jniEnv, j_backend),
+                                                              ::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration));
+        return ::djinni::release(::djinni_generated::WalletPool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)

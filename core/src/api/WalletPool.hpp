@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_WALLETPOOL_HPP
 #define DJINNI_GENERATED_WALLETPOOL_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -13,18 +14,27 @@ namespace ledger { namespace core { namespace api {
 class BlockCallback;
 class CurrencyCallback;
 class CurrencyListCallback;
+class DatabaseBackend;
 class DynamicObject;
 class EventBus;
+class HttpClient;
 class I32Callback;
+class LogPrinter;
 class Logger;
+class PathResolver;
 class Preferences;
+class RandomNumberGenerator;
+class ThreadDispatcher;
 class WalletCallback;
 class WalletListCallback;
+class WebSocketClient;
 struct Currency;
 
 class WalletPool {
 public:
     virtual ~WalletPool() {}
+
+    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::experimental::optional<std::string> & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
 
     virtual std::shared_ptr<Logger> getLogger() = 0;
 
