@@ -603,6 +603,7 @@ declare class NJSBitcoinLikeWallet
 }
 declare class NJSWalletPool
 {
+    static declare function newInstance(name: string, password: ?string, httpClient: NJSHttpClient, webSocketClient: NJSWebSocketClient, pathResolver: NJSPathResolver, logPrinter: NJSLogPrinter, dispatcher: NJSThreadDispatcher, rng: NJSRandomNumberGenerator, backend: NJSDatabaseBackend, configuration: NJSDynamicObject): NJSWalletPool;
     declare function getLogger(): NJSLogger;
     declare function getName(): string;
     declare function getPreferences(): NJSPreferences;

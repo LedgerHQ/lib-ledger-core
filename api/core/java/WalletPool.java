@@ -28,6 +28,8 @@ public abstract class WalletPool {
 
     public abstract EventBus getEventBus();
 
+    public static native WalletPool newInstance(String name, String password, HttpClient httpClient, WebSocketClient webSocketClient, PathResolver pathResolver, LogPrinter logPrinter, ThreadDispatcher dispatcher, RandomNumberGenerator rng, DatabaseBackend backend, DynamicObject configuration);
+
     private static final class CppProxy extends WalletPool
     {
         private final long nativeRef;

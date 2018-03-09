@@ -7,6 +7,77 @@ using namespace v8;
 using namespace node;
 using namespace std;
 
+NAN_METHOD(NJSWalletPool::newInstance) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 10)
+    {
+        return Nan::ThrowError("NJSWalletPool::newInstance needs 10 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    String::Utf8Value string_arg_1(info[1]->ToString());
+    auto arg_1 = std::string(*string_arg_1);
+    Local<Object> njs_arg_2 = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSHttpClient *njs_ptr_arg_2 = static_cast<NJSHttpClient *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
+    std::shared_ptr<NJSHttpClient> arg_2(njs_ptr_arg_2);
+
+    Local<Object> njs_arg_3 = info[3]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSWebSocketClient *njs_ptr_arg_3 = static_cast<NJSWebSocketClient *>(Nan::GetInternalFieldPointer(njs_arg_3,0));
+    std::shared_ptr<NJSWebSocketClient> arg_3(njs_ptr_arg_3);
+
+    Local<Object> njs_arg_4 = info[4]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSPathResolver *njs_ptr_arg_4 = static_cast<NJSPathResolver *>(Nan::GetInternalFieldPointer(njs_arg_4,0));
+    std::shared_ptr<NJSPathResolver> arg_4(njs_ptr_arg_4);
+
+    Local<Object> njs_arg_5 = info[5]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSLogPrinter *njs_ptr_arg_5 = static_cast<NJSLogPrinter *>(Nan::GetInternalFieldPointer(njs_arg_5,0));
+    std::shared_ptr<NJSLogPrinter> arg_5(njs_ptr_arg_5);
+
+    Local<Object> njs_arg_6 = info[6]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSThreadDispatcher *njs_ptr_arg_6 = static_cast<NJSThreadDispatcher *>(Nan::GetInternalFieldPointer(njs_arg_6,0));
+    std::shared_ptr<NJSThreadDispatcher> arg_6(njs_ptr_arg_6);
+
+    Local<Object> njs_arg_7 = info[7]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSRandomNumberGenerator *njs_ptr_arg_7 = static_cast<NJSRandomNumberGenerator *>(Nan::GetInternalFieldPointer(njs_arg_7,0));
+    std::shared_ptr<NJSRandomNumberGenerator> arg_7(njs_ptr_arg_7);
+
+    Local<Object> njs_arg_8 = info[8]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDatabaseBackend *njs_ptr_arg_8 = static_cast<NJSDatabaseBackend *>(Nan::GetInternalFieldPointer(njs_arg_8,0));
+    if(!njs_ptr_arg_8)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDatabaseBackend failed");
+    }
+    auto arg_8 = njs_ptr_arg_8->getCppImpl();
+
+    Local<Object> njs_arg_9 = info[9]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDynamicObject *njs_ptr_arg_9 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_9,0));
+    if(!njs_ptr_arg_9)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_9 = njs_ptr_arg_9->getCppImpl();
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSWalletPool* obj = Nan::ObjectWrap::Unwrap<NJSWalletPool>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSWalletPool::newInstance : implementation of WalletPool is not valid");
+    }
+
+    auto result = cpp_impl->newInstance(arg_0,arg_1,arg_2,arg_3,arg_4,arg_5,arg_6,arg_7,arg_8,arg_9);
+
+    //Wrap result in node object
+    auto arg_10 = NJSWalletPool::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_10);
+}
 NAN_METHOD(NJSWalletPool::getLogger) {
 
     //Check if method called with right number of arguments
@@ -440,7 +511,62 @@ NAN_METHOD(NJSWalletPool::New) {
     {
         return Nan::ThrowError("NJSWalletPool function can only be called as constructor (use New)");
     }
-    NJSWalletPool *node_instance = new NJSWalletPool(nullptr);
+
+    //Check if NJSWalletPool::New called with right number of arguments
+    if(info.Length() != 10)
+    {
+        return Nan::ThrowError("NJSWalletPool::New needs same number of arguments as ledger::core::api::WalletPool::newInstance method");
+    }
+
+    //Unwrap objects to get C++ classes
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    String::Utf8Value string_arg_1(info[1]->ToString());
+    auto arg_1 = std::string(*string_arg_1);
+    Local<Object> njs_arg_2 = info[2]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSHttpClient *njs_ptr_arg_2 = static_cast<NJSHttpClient *>(Nan::GetInternalFieldPointer(njs_arg_2,0));
+    std::shared_ptr<NJSHttpClient> arg_2(njs_ptr_arg_2);
+
+    Local<Object> njs_arg_3 = info[3]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSWebSocketClient *njs_ptr_arg_3 = static_cast<NJSWebSocketClient *>(Nan::GetInternalFieldPointer(njs_arg_3,0));
+    std::shared_ptr<NJSWebSocketClient> arg_3(njs_ptr_arg_3);
+
+    Local<Object> njs_arg_4 = info[4]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSPathResolver *njs_ptr_arg_4 = static_cast<NJSPathResolver *>(Nan::GetInternalFieldPointer(njs_arg_4,0));
+    std::shared_ptr<NJSPathResolver> arg_4(njs_ptr_arg_4);
+
+    Local<Object> njs_arg_5 = info[5]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSLogPrinter *njs_ptr_arg_5 = static_cast<NJSLogPrinter *>(Nan::GetInternalFieldPointer(njs_arg_5,0));
+    std::shared_ptr<NJSLogPrinter> arg_5(njs_ptr_arg_5);
+
+    Local<Object> njs_arg_6 = info[6]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSThreadDispatcher *njs_ptr_arg_6 = static_cast<NJSThreadDispatcher *>(Nan::GetInternalFieldPointer(njs_arg_6,0));
+    std::shared_ptr<NJSThreadDispatcher> arg_6(njs_ptr_arg_6);
+
+    Local<Object> njs_arg_7 = info[7]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSRandomNumberGenerator *njs_ptr_arg_7 = static_cast<NJSRandomNumberGenerator *>(Nan::GetInternalFieldPointer(njs_arg_7,0));
+    std::shared_ptr<NJSRandomNumberGenerator> arg_7(njs_ptr_arg_7);
+
+    Local<Object> njs_arg_8 = info[8]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDatabaseBackend *njs_ptr_arg_8 = static_cast<NJSDatabaseBackend *>(Nan::GetInternalFieldPointer(njs_arg_8,0));
+    if(!njs_ptr_arg_8)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDatabaseBackend failed");
+    }
+    auto arg_8 = njs_ptr_arg_8->getCppImpl();
+
+    Local<Object> njs_arg_9 = info[9]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDynamicObject *njs_ptr_arg_9 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_9,0));
+    if(!njs_ptr_arg_9)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_9 = njs_ptr_arg_9->getCppImpl();
+
+
+    //Call factory
+    auto cpp_instance = ledger::core::api::WalletPool::newInstance(arg_0,arg_1,arg_2,arg_3,arg_4,arg_5,arg_6,arg_7,arg_8,arg_9);
+    NJSWalletPool *node_instance = new NJSWalletPool(cpp_instance);
 
     if(node_instance)
     {
