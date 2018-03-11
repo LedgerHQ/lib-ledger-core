@@ -210,8 +210,10 @@ NJSRandomNumberGeneratorImpl.getRandomLong = () => {
 NJSRandomNumberGeneratorImpl.getRandomLong = () => {
   return crypto.randomBytes(1);
 }
-const NJSRandomNumberGenerator = new binding.NJSRandomNumberGenerator(NJSRandomNumberGeneratorImpl);
-
+//const tmpRNG = new binding.NJSRandomNumberGenerator(NJSRandomNumberGeneratorImpl);
+//const NJSRandomNumberGenerator = tmpRNG.NewInstance(NJSRandomNumberGeneratorImpl);
+//tmpRNG.removeRef();
+const NJSRandomNumberGenerator = binding.CreateRNG(NJSRandomNumberGeneratorImpl);
 ////////////////////////////////////////////////////////
 ///////////////Instanciate C++ objects/////////////////
 ///////////////////////////////////////////////////////
@@ -227,7 +229,7 @@ static newInstance(name: string, password: optional<string>, httpClient: HttpCli
                       configuration: DynamicObject): WalletPool;
 */
 logger('NJSWalletPool Instanciation')
-const NJSWalletPool = new binding.NJSWalletPool('test_instance','test_password',NJSHttpClient,
+const NJSWalletPool = new binding.NJSWalletPool('test_instance','',NJSHttpClient,
                                                         NJSWebSocketClient, NJSPathResolver, NJSLogPrinter,
                                                         NJSThreadDispatcher, NJSRandomNumberGenerator, NJSDatabaseBackend,
                                                         NJSDynamicObject);
