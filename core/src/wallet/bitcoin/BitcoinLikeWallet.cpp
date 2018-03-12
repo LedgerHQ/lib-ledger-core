@@ -92,14 +92,13 @@ namespace ledger {
                         if (info.owners[i] != *ownersIterator) continue;
                         if (info.publicKeys[i].size() != 33 && info.publicKeys[i].size() != 65)
                             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
-                        if (firstOccurence == -1)
+                        if (firstOccurence == -1) {
                             firstOccurence = i;
-                        else {
+                        } else {
                             secondOccurence = i;
                             break;
                         }
                     }
-                    ownersIterator++;
                     if (firstOccurence == -1 || secondOccurence == -1)
                         throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (missing derivation(s))");
                     DerivationPath firstOccurencePath(info.derivations[firstOccurence]);
@@ -120,6 +119,7 @@ namespace ledger {
                     result.owners.push_back(*ownersIterator);
                     result.derivations.push_back(info.derivations[secondOccurence]);
                     result.extendedKeys.push_back(xpub->toBase58());
+                    ownersIterator++;
                 }
                 result.index = info.index;
                 return result;

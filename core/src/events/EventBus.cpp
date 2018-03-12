@@ -34,14 +34,12 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
                                        const std::shared_ptr<ledger::core::api::EventReceiver> &receiver) {
 
     std::weak_ptr<EventBus> weak_self(shared_from_this());
-    std::weak_ptr<ledger::core::api::ExecutionContext> weak_context(context);
-    std::weak_ptr<ledger::core::api::EventReceiver> weak_receiver(receiver);
 
     async<Unit>([=] () {
 
         auto local_self = weak_self.lock();
-        auto local_context = weak_context.lock();
-        auto local_receiver = weak_receiver.lock();
+        auto local_context = context;
+        auto local_receiver = receiver;
 
         for (auto& i : local_self->_subscribers) {
             auto& r = std::get<1>(i);
@@ -82,7 +80,7 @@ void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api
     });
 }
 
-void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event> event) {
+void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& event) {
     std::weak_ptr<EventBus> weak_self(shared_from_this());
     run([=] () {
         auto local_self = weak_self.lock();
