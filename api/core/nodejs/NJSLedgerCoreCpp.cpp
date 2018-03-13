@@ -17,15 +17,7 @@ NAN_METHOD(NJSLedgerCore::getStringVersion) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSLedgerCore* obj = Nan::ObjectWrap::Unwrap<NJSLedgerCore>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSLedgerCore::getStringVersion : implementation of LedgerCore is not valid");
-    }
-
-    auto result = cpp_impl->getStringVersion();
+    auto result = LedgerCore::getStringVersion();
 
     //Wrap result in node object
     auto arg_0 = Nan::New<String>(result).ToLocalChecked();
@@ -43,15 +35,7 @@ NAN_METHOD(NJSLedgerCore::getIntVersion) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSLedgerCore* obj = Nan::ObjectWrap::Unwrap<NJSLedgerCore>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSLedgerCore::getIntVersion : implementation of LedgerCore is not valid");
-    }
-
-    auto result = cpp_impl->getIntVersion();
+    auto result = LedgerCore::getIntVersion();
 
     //Wrap result in node object
     auto arg_0 = Nan::New<Int32>(result);
@@ -112,6 +96,8 @@ void NJSLedgerCore::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSLedgerCore").ToLocalChecked());
 
     //SetPrototypeMethod all methods
+    Nan::SetPrototypeMethod(func_template,"getStringVersion", getStringVersion);
+    Nan::SetPrototypeMethod(func_template,"getIntVersion", getIntVersion);
     //Set object prototype
     LedgerCore_prototype.Reset(objectTemplate);
 

@@ -11,7 +11,8 @@ void NJSExecutionContext::execute(const std::shared_ptr<Runnable> & runnable)
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSRunnable::wrap(runnable);
+    auto arg_0_wrap = NJSRunnable::wrap(runnable);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSRunnable>(arg_0_wrap)->handle();
 
     Handle<Value> args[1] = {arg_0};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -32,7 +33,8 @@ void NJSExecutionContext::delay(const std::shared_ptr<Runnable> & runnable, int6
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSRunnable::wrap(runnable);
+    auto arg_0_wrap = NJSRunnable::wrap(runnable);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSRunnable>(arg_0_wrap)->handle();
 
     auto arg_1 = Nan::New<Number>(millis);
     Handle<Value> args[2] = {arg_0,arg_1};

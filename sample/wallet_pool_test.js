@@ -20,7 +20,13 @@ const NJSExecutionContextImpl = {}
 /*
   @param: runnable: NJSRunnable
 */
-NJSExecutionContextImpl.execute = runnable => runnable.run()
+NJSExecutionContextImpl.execute = (runnable) => {
+  try {
+      runnable.run();
+  } catch(e) {
+    console.log(e);
+  }
+}
 /*
   @param: runnable: NJSRunnable
   @param: millis: delay (integer)
@@ -210,16 +216,13 @@ NJSRandomNumberGeneratorImpl.getRandomLong = () => {
 NJSRandomNumberGeneratorImpl.getRandomLong = () => {
   return crypto.randomBytes(1);
 }
-//const tmpRNG = new binding.NJSRandomNumberGenerator(NJSRandomNumberGeneratorImpl);
-//const NJSRandomNumberGenerator = tmpRNG.NewInstance(NJSRandomNumberGeneratorImpl);
-//tmpRNG.removeRef();
-const NJSRandomNumberGenerator = binding.CreateRNG(NJSRandomNumberGeneratorImpl);
+const NJSRandomNumberGenerator = new binding.NJSRandomNumberGenerator(NJSRandomNumberGeneratorImpl);
 ////////////////////////////////////////////////////////
 ///////////////Instanciate C++ objects/////////////////
 ///////////////////////////////////////////////////////
 const NJSDatabaseBackend = new binding.NJSDatabaseBackend();
 const NJSDynamicObject = new binding.NJSDynamicObject();
-
+const NJSNetworks = new binding.NJSNetworks();
 /*
   Test for wallet pool instanciation
 static newInstance(name: string, password: optional<string>, httpClient: HttpClient,
@@ -228,15 +231,53 @@ static newInstance(name: string, password: optional<string>, httpClient: HttpCli
                       rng: RandomNumberGenerator, backend: DatabaseBackend (in C++),
                       configuration: DynamicObject): WalletPool;
 */
-logger('NJSWalletPool Instanciation')
+logger('NJSWalletPool Instanciation');
 const NJSWalletPool = new binding.NJSWalletPool('test_instance','',NJSHttpClient,
                                                         NJSWebSocketClient, NJSPathResolver, NJSLogPrinter,
                                                         NJSThreadDispatcher, NJSRandomNumberGenerator, NJSDatabaseBackend,
                                                         NJSDynamicObject);
 
-// const NJSWalletPool = binding.NJSWalletPool.newInstance('test_instance','test_password',NJSHttpClient,
-//                                                         NJSWebSocketClient, NJSPathResolver, NJSLogPrinter,
-//                                                         NJSThreadDispatcher, NJSRandomNumberGenerator, NJSDatabaseBackend,
-//                                                         NJSDynamicObject);
-
+/*
+  Get wallet pool instance name
+*/
 logger('Test wallet pool instance', NJSWalletPool.getName());
+/*
+  Get wallet count
+*/
+NJSWalletPool.getWalletCount().then(res => {
+  console.log(res);
+})
+
+/*
+  Create a new wallet
+*/
+const unit = {
+  name: 'bitcoin',
+  symbol: 'BTC',
+  code: 'BTC',
+  numberOfDecimal: 8
+}
+
+let bitcoinLikeNetworkParameters;
+try {
+  bitcoinLikeNetworkParameters = NJSNetworks.bitcoin();
+} catch(e) {
+  console.log(e);
+}
+
+const currency = {
+  walletType: 'bitcoin',
+  name: 'bitcoin',
+  bip44CoinType: 0,
+  paymentUriScheme: 'bitcoin',
+  units: [unit],
+  bitcoinLikeNetworkParameters
+}
+const NJSDynamicObjectWallet = new binding.NJSDynamicObject();
+NJSWalletPool.createWallet('my_wallet', currency, NJSDynamicObjectWallet)
+.then(res => {
+  logger('NJSWalletPool.createWallet then', res);
+})
+.catch(err => {
+  logger('NJSWalletPool.createWallet catch', err)
+})

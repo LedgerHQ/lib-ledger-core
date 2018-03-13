@@ -27,6 +27,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSHttpUrlConnection()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSHttpUrlConnection(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -56,6 +58,30 @@ public:
     HttpReadBodyResult readBody();
 
 private:
+    /**
+     * Gets the HTTP response status code
+     * @return The HTTP response status code
+     */
+    static NAN_METHOD(getStatusCode);
+
+    /**
+     * Gets the HTTP response status text
+     * @return The HTTP response status text
+     */
+    static NAN_METHOD(getStatusText);
+
+    /**
+     * Gets the HTTP response headers
+     * @return The HTTP response headers
+     */
+    static NAN_METHOD(getHeaders);
+
+    /**
+     * Reads available HTTP response body. This method will be called multiple times until it returns a empty bytes array.
+     * @returns A chunk of the body data wrapped into a HttpReadBodyResult (for error management)
+     */
+    static NAN_METHOD(readBody);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

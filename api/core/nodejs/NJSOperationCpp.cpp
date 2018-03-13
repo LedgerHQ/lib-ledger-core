@@ -197,7 +197,8 @@ NAN_METHOD(NJSOperation::getAmount) {
     auto result = cpp_impl->getAmount();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -224,7 +225,9 @@ NAN_METHOD(NJSOperation::getFees) {
     auto result = cpp_impl->getFees();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
+
 
 
     //Return result
@@ -251,7 +254,8 @@ NAN_METHOD(NJSOperation::getPreferences) {
     auto result = cpp_impl->getPreferences();
 
     //Wrap result in node object
-    auto arg_0 = NJSPreferences::wrap(result);
+    auto arg_0_wrap = NJSPreferences::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSPreferences>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -278,7 +282,8 @@ NAN_METHOD(NJSOperation::getTrust) {
     auto result = cpp_impl->getTrust();
 
     //Wrap result in node object
-    auto arg_0 = NJSTrustIndicator::wrap(result);
+    auto arg_0_wrap = NJSTrustIndicator::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSTrustIndicator>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -305,7 +310,14 @@ NAN_METHOD(NJSOperation::getBlockHeight) {
     auto result = cpp_impl->getBlockHeight();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Number>((*result));
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Number>(arg_0_optional);
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -331,7 +343,8 @@ NAN_METHOD(NJSOperation::asBitcoinLikeOperation) {
     auto result = cpp_impl->asBitcoinLikeOperation();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeOperation::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeOperation::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOperation>(arg_0_wrap)->handle();
 
 
     //Return result

@@ -12,7 +12,8 @@ void NJSWebSocketClient::connect(const std::string & url, const std::shared_ptr<
     Nan::HandleScope scope;
     //Wrap parameters
     auto arg_0 = Nan::New<String>(url).ToLocalChecked();
-    auto arg_1 = NJSWebSocketConnection::wrap(connection);
+    auto arg_1_wrap = NJSWebSocketConnection::wrap(connection);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWebSocketConnection>(arg_1_wrap)->handle();
 
     Handle<Value> args[2] = {arg_0,arg_1};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
@@ -33,7 +34,8 @@ void NJSWebSocketClient::send(const std::shared_ptr<WebSocketConnection> & conne
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSWebSocketConnection::wrap(connection);
+    auto arg_0_wrap = NJSWebSocketConnection::wrap(connection);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSWebSocketConnection>(arg_0_wrap)->handle();
 
     auto arg_1 = Nan::New<String>(data).ToLocalChecked();
     Handle<Value> args[2] = {arg_0,arg_1};
@@ -55,7 +57,8 @@ void NJSWebSocketClient::disconnect(const std::shared_ptr<WebSocketConnection> &
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSWebSocketConnection::wrap(connection);
+    auto arg_0_wrap = NJSWebSocketConnection::wrap(connection);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSWebSocketConnection>(arg_0_wrap)->handle();
 
     Handle<Value> args[1] = {arg_0};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

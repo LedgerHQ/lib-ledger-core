@@ -17,15 +17,7 @@ NAN_METHOD(NJSNetworks::bitcoin) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSNetworks* obj = Nan::ObjectWrap::Unwrap<NJSNetworks>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSNetworks::bitcoin : implementation of Networks is not valid");
-    }
-
-    auto result = cpp_impl->bitcoin();
+    auto result = Networks::bitcoin();
 
     //Wrap result in node object
     auto arg_0 = Nan::New<Object>();
@@ -121,6 +113,7 @@ void NJSNetworks::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSNetworks").ToLocalChecked());
 
     //SetPrototypeMethod all methods
+    Nan::SetPrototypeMethod(func_template,"bitcoin", bitcoin);
     //Set object prototype
     Networks_prototype.Reset(objectTemplate);
 

@@ -25,6 +25,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSExecutionContext()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSExecutionContext(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -35,6 +37,11 @@ public:
     void delay(const std::shared_ptr<Runnable> & runnable, int64_t millis);
 
 private:
+    /** */
+    static NAN_METHOD(execute);
+
+    static NAN_METHOD(delay);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

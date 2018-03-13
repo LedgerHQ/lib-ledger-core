@@ -24,6 +24,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSEventReceiver()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSEventReceiver(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -31,6 +33,8 @@ public:
     void onEvent(const std::shared_ptr<Event> & event);
 
 private:
+    static NAN_METHOD(onEvent);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

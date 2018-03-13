@@ -11,24 +11,38 @@ void NJSBlockCallback::onCallback(const std::experimental::optional<Block> & res
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = Nan::New<Object>();
-    auto arg_0_1 = Nan::New<String>((*result).hash).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("hash").ToLocalChecked(), arg_0_1);
-    auto arg_0_2 = Nan::New<String>((*result).uid).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("uid").ToLocalChecked(), arg_0_2);
-    auto date_arg_0_3 = chrono::duration_cast<chrono::seconds>((*result).time.time_since_epoch()).count();
-    auto arg_0_3 = Nan::New<Date>(date_arg_0_3).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("time").ToLocalChecked(), arg_0_3);
-    auto arg_0_4 = Nan::New<String>((*result).currencyName).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("currencyName").ToLocalChecked(), arg_0_4);
-    auto arg_0_5 = Nan::New<Number>((*result).height);
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("height").ToLocalChecked(), arg_0_5);
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Object>();
+        auto arg_0_tmp_1 = Nan::New<String>(arg_0_optional.hash).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("hash").ToLocalChecked(), arg_0_tmp_1);
+        auto arg_0_tmp_2 = Nan::New<String>(arg_0_optional.uid).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("uid").ToLocalChecked(), arg_0_tmp_2);
+        auto date_arg_0_tmp_3 = chrono::duration_cast<chrono::seconds>(arg_0_optional.time.time_since_epoch()).count();
+        auto arg_0_tmp_3 = Nan::New<Date>(date_arg_0_tmp_3).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("time").ToLocalChecked(), arg_0_tmp_3);
+        auto arg_0_tmp_4 = Nan::New<String>(arg_0_optional.currencyName).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("currencyName").ToLocalChecked(), arg_0_tmp_4);
+        auto arg_0_tmp_5 = Nan::New<Number>(arg_0_optional.height);
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("height").ToLocalChecked(), arg_0_tmp_5);
 
-    auto arg_1 = Nan::New<Object>();
-    auto arg_1_1 = Nan::New<Integer>((int)(*error).code);
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("code").ToLocalChecked(), arg_1_1);
-    auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
+        arg_0 = arg_0_tmp;
+    }
+
+    Local<Value> arg_1;
+    if(error)
+    {
+        auto arg_1_optional = (error).value();
+        auto arg_1_tmp = Nan::New<Object>();
+        auto arg_1_tmp_1 = Nan::New<Integer>((int)arg_1_optional.code);
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("code").ToLocalChecked(), arg_1_tmp_1);
+        auto arg_1_tmp_2 = Nan::New<String>(arg_1_optional.message).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("message").ToLocalChecked(), arg_1_tmp_2);
+
+        arg_1 = arg_1_tmp;
+    }
 
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
@@ -62,15 +76,8 @@ NAN_METHOD(NJSBlockCallback::New) {
         return Nan::ThrowError("NJSBlockCallback function can only be called as constructor (use New)");
     }
 
-    NJSBlockCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSBlockCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSBlockCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSBlockCallback *node_instance = new NJSBlockCallback(resolver);
 
     if(node_instance)
     {

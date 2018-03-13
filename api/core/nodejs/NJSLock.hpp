@@ -20,6 +20,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSLock()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSLock(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -31,6 +33,12 @@ public:
     void unlock();
 
 private:
+    static NAN_METHOD(lock);
+
+    static NAN_METHOD(tryLock);
+
+    static NAN_METHOD(unlock);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

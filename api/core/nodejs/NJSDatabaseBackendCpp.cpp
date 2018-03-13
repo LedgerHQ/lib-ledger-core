@@ -30,7 +30,8 @@ NAN_METHOD(NJSDatabaseBackend::setUsername) {
     auto result = cpp_impl->setUsername(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -59,7 +60,8 @@ NAN_METHOD(NJSDatabaseBackend::setPassword) {
     auto result = cpp_impl->setPassword(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -88,7 +90,8 @@ NAN_METHOD(NJSDatabaseBackend::setHost) {
     auto result = cpp_impl->setHost(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -117,7 +120,8 @@ NAN_METHOD(NJSDatabaseBackend::setHostAddr) {
     auto result = cpp_impl->setHostAddr(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -146,7 +150,8 @@ NAN_METHOD(NJSDatabaseBackend::setPort) {
     auto result = cpp_impl->setPort(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -175,7 +180,8 @@ NAN_METHOD(NJSDatabaseBackend::setOptions) {
     auto result = cpp_impl->setOptions(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -204,7 +210,8 @@ NAN_METHOD(NJSDatabaseBackend::setSslMode) {
     auto result = cpp_impl->setSslMode(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -233,7 +240,8 @@ NAN_METHOD(NJSDatabaseBackend::setKerberosName) {
     auto result = cpp_impl->setKerberosName(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -262,7 +270,8 @@ NAN_METHOD(NJSDatabaseBackend::setService) {
     auto result = cpp_impl->setService(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -290,7 +299,8 @@ NAN_METHOD(NJSDatabaseBackend::setConnectionPoolSize) {
     auto result = cpp_impl->setConnectionPoolSize(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -318,7 +328,8 @@ NAN_METHOD(NJSDatabaseBackend::enableQueryLogging) {
     auto result = cpp_impl->enableQueryLogging(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDatabaseBackend::wrap(result);
+    auto arg_1_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -620,18 +631,11 @@ NAN_METHOD(NJSDatabaseBackend::getSqlite3Backend) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDatabaseBackend* obj = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDatabaseBackend::getSqlite3Backend : implementation of DatabaseBackend is not valid");
-    }
-
-    auto result = cpp_impl->getSqlite3Backend();
+    auto result = DatabaseBackend::getSqlite3Backend();
 
     //Wrap result in node object
-    auto arg_0 = NJSDatabaseBackend::wrap(result);
+    auto arg_0_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -647,18 +651,11 @@ NAN_METHOD(NJSDatabaseBackend::getPostgreSQLBackend) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDatabaseBackend* obj = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDatabaseBackend::getPostgreSQLBackend : implementation of DatabaseBackend is not valid");
-    }
-
-    auto result = cpp_impl->getPostgreSQLBackend();
+    auto result = DatabaseBackend::getPostgreSQLBackend();
 
     //Wrap result in node object
-    auto arg_0 = NJSDatabaseBackend::wrap(result);
+    auto arg_0_wrap = NJSDatabaseBackend::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -750,6 +747,8 @@ void NJSDatabaseBackend::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getService", getService);
     Nan::SetPrototypeMethod(func_template,"getConnectionPoolSize", getConnectionPoolSize);
     Nan::SetPrototypeMethod(func_template,"isLoggingEnabled", isLoggingEnabled);
+    Nan::SetPrototypeMethod(func_template,"getSqlite3Backend", getSqlite3Backend);
+    Nan::SetPrototypeMethod(func_template,"getPostgreSQLBackend", getPostgreSQLBackend);
     //Set object prototype
     DatabaseBackend_prototype.Reset(objectTemplate);
 

@@ -30,7 +30,8 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::derive) {
     auto result = cpp_impl->derive(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeAddress::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeAddress::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -160,18 +161,11 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
     String::Utf8Value string_arg_2(info[2]->ToString());
     auto arg_2 = std::string(*string_arg_2);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeExtendedPublicKey* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeExtendedPublicKey>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey::fromBase58 : implementation of BitcoinLikeExtendedPublicKey is not valid");
-    }
-
-    auto result = cpp_impl->fromBase58(arg_0,arg_1,arg_2);
+    auto result = BitcoinLikeExtendedPublicKey::fromBase58(arg_0,arg_1,arg_2);
 
     //Wrap result in node object
-    auto arg_3 = NJSBitcoinLikeExtendedPublicKey::wrap(result);
+    auto arg_3_wrap = NJSBitcoinLikeExtendedPublicKey::wrap(result);
+    auto arg_3 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeExtendedPublicKey>(arg_3_wrap)->handle();
 
 
     //Return result
@@ -306,6 +300,7 @@ void NJSBitcoinLikeExtendedPublicKey::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"derive", derive);
     Nan::SetPrototypeMethod(func_template,"toBase58", toBase58);
     Nan::SetPrototypeMethod(func_template,"getRootPath", getRootPath);
+    Nan::SetPrototypeMethod(func_template,"fromBase58", fromBase58);
     //Set object prototype
     BitcoinLikeExtendedPublicKey_prototype.Reset(objectTemplate);
 
