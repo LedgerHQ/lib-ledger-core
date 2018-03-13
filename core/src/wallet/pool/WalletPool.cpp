@@ -34,7 +34,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include "WalletPool.hpp"
-
+#include <iostream>
 namespace ledger {
     namespace core {
 
@@ -83,6 +83,9 @@ namespace ledger {
                     logPrinter
             );
 
+            //Random number Generator
+            _rng = rng;
+
             // Database management
             _database = std::make_shared<DatabaseSessionPool>(
                std::static_pointer_cast<DatabaseBackend>(backend),
@@ -127,12 +130,14 @@ namespace ledger {
             }
             sql.commit();
             CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);
+            std::cout<<"=====_currencies.size = "<<_currencies.size()<<std::endl;
         }
 
         void WalletPool::initializeFactories() {
             for (const auto& currency : _currencies) {
                createFactory(currency);
             }
+            std::cout<<"=====_factories.size = "<<_factories.size()<<std::endl;
         }
 
         void WalletPool::createFactory(const api::Currency &currency) {
@@ -213,6 +218,7 @@ namespace ledger {
 
         std::shared_ptr<AbstractWalletFactory> WalletPool::getFactory(const std::string &currencyName) const {
             for (auto& factory : _factories) {
+                std::cout<<"=====getFactory:"<<factory->getCurrency().name<<std::endl;
                 if (factory->getCurrency().name == currencyName) {
                     return factory;
                 }
@@ -347,11 +353,20 @@ namespace ledger {
         FuturePtr<AbstractWallet> WalletPool::createWallet(const std::string &name, const std::string& currencyName,
                                                            const std::shared_ptr<api::DynamicObject> &configuration) {
             auto self = shared_from_this();
+            std::cout<<"=====Start createWallet"<<std::endl;
             return async<std::shared_ptr<AbstractWallet>>([=] () {
+
+                auto local_logger = self->logger();
+                //local_logger->info("[{}] {}", _tag, _buffer.str());
+                //local_logger->info("===Start async");
+                std::cout<<"=====Start async:"<<currencyName<<std::endl;
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
+                    std::cout<<"==Factory KO"<<std::endl;
                     throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
                 }
+
+                std::cout<<"==Factory OK"<<std::endl;
                 // Create the entry
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 soci::transaction tr(sql);
@@ -362,11 +377,24 @@ namespace ledger {
                 entry.currencyName = currencyName;
                 entry.poolName = self->getName();
                 entry.uid = WalletDatabaseEntry::createWalletUid(self->getName(), name);
-                if (PoolDatabaseHelper::walletExists(sql, entry))
+
+                local_logger->info("WalletDatabaseEntry Ok");
+                std::cout<<"==WalletDatabaseEntry Ok"<<std::endl;
+                if (PoolDatabaseHelper::walletExists(sql, entry)){
+                    local_logger->info("Wallet exists");
+                    std::cout<<"==Wallet Exists"<<std::endl;
                     throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}' already exists", name, currencyName);
+                }
+
                 PoolDatabaseHelper::putWallet(sql, entry);
+                local_logger->info("PoolDatabaseHelper Ok");
+                std::cout<<"==PoolDatabaseHelper Ok"<<std::endl;
                 auto wallet = buildWallet(entry);
+                local_logger->info("buildWallet Ok");
+                std::cout<<"==buildWallet Ok"<<std::endl;
                 tr.commit();
+                local_logger->info("commit Ok");
+                std::cout<<"==commit Ok"<<std::endl;
                 return wallet;
             });
         }

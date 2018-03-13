@@ -11,7 +11,8 @@ void NJSGetEthreumLikeWalletCallback::onSuccess(const std::shared_ptr<EthereumLi
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSEthereumLikeWallet::wrap(wallet);
+    auto arg_0_wrap = NJSEthereumLikeWallet::wrap(wallet);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSEthereumLikeWallet>(arg_0_wrap)->handle();
 
     auto arg_1 = Nan::New<Boolean>(isCreated);
     Handle<Value> args[2] = {arg_0,arg_1};
@@ -73,15 +74,8 @@ NAN_METHOD(NJSGetEthreumLikeWalletCallback::New) {
         return Nan::ThrowError("NJSGetEthreumLikeWalletCallback function can only be called as constructor (use New)");
     }
 
-    NJSGetEthreumLikeWalletCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSGetEthreumLikeWalletCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSGetEthreumLikeWalletCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSGetEthreumLikeWalletCallback *node_instance = new NJSGetEthreumLikeWalletCallback(resolver);
 
     if(node_instance)
     {

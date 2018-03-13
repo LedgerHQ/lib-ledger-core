@@ -11,7 +11,8 @@ void NJSHttpClient::execute(const std::shared_ptr<HttpRequest> & request)
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSHttpRequest::wrap(request);
+    auto arg_0_wrap = NJSHttpRequest::wrap(request);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSHttpRequest>(arg_0_wrap)->handle();
 
     Handle<Value> args[1] = {arg_0};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

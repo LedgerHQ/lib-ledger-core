@@ -22,6 +22,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSPathResolver()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSPathResolver(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -48,6 +50,27 @@ public:
     std::string resolvePreferencesPath(const std::string & path);
 
 private:
+    /**
+     * Resolves the path for a SQLite database file.
+     * @param path The path to resolve.
+     * @return The resolved path.
+     */
+    static NAN_METHOD(resolveDatabasePath);
+
+    /**
+     * Resolves the path of a single log file.
+     * @param path The path to resolve.
+     * @return The resolved path.
+     */
+    static NAN_METHOD(resolveLogFilePath);
+
+    /**
+     * Resolves the path for a json file.
+     * @param path The path to resolve.
+     * @return The resolved path.
+     */
+    static NAN_METHOD(resolvePreferencesPath);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

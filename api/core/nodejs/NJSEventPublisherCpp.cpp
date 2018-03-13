@@ -28,7 +28,8 @@ NAN_METHOD(NJSEventPublisher::getEventBus) {
     auto result = cpp_impl->getEventBus();
 
     //Wrap result in node object
-    auto arg_0 = NJSEventBus::wrap(result);
+    auto arg_0_wrap = NJSEventBus::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSEventBus>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -130,18 +131,11 @@ NAN_METHOD(NJSEventPublisher::newInstance) {
     std::shared_ptr<NJSExecutionContext> arg_0(njs_ptr_arg_0);
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSEventPublisher* obj = Nan::ObjectWrap::Unwrap<NJSEventPublisher>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSEventPublisher::newInstance : implementation of EventPublisher is not valid");
-    }
-
-    auto result = cpp_impl->newInstance(arg_0);
+    auto result = EventPublisher::newInstance(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSEventPublisher::wrap(result);
+    auto arg_1_wrap = NJSEventPublisher::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSEventPublisher>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -219,6 +213,7 @@ void NJSEventPublisher::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"post", post);
     Nan::SetPrototypeMethod(func_template,"postSticky", postSticky);
     Nan::SetPrototypeMethod(func_template,"relay", relay);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     EventPublisher_prototype.Reset(objectTemplate);
 

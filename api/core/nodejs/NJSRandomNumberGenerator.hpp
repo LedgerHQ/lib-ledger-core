@@ -23,6 +23,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSRandomNumberGenerator()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSRandomNumberGenerator(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -36,6 +38,14 @@ public:
     int8_t getRandomByte();
 
 private:
+    static NAN_METHOD(getRandomBytes);
+
+    static NAN_METHOD(getRandomInt);
+
+    static NAN_METHOD(getRandomLong);
+
+    static NAN_METHOD(getRandomByte);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

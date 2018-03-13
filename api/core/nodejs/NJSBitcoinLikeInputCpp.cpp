@@ -28,7 +28,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getAddress) {
     auto result = cpp_impl->getAddress();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -54,7 +61,9 @@ NAN_METHOD(NJSBitcoinLikeInput::getValue) {
     auto result = cpp_impl->getValue();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
+
 
 
     //Return result
@@ -107,7 +116,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getCoinbase) {
     auto result = cpp_impl->getCoinbase();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -133,7 +149,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTxHash) {
     auto result = cpp_impl->getPreviousTxHash();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -159,7 +182,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousOutputIndex) {
     auto result = cpp_impl->getPreviousOutputIndex();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Int32>((*result));
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Int32>(arg_0_optional);
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);

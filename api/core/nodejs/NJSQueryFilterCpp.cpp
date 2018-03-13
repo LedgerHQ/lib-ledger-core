@@ -19,18 +19,11 @@ NAN_METHOD(NJSQueryFilter::accountEq) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::accountEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->accountEq(arg_0);
+    auto result = QueryFilter::accountEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -48,18 +41,11 @@ NAN_METHOD(NJSQueryFilter::accountNeq) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::accountNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->accountNeq(arg_0);
+    auto result = QueryFilter::accountNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -77,18 +63,11 @@ NAN_METHOD(NJSQueryFilter::dateLte) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateLte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateLte(arg_0);
+    auto result = QueryFilter::dateLte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -106,18 +85,11 @@ NAN_METHOD(NJSQueryFilter::dateLt) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateLt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateLt(arg_0);
+    auto result = QueryFilter::dateLt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -135,18 +107,11 @@ NAN_METHOD(NJSQueryFilter::dateGt) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateGt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateGt(arg_0);
+    auto result = QueryFilter::dateGt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -164,18 +129,11 @@ NAN_METHOD(NJSQueryFilter::dateGte) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateGte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateGte(arg_0);
+    auto result = QueryFilter::dateGte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -193,18 +151,11 @@ NAN_METHOD(NJSQueryFilter::dateEq) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateEq(arg_0);
+    auto result = QueryFilter::dateEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -222,18 +173,11 @@ NAN_METHOD(NJSQueryFilter::dateNeq) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::dateNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->dateNeq(arg_0);
+    auto result = QueryFilter::dateNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -251,18 +195,11 @@ NAN_METHOD(NJSQueryFilter::containsRecipient) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::containsRecipient : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->containsRecipient(arg_0);
+    auto result = QueryFilter::containsRecipient(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -280,18 +217,11 @@ NAN_METHOD(NJSQueryFilter::containsSender) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::containsSender : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->containsSender(arg_0);
+    auto result = QueryFilter::containsSender(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -309,18 +239,11 @@ NAN_METHOD(NJSQueryFilter::currencyEq) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::currencyEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->currencyEq(arg_0);
+    auto result = QueryFilter::currencyEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -338,18 +261,11 @@ NAN_METHOD(NJSQueryFilter::operationUidEq) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::operationUidEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->operationUidEq(arg_0);
+    auto result = QueryFilter::operationUidEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -367,18 +283,11 @@ NAN_METHOD(NJSQueryFilter::operationUidNeq) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::operationUidNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->operationUidNeq(arg_0);
+    auto result = QueryFilter::operationUidNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -395,18 +304,11 @@ NAN_METHOD(NJSQueryFilter::trustEq) {
     //Check if parameters have correct types
     auto arg_0 = (ledger::core::api::TrustLevel)Nan::To<int>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::trustEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->trustEq(arg_0);
+    auto result = QueryFilter::trustEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -423,18 +325,11 @@ NAN_METHOD(NJSQueryFilter::trustNeq) {
     //Check if parameters have correct types
     auto arg_0 = (ledger::core::api::TrustLevel)Nan::To<int>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::trustNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->trustNeq(arg_0);
+    auto result = QueryFilter::trustNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -458,18 +353,11 @@ NAN_METHOD(NJSQueryFilter::feesEq) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesEq(arg_0);
+    auto result = QueryFilter::feesEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -493,18 +381,11 @@ NAN_METHOD(NJSQueryFilter::feesNeq) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesNeq(arg_0);
+    auto result = QueryFilter::feesNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -528,18 +409,11 @@ NAN_METHOD(NJSQueryFilter::feesGte) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesGte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesGte(arg_0);
+    auto result = QueryFilter::feesGte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -563,18 +437,11 @@ NAN_METHOD(NJSQueryFilter::feesGt) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesGt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesGt(arg_0);
+    auto result = QueryFilter::feesGt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -598,18 +465,11 @@ NAN_METHOD(NJSQueryFilter::feesLte) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesLte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesLte(arg_0);
+    auto result = QueryFilter::feesLte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -633,18 +493,11 @@ NAN_METHOD(NJSQueryFilter::feesLt) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::feesLt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->feesLt(arg_0);
+    auto result = QueryFilter::feesLt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -668,18 +521,11 @@ NAN_METHOD(NJSQueryFilter::amountEq) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountEq(arg_0);
+    auto result = QueryFilter::amountEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -703,18 +549,11 @@ NAN_METHOD(NJSQueryFilter::amountNeq) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountNeq(arg_0);
+    auto result = QueryFilter::amountNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -738,18 +577,11 @@ NAN_METHOD(NJSQueryFilter::amountGte) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountGte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountGte(arg_0);
+    auto result = QueryFilter::amountGte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -773,18 +605,11 @@ NAN_METHOD(NJSQueryFilter::amountGt) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountGt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountGt(arg_0);
+    auto result = QueryFilter::amountGt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -808,18 +633,11 @@ NAN_METHOD(NJSQueryFilter::amountLte) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountLte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountLte(arg_0);
+    auto result = QueryFilter::amountLte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -843,18 +661,11 @@ NAN_METHOD(NJSQueryFilter::amountLt) {
     auto arg_0 = njs_ptr_arg_0->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::amountLt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->amountLt(arg_0);
+    auto result = QueryFilter::amountLt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -871,18 +682,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightEq) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightEq(arg_0);
+    auto result = QueryFilter::blockHeightEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -899,18 +703,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightNeq) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightNeq(arg_0);
+    auto result = QueryFilter::blockHeightNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -927,18 +724,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightGte) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightGte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightGte(arg_0);
+    auto result = QueryFilter::blockHeightGte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -955,18 +745,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightGt) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightGt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightGt(arg_0);
+    auto result = QueryFilter::blockHeightGt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -983,18 +766,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightLte) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightLte : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightLte(arg_0);
+    auto result = QueryFilter::blockHeightLte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1011,18 +787,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightLt) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightLt : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightLt(arg_0);
+    auto result = QueryFilter::blockHeightLt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1038,18 +807,11 @@ NAN_METHOD(NJSQueryFilter::blockHeightIsNull) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::blockHeightIsNull : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->blockHeightIsNull();
+    auto result = QueryFilter::blockHeightIsNull();
 
     //Wrap result in node object
-    auto arg_0 = NJSQueryFilter::wrap(result);
+    auto arg_0_wrap = NJSQueryFilter::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -1066,18 +828,11 @@ NAN_METHOD(NJSQueryFilter::operationTypeEq) {
     //Check if parameters have correct types
     auto arg_0 = (ledger::core::api::OperationType)Nan::To<int>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::operationTypeEq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->operationTypeEq(arg_0);
+    auto result = QueryFilter::operationTypeEq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1094,18 +849,11 @@ NAN_METHOD(NJSQueryFilter::operationTypeNeq) {
     //Check if parameters have correct types
     auto arg_0 = (ledger::core::api::OperationType)Nan::To<int>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSQueryFilter* obj = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSQueryFilter::operationTypeNeq : implementation of QueryFilter is not valid");
-    }
-
-    auto result = cpp_impl->operationTypeNeq(arg_0);
+    auto result = QueryFilter::operationTypeNeq(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1140,7 +888,8 @@ NAN_METHOD(NJSQueryFilter::op_and) {
     auto result = cpp_impl->op_and(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1175,7 +924,8 @@ NAN_METHOD(NJSQueryFilter::op_or) {
     auto result = cpp_impl->op_or(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1210,7 +960,8 @@ NAN_METHOD(NJSQueryFilter::op_and_not) {
     auto result = cpp_impl->op_and_not(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1245,7 +996,8 @@ NAN_METHOD(NJSQueryFilter::op_or_not) {
     auto result = cpp_impl->op_or_not(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSQueryFilter::wrap(result);
+    auto arg_1_wrap = NJSQueryFilter::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -1317,6 +1069,42 @@ void NJSQueryFilter::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSQueryFilter").ToLocalChecked());
 
     //SetPrototypeMethod all methods
+    Nan::SetPrototypeMethod(func_template,"accountEq", accountEq);
+    Nan::SetPrototypeMethod(func_template,"accountNeq", accountNeq);
+    Nan::SetPrototypeMethod(func_template,"dateLte", dateLte);
+    Nan::SetPrototypeMethod(func_template,"dateLt", dateLt);
+    Nan::SetPrototypeMethod(func_template,"dateGt", dateGt);
+    Nan::SetPrototypeMethod(func_template,"dateGte", dateGte);
+    Nan::SetPrototypeMethod(func_template,"dateEq", dateEq);
+    Nan::SetPrototypeMethod(func_template,"dateNeq", dateNeq);
+    Nan::SetPrototypeMethod(func_template,"containsRecipient", containsRecipient);
+    Nan::SetPrototypeMethod(func_template,"containsSender", containsSender);
+    Nan::SetPrototypeMethod(func_template,"currencyEq", currencyEq);
+    Nan::SetPrototypeMethod(func_template,"operationUidEq", operationUidEq);
+    Nan::SetPrototypeMethod(func_template,"operationUidNeq", operationUidNeq);
+    Nan::SetPrototypeMethod(func_template,"trustEq", trustEq);
+    Nan::SetPrototypeMethod(func_template,"trustNeq", trustNeq);
+    Nan::SetPrototypeMethod(func_template,"feesEq", feesEq);
+    Nan::SetPrototypeMethod(func_template,"feesNeq", feesNeq);
+    Nan::SetPrototypeMethod(func_template,"feesGte", feesGte);
+    Nan::SetPrototypeMethod(func_template,"feesGt", feesGt);
+    Nan::SetPrototypeMethod(func_template,"feesLte", feesLte);
+    Nan::SetPrototypeMethod(func_template,"feesLt", feesLt);
+    Nan::SetPrototypeMethod(func_template,"amountEq", amountEq);
+    Nan::SetPrototypeMethod(func_template,"amountNeq", amountNeq);
+    Nan::SetPrototypeMethod(func_template,"amountGte", amountGte);
+    Nan::SetPrototypeMethod(func_template,"amountGt", amountGt);
+    Nan::SetPrototypeMethod(func_template,"amountLte", amountLte);
+    Nan::SetPrototypeMethod(func_template,"amountLt", amountLt);
+    Nan::SetPrototypeMethod(func_template,"blockHeightEq", blockHeightEq);
+    Nan::SetPrototypeMethod(func_template,"blockHeightNeq", blockHeightNeq);
+    Nan::SetPrototypeMethod(func_template,"blockHeightGte", blockHeightGte);
+    Nan::SetPrototypeMethod(func_template,"blockHeightGt", blockHeightGt);
+    Nan::SetPrototypeMethod(func_template,"blockHeightLte", blockHeightLte);
+    Nan::SetPrototypeMethod(func_template,"blockHeightLt", blockHeightLt);
+    Nan::SetPrototypeMethod(func_template,"blockHeightIsNull", blockHeightIsNull);
+    Nan::SetPrototypeMethod(func_template,"operationTypeEq", operationTypeEq);
+    Nan::SetPrototypeMethod(func_template,"operationTypeNeq", operationTypeNeq);
     Nan::SetPrototypeMethod(func_template,"op_and", op_and);
     Nan::SetPrototypeMethod(func_template,"op_or", op_or);
     Nan::SetPrototypeMethod(func_template,"op_and_not", op_and_not);

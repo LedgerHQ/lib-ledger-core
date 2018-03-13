@@ -11,13 +11,22 @@ void NJSAmountCallback::onCallback(const std::shared_ptr<Amount> & result, const
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
 
-    auto arg_1 = Nan::New<Object>();
-    auto arg_1_1 = Nan::New<Integer>((int)(*error).code);
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("code").ToLocalChecked(), arg_1_1);
-    auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
+
+    Local<Value> arg_1;
+    if(error)
+    {
+        auto arg_1_optional = (error).value();
+        auto arg_1_tmp = Nan::New<Object>();
+        auto arg_1_tmp_1 = Nan::New<Integer>((int)arg_1_optional.code);
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("code").ToLocalChecked(), arg_1_tmp_1);
+        auto arg_1_tmp_2 = Nan::New<String>(arg_1_optional.message).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("message").ToLocalChecked(), arg_1_tmp_2);
+
+        arg_1 = arg_1_tmp;
+    }
 
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
@@ -51,15 +60,8 @@ NAN_METHOD(NJSAmountCallback::New) {
         return Nan::ThrowError("NJSAmountCallback function can only be called as constructor (use New)");
     }
 
-    NJSAmountCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSAmountCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSAmountCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmountCallback *node_instance = new NJSAmountCallback(resolver);
 
     if(node_instance)
     {

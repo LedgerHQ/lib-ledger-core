@@ -55,7 +55,14 @@ NAN_METHOD(NJSDynamicArray::getString) {
     auto result = cpp_impl->getString(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<String>(arg_1_optional).ToLocalChecked();
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -82,7 +89,14 @@ NAN_METHOD(NJSDynamicArray::getInt) {
     auto result = cpp_impl->getInt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Int32>((*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Int32>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -109,7 +123,14 @@ NAN_METHOD(NJSDynamicArray::getLong) {
     auto result = cpp_impl->getLong(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Number>((*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Number>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -136,7 +157,14 @@ NAN_METHOD(NJSDynamicArray::getDouble) {
     auto result = cpp_impl->getDouble(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Number>((*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Number>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -163,11 +191,18 @@ NAN_METHOD(NJSDynamicArray::getData) {
     auto result = cpp_impl->getData(arg_0);
 
     //Wrap result in node object
-    Local<Array> arg_1 = Nan::New<Array>();
-    for(size_t arg_1_id = 0; arg_1_id < (*result).size(); arg_1_id++)
+    Local<Value> arg_1;
+    if(result)
     {
-        auto arg_1_elem = Nan::New<Uint32>((*result)[arg_1_id]);
-        arg_1->Set((int)arg_1_id,arg_1_elem);
+        auto arg_1_optional = (result).value();
+        Local<Array> arg_1_tmp = Nan::New<Array>();
+        for(size_t arg_1_tmp_id = 0; arg_1_tmp_id < arg_1_optional.size(); arg_1_tmp_id++)
+        {
+            auto arg_1_tmp_elem = Nan::New<Uint32>(arg_1_optional[arg_1_tmp_id]);
+            arg_1_tmp->Set((int)arg_1_tmp_id,arg_1_tmp_elem);
+        }
+
+        arg_1 = arg_1_tmp;
     }
 
 
@@ -196,7 +231,14 @@ NAN_METHOD(NJSDynamicArray::getBoolean) {
     auto result = cpp_impl->getBoolean(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Boolean>((*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Boolean>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -223,7 +265,8 @@ NAN_METHOD(NJSDynamicArray::pushInt) {
     auto result = cpp_impl->pushInt(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -251,7 +294,8 @@ NAN_METHOD(NJSDynamicArray::pushLong) {
     auto result = cpp_impl->pushLong(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -280,7 +324,8 @@ NAN_METHOD(NJSDynamicArray::pushString) {
     auto result = cpp_impl->pushString(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -308,7 +353,8 @@ NAN_METHOD(NJSDynamicArray::pushDouble) {
     auto result = cpp_impl->pushDouble(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -346,7 +392,8 @@ NAN_METHOD(NJSDynamicArray::pushData) {
     auto result = cpp_impl->pushData(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -374,7 +421,8 @@ NAN_METHOD(NJSDynamicArray::pushBoolean) {
     auto result = cpp_impl->pushBoolean(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -402,7 +450,9 @@ NAN_METHOD(NJSDynamicArray::getObject) {
     auto result = cpp_impl->getObject(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap(result);
+    auto arg_1_wrap = NJSDynamicObject::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -430,7 +480,9 @@ NAN_METHOD(NJSDynamicArray::getArray) {
     auto result = cpp_impl->getArray(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -465,7 +517,8 @@ NAN_METHOD(NJSDynamicArray::pushObject) {
     auto result = cpp_impl->pushObject(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -500,7 +553,8 @@ NAN_METHOD(NJSDynamicArray::pushArray) {
     auto result = cpp_impl->pushArray(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -535,7 +589,8 @@ NAN_METHOD(NJSDynamicArray::concat) {
     auto result = cpp_impl->concat(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -563,7 +618,14 @@ NAN_METHOD(NJSDynamicArray::getType) {
     auto result = cpp_impl->getType(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Integer>((int)(*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Integer>((int)arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -689,18 +751,11 @@ NAN_METHOD(NJSDynamicArray::newInstance) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicArray* obj = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicArray::newInstance : implementation of DynamicArray is not valid");
-    }
-
-    auto result = cpp_impl->newInstance();
+    auto result = DynamicArray::newInstance();
 
     //Wrap result in node object
-    auto arg_0 = NJSDynamicArray::wrap(result);
+    auto arg_0_wrap = NJSDynamicArray::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -727,18 +782,12 @@ NAN_METHOD(NJSDynamicArray::load) {
     }
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicArray* obj = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicArray::load : implementation of DynamicArray is not valid");
-    }
-
-    auto result = cpp_impl->load(arg_0);
+    auto result = DynamicArray::load(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -831,6 +880,8 @@ void NJSDynamicArray::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"dump", dump);
     Nan::SetPrototypeMethod(func_template,"serialize", serialize);
     Nan::SetPrototypeMethod(func_template,"isReadOnly", isReadOnly);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
+    Nan::SetPrototypeMethod(func_template,"load", load);
     //Set object prototype
     DynamicArray_prototype.Reset(objectTemplate);
 

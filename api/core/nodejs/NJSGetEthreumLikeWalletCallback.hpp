@@ -25,25 +25,25 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSGetEthreumLikeWalletCallback()
     {
+        persistent().Reset();
         njs_impl.Reset();
-        pers_resolver.Reset();
+        njs_impl.Reset();
     };
     NJSGetEthreumLikeWalletCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
     void onSuccess(const std::shared_ptr<EthereumLikeWallet> & wallet, bool isCreated);
 
     void onError(const Error & error);
-    void SetPromise(Local<Promise::Resolver> resolver)
-    {
-        pers_resolver.Reset(resolver);
-    }
 
 private:
+    static NAN_METHOD(onSuccess);
+
+    static NAN_METHOD(onError);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
-    Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSGETETHREUMLIKEWALLETCALLBACK_HPP

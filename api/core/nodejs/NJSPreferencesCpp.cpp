@@ -264,7 +264,8 @@ NAN_METHOD(NJSPreferences::edit) {
     auto result = cpp_impl->edit();
 
     //Wrap result in node object
-    auto arg_0 = NJSPreferencesEditor::wrap(result);
+    auto arg_0_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_0_wrap)->handle();
 
 
     //Return result
