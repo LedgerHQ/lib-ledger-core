@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          command: |
+            . .circleci/setup_debian.sh
+      - run:
+          name: git version
+          command: git --version
+      - run: git submodule init
+      - run:
+          command: |
+            . .circleci/build_lib.sh
+      - run:
+          name: build module
+          command: yarn
+      - run:
+          name: test
+          command: node index.js
