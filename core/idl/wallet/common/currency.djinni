@@ -7,7 +7,7 @@ WalletType = enum {
     ripple;
     monero;
 }
-#Record of cryptocurrency unit
+#Structure of cryptocurrency unit
 CurrencyUnit = record {
     #Currency name, e.g. milli-bitcoin
     name: string;
@@ -18,7 +18,7 @@ CurrencyUnit = record {
     #Number of decimal to display
     numberOfDecimal: i32;
 }
-#Record of cryptocurrency
+#Structure of cryptocurrency
 Currency = record {
     #WalletType object defining the type of wallet the currency belongs to
     walletType: WalletType;
