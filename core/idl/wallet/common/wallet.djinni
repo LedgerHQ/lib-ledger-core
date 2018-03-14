@@ -7,17 +7,19 @@
 @import "../../bitcoin/addresses.djinni"
 @import "currency.djinni"
 
+#Class of synchronization status constants
 SynchronizationStatus = interface +c {
     const STATUS_DONE: i32 = 1;
     const STATUS_ERROR: i32 = 2;
     const STATUS_DONE_SYNCHRONIZE_NEXT_ACCOUNT: i32 = 3;
 }
 
-
+#Enum of operation types
 OperationType = enum {
     send; receive;
 }
 
+#Enum of transaction level of trust
 TrustLevel = enum {
     trusted;
     pending;
@@ -25,6 +27,7 @@ TrustLevel = enum {
     dropped;
 }
 
+#TODO
 TrustIndicator = interface +c {
     getTrustWeight(): i32;
     getTrustLevel(): TrustLevel;
@@ -32,36 +35,72 @@ TrustIndicator = interface +c {
     getOrigin(): string;
 }
 
+#Structure of a block in the blockchain
 Block = record {
+    #String, block's hash
     hash: string;
+    #String, id of block (usually height of block)
     uid: string;
+    #Date on which block was mined
     time: date;
+    #String, currency's name of blockchain the block belongs to
     currencyName: string;
+    #64 bits integer, height of block in the blockchain
     height: i64;
 }
 
+#Class representing an operation
 Operation = interface +c {
+    #Get id's operation
+    #@return string
     getUid(): string;
+    #Get account's index in user's wallet
+    #@return 32 bits integer
     getAccountIndex(): i32;
+    #Get type of operation
+    #@return OperationType object (for more details refer to OperationType)
     getOperationType(): OperationType;
+    #Return date on which operation was issued
+    #@return date object
     getDate(): date;
+    #Get senders of operation
+    #@return List of string, list of all senders
     getSenders(): list<string>;
+    #Get recipients of operation
+    #@return List of string, list of all recipients
     getRecipients(): list<string>;
+    #Get amount of operation
+    #@return Amount object
     getAmount(): Amount;
+    #Get fees of operation
+    #@return Optional Amount object
     getFees(): optional<Amount>;
+    #Get preferences of operation
+    #@return Prefences object
     getPreferences(): Preferences;
+    #Get trust indicator of operation
+    #@return TrustIndicator object
     getTrust(): TrustIndicator;
+    #Get block height on which operation was included
+    #@return Optional 64 bits integer, height of block in which operation was validated
     getBlockHeight(): optional<i64>;
+    #Convert operation as Bitcoin operation
+    #@return BitcoinLikeOperation object
     asBitcoinLikeOperation(): BitcoinLikeOperation;
-    ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
-    ## asRippleLikeOperation(): Callback<RippleLikeEthereum>;
     isInstanceOfBitcoinLikeOperation(): bool;
+    #Same as asBitcoinLikeOperation for ethereum
+    ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
+    #Same as isInstanceOfBitcoinLikeOperation for ethereum
     isInstanceOfEthereumLikeOperation(): bool;
+    #Same as asBitcoinLikeOperation for ripple
+    ## asRippleLikeOperation(): Callback<RippleLikeOperation>;
+    #Same as isInstanceOfBitcoinLikeOperation for ripple
     isInstanceOfRippleLikeOperation(): bool;
-
-
+    #Tells if the operation is complete
+    #@return boolean
     isComplete(): bool;
-
+    #Get type of wallet from which operation was issued
+    #@return WalletType object
     getWalletType(): WalletType;
 }
 

@@ -123,34 +123,76 @@ BitcoinLikeTransactionRequest = record {
     lockTime: optional<i32>;
 }
 
-#
+#Structure representing a prepared bitcoin transaction (ready to be used with device)
 BitcoinLikePreparedTransaction = record {
+    #32 bits integer representing version
     version: i32;
+    #List of BitcoinLikeInput objects, inputs aggregateed by transaction
     inputs: list<BitcoinLikeOutput>;
+    #List of stringsm paths to account creating transaction
     paths: list<string>;
+    #List of BitcoinLikeOutput objects, outputs aggregateed by transaction
     outputs: list<BitcoinLikeOutput>;
+    #32 bits integer, block height after which transaction can be accepted
     lockTime: i32;
 }
 
+#Class providing a Bitcoin helper
 BitcoinLikeHelper = interface +c {
+    #Constructs a BitcoinLikeOutput object from script and amount objects
+    #@param script binary please refer to BitcoinLikeOutput::getScript()
+    #@param amount, Amount object, amount of output
+    #@return BitcoinLikeOutput, resulting output object
     static scriptToOutput(script: binary, amount: Amount): BitcoinLikeOutput;
+    #Constructs a BitcoinLikeOutput object fromn address and amount objects
+    #@param address, string, address that will own the BitcoinLikeOutput object
+    #@param amount, Amount object, amount of output
+    #@return BitcoinLikeOutput, resulting output object
     static addressToOutput(address: string, amount: Amount): BitcoinLikeOutput;
+    #Transforms a transaction to a binary
+    #@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
+    #@return serialized transaction
     static serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): binary;
+    #Transform a serialized transaction to a transaction object
+    #@param transaction, binary, serialized transaction
+    #@return BitcoinLikeTransaction object
     static parseTransaction(transaction: binary): BitcoinLikeTransaction;
 }
 
+#Enum of picking strategies
 BitcoinLikePickingStrategy = enum {
     deep_outputs_first;
     optimize_size;
     merge_outputs;
 }
 
+#Class representing a Bitcoin account
 BitcoinLikeAccount = interface +c {
+    #Get UTXOs of account in a given range
+    #@param from, integer, lower bound for account's UTXO's index
+    #@param to, integer, upper bound for account's UTXO's index
+    #@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
     getUTXO(from: i32, to: i32, callback: ListCallback<BitcoinLikeOutput>);
+    #Get UTXOs count of account
+    #@param callback, Callback object which returns number of UTXO owned by this account
     getUTXOCount(callback: Callback<i32>);
+    #Get UTXOs meeting certain requirements to form a transaction request object
+    #@param baseFees, Amount object, amount of base fees that the transaction will cost
+    #@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
+    #@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
+    #@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
     pickUTXO(baseFees: Amount, outputs: list<BitcoinLikeOutput>, strategy: BitcoinLikePickingStrategy, callback: Callback<BitcoinLikeTransactionRequest>);
+    #Get an estimation of fees given a transaction
+    #@param request, BitcoinLikeTransactionRequest object, request without totalFees set
+    #@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
     estimateFees(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikeTransactionRequest>);
+    #Prepare a raw transaction to be used by user
+    #@param request, BitcoinLikeTransactionRequest object, raw transaction object
+    #@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
     prepareTransaction(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikePreparedTransaction>);
+    #Broadcast transaction to Bitcoin network (to nodes)
+    #@param transaction, serialized transaction to broadcast
+    #@param callback, Callback object which returning a string result
     broadcastTransaction(transaction: binary, callback: Callback<string>);
 }
 
