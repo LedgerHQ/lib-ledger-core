@@ -3,63 +3,127 @@
 @import "../amount.djinni"
 @import "../../bitcoin/addresses.djinni"
 
+#Class of constants to set Bitcoin like wallet configurations
 BitcoinLikeWalletConfiguration = interface +c {
+    #String keychain's name
     const KEYCHAIN: string = "keychain";
+    #String observer's name
     const OBSERVER: string = "observer";
+    #String explorer's name
     const EXPLORER: string = "explorer";
+    #String synchronizer's name
     const SYNCHRONIZER: string = "synchronizer";
+    #String with Payment Script type and BIP on which hierarchical wallet is based
     const KEYCHAIN_P2PKH_BIP44: string = "p2pkh_bip44";
+    #String websocket on which observer receives notifications from explorer
     const OBSERVER_LEDGER_WEBSOCKET: string = "ledger_websocket";
+    #String explorer api
     const EXPLORER_LEDGER_API: string = "ledger_api";
+    #String
     const SYNCHRONIZER_DEFAULT: string = "default";
 }
 
+#Class representing Bitcoin inputs
 BitcoinLikeInput = interface +c {
+    #Get address that spends the input
+    #@return Optional String, address emmiting input
     getAddress(): optional<string>;
+    #Get amount of input
+    #@return Optional Amount object, amount of input
     getValue(): optional<Amount>;
+    #Check whether input
+    #@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
     isCoinbase(): bool;
+    #Stored data cointained in coinbase
+    #@return Optional String
     getCoinbase(): optional<string>;
+    #Get hash of previous transaction that generates that input
+    #@return Optional String, hash of previous transaction (null if coinbase)
     getPreviousTxHash(): optional<string>;
+    #Get output index, it identifies which UTXO from tht transaction to spend
+    #@return Optional 32 bits integer, index of previous transaction
     getPreviousOutputIndex(): optional<i32>;
 }
 
+#Class representing Bitcoin outputs
 BitcoinLikeOutput = interface +c {
+    #Get transaction hash in which output was 'created'
+    #@return String, transaction hash containing output
     getTransactionHash(): string;
+    #Get index of output in list of all outputs contained in same transaction
+    #@return 32 bits integer, index of output
     getOutputIndex(): i32;
+    #Get amount of output
+    #@return Amount object, amount of output
     getValue(): Amount;
+    #Get script (witness script) cryptographic puzzle that determines the conditions to spend the output
+    #@return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
     getScript(): binary;
+    #Get address that spent the output
+    #@return Optional String, address that spent
     getAddress(): optional<string>;
 }
 
+#Class representing Bitcoin block
 BitcoinLikeBlock = interface +c {
+    #Hash of block
+    #@return string representing hash of this block
     getHash(): string;
+    #Height of block in blockchain
+    #@return 64 bits integer, height of block
     getHeight(): i64;
+    #Timestamp when block was mined
+    #@return Date object, date when block was appended to blockchain
     getTime(): date;
 }
 
+#Class representing a Bitcoin transaction
 BitcoinLikeTransaction = interface +c {
+    #Get transaction hash
+    #@return string, transaction hash
     getHash(): string;
+    #Get list of inputs aggregated under that transaction
+    #@return list of BitcoinLikeInput objects
     getInputs(): list<BitcoinLikeInput>;
+    #Get list of outputs aggregated under that transaction
+    #@return list of BitcoinLikeOutput objects
     getOutputs(): list<BitcoinLikeOutput>;
+    #Get block to which this transaction belongs
+    #@return Optional BitcoinLikeBlock
     getBlock(): optional<BitcoinLikeBlock>;
+    #Get lock time of transaction, block height from which transaction may be accepted by miners
+    #@return 64 bits integer, block height after which transaction can be accepted
     getLockTime(): i64;
+    #Get fees payed for this transaction
+    #@return Amount object, amount of fees
     getFees(): Amount;
+    #Get time of creation of this transaction
+    #@return Date object
     getTime(): date;
 }
 
+#Class representing a Bitcoin Operation
 BitcoinLikeOperation = interface +c {
+    #Get operation's transaction
+    #@return BitcoinLikeTransaction object
     getTransaction(): BitcoinLikeTransaction;
 }
 
+#Structure representing a bitcoin transaction request
 BitcoinLikeTransactionRequest = record {
+    #List of BitcoinLikeOutput objects, UTXO (Unspent Transaction Outputs) consumed by transaction's inputs
     utxo: list<BitcoinLikeOutput>;
+    #List of BitcoinLikeOutput objects, transaction's output
     outputs: list<BitcoinLikeOutput>;
+    #Optional Amount object, amount of base fees
     baseFees: optional<Amount>;
+    #Optional Amount object, amount of total fees
     totalFees: optional<Amount>;
+    #Optional 32 bits integer, transaction's lock time (refer to BitcoinLikeTransaction class)
     lockTime: optional<i32>;
-
 }
 
+#
 BitcoinLikePreparedTransaction = record {
     version: i32;
     inputs: list<BitcoinLikeOutput>;
