@@ -1,5 +1,6 @@
-
+#Enum of different event codes
 EventCode = enum {
+
     undefined;
 
     new_operation;
