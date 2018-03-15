@@ -21,4 +21,4 @@ jobs:
           command: yarn
       - run:
           name: test
-          command: node index.js
+          command: node index.js && node sample/wallet_pool_test.js
