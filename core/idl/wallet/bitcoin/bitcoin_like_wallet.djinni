@@ -19,7 +19,7 @@ BitcoinLikeWalletConfiguration = interface +c {
     const OBSERVER_LEDGER_WEBSOCKET: string = "ledger_websocket";
     #String explorer api
     const EXPLORER_LEDGER_API: string = "ledger_api";
-    #String
+    #TODO
     const SYNCHRONIZER_DEFAULT: string = "default";
 }
 
@@ -196,7 +196,7 @@ BitcoinLikeAccount = interface +c {
     broadcastTransaction(transaction: binary, callback: Callback<string>);
 }
 
-
+#TODO
 BitcoinLikeWallet = interface +c {
 
 }
