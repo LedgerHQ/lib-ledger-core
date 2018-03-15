@@ -32,24 +32,56 @@ WalletPool = interface +c {
     #@param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
     #@param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
     #@param configuration, DynamicObject object, desired configuration for this wallet pool
+    #@return WalletPool object, instance of WalletPool
     static newInstance(name: string, password: optional<string>, httpClient: HttpClient,
                         webSocketClient: WebSocketClient, pathResolver: PathResolver,
                         logPrinter: LogPrinter, dispatcher: ThreadDispatcher,
                         rng: RandomNumberGenerator, backend: DatabaseBackend,
                         configuration: DynamicObject): WalletPool;
 
+    #Return used logger to dump logs in defined log path by PathResolver
+    #@return Logger object
     getLogger(): Logger;
+    #Return name given to wallet pool
+    #@return string
     getName(): string;
+    #Return preferences of wallet pool (deduced from configuration)
+    #@return Preferences object
     getPreferences(): Preferences;
+    #Return number of wallets instanciated under wallet pool
+    #@param callback, Callback object returns a 32 bits integer, count of wallets
     getWalletCount(callback: Callback<i32>);
+    #Get instanciated wallets having index in a given range
+    #@param from, 32 bits integer, lower bound of indices to pick
+    #@param to, 32 bits integer, upper bound of indices to pick
+    #@param callback, ListCallback object returns a list of Wallet objects
     getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);
+    #Get wallet with a giver name
+    #@param name, string, name of wallet to look for
+    #@param callback, Callback object returns a Wallet object
     getWallet(name: string, callback: Callback<Wallet>);
+    #Instanciate a new wallet under wallet pool
+    #@param name, string, name of newly created wallet
+    #@param currency, Currency object, currency of the wallet
+    #@param configuration, DynamicObject object, configuration of wallet (preferences)
+    #@param callback, Callback object returning a Wallet object
     createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
+    #Return all supported currencies by wallet pool, at least one wallet support one of returned currencies
+    #@param callback, ListCallback object, returns a list of Currency objects
     getCurrencies(callback: ListCallback<Currency>);
+    #Return currency of a specific wallet
+    #@param name, wallet's name to look for
+    #@param callback, Callback object returning a Currency object
     getCurrency(name: string, callback: Callback<Currency>);
+    #Return last block of blockchain of a given currency (if it is supported by the wallet pool)
+    #@param name, string, name of currency we are interested into getting it's blockchain's last block
+    #@param callback, Callback object returns a Block object
     getLastBlock(currencyName: string, callback: Callback<Block>);
+    #Get event bus (handler) through which wallet pool observe and gets notified (explorers, DBs ...)
+    #@param EventBus object
     getEventBus(): EventBus;
 }
+
 
 WalletPoolBuilder = interface +c {
     setHttpClient(client: HttpClient): WalletPoolBuilder;
