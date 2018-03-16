@@ -101,7 +101,11 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 params.P2PKHVersion = hex::toByteArray(row.get<std::string>(4));
                 params.P2SHVersion = hex::toByteArray(row.get<std::string>(5));
                 params.XPUBVersion = hex::toByteArray(row.get<std::string>(6));
-                params.DustAmount = row.get<int64_t>(7);
+                /*
+                 * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
+                 * so we replace by a long long (which is supported by soci (soci::dt_long_long))
+                 */
+                params.DustAmount = row.get<long long>(7);
                 params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(row.get<std::string>(8));
                 params.UsesTimestampedTransaction = row.get<int>(9) == 1;
                 params.MessagePrefix = row.get<std::string>(10);
