@@ -245,7 +245,7 @@ logger('Test wallet pool instance', NJSWalletPool.getName());
   Get wallet count
 */
 NJSWalletPool.getWalletCount().then(res => {
-  console.log(res);
+    logger("Wallet pool count before wallet creation", res)
 })
 
 /*
@@ -276,7 +276,10 @@ const currency = {
 const NJSDynamicObjectWallet = new binding.NJSDynamicObject();
 NJSWalletPool.createWallet('my_wallet', currency, NJSDynamicObjectWallet)
 .then(res => {
-  logger('NJSWalletPool.createWallet then', res);
+    NJSWalletPool.getWalletCount().then(res => {
+        logger("Wallet pool count after wallet creation", res)
+    })
+    logger('Wallet created with name', res.getName());
 })
 .catch(err => {
   logger('NJSWalletPool.createWallet catch', err)
