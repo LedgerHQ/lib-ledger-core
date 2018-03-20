@@ -2,4 +2,3 @@ general:
   branches:
     only:
      - develop
-     - ci-integration
