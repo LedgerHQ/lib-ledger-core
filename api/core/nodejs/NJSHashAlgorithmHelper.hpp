@@ -23,6 +23,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSHashAlgorithmHelper()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSHashAlgorithmHelper(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -34,6 +36,12 @@ public:
     std::vector<uint8_t> keccak256(const std::vector<uint8_t> & data);
 
 private:
+    static NAN_METHOD(ripemd160);
+
+    static NAN_METHOD(sha256);
+
+    static NAN_METHOD(keccak256);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

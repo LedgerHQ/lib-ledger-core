@@ -3,19 +3,38 @@
 
 #import "LGCurrency.h"
 #import <Foundation/Foundation.h>
+@class LGDatabaseBackend;
 @class LGDynamicObject;
 @class LGEventBus;
 @class LGLogger;
 @class LGPreferences;
+@class LGWalletPool;
 @protocol LGBlockCallback;
 @protocol LGCurrencyCallback;
 @protocol LGCurrencyListCallback;
+@protocol LGHttpClient;
 @protocol LGI32Callback;
+@protocol LGLogPrinter;
+@protocol LGPathResolver;
+@protocol LGRandomNumberGenerator;
+@protocol LGThreadDispatcher;
 @protocol LGWalletCallback;
 @protocol LGWalletListCallback;
+@protocol LGWebSocketClient;
 
 
 @interface LGWalletPool : NSObject
+
++ (nullable LGWalletPool *)newInstance:(nonnull NSString *)name
+                              password:(nullable NSString *)password
+                            httpClient:(nullable id<LGHttpClient>)httpClient
+                       webSocketClient:(nullable id<LGWebSocketClient>)webSocketClient
+                          pathResolver:(nullable id<LGPathResolver>)pathResolver
+                            logPrinter:(nullable id<LGLogPrinter>)logPrinter
+                            dispatcher:(nullable id<LGThreadDispatcher>)dispatcher
+                                   rng:(nullable id<LGRandomNumberGenerator>)rng
+                               backend:(nullable LGDatabaseBackend *)backend
+                         configuration:(nullable LGDynamicObject *)configuration;
 
 - (nullable LGLogger *)getLogger;
 

@@ -11,81 +11,102 @@ void NJSCurrencyListCallback::onCallback(const std::experimental::optional<std::
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t arg_0_id = 0; arg_0_id < (*result).size(); arg_0_id++)
+    Local<Value> arg_0;
+    if(result)
     {
-        auto arg_0_elem = Nan::New<Object>();
-        auto arg_0_elem_1 = Nan::New<Integer>((int)(*result)[arg_0_id].walletType);
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("walletType").ToLocalChecked(), arg_0_elem_1);
-        auto arg_0_elem_2 = Nan::New<String>((*result)[arg_0_id].name).ToLocalChecked();
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("name").ToLocalChecked(), arg_0_elem_2);
-        auto arg_0_elem_3 = Nan::New<Int32>((*result)[arg_0_id].bip44CoinType);
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("bip44CoinType").ToLocalChecked(), arg_0_elem_3);
-        auto arg_0_elem_4 = Nan::New<String>((*result)[arg_0_id].paymentUriScheme).ToLocalChecked();
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("paymentUriScheme").ToLocalChecked(), arg_0_elem_4);
-        Local<Array> arg_0_elem_5 = Nan::New<Array>();
-        for(size_t arg_0_elem_5_id = 0; arg_0_elem_5_id < (*result)[arg_0_id].units.size(); arg_0_elem_5_id++)
+        auto arg_0_optional = (result).value();
+        Local<Array> arg_0_tmp = Nan::New<Array>();
+        for(size_t arg_0_tmp_id = 0; arg_0_tmp_id < arg_0_optional.size(); arg_0_tmp_id++)
         {
-            auto arg_0_elem_5_elem = Nan::New<Object>();
-            auto arg_0_elem_5_elem_1 = Nan::New<String>((*result)[arg_0_id].units[arg_0_elem_5_id].name).ToLocalChecked();
-            Nan::DefineOwnProperty(arg_0_elem_5_elem, Nan::New<String>("name").ToLocalChecked(), arg_0_elem_5_elem_1);
-            auto arg_0_elem_5_elem_2 = Nan::New<String>((*result)[arg_0_id].units[arg_0_elem_5_id].symbol).ToLocalChecked();
-            Nan::DefineOwnProperty(arg_0_elem_5_elem, Nan::New<String>("symbol").ToLocalChecked(), arg_0_elem_5_elem_2);
-            auto arg_0_elem_5_elem_3 = Nan::New<String>((*result)[arg_0_id].units[arg_0_elem_5_id].code).ToLocalChecked();
-            Nan::DefineOwnProperty(arg_0_elem_5_elem, Nan::New<String>("code").ToLocalChecked(), arg_0_elem_5_elem_3);
-            auto arg_0_elem_5_elem_4 = Nan::New<Int32>((*result)[arg_0_id].units[arg_0_elem_5_id].numberOfDecimal);
-            Nan::DefineOwnProperty(arg_0_elem_5_elem, Nan::New<String>("numberOfDecimal").ToLocalChecked(), arg_0_elem_5_elem_4);
+            auto arg_0_tmp_elem = Nan::New<Object>();
+            auto arg_0_tmp_elem_1 = Nan::New<Integer>((int)arg_0_optional[arg_0_tmp_id].walletType);
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("walletType").ToLocalChecked(), arg_0_tmp_elem_1);
+            auto arg_0_tmp_elem_2 = Nan::New<String>(arg_0_optional[arg_0_tmp_id].name).ToLocalChecked();
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("name").ToLocalChecked(), arg_0_tmp_elem_2);
+            auto arg_0_tmp_elem_3 = Nan::New<Int32>(arg_0_optional[arg_0_tmp_id].bip44CoinType);
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("bip44CoinType").ToLocalChecked(), arg_0_tmp_elem_3);
+            auto arg_0_tmp_elem_4 = Nan::New<String>(arg_0_optional[arg_0_tmp_id].paymentUriScheme).ToLocalChecked();
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("paymentUriScheme").ToLocalChecked(), arg_0_tmp_elem_4);
+            Local<Array> arg_0_tmp_elem_5 = Nan::New<Array>();
+            for(size_t arg_0_tmp_elem_5_id = 0; arg_0_tmp_elem_5_id < arg_0_optional[arg_0_tmp_id].units.size(); arg_0_tmp_elem_5_id++)
+            {
+                auto arg_0_tmp_elem_5_elem = Nan::New<Object>();
+                auto arg_0_tmp_elem_5_elem_1 = Nan::New<String>(arg_0_optional[arg_0_tmp_id].units[arg_0_tmp_elem_5_id].name).ToLocalChecked();
+                Nan::DefineOwnProperty(arg_0_tmp_elem_5_elem, Nan::New<String>("name").ToLocalChecked(), arg_0_tmp_elem_5_elem_1);
+                auto arg_0_tmp_elem_5_elem_2 = Nan::New<String>(arg_0_optional[arg_0_tmp_id].units[arg_0_tmp_elem_5_id].symbol).ToLocalChecked();
+                Nan::DefineOwnProperty(arg_0_tmp_elem_5_elem, Nan::New<String>("symbol").ToLocalChecked(), arg_0_tmp_elem_5_elem_2);
+                auto arg_0_tmp_elem_5_elem_3 = Nan::New<String>(arg_0_optional[arg_0_tmp_id].units[arg_0_tmp_elem_5_id].code).ToLocalChecked();
+                Nan::DefineOwnProperty(arg_0_tmp_elem_5_elem, Nan::New<String>("code").ToLocalChecked(), arg_0_tmp_elem_5_elem_3);
+                auto arg_0_tmp_elem_5_elem_4 = Nan::New<Int32>(arg_0_optional[arg_0_tmp_id].units[arg_0_tmp_elem_5_id].numberOfDecimal);
+                Nan::DefineOwnProperty(arg_0_tmp_elem_5_elem, Nan::New<String>("numberOfDecimal").ToLocalChecked(), arg_0_tmp_elem_5_elem_4);
 
-            arg_0_elem_5->Set((int)arg_0_elem_5_id,arg_0_elem_5_elem);
+                arg_0_tmp_elem_5->Set((int)arg_0_tmp_elem_5_id,arg_0_tmp_elem_5_elem);
+            }
+
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("units").ToLocalChecked(), arg_0_tmp_elem_5);
+            Local<Value> arg_0_tmp_elem_6;
+            if(arg_0_optional[arg_0_tmp_id].bitcoinLikeNetworkParameters)
+            {
+                auto arg_0_tmp_elem_6_optional = (arg_0_optional[arg_0_tmp_id].bitcoinLikeNetworkParameters).value();
+                auto arg_0_tmp_elem_6_tmp = Nan::New<Object>();
+                auto arg_0_tmp_elem_6_tmp_1 = Nan::New<String>(arg_0_tmp_elem_6_optional.Identifier).ToLocalChecked();
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("Identifier").ToLocalChecked(), arg_0_tmp_elem_6_tmp_1);
+                Local<Array> arg_0_tmp_elem_6_tmp_2 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_2_id = 0; arg_0_tmp_elem_6_tmp_2_id < arg_0_tmp_elem_6_optional.P2PKHVersion.size(); arg_0_tmp_elem_6_tmp_2_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_2_elem = Nan::New<Uint32>(arg_0_tmp_elem_6_optional.P2PKHVersion[arg_0_tmp_elem_6_tmp_2_id]);
+                    arg_0_tmp_elem_6_tmp_2->Set((int)arg_0_tmp_elem_6_tmp_2_id,arg_0_tmp_elem_6_tmp_2_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("P2PKHVersion").ToLocalChecked(), arg_0_tmp_elem_6_tmp_2);
+                Local<Array> arg_0_tmp_elem_6_tmp_3 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_3_id = 0; arg_0_tmp_elem_6_tmp_3_id < arg_0_tmp_elem_6_optional.P2SHVersion.size(); arg_0_tmp_elem_6_tmp_3_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_3_elem = Nan::New<Uint32>(arg_0_tmp_elem_6_optional.P2SHVersion[arg_0_tmp_elem_6_tmp_3_id]);
+                    arg_0_tmp_elem_6_tmp_3->Set((int)arg_0_tmp_elem_6_tmp_3_id,arg_0_tmp_elem_6_tmp_3_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("P2SHVersion").ToLocalChecked(), arg_0_tmp_elem_6_tmp_3);
+                Local<Array> arg_0_tmp_elem_6_tmp_4 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_4_id = 0; arg_0_tmp_elem_6_tmp_4_id < arg_0_tmp_elem_6_optional.XPUBVersion.size(); arg_0_tmp_elem_6_tmp_4_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_4_elem = Nan::New<Uint32>(arg_0_tmp_elem_6_optional.XPUBVersion[arg_0_tmp_elem_6_tmp_4_id]);
+                    arg_0_tmp_elem_6_tmp_4->Set((int)arg_0_tmp_elem_6_tmp_4_id,arg_0_tmp_elem_6_tmp_4_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("XPUBVersion").ToLocalChecked(), arg_0_tmp_elem_6_tmp_4);
+                auto arg_0_tmp_elem_6_tmp_5 = Nan::New<Integer>((int)arg_0_tmp_elem_6_optional.FeePolicy);
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("FeePolicy").ToLocalChecked(), arg_0_tmp_elem_6_tmp_5);
+                auto arg_0_tmp_elem_6_tmp_6 = Nan::New<Number>(arg_0_tmp_elem_6_optional.DustAmount);
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("DustAmount").ToLocalChecked(), arg_0_tmp_elem_6_tmp_6);
+                auto arg_0_tmp_elem_6_tmp_7 = Nan::New<String>(arg_0_tmp_elem_6_optional.MessagePrefix).ToLocalChecked();
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_tmp_elem_6_tmp_7);
+                auto arg_0_tmp_elem_6_tmp_8 = Nan::New<Boolean>(arg_0_tmp_elem_6_optional.UsesTimestampedTransaction);
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_tmp_elem_6_tmp_8);
+
+                arg_0_tmp_elem_6 = arg_0_tmp_elem_6_tmp;
+            }
+
+            Nan::DefineOwnProperty(arg_0_tmp_elem, Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked(), arg_0_tmp_elem_6);
+
+            arg_0_tmp->Set((int)arg_0_tmp_id,arg_0_tmp_elem);
         }
 
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("units").ToLocalChecked(), arg_0_elem_5);
-        auto arg_0_elem_6 = Nan::New<Object>();
-        auto arg_0_elem_6_1 = Nan::New<String>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).Identifier).ToLocalChecked();
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("Identifier").ToLocalChecked(), arg_0_elem_6_1);
-        Local<Array> arg_0_elem_6_2 = Nan::New<Array>();
-        for(size_t arg_0_elem_6_2_id = 0; arg_0_elem_6_2_id < (*(*result)[arg_0_id].bitcoinLikeNetworkParameters).P2PKHVersion.size(); arg_0_elem_6_2_id++)
-        {
-            auto arg_0_elem_6_2_elem = Nan::New<Uint32>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).P2PKHVersion[arg_0_elem_6_2_id]);
-            arg_0_elem_6_2->Set((int)arg_0_elem_6_2_id,arg_0_elem_6_2_elem);
-        }
-
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("P2PKHVersion").ToLocalChecked(), arg_0_elem_6_2);
-        Local<Array> arg_0_elem_6_3 = Nan::New<Array>();
-        for(size_t arg_0_elem_6_3_id = 0; arg_0_elem_6_3_id < (*(*result)[arg_0_id].bitcoinLikeNetworkParameters).P2SHVersion.size(); arg_0_elem_6_3_id++)
-        {
-            auto arg_0_elem_6_3_elem = Nan::New<Uint32>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).P2SHVersion[arg_0_elem_6_3_id]);
-            arg_0_elem_6_3->Set((int)arg_0_elem_6_3_id,arg_0_elem_6_3_elem);
-        }
-
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("P2SHVersion").ToLocalChecked(), arg_0_elem_6_3);
-        Local<Array> arg_0_elem_6_4 = Nan::New<Array>();
-        for(size_t arg_0_elem_6_4_id = 0; arg_0_elem_6_4_id < (*(*result)[arg_0_id].bitcoinLikeNetworkParameters).XPUBVersion.size(); arg_0_elem_6_4_id++)
-        {
-            auto arg_0_elem_6_4_elem = Nan::New<Uint32>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).XPUBVersion[arg_0_elem_6_4_id]);
-            arg_0_elem_6_4->Set((int)arg_0_elem_6_4_id,arg_0_elem_6_4_elem);
-        }
-
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("XPUBVersion").ToLocalChecked(), arg_0_elem_6_4);
-        auto arg_0_elem_6_5 = Nan::New<Integer>((int)(*(*result)[arg_0_id].bitcoinLikeNetworkParameters).FeePolicy);
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("FeePolicy").ToLocalChecked(), arg_0_elem_6_5);
-        auto arg_0_elem_6_6 = Nan::New<Number>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).DustAmount);
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("DustAmount").ToLocalChecked(), arg_0_elem_6_6);
-        auto arg_0_elem_6_7 = Nan::New<String>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).MessagePrefix).ToLocalChecked();
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_elem_6_7);
-        auto arg_0_elem_6_8 = Nan::New<Boolean>((*(*result)[arg_0_id].bitcoinLikeNetworkParameters).UsesTimestampedTransaction);
-        Nan::DefineOwnProperty(arg_0_elem_6, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_elem_6_8);
-
-        Nan::DefineOwnProperty(arg_0_elem, Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked(), arg_0_elem_6);
-
-        arg_0->Set((int)arg_0_id,arg_0_elem);
+        arg_0 = arg_0_tmp;
     }
 
-    auto arg_1 = Nan::New<Object>();
-    auto arg_1_1 = Nan::New<Integer>((int)(*error).code);
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("code").ToLocalChecked(), arg_1_1);
-    auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
+    Local<Value> arg_1;
+    if(error)
+    {
+        auto arg_1_optional = (error).value();
+        auto arg_1_tmp = Nan::New<Object>();
+        auto arg_1_tmp_1 = Nan::New<Integer>((int)arg_1_optional.code);
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("code").ToLocalChecked(), arg_1_tmp_1);
+        auto arg_1_tmp_2 = Nan::New<String>(arg_1_optional.message).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("message").ToLocalChecked(), arg_1_tmp_2);
+
+        arg_1 = arg_1_tmp;
+    }
 
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
@@ -119,15 +140,8 @@ NAN_METHOD(NJSCurrencyListCallback::New) {
         return Nan::ThrowError("NJSCurrencyListCallback function can only be called as constructor (use New)");
     }
 
-    NJSCurrencyListCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSCurrencyListCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSCurrencyListCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSCurrencyListCallback *node_instance = new NJSCurrencyListCallback(resolver);
 
     if(node_instance)
     {

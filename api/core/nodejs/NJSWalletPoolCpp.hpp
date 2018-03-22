@@ -5,19 +5,27 @@
 #define DJINNI_GENERATED_NJSWALLETPOOL_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include "../../../core/src/api/Currency.hpp"
 #include "../../../core/src/api/CurrencyUnit.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSCurrencyCallback.hpp"
 #include "NJSCurrencyListCallback.hpp"
+#include "NJSDatabaseBackendCpp.hpp"
 #include "NJSDynamicObjectCpp.hpp"
 #include "NJSEventBusCpp.hpp"
+#include "NJSHttpClient.hpp"
 #include "NJSI32Callback.hpp"
+#include "NJSLogPrinter.hpp"
 #include "NJSLoggerCpp.hpp"
+#include "NJSPathResolver.hpp"
 #include "NJSPreferencesCpp.hpp"
+#include "NJSRandomNumberGenerator.hpp"
+#include "NJSThreadDispatcher.hpp"
 #include "NJSWalletCallback.hpp"
 #include "NJSWalletListCallback.hpp"
+#include "NJSWebSocketClient.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -43,6 +51,8 @@ public:
     std::shared_ptr<ledger::core::api::WalletPool> getCppImpl(){return _WalletPool;};
 
 private:
+    static NAN_METHOD(newInstance);
+
     static NAN_METHOD(getLogger);
 
     static NAN_METHOD(getName);

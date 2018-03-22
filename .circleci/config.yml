@@ -1,0 +1,47 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_debian.sh
+      - run:
+          name: Initialize submodules
+          command: git submodule init
+      - run:
+          name: Build core library
+          command: |
+            . .circleci/build_lib.sh
+      - run:
+          name: Build node module
+          command: yarn
+      - run:
+          name: Test Wallet Creation
+          command: node sample/wallet_pool_test.js
+      - run:
+          name: Store error logs
+          command: |
+              mkdir -p /tmp/core_dumps
+              cp ./sample/tmp/log_file_test_instance-l.log /tmp/core_dumps
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/core_dumps
+      - run:
+          name: Store dynamic library
+          command: |
+              mkdir -p /tmp/lib
+              cp ../lib-ledger-core-build/core/src/libledger-core.so /tmp/lib
+      - store_artifacts:
+          path: /tmp/lib
+      - run:
+          name: Store node module
+          command: |
+              mkdir -p /tmp/node_module
+              cp ./build/Release/ledgerapp_nodejs.node /tmp/node_module
+      - store_artifacts:
+          path: /tmp/node_module

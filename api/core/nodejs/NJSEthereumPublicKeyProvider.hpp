@@ -20,6 +20,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSEthereumPublicKeyProvider()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSEthereumPublicKeyProvider(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};

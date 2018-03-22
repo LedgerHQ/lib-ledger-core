@@ -28,7 +28,8 @@ NAN_METHOD(NJSBitcoinLikeOperation::getTransaction) {
     auto result = cpp_impl->getTransaction();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeTransaction::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeTransaction::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(arg_0_wrap)->handle();
 
 
     //Return result

@@ -11,7 +11,8 @@ void NJSEventReceiver::onEvent(const std::shared_ptr<Event> & event)
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSEvent::wrap(event);
+    auto arg_0_wrap = NJSEvent::wrap(event);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSEvent>(arg_0_wrap)->handle();
 
     Handle<Value> args[1] = {arg_0};
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);

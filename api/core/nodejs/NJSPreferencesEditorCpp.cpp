@@ -32,7 +32,8 @@ NAN_METHOD(NJSPreferencesEditor::putString) {
     auto result = cpp_impl->putString(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -62,7 +63,8 @@ NAN_METHOD(NJSPreferencesEditor::putInt) {
     auto result = cpp_impl->putInt(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -92,7 +94,8 @@ NAN_METHOD(NJSPreferencesEditor::putLong) {
     auto result = cpp_impl->putLong(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -122,7 +125,8 @@ NAN_METHOD(NJSPreferencesEditor::putBoolean) {
     auto result = cpp_impl->putBoolean(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -163,7 +167,8 @@ NAN_METHOD(NJSPreferencesEditor::putStringArray) {
     auto result = cpp_impl->putStringArray(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -203,7 +208,8 @@ NAN_METHOD(NJSPreferencesEditor::putData) {
     auto result = cpp_impl->putData(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSPreferencesEditor::wrap(result);
+    auto arg_2_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -232,7 +238,8 @@ NAN_METHOD(NJSPreferencesEditor::remove) {
     auto result = cpp_impl->remove(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSPreferencesEditor::wrap(result);
+    auto arg_1_wrap = NJSPreferencesEditor::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(arg_1_wrap)->handle();
 
 
     //Return result

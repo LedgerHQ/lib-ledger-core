@@ -27,6 +27,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSThreadDispatcher()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSThreadDispatcher(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -40,6 +42,14 @@ public:
     std::shared_ptr<Lock> newLock();
 
 private:
+    static NAN_METHOD(getSerialExecutionContext);
+
+    static NAN_METHOD(getThreadPoolExecutionContext);
+
+    static NAN_METHOD(getMainExecutionContext);
+
+    static NAN_METHOD(newLock);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

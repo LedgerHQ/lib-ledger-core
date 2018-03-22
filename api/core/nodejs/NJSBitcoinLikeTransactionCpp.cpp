@@ -57,7 +57,8 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getInputs) {
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = NJSBitcoinLikeInput::wrap(result[arg_0_id]);
+        auto arg_0_elem_wrap = NJSBitcoinLikeInput::wrap(result[arg_0_id]);
+        auto arg_0_elem = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeInput>(arg_0_elem_wrap)->handle();
 
         arg_0->Set((int)arg_0_id,arg_0_elem);
     }
@@ -90,7 +91,8 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getOutputs) {
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = NJSBitcoinLikeOutput::wrap(result[arg_0_id]);
+        auto arg_0_elem_wrap = NJSBitcoinLikeOutput::wrap(result[arg_0_id]);
+        auto arg_0_elem = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(arg_0_elem_wrap)->handle();
 
         arg_0->Set((int)arg_0_id,arg_0_elem);
     }
@@ -120,7 +122,9 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getBlock) {
     auto result = cpp_impl->getBlock();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeBlock::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeBlock::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeBlock>(arg_0_wrap)->handle();
+
 
 
     //Return result
@@ -173,7 +177,8 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getFees) {
     auto result = cpp_impl->getFees();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
 
 
     //Return result

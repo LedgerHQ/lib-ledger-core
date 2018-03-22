@@ -11,59 +11,73 @@ void NJSAccountCreationInfoCallback::onCallback(const std::experimental::optiona
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = Nan::New<Object>();
-    auto arg_0_1 = Nan::New<Int32>((*result).index);
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("index").ToLocalChecked(), arg_0_1);
-    Local<Array> arg_0_2 = Nan::New<Array>();
-    for(size_t arg_0_2_id = 0; arg_0_2_id < (*result).owners.size(); arg_0_2_id++)
+    Local<Value> arg_0;
+    if(result)
     {
-        auto arg_0_2_elem = Nan::New<String>((*result).owners[arg_0_2_id]).ToLocalChecked();
-        arg_0_2->Set((int)arg_0_2_id,arg_0_2_elem);
-    }
-
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("owners").ToLocalChecked(), arg_0_2);
-    Local<Array> arg_0_3 = Nan::New<Array>();
-    for(size_t arg_0_3_id = 0; arg_0_3_id < (*result).derivations.size(); arg_0_3_id++)
-    {
-        auto arg_0_3_elem = Nan::New<String>((*result).derivations[arg_0_3_id]).ToLocalChecked();
-        arg_0_3->Set((int)arg_0_3_id,arg_0_3_elem);
-    }
-
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("derivations").ToLocalChecked(), arg_0_3);
-    Local<Array> arg_0_4 = Nan::New<Array>();
-    for(size_t arg_0_4_id = 0; arg_0_4_id < (*result).publicKeys.size(); arg_0_4_id++)
-    {
-        Local<Array> arg_0_4_elem = Nan::New<Array>();
-        for(size_t arg_0_4_elem_id = 0; arg_0_4_elem_id < (*result).publicKeys[arg_0_4_id].size(); arg_0_4_elem_id++)
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Object>();
+        auto arg_0_tmp_1 = Nan::New<Int32>(arg_0_optional.index);
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("index").ToLocalChecked(), arg_0_tmp_1);
+        Local<Array> arg_0_tmp_2 = Nan::New<Array>();
+        for(size_t arg_0_tmp_2_id = 0; arg_0_tmp_2_id < arg_0_optional.owners.size(); arg_0_tmp_2_id++)
         {
-            auto arg_0_4_elem_elem = Nan::New<Uint32>((*result).publicKeys[arg_0_4_id][arg_0_4_elem_id]);
-            arg_0_4_elem->Set((int)arg_0_4_elem_id,arg_0_4_elem_elem);
+            auto arg_0_tmp_2_elem = Nan::New<String>(arg_0_optional.owners[arg_0_tmp_2_id]).ToLocalChecked();
+            arg_0_tmp_2->Set((int)arg_0_tmp_2_id,arg_0_tmp_2_elem);
         }
 
-        arg_0_4->Set((int)arg_0_4_id,arg_0_4_elem);
-    }
-
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("publicKeys").ToLocalChecked(), arg_0_4);
-    Local<Array> arg_0_5 = Nan::New<Array>();
-    for(size_t arg_0_5_id = 0; arg_0_5_id < (*result).chainCodes.size(); arg_0_5_id++)
-    {
-        Local<Array> arg_0_5_elem = Nan::New<Array>();
-        for(size_t arg_0_5_elem_id = 0; arg_0_5_elem_id < (*result).chainCodes[arg_0_5_id].size(); arg_0_5_elem_id++)
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("owners").ToLocalChecked(), arg_0_tmp_2);
+        Local<Array> arg_0_tmp_3 = Nan::New<Array>();
+        for(size_t arg_0_tmp_3_id = 0; arg_0_tmp_3_id < arg_0_optional.derivations.size(); arg_0_tmp_3_id++)
         {
-            auto arg_0_5_elem_elem = Nan::New<Uint32>((*result).chainCodes[arg_0_5_id][arg_0_5_elem_id]);
-            arg_0_5_elem->Set((int)arg_0_5_elem_id,arg_0_5_elem_elem);
+            auto arg_0_tmp_3_elem = Nan::New<String>(arg_0_optional.derivations[arg_0_tmp_3_id]).ToLocalChecked();
+            arg_0_tmp_3->Set((int)arg_0_tmp_3_id,arg_0_tmp_3_elem);
         }
 
-        arg_0_5->Set((int)arg_0_5_id,arg_0_5_elem);
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("derivations").ToLocalChecked(), arg_0_tmp_3);
+        Local<Array> arg_0_tmp_4 = Nan::New<Array>();
+        for(size_t arg_0_tmp_4_id = 0; arg_0_tmp_4_id < arg_0_optional.publicKeys.size(); arg_0_tmp_4_id++)
+        {
+            Local<Array> arg_0_tmp_4_elem = Nan::New<Array>();
+            for(size_t arg_0_tmp_4_elem_id = 0; arg_0_tmp_4_elem_id < arg_0_optional.publicKeys[arg_0_tmp_4_id].size(); arg_0_tmp_4_elem_id++)
+            {
+                auto arg_0_tmp_4_elem_elem = Nan::New<Uint32>(arg_0_optional.publicKeys[arg_0_tmp_4_id][arg_0_tmp_4_elem_id]);
+                arg_0_tmp_4_elem->Set((int)arg_0_tmp_4_elem_id,arg_0_tmp_4_elem_elem);
+            }
+
+            arg_0_tmp_4->Set((int)arg_0_tmp_4_id,arg_0_tmp_4_elem);
+        }
+
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("publicKeys").ToLocalChecked(), arg_0_tmp_4);
+        Local<Array> arg_0_tmp_5 = Nan::New<Array>();
+        for(size_t arg_0_tmp_5_id = 0; arg_0_tmp_5_id < arg_0_optional.chainCodes.size(); arg_0_tmp_5_id++)
+        {
+            Local<Array> arg_0_tmp_5_elem = Nan::New<Array>();
+            for(size_t arg_0_tmp_5_elem_id = 0; arg_0_tmp_5_elem_id < arg_0_optional.chainCodes[arg_0_tmp_5_id].size(); arg_0_tmp_5_elem_id++)
+            {
+                auto arg_0_tmp_5_elem_elem = Nan::New<Uint32>(arg_0_optional.chainCodes[arg_0_tmp_5_id][arg_0_tmp_5_elem_id]);
+                arg_0_tmp_5_elem->Set((int)arg_0_tmp_5_elem_id,arg_0_tmp_5_elem_elem);
+            }
+
+            arg_0_tmp_5->Set((int)arg_0_tmp_5_id,arg_0_tmp_5_elem);
+        }
+
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("chainCodes").ToLocalChecked(), arg_0_tmp_5);
+
+        arg_0 = arg_0_tmp;
     }
 
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("chainCodes").ToLocalChecked(), arg_0_5);
+    Local<Value> arg_1;
+    if(error)
+    {
+        auto arg_1_optional = (error).value();
+        auto arg_1_tmp = Nan::New<Object>();
+        auto arg_1_tmp_1 = Nan::New<Integer>((int)arg_1_optional.code);
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("code").ToLocalChecked(), arg_1_tmp_1);
+        auto arg_1_tmp_2 = Nan::New<String>(arg_1_optional.message).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("message").ToLocalChecked(), arg_1_tmp_2);
 
-    auto arg_1 = Nan::New<Object>();
-    auto arg_1_1 = Nan::New<Integer>((int)(*error).code);
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("code").ToLocalChecked(), arg_1_1);
-    auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
+        arg_1 = arg_1_tmp;
+    }
 
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
@@ -97,15 +111,8 @@ NAN_METHOD(NJSAccountCreationInfoCallback::New) {
         return Nan::ThrowError("NJSAccountCreationInfoCallback function can only be called as constructor (use New)");
     }
 
-    NJSAccountCreationInfoCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSAccountCreationInfoCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSAccountCreationInfoCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAccountCreationInfoCallback *node_instance = new NJSAccountCreationInfoCallback(resolver);
 
     if(node_instance)
     {

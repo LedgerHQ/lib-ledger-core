@@ -1,15 +1,6 @@
-let binding = null;
-
-function loadBinding() {
-  if (!binding) {
-    binding = require('bindings')('ledgerapp_nodejs') // eslint-disable-line global-require
-  }
-}
-
-loadBinding();
-
+const binding = require('bindings')('ledgerapp_nodejs'); // eslint-disable-line global-require
 /*
-    NJSSecp256k1 Implementation
+    Test NJSSecp256k1 Implementation
  */
 const NJSSecp256k1Impl = new binding.NJSSecp256k1();
 const pubKeys = NJSSecp256k1Impl.computePubKey([123],true);

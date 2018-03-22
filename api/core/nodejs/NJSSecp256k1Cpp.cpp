@@ -174,18 +174,11 @@ NAN_METHOD(NJSSecp256k1::newInstance) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSSecp256k1* obj = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSSecp256k1::newInstance : implementation of Secp256k1 is not valid");
-    }
-
-    auto result = cpp_impl->newInstance();
+    auto result = Secp256k1::newInstance();
 
     //Wrap result in node object
-    auto arg_0 = NJSSecp256k1::wrap(result);
+    auto arg_0_wrap = NJSSecp256k1::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -258,6 +251,7 @@ void NJSSecp256k1::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"computePubKey", computePubKey);
     Nan::SetPrototypeMethod(func_template,"sign", sign);
     Nan::SetPrototypeMethod(func_template,"verify", verify);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     Secp256k1_prototype.Reset(objectTemplate);
 

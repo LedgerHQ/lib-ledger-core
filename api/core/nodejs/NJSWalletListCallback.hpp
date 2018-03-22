@@ -27,23 +27,20 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSWalletListCallback()
     {
-        njs_impl.Reset();
+        persistent().Reset();
         pers_resolver.Reset();
     };
-    NJSWalletListCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
+    NJSWalletListCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
 
     void onCallback(const std::experimental::optional<std::vector<std::shared_ptr<Wallet>>> & result, const std::experimental::optional<Error> & error);
-    void SetPromise(Local<Promise::Resolver> resolver)
-    {
-        pers_resolver.Reset(resolver);
-    }
 
 private:
+    static NAN_METHOD(onCallback);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent<Object> njs_impl;
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSWALLETLISTCALLBACK_HPP

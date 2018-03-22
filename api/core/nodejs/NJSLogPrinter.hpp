@@ -25,6 +25,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSLogPrinter()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSLogPrinter(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -44,6 +46,20 @@ public:
     std::shared_ptr<ExecutionContext> getContext();
 
 private:
+    static NAN_METHOD(printError);
+
+    static NAN_METHOD(printInfo);
+
+    static NAN_METHOD(printDebug);
+
+    static NAN_METHOD(printWarning);
+
+    static NAN_METHOD(printApdu);
+
+    static NAN_METHOD(printCriticalError);
+
+    static NAN_METHOD(getContext);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

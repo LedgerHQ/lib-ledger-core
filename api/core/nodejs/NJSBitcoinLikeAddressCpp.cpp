@@ -231,7 +231,14 @@ NAN_METHOD(NJSBitcoinLikeAddress::getDerivationPath) {
     auto result = cpp_impl->getDerivationPath();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -306,18 +313,11 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeAddress* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::fromBase58 : implementation of BitcoinLikeAddress is not valid");
-    }
-
-    auto result = cpp_impl->fromBase58(arg_0,arg_1);
+    auto result = BitcoinLikeAddress::fromBase58(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeAddress::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeAddress::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -393,15 +393,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeAddress* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::isAddressValid : implementation of BitcoinLikeAddress is not valid");
-    }
-
-    auto result = cpp_impl->isAddressValid(arg_0,arg_1);
+    auto result = BitcoinLikeAddress::isAddressValid(arg_0,arg_1);
 
     //Wrap result in node object
     auto arg_2 = Nan::New<Boolean>(result);
@@ -540,6 +532,8 @@ void NJSBitcoinLikeAddress::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"isP2SH", isP2SH);
     Nan::SetPrototypeMethod(func_template,"isP2PKH", isP2PKH);
     Nan::SetPrototypeMethod(func_template,"getDerivationPath", getDerivationPath);
+    Nan::SetPrototypeMethod(func_template,"fromBase58", fromBase58);
+    Nan::SetPrototypeMethod(func_template,"isAddressValid", isAddressValid);
     //Set object prototype
     BitcoinLikeAddress_prototype.Reset(objectTemplate);
 

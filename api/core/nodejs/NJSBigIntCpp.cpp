@@ -36,7 +36,8 @@ NAN_METHOD(NJSBigInt::add) {
     auto result = cpp_impl->add(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -71,7 +72,8 @@ NAN_METHOD(NJSBigInt::subtract) {
     auto result = cpp_impl->subtract(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -106,7 +108,8 @@ NAN_METHOD(NJSBigInt::multiply) {
     auto result = cpp_impl->multiply(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -141,7 +144,8 @@ NAN_METHOD(NJSBigInt::divide) {
     auto result = cpp_impl->divide(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -179,7 +183,8 @@ NAN_METHOD(NJSBigInt::divideAndRemainder) {
     Local<Array> arg_1 = Nan::New<Array>();
     for(size_t arg_1_id = 0; arg_1_id < result.size(); arg_1_id++)
     {
-        auto arg_1_elem = NJSBigInt::wrap(result[arg_1_id]);
+        auto arg_1_elem_wrap = NJSBigInt::wrap(result[arg_1_id]);
+        auto arg_1_elem = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_elem_wrap)->handle();
 
         arg_1->Set((int)arg_1_id,arg_1_elem);
     }
@@ -210,7 +215,8 @@ NAN_METHOD(NJSBigInt::pow) {
     auto result = cpp_impl->pow(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -349,18 +355,11 @@ NAN_METHOD(NJSBigInt::fromDecimalString) {
     String::Utf8Value string_arg_2(info[2]->ToString());
     auto arg_2 = std::string(*string_arg_2);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBigInt* obj = Nan::ObjectWrap::Unwrap<NJSBigInt>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBigInt::fromDecimalString : implementation of BigInt is not valid");
-    }
-
-    auto result = cpp_impl->fromDecimalString(arg_0,arg_1,arg_2);
+    auto result = BigInt::fromDecimalString(arg_0,arg_1,arg_2);
 
     //Wrap result in node object
-    auto arg_3 = NJSBigInt::wrap(result);
+    auto arg_3_wrap = NJSBigInt::wrap(result);
+    auto arg_3 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_3_wrap)->handle();
 
 
     //Return result
@@ -379,18 +378,11 @@ NAN_METHOD(NJSBigInt::fromIntegerString) {
     auto arg_0 = std::string(*string_arg_0);
     auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBigInt* obj = Nan::ObjectWrap::Unwrap<NJSBigInt>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBigInt::fromIntegerString : implementation of BigInt is not valid");
-    }
-
-    auto result = cpp_impl->fromIntegerString(arg_0,arg_1);
+    auto result = BigInt::fromIntegerString(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBigInt::wrap(result);
+    auto arg_2_wrap = NJSBigInt::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -407,18 +399,11 @@ NAN_METHOD(NJSBigInt::fromLong) {
     //Check if parameters have correct types
     auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBigInt* obj = Nan::ObjectWrap::Unwrap<NJSBigInt>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBigInt::fromLong : implementation of BigInt is not valid");
-    }
-
-    auto result = cpp_impl->fromLong(arg_0);
+    auto result = BigInt::fromLong(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBigInt::wrap(result);
+    auto arg_1_wrap = NJSBigInt::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -503,6 +488,9 @@ void NJSBigInt::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"toString", toString);
     Nan::SetPrototypeMethod(func_template,"intValue", intValue);
     Nan::SetPrototypeMethod(func_template,"compare", compare);
+    Nan::SetPrototypeMethod(func_template,"fromDecimalString", fromDecimalString);
+    Nan::SetPrototypeMethod(func_template,"fromIntegerString", fromIntegerString);
+    Nan::SetPrototypeMethod(func_template,"fromLong", fromLong);
     //Set object prototype
     BigInt_prototype.Reset(objectTemplate);
 

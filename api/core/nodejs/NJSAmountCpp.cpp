@@ -28,7 +28,8 @@ NAN_METHOD(NJSAmount::toBigInt) {
     auto result = cpp_impl->toBigInt();
 
     //Wrap result in node object
-    auto arg_0 = NJSBigInt::wrap(result);
+    auto arg_0_wrap = NJSBigInt::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBigInt>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -81,41 +82,48 @@ NAN_METHOD(NJSAmount::getCurrency) {
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("units").ToLocalChecked(), arg_0_5);
-    auto arg_0_6 = Nan::New<Object>();
-    auto arg_0_6_1 = Nan::New<String>((*result.bitcoinLikeNetworkParameters).Identifier).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("Identifier").ToLocalChecked(), arg_0_6_1);
-    Local<Array> arg_0_6_2 = Nan::New<Array>();
-    for(size_t arg_0_6_2_id = 0; arg_0_6_2_id < (*result.bitcoinLikeNetworkParameters).P2PKHVersion.size(); arg_0_6_2_id++)
+    Local<Value> arg_0_6;
+    if(result.bitcoinLikeNetworkParameters)
     {
-        auto arg_0_6_2_elem = Nan::New<Uint32>((*result.bitcoinLikeNetworkParameters).P2PKHVersion[arg_0_6_2_id]);
-        arg_0_6_2->Set((int)arg_0_6_2_id,arg_0_6_2_elem);
-    }
+        auto arg_0_6_optional = (result.bitcoinLikeNetworkParameters).value();
+        auto arg_0_6_tmp = Nan::New<Object>();
+        auto arg_0_6_tmp_1 = Nan::New<String>(arg_0_6_optional.Identifier).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("Identifier").ToLocalChecked(), arg_0_6_tmp_1);
+        Local<Array> arg_0_6_tmp_2 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_2_id = 0; arg_0_6_tmp_2_id < arg_0_6_optional.P2PKHVersion.size(); arg_0_6_tmp_2_id++)
+        {
+            auto arg_0_6_tmp_2_elem = Nan::New<Uint32>(arg_0_6_optional.P2PKHVersion[arg_0_6_tmp_2_id]);
+            arg_0_6_tmp_2->Set((int)arg_0_6_tmp_2_id,arg_0_6_tmp_2_elem);
+        }
 
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("P2PKHVersion").ToLocalChecked(), arg_0_6_2);
-    Local<Array> arg_0_6_3 = Nan::New<Array>();
-    for(size_t arg_0_6_3_id = 0; arg_0_6_3_id < (*result.bitcoinLikeNetworkParameters).P2SHVersion.size(); arg_0_6_3_id++)
-    {
-        auto arg_0_6_3_elem = Nan::New<Uint32>((*result.bitcoinLikeNetworkParameters).P2SHVersion[arg_0_6_3_id]);
-        arg_0_6_3->Set((int)arg_0_6_3_id,arg_0_6_3_elem);
-    }
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("P2PKHVersion").ToLocalChecked(), arg_0_6_tmp_2);
+        Local<Array> arg_0_6_tmp_3 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_3_id = 0; arg_0_6_tmp_3_id < arg_0_6_optional.P2SHVersion.size(); arg_0_6_tmp_3_id++)
+        {
+            auto arg_0_6_tmp_3_elem = Nan::New<Uint32>(arg_0_6_optional.P2SHVersion[arg_0_6_tmp_3_id]);
+            arg_0_6_tmp_3->Set((int)arg_0_6_tmp_3_id,arg_0_6_tmp_3_elem);
+        }
 
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("P2SHVersion").ToLocalChecked(), arg_0_6_3);
-    Local<Array> arg_0_6_4 = Nan::New<Array>();
-    for(size_t arg_0_6_4_id = 0; arg_0_6_4_id < (*result.bitcoinLikeNetworkParameters).XPUBVersion.size(); arg_0_6_4_id++)
-    {
-        auto arg_0_6_4_elem = Nan::New<Uint32>((*result.bitcoinLikeNetworkParameters).XPUBVersion[arg_0_6_4_id]);
-        arg_0_6_4->Set((int)arg_0_6_4_id,arg_0_6_4_elem);
-    }
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("P2SHVersion").ToLocalChecked(), arg_0_6_tmp_3);
+        Local<Array> arg_0_6_tmp_4 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_4_id = 0; arg_0_6_tmp_4_id < arg_0_6_optional.XPUBVersion.size(); arg_0_6_tmp_4_id++)
+        {
+            auto arg_0_6_tmp_4_elem = Nan::New<Uint32>(arg_0_6_optional.XPUBVersion[arg_0_6_tmp_4_id]);
+            arg_0_6_tmp_4->Set((int)arg_0_6_tmp_4_id,arg_0_6_tmp_4_elem);
+        }
 
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("XPUBVersion").ToLocalChecked(), arg_0_6_4);
-    auto arg_0_6_5 = Nan::New<Integer>((int)(*result.bitcoinLikeNetworkParameters).FeePolicy);
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("FeePolicy").ToLocalChecked(), arg_0_6_5);
-    auto arg_0_6_6 = Nan::New<Number>((*result.bitcoinLikeNetworkParameters).DustAmount);
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("DustAmount").ToLocalChecked(), arg_0_6_6);
-    auto arg_0_6_7 = Nan::New<String>((*result.bitcoinLikeNetworkParameters).MessagePrefix).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_6_7);
-    auto arg_0_6_8 = Nan::New<Boolean>((*result.bitcoinLikeNetworkParameters).UsesTimestampedTransaction);
-    Nan::DefineOwnProperty(arg_0_6, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_6_8);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("XPUBVersion").ToLocalChecked(), arg_0_6_tmp_4);
+        auto arg_0_6_tmp_5 = Nan::New<Integer>((int)arg_0_6_optional.FeePolicy);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("FeePolicy").ToLocalChecked(), arg_0_6_tmp_5);
+        auto arg_0_6_tmp_6 = Nan::New<Number>(arg_0_6_optional.DustAmount);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("DustAmount").ToLocalChecked(), arg_0_6_tmp_6);
+        auto arg_0_6_tmp_7 = Nan::New<String>(arg_0_6_optional.MessagePrefix).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_6_tmp_7);
+        auto arg_0_6_tmp_8 = Nan::New<Boolean>(arg_0_6_optional.UsesTimestampedTransaction);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_6_tmp_8);
+
+        arg_0_6 = arg_0_6_tmp;
+    }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked(), arg_0_6);
 
@@ -196,7 +204,8 @@ NAN_METHOD(NJSAmount::toUnit) {
     auto result = cpp_impl->toUnit(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSAmount::wrap(result);
+    auto arg_1_wrap = NJSAmount::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -224,7 +233,8 @@ NAN_METHOD(NJSAmount::toMagnitude) {
     auto result = cpp_impl->toMagnitude(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSAmount::wrap(result);
+    auto arg_1_wrap = NJSAmount::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_1_wrap)->handle();
 
 
     //Return result
