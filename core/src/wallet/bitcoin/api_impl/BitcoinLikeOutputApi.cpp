@@ -32,6 +32,7 @@
 #include <utils/hex.h>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -75,6 +76,10 @@ namespace ledger {
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
             else
                 return _backend.getRight();
+        }
+
+        std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript()");
         }
 
     }

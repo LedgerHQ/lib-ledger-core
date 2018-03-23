@@ -43,8 +43,6 @@
 #include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
 #include <events/EventPublisher.hpp>
 #include <events/Event.hpp>
-#include <api/BitcoinLikePreparedTransactionCallback.hpp>
-#include <api/BitcoinLikeTransactionRequestCallback.hpp>
 #include <api/StringCallback.hpp>
 
 namespace ledger {
@@ -255,13 +253,6 @@ namespace ledger {
             return eventPublisher->getEventBus();
         }
 
-        void BitcoinLikeAccount::computeFees(const std::shared_ptr<api::Amount> &amount, int32_t priority,
-                                             const std::vector<std::string> &recipients,
-                                             const std::vector<std::vector<uint8_t>> &data,
-                                             const std::shared_ptr<api::AmountCallback> &callback) {
-
-        }
-
         void BitcoinLikeAccount::getUTXO(int32_t from, int32_t to,
                                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) {
             getUTXO(from, to).callback(getMainExecutionContext(), callback);
@@ -381,53 +372,24 @@ namespace ledger {
             return _observer->isRegistered(getSelf());
         }
 
-        void BitcoinLikeAccount::pickUTXO(const std::shared_ptr<api::Amount> &baseFees,
-                                          const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &outputs,
-                                          api::BitcoinLikePickingStrategy strategy,
-                                          const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> &callback) {
-            pickUTXO(baseFees, outputs, strategy).callback(getMainExecutionContext(), callback);
-        }
-
-        Future<api::BitcoinLikeTransactionRequest>
-        BitcoinLikeAccount::pickUTXO(const std::shared_ptr<api::Amount> &baseFees,
-                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &outputs,
-                                     api::BitcoinLikePickingStrategy strategy) {
-            Promise<api::BitcoinLikeTransactionRequest> p;
-            return p.getFuture();
-        }
-
-        void BitcoinLikeAccount::estimateFees(const api::BitcoinLikeTransactionRequest &request,
-                                              const std::shared_ptr<api::BitcoinLikeTransactionRequestCallback> &callback) {
-            estimateFees(request).callback(getMainExecutionContext(), callback);
-        }
-
-        Future<api::BitcoinLikeTransactionRequest>
-        BitcoinLikeAccount::estimateFees(const api::BitcoinLikeTransactionRequest &request) {
-            Promise<api::BitcoinLikeTransactionRequest> p;
-            return p.getFuture();
-        }
-
-        void BitcoinLikeAccount::prepareTransaction(const api::BitcoinLikeTransactionRequest &utxo,
-                                                    const std::shared_ptr<api::BitcoinLikePreparedTransactionCallback> &callback) {
-            prepareTransaction(utxo).callback(getMainExecutionContext(), callback);
-        }
-
-        Future<api::BitcoinLikePreparedTransaction>
-        BitcoinLikeAccount::prepareTransaction(const api::BitcoinLikeTransactionRequest &request) {
-            Promise<api::BitcoinLikePreparedTransaction> p;
-
-            return p.getFuture();
-        }
-
-        void BitcoinLikeAccount::broadcastTransaction(const std::vector<uint8_t> &transaction,
-                                                      const std::shared_ptr<api::StringCallback> &callback) {
-            broadcastTransaction(transaction).callback(getMainExecutionContext(), callback);
-        }
-
         Future<std::string> BitcoinLikeAccount::broadcastTransaction(const std::vector<uint8_t> &transaction) {
             Promise<std::string> p;
 
             return p.getFuture();
+        }
+
+        void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                         const std::shared_ptr<api::StringCallback> &callback) {
+
+        }
+
+        void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
+                                                      const std::shared_ptr<api::StringCallback> &callback) {
+
+        }
+
+        std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
+            return nullptr;
         }
 
 

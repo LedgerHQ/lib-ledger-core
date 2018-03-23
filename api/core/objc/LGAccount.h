@@ -3,7 +3,6 @@
 
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
-@class LGAmount;
 @class LGEventBus;
 @class LGLogger;
 @class LGOperationQuery;
@@ -70,11 +69,5 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
 - (BOOL)isObservingBlockchain;
 
 - (void)getLastBlock:(nullable id<LGBlockCallback>)callback;
-
-- (void)computeFees:(nullable LGAmount *)amount
-           priority:(int32_t)priority
-         recipients:(nonnull NSArray<NSString *> *)recipients
-               data:(nonnull NSArray<NSData *> *)data
-           callback:(nullable id<LGAmountCallback>)callback;
 
 @end

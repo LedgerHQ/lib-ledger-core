@@ -22,19 +22,38 @@ class BitcoinLikeTransaction {
 public:
     virtual ~BitcoinLikeTransaction() {}
 
+    /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;
 
+    /** Get the input of the transaction */
     virtual std::vector<std::shared_ptr<BitcoinLikeInput>> getInputs() = 0;
 
+    /** Get the output of the transaction */
     virtual std::vector<std::shared_ptr<BitcoinLikeOutput>> getOutputs() = 0;
 
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     virtual std::shared_ptr<BitcoinLikeBlock> getBlock() = 0;
 
+    /** Get the lock time of the transaction. */
     virtual int64_t getLockTime() = 0;
 
+    /** Get the amount of fees of the transaction. */
     virtual std::shared_ptr<Amount> getFees() = 0;
 
+    /**
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
+     */
     virtual std::chrono::system_clock::time_point getTime() = 0;
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    virtual std::experimental::optional<std::chrono::system_clock::time_point> getTimestamp() = 0;
+
+    /** Serialize the transaction to its raw format. */
+    virtual std::vector<uint8_t> serialize() = 0;
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    virtual std::experimental::optional<std::vector<uint8_t>> getWitness() = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -71,5 +71,49 @@ namespace ledger {
                 return (int32_t)v;
             }).toOptional();
         }
+
+        std::vector<std::vector<uint8_t>> BitcoinLikeInputApi::getPublicKeys() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::vector<std::vector<uint8_t>> BitcoinLikeInputApi::getPublicKeys()");
+        }
+
+        std::vector<std::shared_ptr<api::DerivationPath>> BitcoinLikeInputApi::getDerivationPath() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::vector<std::shared_ptr<DerivationPath>> BitcoinLikeInputApi::getDerivationPath()");
+        }
+
+        std::shared_ptr<api::BitcoinLikeOutput> BitcoinLikeInputApi::getPreviousOuput() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeOutput> BitcoinLikeInputApi::getPreviousOuput()");
+        }
+
+        std::vector<uint8_t> BitcoinLikeInputApi::getScriptSig() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::vector<uint8_t> BitcoinLikeInputApi::getScriptSig()");
+        }
+
+        std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeInputApi::parseScriptSig() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeInputApi::parseScriptSig()");
+        }
+
+        void BitcoinLikeInputApi::setScriptSig(const std::vector<uint8_t> &scriptSig) {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::setScriptSig(const std::vector<uint8_t> &scriptSig)");
+        }
+
+        void BitcoinLikeInputApi::pushToScriptSig(const std::vector<uint8_t> &data) {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::pushToScriptSig(const std::vector<uint8_t> &data)");
+        }
+
+        void BitcoinLikeInputApi::setSequence(int32_t sequence) {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::setSequence(int32_t sequence)");
+        }
+
+        int32_t BitcoinLikeInputApi::getSequence() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "int32_t BitcoinLikeInputApi::getSequence()");
+        }
+
+        optional<std::vector<uint8_t>> BitcoinLikeInputApi::getPreviousTransaction() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::vector<uint8_t>> BitcoinLikeInputApi::getPreviousTransaction()");
+        }
+
+        void BitcoinLikeInputApi::setP2PKHSigScript(const std::vector<uint8_t> &signature) {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::setP2PKHSigScript(const std::vector<uint8_t> &signature)");
+        }
     }
 }

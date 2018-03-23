@@ -2,6 +2,7 @@
 @import "../../preferences/preferences.djinni"
 @import "../amount.djinni"
 @import "../../bitcoin/addresses.djinni"
+@import "./bitcoin_script.djinni"
 
 BitcoinLikeWalletConfiguration = interface +c {
     const KEYCHAIN: string = "keychain";
@@ -15,12 +16,53 @@ BitcoinLikeWalletConfiguration = interface +c {
 }
 
 BitcoinLikeInput = interface +c {
+    # Returns the address of the input (if an address can be computed)
     getAddress(): optional<string>;
+    # Returns the public associated with the address. This value can be NULL if you are building a transaction with an
+    # address which does not belong to your wallet.
+    getPublicKeys(): list<binary>;
+    # Returns the derivation path of this input if the address is owned by the wallet
+    getDerivationPath(): list<DerivationPath>;
+    # Returns the value of the amount. Depending on the backend this value may not exist if the input is not owned by
+    # the wallet.
     getValue(): optional<Amount>;
+    # Return true if the input is a coinbase input
     isCoinbase(): bool;
+    # Get coinbase input data
     getCoinbase(): optional<string>;
+    # Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
+    # the wallet
     getPreviousTxHash(): optional<string>;
+    # Get the index at which the output is located in the transaction output spent by this input. The result can be
+    # NULL if the input does not belong to the wallet
     getPreviousOutputIndex(): optional<i32>;
+    # Retrieve the output spent by this input. Depending on the implementation this method may
+    # use a lock to fetch data from a database. Therefore it may have poor performance, use with
+    # caution.
+    # @return The output spent by this input.
+    getPreviousOuput(): BitcoinLikeOutput;
+    # Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output.
+    getScriptSig(): binary;
+    # Parse the script sig to a [[BitcoinLikeScript]]
+    parseScriptSig(): BitcoinLikeScript;
+
+    # Set the ScriptS to the given value
+    # @param scriptSig The ScriptSig to use for this input
+    setScriptSig(scriptSig: binary);
+    # Push data to the end of the current ScriptSig
+    pushToScriptSig(data: binary);
+
+    # Set the sequence number of this input
+    setSequence(sequence: i32);
+    # Get the sequence number of this input
+    getSequence(): i32;
+
+
+    getPreviousTransaction(): optional<binary>;
+
+    # Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature)
+    setP2PKHSigScript(signature: binary);
+
 }
 
 BitcoinLikeOutput = interface +c {
@@ -28,6 +70,7 @@ BitcoinLikeOutput = interface +c {
     getOutputIndex(): i32;
     getValue(): Amount;
     getScript(): binary;
+    parseScript(): BitcoinLikeScript;
     getAddress(): optional<string>;
 }
 
@@ -38,13 +81,28 @@ BitcoinLikeBlock = interface +c {
 }
 
 BitcoinLikeTransaction = interface +c {
+    # Get the hash of the transaction.
     getHash(): string;
+    # Get the input of the transaction
     getInputs(): list<BitcoinLikeInput>;
+    # Get the output of the transaction
     getOutputs(): list<BitcoinLikeOutput>;
+    # Get the block in which the transaction is inserted if the transaction is confirmed.
     getBlock(): optional<BitcoinLikeBlock>;
+    # Get the lock time of the transaction.
     getLockTime(): i64;
+    # Get the amount of fees of the transaction.
     getFees(): Amount;
+    # Get the time when the transaction was issued or the time of the block including
+    # this transaction
     getTime(): date;
+    # Get the timestamps serialized in the raw transaction if the underlying currency handles it.
+    getTimestamp(): optional<date>;
+    # Serialize the transaction to its raw format.
+    serialize(): binary;
+    # Get the witness if the underlying transaction is a segwit transaction.
+    getWitness(): optional<binary>;
+
 }
 
 BitcoinLikeOperation = interface +c {
@@ -57,7 +115,6 @@ BitcoinLikeTransactionRequest = record {
     baseFees: optional<Amount>;
     totalFees: optional<Amount>;
     lockTime: optional<i32>;
-
 }
 
 BitcoinLikePreparedTransaction = record {
@@ -81,15 +138,27 @@ BitcoinLikePickingStrategy = enum {
     merge_outputs;
 }
 
+BitcoinLikeTransactionBuilder = interface +c {
+    addInput(transactionHash: string, index: i32, sequence: i32): BitcoinLikeTransactionBuilder;
+    addOutput(amount: Amount, script: BitcoinLikeScript): BitcoinLikeTransactionBuilder;
+    addChangePath(path: string);
+    setNumberOfChangeAddresses(count: i32): BitcoinLikeTransactionBuilder;
+
+    pickInputs(strategy: BitcoinLikePickingStrategy, sequence: i32): BitcoinLikeTransactionBuilder;
+    sendToAddress(amount: Amount, address: string): BitcoinLikeTransactionBuilder;
+
+    setFeesPerByte(fees: Amount): BitcoinLikeTransactionBuilder;
+
+    build(callback: Callback<BitcoinLikeTransaction>);
+}
+
 BitcoinLikeAccount = interface +c {
     getUTXO(from: i32, to: i32, callback: ListCallback<BitcoinLikeOutput>);
     getUTXOCount(callback: Callback<i32>);
-    pickUTXO(baseFees: Amount, outputs: list<BitcoinLikeOutput>, strategy: BitcoinLikePickingStrategy, callback: Callback<BitcoinLikeTransactionRequest>);
-    estimateFees(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikeTransactionRequest>);
-    prepareTransaction(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikePreparedTransaction>);
-    broadcastTransaction(transaction: binary, callback: Callback<string>);
+    broadcastRawTransaction(transaction: binary, callback: Callback<string>);
+    broadcastTransaction(transaction: BitcoinLikeTransaction, callback: Callback<string>);
+    buildTransaction(): BitcoinLikeTransactionBuilder;
 }
-
 
 BitcoinLikeWallet = interface +c {
 

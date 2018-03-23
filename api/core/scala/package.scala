@@ -139,6 +139,8 @@ package object implicits {
     }
     implicit class RichSynchronizationStatus(val self: SynchronizationStatus) {
     }
+    implicit class RichDerivationPath(val self: DerivationPath) {
+    }
     implicit class RichTrustIndicator(val self: TrustIndicator) {
     }
     implicit class RichOperation(val self: Operation) {
@@ -196,20 +198,6 @@ package object implicits {
             val promise = Promise[Block]()
             self.getLastBlock(new BlockCallback() {
                 override def onCallback(result: Block, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
-        def computeFees(amount: Amount, priority: Int, recipients: Array[String], data: Array[Array[Byte]]): Future[Amount] = {
-            val promise = Promise[Amount]()
-            self.computeFees(amount, priority, arrayList2Array(recipients), arrayList2Array(data), new AmountCallback() {
-                override def onCallback(result: Amount, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -423,6 +411,10 @@ package object implicits {
     }
     implicit class RichEthereumLikeWallet(val self: EthereumLikeWallet) {
     }
+    implicit class RichBitcoinLikeScriptChunk(val self: BitcoinLikeScriptChunk) {
+    }
+    implicit class RichBitcoinLikeScript(val self: BitcoinLikeScript) {
+    }
     implicit class RichBitcoinLikeAddress(val self: BitcoinLikeAddress) {
     }
     implicit class RichBitcoinLikeExtendedPublicKey(val self: BitcoinLikeExtendedPublicKey) {
@@ -446,6 +438,24 @@ package object implicits {
     implicit class RichBitcoinLikeOperation(val self: BitcoinLikeOperation) {
     }
     implicit class RichBitcoinLikeHelper(val self: BitcoinLikeHelper) {
+    }
+    implicit class RichBitcoinLikeTransactionBuilder(val self: BitcoinLikeTransactionBuilder) {
+        def build(): Future[BitcoinLikeTransaction] = {
+            val promise = Promise[BitcoinLikeTransaction]()
+            self.build(new BitcoinLikeTransactionCallback() {
+                override def onCallback(result: BitcoinLikeTransaction, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+    }
+    implicit class RichBitcoinLikeTransactionCallback(val self: BitcoinLikeTransactionCallback) {
     }
     implicit class RichBitcoinLikeAccount(val self: BitcoinLikeAccount) {
         def getUTXO(from: Int, to: Int): Future[ArrayList[BitcoinLikeOutput]] = {
@@ -476,10 +486,10 @@ package object implicits {
             })
             promise.future
         }
-        def pickUTXO(baseFees: Amount, outputs: Array[BitcoinLikeOutput], strategy: BitcoinLikePickingStrategy): Future[BitcoinLikeTransactionRequest] = {
-            val promise = Promise[BitcoinLikeTransactionRequest]()
-            self.pickUTXO(baseFees, arrayList2Array(outputs), strategy, new BitcoinLikeTransactionRequestCallback() {
-                override def onCallback(result: BitcoinLikeTransactionRequest, error: co.ledger.core.Error): Unit =  {
+        def broadcastRawTransaction(transaction: Array[Byte]): Future[String] = {
+            val promise = Promise[String]()
+            self.broadcastRawTransaction(transaction, new StringCallback() {
+                override def onCallback(result: String, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -490,35 +500,7 @@ package object implicits {
             })
             promise.future
         }
-        def estimateFees(request: BitcoinLikeTransactionRequest): Future[BitcoinLikeTransactionRequest] = {
-            val promise = Promise[BitcoinLikeTransactionRequest]()
-            self.estimateFees(request, new BitcoinLikeTransactionRequestCallback() {
-                override def onCallback(result: BitcoinLikeTransactionRequest, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
-        def prepareTransaction(request: BitcoinLikeTransactionRequest): Future[BitcoinLikePreparedTransaction] = {
-            val promise = Promise[BitcoinLikePreparedTransaction]()
-            self.prepareTransaction(request, new BitcoinLikePreparedTransactionCallback() {
-                override def onCallback(result: BitcoinLikePreparedTransaction, error: co.ledger.core.Error): Unit =  {
-                    if (error != null) {
-                        promise.failure(wrapLedgerCoreError(error))
-                    }
-                    else {
-                        promise.success(result)
-                    }
-                }
-            })
-            promise.future
-        }
-        def broadcastTransaction(transaction: Array[Byte]): Future[String] = {
+        def broadcastTransaction(transaction: BitcoinLikeTransaction): Future[String] = {
             val promise = Promise[String]()
             self.broadcastTransaction(transaction, new StringCallback() {
                 override def onCallback(result: String, error: co.ledger.core.Error): Unit =  {
@@ -534,10 +516,6 @@ package object implicits {
         }
     }
     implicit class RichBitcoinLikeOutputListCallback(val self: BitcoinLikeOutputListCallback) {
-    }
-    implicit class RichBitcoinLikeTransactionRequestCallback(val self: BitcoinLikeTransactionRequestCallback) {
-    }
-    implicit class RichBitcoinLikePreparedTransactionCallback(val self: BitcoinLikePreparedTransactionCallback) {
     }
     implicit class RichStringCallback(val self: StringCallback) {
     }

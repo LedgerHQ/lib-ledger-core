@@ -37,19 +37,38 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeTransaction> getCppImpl(){return _BitcoinLikeTransaction;};
 
 private:
+    /** Get the hash of the transaction. */
     static NAN_METHOD(getHash);
 
+    /** Get the input of the transaction */
     static NAN_METHOD(getInputs);
 
+    /** Get the output of the transaction */
     static NAN_METHOD(getOutputs);
 
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     static NAN_METHOD(getBlock);
 
+    /** Get the lock time of the transaction. */
     static NAN_METHOD(getLockTime);
 
+    /** Get the amount of fees of the transaction. */
     static NAN_METHOD(getFees);
 
+    /**
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
+     */
     static NAN_METHOD(getTime);
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    static NAN_METHOD(getTimestamp);
+
+    /** Serialize the transaction to its raw format. */
+    static NAN_METHOD(serialize);
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    static NAN_METHOD(getWitness);
 
     static NAN_METHOD(New);
 

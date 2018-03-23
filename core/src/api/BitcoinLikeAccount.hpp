@@ -10,15 +10,11 @@
 
 namespace ledger { namespace core { namespace api {
 
-class Amount;
-class BitcoinLikeOutput;
 class BitcoinLikeOutputListCallback;
-class BitcoinLikePreparedTransactionCallback;
-class BitcoinLikeTransactionRequestCallback;
+class BitcoinLikeTransaction;
+class BitcoinLikeTransactionBuilder;
 class I32Callback;
 class StringCallback;
-enum class BitcoinLikePickingStrategy;
-struct BitcoinLikeTransactionRequest;
 
 class BitcoinLikeAccount {
 public:
@@ -28,13 +24,11 @@ public:
 
     virtual void getUTXOCount(const std::shared_ptr<I32Callback> & callback) = 0;
 
-    virtual void pickUTXO(const std::shared_ptr<Amount> & baseFees, const std::vector<std::shared_ptr<BitcoinLikeOutput>> & outputs, BitcoinLikePickingStrategy strategy, const std::shared_ptr<BitcoinLikeTransactionRequestCallback> & callback) = 0;
+    virtual void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
-    virtual void estimateFees(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikeTransactionRequestCallback> & callback) = 0;
+    virtual void broadcastTransaction(const std::shared_ptr<BitcoinLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
-    virtual void prepareTransaction(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikePreparedTransactionCallback> & callback) = 0;
-
-    virtual void broadcastTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
+    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> buildTransaction() = 0;
 };
 
 } } }  // namespace ledger::core::api

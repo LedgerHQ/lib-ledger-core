@@ -206,6 +206,97 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getTime) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSBitcoinLikeTransaction::getTimestamp) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getTimestamp needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransaction* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getTimestamp : implementation of BitcoinLikeTransaction is not valid");
+    }
+
+    auto result = cpp_impl->getTimestamp();
+
+    //Wrap result in node object
+    auto date_arg_0 = chrono::duration_cast<chrono::seconds>((*result).time_since_epoch()).count();
+    auto arg_0 = Nan::New<Date>(date_arg_0).ToLocalChecked();
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
+NAN_METHOD(NJSBitcoinLikeTransaction::serialize) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::serialize needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransaction* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::serialize : implementation of BitcoinLikeTransaction is not valid");
+    }
+
+    auto result = cpp_impl->serialize();
+
+    //Wrap result in node object
+    Local<Array> arg_0 = Nan::New<Array>();
+    for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
+    {
+        auto arg_0_elem = Nan::New<Uint32>(result[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
+NAN_METHOD(NJSBitcoinLikeTransaction::getWitness) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getWitness needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransaction* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getWitness : implementation of BitcoinLikeTransaction is not valid");
+    }
+
+    auto result = cpp_impl->getWitness();
+
+    //Wrap result in node object
+    Local<Array> arg_0 = Nan::New<Array>();
+    for(size_t arg_0_id = 0; arg_0_id < (*result).size(); arg_0_id++)
+    {
+        auto arg_0_elem = Nan::New<Uint32>((*result)[arg_0_id]);
+        arg_0->Set((int)arg_0_id,arg_0_elem);
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 
 NAN_METHOD(NJSBitcoinLikeTransaction::New) {
     //Only new allowed
@@ -266,6 +357,9 @@ void NJSBitcoinLikeTransaction::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getLockTime", getLockTime);
     Nan::SetPrototypeMethod(func_template,"getFees", getFees);
     Nan::SetPrototypeMethod(func_template,"getTime", getTime);
+    Nan::SetPrototypeMethod(func_template,"getTimestamp", getTimestamp);
+    Nan::SetPrototypeMethod(func_template,"serialize", serialize);
+    Nan::SetPrototypeMethod(func_template,"getWitness", getWitness);
     //Set object prototype
     BitcoinLikeTransaction_prototype.Reset(objectTemplate);
 

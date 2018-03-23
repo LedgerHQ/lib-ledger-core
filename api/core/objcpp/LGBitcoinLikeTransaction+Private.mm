@@ -83,6 +83,27 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable NSDate *)getTimestamp {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getTimestamp();
+        return ::djinni::Optional<std::experimental::optional, ::djinni::Date>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull NSData *)serialize {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->serialize();
+        return ::djinni::Binary::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSData *)getWitness {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getWitness();
+        return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 namespace djinni_generated {
 
 auto BitcoinLikeTransaction::toCpp(ObjcType objc) -> CppType

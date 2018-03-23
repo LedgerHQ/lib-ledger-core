@@ -118,6 +118,33 @@ NAN_METHOD(NJSBitcoinLikeOutput::getScript) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSBitcoinLikeOutput::parseScript) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeOutput::parseScript needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeOutput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeOutput::parseScript : implementation of BitcoinLikeOutput is not valid");
+    }
+
+    auto result = cpp_impl->parseScript();
+
+    //Wrap result in node object
+    auto arg_0 = NJSBitcoinLikeScript::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 NAN_METHOD(NJSBitcoinLikeOutput::getAddress) {
 
     //Check if method called with right number of arguments
@@ -201,6 +228,7 @@ void NJSBitcoinLikeOutput::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getOutputIndex", getOutputIndex);
     Nan::SetPrototypeMethod(func_template,"getValue", getValue);
     Nan::SetPrototypeMethod(func_template,"getScript", getScript);
+    Nan::SetPrototypeMethod(func_template,"parseScript", parseScript);
     Nan::SetPrototypeMethod(func_template,"getAddress", getAddress);
     //Set object prototype
     BitcoinLikeOutput_prototype.Reset(objectTemplate);

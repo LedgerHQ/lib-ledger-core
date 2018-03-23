@@ -49,6 +49,8 @@ namespace ledger {
             std::vector<uint8_t> getScript() override;
             optional<std::string> getAddress() override;
 
+            std::shared_ptr<api::BitcoinLikeScript> parseScript() override;
+
         private:
             BitcoinLikeBlockchainExplorer::Output& getOuput();
 

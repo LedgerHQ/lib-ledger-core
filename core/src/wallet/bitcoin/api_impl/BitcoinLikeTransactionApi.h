@@ -53,6 +53,11 @@ namespace ledger {
 
             std::chrono::system_clock::time_point getTime() override;
 
+            optional<std::chrono::system_clock::time_point> getTimestamp() override;
+
+            std::vector<uint8_t> serialize() override;
+
+            optional<std::vector<uint8_t>> getWitness() override;
 
         private:
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> _inputs;

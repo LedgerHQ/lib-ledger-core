@@ -5,13 +5,9 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEACCOUNT_HPP
 
 
-#include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
-#include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
-#include "NJSAmountCpp.hpp"
-#include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeOutputListCallback.hpp"
-#include "NJSBitcoinLikePreparedTransactionCallback.hpp"
-#include "NJSBitcoinLikeTransactionRequestCallback.hpp"
+#include "NJSBitcoinLikeTransactionBuilderCpp.hpp"
+#include "NJSBitcoinLikeTransactionCpp.hpp"
 #include "NJSI32Callback.hpp"
 #include "NJSStringCallback.hpp"
 #include <cstdint>
@@ -43,13 +39,11 @@ private:
 
     static NAN_METHOD(getUTXOCount);
 
-    static NAN_METHOD(pickUTXO);
-
-    static NAN_METHOD(estimateFees);
-
-    static NAN_METHOD(prepareTransaction);
+    static NAN_METHOD(broadcastRawTransaction);
 
     static NAN_METHOD(broadcastTransaction);
+
+    static NAN_METHOD(buildTransaction);
 
     static NAN_METHOD(New);
 

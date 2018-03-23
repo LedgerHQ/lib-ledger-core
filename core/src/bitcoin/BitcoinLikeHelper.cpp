@@ -33,6 +33,7 @@
 #include <api/BitcoinLikeOutput.hpp>
 #include <utils/Option.hpp>
 #include <memory>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -63,6 +64,10 @@ namespace ledger {
                 // Parse the address
                 Option<std::string> addr;
                 return addr.toOptional();
+            }
+
+            std::shared_ptr<api::BitcoinLikeScript> parseScript() override {
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> parseScript()");
             }
 
         private:

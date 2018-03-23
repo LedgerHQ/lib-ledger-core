@@ -3,7 +3,6 @@
 
 package co.ledger.core;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeAccount {
@@ -11,13 +10,11 @@ public abstract class BitcoinLikeAccount {
 
     public abstract void getUTXOCount(I32Callback callback);
 
-    public abstract void pickUTXO(Amount baseFees, ArrayList<BitcoinLikeOutput> outputs, BitcoinLikePickingStrategy strategy, BitcoinLikeTransactionRequestCallback callback);
+    public abstract void broadcastRawTransaction(byte[] transaction, StringCallback callback);
 
-    public abstract void estimateFees(BitcoinLikeTransactionRequest request, BitcoinLikeTransactionRequestCallback callback);
+    public abstract void broadcastTransaction(BitcoinLikeTransaction transaction, StringCallback callback);
 
-    public abstract void prepareTransaction(BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback);
-
-    public abstract void broadcastTransaction(byte[] transaction, StringCallback callback);
+    public abstract BitcoinLikeTransactionBuilder buildTransaction();
 
     private static final class CppProxy extends BitcoinLikeAccount
     {
@@ -59,35 +56,27 @@ public abstract class BitcoinLikeAccount {
         private native void native_getUTXOCount(long _nativeRef, I32Callback callback);
 
         @Override
-        public void pickUTXO(Amount baseFees, ArrayList<BitcoinLikeOutput> outputs, BitcoinLikePickingStrategy strategy, BitcoinLikeTransactionRequestCallback callback)
+        public void broadcastRawTransaction(byte[] transaction, StringCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_pickUTXO(this.nativeRef, baseFees, outputs, strategy, callback);
+            native_broadcastRawTransaction(this.nativeRef, transaction, callback);
         }
-        private native void native_pickUTXO(long _nativeRef, Amount baseFees, ArrayList<BitcoinLikeOutput> outputs, BitcoinLikePickingStrategy strategy, BitcoinLikeTransactionRequestCallback callback);
+        private native void native_broadcastRawTransaction(long _nativeRef, byte[] transaction, StringCallback callback);
 
         @Override
-        public void estimateFees(BitcoinLikeTransactionRequest request, BitcoinLikeTransactionRequestCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_estimateFees(this.nativeRef, request, callback);
-        }
-        private native void native_estimateFees(long _nativeRef, BitcoinLikeTransactionRequest request, BitcoinLikeTransactionRequestCallback callback);
-
-        @Override
-        public void prepareTransaction(BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_prepareTransaction(this.nativeRef, request, callback);
-        }
-        private native void native_prepareTransaction(long _nativeRef, BitcoinLikeTransactionRequest request, BitcoinLikePreparedTransactionCallback callback);
-
-        @Override
-        public void broadcastTransaction(byte[] transaction, StringCallback callback)
+        public void broadcastTransaction(BitcoinLikeTransaction transaction, StringCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             native_broadcastTransaction(this.nativeRef, transaction, callback);
         }
-        private native void native_broadcastTransaction(long _nativeRef, byte[] transaction, StringCallback callback);
+        private native void native_broadcastTransaction(long _nativeRef, BitcoinLikeTransaction transaction, StringCallback callback);
+
+        @Override
+        public BitcoinLikeTransactionBuilder buildTransaction()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_buildTransaction(this.nativeRef);
+        }
+        private native BitcoinLikeTransactionBuilder native_buildTransaction(long _nativeRef);
     }
 }

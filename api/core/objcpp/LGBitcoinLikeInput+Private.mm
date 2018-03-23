@@ -7,6 +7,9 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
+#import "LGBitcoinLikeOutput+Private.h"
+#import "LGBitcoinLikeScript+Private.h"
+#import "LGDerivationPath+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -35,6 +38,20 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getAddress();
         return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull NSArray<NSData *> *)getPublicKeys {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPublicKeys();
+        return ::djinni::List<::djinni::Binary>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull NSArray<LGDerivationPath *> *)getDerivationPath {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getDerivationPath();
+        return ::djinni::List<::djinni_generated::DerivationPath>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -70,6 +87,65 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getPreviousOutputIndex();
         return ::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeOutput *)getPreviousOuput {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreviousOuput();
+        return ::djinni_generated::BitcoinLikeOutput::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull NSData *)getScriptSig {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getScriptSig();
+        return ::djinni::Binary::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeScript *)parseScriptSig {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->parseScriptSig();
+        return ::djinni_generated::BitcoinLikeScript::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)setScriptSig:(nonnull NSData *)scriptSig {
+    try {
+        _cppRefHandle.get()->setScriptSig(::djinni::Binary::toCpp(scriptSig));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)pushToScriptSig:(nonnull NSData *)data {
+    try {
+        _cppRefHandle.get()->pushToScriptSig(::djinni::Binary::toCpp(data));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)setSequence:(int32_t)sequence {
+    try {
+        _cppRefHandle.get()->setSequence(::djinni::I32::toCpp(sequence));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (int32_t)getSequence {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getSequence();
+        return ::djinni::I32::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSData *)getPreviousTransaction {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreviousTransaction();
+        return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)setP2PKHSigScript:(nonnull NSData *)signature {
+    try {
+        _cppRefHandle.get()->setP2PKHSigScript(::djinni::Binary::toCpp(signature));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

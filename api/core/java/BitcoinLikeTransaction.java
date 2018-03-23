@@ -8,19 +8,38 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeTransaction {
+    /** Get the hash of the transaction. */
     public abstract String getHash();
 
+    /** Get the input of the transaction */
     public abstract ArrayList<BitcoinLikeInput> getInputs();
 
+    /** Get the output of the transaction */
     public abstract ArrayList<BitcoinLikeOutput> getOutputs();
 
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     public abstract BitcoinLikeBlock getBlock();
 
+    /** Get the lock time of the transaction. */
     public abstract long getLockTime();
 
+    /** Get the amount of fees of the transaction. */
     public abstract Amount getFees();
 
+    /**
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
+     */
     public abstract Date getTime();
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    public abstract Date getTimestamp();
+
+    /** Serialize the transaction to its raw format. */
+    public abstract byte[] serialize();
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    public abstract byte[] getWitness();
 
     private static final class CppProxy extends BitcoinLikeTransaction
     {
@@ -100,5 +119,29 @@ public abstract class BitcoinLikeTransaction {
             return native_getTime(this.nativeRef);
         }
         private native Date native_getTime(long _nativeRef);
+
+        @Override
+        public Date getTimestamp()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getTimestamp(this.nativeRef);
+        }
+        private native Date native_getTimestamp(long _nativeRef);
+
+        @Override
+        public byte[] serialize()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_serialize(this.nativeRef);
+        }
+        private native byte[] native_serialize(long _nativeRef);
+
+        @Override
+        public byte[] getWitness()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWitness(this.nativeRef);
+        }
+        private native byte[] native_getWitness(long _nativeRef);
     }
 }

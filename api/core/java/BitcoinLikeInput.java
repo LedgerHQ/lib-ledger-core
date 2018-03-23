@@ -3,20 +3,79 @@
 
 package co.ledger.core;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeInput {
+    /** Returns the address of the input (if an address can be computed) */
     public abstract String getAddress();
 
+    /**
+     * Returns the public associated with the address. This value can be NULL if you are building a transaction with an
+     * address which does not belong to your wallet.
+     */
+    public abstract ArrayList<byte[]> getPublicKeys();
+
+    /** Returns the derivation path of this input if the address is owned by the wallet */
+    public abstract ArrayList<DerivationPath> getDerivationPath();
+
+    /**
+     * Returns the value of the amount. Depending on the backend this value may not exist if the input is not owned by
+     * the wallet.
+     */
     public abstract Amount getValue();
 
+    /** Return true if the input is a coinbase input */
     public abstract boolean isCoinbase();
 
+    /** Get coinbase input data */
     public abstract String getCoinbase();
 
+    /**
+     * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
+     * the wallet
+     */
     public abstract String getPreviousTxHash();
 
+    /**
+     * Get the index at which the output is located in the transaction output spent by this input. The result can be
+     * NULL if the input does not belong to the wallet
+     */
     public abstract Integer getPreviousOutputIndex();
+
+    /**
+     * Retrieve the output spent by this input. Depending on the implementation this method may
+     * use a lock to fetch data from a database. Therefore it may have poor performance, use with
+     * caution.
+     * @return The output spent by this input.
+     */
+    public abstract BitcoinLikeOutput getPreviousOuput();
+
+    /** Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output. */
+    public abstract byte[] getScriptSig();
+
+    /** Parse the script sig to a [[BitcoinLikeScript]] */
+    public abstract BitcoinLikeScript parseScriptSig();
+
+    /**
+     * Set the ScriptS to the given value
+     * @param scriptSig The ScriptSig to use for this input
+     */
+    public abstract void setScriptSig(byte[] scriptSig);
+
+    /** Push data to the end of the current ScriptSig */
+    public abstract void pushToScriptSig(byte[] data);
+
+    /** Set the sequence number of this input */
+    public abstract void setSequence(int sequence);
+
+    /** Get the sequence number of this input */
+    public abstract int getSequence();
+
+    public abstract byte[] getPreviousTransaction();
+
+    /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
+    public abstract void setP2PKHSigScript(byte[] signature);
 
     private static final class CppProxy extends BitcoinLikeInput
     {
@@ -48,6 +107,22 @@ public abstract class BitcoinLikeInput {
             return native_getAddress(this.nativeRef);
         }
         private native String native_getAddress(long _nativeRef);
+
+        @Override
+        public ArrayList<byte[]> getPublicKeys()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPublicKeys(this.nativeRef);
+        }
+        private native ArrayList<byte[]> native_getPublicKeys(long _nativeRef);
+
+        @Override
+        public ArrayList<DerivationPath> getDerivationPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getDerivationPath(this.nativeRef);
+        }
+        private native ArrayList<DerivationPath> native_getDerivationPath(long _nativeRef);
 
         @Override
         public Amount getValue()
@@ -88,5 +163,77 @@ public abstract class BitcoinLikeInput {
             return native_getPreviousOutputIndex(this.nativeRef);
         }
         private native Integer native_getPreviousOutputIndex(long _nativeRef);
+
+        @Override
+        public BitcoinLikeOutput getPreviousOuput()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreviousOuput(this.nativeRef);
+        }
+        private native BitcoinLikeOutput native_getPreviousOuput(long _nativeRef);
+
+        @Override
+        public byte[] getScriptSig()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getScriptSig(this.nativeRef);
+        }
+        private native byte[] native_getScriptSig(long _nativeRef);
+
+        @Override
+        public BitcoinLikeScript parseScriptSig()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_parseScriptSig(this.nativeRef);
+        }
+        private native BitcoinLikeScript native_parseScriptSig(long _nativeRef);
+
+        @Override
+        public void setScriptSig(byte[] scriptSig)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_setScriptSig(this.nativeRef, scriptSig);
+        }
+        private native void native_setScriptSig(long _nativeRef, byte[] scriptSig);
+
+        @Override
+        public void pushToScriptSig(byte[] data)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_pushToScriptSig(this.nativeRef, data);
+        }
+        private native void native_pushToScriptSig(long _nativeRef, byte[] data);
+
+        @Override
+        public void setSequence(int sequence)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_setSequence(this.nativeRef, sequence);
+        }
+        private native void native_setSequence(long _nativeRef, int sequence);
+
+        @Override
+        public int getSequence()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getSequence(this.nativeRef);
+        }
+        private native int native_getSequence(long _nativeRef);
+
+        @Override
+        public byte[] getPreviousTransaction()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreviousTransaction(this.nativeRef);
+        }
+        private native byte[] native_getPreviousTransaction(long _nativeRef);
+
+        @Override
+        public void setP2PKHSigScript(byte[] signature)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_setP2PKHSigScript(this.nativeRef, signature);
+        }
+        private native void native_setP2PKHSigScript(long _nativeRef, byte[] signature);
     }
 }

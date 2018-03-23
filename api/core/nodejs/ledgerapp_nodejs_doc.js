@@ -46,6 +46,30 @@ declare class NJSEventPublisher
 declare class NJSSynchronizationStatus
 {
 }
+declare class NJSDerivationPath
+{
+    /** Get the number of element in this path. */
+    declare function getDepth(): number;
+    /** Get the child num at the given index in the path. */
+    declare function getChildNum(index: number): number;
+    /**
+     * Get the child num at the given index in the path. If the child num is hardened, returns it
+     * without the hardened marker bit.
+     */
+    declare function getUnhardenedChildNum(index: number): number;
+    /** Return true if the given index in the path is an hardened child num. */
+    declare function isHardened(index: number): boolean;
+    /** Serialize the given path to a human readable string like "44'/0'/0'/0/0" */
+    declare function toString(): string;
+    /**
+     * Return a derivation path without the last element, e.g. the parent of "44'/0'/0'/0/0" is
+     * "44'/0'/0'/0"
+     */
+    declare function getParent(): NJSDerivationPath;
+    /** Return an array where which item is a child num of the path. */
+    declare function toArray(): Array<number>;
+    static declare function parse(path: string): NJSDerivationPath;
+}
 declare class NJSTrustIndicator
 {
     declare function getTrustWeight(): number;
@@ -159,7 +183,6 @@ declare class NJSAccount
     declare function stopBlockchainObservation();
     declare function isObservingBlockchain(): boolean;
     declare function getLastBlock(callback: NJSBlockCallback);
-    declare function computeFees(amount: NJSAmount, priority: number, recipients: Array<string>, data: Array<Object>, callback: NJSAmountCallback);
 }
 declare class NJSAmountCallback
 {
@@ -351,6 +374,21 @@ declare class NJSGetEthreumLikeWalletCallback
 declare class NJSEthereumLikeWallet
 {
 }
+declare class NJSBitcoinLikeScriptChunk
+{
+    declare function isOperator(): boolean;
+    declare function isPushedData(): boolean;
+    declare function getOperator(): ?BitcoinLikeOperator;
+    declare function getPushedData(): ?Object;
+    declare function next(): NJSBitcoinLikeScriptChunk;
+    declare function hasNext(): boolean;
+}
+declare class NJSBitcoinLikeScript
+{
+    declare function head(): NJSBitcoinLikeScriptChunk;
+    declare function toString(): string;
+    static declare function parse(data: Object): NJSBitcoinLikeScript;
+}
 /** Helper class for manipulating Bitcoin like addresses */
 declare class NJSBitcoinLikeAddress
 {
@@ -531,12 +569,59 @@ declare class NJSBitcoinLikeWalletConfiguration
 }
 declare class NJSBitcoinLikeInput
 {
+    /** Returns the address of the input (if an address can be computed) */
     declare function getAddress(): ?string;
+    /**
+     * Returns the public associated with the address. This value can be NULL if you are building a transaction with an
+     * address which does not belong to your wallet.
+     */
+    declare function getPublicKeys(): Array<Object>;
+    /** Returns the derivation path of this input if the address is owned by the wallet */
+    declare function getDerivationPath(): Array<NJSDerivationPath>;
+    /**
+     * Returns the value of the amount. Depending on the backend this value may not exist if the input is not owned by
+     * the wallet.
+     */
     declare function getValue(): ?NJSAmount;
+    /** Return true if the input is a coinbase input */
     declare function isCoinbase(): boolean;
+    /** Get coinbase input data */
     declare function getCoinbase(): ?string;
+    /**
+     * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
+     * the wallet
+     */
     declare function getPreviousTxHash(): ?string;
+    /**
+     * Get the index at which the output is located in the transaction output spent by this input. The result can be
+     * NULL if the input does not belong to the wallet
+     */
     declare function getPreviousOutputIndex(): ?number;
+    /**
+     * Retrieve the output spent by this input. Depending on the implementation this method may
+     * use a lock to fetch data from a database. Therefore it may have poor performance, use with
+     * caution.
+     * @return The output spent by this input.
+     */
+    declare function getPreviousOuput(): NJSBitcoinLikeOutput;
+    /** Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output. */
+    declare function getScriptSig(): Object;
+    /** Parse the script sig to a [[BitcoinLikeScript]] */
+    declare function parseScriptSig(): NJSBitcoinLikeScript;
+    /**
+     * Set the ScriptS to the given value
+     * @param scriptSig The ScriptSig to use for this input
+     */
+    declare function setScriptSig(scriptSig: Object);
+    /** Push data to the end of the current ScriptSig */
+    declare function pushToScriptSig(data: Object);
+    /** Set the sequence number of this input */
+    declare function setSequence(sequence: number);
+    /** Get the sequence number of this input */
+    declare function getSequence(): number;
+    declare function getPreviousTransaction(): ?Object;
+    /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
+    declare function setP2PKHSigScript(signature: Object);
 }
 declare class NJSBitcoinLikeOutput
 {
@@ -544,6 +629,7 @@ declare class NJSBitcoinLikeOutput
     declare function getOutputIndex(): number;
     declare function getValue(): NJSAmount;
     declare function getScript(): Object;
+    declare function parseScript(): NJSBitcoinLikeScript;
     declare function getAddress(): ?string;
 }
 declare class NJSBitcoinLikeBlock
@@ -554,13 +640,29 @@ declare class NJSBitcoinLikeBlock
 }
 declare class NJSBitcoinLikeTransaction
 {
+    /** Get the hash of the transaction. */
     declare function getHash(): string;
+    /** Get the input of the transaction */
     declare function getInputs(): Array<NJSBitcoinLikeInput>;
+    /** Get the output of the transaction */
     declare function getOutputs(): Array<NJSBitcoinLikeOutput>;
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     declare function getBlock(): ?NJSBitcoinLikeBlock;
+    /** Get the lock time of the transaction. */
     declare function getLockTime(): number;
+    /** Get the amount of fees of the transaction. */
     declare function getFees(): NJSAmount;
+    /**
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
+     */
     declare function getTime(): Date;
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    declare function getTimestamp(): ?Date;
+    /** Serialize the transaction to its raw format. */
+    declare function serialize(): Object;
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    declare function getWitness(): ?Object;
 }
 declare class NJSBitcoinLikeOperation
 {
@@ -573,26 +675,32 @@ declare class NJSBitcoinLikeHelper
     static declare function serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): Object;
     static declare function parseTransaction(transaction: Object): NJSBitcoinLikeTransaction;
 }
+declare class NJSBitcoinLikeTransactionBuilder
+{
+    declare function addInput(transactionHash: string, index: number, sequence: number): NJSBitcoinLikeTransactionBuilder;
+    declare function addOutput(amount: NJSAmount, script: NJSBitcoinLikeScript): NJSBitcoinLikeTransactionBuilder;
+    declare function addChangePath(path: string);
+    declare function setNumberOfChangeAddresses(count: number): NJSBitcoinLikeTransactionBuilder;
+    declare function pickInputs(strategy: BitcoinLikePickingStrategy, sequence: number): NJSBitcoinLikeTransactionBuilder;
+    declare function sendToAddress(amount: NJSAmount, address: string): NJSBitcoinLikeTransactionBuilder;
+    declare function setFeesPerByte(fees: NJSAmount): NJSBitcoinLikeTransactionBuilder;
+    declare function build(callback: NJSBitcoinLikeTransactionCallback);
+}
+declare class NJSBitcoinLikeTransactionCallback
+{
+    declare function onCallback(result: ?NJSBitcoinLikeTransaction, error: ?Error);
+}
 declare class NJSBitcoinLikeAccount
 {
     declare function getUTXO(from: number, to: number, callback: NJSBitcoinLikeOutputListCallback);
     declare function getUTXOCount(callback: NJSI32Callback);
-    declare function pickUTXO(baseFees: NJSAmount, outputs: Array<NJSBitcoinLikeOutput>, strategy: BitcoinLikePickingStrategy, callback: NJSBitcoinLikeTransactionRequestCallback);
-    declare function estimateFees(request: BitcoinLikeTransactionRequest, callback: NJSBitcoinLikeTransactionRequestCallback);
-    declare function prepareTransaction(request: BitcoinLikeTransactionRequest, callback: NJSBitcoinLikePreparedTransactionCallback);
-    declare function broadcastTransaction(transaction: Object, callback: NJSStringCallback);
+    declare function broadcastRawTransaction(transaction: Object, callback: NJSStringCallback);
+    declare function broadcastTransaction(transaction: NJSBitcoinLikeTransaction, callback: NJSStringCallback);
+    declare function buildTransaction(): NJSBitcoinLikeTransactionBuilder;
 }
 declare class NJSBitcoinLikeOutputListCallback
 {
     declare function onCallback(result: ?Array<NJSBitcoinLikeOutput>, error: ?Error);
-}
-declare class NJSBitcoinLikeTransactionRequestCallback
-{
-    declare function onCallback(result: ?BitcoinLikeTransactionRequest, error: ?Error);
-}
-declare class NJSBitcoinLikePreparedTransactionCallback
-{
-    declare function onCallback(result: ?BitcoinLikePreparedTransaction, error: ?Error);
 }
 declare class NJSStringCallback
 {

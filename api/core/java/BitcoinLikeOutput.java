@@ -14,6 +14,8 @@ public abstract class BitcoinLikeOutput {
 
     public abstract byte[] getScript();
 
+    public abstract BitcoinLikeScript parseScript();
+
     public abstract String getAddress();
 
     private static final class CppProxy extends BitcoinLikeOutput
@@ -70,6 +72,14 @@ public abstract class BitcoinLikeOutput {
             return native_getScript(this.nativeRef);
         }
         private native byte[] native_getScript(long _nativeRef);
+
+        @Override
+        public BitcoinLikeScript parseScript()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_parseScript(this.nativeRef);
+        }
+        private native BitcoinLikeScript native_parseScript(long _nativeRef);
 
         @Override
         public String getAddress()

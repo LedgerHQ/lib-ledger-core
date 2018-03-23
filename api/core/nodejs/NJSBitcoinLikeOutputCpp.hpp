@@ -7,6 +7,7 @@
 
 #include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
+#include "NJSBitcoinLikeScriptCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -40,6 +41,8 @@ private:
     static NAN_METHOD(getValue);
 
     static NAN_METHOD(getScript);
+
+    static NAN_METHOD(parseScript);
 
     static NAN_METHOD(getAddress);
 

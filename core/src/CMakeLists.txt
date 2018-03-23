@@ -196,7 +196,7 @@ add_library(
         net/WebSocketClient.cpp net/WebSocketClient.h
         net/WebSocketConnection.cpp net/WebSocketConnection.h
         math/Fibonacci.cpp math/Fibonacci.h
-        wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h bitcoin/BitcoinLikeHelper.cpp bitcoin/BitcoinLikeHelper.h bitcoin/ScriptParser.cpp bitcoin/ScriptParser.h bitcoin/opcodes.h bitcoin/opcodes.cpp)
+        wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h bitcoin/BitcoinLikeHelper.cpp bitcoin/BitcoinLikeHelper.h bitcoin/ScriptParser.cpp bitcoin/ScriptParser.h bitcoin/opcodes.h bitcoin/opcodes.cpp wallet/common/api_impl/DerivationPathApi.cpp wallet/common/api_impl/DerivationPathApi.h)
 
 target_link_libraries(ledger-core bigd)
 target_link_libraries(ledger-core fmt)

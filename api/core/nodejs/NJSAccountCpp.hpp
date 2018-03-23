@@ -7,7 +7,6 @@
 
 #include "../../../core/src/api/WalletType.hpp"
 #include "NJSAmountCallback.hpp"
-#include "NJSAmountCpp.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSLoggerCpp.hpp"
@@ -17,7 +16,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -80,8 +78,6 @@ private:
     static NAN_METHOD(isObservingBlockchain);
 
     static NAN_METHOD(getLastBlock);
-
-    static NAN_METHOD(computeFees);
 
     static NAN_METHOD(New);
 

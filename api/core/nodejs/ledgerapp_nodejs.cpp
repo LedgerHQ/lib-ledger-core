@@ -12,6 +12,7 @@
 #include "NJSEventBusCpp.hpp"
 #include "NJSEventPublisherCpp.hpp"
 #include "NJSSynchronizationStatusCpp.hpp"
+#include "NJSDerivationPathCpp.hpp"
 #include "NJSTrustIndicatorCpp.hpp"
 #include "NJSOperationCpp.hpp"
 #include "NJSQueryFilterCpp.hpp"
@@ -42,6 +43,8 @@
 #include "NJSEthereumPublicKeyProvider.hpp"
 #include "NJSGetEthreumLikeWalletCallback.hpp"
 #include "NJSEthereumLikeWalletCpp.hpp"
+#include "NJSBitcoinLikeScriptChunkCpp.hpp"
+#include "NJSBitcoinLikeScriptCpp.hpp"
 #include "NJSBitcoinLikeAddressCpp.hpp"
 #include "NJSBitcoinLikeExtendedPublicKeyCpp.hpp"
 #include "NJSAmountCpp.hpp"
@@ -54,10 +57,10 @@
 #include "NJSBitcoinLikeTransactionCpp.hpp"
 #include "NJSBitcoinLikeOperationCpp.hpp"
 #include "NJSBitcoinLikeHelperCpp.hpp"
+#include "NJSBitcoinLikeTransactionBuilderCpp.hpp"
+#include "NJSBitcoinLikeTransactionCallback.hpp"
 #include "NJSBitcoinLikeAccountCpp.hpp"
 #include "NJSBitcoinLikeOutputListCallback.hpp"
-#include "NJSBitcoinLikeTransactionRequestCallback.hpp"
-#include "NJSBitcoinLikePreparedTransactionCallback.hpp"
 #include "NJSStringCallback.hpp"
 #include "NJSBitcoinLikeWalletCpp.hpp"
 #include "NJSWalletPoolCpp.hpp"
@@ -96,6 +99,7 @@ static void initAll(Local<Object> target)
     NJSEventBus::Initialize(target);
     NJSEventPublisher::Initialize(target);
     NJSSynchronizationStatus::Initialize(target);
+    NJSDerivationPath::Initialize(target);
     NJSTrustIndicator::Initialize(target);
     NJSOperation::Initialize(target);
     NJSQueryFilter::Initialize(target);
@@ -126,6 +130,8 @@ static void initAll(Local<Object> target)
     NJSEthereumPublicKeyProvider::Initialize(target);
     NJSGetEthreumLikeWalletCallback::Initialize(target);
     NJSEthereumLikeWallet::Initialize(target);
+    NJSBitcoinLikeScriptChunk::Initialize(target);
+    NJSBitcoinLikeScript::Initialize(target);
     NJSBitcoinLikeAddress::Initialize(target);
     NJSBitcoinLikeExtendedPublicKey::Initialize(target);
     NJSAmount::Initialize(target);
@@ -138,10 +144,10 @@ static void initAll(Local<Object> target)
     NJSBitcoinLikeTransaction::Initialize(target);
     NJSBitcoinLikeOperation::Initialize(target);
     NJSBitcoinLikeHelper::Initialize(target);
+    NJSBitcoinLikeTransactionBuilder::Initialize(target);
+    NJSBitcoinLikeTransactionCallback::Initialize(target);
     NJSBitcoinLikeAccount::Initialize(target);
     NJSBitcoinLikeOutputListCallback::Initialize(target);
-    NJSBitcoinLikeTransactionRequestCallback::Initialize(target);
-    NJSBitcoinLikePreparedTransactionCallback::Initialize(target);
     NJSStringCallback::Initialize(target);
     NJSBitcoinLikeWallet::Initialize(target);
     NJSWalletPool::Initialize(target);

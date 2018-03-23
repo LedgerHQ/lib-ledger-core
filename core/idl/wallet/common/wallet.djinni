@@ -13,6 +13,26 @@ SynchronizationStatus = interface +c {
     const STATUS_DONE_SYNCHRONIZE_NEXT_ACCOUNT: i32 = 3;
 }
 
+DerivationPath = interface +c {
+    # Get the number of element in this path.
+    getDepth(): i32;
+    # Get the child num at the given index in the path.
+    getChildNum(index: i32): i32;
+    # Get the child num at the given index in the path. If the child num is hardened, returns it
+    # without the hardened marker bit.
+    getUnhardenedChildNum(index: i32): i32;
+    # Return true if the given index in the path is an hardened child num.
+    isHardened(index: i32): bool;
+    # Serialize the given path to a human readable string like "44'/0'/0'/0/0"
+    toString(): string;
+    # Return a derivation path without the last element, e.g. the parent of "44'/0'/0'/0/0" is
+    # "44'/0'/0'/0"
+    getParent(): DerivationPath;
+    # Return an array where which item is a child num of the path.
+    toArray(): list<i32>;
+
+    static parse(path: string): DerivationPath;
+}
 
 OperationType = enum {
     send; receive;
@@ -177,7 +197,6 @@ Account = interface +c {
     stopBlockchainObservation();
     isObservingBlockchain(): bool;
     getLastBlock(callback: Callback<Block>);
-    computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }
 
 Wallet = interface +c {

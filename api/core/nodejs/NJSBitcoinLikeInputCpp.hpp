@@ -7,9 +7,13 @@
 
 #include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
+#include "NJSBitcoinLikeOutputCpp.hpp"
+#include "NJSBitcoinLikeScriptCpp.hpp"
+#include "NJSDerivationPathCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -32,17 +36,75 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeInput> getCppImpl(){return _BitcoinLikeInput;};
 
 private:
+    /** Returns the address of the input (if an address can be computed) */
     static NAN_METHOD(getAddress);
 
+    /**
+     * Returns the public associated with the address. This value can be NULL if you are building a transaction with an
+     * address which does not belong to your wallet.
+     */
+    static NAN_METHOD(getPublicKeys);
+
+    /** Returns the derivation path of this input if the address is owned by the wallet */
+    static NAN_METHOD(getDerivationPath);
+
+    /**
+     * Returns the value of the amount. Depending on the backend this value may not exist if the input is not owned by
+     * the wallet.
+     */
     static NAN_METHOD(getValue);
 
+    /** Return true if the input is a coinbase input */
     static NAN_METHOD(isCoinbase);
 
+    /** Get coinbase input data */
     static NAN_METHOD(getCoinbase);
 
+    /**
+     * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
+     * the wallet
+     */
     static NAN_METHOD(getPreviousTxHash);
 
+    /**
+     * Get the index at which the output is located in the transaction output spent by this input. The result can be
+     * NULL if the input does not belong to the wallet
+     */
     static NAN_METHOD(getPreviousOutputIndex);
+
+    /**
+     * Retrieve the output spent by this input. Depending on the implementation this method may
+     * use a lock to fetch data from a database. Therefore it may have poor performance, use with
+     * caution.
+     * @return The output spent by this input.
+     */
+    static NAN_METHOD(getPreviousOuput);
+
+    /** Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output. */
+    static NAN_METHOD(getScriptSig);
+
+    /** Parse the script sig to a [[BitcoinLikeScript]] */
+    static NAN_METHOD(parseScriptSig);
+
+    /**
+     * Set the ScriptS to the given value
+     * @param scriptSig The ScriptSig to use for this input
+     */
+    static NAN_METHOD(setScriptSig);
+
+    /** Push data to the end of the current ScriptSig */
+    static NAN_METHOD(pushToScriptSig);
+
+    /** Set the sequence number of this input */
+    static NAN_METHOD(setSequence);
+
+    /** Get the sequence number of this input */
+    static NAN_METHOD(getSequence);
+
+    static NAN_METHOD(getPreviousTransaction);
+
+    /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
+    static NAN_METHOD(setP2PKHSigScript);
 
     static NAN_METHOD(New);
 

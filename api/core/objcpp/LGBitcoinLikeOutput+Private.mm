@@ -7,6 +7,7 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
+#import "LGBitcoinLikeScript+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -56,6 +57,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getScript();
         return ::djinni::Binary::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeScript *)parseScript {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->parseScript();
+        return ::djinni_generated::BitcoinLikeScript::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

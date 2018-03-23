@@ -90,5 +90,17 @@ namespace ledger {
         std::string BitcoinLikeTransactionApi::getHash() {
             return _hash;
         }
+
+        optional<std::chrono:: system_clock::time_point> BitcoinLikeTransactionApi::getTimestamp() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::chrono::time_point> BitcoinLikeTransactionApi::getTimestamp()");
+        }
+
+        std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::vector<uint8_t> BitcoinLikeTransactionApi::serialize()");
+        }
+
+        optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness()");
+        }
     }
 }
