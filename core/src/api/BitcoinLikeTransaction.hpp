@@ -17,6 +17,7 @@ class Amount;
 class BitcoinLikeBlock;
 class BitcoinLikeInput;
 class BitcoinLikeOutput;
+struct EstimatedSize;
 
 class BitcoinLikeTransaction {
 public:
@@ -54,6 +55,12 @@ public:
 
     /** Get the witness if the underlying transaction is a segwit transaction. */
     virtual std::experimental::optional<std::vector<uint8_t>> getWitness() = 0;
+
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    virtual EstimatedSize getEstimatedSize() = 0;
 };
 
 } } }  // namespace ledger::core::api

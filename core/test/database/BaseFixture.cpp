@@ -30,6 +30,7 @@
  */
 
 #include <utils/FilesystemUtils.h>
+#include "IntegrationEnvironment.h"
 #include "BaseFixture.h"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
@@ -48,9 +49,9 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
-    ledger::qt::FilesystemUtils::clearFs();
+    ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     dispatcher = std::make_shared<QtThreadDispatcher>();
-    resolver = std::make_shared<NativePathResolver>();
+    resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());

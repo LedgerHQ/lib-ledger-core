@@ -38,6 +38,7 @@
 #include "BitcoinLikeOutputApi.h"
 #include <api/BitcoinLikeBlock.hpp>
 #include "BitcoinLikeBlockApi.h"
+#include <api/EstimatedSize.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,6 +59,8 @@ namespace ledger {
             std::vector<uint8_t> serialize() override;
 
             optional<std::vector<uint8_t>> getWitness() override;
+
+            api::EstimatedSize getEstimatedSize() override;
 
         private:
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> _inputs;

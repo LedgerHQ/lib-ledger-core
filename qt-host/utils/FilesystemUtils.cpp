@@ -32,12 +32,14 @@
 #include "FilesystemUtils.h"
 #include <QDir>
 #include <QDebug>
+#include <QCoreApplication>
+#include <iostream>
 
-void ledger::qt::FilesystemUtils::clearFs() {
-    QDir root;
+void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
+    QDir root(QString::fromStdString(path));
     for (const auto& file : root.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
         if (file.isDir() && file.absoluteFilePath().compare(root.absolutePath()) != 0) {
-            QDir(file.absoluteFilePath()).removeRecursively();
+            clearFs(file.absoluteFilePath().toStdString());
         } else if (!file.isExecutable()) {
             QFile::remove(file.absoluteFilePath());
         }

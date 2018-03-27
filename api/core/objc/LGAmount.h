@@ -31,4 +31,8 @@
 - (nonnull NSString *)format:(nonnull LGLocale *)locale
                        rules:(nullable LGFormatRules *)rules;
 
++ (nullable LGAmount *)fromHex:(nonnull NSString *)hex;
+
++ (nullable LGAmount *)fromLong:(int64_t)value;
+
 @end

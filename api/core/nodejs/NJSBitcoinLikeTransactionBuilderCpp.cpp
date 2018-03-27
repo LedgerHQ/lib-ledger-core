@@ -100,7 +100,45 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::addChangePath) {
     {
         return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::addChangePath : implementation of BitcoinLikeTransactionBuilder is not valid");
     }
-    cpp_impl->addChangePath(arg_0);
+
+    auto result = cpp_impl->addChangePath(arg_0);
+
+    //Wrap result in node object
+    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::excludeUtxo) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 2)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::excludeUtxo needs 2 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::excludeUtxo : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->excludeUtxo(arg_0,arg_1);
+
+    //Wrap result in node object
+    auto arg_2 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setNumberOfChangeAddresses) {
 
@@ -122,6 +160,76 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setNumberOfChangeAddresses) {
     }
 
     auto result = cpp_impl->setNumberOfChangeAddresses(arg_0);
+
+    //Wrap result in node object
+    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setMaxAmountOnChange) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::setMaxAmountOnChange needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::setMaxAmountOnChange : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->setMaxAmountOnChange(arg_0);
+
+    //Wrap result in node object
+    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setMinAmountOnChange) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::setMinAmountOnChange needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::setMinAmountOnChange : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->setMinAmountOnChange(arg_0);
 
     //Wrap result in node object
     auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
@@ -259,6 +367,52 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::build) {
     cpp_impl->build(arg_0);
     info.GetReturnValue().Set(resolver->GetPromise());
 }
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::clone) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::clone needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::clone : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->clone();
+
+    //Wrap result in node object
+    auto arg_0 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::reset) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::reset needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::reset : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+    cpp_impl->reset();
+}
 
 NAN_METHOD(NJSBitcoinLikeTransactionBuilder::New) {
     //Only new allowed
@@ -315,11 +469,16 @@ void NJSBitcoinLikeTransactionBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"addInput", addInput);
     Nan::SetPrototypeMethod(func_template,"addOutput", addOutput);
     Nan::SetPrototypeMethod(func_template,"addChangePath", addChangePath);
+    Nan::SetPrototypeMethod(func_template,"excludeUtxo", excludeUtxo);
     Nan::SetPrototypeMethod(func_template,"setNumberOfChangeAddresses", setNumberOfChangeAddresses);
+    Nan::SetPrototypeMethod(func_template,"setMaxAmountOnChange", setMaxAmountOnChange);
+    Nan::SetPrototypeMethod(func_template,"setMinAmountOnChange", setMinAmountOnChange);
     Nan::SetPrototypeMethod(func_template,"pickInputs", pickInputs);
     Nan::SetPrototypeMethod(func_template,"sendToAddress", sendToAddress);
     Nan::SetPrototypeMethod(func_template,"setFeesPerByte", setFeesPerByte);
     Nan::SetPrototypeMethod(func_template,"build", build);
+    Nan::SetPrototypeMethod(func_template,"clone", clone);
+    Nan::SetPrototypeMethod(func_template,"reset", reset);
     //Set object prototype
     BitcoinLikeTransactionBuilder_prototype.Reset(objectTemplate);
 

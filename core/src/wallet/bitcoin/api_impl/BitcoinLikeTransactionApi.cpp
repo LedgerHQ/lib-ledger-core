@@ -102,5 +102,9 @@ namespace ledger {
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness()");
         }
+
+        api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize()");
+        }
     }
 }

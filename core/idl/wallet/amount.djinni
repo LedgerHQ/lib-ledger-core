@@ -24,4 +24,7 @@ Amount = interface +c {
     toLong(): i64;
     toDouble(): f64;
     format(locale: Locale, rules: optional<FormatRules>): string;
+
+    static fromHex(currency: Currency, hex: string): Amount;
+    static fromLong(currency: Currency, value: i64): Amount;
 }

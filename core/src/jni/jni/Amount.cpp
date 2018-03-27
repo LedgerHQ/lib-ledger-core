@@ -115,4 +115,22 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1form
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_fromHex(JNIEnv* jniEnv, jobject /*this*/, jstring j_hex)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Amount::fromHex(::djinni::String::toCpp(jniEnv, j_hex));
+        return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_fromLong(JNIEnv* jniEnv, jobject /*this*/, jlong j_value)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Amount::fromLong(::djinni::I64::toCpp(jniEnv, j_value));
+        return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 }  // namespace djinni_generated

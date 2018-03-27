@@ -355,6 +355,63 @@ NAN_METHOD(NJSAmount::format) {
     //Return result
     info.GetReturnValue().Set(arg_2);
 }
+NAN_METHOD(NJSAmount::fromHex) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSAmount::fromHex needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSAmount* obj = Nan::ObjectWrap::Unwrap<NJSAmount>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSAmount::fromHex : implementation of Amount is not valid");
+    }
+
+    auto result = cpp_impl->fromHex(arg_0);
+
+    //Wrap result in node object
+    auto arg_1 = NJSAmount::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSAmount::fromLong) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSAmount::fromLong needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSAmount* obj = Nan::ObjectWrap::Unwrap<NJSAmount>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSAmount::fromLong : implementation of Amount is not valid");
+    }
+
+    auto result = cpp_impl->fromLong(arg_0);
+
+    //Wrap result in node object
+    auto arg_1 = NJSAmount::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
 
 NAN_METHOD(NJSAmount::New) {
     //Only new allowed
@@ -362,7 +419,20 @@ NAN_METHOD(NJSAmount::New) {
     {
         return Nan::ThrowError("NJSAmount function can only be called as constructor (use New)");
     }
-    NJSAmount *node_instance = new NJSAmount(nullptr);
+
+    //Check if NJSAmount::New called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSAmount::New needs same number of arguments as ledger::core::api::Amount::fromHex method");
+    }
+
+    //Unwrap objects to get C++ classes
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Call factory
+    auto cpp_instance = ledger::core::api::Amount::fromHex(arg_0);
+    NJSAmount *node_instance = new NJSAmount(cpp_instance);
 
     if(node_instance)
     {

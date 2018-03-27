@@ -54,15 +54,39 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)addChangePath:(nonnull NSString *)path {
+- (nullable LGBitcoinLikeTransactionBuilder *)addChangePath:(nonnull NSString *)path {
     try {
-        _cppRefHandle.get()->addChangePath(::djinni::String::toCpp(path));
+        auto objcpp_result_ = _cppRefHandle.get()->addChangePath(::djinni::String::toCpp(path));
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeTransactionBuilder *)excludeUtxo:(nonnull NSString *)transactionHash
+                                              outputIndex:(int32_t)outputIndex {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->excludeUtxo(::djinni::String::toCpp(transactionHash),
+                                                               ::djinni::I32::toCpp(outputIndex));
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
 - (nullable LGBitcoinLikeTransactionBuilder *)setNumberOfChangeAddresses:(int32_t)count {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->setNumberOfChangeAddresses(::djinni::I32::toCpp(count));
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeTransactionBuilder *)setMaxAmountOnChange:(nullable LGAmount *)amount {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->setMaxAmountOnChange(::djinni_generated::Amount::toCpp(amount));
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeTransactionBuilder *)setMinAmountOnChange:(nullable LGAmount *)amount {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->setMinAmountOnChange(::djinni_generated::Amount::toCpp(amount));
         return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
@@ -95,6 +119,19 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)build:(nullable id<LGBitcoinLikeTransactionCallback>)callback {
     try {
         _cppRefHandle.get()->build(::djinni_generated::BitcoinLikeTransactionCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeTransactionBuilder *)clone {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->clone();
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)reset {
+    try {
+        _cppRefHandle.get()->reset();
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

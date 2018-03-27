@@ -41,6 +41,12 @@ public abstract class BitcoinLikeTransaction {
     /** Get the witness if the underlying transaction is a segwit transaction. */
     public abstract byte[] getWitness();
 
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    public abstract EstimatedSize getEstimatedSize();
+
     private static final class CppProxy extends BitcoinLikeTransaction
     {
         private final long nativeRef;
@@ -143,5 +149,13 @@ public abstract class BitcoinLikeTransaction {
             return native_getWitness(this.nativeRef);
         }
         private native byte[] native_getWitness(long _nativeRef);
+
+        @Override
+        public EstimatedSize getEstimatedSize()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getEstimatedSize(this.nativeRef);
+        }
+        private native EstimatedSize native_getEstimatedSize(long _nativeRef);
     }
 }

@@ -34,10 +34,12 @@
 #include <fstream>
 #include <src/io/filesystem.hpp>
 
+
+
 std::string NativePathResolver::resolveDatabasePath(const std::string &path) {
     std::string p = path;
     boost::algorithm::replace_all(p, "/", "__");
-    p = "./database_" + p;
+    p = _rootDirPath.getValueOr(".") + "/database_" + p;
     _createdPaths.push_back(p);
     return p;
 }
@@ -45,7 +47,7 @@ std::string NativePathResolver::resolveDatabasePath(const std::string &path) {
 std::string NativePathResolver::resolveLogFilePath(const std::string &path) {
     std::string p = path;
     boost::algorithm::replace_all(p, "/", "__");
-    p = "./log_file_" + p;
+    p = _rootDirPath.getValueOr(".") + "/log_file_" + p;
     _createdPaths.push_back(p);
     return p;
 }
@@ -53,7 +55,7 @@ std::string NativePathResolver::resolveLogFilePath(const std::string &path) {
 std::string NativePathResolver::resolvePreferencesPath(const std::string &path) {
     std::string p = path;
     boost::algorithm::replace_all(p, "/", "__");
-    p = "./preferences_" + p;
+    p = _rootDirPath.getValueOr(".") + "/preferences_" + p;
     _createdPaths.push_back(p);
     return p;
 }
@@ -62,4 +64,12 @@ void NativePathResolver::clean() {
     for (auto path : _createdPaths) {
         //ledger::core::fs::remove_all(path);
     }
+}
+
+NativePathResolver::NativePathResolver(const ledger::core::Option<std::string> &root) : _rootDirPath(root) {
+
+}
+
+NativePathResolver::NativePathResolver() : NativePathResolver(ledger::core::Option<std::string>()) {
+
 }

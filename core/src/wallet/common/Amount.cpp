@@ -102,5 +102,6 @@ namespace ledger {
         int32_t Amount::getMagnitude() const {
             return _currency.units[_unitIndex].numberOfDecimal;
         }
+
     }
 }

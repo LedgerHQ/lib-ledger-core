@@ -460,6 +460,8 @@ declare class NJSAmount
     declare function toLong(): number;
     declare function toDouble(): number;
     declare function format(locale: Locale, rules: ?FormatRules): string;
+    static declare function fromHex(hex: string): NJSAmount;
+    static declare function fromLong(value: number): NJSAmount;
 }
 /**
  * Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
@@ -663,6 +665,11 @@ declare class NJSBitcoinLikeTransaction
     declare function serialize(): Object;
     /** Get the witness if the underlying transaction is a segwit transaction. */
     declare function getWitness(): ?Object;
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    declare function getEstimatedSize(): EstimatedSize;
 }
 declare class NJSBitcoinLikeOperation
 {
@@ -677,14 +684,73 @@ declare class NJSBitcoinLikeHelper
 }
 declare class NJSBitcoinLikeTransactionBuilder
 {
+    /**
+     * Add the given input to the final transaction.
+     * @param transactionhash The hash of the transaction in where the UTXO can be located.
+     * @params index Index of the UTXO in the previous transaction
+     * @params sequence Sequence number to add at the end of the input serialization. This can be used for RBF transaction
+     * @return A reference on the same builder in order to chain calls.
+     */
     declare function addInput(transactionHash: string, index: number, sequence: number): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Add the given output to the final transaction
+     * @return A reference on the same builder in order to chain calls.
+     */
     declare function addOutput(amount: NJSAmount, script: NJSBitcoinLikeScript): NJSBitcoinLikeTransactionBuilder;
-    declare function addChangePath(path: string);
+    /**
+     * If needed the transaction will send its change to the given path. It is possible to add multiple change path.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function addChangePath(path: string): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Exclude UTXO from the coin selection (alias UTXO picking). You can call this method multiple times to exclude multiple
+     * UTXO.
+     * @param transactionHash The hash of the transaction in which this UTXO can be found.
+     * @param outputIndex The position of the output in the previous transaction,
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function excludeUtxo(transactionHash: string, outputIndex: number): NJSBitcoinLikeTransactionBuilder;
+    /** @return A reference on the same builder in order to chain calls. */
     declare function setNumberOfChangeAddresses(count: number): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Set the maximum amount per change output. By default there is no max amount.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function setMaxAmountOnChange(amount: NJSAmount): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Set the minimum amount per change output. By default this value is the dust value of the currency.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function setMinAmountOnChange(amount: NJSAmount): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Set the UTXO picking strategy (see [[BitcoinLikePickingStrategy]]).
+     * @param strategy The strategy to adopt in order to select which input to use in the transaction.
+     * @param sequence The sequence value serialized at the end of the raw transaction. If you don't know what to put here
+     * just use 0xFFFFFF
+     * @return A reference on the same builder in order to chain calls.
+     */
     declare function pickInputs(strategy: BitcoinLikePickingStrategy, sequence: number): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+     * @param amount The value to send
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
     declare function sendToAddress(amount: NJSAmount, address: string): NJSBitcoinLikeTransactionBuilder;
+    /**
+     * Set the amount of fees per byte (of the raw transaction).
+     * @return A reference on the same builder in order to chain calls.
+     */
     declare function setFeesPerByte(fees: NJSAmount): NJSBitcoinLikeTransactionBuilder;
+    /** Build a transaction from the given builder parameters. */
     declare function build(callback: NJSBitcoinLikeTransactionCallback);
+    /**
+     * Creates a clone of this builder.
+     * @return A copy of the current builder instance.
+     */
+    declare function clone(): NJSBitcoinLikeTransactionBuilder;
+    /** Reset the current instance to its initial state */
+    declare function reset();
 }
 declare class NJSBitcoinLikeTransactionCallback
 {

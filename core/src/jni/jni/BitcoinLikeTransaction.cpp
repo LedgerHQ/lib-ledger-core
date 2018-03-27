@@ -6,6 +6,7 @@
 #include "BitcoinLikeBlock.hpp"
 #include "BitcoinLikeInput.hpp"
 #include "BitcoinLikeOutput.hpp"
+#include "EstimatedSize.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -120,6 +121,16 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024Cp
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
         auto r = ref->getWitness();
         return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1getEstimatedSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
+        auto r = ref->getEstimatedSize();
+        return ::djinni::release(::djinni_generated::EstimatedSize::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

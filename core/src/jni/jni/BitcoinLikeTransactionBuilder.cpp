@@ -46,13 +46,25 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_000
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1addChangePath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1addChangePath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
-        ref->addChangePath(::djinni::String::toCpp(jniEnv, j_path));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->addChangePath(::djinni::String::toCpp(jniEnv, j_path));
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1excludeUtxo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_transactionHash, jint j_outputIndex)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
+        auto r = ref->excludeUtxo(::djinni::String::toCpp(jniEnv, j_transactionHash),
+                                  ::djinni::I32::toCpp(jniEnv, j_outputIndex));
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1setNumberOfChangeAddresses(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_count)
@@ -61,6 +73,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_000
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
         auto r = ref->setNumberOfChangeAddresses(::djinni::I32::toCpp(jniEnv, j_count));
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1setMaxAmountOnChange(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setMaxAmountOnChange(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1setMinAmountOnChange(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setMinAmountOnChange(::djinni_generated::Amount::toCpp(jniEnv, j_amount));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
@@ -103,6 +135,25 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024C
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
         ref->build(::djinni_generated::BitcoinLikeTransactionCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
+        auto r = ref->clone();
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
+        ref->reset();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

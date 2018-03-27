@@ -297,6 +297,37 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getWitness) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSBitcoinLikeTransaction::getEstimatedSize) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getEstimatedSize needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransaction* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransaction::getEstimatedSize : implementation of BitcoinLikeTransaction is not valid");
+    }
+
+    auto result = cpp_impl->getEstimatedSize();
+
+    //Wrap result in node object
+    auto arg_0 = Nan::New<Object>();
+    auto arg_0_1 = Nan::New<Int32>(result.min);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("min").ToLocalChecked(), arg_0_1);
+    auto arg_0_2 = Nan::New<Int32>(result.max);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("max").ToLocalChecked(), arg_0_2);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 
 NAN_METHOD(NJSBitcoinLikeTransaction::New) {
     //Only new allowed
@@ -360,6 +391,7 @@ void NJSBitcoinLikeTransaction::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getTimestamp", getTimestamp);
     Nan::SetPrototypeMethod(func_template,"serialize", serialize);
     Nan::SetPrototypeMethod(func_template,"getWitness", getWitness);
+    Nan::SetPrototypeMethod(func_template,"getEstimatedSize", getEstimatedSize);
     //Set object prototype
     BitcoinLikeTransaction_prototype.Reset(objectTemplate);
 

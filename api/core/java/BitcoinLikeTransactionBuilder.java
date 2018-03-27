@@ -6,21 +6,85 @@ package co.ledger.core;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BitcoinLikeTransactionBuilder {
+    /**
+     * Add the given input to the final transaction.
+     * @param transactionhash The hash of the transaction in where the UTXO can be located.
+     * @params index Index of the UTXO in the previous transaction
+     * @params sequence Sequence number to add at the end of the input serialization. This can be used for RBF transaction
+     * @return A reference on the same builder in order to chain calls.
+     */
     public abstract BitcoinLikeTransactionBuilder addInput(String transactionHash, int index, int sequence);
 
+    /**
+     * Add the given output to the final transaction
+     * @return A reference on the same builder in order to chain calls.
+     */
     public abstract BitcoinLikeTransactionBuilder addOutput(Amount amount, BitcoinLikeScript script);
 
-    public abstract void addChangePath(String path);
+    /**
+     * If needed the transaction will send its change to the given path. It is possible to add multiple change path.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    public abstract BitcoinLikeTransactionBuilder addChangePath(String path);
 
+    /**
+     * Exclude UTXO from the coin selection (alias UTXO picking). You can call this method multiple times to exclude multiple
+     * UTXO.
+     * @param transactionHash The hash of the transaction in which this UTXO can be found.
+     * @param outputIndex The position of the output in the previous transaction,
+     * @return A reference on the same builder in order to chain calls.
+     */
+    public abstract BitcoinLikeTransactionBuilder excludeUtxo(String transactionHash, int outputIndex);
+
+    /** @return A reference on the same builder in order to chain calls. */
     public abstract BitcoinLikeTransactionBuilder setNumberOfChangeAddresses(int count);
 
+    /**
+     * Set the maximum amount per change output. By default there is no max amount.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    public abstract BitcoinLikeTransactionBuilder setMaxAmountOnChange(Amount amount);
+
+    /**
+     * Set the minimum amount per change output. By default this value is the dust value of the currency.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    public abstract BitcoinLikeTransactionBuilder setMinAmountOnChange(Amount amount);
+
+    /**
+     * Set the UTXO picking strategy (see [[BitcoinLikePickingStrategy]]).
+     * @param strategy The strategy to adopt in order to select which input to use in the transaction.
+     * @param sequence The sequence value serialized at the end of the raw transaction. If you don't know what to put here
+     * just use 0xFFFFFF
+     * @return A reference on the same builder in order to chain calls.
+     */
     public abstract BitcoinLikeTransactionBuilder pickInputs(BitcoinLikePickingStrategy strategy, int sequence);
 
+    /**
+     * Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+     * @param amount The value to send
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
     public abstract BitcoinLikeTransactionBuilder sendToAddress(Amount amount, String address);
 
+    /**
+     * Set the amount of fees per byte (of the raw transaction).
+     * @return A reference on the same builder in order to chain calls.
+     */
     public abstract BitcoinLikeTransactionBuilder setFeesPerByte(Amount fees);
 
+    /** Build a transaction from the given builder parameters. */
     public abstract void build(BitcoinLikeTransactionCallback callback);
+
+    /**
+     * Creates a clone of this builder.
+     * @return A copy of the current builder instance.
+     */
+    public abstract BitcoinLikeTransactionBuilder clone();
+
+    /** Reset the current instance to its initial state */
+    public abstract void reset();
 
     private static final class CppProxy extends BitcoinLikeTransactionBuilder
     {
@@ -62,12 +126,20 @@ public abstract class BitcoinLikeTransactionBuilder {
         private native BitcoinLikeTransactionBuilder native_addOutput(long _nativeRef, Amount amount, BitcoinLikeScript script);
 
         @Override
-        public void addChangePath(String path)
+        public BitcoinLikeTransactionBuilder addChangePath(String path)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_addChangePath(this.nativeRef, path);
+            return native_addChangePath(this.nativeRef, path);
         }
-        private native void native_addChangePath(long _nativeRef, String path);
+        private native BitcoinLikeTransactionBuilder native_addChangePath(long _nativeRef, String path);
+
+        @Override
+        public BitcoinLikeTransactionBuilder excludeUtxo(String transactionHash, int outputIndex)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_excludeUtxo(this.nativeRef, transactionHash, outputIndex);
+        }
+        private native BitcoinLikeTransactionBuilder native_excludeUtxo(long _nativeRef, String transactionHash, int outputIndex);
 
         @Override
         public BitcoinLikeTransactionBuilder setNumberOfChangeAddresses(int count)
@@ -76,6 +148,22 @@ public abstract class BitcoinLikeTransactionBuilder {
             return native_setNumberOfChangeAddresses(this.nativeRef, count);
         }
         private native BitcoinLikeTransactionBuilder native_setNumberOfChangeAddresses(long _nativeRef, int count);
+
+        @Override
+        public BitcoinLikeTransactionBuilder setMaxAmountOnChange(Amount amount)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setMaxAmountOnChange(this.nativeRef, amount);
+        }
+        private native BitcoinLikeTransactionBuilder native_setMaxAmountOnChange(long _nativeRef, Amount amount);
+
+        @Override
+        public BitcoinLikeTransactionBuilder setMinAmountOnChange(Amount amount)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_setMinAmountOnChange(this.nativeRef, amount);
+        }
+        private native BitcoinLikeTransactionBuilder native_setMinAmountOnChange(long _nativeRef, Amount amount);
 
         @Override
         public BitcoinLikeTransactionBuilder pickInputs(BitcoinLikePickingStrategy strategy, int sequence)
@@ -108,5 +196,21 @@ public abstract class BitcoinLikeTransactionBuilder {
             native_build(this.nativeRef, callback);
         }
         private native void native_build(long _nativeRef, BitcoinLikeTransactionCallback callback);
+
+        @Override
+        public BitcoinLikeTransactionBuilder clone()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_clone(this.nativeRef);
+        }
+        private native BitcoinLikeTransactionBuilder native_clone(long _nativeRef);
+
+        @Override
+        public void reset()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_reset(this.nativeRef);
+        }
+        private native void native_reset(long _nativeRef);
     }
 }

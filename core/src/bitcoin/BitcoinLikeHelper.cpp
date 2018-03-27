@@ -53,11 +53,11 @@ namespace ledger {
             }
 
             std::shared_ptr<api::Amount> getValue() override {
-                return nullptr;
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> parseScript()");
             }
 
             std::vector<uint8_t> getScript() override {
-                return {};
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> parseScript()");
             }
 
             optional<std::string> getAddress() override {

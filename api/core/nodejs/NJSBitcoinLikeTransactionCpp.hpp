@@ -6,6 +6,7 @@
 
 
 #include "../../../core/src/api/../utils/optional.hpp"
+#include "../../../core/src/api/EstimatedSize.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeInputCpp.hpp"
@@ -69,6 +70,12 @@ private:
 
     /** Get the witness if the underlying transaction is a segwit transaction. */
     static NAN_METHOD(getWitness);
+
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    static NAN_METHOD(getEstimatedSize);
 
     static NAN_METHOD(New);
 

@@ -3,7 +3,7 @@
  * BitcoinLikeTransactionBuilder.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 16/10/2017.
+ * Created by Pierre Pollastri on 27/03/2018.
  *
  * The MIT License (MIT)
  *
@@ -32,32 +32,82 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 
-#include <vector>
-#include <memory>
-#include <api/BitcoinLikeOutput.hpp>
-#include <soci.h>
+#include <api/BitcoinLikeTransactionBuilder.hpp>
+#include <api/BitcoinLikePickingStrategy.hpp>
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/Amount.hpp>
+#include <functional>
+#include <list>
+#include <async/Future.hpp>
+#include <math/BigInt.h>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeTransactionCreationRequest;
-        class BitcoinLikeTransactionBuilder {
+
+        struct BitcoinLikeTransactionBuildRequest {
+            BitcoinLikeTransactionBuildRequest(const std::shared_ptr<BigInt>& minChange);
+            std::list<std::tuple<std::string, int32_t, uint32_t>> inputs;
+            std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> outputs;
+            std::list<std::string> changePaths;
+            std::list<std::tuple<std::string, int32_t>> excludedUtxo;
+            int32_t changeCount;
+            std::shared_ptr<api::Amount> feePerByte;
+            Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
+            std::shared_ptr<BigInt> maxChange;
+            std::shared_ptr<BigInt> minChange;
+
+            static const std::shared_ptr<BigInt> DEFAULT_MAX_AMOUNT;
+        };
+
+        using BitcoinLikeTransactionBuildFunction = std::function<void (const BitcoinLikeTransactionBuildRequest&)>;
+
+        class BitcoinLikeTransactionBuilder : public api::BitcoinLikeTransactionBuilder, public std::enable_shared_from_this<BitcoinLikeTransactionBuilder> {
         public:
-            virtual void buildTransaction(
-                    soci::session& sql,
-                    const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& inputs,
-                    const std::vector<std::vector<uint8_t>>& signatures,
-                    const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& outputs,
-                    uint32_t lockTime,
-                    std::vector<uint8_t>& rawTransaction
-            ) = 0;
-            virtual void estimateSize(const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& inputs,
-                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& outputs,
-                                      uint64_t& out
-            ) = 0;
-            virtual void pickUTXO(soci::session& sql, const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
-                          std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& pickedUtxo) = 0;
+            explicit BitcoinLikeTransactionBuilder(const api::BitcoinLikeNetworkParameters& params,
+                                                   const BitcoinLikeTransactionBuildFunction& buildFunction);
+            BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            addInput(const std::string &transactionHash, int32_t index, int32_t sequence) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> addOutput(const std::shared_ptr<api::Amount> &amount,
+                                                                          const std::shared_ptr<api::BitcoinLikeScript> &script) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> addChangePath(const std::string &path) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            excludeUtxo(const std::string &transactionHash, int32_t outputIndex) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> setNumberOfChangeAddresses(int32_t count) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            sendToAddress(const std::shared_ptr<api::Amount> &amount, const std::string &address) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            setFeesPerByte(const std::shared_ptr<api::Amount> &fees) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            setMaxAmountOnChange(const std::shared_ptr<api::Amount> &amount) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            setMinAmountOnChange(const std::shared_ptr<api::Amount> &amount) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> clone() override;
+
+            void reset() override;
+
+            void build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) override;
+
+        private:
+            api::BitcoinLikeNetworkParameters _params;
+            BitcoinLikeTransactionBuildFunction _build;
+            BitcoinLikeTransactionBuildRequest _request;
         };
     }
 }
+
 
 #endif //LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H

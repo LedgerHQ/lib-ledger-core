@@ -58,6 +58,7 @@ namespace ledger {
             void postRunnable(std::shared_ptr<core::api::Runnable> runnable);
 
         private:
+            std::atomic_bool _isRunning;
             std::shared_ptr<QCoreApplication> _app;
         };
     }

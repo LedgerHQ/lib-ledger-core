@@ -57,14 +57,17 @@ ledger::qt::QtMainExecutionContext::QtMainExecutionContext() : QtMainExecutionCo
 
 ledger::qt::QtMainExecutionContext::QtMainExecutionContext(int argc, char **argv)
 : QtMainExecutionContext(std::make_shared<QCoreApplication>(argc, argv)) {
-
+    _isRunning = true;
 }
 
 int ledger::qt::QtMainExecutionContext::run() {
+    if (!_isRunning.load())
+        return 0;
     return _app->exec();
 }
 
 void ledger::qt::QtMainExecutionContext::exit() {
+    _isRunning = false;
     auto app = _app;
     execute(make_runnable([app] {
         app->exit(0);

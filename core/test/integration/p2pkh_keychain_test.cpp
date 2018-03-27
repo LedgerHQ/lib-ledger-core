@@ -46,7 +46,7 @@ public:
             resolver
         );
         auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getSerialExecutionContext("worker")->execute(ledger::qt::make_runnable([=]() {
+        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
             P2PKHBitcoinLikeKeychain keychain(
                     configuration,
                     ledger::core::currencies::BITCOIN,
@@ -55,9 +55,7 @@ public:
                     backend->getPreferences("keychain")
             );
             f(keychain);
-            dispatcher->getSerialExecutionContext("worker")->execute(ledger::qt::make_runnable([=] () {
-                dispatcher->stop();
-            }));
+            dispatcher->stop();
         }));
         dispatcher->waitUntilStopped();
     };

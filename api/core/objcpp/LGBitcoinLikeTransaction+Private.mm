@@ -10,6 +10,7 @@
 #import "LGBitcoinLikeBlock+Private.h"
 #import "LGBitcoinLikeInput+Private.h"
 #import "LGBitcoinLikeOutput+Private.h"
+#import "LGEstimatedSize+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -101,6 +102,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWitness();
         return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull LGEstimatedSize *)getEstimatedSize {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getEstimatedSize();
+        return ::djinni_generated::EstimatedSize::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

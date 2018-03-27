@@ -1,13 +1,13 @@
 /*
  *
- * NativePathResolver
+ * IntegrationEnvironment.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 22/11/2016.
+ * Created by Pierre Pollastri on 26/03/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,27 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NATIVEPATHRESOLVER_HPP
-#define LEDGER_CORE_NATIVEPATHRESOLVER_HPP
 
-#include <src/api/PathResolver.hpp>
-#include <vector>
-#include <utils/Option.hpp>
+#include "IntegrationEnvironment.h"
 
-class NativePathResolver : public ledger::core::api::PathResolver {
-public:
-    NativePathResolver();
-    explicit NativePathResolver(const ledger::core::Option<std::string>& rootDirPath);
-    virtual std::string resolveDatabasePath(const std::string &path) override;
+IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 
-    virtual std::string resolveLogFilePath(const std::string &path) override;
+IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
+    QCoreApplication app(argc, argv);
+    _appDir = app.applicationDirPath().toStdString();
+}
 
-    virtual std::string resolvePreferencesPath(const std::string &path) override;
-    void clean();
-private:
-    std::vector<std::string> _createdPaths;
-    ledger::core::Option<std::string> _rootDirPath;
-};
+std::string IntegrationEnvironment::getApplicationDirPath() const {
+    return _appDir;
+}
 
+IntegrationEnvironment *IntegrationEnvironment::initInstance(int argc, char **argv) {
+    if (_instance == nullptr) {
+        _instance = new IntegrationEnvironment(argc, argv);
+    }
+    return _instance;
+}
 
-#endif //LEDGER_CORE_NATIVEPATHRESOLVER_HPP
+IntegrationEnvironment *IntegrationEnvironment::getInstance() {
+    return _instance;
+}
