@@ -134,6 +134,11 @@ namespace ledger {
             std::vector<uint8_t> readUntilEnd();
 
             /**
+            * Reset cursor position and offset to 0
+            */
+            void reset();
+
+            /**
              * Gets current cursor position
              * @return Current byte offset.
              */
