@@ -31,7 +31,6 @@
 #include "AESCipher.hpp"
 #include "PBKDF2.hpp"
 #include "AES256.hpp"
-#include "iostream"
 
 namespace ledger {
     namespace core {
@@ -91,96 +90,58 @@ namespace ledger {
         }
 
         void AESCipher::encrypt(BytesReader& input, BytesWriter& output) {
-
             uint32_t maxRead = 254 * AES256::BLOCK_SIZE;
-            //uint32_t maxReadBlocks = maxRead/ sizeof(uint32_t);
-            std::cout<<"============Start encrypt:============"<<std::endl;
             do {
-                //std::cout<<"################################"<<std::endl;
-
                 // Read 254 * AES_BLOCK_SIZE bytes (we want at most 0xFF blocks to encrypt we the same IV)
                 uint32_t available = input.available();
-
                 uint32_t minEncryptedRead = std::min(maxRead,available);
                 std::vector<uint8_t> dataToEncrypt = input.read(minEncryptedRead);
                 uint32_t read = dataToEncrypt.size();
-
-                std::cout<<"read: "<<read<<std::endl;
-
                 // Create an IVt
                 auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
-
-                //std::cout<<"AESCipher::encrypt Length of IV: "<<IV.size()<<std::endl;
-
                 // Encrypt
                 auto encrypted = AES256::encrypt(IV, _key, dataToEncrypt);
-                uint32_t encryptedSize = encrypted.size();
-
-                //std::cout<<"encryptedSize: "<<encryptedSize<<std::endl;
-
                 // Store number of blocks
                 uint8_t blocksCount = (encrypted.size() / AES256::BLOCK_SIZE);
-
-                //std::cout<<"blocksCount: "<<+blocksCount<<std::endl;
-
                 //Number of blocks of size AES256::BLOCK_SIZE in enrypted data
                 output.writeByte(blocksCount);
-
-                //Limit of reading (padding or string terminating before maxRead
+                //Limit of reading (padding or string terminating before maxRead)
                 output.writeVarInt(read);
-
                 // Store IV
                 output.writeByteArray(IV);
-
                 // Store encrypted data
                 output.writeByteArray(encrypted);
-                //std::cout<<"################################"<<std::endl;
             } while (input.hasNext());
-            std::cout<<"============End encrypt:============"<<std::endl;
         }
 
         void AESCipher::decrypt(BytesReader& input, BytesWriter& output) {
-
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
-
-            std::cout<<"============Start decrypt with maxReadBlocks:============"<<maxRead<<std::endl;
             do {
-
                 //Get number of blocks in encrypted data
                 uint8_t blocksCount = input.readNextByte();
-
-                //std::cout<<"blocksCount: "<<+blocksCount<<std::endl;
-
-                uint32_t dataSize = input.readNextVarInt();
-
-                //std::cout<<"read: "<<dataSize<<std::endl;
-
                 //Size of encrypted (chunk of) data
                 uint32_t encryptedDataSize = blocksCount*AES256::BLOCK_SIZE;
-
-                std::cout<<"encryptedDataSize: "<<+encryptedDataSize<<std::endl;
-
-                //Read IV and encryptedData
+                //Get data that we read
+                uint32_t dataSize = input.readNextVarInt();
+                //Read IV
                 std::vector<uint8_t> IV = input.read(AES256::BLOCK_SIZE);
-
                 //Get number of bytes to read
                 uint32_t available = input.available();
-
-                std::cout<<"available: "<<available<<std::endl;
-
-                uint32_t minEncryptedRead = std::min(maxRead,available);
-
-                //std::cout<<"AESCipher::decrypt Length of IV: "<<IV.size()<<std::endl;
-
-                std::vector<uint8_t> encryptedData = input.read(minEncryptedRead);
-
+                if(available < encryptedDataSize) {
+                    //Should not read than more available data
+                    break;
+                }
+                //Read encrypted data
+                std::vector<uint8_t> encryptedData = input.read(encryptedDataSize);
                 //Decrypt
                 auto decrypted = AES256::decrypt(IV, _key, encryptedData);
-                std::cout<<"decrypted size: "<<decrypted.size()<<std::endl;
+                //Truncate if needed to size of encrypted data that we stored in dataSize bytes
+                if(dataSize <  decrypted.size()){
+                    decrypted.resize(dataSize);
+                }
+                //Store decrypted data
                 output.writeByteArray(decrypted);
-
             } while (input.hasNext());
-            std::cout<<"============End decrypt:============"<<std::endl;
         }
     }
 }
