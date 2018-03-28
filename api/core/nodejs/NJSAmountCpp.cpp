@@ -358,14 +358,119 @@ NAN_METHOD(NJSAmount::format) {
 NAN_METHOD(NJSAmount::fromHex) {
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 2)
     {
-        return Nan::ThrowError("NJSAmount::fromHex needs 1 arguments");
+        return Nan::ThrowError("NJSAmount::fromHex needs 2 arguments");
     }
 
     //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
+
+    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("walletType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_1 = (ledger::core::api::WalletType)Nan::To<int>(field_arg_0_1).FromJust();
+
+    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_2(field_arg_0_2->ToString());
+    auto arg_0_2 = std::string(*string_arg_0_2);
+
+    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bip44CoinType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_3 = Nan::To<int32_t>(field_arg_0_3).FromJust();
+
+    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("paymentUriScheme").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_4(field_arg_0_4->ToString());
+    auto arg_0_4 = std::string(*string_arg_0_4);
+
+    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("units").ToLocalChecked()).ToLocalChecked();
+    vector<CurrencyUnit> arg_0_5;
+    Local<Array> arg_0_5_container = Local<Array>::Cast(field_arg_0_5);
+    for(uint32_t arg_0_5_id = 0; arg_0_5_id < arg_0_5_container->Length(); arg_0_5_id++)
+    {
+        if(arg_0_5_container->Get(arg_0_5_id)->IsObject())
+        {
+
+            auto field_arg_0_5_elem_1 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_1(field_arg_0_5_elem_1->ToString());
+            auto arg_0_5_elem_1 = std::string(*string_arg_0_5_elem_1);
+
+            auto field_arg_0_5_elem_2 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_2(field_arg_0_5_elem_2->ToString());
+            auto arg_0_5_elem_2 = std::string(*string_arg_0_5_elem_2);
+
+            auto field_arg_0_5_elem_3 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_3(field_arg_0_5_elem_3->ToString());
+            auto arg_0_5_elem_3 = std::string(*string_arg_0_5_elem_3);
+
+            auto field_arg_0_5_elem_4 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
+            auto arg_0_5_elem_4 = Nan::To<int32_t>(field_arg_0_5_elem_4).FromJust();
+            CurrencyUnit arg_0_5_elem(arg_0_5_elem_1, arg_0_5_elem_2, arg_0_5_elem_3, arg_0_5_elem_4);
+
+            arg_0_5.emplace_back(arg_0_5_elem);
+        }
+    }
+
+
+    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked()).ToLocalChecked();
+
+    auto field_arg_0_6_1 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_1(field_arg_0_6_1->ToString());
+    auto arg_0_6_1 = std::string(*string_arg_0_6_1);
+
+    auto field_arg_0_6_2 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_2;
+    Local<Array> arg_0_6_2_container = Local<Array>::Cast(field_arg_0_6_2);
+    for(uint32_t arg_0_6_2_id = 0; arg_0_6_2_id < arg_0_6_2_container->Length(); arg_0_6_2_id++)
+    {
+        if(arg_0_6_2_container->Get(arg_0_6_2_id)->IsUint32())
+        {
+            auto arg_0_6_2_elem = Nan::To<uint32_t>(arg_0_6_2_container->Get(arg_0_6_2_id)).FromJust();
+            arg_0_6_2.emplace_back(arg_0_6_2_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_3 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_3;
+    Local<Array> arg_0_6_3_container = Local<Array>::Cast(field_arg_0_6_3);
+    for(uint32_t arg_0_6_3_id = 0; arg_0_6_3_id < arg_0_6_3_container->Length(); arg_0_6_3_id++)
+    {
+        if(arg_0_6_3_container->Get(arg_0_6_3_id)->IsUint32())
+        {
+            auto arg_0_6_3_elem = Nan::To<uint32_t>(arg_0_6_3_container->Get(arg_0_6_3_id)).FromJust();
+            arg_0_6_3.emplace_back(arg_0_6_3_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_4 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_4;
+    Local<Array> arg_0_6_4_container = Local<Array>::Cast(field_arg_0_6_4);
+    for(uint32_t arg_0_6_4_id = 0; arg_0_6_4_id < arg_0_6_4_container->Length(); arg_0_6_4_id++)
+    {
+        if(arg_0_6_4_container->Get(arg_0_6_4_id)->IsUint32())
+        {
+            auto arg_0_6_4_elem = Nan::To<uint32_t>(arg_0_6_4_container->Get(arg_0_6_4_id)).FromJust();
+            arg_0_6_4.emplace_back(arg_0_6_4_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_5 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_6_5).FromJust();
+
+    auto field_arg_0_6_6 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_6 = Nan::To<int64_t>(field_arg_0_6_6).FromJust();
+
+    auto field_arg_0_6_7 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_7(field_arg_0_6_7->ToString());
+    auto arg_0_6_7 = std::string(*string_arg_0_6_7);
+
+    auto field_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_8 = Nan::To<bool>(field_arg_0_6_8).FromJust();
+    BitcoinLikeNetworkParameters arg_0_6(arg_0_6_1, arg_0_6_2, arg_0_6_3, arg_0_6_4, arg_0_6_5, arg_0_6_6, arg_0_6_7, arg_0_6_8);
+
+    Currency arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6);
+
+    String::Utf8Value string_arg_1(info[1]->ToString());
+    auto arg_1 = std::string(*string_arg_1);
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSAmount* obj = Nan::ObjectWrap::Unwrap<NJSAmount>(info.This());
@@ -375,25 +480,130 @@ NAN_METHOD(NJSAmount::fromHex) {
         return Nan::ThrowError("NJSAmount::fromHex : implementation of Amount is not valid");
     }
 
-    auto result = cpp_impl->fromHex(arg_0);
+    auto result = cpp_impl->fromHex(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_1 = NJSAmount::wrap(result);
+    auto arg_2 = NJSAmount::wrap(result);
 
 
     //Return result
-    info.GetReturnValue().Set(arg_1);
+    info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSAmount::fromLong) {
 
     //Check if method called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 2)
     {
-        return Nan::ThrowError("NJSAmount::fromLong needs 1 arguments");
+        return Nan::ThrowError("NJSAmount::fromLong needs 2 arguments");
     }
 
     //Check if parameters have correct types
-    auto arg_0 = Nan::To<int64_t>(info[0]).FromJust();
+
+    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("walletType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_1 = (ledger::core::api::WalletType)Nan::To<int>(field_arg_0_1).FromJust();
+
+    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_2(field_arg_0_2->ToString());
+    auto arg_0_2 = std::string(*string_arg_0_2);
+
+    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bip44CoinType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_3 = Nan::To<int32_t>(field_arg_0_3).FromJust();
+
+    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("paymentUriScheme").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_4(field_arg_0_4->ToString());
+    auto arg_0_4 = std::string(*string_arg_0_4);
+
+    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("units").ToLocalChecked()).ToLocalChecked();
+    vector<CurrencyUnit> arg_0_5;
+    Local<Array> arg_0_5_container = Local<Array>::Cast(field_arg_0_5);
+    for(uint32_t arg_0_5_id = 0; arg_0_5_id < arg_0_5_container->Length(); arg_0_5_id++)
+    {
+        if(arg_0_5_container->Get(arg_0_5_id)->IsObject())
+        {
+
+            auto field_arg_0_5_elem_1 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_1(field_arg_0_5_elem_1->ToString());
+            auto arg_0_5_elem_1 = std::string(*string_arg_0_5_elem_1);
+
+            auto field_arg_0_5_elem_2 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_2(field_arg_0_5_elem_2->ToString());
+            auto arg_0_5_elem_2 = std::string(*string_arg_0_5_elem_2);
+
+            auto field_arg_0_5_elem_3 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_3(field_arg_0_5_elem_3->ToString());
+            auto arg_0_5_elem_3 = std::string(*string_arg_0_5_elem_3);
+
+            auto field_arg_0_5_elem_4 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
+            auto arg_0_5_elem_4 = Nan::To<int32_t>(field_arg_0_5_elem_4).FromJust();
+            CurrencyUnit arg_0_5_elem(arg_0_5_elem_1, arg_0_5_elem_2, arg_0_5_elem_3, arg_0_5_elem_4);
+
+            arg_0_5.emplace_back(arg_0_5_elem);
+        }
+    }
+
+
+    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked()).ToLocalChecked();
+
+    auto field_arg_0_6_1 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_1(field_arg_0_6_1->ToString());
+    auto arg_0_6_1 = std::string(*string_arg_0_6_1);
+
+    auto field_arg_0_6_2 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_2;
+    Local<Array> arg_0_6_2_container = Local<Array>::Cast(field_arg_0_6_2);
+    for(uint32_t arg_0_6_2_id = 0; arg_0_6_2_id < arg_0_6_2_container->Length(); arg_0_6_2_id++)
+    {
+        if(arg_0_6_2_container->Get(arg_0_6_2_id)->IsUint32())
+        {
+            auto arg_0_6_2_elem = Nan::To<uint32_t>(arg_0_6_2_container->Get(arg_0_6_2_id)).FromJust();
+            arg_0_6_2.emplace_back(arg_0_6_2_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_3 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_3;
+    Local<Array> arg_0_6_3_container = Local<Array>::Cast(field_arg_0_6_3);
+    for(uint32_t arg_0_6_3_id = 0; arg_0_6_3_id < arg_0_6_3_container->Length(); arg_0_6_3_id++)
+    {
+        if(arg_0_6_3_container->Get(arg_0_6_3_id)->IsUint32())
+        {
+            auto arg_0_6_3_elem = Nan::To<uint32_t>(arg_0_6_3_container->Get(arg_0_6_3_id)).FromJust();
+            arg_0_6_3.emplace_back(arg_0_6_3_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_4 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_4;
+    Local<Array> arg_0_6_4_container = Local<Array>::Cast(field_arg_0_6_4);
+    for(uint32_t arg_0_6_4_id = 0; arg_0_6_4_id < arg_0_6_4_container->Length(); arg_0_6_4_id++)
+    {
+        if(arg_0_6_4_container->Get(arg_0_6_4_id)->IsUint32())
+        {
+            auto arg_0_6_4_elem = Nan::To<uint32_t>(arg_0_6_4_container->Get(arg_0_6_4_id)).FromJust();
+            arg_0_6_4.emplace_back(arg_0_6_4_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_5 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_6_5).FromJust();
+
+    auto field_arg_0_6_6 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_6 = Nan::To<int64_t>(field_arg_0_6_6).FromJust();
+
+    auto field_arg_0_6_7 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_7(field_arg_0_6_7->ToString());
+    auto arg_0_6_7 = std::string(*string_arg_0_6_7);
+
+    auto field_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_8 = Nan::To<bool>(field_arg_0_6_8).FromJust();
+    BitcoinLikeNetworkParameters arg_0_6(arg_0_6_1, arg_0_6_2, arg_0_6_3, arg_0_6_4, arg_0_6_5, arg_0_6_6, arg_0_6_7, arg_0_6_8);
+
+    Currency arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6);
+
+    auto arg_1 = Nan::To<int64_t>(info[1]).FromJust();
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSAmount* obj = Nan::ObjectWrap::Unwrap<NJSAmount>(info.This());
@@ -403,14 +613,14 @@ NAN_METHOD(NJSAmount::fromLong) {
         return Nan::ThrowError("NJSAmount::fromLong : implementation of Amount is not valid");
     }
 
-    auto result = cpp_impl->fromLong(arg_0);
+    auto result = cpp_impl->fromLong(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_1 = NJSAmount::wrap(result);
+    auto arg_2 = NJSAmount::wrap(result);
 
 
     //Return result
-    info.GetReturnValue().Set(arg_1);
+    info.GetReturnValue().Set(arg_2);
 }
 
 NAN_METHOD(NJSAmount::New) {
@@ -421,17 +631,122 @@ NAN_METHOD(NJSAmount::New) {
     }
 
     //Check if NJSAmount::New called with right number of arguments
-    if(info.Length() != 1)
+    if(info.Length() != 2)
     {
         return Nan::ThrowError("NJSAmount::New needs same number of arguments as ledger::core::api::Amount::fromHex method");
     }
 
     //Unwrap objects to get C++ classes
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
+
+    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("walletType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_1 = (ledger::core::api::WalletType)Nan::To<int>(field_arg_0_1).FromJust();
+
+    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_2(field_arg_0_2->ToString());
+    auto arg_0_2 = std::string(*string_arg_0_2);
+
+    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bip44CoinType").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_3 = Nan::To<int32_t>(field_arg_0_3).FromJust();
+
+    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("paymentUriScheme").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_4(field_arg_0_4->ToString());
+    auto arg_0_4 = std::string(*string_arg_0_4);
+
+    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("units").ToLocalChecked()).ToLocalChecked();
+    vector<CurrencyUnit> arg_0_5;
+    Local<Array> arg_0_5_container = Local<Array>::Cast(field_arg_0_5);
+    for(uint32_t arg_0_5_id = 0; arg_0_5_id < arg_0_5_container->Length(); arg_0_5_id++)
+    {
+        if(arg_0_5_container->Get(arg_0_5_id)->IsObject())
+        {
+
+            auto field_arg_0_5_elem_1 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("name").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_1(field_arg_0_5_elem_1->ToString());
+            auto arg_0_5_elem_1 = std::string(*string_arg_0_5_elem_1);
+
+            auto field_arg_0_5_elem_2 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("symbol").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_2(field_arg_0_5_elem_2->ToString());
+            auto arg_0_5_elem_2 = std::string(*string_arg_0_5_elem_2);
+
+            auto field_arg_0_5_elem_3 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+            String::Utf8Value string_arg_0_5_elem_3(field_arg_0_5_elem_3->ToString());
+            auto arg_0_5_elem_3 = std::string(*string_arg_0_5_elem_3);
+
+            auto field_arg_0_5_elem_4 = Nan::Get(arg_0_5_container->Get(arg_0_5_id)->ToObject(), Nan::New<String>("numberOfDecimal").ToLocalChecked()).ToLocalChecked();
+            auto arg_0_5_elem_4 = Nan::To<int32_t>(field_arg_0_5_elem_4).FromJust();
+            CurrencyUnit arg_0_5_elem(arg_0_5_elem_1, arg_0_5_elem_2, arg_0_5_elem_3, arg_0_5_elem_4);
+
+            arg_0_5.emplace_back(arg_0_5_elem);
+        }
+    }
+
+
+    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked()).ToLocalChecked();
+
+    auto field_arg_0_6_1 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_1(field_arg_0_6_1->ToString());
+    auto arg_0_6_1 = std::string(*string_arg_0_6_1);
+
+    auto field_arg_0_6_2 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_2;
+    Local<Array> arg_0_6_2_container = Local<Array>::Cast(field_arg_0_6_2);
+    for(uint32_t arg_0_6_2_id = 0; arg_0_6_2_id < arg_0_6_2_container->Length(); arg_0_6_2_id++)
+    {
+        if(arg_0_6_2_container->Get(arg_0_6_2_id)->IsUint32())
+        {
+            auto arg_0_6_2_elem = Nan::To<uint32_t>(arg_0_6_2_container->Get(arg_0_6_2_id)).FromJust();
+            arg_0_6_2.emplace_back(arg_0_6_2_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_3 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_3;
+    Local<Array> arg_0_6_3_container = Local<Array>::Cast(field_arg_0_6_3);
+    for(uint32_t arg_0_6_3_id = 0; arg_0_6_3_id < arg_0_6_3_container->Length(); arg_0_6_3_id++)
+    {
+        if(arg_0_6_3_container->Get(arg_0_6_3_id)->IsUint32())
+        {
+            auto arg_0_6_3_elem = Nan::To<uint32_t>(arg_0_6_3_container->Get(arg_0_6_3_id)).FromJust();
+            arg_0_6_3.emplace_back(arg_0_6_3_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_4 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_6_4;
+    Local<Array> arg_0_6_4_container = Local<Array>::Cast(field_arg_0_6_4);
+    for(uint32_t arg_0_6_4_id = 0; arg_0_6_4_id < arg_0_6_4_container->Length(); arg_0_6_4_id++)
+    {
+        if(arg_0_6_4_container->Get(arg_0_6_4_id)->IsUint32())
+        {
+            auto arg_0_6_4_elem = Nan::To<uint32_t>(arg_0_6_4_container->Get(arg_0_6_4_id)).FromJust();
+            arg_0_6_4.emplace_back(arg_0_6_4_elem);
+        }
+    }
+
+
+    auto field_arg_0_6_5 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_6_5).FromJust();
+
+    auto field_arg_0_6_6 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_6 = Nan::To<int64_t>(field_arg_0_6_6).FromJust();
+
+    auto field_arg_0_6_7 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
+    String::Utf8Value string_arg_0_6_7(field_arg_0_6_7->ToString());
+    auto arg_0_6_7 = std::string(*string_arg_0_6_7);
+
+    auto field_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_6_8 = Nan::To<bool>(field_arg_0_6_8).FromJust();
+    BitcoinLikeNetworkParameters arg_0_6(arg_0_6_1, arg_0_6_2, arg_0_6_3, arg_0_6_4, arg_0_6_5, arg_0_6_6, arg_0_6_7, arg_0_6_8);
+
+    Currency arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6);
+
+    String::Utf8Value string_arg_1(info[1]->ToString());
+    auto arg_1 = std::string(*string_arg_1);
 
     //Call factory
-    auto cpp_instance = ledger::core::api::Amount::fromHex(arg_0);
+    auto cpp_instance = ledger::core::api::Amount::fromHex(arg_0,arg_1);
     NJSAmount *node_instance = new NJSAmount(cpp_instance);
 
     if(node_instance)

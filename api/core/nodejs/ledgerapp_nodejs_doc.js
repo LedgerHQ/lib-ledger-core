@@ -460,8 +460,8 @@ declare class NJSAmount
     declare function toLong(): number;
     declare function toDouble(): number;
     declare function format(locale: Locale, rules: ?FormatRules): string;
-    static declare function fromHex(hex: string): NJSAmount;
-    static declare function fromLong(value: number): NJSAmount;
+    static declare function fromHex(currency: Currency, hex: string): NJSAmount;
+    static declare function fromLong(currency: Currency, value: number): NJSAmount;
 }
 /**
  * Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to

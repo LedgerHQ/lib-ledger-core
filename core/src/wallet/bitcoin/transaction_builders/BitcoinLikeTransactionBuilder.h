@@ -57,7 +57,6 @@ namespace ledger {
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
 
-            static const std::shared_ptr<BigInt> DEFAULT_MAX_AMOUNT;
         };
 
         using BitcoinLikeTransactionBuildFunction = std::function<void (const BitcoinLikeTransactionBuildRequest&)>;

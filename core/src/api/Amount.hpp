@@ -39,9 +39,9 @@ public:
 
     virtual std::string format(const Locale & locale, const std::experimental::optional<FormatRules> & rules) = 0;
 
-    static std::shared_ptr<Amount> fromHex(const std::string & hex);
+    static std::shared_ptr<Amount> fromHex(const Currency & currency, const std::string & hex);
 
-    static std::shared_ptr<Amount> fromLong(int64_t value);
+    static std::shared_ptr<Amount> fromLong(const Currency & currency, int64_t value);
 };
 
 } } }  // namespace ledger::core::api
