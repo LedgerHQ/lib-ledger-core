@@ -27,7 +27,7 @@ add_executable(ledger-core-integration-tests
         pool_tests.cpp
         BaseFixture.cpp BaseFixture.h accounts_public_interfaces_test.cpp
         account_creation_tests.cpp
-        ${ledger-core-fixtures-srcs} account_blockchain_observation.cpp IntegrationEnvironment.cpp IntegrationEnvironment.h)
+        ${ledger-core-fixtures-srcs} account_blockchain_observation.cpp IntegrationEnvironment.cpp IntegrationEnvironment.h bitcoin_transaction_tests.cpp)
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
 target_link_libraries(ledger-core-integration-tests ledger-core)

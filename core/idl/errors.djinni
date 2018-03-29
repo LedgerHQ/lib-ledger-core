@@ -42,6 +42,7 @@ ErrorCode = enum {
 
     # Bitcoin error
     invalid_network_address_version;
+    incomplete_transaction;
 
     # Generic
     runtime_error;

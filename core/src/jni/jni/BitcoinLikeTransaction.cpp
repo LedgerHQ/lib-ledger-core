@@ -100,7 +100,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppPr
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
         auto r = ref->getTimestamp();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Date>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

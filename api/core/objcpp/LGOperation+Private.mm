@@ -8,6 +8,7 @@
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
 #import "LGBitcoinLikeOperation+Private.h"
+#import "LGCurrency+Private.h"
 #import "LGOperationType+Private.h"
 #import "LGPreferences+Private.h"
 #import "LGTrustIndicator+Private.h"
@@ -152,6 +153,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWalletType();
         return ::djinni::Enum<::ledger::core::api::WalletType, LGWalletType>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nonnull LGCurrency *)getCurrency {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getCurrency();
+        return ::djinni_generated::Currency::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

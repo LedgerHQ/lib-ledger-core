@@ -44,6 +44,7 @@
 #include <events/EventPublisher.hpp>
 #include <events/Event.hpp>
 #include <api/StringCallback.hpp>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 
 namespace ledger {
     namespace core {
@@ -389,6 +390,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
+
             return nullptr;
         }
 

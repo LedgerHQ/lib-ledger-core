@@ -45,6 +45,7 @@ enum class ErrorCode : int {
     PRIVATE_DERIVATION_NOT_SUPPORTED,
     /** Bitcoin error */
     INVALID_NETWORK_ADDRESS_VERSION,
+    INCOMPLETE_TRANSACTION,
     /** Generic */
     RUNTIME_ERROR,
     OUT_OF_RANGE,

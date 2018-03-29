@@ -45,6 +45,8 @@
 #include <api/BitcoinLikePickingStrategy.hpp>
 #include <api/BitcoinLikeTransactionRequest.hpp>
 #include <api/BitcoinLikePreparedTransaction.hpp>
+#include <wallet/bitcoin/types.h>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
 namespace ledger {
     namespace core {
@@ -136,6 +138,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
+            std::shared_ptr<BitcoinLikeUtxoPicker> _picker;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
         };

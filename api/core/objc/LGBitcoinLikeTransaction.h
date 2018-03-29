@@ -36,7 +36,7 @@
 - (nonnull NSDate *)getTime;
 
 /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
-- (nullable NSDate *)getTimestamp;
+- (nullable NSNumber *)getTimestamp;
 
 /** Serialize the transaction to its raw format. */
 - (nonnull NSData *)serialize;

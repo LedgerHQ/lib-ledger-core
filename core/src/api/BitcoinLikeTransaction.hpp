@@ -48,7 +48,7 @@ public:
     virtual std::chrono::system_clock::time_point getTime() = 0;
 
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
-    virtual std::experimental::optional<std::chrono::system_clock::time_point> getTimestamp() = 0;
+    virtual std::experimental::optional<int32_t> getTimestamp() = 0;
 
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;

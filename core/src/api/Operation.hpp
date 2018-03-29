@@ -19,6 +19,7 @@ class Preferences;
 class TrustIndicator;
 enum class OperationType;
 enum class WalletType;
+struct Currency;
 
 class Operation {
 public:
@@ -61,6 +62,8 @@ public:
     virtual bool isComplete() = 0;
 
     virtual WalletType getWalletType() = 0;
+
+    virtual Currency getCurrency() = 0;
 };
 
 } } }  // namespace ledger::core::api

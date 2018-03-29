@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodePrivateDerivationNotSupported,
     /** Bitcoin error */
     LGErrorCodeInvalidNetworkAddressVersion,
+    LGErrorCodeIncompleteTransaction,
     /** Generic */
     LGErrorCodeRuntimeError,
     LGErrorCodeOutOfRange,

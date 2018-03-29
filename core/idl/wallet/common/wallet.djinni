@@ -83,6 +83,7 @@ Operation = interface +c {
     isComplete(): bool;
 
     getWalletType(): WalletType;
+    getCurrency(): Currency;
 }
 
 OperationOrderKey = enum {

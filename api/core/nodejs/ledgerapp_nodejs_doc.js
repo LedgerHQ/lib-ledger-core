@@ -100,6 +100,7 @@ declare class NJSOperation
     declare function isInstanceOfRippleLikeOperation(): boolean;
     declare function isComplete(): boolean;
     declare function getWalletType(): WalletType;
+    declare function getCurrency(): Currency;
 }
 declare class NJSQueryFilter
 {
@@ -660,7 +661,7 @@ declare class NJSBitcoinLikeTransaction
      */
     declare function getTime(): Date;
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
-    declare function getTimestamp(): ?Date;
+    declare function getTimestamp(): ?number;
     /** Serialize the transaction to its raw format. */
     declare function serialize(): Object;
     /** Get the witness if the underlying transaction is a segwit transaction. */

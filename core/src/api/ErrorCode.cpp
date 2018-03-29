@@ -30,6 +30,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::INVALID_VERSION: return "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED: return "PRIVATE_DERIVATION_NOT_SUPPORTED";
         case ErrorCode::INVALID_NETWORK_ADDRESS_VERSION: return "INVALID_NETWORK_ADDRESS_VERSION";
+        case ErrorCode::INCOMPLETE_TRANSACTION: return "INCOMPLETE_TRANSACTION";
         case ErrorCode::RUNTIME_ERROR: return "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE: return "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT: return "ILLEGAL_ARGUMENT";
@@ -88,6 +89,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "INVALID_VERSION") return ErrorCode::INVALID_VERSION;
     else if (errorCode == "PRIVATE_DERIVATION_NOT_SUPPORTED") return ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED;
     else if (errorCode == "INVALID_NETWORK_ADDRESS_VERSION") return ErrorCode::INVALID_NETWORK_ADDRESS_VERSION;
+    else if (errorCode == "INCOMPLETE_TRANSACTION") return ErrorCode::INCOMPLETE_TRANSACTION;
     else if (errorCode == "RUNTIME_ERROR") return ErrorCode::RUNTIME_ERROR;
     else if (errorCode == "OUT_OF_RANGE") return ErrorCode::OUT_OF_RANGE;
     else if (errorCode == "ILLEGAL_ARGUMENT") return ErrorCode::ILLEGAL_ARGUMENT;
@@ -147,6 +149,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::INVALID_VERSION:  return os << "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED:  return os << "PRIVATE_DERIVATION_NOT_SUPPORTED";
         case ErrorCode::INVALID_NETWORK_ADDRESS_VERSION:  return os << "INVALID_NETWORK_ADDRESS_VERSION";
+        case ErrorCode::INCOMPLETE_TRANSACTION:  return os << "INCOMPLETE_TRANSACTION";
         case ErrorCode::RUNTIME_ERROR:  return os << "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE:  return os << "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT:  return os << "ILLEGAL_ARGUMENT";

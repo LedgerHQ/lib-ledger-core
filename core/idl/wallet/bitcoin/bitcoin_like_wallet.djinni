@@ -97,7 +97,7 @@ BitcoinLikeTransaction = interface +c {
     # this transaction
     getTime(): date;
     # Get the timestamps serialized in the raw transaction if the underlying currency handles it.
-    getTimestamp(): optional<date>;
+    getTimestamp(): optional<i32>;
     # Serialize the transaction to its raw format.
     serialize(): binary;
     # Get the witness if the underlying transaction is a segwit transaction.

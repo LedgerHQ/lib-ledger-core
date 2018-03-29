@@ -227,8 +227,7 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getTimestamp) {
     auto result = cpp_impl->getTimestamp();
 
     //Wrap result in node object
-    auto date_arg_0 = chrono::duration_cast<chrono::seconds>((*result).time_since_epoch()).count();
-    auto arg_0 = Nan::New<Date>(date_arg_0).ToLocalChecked();
+    auto arg_0 = Nan::New<Int32>((*result));
 
     //Return result
     info.GetReturnValue().Set(arg_0);

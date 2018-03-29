@@ -59,7 +59,7 @@ namespace ledger {
 
         };
 
-        using BitcoinLikeTransactionBuildFunction = std::function<void (const BitcoinLikeTransactionBuildRequest&)>;
+        using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;
 
         class BitcoinLikeTransactionBuilder : public api::BitcoinLikeTransactionBuilder, public std::enable_shared_from_this<BitcoinLikeTransactionBuilder> {
         public:
@@ -99,7 +99,7 @@ namespace ledger {
             void reset() override;
 
             void build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) override;
-
+            Future<std::shared_ptr<api::BitcoinLikeTransaction>> build();
         private:
             api::BitcoinLikeNetworkParameters _params;
             BitcoinLikeTransactionBuildFunction _build;
