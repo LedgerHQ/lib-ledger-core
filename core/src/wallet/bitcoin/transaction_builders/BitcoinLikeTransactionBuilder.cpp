@@ -100,6 +100,7 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                      const std::string &address) {
+
             return shared_from_this();
         }
 
