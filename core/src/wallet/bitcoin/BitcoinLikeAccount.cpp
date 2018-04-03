@@ -45,6 +45,8 @@
 #include <events/Event.hpp>
 #include <api/StringCallback.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 
 namespace ledger {
     namespace core {
@@ -60,6 +62,7 @@ namespace ledger {
             _synchronizer = synchronizer;
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
+            _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getContext(), getWallet()->getCurrency());
         }
 
         void
@@ -381,17 +384,26 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
-
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
+                return seq.str();
+            }).callback(getContext(), callback);
         }
 
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                                       const std::shared_ptr<api::StringCallback> &callback) {
-
+            broadcastRawTransaction(transaction->serialize(), callback);
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
-
-            return nullptr;
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
+                return self->getUTXO();
+            };
+            return std::make_shared<BitcoinLikeTransactionBuilder>(
+                    getContext(),
+                    getWallet()->getCurrency().bitcoinLikeNetworkParameters.value(),
+                    _picker->getBuildFunction(getUTXO, _explorer, _keychain)
+            );
         }
 
 

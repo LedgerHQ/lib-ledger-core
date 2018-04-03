@@ -69,5 +69,7 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto tx = wait(builder->build());
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    tx;
 }

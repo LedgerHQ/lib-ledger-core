@@ -63,8 +63,10 @@ namespace ledger {
 
         class BitcoinLikeTransactionBuilder : public api::BitcoinLikeTransactionBuilder, public std::enable_shared_from_this<BitcoinLikeTransactionBuilder> {
         public:
-            explicit BitcoinLikeTransactionBuilder(const api::BitcoinLikeNetworkParameters& params,
-                                                   const BitcoinLikeTransactionBuildFunction& buildFunction);
+            explicit BitcoinLikeTransactionBuilder(
+                    const std::shared_ptr<api::ExecutionContext>& context,
+                    const api::BitcoinLikeNetworkParameters& params,
+                    const BitcoinLikeTransactionBuildFunction& buildFunction);
             BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
             addInput(const std::string &transactionHash, int32_t index, int32_t sequence) override;
@@ -104,6 +106,7 @@ namespace ledger {
             api::BitcoinLikeNetworkParameters _params;
             BitcoinLikeTransactionBuildFunction _build;
             BitcoinLikeTransactionBuildRequest _request;
+            std::shared_ptr<api::ExecutionContext> _context;
         };
     }
 }

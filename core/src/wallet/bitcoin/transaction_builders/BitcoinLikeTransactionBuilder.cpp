@@ -31,6 +31,7 @@
 
 #include "BitcoinLikeTransactionBuilder.h"
 #include <wallet/common/Amount.h>
+#include <api/BitcoinLikeTransactionCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,14 +46,17 @@ namespace ledger {
             _params = cpy._params;
             _build = cpy._build;
             _request = cpy._request;
+            _context = cpy._context;
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
+                const std::shared_ptr<api::ExecutionContext>& context,
                 const api::BitcoinLikeNetworkParameters& params,
                 const BitcoinLikeTransactionBuildFunction &buildFunction)
                 : _request(std::make_shared<BigInt>(params.DustAmount)) {
             _params = params;
             _build = buildFunction;
+            _context = context;
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -106,7 +110,7 @@ namespace ledger {
 
         void
         BitcoinLikeTransactionBuilder::build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) {
-
+            build().callback(_context, callback);
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -125,6 +129,10 @@ namespace ledger {
 
         void BitcoinLikeTransactionBuilder::reset() {
             _request = BitcoinLikeTransactionBuildRequest(std::make_shared<BigInt>(_params.DustAmount));
+        }
+
+        Future<std::shared_ptr<api::BitcoinLikeTransaction>> BitcoinLikeTransactionBuilder::build() {
+            return _build(_request);
         }
 
         BitcoinLikeTransactionBuildRequest::BitcoinLikeTransactionBuildRequest(

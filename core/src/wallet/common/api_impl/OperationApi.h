@@ -33,6 +33,7 @@
 
 #include <api/Operation.hpp>
 #include "../Operation.h"
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,6 +60,8 @@ namespace ledger {
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();
             const std::shared_ptr<AbstractAccount>& getAccount() const;
+
+            api::Currency getCurrency() override;
 
         private:
             ledger::core::Operation _backend;

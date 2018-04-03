@@ -30,6 +30,7 @@
  */
 
 #include "BitcoinLikeUtxoPicker.h"
+#include <async/Promise.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,11 +45,10 @@ namespace ledger {
         BitcoinLikeUtxoPicker::getBuildFunction(const BitcoinLikeGetUtxoFunction &getUtxo,
                                                 const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
                                                 const std::shared_ptr<BitcoinLikeKeychain> &keychain) {
-
             auto self = shared_from_this();
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
-                self->async<std::shared_ptr<api::BitcoinLikeTransaction>>([=] () -> std::shared_ptr<api::BitcoinLikeTransaction> {
-                    auto tx = std::make_shared<BitcoinLikeTransactionApi>();
+                return self->async<std::shared_ptr<api::BitcoinLikeTransaction>>([=] () -> std::shared_ptr<api::BitcoinLikeTransaction> {
+                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency);
                     Buddy buddy(r, explorer, keychain, *tx);
                     self->fillInputs(buddy);
                     self->fillOutputs(buddy);

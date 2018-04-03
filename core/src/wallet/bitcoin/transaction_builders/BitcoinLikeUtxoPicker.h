@@ -39,10 +39,12 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <api/Currency.hpp>
+#include <async/Future.hpp>
+#include <api/BitcoinLikeOutput.hpp>
 
 namespace ledger {
     namespace core {
-        using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>>;
+        using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
         public:
@@ -74,7 +76,6 @@ namespace ledger {
                 BitcoinLikeTransactionApi& transaction;
             };
 
-            virtual std::list<api::BitcoinLikeOutput> pickUtxo(Buddy& buddy) = 0;
             virtual void fillInputs(Buddy& buddy) = 0;
             virtual void fillOutputs(Buddy& buddy) = 0;
             virtual void fillTransactionInfo(Buddy& buddy) = 0;
