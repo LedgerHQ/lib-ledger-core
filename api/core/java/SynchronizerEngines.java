@@ -5,9 +5,19 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class of constants representing the engines to rely on for synchronization */
 public abstract class SynchronizerEngines {
+    /**
+     *String, rely on blockchain explorers to synchronize,
+     *For example to condsider a transaction valid, it should, first, be included in a block,
+     *then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
+     */
     public static final String BLOCKCHAIN_EXPLORER = "BLOCKCHAIN_EXPLORER";
 
+    /**
+     *String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
+     *To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
+     */
     public static final String SPV = "SPV";
 
 

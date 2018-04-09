@@ -8,6 +8,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**TODO */
 class PoolConfiguration {
 public:
     virtual ~PoolConfiguration() {}

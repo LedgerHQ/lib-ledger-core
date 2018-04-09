@@ -30,10 +30,29 @@ public:
     std::shared_ptr<ledger::core::api::Secp256k1> getCppImpl(){return _Secp256k1;};
 
 private:
+    /**
+     * Generates public key from private key.
+     * @param privKey 32 byte private key
+     * @param compress get compressed (35 bytes) or uncompressed (65 bytes)
+     * @return public key can be compressed (35 bytes starting with 02 or 03) or un compressed (65 bytes starting with 04)
+     */
     static NAN_METHOD(computePubKey);
 
+    /**
+     * Signs message using a given private key
+     * @param privKey 32 bytes private key
+     * @param data 32 bytes message to sign
+     * @return 32 bytes signed message
+     */
     static NAN_METHOD(sign);
 
+    /**
+     * Check if message was signed with given signature and public key
+     * @param data 32 bytes signed message
+     * @param signature 32 bytes signature (generated from private key)
+     * @param oubkey 32 bytes public key
+     * @return true if message was signed with signature and public key (both issued from same private key)
+     */
     static NAN_METHOD(verify);
 
     static NAN_METHOD(newInstance);

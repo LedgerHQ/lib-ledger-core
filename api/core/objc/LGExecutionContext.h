@@ -5,11 +5,20 @@
 @class LGRunnable;
 
 
+/**Class representing context in which tasks get executed */
 @protocol LGExecutionContext
 
-/** */
+/**
+ *Execute a given runnable
+ *@param runnalbe, Runnable object
+ */
 - (void)execute:(nullable LGRunnable *)runnable;
 
+/**
+ *Execute a given runnable with a delay
+ *@param runnalbe, Runnable object
+ *@param millis, 64 bits integer, delay in milli-seconds
+ */
 - (void)delay:(nullable LGRunnable *)runnable
        millis:(int64_t)millis;
 

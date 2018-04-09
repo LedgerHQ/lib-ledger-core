@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enum listing supported cryptocurrencies' families */
 typedef NS_ENUM(NSInteger, LGWalletType)
 {
     LGWalletTypeBitcoin,

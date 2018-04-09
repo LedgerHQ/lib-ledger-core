@@ -39,48 +39,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable NSString *)getString:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getString(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSNumber *)getInt:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getInt(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSNumber *)getLong:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getLong(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSNumber *)getDouble:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getDouble(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSData *)getData:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getData(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSNumber *)getBoolean:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getBoolean(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGDynamicArray *)pushInt:(int32_t)value {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->pushInt(::djinni::I32::toCpp(value));
@@ -123,20 +81,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGDynamicObject *)getObject:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getObject(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGDynamicArray *)getArray:(int64_t)index {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getArray(::djinni::I64::toCpp(index));
-        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicArray>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGDynamicArray *)pushObject:(nullable LGDynamicObject *)value {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->pushObject(::djinni_generated::DynamicObject::toCpp(value));
@@ -148,6 +92,62 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->pushArray(::djinni_generated::DynamicArray::toCpp(value));
         return ::djinni_generated::DynamicArray::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSString *)getString:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getString(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSNumber *)getInt:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getInt(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSNumber *)getLong:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getLong(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSNumber *)getDouble:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getDouble(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSData *)getData:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getData(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable NSNumber *)getBoolean:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getBoolean(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGDynamicObject *)getObject:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getObject(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGDynamicArray *)getArray:(int64_t)index {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getArray(::djinni::I64::toCpp(index));
+        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicArray>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

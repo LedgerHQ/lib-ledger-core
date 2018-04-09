@@ -30,8 +30,17 @@ public:
     std::shared_ptr<ledger::core::api::EventBus> getCppImpl(){return _EventBus;};
 
 private:
+    /**
+     *Subscribe an event receiver to the event bus
+     *@param context, ExecutionContext object, execution context in which receiver will be notified
+     *@param reveiver, EventReceiver object, receiver that event bu will notify
+     */
     static NAN_METHOD(subscribe);
 
+    /**
+     *Unsubscribe an event receiver from the event bus
+     *@param receiver, EventReceiver object, receiver to unsubscribe
+     */
     static NAN_METHOD(unsubscribe);
 
     static NAN_METHOD(New);

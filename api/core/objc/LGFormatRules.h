@@ -4,6 +4,7 @@
 #import "LGRoundingMode.h"
 #import <Foundation/Foundation.h>
 
+/**TODO */
 @interface LGFormatRules : NSObject
 - (nonnull instancetype)initWithRoundingMode:(LGRoundingMode)roundingMode
                          maxNumberOfDecimals:(int32_t)maxNumberOfDecimals;

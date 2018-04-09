@@ -5,7 +5,12 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ *Class representing a runnable object
+ *A runnable, needs a specific execution context (refer to ExecutionContext) to run
+ */
 public abstract class Runnable {
+    /**Trigger runnable execution */
     public abstract void run();
 
     private static final class CppProxy extends Runnable

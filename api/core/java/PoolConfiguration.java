@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**TODO */
 public abstract class PoolConfiguration {
     public static final String DATABASE_NAME = "DATABASE_NAME";
 

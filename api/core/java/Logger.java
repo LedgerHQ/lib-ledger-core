@@ -5,15 +5,41 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class to print logs to console */
 public abstract class Logger {
+    /**
+     *Print debug message to console
+     *@param tag, string
+     *@param message, string
+     */
     public abstract void d(String tag, String message);
 
+    /**
+     *Print information message to console
+     *@param tag, string
+     *@param message, string
+     */
     public abstract void i(String tag, String message);
 
+    /**
+     *Print error message to console
+     *@param tag, string
+     *@param message, string
+     */
     public abstract void e(String tag, String message);
 
+    /**
+     *Print warning message to console
+     *@param tag, string
+     *@param message, string
+     */
     public abstract void w(String tag, String message);
 
+    /**
+     *Print critical error message to console
+     *@param tag, string
+     *@param message, string
+     */
     public abstract void c(String tag, String message);
 
     private static final class CppProxy extends Logger

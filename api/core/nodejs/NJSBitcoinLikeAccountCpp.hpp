@@ -39,16 +39,48 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeAccount> getCppImpl(){return _BitcoinLikeAccount;};
 
 private:
+    /**
+     *Get UTXOs of account in a given range
+     *@param from, integer, lower bound for account's UTXO's index
+     *@param to, integer, upper bound for account's UTXO's index
+     *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
+     */
     static NAN_METHOD(getUTXO);
 
+    /**
+     *Get UTXOs count of account
+     *@param callback, Callback object which returns number of UTXO owned by this account
+     */
     static NAN_METHOD(getUTXOCount);
 
+    /**
+     *Get UTXOs meeting certain requirements to form a transaction request object
+     *@param baseFees, Amount object, amount of base fees that the transaction will cost
+     *@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
+     *@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
+     *@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
+     */
     static NAN_METHOD(pickUTXO);
 
+    /**
+     *Get an estimation of fees given a transaction
+     *@param request, BitcoinLikeTransactionRequest object, request without totalFees set
+     *@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
+     */
     static NAN_METHOD(estimateFees);
 
+    /**
+     *Prepare a raw transaction to be used by user
+     *@param request, BitcoinLikeTransactionRequest object, raw transaction object
+     *@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
+     */
     static NAN_METHOD(prepareTransaction);
 
+    /**
+     *Broadcast transaction to Bitcoin network (to nodes)
+     *@param transaction, serialized transaction to broadcast
+     *@param callback, Callback object which returning a string result
+     */
     static NAN_METHOD(broadcastTransaction);
 
     static NAN_METHOD(New);

@@ -6,15 +6,37 @@ package co.ledger.core;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing an Http request */
 public abstract class HttpRequest {
+    /**
+     *Get method of request
+     *@return HttpMethod enum entry
+     */
     public abstract HttpMethod getMethod();
 
+    /**
+     *Get headers set in the request
+     *@return Map with key and value of type string
+     */
     public abstract HashMap<String, String> getHeaders();
 
+    /**
+     *Get body of request
+     *@return binary
+     */
     public abstract byte[] getBody();
 
+    /**
+     *Get Url of request
+     *@return string
+     */
     public abstract String getUrl();
 
+    /**
+     *Method called when reauest is completed
+     *@param response, Optional HttpUrlConnection object, response of request if succeed
+     *@param error, optional Error structure, error returned in case of request failure
+     */
     public abstract void complete(HttpUrlConnection response, Error error);
 
     private static final class CppProxy extends HttpRequest

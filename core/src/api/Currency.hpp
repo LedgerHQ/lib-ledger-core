@@ -16,12 +16,22 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**Structure of cryptocurrency */
 struct Currency final {
+    /**WalletType object defining the type of wallet the currency belongs to */
     WalletType walletType;
+    /**String which represents currency name */
     std::string name;
+    /**
+     *Integer cointype, part of BIP32 path
+     *One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+     */
     int32_t bip44CoinType;
+    /**String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin) */
     std::string paymentUriScheme;
+    /**List of CurrencyUnit objects (e.g. BTC, mBTC ...) */
     std::vector<CurrencyUnit> units;
+    /**Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc */
     std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
 
     Currency(WalletType walletType_,

@@ -11,10 +11,15 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**Structure of cryptocurrency unit */
 struct CurrencyUnit final {
+    /**Currency name, e.g. milli-bitcoin */
     std::string name;
+    /**UTF-8 (hex) currency symbol, e.g. hex code for m₿ */
     std::string symbol;
+    /**Currency code, e.g. mBTC */
     std::string code;
+    /**Number of decimal to display */
     int32_t numberOfDecimal;
 
     CurrencyUnit(std::string name_,

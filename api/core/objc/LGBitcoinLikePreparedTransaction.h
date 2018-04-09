@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 @class LGBitcoinLikeOutput;
 
+/**Structure representing a prepared bitcoin transaction (ready to be used with device) */
 @interface LGBitcoinLikePreparedTransaction : NSObject
 - (nonnull instancetype)initWithVersion:(int32_t)version
                                  inputs:(nonnull NSArray<LGBitcoinLikeOutput *> *)inputs
@@ -16,14 +17,19 @@
                                                           outputs:(nonnull NSArray<LGBitcoinLikeOutput *> *)outputs
                                                          lockTime:(int32_t)lockTime;
 
+/**32 bits integer representing version */
 @property (nonatomic, readonly) int32_t version;
 
+/**List of BitcoinLikeInput objects, inputs aggregateed by transaction */
 @property (nonatomic, readonly, nonnull) NSArray<LGBitcoinLikeOutput *> * inputs;
 
+/**List of stringsm paths to account creating transaction */
 @property (nonatomic, readonly, nonnull) NSArray<NSString *> * paths;
 
+/**List of BitcoinLikeOutput objects, outputs aggregateed by transaction */
 @property (nonatomic, readonly, nonnull) NSArray<LGBitcoinLikeOutput *> * outputs;
 
+/**32 bits integer, block height after which transaction can be accepted */
 @property (nonatomic, readonly) int32_t lockTime;
 
 @end

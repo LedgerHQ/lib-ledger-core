@@ -7,19 +7,48 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing a Bitcoin transaction */
 public abstract class BitcoinLikeTransaction {
+    /**
+     *Get transaction hash
+     *@return string, transaction hash
+     */
     public abstract String getHash();
 
+    /**
+     *Get list of inputs aggregated under that transaction
+     *@return list of BitcoinLikeInput objects
+     */
     public abstract ArrayList<BitcoinLikeInput> getInputs();
 
+    /**
+     *Get list of outputs aggregated under that transaction
+     *@return list of BitcoinLikeOutput objects
+     */
     public abstract ArrayList<BitcoinLikeOutput> getOutputs();
 
+    /**
+     *Get block to which this transaction belongs
+     *@return Optional BitcoinLikeBlock
+     */
     public abstract BitcoinLikeBlock getBlock();
 
+    /**
+     *Get lock time of transaction, block height from which transaction may be accepted by miners
+     *@return 64 bits integer, block height after which transaction can be accepted
+     */
     public abstract long getLockTime();
 
+    /**
+     *Get fees payed for this transaction
+     *@return Amount object, amount of fees
+     */
     public abstract Amount getFees();
 
+    /**
+     *Get time of creation of this transaction
+     *@return Date object
+     */
     public abstract Date getTime();
 
     private static final class CppProxy extends BitcoinLikeTransaction

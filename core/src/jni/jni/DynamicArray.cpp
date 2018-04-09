@@ -31,66 +31,6 @@ CJNIEXPORT jlong JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getString(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getInt(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getLong(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getDouble(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getData(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getBoolean(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1pushInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_value)
 {
     try {
@@ -151,26 +91,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getObject(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
-        auto r = ref->getArray(::djinni::I64::toCpp(jniEnv, j_index));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicArray>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1pushObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_value)
 {
     try {
@@ -188,6 +108,86 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
         auto r = ref->pushArray(::djinni_generated::DynamicArray::toCpp(jniEnv, j_value));
         return ::djinni::release(::djinni_generated::DynamicArray::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getString(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getInt(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getLong(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getDouble(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getData(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getBoolean(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getObject(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicArray_00024CppProxy_native_1getArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_index)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicArray>(nativeRef);
+        auto r = ref->getArray(::djinni::I64::toCpp(jniEnv, j_index));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicArray>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

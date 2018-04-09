@@ -40,47 +40,116 @@ public:
     std::shared_ptr<ledger::core::api::Account> getCppImpl(){return _Account;};
 
 private:
+    /**
+     *Get index of account in user's wallet
+     *32 bits integer
+     */
     static NAN_METHOD(getIndex);
 
+    /**TODO */
     static NAN_METHOD(queryOperations);
 
+    /**
+     *Get balance of account
+     *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
+     */
     static NAN_METHOD(getBalance);
 
+    /**
+     *Get synchronization status of account
+     *@return bool
+     */
     static NAN_METHOD(isSynchronizing);
 
+    /**
+     *Start synchronization of account
+     *@return EventBus, handler will be notified of synchronization outcome
+     */
     static NAN_METHOD(synchronize);
 
+    /**
+     *Return account's preferences
+     *@return Preferences object
+     */
     static NAN_METHOD(getPreferences);
 
+    /**
+     *Return account's logger which provides all needed (e.g. database) logs
+     *@return Logger Object
+     */
     static NAN_METHOD(getLogger);
 
+    /**
+     *Return preferences of specific operation
+     *@param uid, string of operation id
+     *@return Preferences
+     *Return operation for a specific operation
+     *@param uid, string of operation id
+     */
     static NAN_METHOD(getOperationPreferences);
 
     /**
      * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
      * asRippleLikeAccount(): Callback<RippleLikeAccount>;
+     *Check if account is a Bitcoin one
+     *@return bool
      */
     static NAN_METHOD(isInstanceOfBitcoinLikeAccount);
 
+    /**
+     *Check if account is an Ethereum one
+     *@return bool
+     */
     static NAN_METHOD(isInstanceOfEthereumLikeAccount);
 
+    /**
+     *Check if account is a Ripple one
+     *@return bool
+     */
     static NAN_METHOD(isInstanceOfRippleLikeAccount);
 
+    /**TODO */
     static NAN_METHOD(getFreshPublicAddresses);
 
+    /**
+     *Get type of wallet to which account belongs
+     *@return WalletType object
+     */
     static NAN_METHOD(getWalletType);
 
+    /**
+     *Get event bus through which account is notified on synchronization status
+     *@return EventBus object
+     */
     static NAN_METHOD(getEventBus);
 
+    /**Start observing blockchain on which account synchronizes and send/receive transactions */
     static NAN_METHOD(startBlockchainObservation);
 
+    /**Stop observing blockchain */
     static NAN_METHOD(stopBlockchainObservation);
 
+    /**
+     *Get account's observation status
+     *@return boolean
+     */
     static NAN_METHOD(isObservingBlockchain);
 
+    /**
+     *Get Last block of blockchain on which account operates
+     *@param callback, Callback returning, if getLastBlock succeeds, a Block object
+     */
     static NAN_METHOD(getLastBlock);
 
+    /**
+     *Compute fees of transaction with a given amount, priority, data ...
+     *@param amount, Amount object
+     *@param priority, 32 bits integer priority under which transaction will be proccessed
+     *@param recipients, list of string representing recipients of transaction
+     *@param data, list of bytes, data that transaction is holding
+     *@param callback, Callback returning, if computeFees succeed, an Amount Object
+     */
     static NAN_METHOD(computeFees);
 
     static NAN_METHOD(New);

@@ -3,18 +3,50 @@
 
 package co.ledger.core;
 
+/**
+ *Class representing a printer of errors, warnings, infos ... (at runtime)
+ *Printed logs are stored in path set by PathResolver::resolveLogFilePath
+ */
 public abstract class LogPrinter {
+    /**
+     *Print different encountered errors
+     *@param message, string
+     */
     public abstract void printError(String message);
 
+    /**
+     *Print useful information messages
+     *@param message, string
+     */
     public abstract void printInfo(String message);
 
+    /**
+     *Print debug messages
+     *@param message string
+     */
     public abstract void printDebug(String message);
 
+    /**
+     *Print warning messages
+     *@param message, string
+     */
     public abstract void printWarning(String message);
 
+    /**
+     *Print messages from APDU comand interpretation loop
+     *@param message, string
+     */
     public abstract void printApdu(String message);
 
+    /**
+     *Print critical errors causing a core dump or error from which recovery is impossible
+     *@param message, string
+     */
     public abstract void printCriticalError(String message);
 
+    /**
+     *Get context in which printer is executed (print)
+     *@return ExecutionContext object
+     */
     public abstract ExecutionContext getContext();
 }

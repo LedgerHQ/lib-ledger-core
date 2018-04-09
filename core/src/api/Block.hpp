@@ -12,11 +12,17 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**Structure of a block in the blockchain */
 struct Block final {
+    /**String, block's hash */
     std::string hash;
+    /**String, id of block (usually height of block) */
     std::string uid;
+    /**Date on which block was mined */
     std::chrono::system_clock::time_point time;
+    /**String, currency's name of blockchain the block belongs to */
     std::string currencyName;
+    /**64 bits integer, height of block in the blockchain */
     int64_t height;
 
     Block(std::string hash_,

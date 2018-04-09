@@ -6,10 +6,15 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**
+ *Class representing a runnable object
+ *A runnable, needs a specific execution context (refer to ExecutionContext) to run
+ */
 class Runnable {
 public:
     virtual ~Runnable() {}
 
+    /**Trigger runnable execution */
     virtual void run() = 0;
 };
 

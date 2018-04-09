@@ -8,16 +8,39 @@
 @class LGBitcoinLikeTransaction;
 
 
+/**Class providing a Bitcoin helper */
 @interface LGBitcoinLikeHelper : NSObject
 
+/**
+ *Constructs a BitcoinLikeOutput object from script and amount objects
+ *@param script binary please refer to BitcoinLikeOutput::getScript()
+ *@param amount, Amount object, amount of output
+ *@return BitcoinLikeOutput, resulting output object
+ */
 + (nullable LGBitcoinLikeOutput *)scriptToOutput:(nonnull NSData *)script
                                           amount:(nullable LGAmount *)amount;
 
+/**
+ *Constructs a BitcoinLikeOutput object fromn address and amount objects
+ *@param address, string, address that will own the BitcoinLikeOutput object
+ *@param amount, Amount object, amount of output
+ *@return BitcoinLikeOutput, resulting output object
+ */
 + (nullable LGBitcoinLikeOutput *)addressToOutput:(nonnull NSString *)address
                                            amount:(nullable LGAmount *)amount;
 
+/**
+ *Transforms a transaction to a binary
+ *@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
+ *@return serialized transaction
+ */
 + (nonnull NSData *)serializeTransaction:(nonnull LGBitcoinLikePreparedTransaction *)preparedTransaction;
 
+/**
+ *Transform a serialized transaction to a transaction object
+ *@param transaction, binary, serialized transaction
+ *@return BitcoinLikeTransaction object
+ */
 + (nullable LGBitcoinLikeTransaction *)parseTransaction:(nonnull NSData *)transaction;
 
 @end

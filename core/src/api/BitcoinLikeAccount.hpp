@@ -20,20 +20,53 @@ class StringCallback;
 enum class BitcoinLikePickingStrategy;
 struct BitcoinLikeTransactionRequest;
 
+/**Class representing a Bitcoin account */
 class BitcoinLikeAccount {
 public:
     virtual ~BitcoinLikeAccount() {}
 
+    /**
+     *Get UTXOs of account in a given range
+     *@param from, integer, lower bound for account's UTXO's index
+     *@param to, integer, upper bound for account's UTXO's index
+     *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
+     */
     virtual void getUTXO(int32_t from, int32_t to, const std::shared_ptr<BitcoinLikeOutputListCallback> & callback) = 0;
 
+    /**
+     *Get UTXOs count of account
+     *@param callback, Callback object which returns number of UTXO owned by this account
+     */
     virtual void getUTXOCount(const std::shared_ptr<I32Callback> & callback) = 0;
 
+    /**
+     *Get UTXOs meeting certain requirements to form a transaction request object
+     *@param baseFees, Amount object, amount of base fees that the transaction will cost
+     *@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
+     *@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
+     *@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
+     */
     virtual void pickUTXO(const std::shared_ptr<Amount> & baseFees, const std::vector<std::shared_ptr<BitcoinLikeOutput>> & outputs, BitcoinLikePickingStrategy strategy, const std::shared_ptr<BitcoinLikeTransactionRequestCallback> & callback) = 0;
 
+    /**
+     *Get an estimation of fees given a transaction
+     *@param request, BitcoinLikeTransactionRequest object, request without totalFees set
+     *@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
+     */
     virtual void estimateFees(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikeTransactionRequestCallback> & callback) = 0;
 
+    /**
+     *Prepare a raw transaction to be used by user
+     *@param request, BitcoinLikeTransactionRequest object, raw transaction object
+     *@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
+     */
     virtual void prepareTransaction(const BitcoinLikeTransactionRequest & request, const std::shared_ptr<BitcoinLikePreparedTransactionCallback> & callback) = 0;
 
+    /**
+     *Broadcast transaction to Bitcoin network (to nodes)
+     *@param transaction, serialized transaction to broadcast
+     *@param callback, Callback object which returning a string result
+     */
     virtual void broadcastTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 };
 

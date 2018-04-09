@@ -8,6 +8,7 @@
 @class LGQueryFilter;
 
 
+/**TODO */
 @interface LGQueryFilter : NSObject
 
 + (nullable LGQueryFilter *)accountEq:(nonnull NSString *)accountUid;

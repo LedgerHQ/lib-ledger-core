@@ -10,6 +10,7 @@ fi
 echo "Enable debug compilation " $trace
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
+
 rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
 ./djinni/src/run    --idl ./core/core.djinni \
                     --cpp-out $CORE_CPP_API_DIRECTORY \
@@ -29,6 +30,11 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
 					--node-type-prefix NJS \
         			--node-include-cpp ../../../$CORE_CPP_API_DIRECTORY \
         			--node-package ledgerapp_nodejs \
+        			--react-native-out api/core/react-native/LibLedgerCore/ios/Sources \
+					--react-native-type-prefix RCTCore \
+					--react-include-objc ../../../../objc \
+					--react-include-objc-impl  ../../../../src/objc \
+					--react-native-objc-impl-suffix Impl \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni

@@ -4,20 +4,46 @@
 #import <Foundation/Foundation.h>
 
 
+/**Class to print logs to console */
 @interface LGLogger : NSObject
 
+/**
+ *Print debug message to console
+ *@param tag, string
+ *@param message, string
+ */
 - (void)d:(nonnull NSString *)tag
   message:(nonnull NSString *)message;
 
+/**
+ *Print information message to console
+ *@param tag, string
+ *@param message, string
+ */
 - (void)i:(nonnull NSString *)tag
   message:(nonnull NSString *)message;
 
+/**
+ *Print error message to console
+ *@param tag, string
+ *@param message, string
+ */
 - (void)e:(nonnull NSString *)tag
   message:(nonnull NSString *)message;
 
+/**
+ *Print warning message to console
+ *@param tag, string
+ *@param message, string
+ */
 - (void)w:(nonnull NSString *)tag
   message:(nonnull NSString *)message;
 
+/**
+ *Print critical error message to console
+ *@param tag, string
+ *@param message, string
+ */
 - (void)c:(nonnull NSString *)tag
   message:(nonnull NSString *)message;
 

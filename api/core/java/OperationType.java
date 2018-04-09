@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enum of operation types */
 public enum OperationType {
     SEND,
     RECEIVE,

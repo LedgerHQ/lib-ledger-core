@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enum of picking strategies */
 typedef NS_ENUM(NSInteger, LGBitcoinLikePickingStrategy)
 {
     LGBitcoinLikePickingStrategyDeepOutputsFirst,

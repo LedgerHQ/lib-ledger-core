@@ -12,10 +12,19 @@ namespace ledger { namespace core { namespace api {
 
 struct Error;
 
+/**
+ *Callback triggered by main completed task,
+ *returns optional result as list of template type T
+ */
 class StringListCallback {
 public:
     virtual ~StringListCallback() {}
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     virtual void onCallback(const std::experimental::optional<std::vector<std::string>> & result, const std::experimental::optional<Error> & error) = 0;
 };
 

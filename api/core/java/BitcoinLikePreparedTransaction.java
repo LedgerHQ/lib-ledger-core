@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.ArrayList;
 
+/**Structure representing a prepared bitcoin transaction (ready to be used with device) */
 public final class BitcoinLikePreparedTransaction {
 
 
@@ -31,22 +32,27 @@ public final class BitcoinLikePreparedTransaction {
         this.lockTime = lockTime;
     }
 
+    /**32 bits integer representing version */
     public int getVersion() {
         return version;
     }
 
+    /**List of BitcoinLikeInput objects, inputs aggregateed by transaction */
     public ArrayList<BitcoinLikeOutput> getInputs() {
         return inputs;
     }
 
+    /**List of stringsm paths to account creating transaction */
     public ArrayList<String> getPaths() {
         return paths;
     }
 
+    /**List of BitcoinLikeOutput objects, outputs aggregateed by transaction */
     public ArrayList<BitcoinLikeOutput> getOutputs() {
         return outputs;
     }
 
+    /**32 bits integer, block height after which transaction can be accepted */
     public int getLockTime() {
         return lockTime;
     }

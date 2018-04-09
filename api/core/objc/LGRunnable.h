@@ -4,8 +4,13 @@
 #import <Foundation/Foundation.h>
 
 
+/**
+ *Class representing a runnable object
+ *A runnable, needs a specific execution context (refer to ExecutionContext) to run
+ */
 @interface LGRunnable : NSObject
 
+/**Trigger runnable execution */
 - (void)run;
 
 @end

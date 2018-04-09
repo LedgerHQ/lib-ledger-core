@@ -37,18 +37,46 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeTransaction> getCppImpl(){return _BitcoinLikeTransaction;};
 
 private:
+    /**
+     *Get transaction hash
+     *@return string, transaction hash
+     */
     static NAN_METHOD(getHash);
 
+    /**
+     *Get list of inputs aggregated under that transaction
+     *@return list of BitcoinLikeInput objects
+     */
     static NAN_METHOD(getInputs);
 
+    /**
+     *Get list of outputs aggregated under that transaction
+     *@return list of BitcoinLikeOutput objects
+     */
     static NAN_METHOD(getOutputs);
 
+    /**
+     *Get block to which this transaction belongs
+     *@return Optional BitcoinLikeBlock
+     */
     static NAN_METHOD(getBlock);
 
+    /**
+     *Get lock time of transaction, block height from which transaction may be accepted by miners
+     *@return 64 bits integer, block height after which transaction can be accepted
+     */
     static NAN_METHOD(getLockTime);
 
+    /**
+     *Get fees payed for this transaction
+     *@return Amount object, amount of fees
+     */
     static NAN_METHOD(getFees);
 
+    /**
+     *Get time of creation of this transaction
+     *@return Date object
+     */
     static NAN_METHOD(getTime);
 
     static NAN_METHOD(New);

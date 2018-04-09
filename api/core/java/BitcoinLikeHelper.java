@@ -5,13 +5,36 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class providing a Bitcoin helper */
 public abstract class BitcoinLikeHelper {
+    /**
+     *Constructs a BitcoinLikeOutput object from script and amount objects
+     *@param script binary please refer to BitcoinLikeOutput::getScript()
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     public static native BitcoinLikeOutput scriptToOutput(byte[] script, Amount amount);
 
+    /**
+     *Constructs a BitcoinLikeOutput object fromn address and amount objects
+     *@param address, string, address that will own the BitcoinLikeOutput object
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     public static native BitcoinLikeOutput addressToOutput(String address, Amount amount);
 
+    /**
+     *Transforms a transaction to a binary
+     *@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
+     *@return serialized transaction
+     */
     public static native byte[] serializeTransaction(BitcoinLikePreparedTransaction preparedTransaction);
 
+    /**
+     *Transform a serialized transaction to a transaction object
+     *@param transaction, binary, serialized transaction
+     *@return BitcoinLikeTransaction object
+     */
     public static native BitcoinLikeTransaction parseTransaction(byte[] transaction);
 
     private static final class CppProxy extends BitcoinLikeHelper

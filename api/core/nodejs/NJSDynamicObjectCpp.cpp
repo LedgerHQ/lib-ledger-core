@@ -7,32 +7,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 
-NAN_METHOD(NJSDynamicObject::isReadOnly) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 0)
-    {
-        return Nan::ThrowError("NJSDynamicObject::isReadOnly needs 0 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::isReadOnly : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->isReadOnly();
-
-    //Wrap result in node object
-    auto arg_0 = Nan::New<Boolean>(result);
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
-}
 NAN_METHOD(NJSDynamicObject::putString) {
 
     //Check if method called with right number of arguments
@@ -221,6 +195,82 @@ NAN_METHOD(NJSDynamicObject::putBoolean) {
     }
 
     auto result = cpp_impl->putBoolean(arg_0,arg_1);
+
+    //Wrap result in node object
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_2);
+}
+NAN_METHOD(NJSDynamicObject::putObject) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 2)
+    {
+        return Nan::ThrowError("NJSDynamicObject::putObject needs 2 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::putObject : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->putObject(arg_0,arg_1);
+
+    //Wrap result in node object
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_2);
+}
+NAN_METHOD(NJSDynamicObject::putArray) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 2)
+    {
+        return Nan::ThrowError("NJSDynamicObject::putArray needs 2 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSDynamicArray *njs_ptr_arg_1 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
+    if(!njs_ptr_arg_1)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSDynamicArray failed");
+    }
+    auto arg_1 = njs_ptr_arg_1->getCppImpl();
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::putArray : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->putArray(arg_0,arg_1);
 
     //Wrap result in node object
     auto arg_2_wrap = NJSDynamicObject::wrap(result);
@@ -445,82 +495,6 @@ NAN_METHOD(NJSDynamicObject::getBoolean) {
 
     //Return result
     info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::putObject) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSDynamicObject::putObject needs 2 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSDynamicObject *njs_ptr_arg_1 = static_cast<NJSDynamicObject *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    if(!njs_ptr_arg_1)
-    {
-        return Nan::ThrowError("NodeJs Object to NJSDynamicObject failed");
-    }
-    auto arg_1 = njs_ptr_arg_1->getCppImpl();
-
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::putObject : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->putObject(arg_0,arg_1);
-
-    //Wrap result in node object
-    auto arg_2_wrap = NJSDynamicObject::wrap(result);
-    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_2);
-}
-NAN_METHOD(NJSDynamicObject::putArray) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSDynamicObject::putArray needs 2 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-    Local<Object> njs_arg_1 = info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSDynamicArray *njs_ptr_arg_1 = static_cast<NJSDynamicArray *>(Nan::GetInternalFieldPointer(njs_arg_1,0));
-    if(!njs_ptr_arg_1)
-    {
-        return Nan::ThrowError("NodeJs Object to NJSDynamicArray failed");
-    }
-    auto arg_1 = njs_ptr_arg_1->getCppImpl();
-
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::putArray : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->putArray(arg_0,arg_1);
-
-    //Wrap result in node object
-    auto arg_2_wrap = NJSDynamicObject::wrap(result);
-    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_2);
 }
 NAN_METHOD(NJSDynamicObject::getObject) {
 
@@ -765,6 +739,32 @@ NAN_METHOD(NJSDynamicObject::serialize) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSDynamicObject::isReadOnly) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSDynamicObject::isReadOnly needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::isReadOnly : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->isReadOnly();
+
+    //Wrap result in node object
+    auto arg_0 = Nan::New<Boolean>(result);
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 NAN_METHOD(NJSDynamicObject::size) {
 
     //Check if method called with right number of arguments
@@ -907,21 +907,20 @@ void NJSDynamicObject::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSDynamicObject").ToLocalChecked());
 
     //SetPrototypeMethod all methods
-    Nan::SetPrototypeMethod(func_template,"isReadOnly", isReadOnly);
     Nan::SetPrototypeMethod(func_template,"putString", putString);
     Nan::SetPrototypeMethod(func_template,"putInt", putInt);
     Nan::SetPrototypeMethod(func_template,"putLong", putLong);
     Nan::SetPrototypeMethod(func_template,"putDouble", putDouble);
     Nan::SetPrototypeMethod(func_template,"putData", putData);
     Nan::SetPrototypeMethod(func_template,"putBoolean", putBoolean);
+    Nan::SetPrototypeMethod(func_template,"putObject", putObject);
+    Nan::SetPrototypeMethod(func_template,"putArray", putArray);
     Nan::SetPrototypeMethod(func_template,"getString", getString);
     Nan::SetPrototypeMethod(func_template,"getInt", getInt);
     Nan::SetPrototypeMethod(func_template,"getLong", getLong);
     Nan::SetPrototypeMethod(func_template,"getDouble", getDouble);
     Nan::SetPrototypeMethod(func_template,"getData", getData);
     Nan::SetPrototypeMethod(func_template,"getBoolean", getBoolean);
-    Nan::SetPrototypeMethod(func_template,"putObject", putObject);
-    Nan::SetPrototypeMethod(func_template,"putArray", putArray);
     Nan::SetPrototypeMethod(func_template,"getObject", getObject);
     Nan::SetPrototypeMethod(func_template,"getArray", getArray);
     Nan::SetPrototypeMethod(func_template,"contains", contains);
@@ -930,6 +929,7 @@ void NJSDynamicObject::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getType", getType);
     Nan::SetPrototypeMethod(func_template,"dump", dump);
     Nan::SetPrototypeMethod(func_template,"serialize", serialize);
+    Nan::SetPrototypeMethod(func_template,"isReadOnly", isReadOnly);
     Nan::SetPrototypeMethod(func_template,"size", size);
     Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     Nan::SetPrototypeMethod(func_template,"load", load);

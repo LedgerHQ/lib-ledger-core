@@ -35,12 +35,34 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeHelper> getCppImpl(){return _BitcoinLikeHelper;};
 
 private:
+    /**
+     *Constructs a BitcoinLikeOutput object from script and amount objects
+     *@param script binary please refer to BitcoinLikeOutput::getScript()
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     static NAN_METHOD(scriptToOutput);
 
+    /**
+     *Constructs a BitcoinLikeOutput object fromn address and amount objects
+     *@param address, string, address that will own the BitcoinLikeOutput object
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     static NAN_METHOD(addressToOutput);
 
+    /**
+     *Transforms a transaction to a binary
+     *@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
+     *@return serialized transaction
+     */
     static NAN_METHOD(serializeTransaction);
 
+    /**
+     *Transform a serialized transaction to a transaction object
+     *@param transaction, binary, serialized transaction
+     *@return BitcoinLikeTransaction object
+     */
     static NAN_METHOD(parseTransaction);
 
     static NAN_METHOD(New);

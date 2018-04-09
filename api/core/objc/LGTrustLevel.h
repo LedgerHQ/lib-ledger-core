@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enum of transaction level of trust */
 typedef NS_ENUM(NSInteger, LGTrustLevel)
 {
     LGTrustLevelTrusted,

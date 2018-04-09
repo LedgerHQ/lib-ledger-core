@@ -10,10 +10,15 @@ namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeTransaction;
 
+/**Class representing a Bitcoin Operation */
 class BitcoinLikeOperation {
 public:
     virtual ~BitcoinLikeOperation() {}
 
+    /**
+     *Get operation's transaction
+     *@return BitcoinLikeTransaction object
+     */
     virtual std::shared_ptr<BitcoinLikeTransaction> getTransaction() = 0;
 };
 
