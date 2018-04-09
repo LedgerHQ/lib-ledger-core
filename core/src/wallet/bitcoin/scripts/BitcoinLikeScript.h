@@ -40,20 +40,27 @@
 namespace ledger {
     namespace core {
 
-        using BitcoinLikeOpCode = btccore::opcodetype;
-        using BitcoinLikePushedByte = std::vector<uint8_t>;
+        using  BitcoinLikeScriptOpCode = btccore::opcodetype;
+        class BitcoinLikeScriptChunk {
+        public:
+            explicit BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op);
+            explicit BitcoinLikeScriptChunk(const std::vector<uint8_t>& bytes);
+            const std::vector<uint8_t>& getBytes() const;
+            bool isBytes() const;
+            BitcoinLikeScriptOpCode getOpCode() const;
+            bool isOpCode() const;
 
-        using BitcoinLikeScriptChunk = Either<BitcoinLikePushedByte, BitcoinLikeOpCode>;
-
+        private:
+            Either<std::vector<uint8_t>, BitcoinLikeScriptOpCode> _value;
+        };
         class BitcoinLikeScript {
         public:
-            BitcoinLikeScript() {};
-
+            BitcoinLikeScript() = default;
             BitcoinLikeScript& operator<<(btccore::opcodetype op_code);
             BitcoinLikeScript& operator<<(const std::vector<uint8_t>& bytes);
             std::string toString() const;
             std::vector<uint8_t> serialize() const;
-            const std::list<BitcoinLikeScriptChunk>& toList();
+            const std::list<BitcoinLikeScriptChunk>& toList() const;
 
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t>& script);
 

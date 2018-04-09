@@ -198,8 +198,6 @@ add_library(
         math/Fibonacci.cpp math/Fibonacci.h
         wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h
         bitcoin/BitcoinLikeHelper.cpp bitcoin/BitcoinLikeHelper.h
-        bitcoin/ScriptParser.cpp bitcoin/ScriptParser.h
-        bitcoin/opcodes.h bitcoin/opcodes.cpp
         wallet/common/api_impl/DerivationPathApi.cpp
         wallet/common/api_impl/DerivationPathApi.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.cpp wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h wallet/bitcoin/types.h wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.cpp wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h wallet/bitcoin/scripts/operators.h wallet/bitcoin/scripts/operators.cpp wallet/bitcoin/scripts/BitcoinLikeScript.cpp wallet/bitcoin/scripts/BitcoinLikeScript.h)
 

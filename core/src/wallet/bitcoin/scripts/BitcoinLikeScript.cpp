@@ -37,7 +37,6 @@
 namespace ledger {
     namespace core {
 
-
         Try<BitcoinLikeScript> BitcoinLikeScript::parse(const std::vector<uint8_t> &script) {
             return Try<BitcoinLikeScript>::from([&] () -> BitcoinLikeScript {
                 BytesReader reader(script);
@@ -61,11 +60,13 @@ namespace ledger {
         }
 
         BitcoinLikeScript &BitcoinLikeScript::operator<<(btccore::opcodetype op_code) {
-            return <#initializer#>;
+            _chunks.push_back(BitcoinLikeScriptChunk(op_code));
+            return *this;
         }
 
         BitcoinLikeScript &BitcoinLikeScript::operator<<(const std::vector<uint8_t> &bytes) {
-            return <#initializer#>;
+            _chunks.push_back(BitcoinLikeScriptChunk(bytes));
+            return *this;
         }
 
         std::string BitcoinLikeScript::toString() const {
@@ -77,22 +78,21 @@ namespace ledger {
                 } else {
                     first = false;
                 }
-                if (chunk.isLeft()) {
-                    auto bytes = chunk.getLeft();
+                if (chunk.isBytes()) {
+                    const auto& bytes = chunk.getBytes();
                     ss << "PUSHDATA(" << bytes.size() << ")[" << hex::toString(bytes) << "]";
                 } else {
-                    ss << chunk.getRight();
+                    ss << btccore::GetOpName(chunk.getOpCode());
                 }
             }
-            auto str = ss.str();
-            return str.substr(0, str.size() - 1);
+            return ss.str();
         }
 
         std::vector<uint8_t> BitcoinLikeScript::serialize() const {
             BytesWriter writer;
             for (auto& chunk : _chunks) {
-                if (chunk.isLeft()) {
-                    auto& bytes = chunk.getLeft();
+                if (chunk.isBytes()) {
+                    auto& bytes = chunk.getBytes();
                     auto size = bytes.size();
                     if (size <= 0x75) {
                         writer.writeByte((uint8_t) size).writeByteArray(bytes);
@@ -104,14 +104,39 @@ namespace ledger {
                         writer.writeLeValue<uint32_t>((uint32_t) size).writeByteArray(bytes);
                     }
                 } else {
-                    writer.writeByte(chunk.getRight());
+                    writer.writeByte(chunk.getOpCode());
                 }
             }
             return writer.toByteArray();
         }
 
-        const std::list<BitcoinLikeScriptChunk> &BitcoinLikeScript::toList() {
+        const std::list<BitcoinLikeScriptChunk> &BitcoinLikeScript::toList() const {
             return _chunks;
+        }
+
+
+        BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op) : _value(op) {
+
+        }
+
+        BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(const std::vector<uint8_t> &bytes) : _value(bytes) {
+
+        }
+
+        const std::vector<uint8_t> &BitcoinLikeScriptChunk::getBytes() const {
+            return _value.getLeft();
+        }
+
+        bool BitcoinLikeScriptChunk::isBytes() const {
+            return _value.isLeft();
+        }
+
+        BitcoinLikeScriptOpCode BitcoinLikeScriptChunk::getOpCode() const {
+            return _value.getRight();
+        }
+
+        bool BitcoinLikeScriptChunk::isOpCode() const {
+            return _value.isRight();
         }
     }
 }
