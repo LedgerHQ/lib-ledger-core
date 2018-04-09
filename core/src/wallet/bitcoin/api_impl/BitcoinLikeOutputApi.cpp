@@ -74,8 +74,7 @@ namespace ledger {
         BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOuput() {
             if (_backend.isLeft())
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
-            else
-                return _backend.getRight();
+            return _backend.getRight();
         }
 
         std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {

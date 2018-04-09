@@ -71,5 +71,4 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = ::wait(f);
-    tx;
 }
