@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferences)
 RCT_REMAP_METHOD(getString,getString:(nonnull NSString *)key
                        fallbackValue:(nonnull NSString *)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getString:key fallbackValue:fallbackValue];
+    id result = @{@"result" :[self.objcImpl getString:key fallbackValue:fallbackValue]};
     if(result)
     {
         resolve(result);
@@ -44,8 +44,7 @@ RCT_REMAP_METHOD(getString,getString:(nonnull NSString *)key
 RCT_REMAP_METHOD(getInt,getInt:(nonnull NSString *)key
                  fallbackValue:(int32_t)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getInt:key fallbackValue:fallbackValue];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getInt:key fallbackValue:fallbackValue])};if(result)
     {
         resolve(result);
     }
@@ -62,8 +61,7 @@ RCT_REMAP_METHOD(getInt,getInt:(nonnull NSString *)key
 RCT_REMAP_METHOD(getLong,getLong:(nonnull NSString *)key
                    fallbackValue:(int64_t)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getLong:key fallbackValue:fallbackValue];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getLong:key fallbackValue:fallbackValue])};if(result)
     {
         resolve(result);
     }
@@ -80,8 +78,7 @@ RCT_REMAP_METHOD(getLong,getLong:(nonnull NSString *)key
 RCT_REMAP_METHOD(getBoolean,getBoolean:(nonnull NSString *)key
                          fallbackValue:(BOOL)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getBoolean:key fallbackValue:fallbackValue];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getBoolean:key fallbackValue:fallbackValue])};if(result)
     {
         resolve(result);
     }
@@ -98,7 +95,7 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(nonnull NSString *)key
 RCT_REMAP_METHOD(getStringArray,getStringArray:(nonnull NSString *)key
                                  fallbackValue:(nonnull NSArray<NSString *> *)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getStringArray:key fallbackValue:fallbackValue];
+    id result = @{@"result" :[self.objcImpl getStringArray:key fallbackValue:fallbackValue]};
     if(result)
     {
         resolve(result);
@@ -116,7 +113,7 @@ RCT_REMAP_METHOD(getStringArray,getStringArray:(nonnull NSString *)key
 RCT_REMAP_METHOD(getData,getData:(nonnull NSString *)key
                    fallbackValue:(nonnull NSData *)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getData:key fallbackValue:fallbackValue];
+    id result = @{@"result" :[self.objcImpl getData:key fallbackValue:fallbackValue]};
     if(result)
     {
         resolve(result);
@@ -133,8 +130,7 @@ RCT_REMAP_METHOD(getData,getData:(nonnull NSString *)key
  */
 RCT_REMAP_METHOD(contains,contains:(nonnull NSString *)key withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl contains:key];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl contains:key])};if(result)
     {
         resolve(result);
     }
@@ -150,7 +146,7 @@ RCT_REMAP_METHOD(contains,contains:(nonnull NSString *)key withResolver:(RCTProm
  */
 RCT_REMAP_METHOD(edit,editWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl edit];
+    id result = @{@"result" :[self.objcImpl edit]};
     if(result)
     {
         resolve(result);

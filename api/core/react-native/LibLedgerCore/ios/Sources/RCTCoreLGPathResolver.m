@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGPathResolver)
  */
 RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl resolveDatabasePath:path];
+    id result = @{@"result" :[self.objcImpl resolveDatabasePath:path]};
     if(result)
     {
         resolve(result);
@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(nonnull NSString *)pat
  */
 RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl resolveLogFilePath:path];
+    id result = @{@"result" :[self.objcImpl resolveLogFilePath:path]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(nonnull NSString *)path 
  */
 RCT_REMAP_METHOD(resolvePreferencesPath,resolvePreferencesPath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl resolvePreferencesPath:path];
+    id result = @{@"result" :[self.objcImpl resolvePreferencesPath:path]};
     if(result)
     {
         resolve(result);

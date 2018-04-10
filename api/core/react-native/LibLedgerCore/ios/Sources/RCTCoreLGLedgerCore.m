@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGLedgerCore)
  */
 RCT_REMAP_METHOD(getStringVersion,getStringVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGLedgerCore getStringVersion];
+    id result = @{@"result" :[LGLedgerCore getStringVersion]};
     if(result)
     {
         resolve(result);
@@ -42,8 +42,7 @@ RCT_REMAP_METHOD(getStringVersion,getStringVersionWithResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(getIntVersion,getIntVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGLedgerCore getIntVersion];
-    if(result)
+    id result = @{@"result" :@([LGLedgerCore getIntVersion])};if(result)
     {
         resolve(result);
     }

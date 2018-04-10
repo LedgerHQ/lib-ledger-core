@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOutput)
  */
 RCT_REMAP_METHOD(getTransactionHash,getTransactionHashWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTransactionHash];
+    id result = @{@"result" :[self.objcImpl getTransactionHash]};
     if(result)
     {
         resolve(result);
@@ -42,8 +42,7 @@ RCT_REMAP_METHOD(getTransactionHash,getTransactionHashWithResolver:(RCTPromiseRe
  */
 RCT_REMAP_METHOD(getOutputIndex,getOutputIndexWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getOutputIndex];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getOutputIndex])};if(result)
     {
         resolve(result);
     }
@@ -59,7 +58,7 @@ RCT_REMAP_METHOD(getOutputIndex,getOutputIndexWithResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(getValue,getValueWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getValue];
+    id result = @{@"result" :[self.objcImpl getValue]};
     if(result)
     {
         resolve(result);
@@ -76,7 +75,7 @@ RCT_REMAP_METHOD(getValue,getValueWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(getScript,getScriptWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getScript];
+    id result = @{@"result" :[self.objcImpl getScript]};
     if(result)
     {
         resolve(result);
@@ -93,7 +92,7 @@ RCT_REMAP_METHOD(getScript,getScriptWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getAddress,getAddressWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getAddress];
+    id result = @{@"result" :[self.objcImpl getAddress]};
     if(result)
     {
         resolve(result);

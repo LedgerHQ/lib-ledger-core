@@ -42,8 +42,7 @@ RCT_REMAP_METHOD(onError,onError:(LGErrorCode)code
 
 RCT_REMAP_METHOD(getConnectionId,getConnectionIdWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getConnectionId];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getConnectionId])};if(result)
     {
         resolve(result);
     }

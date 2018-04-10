@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransaction)
  */
 RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHash];
+    id result = @{@"result" :[self.objcImpl getHash]};
     if(result)
     {
         resolve(result);
@@ -42,7 +42,7 @@ RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getInputs,getInputsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getInputs];
+    id result = @{@"result" :[self.objcImpl getInputs]};
     if(result)
     {
         resolve(result);
@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(getInputs,getInputsWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getOutputs,getOutputsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getOutputs];
+    id result = @{@"result" :[self.objcImpl getOutputs]};
     if(result)
     {
         resolve(result);
@@ -76,7 +76,7 @@ RCT_REMAP_METHOD(getOutputs,getOutputsWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getBlock,getBlockWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getBlock];
+    id result = @{@"result" :[self.objcImpl getBlock]};
     if(result)
     {
         resolve(result);
@@ -93,8 +93,7 @@ RCT_REMAP_METHOD(getBlock,getBlockWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(getLockTime,getLockTimeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getLockTime];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getLockTime])};if(result)
     {
         resolve(result);
     }
@@ -110,7 +109,7 @@ RCT_REMAP_METHOD(getLockTime,getLockTimeWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getFees];
+    id result = @{@"result" :[self.objcImpl getFees]};
     if(result)
     {
         resolve(result);
@@ -127,7 +126,7 @@ RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getTime,getTimeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTime];
+    id result = @{@"result" :[self.objcImpl getTime]};
     if(result)
     {
         resolve(result);

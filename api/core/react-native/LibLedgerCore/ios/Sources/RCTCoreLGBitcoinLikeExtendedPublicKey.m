@@ -21,7 +21,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeExtendedPublicKey)
 
 RCT_REMAP_METHOD(derive,derive:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl derive:path];
+    id result = @{@"result" :[self.objcImpl derive:path]};
     if(result)
     {
         resolve(result);
@@ -34,7 +34,7 @@ RCT_REMAP_METHOD(derive,derive:(nonnull NSString *)path withResolver:(RCTPromise
 
 RCT_REMAP_METHOD(toBase58,toBase58WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toBase58];
+    id result = @{@"result" :[self.objcImpl toBase58]};
     if(result)
     {
         resolve(result);
@@ -47,7 +47,7 @@ RCT_REMAP_METHOD(toBase58,toBase58WithResolver:(RCTPromiseResolveBlock)resolve r
 
 RCT_REMAP_METHOD(getRootPath,getRootPathWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRootPath];
+    id result = @{@"result" :[self.objcImpl getRootPath]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(fromBase58,fromBase58:(nonnull LGBitcoinLikeNetworkParameters *
                                address:(nonnull NSString *)address
                                   path:(nullable NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeExtendedPublicKey fromBase58:params address:address path:path];
+    id result = @{@"result" :[LGBitcoinLikeExtendedPublicKey fromBase58:params address:address path:path]};
     if(result)
     {
         resolve(result);

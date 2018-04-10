@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGHashAlgorithmHelper)
  */
 RCT_REMAP_METHOD(ripemd160,ripemd160:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl ripemd160:data];
+    id result = @{@"result" :[self.objcImpl ripemd160:data]};
     if(result)
     {
         resolve(result);
@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(ripemd160,ripemd160:(nonnull NSData *)data withResolver:(RCTPro
  */
 RCT_REMAP_METHOD(sha256,sha256:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl sha256:data];
+    id result = @{@"result" :[self.objcImpl sha256:data]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(sha256,sha256:(nonnull NSData *)data withResolver:(RCTPromiseRe
  */
 RCT_REMAP_METHOD(keccak256,keccak256:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl keccak256:data];
+    id result = @{@"result" :[self.objcImpl keccak256:data]};
     if(result)
     {
         resolve(result);

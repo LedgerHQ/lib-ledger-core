@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGWallet)
  */
 RCT_REMAP_METHOD(getName,getNameWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getName];
+    id result = @{@"result" :[self.objcImpl getName]};
     if(result)
     {
         resolve(result);
@@ -84,7 +84,7 @@ RCT_REMAP_METHOD(getNextAccountIndex,getNextAccountIndex:(nullable id<LGI32Callb
  */
 RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getEventBus];
+    id result = @{@"result" :[self.objcImpl getEventBus]};
     if(result)
     {
         resolve(result);
@@ -101,8 +101,7 @@ RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(isSynchronizing,isSynchronizingWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isSynchronizing];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isSynchronizing])};if(result)
     {
         resolve(result);
     }
@@ -118,7 +117,7 @@ RCT_REMAP_METHOD(isSynchronizing,isSynchronizingWithResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(synchronize,synchronizeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl synchronize];
+    id result = @{@"result" :[self.objcImpl synchronize]};
     if(result)
     {
         resolve(result);
@@ -135,7 +134,7 @@ RCT_REMAP_METHOD(synchronize,synchronizeWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPreferences];
+    id result = @{@"result" :[self.objcImpl getPreferences]};
     if(result)
     {
         resolve(result);
@@ -152,7 +151,7 @@ RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(getLogger,getLoggerWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getLogger];
+    id result = @{@"result" :[self.objcImpl getLogger]};
     if(result)
     {
         resolve(result);
@@ -170,7 +169,7 @@ RCT_REMAP_METHOD(getLogger,getLoggerWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getAccountPreferences,getAccountPreferences:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getAccountPreferences:index];
+    id result = @{@"result" :[self.objcImpl getAccountPreferences:index]};
     if(result)
     {
         resolve(result);
@@ -190,7 +189,7 @@ RCT_REMAP_METHOD(getAccountPreferences,getAccountPreferences:(int32_t)index with
  */
 RCT_REMAP_METHOD(asBitcoinLikeWallet,asBitcoinLikeWalletWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl asBitcoinLikeWallet];
+    id result = @{@"result" :[self.objcImpl asBitcoinLikeWallet]};
     if(result)
     {
         resolve(result);
@@ -207,7 +206,7 @@ RCT_REMAP_METHOD(asBitcoinLikeWallet,asBitcoinLikeWalletWithResolver:(RCTPromise
  */
 RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getCurrency];
+    id result = @{@"result" :[self.objcImpl getCurrency]};
     if(result)
     {
         resolve(result);
@@ -224,8 +223,7 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(isInstanceOfBitcoinLikeWallet,isInstanceOfBitcoinLikeWalletWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfBitcoinLikeWallet];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfBitcoinLikeWallet])};if(result)
     {
         resolve(result);
     }
@@ -241,8 +239,7 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeWallet,isInstanceOfBitcoinLikeWalletWith
  */
 RCT_REMAP_METHOD(isInstanceOfEthereumLikeWallet,isInstanceOfEthereumLikeWalletWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfEthereumLikeWallet];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfEthereumLikeWallet])};if(result)
     {
         resolve(result);
     }
@@ -258,8 +255,7 @@ RCT_REMAP_METHOD(isInstanceOfEthereumLikeWallet,isInstanceOfEthereumLikeWalletWi
  */
 RCT_REMAP_METHOD(isInstanceOfRippleLikeWallet,isInstanceOfRippleLikeWalletWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfRippleLikeWallet];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfRippleLikeWallet])};if(result)
     {
         resolve(result);
     }
@@ -275,8 +271,7 @@ RCT_REMAP_METHOD(isInstanceOfRippleLikeWallet,isInstanceOfRippleLikeWalletWithRe
  */
 RCT_REMAP_METHOD(getWalletType,getWalletTypeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getWalletType];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getWalletType])};if(result)
     {
         resolve(result);
     }

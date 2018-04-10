@@ -21,7 +21,7 @@ RCT_EXPORT_MODULE(RCTCoreLGNetworks)
 
 RCT_REMAP_METHOD(bitcoin,bitcoinWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGNetworks bitcoin];
+    id result = @{@"result" :[LGNetworks bitcoin]};
     if(result)
     {
         resolve(result);

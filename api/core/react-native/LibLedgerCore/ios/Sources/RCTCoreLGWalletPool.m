@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(newInstance,newInstance:(nonnull NSString *)name
                                  backend:(nullable LGDatabaseBackend *)backend
                            configuration:(nullable LGDynamicObject *)configuration withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGWalletPool newInstance:name password:password httpClient:httpClient webSocketClient:webSocketClient pathResolver:pathResolver logPrinter:logPrinter dispatcher:dispatcher rng:rng backend:backend configuration:configuration];
+    id result = @{@"result" :[LGWalletPool newInstance:name password:password httpClient:httpClient webSocketClient:webSocketClient pathResolver:pathResolver logPrinter:logPrinter dispatcher:dispatcher rng:rng backend:backend configuration:configuration]};
     if(result)
     {
         resolve(result);
@@ -61,7 +61,7 @@ RCT_REMAP_METHOD(newInstance,newInstance:(nonnull NSString *)name
  */
 RCT_REMAP_METHOD(getLogger,getLoggerWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getLogger];
+    id result = @{@"result" :[self.objcImpl getLogger]};
     if(result)
     {
         resolve(result);
@@ -78,7 +78,7 @@ RCT_REMAP_METHOD(getLogger,getLoggerWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getName,getNameWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getName];
+    id result = @{@"result" :[self.objcImpl getName]};
     if(result)
     {
         resolve(result);
@@ -95,7 +95,7 @@ RCT_REMAP_METHOD(getName,getNameWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPreferences];
+    id result = @{@"result" :[self.objcImpl getPreferences]};
     if(result)
     {
         resolve(result);
@@ -191,7 +191,7 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(nonnull NSString *)currencyName
  */
 RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getEventBus];
+    id result = @{@"result" :[self.objcImpl getEventBus]};
     if(result)
     {
         resolve(result);

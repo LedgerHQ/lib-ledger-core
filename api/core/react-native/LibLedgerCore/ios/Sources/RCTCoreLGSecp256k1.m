@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(RCTCoreLGSecp256k1)
 RCT_REMAP_METHOD(computePubKey,computePubKey:(nonnull NSData *)privKey
                                     compress:(BOOL)compress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl computePubKey:privKey compress:compress];
+    id result = @{@"result" :[self.objcImpl computePubKey:privKey compress:compress]};
     if(result)
     {
         resolve(result);
@@ -48,7 +48,7 @@ RCT_REMAP_METHOD(computePubKey,computePubKey:(nonnull NSData *)privKey
 RCT_REMAP_METHOD(sign,sign:(nonnull NSData *)privKey
                       data:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl sign:privKey data:data];
+    id result = @{@"result" :[self.objcImpl sign:privKey data:data]};
     if(result)
     {
         resolve(result);
@@ -70,8 +70,7 @@ RCT_REMAP_METHOD(verify,verify:(nonnull NSData *)data
                      signature:(nonnull NSData *)signature
                         pubKey:(nonnull NSData *)pubKey withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl verify:data signature:signature pubKey:pubKey];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl verify:data signature:signature pubKey:pubKey])};if(result)
     {
         resolve(result);
     }
@@ -83,7 +82,7 @@ RCT_REMAP_METHOD(verify,verify:(nonnull NSData *)data
 
 RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGSecp256k1 newInstance];
+    id result = @{@"result" :[LGSecp256k1 newInstance]};
     if(result)
     {
         resolve(result);

@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
+#import "../../objc/LGGetEthreumLikeWalletCallback.h"
 
-@interface LGGetEthreumLikeWalletCallbackImpl : NSObject
--(void)onSuccess:(nullable LGEthereumLikeWallet *)wallet
-        isCreated:(BOOL)isCreated;
--(void)onError:(nonnull LGError *)error;
+@interface LGGetEthreumLikeWalletCallbackImpl : NSObject <LGGetEthreumLikeWalletCallback>
+
 @end

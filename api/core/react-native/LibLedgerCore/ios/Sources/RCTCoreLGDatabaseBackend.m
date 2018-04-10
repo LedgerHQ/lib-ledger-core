@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGDatabaseBackend)
  */
 RCT_REMAP_METHOD(setUsername,setUsername:(nonnull NSString *)username withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setUsername:username];
+    id result = @{@"result" :[self.objcImpl setUsername:username]};
     if(result)
     {
         resolve(result);
@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(setUsername,setUsername:(nonnull NSString *)username withResolv
  */
 RCT_REMAP_METHOD(setPassword,setPassword:(nonnull NSString *)pwd withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setPassword:pwd];
+    id result = @{@"result" :[self.objcImpl setPassword:pwd]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(setPassword,setPassword:(nonnull NSString *)pwd withResolver:(R
  */
 RCT_REMAP_METHOD(setHost,setHost:(nonnull NSString *)host withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setHost:host];
+    id result = @{@"result" :[self.objcImpl setHost:host]};
     if(result)
     {
         resolve(result);
@@ -80,7 +80,7 @@ RCT_REMAP_METHOD(setHost,setHost:(nonnull NSString *)host withResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(setHostAddr,setHostAddr:(nonnull NSString *)hostAddr withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setHostAddr:hostAddr];
+    id result = @{@"result" :[self.objcImpl setHostAddr:hostAddr]};
     if(result)
     {
         resolve(result);
@@ -98,7 +98,7 @@ RCT_REMAP_METHOD(setHostAddr,setHostAddr:(nonnull NSString *)hostAddr withResolv
  */
 RCT_REMAP_METHOD(setPort,setPort:(nonnull NSString *)port withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setPort:port];
+    id result = @{@"result" :[self.objcImpl setPort:port]};
     if(result)
     {
         resolve(result);
@@ -116,7 +116,7 @@ RCT_REMAP_METHOD(setPort,setPort:(nonnull NSString *)port withResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(setOptions,setOptions:(nonnull NSString *)opts withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setOptions:opts];
+    id result = @{@"result" :[self.objcImpl setOptions:opts]};
     if(result)
     {
         resolve(result);
@@ -134,7 +134,7 @@ RCT_REMAP_METHOD(setOptions,setOptions:(nonnull NSString *)opts withResolver:(RC
  */
 RCT_REMAP_METHOD(setSslMode,setSslMode:(nonnull NSString *)mode withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setSslMode:mode];
+    id result = @{@"result" :[self.objcImpl setSslMode:mode]};
     if(result)
     {
         resolve(result);
@@ -152,7 +152,7 @@ RCT_REMAP_METHOD(setSslMode,setSslMode:(nonnull NSString *)mode withResolver:(RC
  */
 RCT_REMAP_METHOD(setKerberosName,setKerberosName:(nonnull NSString *)name withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setKerberosName:name];
+    id result = @{@"result" :[self.objcImpl setKerberosName:name]};
     if(result)
     {
         resolve(result);
@@ -166,7 +166,7 @@ RCT_REMAP_METHOD(setKerberosName,setKerberosName:(nonnull NSString *)name withRe
 /**TODO */
 RCT_REMAP_METHOD(setService,setService:(nonnull NSString *)service withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setService:service];
+    id result = @{@"result" :[self.objcImpl setService:service]};
     if(result)
     {
         resolve(result);
@@ -179,7 +179,7 @@ RCT_REMAP_METHOD(setService,setService:(nonnull NSString *)service withResolver:
 
 RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(int32_t)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setConnectionPoolSize:size];
+    id result = @{@"result" :[self.objcImpl setConnectionPoolSize:size]};
     if(result)
     {
         resolve(result);
@@ -192,7 +192,7 @@ RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(int32_t)size withR
 
 RCT_REMAP_METHOD(enableQueryLogging,enableQueryLogging:(BOOL)enable withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl enableQueryLogging:enable];
+    id result = @{@"result" :[self.objcImpl enableQueryLogging:enable]};
     if(result)
     {
         resolve(result);
@@ -209,7 +209,7 @@ RCT_REMAP_METHOD(enableQueryLogging,enableQueryLogging:(BOOL)enable withResolver
  */
 RCT_REMAP_METHOD(getUsername,getUsernameWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getUsername];
+    id result = @{@"result" :[self.objcImpl getUsername]};
     if(result)
     {
         resolve(result);
@@ -226,7 +226,7 @@ RCT_REMAP_METHOD(getUsername,getUsernameWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getPassword,getPasswordWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPassword];
+    id result = @{@"result" :[self.objcImpl getPassword]};
     if(result)
     {
         resolve(result);
@@ -243,7 +243,7 @@ RCT_REMAP_METHOD(getPassword,getPasswordWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getHost,getHostWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHost];
+    id result = @{@"result" :[self.objcImpl getHost]};
     if(result)
     {
         resolve(result);
@@ -260,7 +260,7 @@ RCT_REMAP_METHOD(getHost,getHostWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getHostAddr,getHostAddrWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHostAddr];
+    id result = @{@"result" :[self.objcImpl getHostAddr]};
     if(result)
     {
         resolve(result);
@@ -277,7 +277,7 @@ RCT_REMAP_METHOD(getHostAddr,getHostAddrWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getPort,getPortWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPort];
+    id result = @{@"result" :[self.objcImpl getPort]};
     if(result)
     {
         resolve(result);
@@ -294,7 +294,7 @@ RCT_REMAP_METHOD(getPort,getPortWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getOptions,getOptionsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getOptions];
+    id result = @{@"result" :[self.objcImpl getOptions]};
     if(result)
     {
         resolve(result);
@@ -311,7 +311,7 @@ RCT_REMAP_METHOD(getOptions,getOptionsWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getSslMode,getSslModeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getSslMode];
+    id result = @{@"result" :[self.objcImpl getSslMode]};
     if(result)
     {
         resolve(result);
@@ -328,7 +328,7 @@ RCT_REMAP_METHOD(getSslMode,getSslModeWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getKerberosName,getKerberosNameWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getKerberosName];
+    id result = @{@"result" :[self.objcImpl getKerberosName]};
     if(result)
     {
         resolve(result);
@@ -342,7 +342,7 @@ RCT_REMAP_METHOD(getKerberosName,getKerberosNameWithResolver:(RCTPromiseResolveB
 /**TODO */
 RCT_REMAP_METHOD(getService,getServiceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getService];
+    id result = @{@"result" :[self.objcImpl getService]};
     if(result)
     {
         resolve(result);
@@ -355,8 +355,7 @@ RCT_REMAP_METHOD(getService,getServiceWithResolver:(RCTPromiseResolveBlock)resol
 
 RCT_REMAP_METHOD(getConnectionPoolSize,getConnectionPoolSizeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getConnectionPoolSize];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getConnectionPoolSize])};if(result)
     {
         resolve(result);
     }
@@ -368,8 +367,7 @@ RCT_REMAP_METHOD(getConnectionPoolSize,getConnectionPoolSizeWithResolver:(RCTPro
 
 RCT_REMAP_METHOD(isLoggingEnabled,isLoggingEnabledWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isLoggingEnabled];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isLoggingEnabled])};if(result)
     {
         resolve(result);
     }
@@ -385,7 +383,7 @@ RCT_REMAP_METHOD(isLoggingEnabled,isLoggingEnabledWithResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(getSqlite3Backend,getSqlite3BackendWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGDatabaseBackend getSqlite3Backend];
+    id result = @{@"result" :[LGDatabaseBackend getSqlite3Backend]};
     if(result)
     {
         resolve(result);
@@ -402,7 +400,7 @@ RCT_REMAP_METHOD(getSqlite3Backend,getSqlite3BackendWithResolver:(RCTPromiseReso
  */
 RCT_REMAP_METHOD(getPostgreSQLBackend,getPostgreSQLBackendWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGDatabaseBackend getPostgreSQLBackend];
+    id result = @{@"result" :[LGDatabaseBackend getPostgreSQLBackend]};
     if(result)
     {
         resolve(result);

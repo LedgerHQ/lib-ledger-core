@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGRandomNumberGenerator)
  */
 RCT_REMAP_METHOD(getRandomBytes,getRandomBytes:(int32_t)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRandomBytes:size];
+    id result = @{@"result" :[self.objcImpl getRandomBytes:size]};
     if(result)
     {
         resolve(result);
@@ -43,8 +43,7 @@ RCT_REMAP_METHOD(getRandomBytes,getRandomBytes:(int32_t)size withResolver:(RCTPr
  */
 RCT_REMAP_METHOD(getRandomInt,getRandomIntWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRandomInt];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getRandomInt])};if(result)
     {
         resolve(result);
     }
@@ -60,8 +59,7 @@ RCT_REMAP_METHOD(getRandomInt,getRandomIntWithResolver:(RCTPromiseResolveBlock)r
  */
 RCT_REMAP_METHOD(getRandomLong,getRandomLongWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRandomLong];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getRandomLong])};if(result)
     {
         resolve(result);
     }
@@ -77,8 +75,7 @@ RCT_REMAP_METHOD(getRandomLong,getRandomLongWithResolver:(RCTPromiseResolveBlock
  */
 RCT_REMAP_METHOD(getRandomByte,getRandomByteWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRandomByte];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getRandomByte])};if(result)
     {
         resolve(result);
     }

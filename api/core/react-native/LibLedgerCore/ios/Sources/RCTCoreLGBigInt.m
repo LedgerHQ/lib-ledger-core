@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBigInt)
  */
 RCT_REMAP_METHOD(add,add:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl add:i];
+    id result = @{@"result" :[self.objcImpl add:i]};
     if(result)
     {
         resolve(result);
@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(add,add:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(subtract,subtract:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl subtract:i];
+    id result = @{@"result" :[self.objcImpl subtract:i]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(subtract,subtract:(nullable LGBigInt *)i withResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(multiply,multiply:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl multiply:i];
+    id result = @{@"result" :[self.objcImpl multiply:i]};
     if(result)
     {
         resolve(result);
@@ -80,7 +80,7 @@ RCT_REMAP_METHOD(multiply,multiply:(nullable LGBigInt *)i withResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(divide,divide:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl divide:i];
+    id result = @{@"result" :[self.objcImpl divide:i]};
     if(result)
     {
         resolve(result);
@@ -98,7 +98,7 @@ RCT_REMAP_METHOD(divide,divide:(nullable LGBigInt *)i withResolver:(RCTPromiseRe
  */
 RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl divideAndRemainder:i];
+    id result = @{@"result" :[self.objcImpl divideAndRemainder:i]};
     if(result)
     {
         resolve(result);
@@ -116,7 +116,7 @@ RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(nullable LGBigInt *)i wi
  */
 RCT_REMAP_METHOD(pow,pow:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pow:exponent];
+    id result = @{@"result" :[self.objcImpl pow:exponent]};
     if(result)
     {
         resolve(result);
@@ -138,7 +138,7 @@ RCT_REMAP_METHOD(toDecimalString,toDecimalString:(int32_t)precision
                                 decimalSeparator:(nonnull NSString *)decimalSeparator
                                thousandSeparator:(nonnull NSString *)thousandSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toDecimalString:precision decimalSeparator:decimalSeparator thousandSeparator:thousandSeparator];
+    id result = @{@"result" :[self.objcImpl toDecimalString:precision decimalSeparator:decimalSeparator thousandSeparator:thousandSeparator]};
     if(result)
     {
         resolve(result);
@@ -155,7 +155,7 @@ RCT_REMAP_METHOD(toDecimalString,toDecimalString:(int32_t)precision
  */
 RCT_REMAP_METHOD(toString,toString:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toString:radix];
+    id result = @{@"result" :[self.objcImpl toString:radix]};
     if(result)
     {
         resolve(result);
@@ -173,8 +173,7 @@ RCT_REMAP_METHOD(toString,toString:(int32_t)radix withResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(intValue,intValueWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl intValue];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl intValue])};if(result)
     {
         resolve(result);
     }
@@ -191,8 +190,7 @@ RCT_REMAP_METHOD(intValue,intValueWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(compare,compare:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl compare:i];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl compare:i])};if(result)
     {
         resolve(result);
     }
@@ -214,7 +212,7 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalString:(nonnull NSString *)s
                                            precision:(int32_t)precision
                                     decimalSeparator:(nonnull NSString *)decimalSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBigInt fromDecimalString:s precision:precision decimalSeparator:decimalSeparator];
+    id result = @{@"result" :[LGBigInt fromDecimalString:s precision:precision decimalSeparator:decimalSeparator]};
     if(result)
     {
         resolve(result);
@@ -234,7 +232,7 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalString:(nonnull NSString *)s
 RCT_REMAP_METHOD(fromIntegerString,fromIntegerString:(nonnull NSString *)s
                                                radix:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBigInt fromIntegerString:s radix:radix];
+    id result = @{@"result" :[LGBigInt fromIntegerString:s radix:radix]};
     if(result)
     {
         resolve(result);
@@ -252,7 +250,7 @@ RCT_REMAP_METHOD(fromIntegerString,fromIntegerString:(nonnull NSString *)s
  */
 RCT_REMAP_METHOD(fromLong,fromLong:(int64_t)l withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBigInt fromLong:l];
+    id result = @{@"result" :[LGBigInt fromLong:l]};
     if(result)
     {
         resolve(result);

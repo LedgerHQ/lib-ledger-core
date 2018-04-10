@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(RCTCoreLGOperationQuery)
 RCT_REMAP_METHOD(addOrder,addOrder:(LGOperationOrderKey)key
                         descending:(BOOL)descending withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl addOrder:key descending:descending];
+    id result = @{@"result" :[self.objcImpl addOrder:key descending:descending]};
     if(result)
     {
         resolve(result);
@@ -45,7 +45,7 @@ RCT_REMAP_METHOD(addOrder,addOrder:(LGOperationOrderKey)key
  */
 RCT_REMAP_METHOD(filter,filterWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl filter];
+    id result = @{@"result" :[self.objcImpl filter]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(filter,filterWithResolver:(RCTPromiseResolveBlock)resolve rejec
  */
 RCT_REMAP_METHOD(offset,offset:(int64_t)from withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl offset:from];
+    id result = @{@"result" :[self.objcImpl offset:from]};
     if(result)
     {
         resolve(result);
@@ -79,7 +79,7 @@ RCT_REMAP_METHOD(offset,offset:(int64_t)from withResolver:(RCTPromiseResolveBloc
  */
 RCT_REMAP_METHOD(limit,limit:(int64_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl limit:count];
+    id result = @{@"result" :[self.objcImpl limit:count]};
     if(result)
     {
         resolve(result);
@@ -96,7 +96,7 @@ RCT_REMAP_METHOD(limit,limit:(int64_t)count withResolver:(RCTPromiseResolveBlock
  */
 RCT_REMAP_METHOD(complete,completeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl complete];
+    id result = @{@"result" :[self.objcImpl complete]};
     if(result)
     {
         resolve(result);
@@ -110,7 +110,7 @@ RCT_REMAP_METHOD(complete,completeWithResolver:(RCTPromiseResolveBlock)resolve r
 /**TODO */
 RCT_REMAP_METHOD(partial,partialWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl partial];
+    id result = @{@"result" :[self.objcImpl partial]};
     if(result)
     {
         resolve(result);

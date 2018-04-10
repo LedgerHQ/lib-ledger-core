@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeAddress)
  */
 RCT_REMAP_METHOD(getVersion,getVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getVersion];
+    id result = @{@"result" :[self.objcImpl getVersion]};
     if(result)
     {
         resolve(result);
@@ -42,7 +42,7 @@ RCT_REMAP_METHOD(getVersion,getVersionWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getHash160,getHash160WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHash160];
+    id result = @{@"result" :[self.objcImpl getHash160]};
     if(result)
     {
         resolve(result);
@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(getHash160,getHash160WithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getNetworkParameters,getNetworkParametersWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getNetworkParameters];
+    id result = @{@"result" :[self.objcImpl getNetworkParameters]};
     if(result)
     {
         resolve(result);
@@ -76,7 +76,7 @@ RCT_REMAP_METHOD(getNetworkParameters,getNetworkParametersWithResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(toBase58,toBase58WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toBase58];
+    id result = @{@"result" :[self.objcImpl toBase58]};
     if(result)
     {
         resolve(result);
@@ -96,8 +96,7 @@ RCT_REMAP_METHOD(toBase58,toBase58WithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(isP2SH,isP2SHWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isP2SH];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isP2SH])};if(result)
     {
         resolve(result);
     }
@@ -113,8 +112,7 @@ RCT_REMAP_METHOD(isP2SH,isP2SHWithResolver:(RCTPromiseResolveBlock)resolve rejec
  */
 RCT_REMAP_METHOD(isP2PKH,isP2PKHWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isP2PKH];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isP2PKH])};if(result)
     {
         resolve(result);
     }
@@ -130,7 +128,7 @@ RCT_REMAP_METHOD(isP2PKH,isP2PKHWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getDerivationPath,getDerivationPathWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getDerivationPath];
+    id result = @{@"result" :[self.objcImpl getDerivationPath]};
     if(result)
     {
         resolve(result);
@@ -149,7 +147,7 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPathWithResolver:(RCTPromiseReso
 RCT_REMAP_METHOD(fromBase58,fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
                                address:(nonnull NSString *)address withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeAddress fromBase58:params address:address];
+    id result = @{@"result" :[LGBitcoinLikeAddress fromBase58:params address:address]};
     if(result)
     {
         resolve(result);
@@ -167,8 +165,7 @@ RCT_REMAP_METHOD(fromBase58,fromBase58:(nonnull LGBitcoinLikeNetworkParameters *
 RCT_REMAP_METHOD(isAddressValid,isAddressValid:(nonnull LGBitcoinLikeNetworkParameters *)params
                                        address:(nonnull NSString *)address withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeAddress isAddressValid:params address:address];
-    if(result)
+    id result = @{@"result" :@([LGBitcoinLikeAddress isAddressValid:params address:address])};if(result)
     {
         resolve(result);
     }

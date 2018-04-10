@@ -37,8 +37,7 @@ RCT_EXPORT_METHOD(lock) {
  */
 RCT_REMAP_METHOD(tryLock,tryLockWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl tryLock];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl tryLock])};if(result)
     {
         resolve(result);
     }

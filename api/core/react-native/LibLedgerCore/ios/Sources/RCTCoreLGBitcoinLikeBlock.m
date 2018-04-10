@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeBlock)
  */
 RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHash];
+    id result = @{@"result" :[self.objcImpl getHash]};
     if(result)
     {
         resolve(result);
@@ -42,8 +42,7 @@ RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getHeight,getHeightWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHeight];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getHeight])};if(result)
     {
         resolve(result);
     }
@@ -59,7 +58,7 @@ RCT_REMAP_METHOD(getHeight,getHeightWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getTime,getTimeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTime];
+    id result = @{@"result" :[self.objcImpl getTime]};
     if(result)
     {
         resolve(result);

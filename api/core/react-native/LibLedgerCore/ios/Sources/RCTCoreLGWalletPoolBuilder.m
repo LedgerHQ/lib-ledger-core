@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGWalletPoolBuilder)
  */
 RCT_REMAP_METHOD(setHttpClient,setHttpClient:(nullable id<LGHttpClient>)client withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setHttpClient:client];
+    id result = @{@"result" :[self.objcImpl setHttpClient:client]};
     if(result)
     {
         resolve(result);
@@ -44,7 +44,7 @@ RCT_REMAP_METHOD(setHttpClient,setHttpClient:(nullable id<LGHttpClient>)client w
  */
 RCT_REMAP_METHOD(setWebsocketClient,setWebsocketClient:(nullable id<LGWebSocketClient>)client withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setWebsocketClient:client];
+    id result = @{@"result" :[self.objcImpl setWebsocketClient:client]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(setWebsocketClient,setWebsocketClient:(nullable id<LGWebSocketC
  */
 RCT_REMAP_METHOD(setPathResolver,setPathResolver:(nullable id<LGPathResolver>)pathResolver withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setPathResolver:pathResolver];
+    id result = @{@"result" :[self.objcImpl setPathResolver:pathResolver]};
     if(result)
     {
         resolve(result);
@@ -80,7 +80,7 @@ RCT_REMAP_METHOD(setPathResolver,setPathResolver:(nullable id<LGPathResolver>)pa
  */
 RCT_REMAP_METHOD(setLogPrinter,setLogPrinter:(nullable id<LGLogPrinter>)printer withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setLogPrinter:printer];
+    id result = @{@"result" :[self.objcImpl setLogPrinter:printer]};
     if(result)
     {
         resolve(result);
@@ -98,7 +98,7 @@ RCT_REMAP_METHOD(setLogPrinter,setLogPrinter:(nullable id<LGLogPrinter>)printer 
  */
 RCT_REMAP_METHOD(setThreadDispatcher,setThreadDispatcher:(nullable id<LGThreadDispatcher>)dispatcher withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setThreadDispatcher:dispatcher];
+    id result = @{@"result" :[self.objcImpl setThreadDispatcher:dispatcher]};
     if(result)
     {
         resolve(result);
@@ -116,7 +116,7 @@ RCT_REMAP_METHOD(setThreadDispatcher,setThreadDispatcher:(nullable id<LGThreadDi
  */
 RCT_REMAP_METHOD(setName,setName:(nonnull NSString *)name withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setName:name];
+    id result = @{@"result" :[self.objcImpl setName:name]};
     if(result)
     {
         resolve(result);
@@ -134,7 +134,7 @@ RCT_REMAP_METHOD(setName,setName:(nonnull NSString *)name withResolver:(RCTPromi
  */
 RCT_REMAP_METHOD(setPassword,setPassword:(nonnull NSString *)password withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setPassword:password];
+    id result = @{@"result" :[self.objcImpl setPassword:password]};
     if(result)
     {
         resolve(result);
@@ -152,7 +152,7 @@ RCT_REMAP_METHOD(setPassword,setPassword:(nonnull NSString *)password withResolv
  */
 RCT_REMAP_METHOD(setRandomNumberGenerator,setRandomNumberGenerator:(nullable id<LGRandomNumberGenerator>)rng withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setRandomNumberGenerator:rng];
+    id result = @{@"result" :[self.objcImpl setRandomNumberGenerator:rng]};
     if(result)
     {
         resolve(result);
@@ -170,7 +170,7 @@ RCT_REMAP_METHOD(setRandomNumberGenerator,setRandomNumberGenerator:(nullable id<
  */
 RCT_REMAP_METHOD(setDatabaseBackend,setDatabaseBackend:(nullable LGDatabaseBackend *)backend withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setDatabaseBackend:backend];
+    id result = @{@"result" :[self.objcImpl setDatabaseBackend:backend]};
     if(result)
     {
         resolve(result);
@@ -188,7 +188,7 @@ RCT_REMAP_METHOD(setDatabaseBackend,setDatabaseBackend:(nullable LGDatabaseBacke
  */
 RCT_REMAP_METHOD(setConfiguration,setConfiguration:(nullable LGDynamicObject *)configuration withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl setConfiguration:configuration];
+    id result = @{@"result" :[self.objcImpl setConfiguration:configuration]};
     if(result)
     {
         resolve(result);
@@ -214,7 +214,7 @@ RCT_REMAP_METHOD(build,build:(nullable id<LGWalletPoolCallback>)listener) {
  */
 RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGWalletPoolBuilder createInstance];
+    id result = @{@"result" :[LGWalletPoolBuilder createInstance]};
     if(result)
     {
         resolve(result);

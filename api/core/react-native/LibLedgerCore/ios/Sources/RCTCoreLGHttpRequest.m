@@ -25,8 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpRequest)
  */
 RCT_REMAP_METHOD(getMethod,getMethodWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getMethod];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getMethod])};if(result)
     {
         resolve(result);
     }
@@ -42,7 +41,7 @@ RCT_REMAP_METHOD(getMethod,getMethodWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getHeaders,getHeadersWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getHeaders];
+    id result = @{@"result" :[self.objcImpl getHeaders]};
     if(result)
     {
         resolve(result);
@@ -59,7 +58,7 @@ RCT_REMAP_METHOD(getHeaders,getHeadersWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getBody,getBodyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getBody];
+    id result = @{@"result" :[self.objcImpl getBody]};
     if(result)
     {
         resolve(result);
@@ -76,7 +75,7 @@ RCT_REMAP_METHOD(getBody,getBodyWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getUrl,getUrlWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getUrl];
+    id result = @{@"result" :[self.objcImpl getUrl]};
     if(result)
     {
         resolve(result);

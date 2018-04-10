@@ -21,8 +21,7 @@ RCT_EXPORT_MODULE(RCTCoreLGTrustIndicator)
 
 RCT_REMAP_METHOD(getTrustWeight,getTrustWeightWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTrustWeight];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getTrustWeight])};if(result)
     {
         resolve(result);
     }
@@ -34,8 +33,7 @@ RCT_REMAP_METHOD(getTrustWeight,getTrustWeightWithResolver:(RCTPromiseResolveBlo
 
 RCT_REMAP_METHOD(getTrustLevel,getTrustLevelWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTrustLevel];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getTrustLevel])};if(result)
     {
         resolve(result);
     }
@@ -47,7 +45,7 @@ RCT_REMAP_METHOD(getTrustLevel,getTrustLevelWithResolver:(RCTPromiseResolveBlock
 
 RCT_REMAP_METHOD(getConflictingOperationUids,getConflictingOperationUidsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getConflictingOperationUids];
+    id result = @{@"result" :[self.objcImpl getConflictingOperationUids]};
     if(result)
     {
         resolve(result);
@@ -60,7 +58,7 @@ RCT_REMAP_METHOD(getConflictingOperationUids,getConflictingOperationUidsWithReso
 
 RCT_REMAP_METHOD(getOrigin,getOriginWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getOrigin];
+    id result = @{@"result" :[self.objcImpl getOrigin]};
     if(result)
     {
         resolve(result);

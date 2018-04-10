@@ -79,7 +79,7 @@ RCT_REMAP_METHOD(printCriticalError,printCriticalError:(nonnull NSString *)messa
  */
 RCT_REMAP_METHOD(getContext,getContextWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getContext];
+    id result = @{@"result" :[self.objcImpl getContext]};
     if(result)
     {
         resolve(result);

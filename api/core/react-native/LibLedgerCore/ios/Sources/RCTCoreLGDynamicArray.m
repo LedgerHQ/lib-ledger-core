@@ -25,8 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGDynamicArray)
  */
 RCT_REMAP_METHOD(size,sizeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl size];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl size])};if(result)
     {
         resolve(result);
     }
@@ -43,7 +42,7 @@ RCT_REMAP_METHOD(size,sizeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:
  */
 RCT_REMAP_METHOD(pushInt,pushInt:(int32_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushInt:value];
+    id result = @{@"result" :[self.objcImpl pushInt:value]};
     if(result)
     {
         resolve(result);
@@ -61,7 +60,7 @@ RCT_REMAP_METHOD(pushInt,pushInt:(int32_t)value withResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(pushLong,pushLong:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushLong:value];
+    id result = @{@"result" :[self.objcImpl pushLong:value]};
     if(result)
     {
         resolve(result);
@@ -79,7 +78,7 @@ RCT_REMAP_METHOD(pushLong,pushLong:(int64_t)value withResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(pushString,pushString:(nonnull NSString *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushString:value];
+    id result = @{@"result" :[self.objcImpl pushString:value]};
     if(result)
     {
         resolve(result);
@@ -97,7 +96,7 @@ RCT_REMAP_METHOD(pushString,pushString:(nonnull NSString *)value withResolver:(R
  */
 RCT_REMAP_METHOD(pushDouble,pushDouble:(double)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushDouble:value];
+    id result = @{@"result" :[self.objcImpl pushDouble:value]};
     if(result)
     {
         resolve(result);
@@ -115,7 +114,7 @@ RCT_REMAP_METHOD(pushDouble,pushDouble:(double)value withResolver:(RCTPromiseRes
  */
 RCT_REMAP_METHOD(pushData,pushData:(nonnull NSData *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushData:value];
+    id result = @{@"result" :[self.objcImpl pushData:value]};
     if(result)
     {
         resolve(result);
@@ -133,7 +132,7 @@ RCT_REMAP_METHOD(pushData,pushData:(nonnull NSData *)value withResolver:(RCTProm
  */
 RCT_REMAP_METHOD(pushBoolean,pushBoolean:(BOOL)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushBoolean:value];
+    id result = @{@"result" :[self.objcImpl pushBoolean:value]};
     if(result)
     {
         resolve(result);
@@ -151,7 +150,7 @@ RCT_REMAP_METHOD(pushBoolean,pushBoolean:(BOOL)value withResolver:(RCTPromiseRes
  */
 RCT_REMAP_METHOD(pushObject,pushObject:(nullable LGDynamicObject *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushObject:value];
+    id result = @{@"result" :[self.objcImpl pushObject:value]};
     if(result)
     {
         resolve(result);
@@ -169,7 +168,7 @@ RCT_REMAP_METHOD(pushObject,pushObject:(nullable LGDynamicObject *)value withRes
  */
 RCT_REMAP_METHOD(pushArray,pushArray:(nullable LGDynamicArray *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl pushArray:value];
+    id result = @{@"result" :[self.objcImpl pushArray:value]};
     if(result)
     {
         resolve(result);
@@ -187,7 +186,7 @@ RCT_REMAP_METHOD(pushArray,pushArray:(nullable LGDynamicArray *)value withResolv
  */
 RCT_REMAP_METHOD(getString,getString:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getString:index];
+    id result = @{@"result" :[self.objcImpl getString:index]};
     if(result)
     {
         resolve(result);
@@ -205,7 +204,7 @@ RCT_REMAP_METHOD(getString,getString:(int64_t)index withResolver:(RCTPromiseReso
  */
 RCT_REMAP_METHOD(getInt,getInt:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getInt:index];
+    id result = @{@"result" :[self.objcImpl getInt:index]};
     if(result)
     {
         resolve(result);
@@ -223,7 +222,7 @@ RCT_REMAP_METHOD(getInt,getInt:(int64_t)index withResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(getLong,getLong:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getLong:index];
+    id result = @{@"result" :[self.objcImpl getLong:index]};
     if(result)
     {
         resolve(result);
@@ -241,7 +240,7 @@ RCT_REMAP_METHOD(getLong,getLong:(int64_t)index withResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(getDouble,getDouble:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getDouble:index];
+    id result = @{@"result" :[self.objcImpl getDouble:index]};
     if(result)
     {
         resolve(result);
@@ -259,7 +258,7 @@ RCT_REMAP_METHOD(getDouble,getDouble:(int64_t)index withResolver:(RCTPromiseReso
  */
 RCT_REMAP_METHOD(getData,getData:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getData:index];
+    id result = @{@"result" :[self.objcImpl getData:index]};
     if(result)
     {
         resolve(result);
@@ -277,7 +276,7 @@ RCT_REMAP_METHOD(getData,getData:(int64_t)index withResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(getBoolean,getBoolean:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getBoolean:index];
+    id result = @{@"result" :[self.objcImpl getBoolean:index]};
     if(result)
     {
         resolve(result);
@@ -295,7 +294,7 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(int64_t)index withResolver:(RCTPromiseRe
  */
 RCT_REMAP_METHOD(getObject,getObject:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getObject:index];
+    id result = @{@"result" :[self.objcImpl getObject:index]};
     if(result)
     {
         resolve(result);
@@ -313,7 +312,7 @@ RCT_REMAP_METHOD(getObject,getObject:(int64_t)index withResolver:(RCTPromiseReso
  */
 RCT_REMAP_METHOD(getArray,getArray:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getArray:index];
+    id result = @{@"result" :[self.objcImpl getArray:index]};
     if(result)
     {
         resolve(result);
@@ -331,7 +330,7 @@ RCT_REMAP_METHOD(getArray,getArray:(int64_t)index withResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(concat,concat:(nullable LGDynamicArray *)array withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl concat:array];
+    id result = @{@"result" :[self.objcImpl concat:array]};
     if(result)
     {
         resolve(result);
@@ -349,7 +348,7 @@ RCT_REMAP_METHOD(concat,concat:(nullable LGDynamicArray *)array withResolver:(RC
  */
 RCT_REMAP_METHOD(getType,getType:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getType:index];
+    id result = @{@"result" :[self.objcImpl getType:index]};
     if(result)
     {
         resolve(result);
@@ -367,8 +366,7 @@ RCT_REMAP_METHOD(getType,getType:(int64_t)index withResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(remove,remove:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl remove:index];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl remove:index])};if(result)
     {
         resolve(result);
     }
@@ -384,7 +382,7 @@ RCT_REMAP_METHOD(remove,remove:(int64_t)index withResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(dump,dumpWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl dump];
+    id result = @{@"result" :[self.objcImpl dump]};
     if(result)
     {
         resolve(result);
@@ -401,7 +399,7 @@ RCT_REMAP_METHOD(dump,dumpWithResolver:(RCTPromiseResolveBlock)resolve rejecter:
  */
 RCT_REMAP_METHOD(serialize,serializeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl serialize];
+    id result = @{@"result" :[self.objcImpl serialize]};
     if(result)
     {
         resolve(result);
@@ -418,8 +416,7 @@ RCT_REMAP_METHOD(serialize,serializeWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(isReadOnly,isReadOnlyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isReadOnly];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isReadOnly])};if(result)
     {
         resolve(result);
     }
@@ -435,7 +432,7 @@ RCT_REMAP_METHOD(isReadOnly,isReadOnlyWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGDynamicArray newInstance];
+    id result = @{@"result" :[LGDynamicArray newInstance]};
     if(result)
     {
         resolve(result);
@@ -453,7 +450,7 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(load,load:(nonnull NSData *)serialized withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGDynamicArray load:serialized];
+    id result = @{@"result" :[LGDynamicArray load:serialized]};
     if(result)
     {
         resolve(result);

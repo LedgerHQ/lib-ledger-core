@@ -25,9 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGEvent)
  */
 RCT_REMAP_METHOD(getCode,getCodeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    //id result = [self.objcImpl getCode];
-    id result = @{@"result" : @([self.objcImpl getCode])};
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getCode])};if(result)
     {
         resolve(result);
     }
@@ -43,7 +41,7 @@ RCT_REMAP_METHOD(getCode,getCodeWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getPayload,getPayloadWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPayload];
+    id result = @{@"result" :[self.objcImpl getPayload]};
     if(result)
     {
         resolve(result);
@@ -59,14 +57,8 @@ RCT_REMAP_METHOD(getPayload,getPayloadWithResolver:(RCTPromiseResolveBlock)resol
  *@return bool
  */
 RCT_REMAP_METHOD(isSticky,isStickyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-//    NSDictionary *dictionary = @{
-//                                 @"anObject" : someObject,
-//                                 @"helloString" : @"Hello, World!",
-//                                 @"magicNumber" : @42,
-//                                 @"aValue" : someValue
-//                                 };
-    id result = @{@"result" : @([self.objcImpl isSticky])};
-    if(result)
+
+    id result = @{@"result" :@([self.objcImpl isSticky])};if(result)
     {
         resolve(result);
     }
@@ -82,9 +74,7 @@ RCT_REMAP_METHOD(isSticky,isStickyWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(getStickyTag,getStickyTagWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    //id result = [self.objcImpl getStickyTag];
-    id result = @{@"result" : @([self.objcImpl getStickyTag])};
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getStickyTag])};if(result)
     {
         resolve(result);
     }
@@ -103,7 +93,7 @@ RCT_REMAP_METHOD(getStickyTag,getStickyTagWithResolver:(RCTPromiseResolveBlock)r
 RCT_REMAP_METHOD(newInstance,newInstance:(LGEventCode)code
                                  payload:(nullable LGDynamicObject *)payload withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGEvent newInstance:code payload:payload];
+    id result = @{@"result" :[LGEvent newInstance:code payload:payload]};
     if(result)
     {
         resolve(result);

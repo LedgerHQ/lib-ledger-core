@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperation)
  */
 RCT_REMAP_METHOD(getTransaction,getTransactionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTransaction];
+    id result = @{@"result" :[self.objcImpl getTransaction]};
     if(result)
     {
         resolve(result);

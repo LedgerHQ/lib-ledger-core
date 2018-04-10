@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGEventPublisher)
  */
 RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getEventBus];
+    id result = @{@"result" :[self.objcImpl getEventBus]};
     if(result)
     {
         resolve(result);
@@ -71,7 +71,7 @@ RCT_REMAP_METHOD(relay,relay:(nullable LGEventBus *)bus) {
  */
 RCT_REMAP_METHOD(newInstance,newInstance:(nullable id<LGExecutionContext>)context withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGEventPublisher newInstance:context];
+    id result = @{@"result" :[LGEventPublisher newInstance:context]};
     if(result)
     {
         resolve(result);

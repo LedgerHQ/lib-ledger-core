@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeInput)
  */
 RCT_REMAP_METHOD(getAddress,getAddressWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getAddress];
+    id result = @{@"result" :[self.objcImpl getAddress]};
     if(result)
     {
         resolve(result);
@@ -42,7 +42,7 @@ RCT_REMAP_METHOD(getAddress,getAddressWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getValue,getValueWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getValue];
+    id result = @{@"result" :[self.objcImpl getValue]};
     if(result)
     {
         resolve(result);
@@ -59,8 +59,7 @@ RCT_REMAP_METHOD(getValue,getValueWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(isCoinbase,isCoinbaseWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isCoinbase];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isCoinbase])};if(result)
     {
         resolve(result);
     }
@@ -76,7 +75,7 @@ RCT_REMAP_METHOD(isCoinbase,isCoinbaseWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getCoinbase,getCoinbaseWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getCoinbase];
+    id result = @{@"result" :[self.objcImpl getCoinbase]};
     if(result)
     {
         resolve(result);
@@ -93,7 +92,7 @@ RCT_REMAP_METHOD(getCoinbase,getCoinbaseWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getPreviousTxHash,getPreviousTxHashWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPreviousTxHash];
+    id result = @{@"result" :[self.objcImpl getPreviousTxHash]};
     if(result)
     {
         resolve(result);
@@ -110,7 +109,7 @@ RCT_REMAP_METHOD(getPreviousTxHash,getPreviousTxHashWithResolver:(RCTPromiseReso
  */
 RCT_REMAP_METHOD(getPreviousOutputIndex,getPreviousOutputIndexWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPreviousOutputIndex];
+    id result = @{@"result" :[self.objcImpl getPreviousOutputIndex]};
     if(result)
     {
         resolve(result);

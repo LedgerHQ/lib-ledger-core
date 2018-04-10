@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGAmount)
  */
 RCT_REMAP_METHOD(toBigInt,toBigIntWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toBigInt];
+    id result = @{@"result" :[self.objcImpl toBigInt]};
     if(result)
     {
         resolve(result);
@@ -42,7 +42,7 @@ RCT_REMAP_METHOD(toBigInt,toBigIntWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getCurrency];
+    id result = @{@"result" :[self.objcImpl getCurrency]};
     if(result)
     {
         resolve(result);
@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
  */
 RCT_REMAP_METHOD(getUnit,getUnitWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getUnit];
+    id result = @{@"result" :[self.objcImpl getUnit]};
     if(result)
     {
         resolve(result);
@@ -77,7 +77,7 @@ RCT_REMAP_METHOD(getUnit,getUnitWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(toUnit,toUnit:(nonnull LGCurrencyUnit *)unit withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toUnit:unit];
+    id result = @{@"result" :[self.objcImpl toUnit:unit]};
     if(result)
     {
         resolve(result);
@@ -91,7 +91,7 @@ RCT_REMAP_METHOD(toUnit,toUnit:(nonnull LGCurrencyUnit *)unit withResolver:(RCTP
 /**TODO */
 RCT_REMAP_METHOD(toMagnitude,toMagnitude:(int32_t)magnitude withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toMagnitude:magnitude];
+    id result = @{@"result" :[self.objcImpl toMagnitude:magnitude]};
     if(result)
     {
         resolve(result);
@@ -108,7 +108,7 @@ RCT_REMAP_METHOD(toMagnitude,toMagnitude:(int32_t)magnitude withResolver:(RCTPro
  */
 RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toString];
+    id result = @{@"result" :[self.objcImpl toString]};
     if(result)
     {
         resolve(result);
@@ -125,8 +125,7 @@ RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(toLong,toLongWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toLong];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl toLong])};if(result)
     {
         resolve(result);
     }
@@ -142,8 +141,7 @@ RCT_REMAP_METHOD(toLong,toLongWithResolver:(RCTPromiseResolveBlock)resolve rejec
  */
 RCT_REMAP_METHOD(toDouble,toDoubleWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl toDouble];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl toDouble])};if(result)
     {
         resolve(result);
     }
@@ -157,7 +155,7 @@ RCT_REMAP_METHOD(toDouble,toDoubleWithResolver:(RCTPromiseResolveBlock)resolve r
 RCT_REMAP_METHOD(format,format:(nonnull LGLocale *)locale
                          rules:(nullable LGFormatRules *)rules withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl format:locale rules:rules];
+    id result = @{@"result" :[self.objcImpl format:locale rules:rules]};
     if(result)
     {
         resolve(result);

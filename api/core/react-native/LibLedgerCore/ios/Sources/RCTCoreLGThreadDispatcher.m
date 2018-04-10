@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGThreadDispatcher)
  */
 RCT_REMAP_METHOD(getSerialExecutionContext,getSerialExecutionContext:(nonnull NSString *)name withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getSerialExecutionContext:name];
+    id result = @{@"result" :[self.objcImpl getSerialExecutionContext:name]};
     if(result)
     {
         resolve(result);
@@ -45,7 +45,7 @@ RCT_REMAP_METHOD(getSerialExecutionContext,getSerialExecutionContext:(nonnull NS
  */
 RCT_REMAP_METHOD(getThreadPoolExecutionContext,getThreadPoolExecutionContext:(nonnull NSString *)name withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getThreadPoolExecutionContext:name];
+    id result = @{@"result" :[self.objcImpl getThreadPoolExecutionContext:name]};
     if(result)
     {
         resolve(result);
@@ -62,7 +62,7 @@ RCT_REMAP_METHOD(getThreadPoolExecutionContext,getThreadPoolExecutionContext:(no
  */
 RCT_REMAP_METHOD(getMainExecutionContext,getMainExecutionContextWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getMainExecutionContext];
+    id result = @{@"result" :[self.objcImpl getMainExecutionContext]};
     if(result)
     {
         resolve(result);
@@ -79,7 +79,7 @@ RCT_REMAP_METHOD(getMainExecutionContext,getMainExecutionContextWithResolver:(RC
  */
 RCT_REMAP_METHOD(newLock,newLockWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl newLock];
+    id result = @{@"result" :[self.objcImpl newLock]};
     if(result)
     {
         resolve(result);

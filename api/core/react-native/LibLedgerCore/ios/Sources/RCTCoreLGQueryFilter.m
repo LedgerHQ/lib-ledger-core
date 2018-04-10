@@ -21,7 +21,7 @@ RCT_EXPORT_MODULE(RCTCoreLGQueryFilter)
 
 RCT_REMAP_METHOD(accountEq,accountEq:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter accountEq:accountUid];
+    id result = @{@"result" :[LGQueryFilter accountEq:accountUid]};
     if(result)
     {
         resolve(result);
@@ -34,7 +34,7 @@ RCT_REMAP_METHOD(accountEq,accountEq:(nonnull NSString *)accountUid withResolver
 
 RCT_REMAP_METHOD(accountNeq,accountNeq:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter accountNeq:accountUid];
+    id result = @{@"result" :[LGQueryFilter accountNeq:accountUid]};
     if(result)
     {
         resolve(result);
@@ -47,7 +47,7 @@ RCT_REMAP_METHOD(accountNeq,accountNeq:(nonnull NSString *)accountUid withResolv
 
 RCT_REMAP_METHOD(dateLte,dateLte:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateLte:time];
+    id result = @{@"result" :[LGQueryFilter dateLte:time]};
     if(result)
     {
         resolve(result);
@@ -60,7 +60,7 @@ RCT_REMAP_METHOD(dateLte,dateLte:(nonnull NSDate *)time withResolver:(RCTPromise
 
 RCT_REMAP_METHOD(dateLt,dateLt:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateLt:time];
+    id result = @{@"result" :[LGQueryFilter dateLt:time]};
     if(result)
     {
         resolve(result);
@@ -73,7 +73,7 @@ RCT_REMAP_METHOD(dateLt,dateLt:(nonnull NSDate *)time withResolver:(RCTPromiseRe
 
 RCT_REMAP_METHOD(dateGt,dateGt:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateGt:time];
+    id result = @{@"result" :[LGQueryFilter dateGt:time]};
     if(result)
     {
         resolve(result);
@@ -86,7 +86,7 @@ RCT_REMAP_METHOD(dateGt,dateGt:(nonnull NSDate *)time withResolver:(RCTPromiseRe
 
 RCT_REMAP_METHOD(dateGte,dateGte:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateGte:time];
+    id result = @{@"result" :[LGQueryFilter dateGte:time]};
     if(result)
     {
         resolve(result);
@@ -99,7 +99,7 @@ RCT_REMAP_METHOD(dateGte,dateGte:(nonnull NSDate *)time withResolver:(RCTPromise
 
 RCT_REMAP_METHOD(dateEq,dateEq:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateEq:time];
+    id result = @{@"result" :[LGQueryFilter dateEq:time]};
     if(result)
     {
         resolve(result);
@@ -112,7 +112,7 @@ RCT_REMAP_METHOD(dateEq,dateEq:(nonnull NSDate *)time withResolver:(RCTPromiseRe
 
 RCT_REMAP_METHOD(dateNeq,dateNeq:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter dateNeq:time];
+    id result = @{@"result" :[LGQueryFilter dateNeq:time]};
     if(result)
     {
         resolve(result);
@@ -125,7 +125,7 @@ RCT_REMAP_METHOD(dateNeq,dateNeq:(nonnull NSDate *)time withResolver:(RCTPromise
 
 RCT_REMAP_METHOD(containsRecipient,containsRecipient:(nonnull NSString *)recipientAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter containsRecipient:recipientAddress];
+    id result = @{@"result" :[LGQueryFilter containsRecipient:recipientAddress]};
     if(result)
     {
         resolve(result);
@@ -138,7 +138,7 @@ RCT_REMAP_METHOD(containsRecipient,containsRecipient:(nonnull NSString *)recipie
 
 RCT_REMAP_METHOD(containsSender,containsSender:(nonnull NSString *)senderAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter containsSender:senderAddress];
+    id result = @{@"result" :[LGQueryFilter containsSender:senderAddress]};
     if(result)
     {
         resolve(result);
@@ -151,7 +151,7 @@ RCT_REMAP_METHOD(containsSender,containsSender:(nonnull NSString *)senderAddress
 
 RCT_REMAP_METHOD(currencyEq,currencyEq:(nonnull NSString *)currencyName withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter currencyEq:currencyName];
+    id result = @{@"result" :[LGQueryFilter currencyEq:currencyName]};
     if(result)
     {
         resolve(result);
@@ -164,7 +164,7 @@ RCT_REMAP_METHOD(currencyEq,currencyEq:(nonnull NSString *)currencyName withReso
 
 RCT_REMAP_METHOD(operationUidEq,operationUidEq:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter operationUidEq:operationUid];
+    id result = @{@"result" :[LGQueryFilter operationUidEq:operationUid]};
     if(result)
     {
         resolve(result);
@@ -177,7 +177,7 @@ RCT_REMAP_METHOD(operationUidEq,operationUidEq:(nonnull NSString *)operationUid 
 
 RCT_REMAP_METHOD(operationUidNeq,operationUidNeq:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter operationUidNeq:operationUid];
+    id result = @{@"result" :[LGQueryFilter operationUidNeq:operationUid]};
     if(result)
     {
         resolve(result);
@@ -190,7 +190,7 @@ RCT_REMAP_METHOD(operationUidNeq,operationUidNeq:(nonnull NSString *)operationUi
 
 RCT_REMAP_METHOD(trustEq,trustEq:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter trustEq:trust];
+    id result = @{@"result" :[LGQueryFilter trustEq:trust]};
     if(result)
     {
         resolve(result);
@@ -203,7 +203,7 @@ RCT_REMAP_METHOD(trustEq,trustEq:(LGTrustLevel)trust withResolver:(RCTPromiseRes
 
 RCT_REMAP_METHOD(trustNeq,trustNeq:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter trustNeq:trust];
+    id result = @{@"result" :[LGQueryFilter trustNeq:trust]};
     if(result)
     {
         resolve(result);
@@ -216,7 +216,7 @@ RCT_REMAP_METHOD(trustNeq,trustNeq:(LGTrustLevel)trust withResolver:(RCTPromiseR
 
 RCT_REMAP_METHOD(feesEq,feesEq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesEq:amount];
+    id result = @{@"result" :[LGQueryFilter feesEq:amount]};
     if(result)
     {
         resolve(result);
@@ -229,7 +229,7 @@ RCT_REMAP_METHOD(feesEq,feesEq:(nullable LGAmount *)amount withResolver:(RCTProm
 
 RCT_REMAP_METHOD(feesNeq,feesNeq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesNeq:amount];
+    id result = @{@"result" :[LGQueryFilter feesNeq:amount]};
     if(result)
     {
         resolve(result);
@@ -242,7 +242,7 @@ RCT_REMAP_METHOD(feesNeq,feesNeq:(nullable LGAmount *)amount withResolver:(RCTPr
 
 RCT_REMAP_METHOD(feesGte,feesGte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesGte:amount];
+    id result = @{@"result" :[LGQueryFilter feesGte:amount]};
     if(result)
     {
         resolve(result);
@@ -255,7 +255,7 @@ RCT_REMAP_METHOD(feesGte,feesGte:(nullable LGAmount *)amount withResolver:(RCTPr
 
 RCT_REMAP_METHOD(feesGt,feesGt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesGt:amount];
+    id result = @{@"result" :[LGQueryFilter feesGt:amount]};
     if(result)
     {
         resolve(result);
@@ -268,7 +268,7 @@ RCT_REMAP_METHOD(feesGt,feesGt:(nullable LGAmount *)amount withResolver:(RCTProm
 
 RCT_REMAP_METHOD(feesLte,feesLte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesLte:amount];
+    id result = @{@"result" :[LGQueryFilter feesLte:amount]};
     if(result)
     {
         resolve(result);
@@ -281,7 +281,7 @@ RCT_REMAP_METHOD(feesLte,feesLte:(nullable LGAmount *)amount withResolver:(RCTPr
 
 RCT_REMAP_METHOD(feesLt,feesLt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter feesLt:amount];
+    id result = @{@"result" :[LGQueryFilter feesLt:amount]};
     if(result)
     {
         resolve(result);
@@ -294,7 +294,7 @@ RCT_REMAP_METHOD(feesLt,feesLt:(nullable LGAmount *)amount withResolver:(RCTProm
 
 RCT_REMAP_METHOD(amountEq,amountEq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountEq:amount];
+    id result = @{@"result" :[LGQueryFilter amountEq:amount]};
     if(result)
     {
         resolve(result);
@@ -307,7 +307,7 @@ RCT_REMAP_METHOD(amountEq,amountEq:(nullable LGAmount *)amount withResolver:(RCT
 
 RCT_REMAP_METHOD(amountNeq,amountNeq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountNeq:amount];
+    id result = @{@"result" :[LGQueryFilter amountNeq:amount]};
     if(result)
     {
         resolve(result);
@@ -320,7 +320,7 @@ RCT_REMAP_METHOD(amountNeq,amountNeq:(nullable LGAmount *)amount withResolver:(R
 
 RCT_REMAP_METHOD(amountGte,amountGte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountGte:amount];
+    id result = @{@"result" :[LGQueryFilter amountGte:amount]};
     if(result)
     {
         resolve(result);
@@ -333,7 +333,7 @@ RCT_REMAP_METHOD(amountGte,amountGte:(nullable LGAmount *)amount withResolver:(R
 
 RCT_REMAP_METHOD(amountGt,amountGt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountGt:amount];
+    id result = @{@"result" :[LGQueryFilter amountGt:amount]};
     if(result)
     {
         resolve(result);
@@ -346,7 +346,7 @@ RCT_REMAP_METHOD(amountGt,amountGt:(nullable LGAmount *)amount withResolver:(RCT
 
 RCT_REMAP_METHOD(amountLte,amountLte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountLte:amount];
+    id result = @{@"result" :[LGQueryFilter amountLte:amount]};
     if(result)
     {
         resolve(result);
@@ -359,7 +359,7 @@ RCT_REMAP_METHOD(amountLte,amountLte:(nullable LGAmount *)amount withResolver:(R
 
 RCT_REMAP_METHOD(amountLt,amountLt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter amountLt:amount];
+    id result = @{@"result" :[LGQueryFilter amountLt:amount]};
     if(result)
     {
         resolve(result);
@@ -372,7 +372,7 @@ RCT_REMAP_METHOD(amountLt,amountLt:(nullable LGAmount *)amount withResolver:(RCT
 
 RCT_REMAP_METHOD(blockHeightEq,blockHeightEq:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightEq:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightEq:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -385,7 +385,7 @@ RCT_REMAP_METHOD(blockHeightEq,blockHeightEq:(int64_t)blockHeight withResolver:(
 
 RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeq:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightNeq:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightNeq:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -398,7 +398,7 @@ RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeq:(int64_t)blockHeight withResolver
 
 RCT_REMAP_METHOD(blockHeightGte,blockHeightGte:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightGte:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightGte:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -411,7 +411,7 @@ RCT_REMAP_METHOD(blockHeightGte,blockHeightGte:(int64_t)blockHeight withResolver
 
 RCT_REMAP_METHOD(blockHeightGt,blockHeightGt:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightGt:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightGt:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -424,7 +424,7 @@ RCT_REMAP_METHOD(blockHeightGt,blockHeightGt:(int64_t)blockHeight withResolver:(
 
 RCT_REMAP_METHOD(blockHeightLte,blockHeightLte:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightLte:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightLte:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -437,7 +437,7 @@ RCT_REMAP_METHOD(blockHeightLte,blockHeightLte:(int64_t)blockHeight withResolver
 
 RCT_REMAP_METHOD(blockHeightLt,blockHeightLt:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightLt:blockHeight];
+    id result = @{@"result" :[LGQueryFilter blockHeightLt:blockHeight]};
     if(result)
     {
         resolve(result);
@@ -450,7 +450,7 @@ RCT_REMAP_METHOD(blockHeightLt,blockHeightLt:(int64_t)blockHeight withResolver:(
 
 RCT_REMAP_METHOD(blockHeightIsNull,blockHeightIsNullWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter blockHeightIsNull];
+    id result = @{@"result" :[LGQueryFilter blockHeightIsNull]};
     if(result)
     {
         resolve(result);
@@ -463,7 +463,7 @@ RCT_REMAP_METHOD(blockHeightIsNull,blockHeightIsNullWithResolver:(RCTPromiseReso
 
 RCT_REMAP_METHOD(operationTypeEq,operationTypeEq:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter operationTypeEq:operationType];
+    id result = @{@"result" :[LGQueryFilter operationTypeEq:operationType]};
     if(result)
     {
         resolve(result);
@@ -476,7 +476,7 @@ RCT_REMAP_METHOD(operationTypeEq,operationTypeEq:(LGOperationType)operationType 
 
 RCT_REMAP_METHOD(operationTypeNeq,operationTypeNeq:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGQueryFilter operationTypeNeq:operationType];
+    id result = @{@"result" :[LGQueryFilter operationTypeNeq:operationType]};
     if(result)
     {
         resolve(result);
@@ -489,7 +489,7 @@ RCT_REMAP_METHOD(operationTypeNeq,operationTypeNeq:(LGOperationType)operationTyp
 
 RCT_REMAP_METHOD(opAnd,opAnd:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl opAnd:filter];
+    id result = @{@"result" :[self.objcImpl opAnd:filter]};
     if(result)
     {
         resolve(result);
@@ -502,7 +502,7 @@ RCT_REMAP_METHOD(opAnd,opAnd:(nullable LGQueryFilter *)filter withResolver:(RCTP
 
 RCT_REMAP_METHOD(opOr,opOr:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl opOr:filter];
+    id result = @{@"result" :[self.objcImpl opOr:filter]};
     if(result)
     {
         resolve(result);
@@ -515,7 +515,7 @@ RCT_REMAP_METHOD(opOr,opOr:(nullable LGQueryFilter *)filter withResolver:(RCTPro
 
 RCT_REMAP_METHOD(opAndNot,opAndNot:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl opAndNot:filter];
+    id result = @{@"result" :[self.objcImpl opAndNot:filter]};
     if(result)
     {
         resolve(result);
@@ -528,7 +528,7 @@ RCT_REMAP_METHOD(opAndNot,opAndNot:(nullable LGQueryFilter *)filter withResolver
 
 RCT_REMAP_METHOD(opOrNot,opOrNot:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl opOrNot:filter];
+    id result = @{@"result" :[self.objcImpl opOrNot:filter]};
     if(result)
     {
         resolve(result);

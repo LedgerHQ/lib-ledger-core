@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferencesEditor)
 RCT_REMAP_METHOD(putString,putString:(nonnull NSString *)key
                                value:(nonnull NSString *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putString:key value:value];
+    id result = @{@"result" :[self.objcImpl putString:key value:value]};
     if(result)
     {
         resolve(result);
@@ -48,7 +48,7 @@ RCT_REMAP_METHOD(putString,putString:(nonnull NSString *)key
 RCT_REMAP_METHOD(putInt,putInt:(nonnull NSString *)key
                          value:(int32_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putInt:key value:value];
+    id result = @{@"result" :[self.objcImpl putInt:key value:value]};
     if(result)
     {
         resolve(result);
@@ -68,7 +68,7 @@ RCT_REMAP_METHOD(putInt,putInt:(nonnull NSString *)key
 RCT_REMAP_METHOD(putLong,putLong:(nonnull NSString *)key
                            value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putLong:key value:value];
+    id result = @{@"result" :[self.objcImpl putLong:key value:value]};
     if(result)
     {
         resolve(result);
@@ -88,7 +88,7 @@ RCT_REMAP_METHOD(putLong,putLong:(nonnull NSString *)key
 RCT_REMAP_METHOD(putBoolean,putBoolean:(nonnull NSString *)key
                                  value:(BOOL)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putBoolean:key value:value];
+    id result = @{@"result" :[self.objcImpl putBoolean:key value:value]};
     if(result)
     {
         resolve(result);
@@ -108,7 +108,7 @@ RCT_REMAP_METHOD(putBoolean,putBoolean:(nonnull NSString *)key
 RCT_REMAP_METHOD(putStringArray,putStringArray:(nonnull NSString *)key
                                          value:(nonnull NSArray<NSString *> *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putStringArray:key value:value];
+    id result = @{@"result" :[self.objcImpl putStringArray:key value:value]};
     if(result)
     {
         resolve(result);
@@ -128,7 +128,7 @@ RCT_REMAP_METHOD(putStringArray,putStringArray:(nonnull NSString *)key
 RCT_REMAP_METHOD(putData,putData:(nonnull NSString *)key
                            value:(nonnull NSData *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl putData:key value:value];
+    id result = @{@"result" :[self.objcImpl putData:key value:value]};
     if(result)
     {
         resolve(result);
@@ -146,7 +146,7 @@ RCT_REMAP_METHOD(putData,putData:(nonnull NSString *)key
  */
 RCT_REMAP_METHOD(remove,remove:(nonnull NSString *)key withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl remove:key];
+    id result = @{@"result" :[self.objcImpl remove:key]};
     if(result)
     {
         resolve(result);

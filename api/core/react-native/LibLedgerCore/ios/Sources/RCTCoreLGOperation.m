@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGOperation)
  */
 RCT_REMAP_METHOD(getUid,getUidWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getUid];
+    id result = @{@"result" :[self.objcImpl getUid]};
     if(result)
     {
         resolve(result);
@@ -42,8 +42,7 @@ RCT_REMAP_METHOD(getUid,getUidWithResolver:(RCTPromiseResolveBlock)resolve rejec
  */
 RCT_REMAP_METHOD(getAccountIndex,getAccountIndexWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getAccountIndex];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getAccountIndex])};if(result)
     {
         resolve(result);
     }
@@ -59,8 +58,7 @@ RCT_REMAP_METHOD(getAccountIndex,getAccountIndexWithResolver:(RCTPromiseResolveB
  */
 RCT_REMAP_METHOD(getOperationType,getOperationTypeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getOperationType];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getOperationType])};if(result)
     {
         resolve(result);
     }
@@ -76,7 +74,7 @@ RCT_REMAP_METHOD(getOperationType,getOperationTypeWithResolver:(RCTPromiseResolv
  */
 RCT_REMAP_METHOD(getDate,getDateWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getDate];
+    id result = @{@"result" :[self.objcImpl getDate]};
     if(result)
     {
         resolve(result);
@@ -93,7 +91,7 @@ RCT_REMAP_METHOD(getDate,getDateWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getSenders,getSendersWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getSenders];
+    id result = @{@"result" :[self.objcImpl getSenders]};
     if(result)
     {
         resolve(result);
@@ -110,7 +108,7 @@ RCT_REMAP_METHOD(getSenders,getSendersWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getRecipients,getRecipientsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getRecipients];
+    id result = @{@"result" :[self.objcImpl getRecipients]};
     if(result)
     {
         resolve(result);
@@ -127,7 +125,7 @@ RCT_REMAP_METHOD(getRecipients,getRecipientsWithResolver:(RCTPromiseResolveBlock
  */
 RCT_REMAP_METHOD(getAmount,getAmountWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getAmount];
+    id result = @{@"result" :[self.objcImpl getAmount]};
     if(result)
     {
         resolve(result);
@@ -144,7 +142,7 @@ RCT_REMAP_METHOD(getAmount,getAmountWithResolver:(RCTPromiseResolveBlock)resolve
  */
 RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getFees];
+    id result = @{@"result" :[self.objcImpl getFees]};
     if(result)
     {
         resolve(result);
@@ -161,7 +159,7 @@ RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rej
  */
 RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getPreferences];
+    id result = @{@"result" :[self.objcImpl getPreferences]};
     if(result)
     {
         resolve(result);
@@ -178,7 +176,7 @@ RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(getTrust,getTrustWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getTrust];
+    id result = @{@"result" :[self.objcImpl getTrust]};
     if(result)
     {
         resolve(result);
@@ -195,7 +193,7 @@ RCT_REMAP_METHOD(getTrust,getTrustWithResolver:(RCTPromiseResolveBlock)resolve r
  */
 RCT_REMAP_METHOD(getBlockHeight,getBlockHeightWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getBlockHeight];
+    id result = @{@"result" :[self.objcImpl getBlockHeight]};
     if(result)
     {
         resolve(result);
@@ -212,7 +210,7 @@ RCT_REMAP_METHOD(getBlockHeight,getBlockHeightWithResolver:(RCTPromiseResolveBlo
  */
 RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl asBitcoinLikeOperation];
+    id result = @{@"result" :[self.objcImpl asBitcoinLikeOperation]};
     if(result)
     {
         resolve(result);
@@ -225,8 +223,7 @@ RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperationWithResolver:(RCTP
 
 RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfBitcoinLikeOperation];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfBitcoinLikeOperation])};if(result)
     {
         resolve(result);
     }
@@ -243,8 +240,7 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperati
  */
 RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfEthereumLikeOperation];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfEthereumLikeOperation])};if(result)
     {
         resolve(result);
     }
@@ -261,8 +257,7 @@ RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOpera
  */
 RCT_REMAP_METHOD(isInstanceOfRippleLikeOperation,isInstanceOfRippleLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isInstanceOfRippleLikeOperation];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isInstanceOfRippleLikeOperation])};if(result)
     {
         resolve(result);
     }
@@ -278,8 +273,7 @@ RCT_REMAP_METHOD(isInstanceOfRippleLikeOperation,isInstanceOfRippleLikeOperation
  */
 RCT_REMAP_METHOD(isComplete,isCompleteWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl isComplete];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl isComplete])};if(result)
     {
         resolve(result);
     }
@@ -295,8 +289,7 @@ RCT_REMAP_METHOD(isComplete,isCompleteWithResolver:(RCTPromiseResolveBlock)resol
  */
 RCT_REMAP_METHOD(getWalletType,getWalletTypeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [self.objcImpl getWalletType];
-    if(result)
+    id result = @{@"result" :@([self.objcImpl getWalletType])};if(result)
     {
         resolve(result);
     }

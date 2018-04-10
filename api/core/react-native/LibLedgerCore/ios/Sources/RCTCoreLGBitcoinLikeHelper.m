@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeHelper)
 RCT_REMAP_METHOD(scriptToOutput,scriptToOutput:(nonnull NSData *)script
                                         amount:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeHelper scriptToOutput:script amount:amount];
+    id result = @{@"result" :[LGBitcoinLikeHelper scriptToOutput:script amount:amount]};
     if(result)
     {
         resolve(result);
@@ -48,7 +48,7 @@ RCT_REMAP_METHOD(scriptToOutput,scriptToOutput:(nonnull NSData *)script
 RCT_REMAP_METHOD(addressToOutput,addressToOutput:(nonnull NSString *)address
                                           amount:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeHelper addressToOutput:address amount:amount];
+    id result = @{@"result" :[LGBitcoinLikeHelper addressToOutput:address amount:amount]};
     if(result)
     {
         resolve(result);
@@ -66,7 +66,7 @@ RCT_REMAP_METHOD(addressToOutput,addressToOutput:(nonnull NSString *)address
  */
 RCT_REMAP_METHOD(serializeTransaction,serializeTransaction:(nonnull LGBitcoinLikePreparedTransaction *)preparedTransaction withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeHelper serializeTransaction:preparedTransaction];
+    id result = @{@"result" :[LGBitcoinLikeHelper serializeTransaction:preparedTransaction]};
     if(result)
     {
         resolve(result);
@@ -84,7 +84,7 @@ RCT_REMAP_METHOD(serializeTransaction,serializeTransaction:(nonnull LGBitcoinLik
  */
 RCT_REMAP_METHOD(parseTransaction,parseTransaction:(nonnull NSData *)transaction withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-    id result = [LGBitcoinLikeHelper parseTransaction:transaction];
+    id result = @{@"result" :[LGBitcoinLikeHelper parseTransaction:transaction]};
     if(result)
     {
         resolve(result);
