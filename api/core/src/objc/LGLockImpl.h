@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGLock.h"
+#import "../../objc/LGLock.h"
 
 @interface LGLockImpl : NSObject<LGLock>
 

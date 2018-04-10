@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGWalletPoolCallback.h"
+#import "../../objc/LGWalletPoolCallback.h"
 
 @interface LGWalletPoolCallbackImpl : NSObject<LGWalletPoolCallback>
 

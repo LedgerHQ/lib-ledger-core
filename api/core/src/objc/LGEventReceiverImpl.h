@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "../Generated/objc/LGEventReceiver.h"
+#import "../../objc/LGEventReceiver.h"
 
 @interface LGEventReceiverImpl : NSObject<LGEventReceiver>
 

@@ -32,16 +32,19 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
         			--node-package ledgerapp_nodejs \
         			--react-native-out api/core/react-native/LibLedgerCore/ios/Sources \
 					--react-native-type-prefix RCTCore \
-					--react-include-objc ../Generated/objc \
-					--react-include-objc-impl  ../Implementation \
+					--react-include-objc ../../../../objc \
+					--react-include-objc-impl  ../../../../src/objc \
 					--react-native-objc-impl-suffix Impl \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
 cp ./djinni/support-lib/*.hpp $CORE_CPP_JNI_DIRECTORY
 
+
+#--react-include-objc ../Generated/objc \
+#--react-include-objc-impl  ../Implementation \
 #copy djinni generated objc and objcpp files to react-native project
-cp ./api/core/objc/* ./api/core/react-native/LibLedgerCore/ios/Generated/objc
-cp ./api/core/objcpp/* ./api/core/react-native/LibLedgerCore/ios/Generated/objcpp
+#cp ./api/core/objc/* ./api/core/react-native/LibLedgerCore/ios/Generated/objc
+#cp ./api/core/objcpp/* ./api/core/react-native/LibLedgerCore/ios/Generated/objcpp
 #copy objc implementations to react-native project
-cp ./api/core/src/objc/* ./api/core/react-native/LibLedgerCore/ios/Implementation
+#cp ./api/core/src/objc/* ./api/core/react-native/LibLedgerCore/ios/Implementation

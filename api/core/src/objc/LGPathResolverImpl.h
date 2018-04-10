@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGPathResolver.h"
+#import "../../objc/LGPathResolver.h"
 
 @interface LGPathResolverImpl : NSObject<LGPathResolver>
 

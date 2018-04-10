@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGStringCallback.h"
+#import "../../objc/LGStringCallback.h"
 
 @interface LGStringCallbackImpl : NSObject<LGStringCallback>
 

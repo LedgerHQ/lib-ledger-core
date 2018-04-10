@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "../Generated/objc/LGExtendedKeyAccountCreationInfoCallback.h"
+#import "../../objc/LGExtendedKeyAccountCreationInfoCallback.h"
 
 @interface LGExtendedKeyAccountCreationInfoCallbackImpl : NSObject<LGExtendedKeyAccountCreationInfoCallback>
 

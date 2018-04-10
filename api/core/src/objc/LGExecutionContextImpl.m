@@ -1,4 +1,5 @@
 #import "LGExecutionContextImpl.h"
+#import "../../objc/LGRunnable.h"
 
 @implementation LGExecutionContextImpl
 

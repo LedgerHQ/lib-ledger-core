@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "../Generated/objc/LGBitcoinLikeTransactionRequestCallback.h"
+#import "../../objc/LGBitcoinLikeTransactionRequestCallback.h"
 
 @interface LGBitcoinLikeTransactionRequestCallbackImpl : NSObject<LGBitcoinLikeTransactionRequestCallback>
 

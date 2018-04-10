@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGWebSocketClient.h"
+#import "../../objc/LGWebSocketClient.h"
 
 @interface LGWebSocketClientImpl : NSObject<LGWebSocketClient>
 

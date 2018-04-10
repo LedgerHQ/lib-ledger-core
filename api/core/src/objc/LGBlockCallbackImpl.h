@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "../Generated/objc/LGBlockCallback.h"
+#import "../../objc/LGBlockCallback.h"
 
 @interface LGBlockCallbackImpl : NSObject<LGBlockCallback>
 

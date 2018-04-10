@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGAccountCreationInfoCallback.h"
+#import "../../objc/LGAccountCreationInfoCallback.h"
 
 @interface LGAccountCreationInfoCallbackImpl : NSObject<LGAccountCreationInfoCallback>
 @end

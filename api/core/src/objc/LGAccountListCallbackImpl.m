@@ -1,4 +1,4 @@
-#import "LGAccountListCallback.h"
+#import "LGAccountListCallbackImpl.h"
 
 @implementation LGAccountListCallbackImpl
 

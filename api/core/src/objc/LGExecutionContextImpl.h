@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "../Generated/objc/LGExecutionContext.h"
+#import "../../objc/LGExecutionContext.h"
 
 @interface LGExecutionContextImpl : NSObject<LGExecutionContext>
 

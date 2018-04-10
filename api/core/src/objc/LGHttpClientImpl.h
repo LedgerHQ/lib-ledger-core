@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGHttpClient.h"
+#import "../../objc/LGHttpClient.h"
 
 @interface LGHttpClientImpl : NSObject<LGHttpClient>
 

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "../Generated/objc/LGOperationListCallback.h"
+#import "../../objc/LGOperationListCallback.h"
 
 @interface LGOperationListCallbackImpl : NSObject<LGOperationListCallback>
 
