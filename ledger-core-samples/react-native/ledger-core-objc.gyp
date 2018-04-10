@@ -18,7 +18,7 @@
             'include_dirs': [
 				"<@(core_library)/include/ledger/core",
 			],
-			'libraries': ['<!(pwd)/<@(run_path)/libledger-core.dylib'],
+			'libraries': ['<!(pwd)/<@(run_path)/libledger-core.a'],
 			'conditions': [
 				['OS=="ios"', {
 					'LDFLAGS': [

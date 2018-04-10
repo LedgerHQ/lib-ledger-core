@@ -46,8 +46,13 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+set(LIB_BUILD_TYPE SHARED)
+if(BUILD_IOS)
+    set(LIB_BUILD_TYPE STATIC)
+endif(BUILD_IOS)
+
 add_library(
-        ledger-core SHARED
+        ledger-core ${LIB_BUILD_TYPE}
         ${ledger-core-sources}
         api_impl/BigIntImpl.cpp
         api_impl/BigIntImpl.hpp
