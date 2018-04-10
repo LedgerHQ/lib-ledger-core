@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		289A75F91F7D1C4500E34F27 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 289A75E91F7D1BF800E34F27 /* libReact.a */; };
+		B91D2CF0207CE1B100EC285F /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2CE7207CE1B100EC285F /* libledger-core.dylib */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
 		B97DA0D02064133100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */; };
@@ -162,6 +163,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRCTCoreLibLedgerCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTCoreLibLedgerCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		289A75DD1F7D1BF800E34F27 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		B91D2CE7207CE1B100EC285F /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../../lib-ledger-core-build/core/src/libledger-core.dylib"; sourceTree = "<group>"; };
 		B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeBlock.m; sourceTree = "<group>"; };
 		B97DA0332064132100418351 /* RCTCoreLGPathResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPathResolver.h; sourceTree = "<group>"; };
 		B97DA0342064132100418351 /* RCTCoreLGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEvent.h; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B91D2CF0207CE1B100EC285F /* libledger-core.dylib in Frameworks */,
 				289A75F91F7D1C4500E34F27 /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,6 +361,7 @@
 		289A75F81F7D1C4500E34F27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B91D2CE7207CE1B100EC285F /* libledger-core.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -841,8 +845,12 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/api/core/objc/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core-build/include",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;
@@ -857,8 +865,12 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/api/core/objc/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core-build/include",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;
