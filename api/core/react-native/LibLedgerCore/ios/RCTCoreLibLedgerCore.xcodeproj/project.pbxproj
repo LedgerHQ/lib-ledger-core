@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B91D2E38207E090800EC285F /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2E39207E090800EC285F /* libReact.a */; };
-		B91D2EBE207E301000EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2EBD207E2FFE00EC285F /* libledger-core-objc.a */; };
+		B91D2F57207E4EC800EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2F56207E4EB000EC285F /* libledger-core-objc.a */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
 		B97DA0D02064133100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */; };
@@ -90,9 +90,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B91D2EBC207E2FFE00EC285F /* PBXContainerItemProxy */ = {
+		B91D2F55207E4EB000EC285F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = B91D2EB7207E2FFE00EC285F /* ledger-core-objc.xcodeproj */;
+			containerPortal = B91D2F50207E4EB000EC285F /* ledger-core-objc.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 806874EA0767DF98F3C38899;
 			remoteInfo = "libledger-core-objc";
@@ -114,7 +114,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRCTCoreLibLedgerCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTCoreLibLedgerCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B91D2E39207E090800EC285F /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B91D2EB7207E2FFE00EC285F /* ledger-core-objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ledger-core-objc.xcodeproj"; path = "../build_ios/ledger-core-objc.xcodeproj"; sourceTree = "<group>"; };
+		B91D2F50207E4EB000EC285F /* ledger-core-objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ledger-core-objc.xcodeproj"; path = "../build_ios/ledger-core-objc.xcodeproj"; sourceTree = "<group>"; };
 		B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeBlock.m; sourceTree = "<group>"; };
 		B97DA0332064132100418351 /* RCTCoreLGPathResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPathResolver.h; sourceTree = "<group>"; };
 		B97DA0342064132100418351 /* RCTCoreLGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEvent.h; sourceTree = "<group>"; };
@@ -279,7 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B91D2E38207E090800EC285F /* libReact.a in Frameworks */,
-				B91D2EBE207E301000EC285F /* libledger-core-objc.a in Frameworks */,
+				B91D2F57207E4EC800EC285F /* libledger-core-objc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,15 +315,15 @@
 		B91D2DD4207DEF6D00EC285F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				B91D2EB7207E2FFE00EC285F /* ledger-core-objc.xcodeproj */,
+				B91D2F50207E4EB000EC285F /* ledger-core-objc.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
 		};
-		B91D2EB8207E2FFE00EC285F /* Products */ = {
+		B91D2F51207E4EB000EC285F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B91D2EBD207E2FFE00EC285F /* libledger-core-objc.a */,
+				B91D2F56207E4EB000EC285F /* libledger-core-objc.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -537,8 +537,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = B91D2EB8207E2FFE00EC285F /* Products */;
-					ProjectRef = B91D2EB7207E2FFE00EC285F /* ledger-core-objc.xcodeproj */;
+					ProductGroup = B91D2F51207E4EB000EC285F /* Products */;
+					ProjectRef = B91D2F50207E4EB000EC285F /* ledger-core-objc.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -549,11 +549,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		B91D2EBD207E2FFE00EC285F /* libledger-core-objc.a */ = {
+		B91D2F56207E4EB000EC285F /* libledger-core-objc.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = "libledger-core-objc.a";
-			remoteRef = B91D2EBC207E2FFE00EC285F /* PBXContainerItemProxy */;
+			remoteRef = B91D2F55207E4EB000EC285F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -748,12 +748,10 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/api/core/objc/**",
+					../../../objc,
+					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core-build/include",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;
@@ -768,12 +766,10 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/api/core/objc/**",
+					../../../objc,
+					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core-build/include",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;

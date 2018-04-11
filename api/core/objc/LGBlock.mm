@@ -5,7 +5,7 @@
 
 
 @implementation LGBlock
-@synthesize hash = _hash;
+
 - (nonnull instancetype)initWithHash:(nonnull NSString *)hash
                                  uid:(nonnull NSString *)uid
                                 time:(nonnull NSDate *)time
@@ -13,7 +13,7 @@
                               height:(int64_t)height
 {
     if (self = [super init]) {
-        _hash = [hash copy];
+        _localhash = [hash copy];
         _uid = [uid copy];
         _time = time;
         _currencyName = [currencyName copy];
@@ -37,7 +37,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.hash, self.uid, self.time, self.currencyName, @(self.height)];
+    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.localhash, self.uid, self.time, self.currencyName, @(self.height)];
 }
 
 @end

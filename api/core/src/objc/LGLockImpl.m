@@ -17,7 +17,9 @@
 *@return bool, return true if Lock acquire by calling thread, false otherwise
 */
 - (BOOL)tryLock
-{}
+{
+    return false;
+}
 
 /**Release Lock ownership by calling thread */
 - (void)unlock

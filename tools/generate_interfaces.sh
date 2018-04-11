@@ -32,11 +32,10 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
         			--node-package ledgerapp_nodejs \
         			--react-native-out api/core/react-native/LibLedgerCore/ios/Sources \
 					--react-native-type-prefix RCTCore \
-					--react-include-objc ../../../../objc \
 					--react-include-objc-impl  ../../../../src/objc \
 					--react-native-objc-impl-suffix Impl \
                     --trace $trace
-
+#--react-include-objc ../../../../objc \
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
 cp ./djinni/support-lib/*.hpp $CORE_CPP_JNI_DIRECTORY
 
