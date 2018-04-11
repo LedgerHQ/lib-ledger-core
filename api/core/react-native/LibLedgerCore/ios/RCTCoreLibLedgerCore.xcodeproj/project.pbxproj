@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		289A75F91F7D1C4500E34F27 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 289A75E91F7D1BF800E34F27 /* libReact.a */; };
-		B91D2CF0207CE1B100EC285F /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2CE7207CE1B100EC285F /* libledger-core.dylib */; };
+		B91D2E38207E090800EC285F /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2E39207E090800EC285F /* libReact.a */; };
+		B91D2E3A207E099C00EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2DE8207DEFD100EC285F /* libledger-core-objc.a */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
 		B97DA0D02064133100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */; };
@@ -90,61 +90,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		289A75E81F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
+		B91D2DE7207DEFD100EC285F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
+			containerPortal = B91D2DE3207DEFD100EC285F /* ledger-core-objc.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
-			remoteInfo = React;
-		};
-		289A75EA1F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2D2A28131D9B038B00D4039D;
-			remoteInfo = "React-tvOS";
-		};
-		289A75EC1F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3C059A1DE3340900C268FA;
-			remoteInfo = yoga;
-		};
-		289A75EE1F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3C06751DE3340C00C268FA;
-			remoteInfo = "yoga-tvOS";
-		};
-		289A75F01F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3CD9251DE5FBEC00167DC4;
-			remoteInfo = cxxreact;
-		};
-		289A75F21F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3CD9321DE5FBEE00167DC4;
-			remoteInfo = "cxxreact-tvOS";
-		};
-		289A75F41F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3CD90B1DE5FBD600167DC4;
-			remoteInfo = jschelpers;
-		};
-		289A75F61F7D1BF800E34F27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
-			remoteInfo = "jschelpers-tvOS";
+			remoteGlobalIDString = 806874EA0767DF98F3C38899;
+			remoteInfo = "libledger-core-objc";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -162,8 +113,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRCTCoreLibLedgerCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTCoreLibLedgerCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		289A75DD1F7D1BF800E34F27 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		B91D2CE7207CE1B100EC285F /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../../lib-ledger-core-build/core/src/libledger-core.dylib"; sourceTree = "<group>"; };
+		B91D2DE3207DEFD100EC285F /* ledger-core-objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ledger-core-objc.xcodeproj"; path = "../../../../../ledger-core-samples/react-native/build_ios/ledger-core-objc.xcodeproj"; sourceTree = "<group>"; };
+		B91D2E39207E090800EC285F /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeBlock.m; sourceTree = "<group>"; };
 		B97DA0332064132100418351 /* RCTCoreLGPathResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPathResolver.h; sourceTree = "<group>"; };
 		B97DA0342064132100418351 /* RCTCoreLGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEvent.h; sourceTree = "<group>"; };
@@ -327,8 +278,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B91D2CF0207CE1B100EC285F /* libledger-core.dylib in Frameworks */,
-				289A75F91F7D1C4500E34F27 /* libReact.a in Frameworks */,
+				B91D2E3A207E099C00EC285F /* libledger-core-objc.a in Frameworks */,
+				B91D2E38207E090800EC285F /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,25 +294,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		289A75DE1F7D1BF800E34F27 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				289A75E91F7D1BF800E34F27 /* libReact.a */,
-				289A75EB1F7D1BF800E34F27 /* libReact.a */,
-				289A75ED1F7D1BF800E34F27 /* libyoga.a */,
-				289A75EF1F7D1BF800E34F27 /* libyoga.a */,
-				289A75F11F7D1BF800E34F27 /* libcxxreact.a */,
-				289A75F31F7D1BF800E34F27 /* libcxxreact.a */,
-				289A75F51F7D1BF800E34F27 /* libjschelpers.a */,
-				289A75F71F7D1BF800E34F27 /* libjschelpers.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		289A75F81F7D1C4500E34F27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B91D2CE7207CE1B100EC285F /* libledger-core.dylib */,
+				B91D2E39207E090800EC285F /* libReact.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -369,11 +305,27 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				B91D2DD4207DEF6D00EC285F /* Libraries */,
 				B97DA0312064124E00418351 /* Sources */,
 				134814211AA4EA7D00B7C361 /* Products */,
-				289A75DD1F7D1BF800E34F27 /* React.xcodeproj */,
 				289A75F81F7D1C4500E34F27 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		B91D2DD4207DEF6D00EC285F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				B91D2DE3207DEFD100EC285F /* ledger-core-objc.xcodeproj */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		B91D2DE4207DEFD100EC285F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B91D2DE8207DEFD100EC285F /* libledger-core-objc.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		B97DA0312064124E00418351 /* Sources */ = {
@@ -585,8 +537,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 289A75DE1F7D1BF800E34F27 /* Products */;
-					ProjectRef = 289A75DD1F7D1BF800E34F27 /* React.xcodeproj */;
+					ProductGroup = B91D2DE4207DEFD100EC285F /* Products */;
+					ProjectRef = B91D2DE3207DEFD100EC285F /* ledger-core-objc.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -597,60 +549,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		289A75E91F7D1BF800E34F27 /* libReact.a */ = {
+		B91D2DE8207DEFD100EC285F /* libledger-core-objc.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libReact.a;
-			remoteRef = 289A75E81F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75EB1F7D1BF800E34F27 /* libReact.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libReact.a;
-			remoteRef = 289A75EA1F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75ED1F7D1BF800E34F27 /* libyoga.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libyoga.a;
-			remoteRef = 289A75EC1F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75EF1F7D1BF800E34F27 /* libyoga.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libyoga.a;
-			remoteRef = 289A75EE1F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75F11F7D1BF800E34F27 /* libcxxreact.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libcxxreact.a;
-			remoteRef = 289A75F01F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75F31F7D1BF800E34F27 /* libcxxreact.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libcxxreact.a;
-			remoteRef = 289A75F21F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75F51F7D1BF800E34F27 /* libjschelpers.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libjschelpers.a;
-			remoteRef = 289A75F41F7D1BF800E34F27 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		289A75F71F7D1BF800E34F27 /* libjschelpers.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libjschelpers.a;
-			remoteRef = 289A75F61F7D1BF800E34F27 /* PBXContainerItemProxy */;
+			path = "libledger-core-objc.a";
+			remoteRef = B91D2DE7207DEFD100EC285F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

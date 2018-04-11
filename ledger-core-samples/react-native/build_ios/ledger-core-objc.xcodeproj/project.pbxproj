@@ -34,7 +34,6 @@
 		4E03E65D38C27D3567553816 /* LGCurrencyCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FF425AF84B5E6BD891FB88 /* LGCurrencyCallbackImpl.m */; };
 		4E0C71C0DA799B6223DCFDAC /* LGPoolConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6817A1B06BBC2597FDF2DC30 /* LGPoolConfiguration.mm */; };
 		54DB2FC54C9A7AAFB4DFD847 /* LGFormatRules.mm in Sources */ = {isa = PBXBuildFile; fileRef = 075D6D0086E8AF621727E4E9 /* LGFormatRules.mm */; };
-		5B9F2F7EAE169816F8D08544 /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 60F8A2AF82273F724B773049 /* libledger-core.dylib */; };
 		5D9CAD34A20D394B6A659B3D /* LGError.mm in Sources */ = {isa = PBXBuildFile; fileRef = DBF941500ECC8C7E21D6C134 /* LGError.mm */; };
 		72598C1BD204C80FF077ABBA /* LGBitcoinLikeWalletConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8B9FB49E966E3DF6CEF98C02 /* LGBitcoinLikeWalletConfiguration.mm */; };
 		75E21A22B68330390C0B638A /* LGBitcoinLikeTransactionRequestCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B92DE0156412B9C9EC9C337 /* LGBitcoinLikeTransactionRequestCallbackImpl.m */; };
@@ -47,6 +46,7 @@
 		AF40FA544C1A22D2AFE191D2 /* LGSynchronizerEngines.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCFB13D2D2585117FFAAD1 /* LGSynchronizerEngines.mm */; };
 		B07CABB044D91D8EC429E7D6 /* LGWebSocketClientImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = EE496D4DC977BAA62F25A0F0 /* LGWebSocketClientImpl.m */; };
 		B6B85F59516F8F8DA66439BC /* LGBitcoinLikeOutputListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3400E76777FB9B607C6931 /* LGBitcoinLikeOutputListCallbackImpl.m */; };
+		B91D2DEA207DF06400EC285F /* libledger-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2DE9207DF06400EC285F /* libledger-core.a */; };
 		BF25D0E5AEDD1178211CD2C3 /* LGLocale.mm in Sources */ = {isa = PBXBuildFile; fileRef = 881057132972137D6418E896 /* LGLocale.mm */; };
 		C26F355AA6DFB565994CAF4A /* LGBitcoinLikePreparedTransaction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8B7995C96CB1C0B7F057D405 /* LGBitcoinLikePreparedTransaction.mm */; };
 		CB3E1C09BC1582BD8E80C91D /* LGConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1C80B116D4799DF1C7B2362 /* LGConfiguration.mm */; };
@@ -132,7 +132,6 @@
 		5C2042D0CF051E9397645763 /* LGLocale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGLocale.h; sourceTree = "<group>"; };
 		5CD5BFDE2A234BEBC6094A93 /* LGEthereumLikeWallet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGEthereumLikeWallet.h; sourceTree = "<group>"; };
 		5D7C6F3B46723E0C7186F5ED /* LGHttpReadBodyResult.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LGHttpReadBodyResult.mm; sourceTree = "<group>"; };
-		60F8A2AF82273F724B773049 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core-build/core/src/libledger-core.dylib"; sourceTree = "<group>"; };
 		61A36A25B89E8B96F48DEA5D /* LGBitcoinLikePickingStrategy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGBitcoinLikePickingStrategy.h; sourceTree = "<group>"; };
 		641668ACC02EB06133EDEA97 /* LGBitcoinLikePreparedTransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGBitcoinLikePreparedTransaction.h; sourceTree = "<group>"; };
 		655BFF09CE14791E504C0212 /* LGCurrencyListCallback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGCurrencyListCallback.h; sourceTree = "<group>"; };
@@ -189,6 +188,7 @@
 		AF27F46824EDC01675325159 /* LGBlockCallbackImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGBlockCallbackImpl.h; sourceTree = "<group>"; };
 		AFB6DCA6DABF57C9B9E6447F /* LGExtendedKeyAccountCreationInfo.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LGExtendedKeyAccountCreationInfo.mm; sourceTree = "<group>"; };
 		B0D05BB0CA9CA50BFF4A185B /* LGSynchronizationStatus.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LGSynchronizationStatus.mm; sourceTree = "<group>"; };
+		B91D2DE9207DF06400EC285F /* libledger-core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libledger-core.a"; path = "../../../lib-ledger-core-build/core/src/libledger-core.a"; sourceTree = "<group>"; };
 		B92B282A818BC031C621CD23 /* LGConfigurationDefaults.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LGConfigurationDefaults.mm; sourceTree = "<group>"; };
 		B94D57D28D21D2D138033D3C /* LGEventReceiverImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LGEventReceiverImpl.h; sourceTree = "<group>"; };
 		BA5BF2F70D79E7D8C5F8859A /* LGThreadDispatcherImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LGThreadDispatcherImpl.m; sourceTree = "<group>"; };
@@ -260,7 +260,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B9F2F7EAE169816F8D08544 /* libledger-core.dylib in Frameworks */,
+				B91D2DEA207DF06400EC285F /* libledger-core.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,7 +347,7 @@
 		6F42FD65761E325B217B7289 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				60F8A2AF82273F724B773049 /* libledger-core.dylib */,
+				B91D2DE9207DF06400EC285F /* libledger-core.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -539,7 +539,11 @@
 			};
 			buildConfigurationList = 23D1460159DCBFE379DA10DC /* Build configuration list for PBXProject "ledger-core-objc" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = EA758E5277CF50DC509B1E60;
 			projectDirPath = ..;
 			projectRoot = "";
@@ -634,8 +638,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/ledger-core-samples/react-native/../../../lib-ledger-core-build/core/src";
 				OTHER_LDFLAGS = (
-					"-framework IOKit",
-					"-framework CoreFoundation",
+					"-framework",
+					IOKit,
+					"-framework",
+					CoreFoundation,
 				);
 				PRODUCT_NAME = "ledger-core-objc";
 				SDKROOT = iphoneos;
