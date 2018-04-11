@@ -1,7 +1,8 @@
 {
 	'variables': {
-		'core_library%': "../../../../lib-ledger-core-build",
-		'run_path%': "../../../lib-ledger-core-build/core/src",
+		'core_library%': "../../../../../../lib-ledger-core-build",
+		'run_path%': "../../../../../lib-ledger-core-build/core/src",
+		'header_path%': "../../objc",
 	},
 	'targets': [
 		{
@@ -9,22 +10,27 @@
 			'type': 'static_library',
 			'conditions': [],
 			'dependencies': [
-				'../../djinni/support-lib/support_lib.gyp:djinni_objc'
+				'../../../../djinni/support-lib/support_lib.gyp:djinni_objc'
 			],
 			'sources': [
-				"<!@(python glob.py ../../api/core/objc *.h *.m *.mm)",
-				"<!@(python glob.py ../../api/core/src/objc *.h *.m *.mm)",
+				"<!@(python glob.py ../../objc *.h *.m *.mm)",
+				"<!@(python glob.py ../../src/objc *.h *.m *.mm)",
 			],
             'include_dirs': [
 				"<@(core_library)/include/ledger/core",
+				"<@(header_path)",
 			],
+			"direct_dependent_settings": {
+                    "include_dirs": [
+                      "<@(header_path)",
+                    ],
+            },
 			'libraries': ['<!(pwd)/<@(run_path)/libledger-core.a'],
 			'conditions': [
 				['OS=="ios"', {
 					'LDFLAGS': [
 						'-framework IOKit',
 						'-framework CoreFoundation',
-						'-DYLD_LIBRARY_PATH '
 					],
 					'xcode_settings': {
 						'SDKROOT': 'iphoneos',
