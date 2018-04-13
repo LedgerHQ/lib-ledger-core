@@ -53,6 +53,8 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> toMagnitude(int32_t magnitude) override;
 
+            std::shared_ptr<ledger::core::BigInt> value() const;
+
         private:
             int32_t getMagnitude() const;
 

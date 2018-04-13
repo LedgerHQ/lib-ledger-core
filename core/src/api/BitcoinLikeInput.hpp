@@ -13,6 +13,7 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BinaryCallback;
 class BitcoinLikeOutput;
 class BitcoinLikeScript;
 class DerivationPath;
@@ -86,7 +87,7 @@ public:
     /** Get the sequence number of this input */
     virtual int32_t getSequence() = 0;
 
-    virtual std::experimental::optional<std::vector<uint8_t>> getPreviousTransaction() = 0;
+    virtual void getPreviousTransaction(const std::shared_ptr<BinaryCallback> & callback) = 0;
 
     /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
     virtual void setP2PKHSigScript(const std::vector<uint8_t> & signature) = 0;

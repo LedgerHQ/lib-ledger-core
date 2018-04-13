@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 @class LGAmount;
 @class LGBitcoinLikeScript;
+@class LGDerivationPath;
 
 
 @interface LGBitcoinLikeOutput : NSObject
@@ -19,5 +20,7 @@
 - (nullable LGBitcoinLikeScript *)parseScript;
 
 - (nullable NSString *)getAddress;
+
+- (nullable LGDerivationPath *)getDerivationPath;
 
 @end

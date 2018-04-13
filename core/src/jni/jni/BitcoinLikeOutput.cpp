@@ -4,6 +4,7 @@
 #include "BitcoinLikeOutput.hpp"  // my header
 #include "Amount.hpp"
 #include "BitcoinLikeScript.hpp"
+#include "DerivationPath.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -78,6 +79,16 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeOutput_00024CppProxy_n
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeOutput>(nativeRef);
         auto r = ref->getAddress();
         return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeOutput_00024CppProxy_native_1getDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeOutput>(nativeRef);
+        auto r = ref->getDerivationPath();
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DerivationPath>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

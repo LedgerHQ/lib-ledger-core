@@ -31,6 +31,10 @@
 
 #include "BitcoinLikeUtxoPicker.h"
 #include <async/Promise.hpp>
+#include <api/BitcoinLikeScript.hpp>
+#include <api/BitcoinLikeScriptChunk.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
@@ -60,6 +64,36 @@ namespace ledger {
 
         const api::Currency &BitcoinLikeUtxoPicker::getCurrency() const {
             return _currency;
+        }
+
+        void BitcoinLikeUtxoPicker::fillOutputs(BitcoinLikeUtxoPicker::Buddy &buddy) {
+            auto params = getCurrency().bitcoinLikeNetworkParameters.value();
+            auto outputIndex = 0;
+            for (auto &output : buddy.request.outputs) {
+                auto amount = std::dynamic_pointer_cast<Amount>(std::get<0>(output))->value();
+                auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
+                auto address = script.parseAddress(params).map<std::string>([] (const BitcoinLikeAddress& addr) {
+                    return addr.toBase58();
+                });
+                BitcoinLikeBlockchainExplorer::Output out;
+                out.index = outputIndex;
+                out.value = *amount;
+                out.address = address;
+                out.script = hex::toString(script.serialize());
+                std::shared_ptr<api::DerivationPath> derivationPath = nullptr;
+                if (address.nonEmpty()) {
+                    auto path = buddy.keychain->getAddressDerivationPath(out.address.getValue());
+                    if (path.nonEmpty()) {
+                        derivationPath = std::make_shared<DerivationPathApi>(DerivationPath(path.getValue()));
+                    }
+                }
+                outputIndex += 1;
+                buddy.transaction.addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
+            }
+        }
+
+        void BitcoinLikeUtxoPicker::fillTransactionInfo(BitcoinLikeUtxoPicker::Buddy &buddy) {
+
         }
     }
 }

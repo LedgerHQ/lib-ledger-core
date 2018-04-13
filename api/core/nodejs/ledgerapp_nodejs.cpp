@@ -52,6 +52,7 @@
 #include "NJSPreferencesEditorCpp.hpp"
 #include "NJSBitcoinLikeWalletConfigurationCpp.hpp"
 #include "NJSBitcoinLikeInputCpp.hpp"
+#include "NJSBinaryCallback.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeTransactionCpp.hpp"
@@ -139,6 +140,7 @@ static void initAll(Local<Object> target)
     NJSPreferencesEditor::Initialize(target);
     NJSBitcoinLikeWalletConfiguration::Initialize(target);
     NJSBitcoinLikeInput::Initialize(target);
+    NJSBinaryCallback::Initialize(target);
     NJSBitcoinLikeOutput::Initialize(target);
     NJSBitcoinLikeBlock::Initialize(target);
     NJSBitcoinLikeTransaction::Initialize(target);

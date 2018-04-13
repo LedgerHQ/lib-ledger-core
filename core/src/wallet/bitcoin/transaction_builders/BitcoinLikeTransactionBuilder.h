@@ -52,7 +52,7 @@ namespace ledger {
             std::list<std::string> changePaths;
             std::list<std::tuple<std::string, int32_t>> excludedUtxo;
             int32_t changeCount;
-            std::shared_ptr<api::Amount> feePerByte;
+            std::shared_ptr<BigInt> feePerByte;
             Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
@@ -107,6 +107,7 @@ namespace ledger {
             BitcoinLikeTransactionBuildFunction _build;
             BitcoinLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
+
         };
     }
 }

@@ -75,6 +75,10 @@ std::experimental::optional<std::string> ledger::core::BitcoinLikeAddress::getDe
     return _derivationPath;
 }
 
+std::string ledger::core::BitcoinLikeAddress::toBase58() const {
+    return Base58::encodeWithChecksum(vector::concat(_version, _hash160));
+}
+
 std::shared_ptr<ledger::core::api::BitcoinLikeAddress>
         ledger::core::api::BitcoinLikeAddress::fromBase58(const BitcoinLikeNetworkParameters &params,
                                                           const std::string &address) {

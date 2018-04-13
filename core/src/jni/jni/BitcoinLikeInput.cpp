@@ -3,6 +3,7 @@
 
 #include "BitcoinLikeInput.hpp"  // my header
 #include "Amount.hpp"
+#include "BinaryCallback.hpp"
 #include "BitcoinLikeOutput.hpp"
 #include "BitcoinLikeScript.hpp"
 #include "DerivationPath.hpp"
@@ -170,14 +171,13 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
-        auto r = ref->getPreviousTransaction();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->getPreviousTransaction(::djinni_generated::BinaryCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1setP2PKHSigScript(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)

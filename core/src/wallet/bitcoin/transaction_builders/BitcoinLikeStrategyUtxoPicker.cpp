@@ -30,6 +30,10 @@
  */
 
 #include "BitcoinLikeStrategyUtxoPicker.h"
+#include <api/BitcoinLikeScript.hpp>
+#include <api/BitcoinLikeScriptChunk.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
@@ -43,13 +47,6 @@ namespace ledger {
 
         }
 
-        void BitcoinLikeStrategyUtxoPicker::fillOutputs(BitcoinLikeUtxoPicker::Buddy &buddy) {
-
-        }
-
-        void BitcoinLikeStrategyUtxoPicker::fillTransactionInfo(BitcoinLikeUtxoPicker::Buddy &buddy) {
-
-        }
     }
 }
 

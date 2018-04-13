@@ -7,6 +7,7 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
+#import "LGBinaryCallback+Private.h"
 #import "LGBitcoinLikeOutput+Private.h"
 #import "LGBitcoinLikeScript+Private.h"
 #import "LGDerivationPath+Private.h"
@@ -136,10 +137,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable NSData *)getPreviousTransaction {
+- (void)getPreviousTransaction:(nullable id<LGBinaryCallback>)callback {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->getPreviousTransaction();
-        return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(objcpp_result_);
+        _cppRefHandle.get()->getPreviousTransaction(::djinni_generated::BinaryCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

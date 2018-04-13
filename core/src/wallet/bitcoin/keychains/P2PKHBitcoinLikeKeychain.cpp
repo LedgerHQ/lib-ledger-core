@@ -41,6 +41,7 @@
 #include "../../../utils/DerivationPath.hpp"
 #include "../../../collections/strings.hpp"
 #include <debug/Benchmarker.h>
+#include <bitcoin/BitcoinLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
@@ -242,6 +243,21 @@ namespace ledger {
 
         bool P2PKHBitcoinLikeKeychain::contains(const std::string &address) const {
             return getAddressDerivationPath(address).nonEmpty();
+        }
+
+        Option<std::string>
+        P2PKHBitcoinLikeKeychain::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
+            const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
+            BitcoinLikeAddress address(params, hash160, params.P2PKHVersion);
+            return getAddressDerivationPath(address.toBase58());
+        }
+
+        Option<std::vector<uint8_t>> P2PKHBitcoinLikeKeychain::getPublicKey(const std::string &address) const {
+            auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
+            if (path.empty()) {
+                Option<std::vector<uint8_t>>();
+            }
+            return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
         }
 
     }

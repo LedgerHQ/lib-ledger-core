@@ -406,6 +406,10 @@ namespace ledger {
             );
         }
 
+        const std::shared_ptr<BitcoinLikeBlockchainExplorer> &BitcoinLikeAccount::getExplorer() const {
+            return _explorer;
+        }
+
 
     }
 }

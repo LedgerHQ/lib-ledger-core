@@ -36,14 +36,15 @@
 #include "BitcoinLikeTransactionBuilder.h"
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <api/Currency.hpp>
 #include <async/Future.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 
+
 namespace ledger {
     namespace core {
+        class BitcoinLikeTransactionApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
@@ -77,8 +78,8 @@ namespace ledger {
             };
 
             virtual void fillInputs(Buddy& buddy) = 0;
-            virtual void fillOutputs(Buddy& buddy) = 0;
-            virtual void fillTransactionInfo(Buddy& buddy) = 0;
+            virtual void fillOutputs(Buddy& buddy);
+            virtual void fillTransactionInfo(Buddy& buddy);
 
         private:
             api::Currency _currency;

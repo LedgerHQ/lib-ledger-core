@@ -18,6 +18,8 @@ public abstract class BitcoinLikeOutput {
 
     public abstract String getAddress();
 
+    public abstract DerivationPath getDerivationPath();
+
     private static final class CppProxy extends BitcoinLikeOutput
     {
         private final long nativeRef;
@@ -88,5 +90,13 @@ public abstract class BitcoinLikeOutput {
             return native_getAddress(this.nativeRef);
         }
         private native String native_getAddress(long _nativeRef);
+
+        @Override
+        public DerivationPath getDerivationPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getDerivationPath(this.nativeRef);
+        }
+        private native DerivationPath native_getDerivationPath(long _nativeRef);
     }
 }

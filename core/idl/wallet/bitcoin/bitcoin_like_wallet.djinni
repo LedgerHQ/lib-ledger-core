@@ -58,7 +58,7 @@ BitcoinLikeInput = interface +c {
     # Get the sequence number of this input
     getSequence(): i32;
 
-    getPreviousTransaction(): optional<binary>;
+    getPreviousTransaction(callback: Callback<binary>);
 
     # Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature)
     setP2PKHSigScript(signature: binary);
@@ -72,6 +72,7 @@ BitcoinLikeOutput = interface +c {
     getScript(): binary;
     parseScript(): BitcoinLikeScript;
     getAddress(): optional<string>;
+    getDerivationPath(): optional<DerivationPath>;
 }
 
 BitcoinLikeBlock = interface +c {

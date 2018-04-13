@@ -39,6 +39,7 @@
 #include <api/BitcoinLikeBlock.hpp>
 #include "BitcoinLikeBlockApi.h"
 #include <api/EstimatedSize.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 
 namespace ledger {
     namespace core {
@@ -58,7 +59,13 @@ namespace ledger {
             optional<std::vector<uint8_t>> getWitness() override;
             api::EstimatedSize getEstimatedSize() override;
 
+            BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);
+            BitcoinLikeTransactionApi& addOutput(const std::shared_ptr<api::BitcoinLikeOutput>& output);
+            BitcoinLikeTransactionApi& setLockTime(uint32_t lockTime);
 
+        private:
+            inline bool isWriteable() const;
+            inline bool isReadOnly() const;
 
         private:
             int32_t _version;
@@ -71,6 +78,7 @@ namespace ledger {
             std::string _hash;
             api::Currency _currency;
             Option<int32_t> _timestamp;
+            bool _writable;
         };
     }
 }

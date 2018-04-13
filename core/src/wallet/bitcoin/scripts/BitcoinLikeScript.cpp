@@ -114,6 +114,44 @@ namespace ledger {
             return _chunks;
         }
 
+        BitcoinLikeScript
+        BitcoinLikeScript::fromAddress(const std::string &address, const api::BitcoinLikeNetworkParameters &params) {
+            BitcoinLikeScript script;
+            return script;
+        }
+
+        bool BitcoinLikeScript::isP2PKH() const {
+            return  size() >= 5 && (*this)[0].isEqualTo(btccore::OP_DUP) && (*this)[1].isEqualTo(btccore::OP_HASH160)
+                    && (*this)[2].sizeEqualsTo(20) && (*this)[3].isEqualTo(btccore::OP_EQUALVERIFY)
+                    && (*this)[4].isEqualTo(btccore::OP_CHECKSIG);
+        }
+
+        bool BitcoinLikeScript::isP2SH() const {
+            return (size() >= 4 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20)
+                    && (*this)[22].isEqualTo(btccore::OP_EQUAL));
+        }
+
+        std::size_t BitcoinLikeScript::size() const {
+            return _chunks.size();
+        }
+
+        const BitcoinLikeScriptChunk &BitcoinLikeScript::operator[](int index) const {
+            auto size = this->size();
+            auto it = _chunks.begin();
+            for (auto i = 0; i < index; i++)
+                it++;
+            return *it; // Make it breakable on purpose if you are trying to fetch something which doesn't exist the list will throw an exception
+        }
+
+        Option<BitcoinLikeAddress>
+        BitcoinLikeScript::parseAddress(const api::BitcoinLikeNetworkParameters &params) const {
+            if (isP2SH())
+                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(params, (*this)[1].getBytes(), params.P2SHVersion));
+            else if (isP2PKH())
+                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(params, (*this)[2].getBytes(), params.P2PKHVersion));
+            return Option<BitcoinLikeAddress>();
+        }
+
 
         BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op) : _value(op) {
 
@@ -137,6 +175,14 @@ namespace ledger {
 
         bool BitcoinLikeScriptChunk::isOpCode() const {
             return _value.isRight();
+        }
+
+        bool BitcoinLikeScriptChunk::isEqualTo(btccore::opcodetype code) const {
+            return isOpCode() && getOpCode() == code;
+        }
+
+        bool BitcoinLikeScriptChunk::sizeEqualsTo(std::size_t size) const {
+            return isBytes() && getBytes().size() == size;
         }
     }
 }

@@ -30,8 +30,11 @@
  */
 
 #include "BitcoinLikeTransactionBuilder.h"
+#include "../../../../../cmake-build-debug/include/ledger/core/api/BitcoinLikeAddress.hpp"
 #include <wallet/common/Amount.h>
 #include <api/BitcoinLikeTransactionCallback.hpp>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 
 namespace ledger {
     namespace core {
@@ -100,12 +103,23 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                      const std::string &address) {
-
+            auto a = api::BitcoinLikeAddress::fromBase58(_params, address);
+            BitcoinLikeScript script;
+            if (a->isP2PKH()) {
+                script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
+                                                                                          << btccore::OP_CHECKSIG;
+            } else if (a->isP2SH()) {
+                script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
+            } else {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
+            }
+            addOutput(amount, std::make_shared<BitcoinLikeScriptApi>(script));
             return shared_from_this();
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::setFeesPerByte(const std::shared_ptr<api::Amount> &fees) {
+            _request.feePerByte = std::dynamic_pointer_cast<Amount>(fees)->value();
             return shared_from_this();
         }
 
@@ -116,11 +130,13 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::setMaxAmountOnChange(const std::shared_ptr<api::Amount> &amount) {
+            _request.maxChange = std::dynamic_pointer_cast<Amount>(amount)->value();
             return shared_from_this();
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::setMinAmountOnChange(const std::shared_ptr<api::Amount> &amount) {
+            _request.minChange = std::dynamic_pointer_cast<Amount>(amount)->value();
             return shared_from_this();
         }
 

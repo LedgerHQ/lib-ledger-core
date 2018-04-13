@@ -43,8 +43,6 @@ namespace ledger {
 
         protected:
             void fillInputs(Buddy &buddy) override;
-            void fillOutputs(Buddy &buddy) override;
-            void fillTransactionInfo(Buddy &buddy) override;
 
         private:
 

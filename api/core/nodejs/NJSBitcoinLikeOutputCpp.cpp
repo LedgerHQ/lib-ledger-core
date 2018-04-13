@@ -171,6 +171,33 @@ NAN_METHOD(NJSBitcoinLikeOutput::getAddress) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSBitcoinLikeOutput::getDerivationPath) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeOutput::getDerivationPath needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeOutput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeOutput::getDerivationPath : implementation of BitcoinLikeOutput is not valid");
+    }
+
+    auto result = cpp_impl->getDerivationPath();
+
+    //Wrap result in node object
+    auto arg_0 = NJSDerivationPath::wrap(result);
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 
 NAN_METHOD(NJSBitcoinLikeOutput::New) {
     //Only new allowed
@@ -230,6 +257,7 @@ void NJSBitcoinLikeOutput::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getScript", getScript);
     Nan::SetPrototypeMethod(func_template,"parseScript", parseScript);
     Nan::SetPrototypeMethod(func_template,"getAddress", getAddress);
+    Nan::SetPrototypeMethod(func_template,"getDerivationPath", getDerivationPath);
     //Set object prototype
     BitcoinLikeOutput_prototype.Reset(objectTemplate);
 

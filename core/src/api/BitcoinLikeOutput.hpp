@@ -14,6 +14,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeScript;
+class DerivationPath;
 
 class BitcoinLikeOutput {
 public:
@@ -30,6 +31,8 @@ public:
     virtual std::shared_ptr<BitcoinLikeScript> parseScript() = 0;
 
     virtual std::experimental::optional<std::string> getAddress() = 0;
+
+    virtual std::shared_ptr<DerivationPath> getDerivationPath() = 0;
 };
 
 } } }  // namespace ledger::core::api

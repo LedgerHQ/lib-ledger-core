@@ -436,6 +436,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTransaction) {
     }
 
     //Check if parameters have correct types
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSBinaryCallback *njs_ptr_arg_0 = static_cast<NJSBinaryCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
+    std::shared_ptr<NJSBinaryCallback> arg_0(njs_ptr_arg_0);
+
+    //Create promise and set it into Callcack
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    arg_0->SetPromise(resolver);
+
 
     //Unwrap current object and retrieve its Cpp Implementation
     NJSBitcoinLikeInput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeInput>(info.This());
@@ -444,20 +452,8 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTransaction) {
     {
         return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTransaction : implementation of BitcoinLikeInput is not valid");
     }
-
-    auto result = cpp_impl->getPreviousTransaction();
-
-    //Wrap result in node object
-    Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t arg_0_id = 0; arg_0_id < (*result).size(); arg_0_id++)
-    {
-        auto arg_0_elem = Nan::New<Uint32>((*result)[arg_0_id]);
-        arg_0->Set((int)arg_0_id,arg_0_elem);
-    }
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
+    cpp_impl->getPreviousTransaction(arg_0);
+    info.GetReturnValue().Set(resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeInput::setP2PKHSigScript) {
 

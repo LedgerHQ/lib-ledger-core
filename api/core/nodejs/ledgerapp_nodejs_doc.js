@@ -446,6 +446,8 @@ declare class NJSBitcoinLikeAddress
 declare class NJSBitcoinLikeExtendedPublicKey
 {
     declare function derive(path: string): NJSBitcoinLikeAddress;
+    declare function derivePublicKey(path: string): Object;
+    declare function deriveHash160(path: string): Object;
     declare function toBase58(): string;
     declare function getRootPath(): string;
     static declare function fromBase58(params: BitcoinLikeNetworkParameters, address: string, path: ?string): NJSBitcoinLikeExtendedPublicKey;
@@ -622,9 +624,13 @@ declare class NJSBitcoinLikeInput
     declare function setSequence(sequence: number);
     /** Get the sequence number of this input */
     declare function getSequence(): number;
-    declare function getPreviousTransaction(): ?Object;
+    declare function getPreviousTransaction(callback: NJSBinaryCallback);
     /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
     declare function setP2PKHSigScript(signature: Object);
+}
+declare class NJSBinaryCallback
+{
+    declare function onCallback(result: ?Object, error: ?Error);
 }
 declare class NJSBitcoinLikeOutput
 {
@@ -634,6 +640,7 @@ declare class NJSBitcoinLikeOutput
     declare function getScript(): Object;
     declare function parseScript(): NJSBitcoinLikeScript;
     declare function getAddress(): ?string;
+    declare function getDerivationPath(): ?NJSDerivationPath;
 }
 declare class NJSBitcoinLikeBlock
 {

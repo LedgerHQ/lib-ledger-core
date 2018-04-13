@@ -31,6 +31,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_00024CppProxy_native_1derivePublicKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeExtendedPublicKey>(nativeRef);
+        auto r = ref->derivePublicKey(::djinni::String::toCpp(jniEnv, j_path));
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_00024CppProxy_native_1deriveHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeExtendedPublicKey>(nativeRef);
+        auto r = ref->deriveHash160(::djinni::String::toCpp(jniEnv, j_path));
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeExtendedPublicKey_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

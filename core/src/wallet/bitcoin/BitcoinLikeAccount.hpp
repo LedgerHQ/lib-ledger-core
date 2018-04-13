@@ -51,6 +51,7 @@
 namespace ledger {
     namespace core {
         class Operation;
+        class BitcoinLikeUtxoPicker;
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
             static const int FLAG_NEW_TRANSACTION = 0x01;
@@ -118,6 +119,8 @@ namespace ledger {
             Future<std::vector<std::string>> getFreshPublicAddresses() override;
 
             Future<std::string> broadcastTransaction(const std::vector<uint8_t>& transaction);
+
+            const std::shared_ptr<BitcoinLikeBlockchainExplorer>& getExplorer() const;
 
         protected:
             bool checkIfWalletIsEmpty();

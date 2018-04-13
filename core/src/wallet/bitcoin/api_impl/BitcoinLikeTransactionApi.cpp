@@ -40,6 +40,7 @@ namespace ledger {
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency& currency) {
             _currency = currency;
             _version = 1;
+            _writable = true;
         }
 
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) : BitcoinLikeTransactionApi(operation->getCurrency()) {
@@ -47,6 +48,8 @@ namespace ledger {
             auto& tx = operation->getBackend().bitcoinTransaction.getValue();
             _time = tx.receivedAt;
             _lockTime = tx.lockTime;
+            _writable = false;
+
             if (tx.fees.nonEmpty())
                 _fees = std::make_shared<Amount>(operation->getAccount()->getWallet()->getCurrency(), 0, tx.fees.getValue());
             else
@@ -185,5 +188,30 @@ namespace ledger {
             }
             return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
         }
+
+        bool BitcoinLikeTransactionApi::isWriteable() const {
+            return _writable;
+        }
+
+        bool BitcoinLikeTransactionApi::isReadOnly() const {
+            return !isWriteable();
+        }
+
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input) {
+            _inputs.push_back(input);
+            return *this;
+        }
+
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setLockTime(uint32_t lockTime) {
+            _lockTime = lockTime;
+            return *this;
+        }
+
+        BitcoinLikeTransactionApi &
+        BitcoinLikeTransactionApi::addOutput(const std::shared_ptr<api::BitcoinLikeOutput> &output) {
+            _outputs.push_back(output);
+            return *this;
+        }
+
     }
 }

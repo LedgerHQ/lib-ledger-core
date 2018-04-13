@@ -47,6 +47,7 @@ namespace ledger {
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
             virtual std::string toBase58() override;
+            std::string toBase58() const;
             virtual bool isP2SH() override;
             virtual bool isP2PKH() override;
             virtual optional<std::string> getDerivationPath() override;

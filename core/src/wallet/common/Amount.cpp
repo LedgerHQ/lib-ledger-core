@@ -109,6 +109,10 @@ namespace ledger {
             return _currency.units[_unitIndex].numberOfDecimal;
         }
 
+        std::shared_ptr<ledger::core::BigInt> Amount::value() const {
+            return std::make_shared<ledger::core::BigInt>(_value);
+        }
+
         std::shared_ptr<api::Amount> api::Amount::fromLong(const Currency &currency, int64_t value) {
             ledger::core::BigInt  v(value);
             return std::make_shared<ledger::core::Amount>(currency, 0, v);

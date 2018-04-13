@@ -33,6 +33,8 @@
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
 #include <utils/Exception.hpp>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 
 namespace ledger {
     namespace core {
@@ -44,7 +46,7 @@ namespace ledger {
         }
 
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output, const api::Currency& currency) : _backend(output) {
-            _outputIndex = output.index;
+            _outputIndex = static_cast<int32_t>(output.index);
             _currency = currency;
         }
 
@@ -78,8 +80,21 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript()");
+            auto result = BitcoinLikeScript::parse(getScript());
+            if (result.isFailure())
+                throw result.getFailure();
+            return std::make_shared<BitcoinLikeScriptApi>(result.getValue());
         }
 
+        std::shared_ptr<api::DerivationPath> BitcoinLikeOutputApi::getDerivationPath() {
+            return _path;
+        }
+
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output,
+                                                   const api::Currency &currency,
+                                                   const std::shared_ptr<api::DerivationPath> &path)
+                : BitcoinLikeOutputApi(output, currency) {
+            _path = path;
+        }
     }
 }

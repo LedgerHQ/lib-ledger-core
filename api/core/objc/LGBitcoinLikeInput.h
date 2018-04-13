@@ -6,6 +6,7 @@
 @class LGBitcoinLikeOutput;
 @class LGBitcoinLikeScript;
 @class LGDerivationPath;
+@protocol LGBinaryCallback;
 
 
 @interface LGBitcoinLikeInput : NSObject
@@ -75,7 +76,7 @@
 /** Get the sequence number of this input */
 - (int32_t)getSequence;
 
-- (nullable NSData *)getPreviousTransaction;
+- (void)getPreviousTransaction:(nullable id<LGBinaryCallback>)callback;
 
 /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
 - (void)setP2PKHSigScript:(nonnull NSData *)signature;

@@ -43,6 +43,11 @@ namespace ledger {
         public:
             BitcoinLikeOutputApi(const std::shared_ptr<OperationApi>& operation, int32_t outputIndex);
             BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output& output, const api::Currency& currency);
+            BitcoinLikeOutputApi(
+                    const BitcoinLikeBlockchainExplorer::Output& output,
+                    const api::Currency& currency,
+                    const std::shared_ptr<api::DerivationPath>& path
+            );
             std::string getTransactionHash() override;
             int32_t getOutputIndex() override;
             std::shared_ptr<api::Amount> getValue() override;
@@ -51,11 +56,14 @@ namespace ledger {
 
             std::shared_ptr<api::BitcoinLikeScript> parseScript() override;
 
+            std::shared_ptr<api::DerivationPath> getDerivationPath() override;
+
         private:
             BitcoinLikeBlockchainExplorer::Output& getOuput();
 
         private:
             Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorer::Output>  _backend;
+            std::shared_ptr<api::DerivationPath> _path;
             int32_t _outputIndex;
             api::Currency _currency;
         };

@@ -7,6 +7,7 @@
 
 #include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
+#include "NJSBinaryCallback.hpp"
 #include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeScriptCpp.hpp"
 #include "NJSDerivationPathCpp.hpp"

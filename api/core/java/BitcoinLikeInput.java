@@ -72,7 +72,7 @@ public abstract class BitcoinLikeInput {
     /** Get the sequence number of this input */
     public abstract int getSequence();
 
-    public abstract byte[] getPreviousTransaction();
+    public abstract void getPreviousTransaction(BinaryCallback callback);
 
     /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
     public abstract void setP2PKHSigScript(byte[] signature);
@@ -221,12 +221,12 @@ public abstract class BitcoinLikeInput {
         private native int native_getSequence(long _nativeRef);
 
         @Override
-        public byte[] getPreviousTransaction()
+        public void getPreviousTransaction(BinaryCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getPreviousTransaction(this.nativeRef);
+            native_getPreviousTransaction(this.nativeRef, callback);
         }
-        private native byte[] native_getPreviousTransaction(long _nativeRef);
+        private native void native_getPreviousTransaction(long _nativeRef, BinaryCallback callback);
 
         @Override
         public void setP2PKHSigScript(byte[] signature)

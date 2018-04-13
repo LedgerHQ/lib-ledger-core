@@ -52,6 +52,8 @@ BitcoinLikeAddress = interface +c {
 
 BitcoinLikeExtendedPublicKey = interface +c {
     derive(path: string): BitcoinLikeAddress;
+    derivePublicKey(path: string): binary;
+    deriveHash160(path: string): binary;
     toBase58(): string;
     getRootPath(): string;
 

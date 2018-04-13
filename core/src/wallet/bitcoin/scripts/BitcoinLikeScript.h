@@ -36,6 +36,8 @@
 #include <utils/Either.hpp>
 #include "operators.h"
 #include <list>
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <bitcoin/BitcoinLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,6 +50,8 @@ namespace ledger {
             const std::vector<uint8_t>& getBytes() const;
             bool isBytes() const;
             BitcoinLikeScriptOpCode getOpCode() const;
+            bool isEqualTo(btccore::opcodetype code) const;
+            bool sizeEqualsTo(std::size_t size) const;
             bool isOpCode() const;
 
         private:
@@ -58,11 +62,16 @@ namespace ledger {
             BitcoinLikeScript() = default;
             BitcoinLikeScript& operator<<(btccore::opcodetype op_code);
             BitcoinLikeScript& operator<<(const std::vector<uint8_t>& bytes);
+            const BitcoinLikeScriptChunk& operator[](int index) const;
+            std::size_t size() const;
             std::string toString() const;
             std::vector<uint8_t> serialize() const;
             const std::list<BitcoinLikeScriptChunk>& toList() const;
-
+            bool isP2PKH() const;
+            bool isP2SH() const;
+            Option<BitcoinLikeAddress> parseAddress(const api::BitcoinLikeNetworkParameters& params) const;
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t>& script);
+            static BitcoinLikeScript fromAddress(const std::string& address, const api::BitcoinLikeNetworkParameters& params);
 
         private:
             std::list<BitcoinLikeScriptChunk> _chunks;
