@@ -28,7 +28,7 @@
 				  "<@(header_path)",
 				],
 			},
-			'libraries': ['<!(pwd)/<@(run_path)/libledger-core.a']
+			'libraries': ['<!(pwd)/<@(run_path)/libledger-core.dylib']
 		},
   ],
 }
