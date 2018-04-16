@@ -260,12 +260,6 @@ namespace ledger {
                 return p.getFuture();
             }
 
-            static Future<T> successful(T&& value) {
-                Promise<T> p;
-                p.success(value);
-                return p.getFuture();
-            }
-
             static Future<T> failure(Exception&& exception) {
                 Promise<T> p;
                 p.failure(exception);

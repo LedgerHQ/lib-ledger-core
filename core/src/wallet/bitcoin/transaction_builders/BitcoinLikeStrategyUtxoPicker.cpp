@@ -43,8 +43,9 @@ namespace ledger {
 
         }
 
-        void BitcoinLikeStrategyUtxoPicker::fillInputs(BitcoinLikeUtxoPicker::Buddy &buddy) {
-
+        Future<BitcoinLikeUtxoPicker::UTXODescriptorList>
+        BitcoinLikeStrategyUtxoPicker::filterInputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
+            return Future<UTXODescriptorList>::successful(UTXODescriptorList());
         }
 
     }

@@ -42,7 +42,7 @@ namespace ledger {
                                           const api::Currency &currency);
 
         protected:
-            void fillInputs(Buddy &buddy) override;
+            Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
 
         private:
 

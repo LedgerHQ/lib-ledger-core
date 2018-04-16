@@ -45,6 +45,7 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionApi;
+        class BitcoinLikeWritableInputApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
@@ -61,25 +62,31 @@ namespace ledger {
             const api::Currency& getCurrency() const;
 
         protected:
-
+            using UTXODescriptor = std::tuple<std::string, int32_t, uint32_t >;
+            using UTXODescriptorList = std::vector<UTXODescriptor>;
             struct Buddy {
                 Buddy(
                         const BitcoinLikeTransactionBuildRequest& r,
                         const std::shared_ptr<BitcoinLikeBlockchainExplorer>& e,
                         const std::shared_ptr<BitcoinLikeKeychain>& k,
-                        BitcoinLikeTransactionApi& t)
+                        std::shared_ptr<BitcoinLikeTransactionApi> t)
                         : request(r), explorer(e), keychain(k), transaction(t) {
 
                 }
-                const BitcoinLikeTransactionBuildRequest& request;
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer;
-                const std::shared_ptr<BitcoinLikeKeychain>& keychain;
-                BitcoinLikeTransactionApi& transaction;
+                const BitcoinLikeTransactionBuildRequest request;
+                std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer;
+                std::shared_ptr<BitcoinLikeKeychain> keychain;
+                std::shared_ptr<BitcoinLikeTransactionApi> transaction;
+
             };
 
-            virtual void fillInputs(Buddy& buddy) = 0;
-            virtual void fillOutputs(Buddy& buddy);
-            virtual void fillTransactionInfo(Buddy& buddy);
+            virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy>& buddy);
+            virtual Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy>& buddy) = 0;
+            virtual Future<Unit> fillOutputs(const std::shared_ptr<Buddy>& buddy);
+            virtual Future<Unit> fillTransactionInfo(const std::shared_ptr<Buddy>& buddy);
+
+        private:
+            Future<Unit> fillInput(const std::shared_ptr<Buddy>& buddy, const UTXODescriptor& desc);
 
         private:
             api::Currency _currency;

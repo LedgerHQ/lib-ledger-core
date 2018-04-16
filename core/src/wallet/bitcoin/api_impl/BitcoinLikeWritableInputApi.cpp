@@ -36,6 +36,19 @@
 namespace ledger {
     namespace core {
 
+        BitcoinLikeWritableInputApi::BitcoinLikeWritableInputApi(
+                const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<api::ExecutionContext> &context, uint32_t sequence,
+                const std::vector<std::vector<uint8_t> > &pubKeys,
+                const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,
+                const std::shared_ptr<api::Amount> &amount, const std::string &previousTxHash, int32_t index,
+                const std::vector<uint8_t>& scriptSig) : _explorer(explorer), _context(context), _sequence(sequence),
+                                                        _pubKeys(pubKeys), _paths(paths), _address(address),
+                                                        _amount(amount), _previousHash(previousTxHash), _scriptSig(scriptSig)
+        {
+
+        }
+
         optional<std::string> BitcoinLikeWritableInputApi::getAddress() {
             return Option<std::string>(_address).toOptional();
         }
