@@ -29,7 +29,7 @@ target_compile_definitions(secp256k1 PRIVATE ${COMMON_COMPILE_FLAGS} ${COMPILE_F
 target_include_directories(secp256k1 PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src)
 target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 
-string(FIND ${CMAKE_OSX_SYSROOT} "iphone" IS_IOS)
+string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 
 if(IS_IOS GREATER_EQUAL 0)
     add_custom_command(
