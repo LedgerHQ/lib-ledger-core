@@ -38,6 +38,8 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B91D2E2D207DFC8300EC285F /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		B91D2FD9207E680A00EC285F /* libRCTCoreLibLedgerCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2FD8207E67FF00EC285F /* libRCTCoreLibLedgerCore.a */; };
+		B9A5638820842ACD00BA1BC1 /* libledger-core.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = B9A5638720842ACD00BA1BC1 /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B9A5638920842AD600BA1BC1 /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9A5638720842ACD00BA1BC1 /* libledger-core.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -321,7 +323,27 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTCoreLibLedgerCore;
 		};
+		B9A563122083E25B00BA1BC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B91D2FD1207E67FF00EC285F /* RCTCoreLibLedgerCore.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 58B511DA1A9E6C8500147676;
+			remoteInfo = RCTCoreLibLedgerCore;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B9A563462083EDEC00BA1BC1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				B9A5638820842ACD00BA1BC1 /* libledger-core.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -351,6 +373,8 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B91D2FD1207E67FF00EC285F /* RCTCoreLibLedgerCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCoreLibLedgerCore.xcodeproj; path = "../../../../api/core/react-native/LibLedgerCore/ios/RCTCoreLibLedgerCore.xcodeproj"; sourceTree = "<group>"; };
+		B9A562AA2083DAE700BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/api/core/react-native/LibLedgerCore/../../../../../lib-ledger-core-build/core/src/Release-iphoneos/libledger-core.dylib"; sourceTree = "<absolute>"; };
+		B9A5638720842ACD00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -366,6 +390,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9A5638920842AD600BA1BC1 /* libledger-core.dylib in Frameworks */,
 				B91D2FD9207E680A00EC285F /* libRCTCoreLibLedgerCore.a in Frameworks */,
 				B91D2E2D207DFC8300EC285F /* libRCTWebSocket.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -526,6 +551,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9A562AA2083DAE700BA1BC1 /* libledger-core.dylib */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 			);
 			name = Frameworks;
@@ -581,6 +607,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B9A5638720842ACD00BA1BC1 /* libledger-core.dylib */,
 				13B07FAE1A68108700A75B9A /* LedgerCoreTest */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* LedgerCoreTestTests */,
@@ -649,10 +676,12 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				B9A563462083EDEC00BA1BC1 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B9A563132083E25B00BA1BC1 /* PBXTargetDependency */,
 			);
 			name = LedgerCoreTest;
 			productName = "Hello World";
@@ -1176,6 +1205,11 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* LedgerCoreTest-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
+		B9A563132083E25B00BA1BC1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RCTCoreLibLedgerCore;
+			targetProxy = B9A563122083E25B00BA1BC1 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1236,6 +1270,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = LedgerCoreTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1253,6 +1288,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = LedgerCoreTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

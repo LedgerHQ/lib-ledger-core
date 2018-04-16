@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B91D2E38207E090800EC285F /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2E39207E090800EC285F /* libReact.a */; };
 		B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2F9B207E67A200EC285F /* libledger-core-objc.a */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
@@ -87,6 +86,7 @@
 		B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C82064133000418351 /* RCTCoreLGLedgerCore.m */; };
 		B97DA11A2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */; };
 		B97DA11B2064133100418351 /* RCTCoreLGWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */; };
+		B9A5635B208429EC00BA1BC1 /* libledger-core.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +95,13 @@
 			containerPortal = B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 806874EA0767DF98F3C38899;
+			remoteInfo = "libledger-core-objc";
+		};
+		B9A5630F2083E24900BA1BC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C1A6884132D97478B87DC9FD;
 			remoteInfo = "libledger-core-objc";
 		};
 /* End PBXContainerItemProxy section */
@@ -106,6 +113,16 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9A562D42083DD5100BA1BC1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				B9A5635B208429EC00BA1BC1 /* libledger-core.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +288,7 @@
 		B97DA0CB2064133100418351 /* RCTCoreLGBitcoinLikeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeHelper.h; sourceTree = "<group>"; };
 		B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGGetEthreumLikeWalletCallback.m; sourceTree = "<group>"; };
 		B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletCallback.m; sourceTree = "<group>"; };
+		B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,7 +296,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B91D2E38207E090800EC285F /* libReact.a in Frameworks */,
 				B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +322,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */,
 				B91D2DD4207DEF6D00EC285F /* Libraries */,
 				B97DA0312064124E00418351 /* Sources */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -501,10 +519,12 @@
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
+				B9A562D42083DD5100BA1BC1 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B9A563102083E24900BA1BC1 /* PBXTargetDependency */,
 			);
 			name = RCTCoreLibLedgerCore;
 			productName = RCTDataManager;
@@ -646,6 +666,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		B9A563102083E24900BA1BC1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "libledger-core-objc";
+			targetProxy = B9A5630F2083E24900BA1BC1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		58B511ED1A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -751,7 +779,10 @@
 					../../../objc,
 					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../../../../../lib-ledger-core-build/core/src/Release-iphoneos",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;
@@ -769,7 +800,10 @@
 					../../../objc,
 					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../../../../../lib-ledger-core-build/core/src/Release-iphoneos",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;

@@ -215,9 +215,15 @@ target_link_libraries(ledger-core leveldb)
 target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/libsecp256k1.a")
 link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
 
-#SQlite3
-target_link_libraries(ledger-core "${CMAKE_BINARY_DIR}/core/lib/sqlite3/libsqlite3.a")
-link_directories("${CMAKE_BINARY_DIR}/core/lib/sqlite3")
+string(FIND CMAKE_OSX_SYSROOT "iphone" IS_IOS)
+if(IS_IOS)
+    target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
+    link_directories($<TARGET_FILE_DIR:sqlite3>)
+else()
+    #SQlite3
+    target_link_libraries(ledger-core "${CMAKE_BINARY_DIR}/core/lib/sqlite3/libsqlite3.a")
+    link_directories("${CMAKE_BINARY_DIR}/core/lib/sqlite3")
+endif()
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"

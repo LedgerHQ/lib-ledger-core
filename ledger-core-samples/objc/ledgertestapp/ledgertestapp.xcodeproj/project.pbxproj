@@ -19,8 +19,8 @@
 		B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3225207F5F9300EC285F /* Foundation.framework */; };
 		B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3227207F5FA500EC285F /* UIKit.framework */; };
 		B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D322B207F68C800EC285F /* libc++.1.dylib */; };
-		B91D3235207F88EF00EC285F /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3234207F88EF00EC285F /* libledger-core.dylib */; };
-		B91D323D207F917400EC285F /* libledger-core.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = B91D323C207F917400EC285F /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B9A5639D20848C8E00BA1BC1 /* libledger-core.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B9A5639E20848C9A00BA1BC1 /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B91D323D207F917400EC285F /* libledger-core.dylib in Copy Files */,
+				B9A5639D20848C8E00BA1BC1 /* libledger-core.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 1;
@@ -64,8 +64,7 @@
 		B91D3225207F5F9300EC285F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B91D3227207F5FA500EC285F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B91D322B207F68C800EC285F /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
-		B91D3234207F88EF00EC285F /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../lib-ledger-core-build/core/src/libledger-core.dylib"; sourceTree = "<group>"; };
-		B91D323C207F917400EC285F /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libledger-core.dylib"; sourceTree = "<group>"; };
+		B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,11 +72,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B91D3235207F88EF00EC285F /* libledger-core.dylib in Frameworks */,
 				B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */,
 				B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */,
 				B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */,
 				B91D3223207F5F4F00EC285F /* libdjinni_objc.a in Frameworks */,
+				B9A5639E20848C9A00BA1BC1 /* libledger-core.dylib in Frameworks */,
 				B91D3024207F501D00EC285F /* libledger-core-objc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -88,7 +87,7 @@
 		B91D2FF7207F4F8800EC285F = {
 			isa = PBXGroup;
 			children = (
-				B91D323C207F917400EC285F /* libledger-core.dylib */,
+				B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */,
 				B91D301F207F4FB100EC285F /* Libraries */,
 				B91D3002207F4F8800EC285F /* ledgertestapp */,
 				B91D3001207F4F8800EC285F /* Products */,
@@ -140,7 +139,6 @@
 		B91D3022207F501D00EC285F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B91D3234207F88EF00EC285F /* libledger-core.dylib */,
 				B91D322B207F68C800EC285F /* libc++.1.dylib */,
 				B91D3227207F5FA500EC285F /* UIKit.framework */,
 				B91D3225207F5F9300EC285F /* Foundation.framework */,
@@ -386,7 +384,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks ../../../../lib-ledger-core-build/core/src ../../../lib-ledger-core-build/core/src @loader_path/../Frameworks @loader_path/Frameworks @executable_path/ledger-core @executable_path ${PROJECT_DIR}";
 				LIBRARY_SEARCH_PATHS = (
 					"../../../djinni/support-lib/**",
-					"../../../../lib-ledger-core-build/core/src",
+					"../../../../lib-ledger-core-build/core/src/Release-iphonesimulator",
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ledger.ledgertestapp;
@@ -411,7 +409,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks ../../../../lib-ledger-core-build/core/src ../../../lib-ledger-core-build/core/src @loader_path/../Frameworks @loader_path/Frameworks @executable_path/ledger-core @executable_path ${PROJECT_DIR}";
 				LIBRARY_SEARCH_PATHS = (
 					"../../../djinni/support-lib/**",
-					"../../../../lib-ledger-core-build/core/src",
+					"../../../../lib-ledger-core-build/core/src/Release-iphonesimulator",
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ledger.ledgertestapp;

@@ -21,11 +21,11 @@
     
     //////////Core library test call/////////////
     NSString *version = [LGLedgerCore getStringVersion];
-    //LGSecp256k1 *secpObj = [[LGSecp256k1 alloc] init];
-//    NSData *privKey = [[NSData alloc] initWithContentsOfFile:@"private.txt"];
-//    NSData *pubKey = [secpObj computePubKey:privKey compress:NO];
-//    NSString *result = [[NSString alloc] initWithData:pubKey encoding:NSUTF8StringEncoding];
-//    [_label setText:result];
+    LGSecp256k1 *secpObj = [[LGSecp256k1 alloc] init];
+    NSData *privKey = [[NSData alloc] initWithContentsOfFile:@"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/ledger-core-samples/objc/ledgertestapp/ledgertestapp/private.txt"];
+    NSData *pubKey = [secpObj computePubKey:privKey compress:NO];
+    NSString *result = [[NSString alloc] initWithData:pubKey encoding:NSUTF8StringEncoding];
+    [_label setText:result];
     
 }
 
