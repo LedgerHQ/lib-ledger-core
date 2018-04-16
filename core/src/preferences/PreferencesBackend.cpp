@@ -76,7 +76,7 @@ namespace ledger {
             options.sync = true;
             for (auto& item : changes) {
                 leveldb::Slice k((const char *)item.key.data(), item.key.size());
-                if (item.type == PreferencesChangeType::PUT) {
+                if (item.type == PreferencesChangeType::PUT_TYPE) {
                     leveldb::Slice v((const char *)item.value.data(), item.value.size());
                     batch.Put(k, v);
                 } else {

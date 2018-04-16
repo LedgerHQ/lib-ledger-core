@@ -12,4 +12,7 @@ target_link_libraries(ledger-core-utils-tests gtest gtest_main)
 target_link_libraries(ledger-core-utils-tests ledger-core)
 
 target_include_directories(ledger-core-utils-tests PUBLIC ../../../core/src/)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-utils-tests crypto ledger-core)
 add_test (NAME ledger-core-utils-tests COMMAND ledger-core-utils-tests)

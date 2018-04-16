@@ -57,6 +57,10 @@ set( LIBSRC cryptlib.c mem.c mem_clr.c mem_dbg.c cversion.c ex_data.c cpt_err.c
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} .. ../include . asn1 evp modes )
 
+if(MINGW)
+    set(BUILD_SHARED_LIBS 1)
+endif(MINGW)
+
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBCRYPTO )
 endif()

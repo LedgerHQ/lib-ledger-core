@@ -1,4 +1,8 @@
 version: 2
+general:
+dependencies:
+  cache_directories:
+    - ~/cmake-3.10.3
 jobs:
   build:
     docker:
@@ -7,24 +11,31 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup
           command: |
             . .circleci/setup_debian.sh
       - run:
-          name: Initialize submodules
-          command: git submodule init
+          command: |
+            . .circleci/cmake-install.sh
       - run:
-          name: Build core library
+          name: git version
+          command: git --version
+      - run: git submodule init
+      - run:
           command: |
             . .circleci/build_lib.sh
       - run:
-          name: Build node module
+          name: build module
           command: yarn
       - run:
-          name: Test Wallet Creation
-          command: node sample/wallet_pool_test.js
+          name: test
+          command: |
+              node index.js && node sample/wallet_pool_test.js
       - run:
-          name: Store error logs
+          name: run tests
+          command: |
+              cd ../lib-ledger-core-build
+              ctest
+      - run:
           command: |
               mkdir -p /tmp/core_dumps
               cp ./sample/tmp/log_file_test_instance-l.log /tmp/core_dumps
@@ -32,16 +43,19 @@ jobs:
       - store_artifacts:
           path: /tmp/core_dumps
       - run:
-          name: Store dynamic library
           command: |
               mkdir -p /tmp/lib
               cp ../lib-ledger-core-build/core/src/libledger-core.so /tmp/lib
       - store_artifacts:
           path: /tmp/lib
       - run:
-          name: Store node module
           command: |
               mkdir -p /tmp/node_module
               cp ./build/Release/ledgerapp_nodejs.node /tmp/node_module
       - store_artifacts:
           path: /tmp/node_module
+      - deploy:
+                name: Deploy to s3 bucket
+                command: |
+                  aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/ --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
+                  aws s3 ls s3://ledger-lib-ledger-core/;

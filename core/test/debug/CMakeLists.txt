@@ -13,4 +13,8 @@ add_executable(ledger-core-debug-tests main.cpp logger_test.cpp)
 target_link_libraries(ledger-core-debug-tests gtest gtest_main)
 target_link_libraries(ledger-core-debug-tests ledger-core)
 target_link_libraries(ledger-core-debug-tests ledger-test)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-debug-tests crypto ledger-core)
+
 add_test (NAME ledger-core-debug-tests COMMAND ledger-core-debug-tests)

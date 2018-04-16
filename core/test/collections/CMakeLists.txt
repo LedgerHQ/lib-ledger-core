@@ -11,4 +11,8 @@ add_executable(ledger-core-collections-tests main.cpp map_tests.cpp dynamics_tes
 
 target_link_libraries(ledger-core-collections-tests gtest gtest_main)
 target_link_libraries(ledger-core-collections-tests ledger-core)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-collections-tests crypto ledger-core)
+
 add_test (NAME ledger-core-collections-tests COMMAND ledger-core-collections-tests)

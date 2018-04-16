@@ -47,9 +47,6 @@ endif ()
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 set(LIB_BUILD_TYPE SHARED)
-if(BUILD_IOS)
-    set(LIB_BUILD_TYPE STATIC)
-endif(BUILD_IOS)
 
 add_library(
         ledger-core ${LIB_BUILD_TYPE}
@@ -204,13 +201,17 @@ add_library(
         wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h bitcoin/BitcoinLikeHelper.cpp bitcoin/BitcoinLikeHelper.h bitcoin/ScriptParser.cpp bitcoin/ScriptParser.h bitcoin/opcodes.h bitcoin/opcodes.cpp)
 
 target_link_libraries(ledger-core bigd)
-target_link_libraries(ledger-core fmt)
+if(MINGW)
+    target_link_libraries(ledger-core fmt-header-only)
+else()
+    target_link_libraries(ledger-core fmt)
+endif(MINGW)
 target_link_libraries(ledger-core crypto)
 target_link_libraries(ledger-core sqlite3)
 target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 target_link_libraries(ledger-core leveldb)
-
+target_link_libraries(ledger-core spdlog)
 #Secp256k1
 target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/libsecp256k1.a")
 link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
@@ -253,6 +254,7 @@ target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories(ledger-core PUBLIC ../lib/soci/core)
 target_include_directories(ledger-core PUBLIC ../lib/soci_sqlite3)
+target_include_directories(ledger-core PUBLIC ../lib/sqlite3)
 target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)

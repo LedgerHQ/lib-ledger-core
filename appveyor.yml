@@ -1,0 +1,103 @@
+version: 1.0.{build}
+branches:
+  only:
+  - ci-integration
+  - ci-win-integration
+image:
+- Visual Studio 2015
+configuration:
+  - Debug
+environment:
+  nodejs_version: "9"
+  appveyor_rdp_password:
+    secure: jb1LsDmcxCww7tA38S3xSw==
+  priv_key:
+    secure: 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
+  pub_key:
+    secure: B+4FNFeW6sbRsl7XJYnHUYptAx/2AvV7XySuhhEMdvcloUz0YXxgX/EguKV2Bvm5GaBKYLlq4G2Lw7udm4l68I9g3x+2pZvWiMBUhTRaTGVqi8PXXN+RON62G77yR9Lt/zUR+ljVjuJmRqQBU3NkzOJAAfZ/RDOCAEcWkA3cEE64IkfpqOTHBPW0PpwZcPGFF/l4MGdP8r5XIeu/WwPZHfQjGnDlME0VgkRWflA/Pjt0GcyDSLURXQBk+5JJhn9FjGPCKD+db4xQkW7zhep/su5urEf0HYTmVHRiKMZNfBPGSnL/Lmr6343qc6YF78lyX2U9saoJrf+tuxqAHtUq0KhkHltbNeIUaxvcC7TcH+kEm/Uxl/al8iRiMWE86b8z/wiFQI1xA+oejrFQivbyZVJ+cOifoZ7HhYwP+niOnUG+ZzT5WFLejnsnd4Lwdi5XzWaKKooIPtZ9qcyk15SFzVBayEeeljNk/gByrT6U+25LUqO6ekXrZ+A86Tmjkhp67B5+JNxis+k3sCZ63ASP6LhL9NvrVNky1ZGB8WAZ/hs=
+  matrix:
+    - CMAKE_GENERATOR: "MinGW Makefiles"
+      QT5: C:\Qt\5.10.1\mingw53_32
+      MINGW: C:\Qt\Tools\mingw530_32
+      CMAKE_C_COMPILER: gcc
+      CMAKE_CXX_COMPILER: g++
+      CMAKE_MAKE_PROGRAM: C:\projects\deps\cmake\bin\cmake
+      BOOST_ROOT: C:\Libraries\boost_1_63_0
+      BOOST_INCLUDEDIR: C:\Libraries\boost_1_63_0\boost
+      BOOST_LIBRARYDIR: C:\Libraries\boost_1_63_0\lib64-msvc-14.0
+      SQLITE3_DIR: C:\Tools\vcpkg\packages\sqlite3_x64-windows
+      CMAKE_DIR: C:\projects\deps\cmake
+
+build:
+  verbosity: minimal
+install:
+#Install  Sqlite3
+- if not exist "%SQLITE3_DIR%" ( cinst -y sqlite --params '"/InstallDir:%SQLITE3_DIR%"' )
+
+#Install cmake
+- mkdir C:\projects\deps
+- cd C:\projects\deps
+- if not exist "%CMAKE_DIR%" (
+    set CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-rc6-win64-x64.zip"
+    appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+    7z x cmake.zip -oC:\projects\deps > nul
+    move C:\projects\deps\cmake-* C:\projects\deps\cmake
+    cmake --version
+  )
+
+- call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+- call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+
+#Add mingw, Qt5, sqlite3, cmake to PATH
+#- ls -la C:\projects\deps\cmake
+- set PATH=%MINGW%\bin;%QT5%\bin;%PATH%
+- set PATH=C:\Tools\vcpkg\packages\sqlite3_x64-windows\bin;%PATH%
+- set PATH=C:\projects\deps\cmake\bin;%PATH%
+- set QTDIR=%QT5%
+
+#Create public key
+- ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
+- ps: $fileContent += $env:priv_key.Replace(' ', "`n")
+- ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
+- ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
+- ssh-keygen -y -f c:\users\appveyor\.ssh\id_rsa > c:\users\appveyor\.ssh\id_rsa.pub
+
+#Install Node
+- ps: Install-Product node $env:nodejs_version
+
+#Init submodules
+- cd C:\projects\lib-ledger-core
+- git submodule update --init --recursive
+
+build_script:
+- cd C:/projects/
+- mkdir lib-ledger-core-build
+- cd lib-ledger-core-build
+
+- ps: Get-Command sh.exe -All | Remove-Item
+
+#Check if build exists
+- set PATH=C:\projects\tmp\lib-ledger-core-build\core\src\build;%PATH%
+- if exist "C:\projects\tmp\lib-ledger-core-build" (
+    ls -la C:\projects\tmp\lib-ledger-core-build
+    cd C:\projects\tmp\lib-ledger-core-build
+    ctest
+  )
+
+##Using toolchains
+- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_PREFIX_PATH="%QT5%" -DCMAKE_INSTALL_PREFIX="%QT5%" ../lib-ledger-core
+- cmake --build . -- -j4
+- ctest --output-on-failure -VV
+- cd ../lib-ledger-core/ledger-core-samples/nodejs
+- npm install
+- node sample/wallet_pool_test.js
+
+on_finish:
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
