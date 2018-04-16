@@ -118,6 +118,9 @@ TEST(Encryption, EncryptDecryptWithCipher) {
     cipher.encrypt(input, encrypted);
     EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
+    //Reset cursor to read during final comparaison
+    input.reset();
+
     //Decrypt data
     BytesWriter destination;
     BytesReader encryptedReader(encrypted.toByteArray());
@@ -126,16 +129,13 @@ TEST(Encryption, EncryptDecryptWithCipher) {
 }
 
 TEST(Encryption, EncryptDecryptWithCipherHugeText) {
-
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-
     //Init reader
     std::vector<uint8_t> Bigvec;
     for (auto i = 0; i < 10; i++) {
         std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
         Bigvec.insert(Bigvec.end(), vec.begin(), vec.end());
     }
-
 
     BytesReader input(Bigvec);
 
@@ -145,10 +145,13 @@ TEST(Encryption, EncryptDecryptWithCipherHugeText) {
     cipher.encrypt(input, encrypted);
     EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
+    //Reset cursor to read during final comparaison
+    input.reset();
+
     //Decrypt data
     BytesWriter destination;
     BytesReader encryptedReader(encrypted.toByteArray());
     cipher.decrypt(encryptedReader, destination);
-
-    EXPECT_EQ(destination.toByteArray(), input.readUntilEnd());
+    auto inputBytes = input.readUntilEnd();
+    EXPECT_EQ(destination.toByteArray(), inputBytes);
 }
