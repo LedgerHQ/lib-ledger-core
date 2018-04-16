@@ -32,6 +32,12 @@ public abstract class Secp256k1 {
      */
     public abstract boolean verify(byte[] data, byte[] signature, byte[] pubKey);
 
+    /**
+     * Create an instance of Secp256k1
+     * @return Secp256k1 instance
+     */
+    public static native Secp256k1 createInstance();
+
     public static native Secp256k1 newInstance();
 
     private static final class CppProxy extends Secp256k1

@@ -1,5 +1,8 @@
 #Class implementing secp256k1 used in Bitcoin
 Secp256k1 = interface +c {
+    # Create an instance of Secp256k1
+    # @return Secp256k1 instance
+    static createInstance(): Secp256k1;
     # Generates public key from private key.
     # @param privKey 32 byte private key
     # @param compress get compressed (35 bytes) or uncompressed (65 bytes)

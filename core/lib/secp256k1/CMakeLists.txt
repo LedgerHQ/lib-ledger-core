@@ -16,7 +16,7 @@ project(secp256k1 LANGUAGES C)
 
 set(COMMON_COMPILE_FLAGS ENABLE_MODULE_RECOVERY ENABLE_MODULE_ECDH USE_ECMULT_STATIC_PRECOMPUTATION USE_FIELD_INV_BUILTIN USE_NUM_NONE USE_SCALAR_INV_BUILTIN)
 
-if (MSVC OR MINGW OR IS_IOS OR CMAKE_OSX_SYSROOT STREQUAL iphoneos)
+if (MSVC OR MINGW OR CMAKE_OSX_SYSROOT STREQUAL iphoneos)
     set(COMPILE_FLAGS USE_FIELD_10X26 USE_SCALAR_8X32)
     set(COMPILE_OPTIONS -fPIC)
 else()
@@ -29,12 +29,9 @@ target_compile_definitions(secp256k1 PRIVATE ${COMMON_COMPILE_FLAGS} ${COMPILE_F
 target_include_directories(secp256k1 PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src)
 target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 
-string(FIND CMAKE_OSX_SYSROOT "iphone" IS_IOS)
+string(FIND ${CMAKE_OSX_SYSROOT} "iphone" IS_IOS)
 
 if(IS_IOS GREATER_EQUAL 0)
-    message(STATUS "====================")
-    message(STATUS "IS_IOS = ${IS_IOS}")
-    message(STATUS "====================")
     add_custom_command(
             TARGET secp256k1
             PRE_BUILD

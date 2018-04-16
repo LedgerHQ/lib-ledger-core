@@ -9,6 +9,12 @@
 @interface LGSecp256k1 : NSObject
 
 /**
+ * Create an instance of Secp256k1
+ * @return Secp256k1 instance
+ */
++ (nullable LGSecp256k1 *)createInstance;
+
+/**
  * Generates public key from private key.
  * @param privKey 32 byte private key
  * @param compress get compressed (35 bytes) or uncompressed (65 bytes)

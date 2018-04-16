@@ -37,7 +37,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.localhash, self.uid, self.time, self.currencyName, @(self.height)];
+    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.hash, self.uid, self.time, self.currencyName, @(self.height)];
 }
 
 @end

@@ -13,10 +13,29 @@ import {
   NativeModules
 } from 'react-native';
 
-const RCTCoreLGSecp256k1 = NativeModules.RCTCoreLGSecp256k1()
-console.log(RCTCoreLGSecp256k1)
-const resultPubKey = RCTCoreLGSecp256k1.computePubKey([123],true)
-console.log(resultPubKey)
+const { CoreLGSecp256k1 } = NativeModules;
+console.log("=====NativeModules")
+console.log(NativeModules)
+console.log("=====CoreLGSecp256k1")
+console.log(CoreLGSecp256k1)
+
+// const RCTCoreLGSecp256k1 = NativeModules.CoreLGSecp256k1()
+// console.log("=====RCTCoreLGSecp256k1")
+// console.log(RCTCoreLGSecp256k1)
+
+async function getPublicKeyFromPrivKey (privKey, compressed) {
+    try {
+        const publicKey = await CoreLGSecp256k1.computePubKey(privKey,compressed)
+        console.log("============Public Key")
+        console.log(publicKey)
+
+    } catch (e) {
+        console.log("============Error")
+        console.error(e);
+    }
+}
+
+getPublicKeyFromPrivKey("12345", true)
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +

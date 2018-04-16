@@ -5,6 +5,11 @@
 declare class NJSSecp256k1
 {
     /**
+     * Create an instance of Secp256k1
+     * @return Secp256k1 instance
+     */
+    static declare function createInstance(): NJSSecp256k1;
+    /**
      * Generates public key from private key.
      * @param privKey 32 byte private key
      * @param compress get compressed (35 bytes) or uncompressed (65 bytes)
