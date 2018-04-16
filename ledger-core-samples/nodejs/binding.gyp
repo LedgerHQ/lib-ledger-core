@@ -1,12 +1,13 @@
 {
 	'variables': {
-		'core_library%': "../../lib-ledger-core-build",
-		'run_path%': "../lib-ledger-core-build/core/src",
+		'core_library%': "../../../../lib-ledger-core-build",
+		'run_path%': "../../../lib-ledger-core-build/core/src",
+		'source_path%': "../../api/core/nodejs",
 	},
 	'targets': [{
 		'target_name': 'ledgerapp_nodejs',
 		'sources': [
-			"<!@(python glob.py api/core/nodejs *.cpp *.hpp)"
+			"<!@(python glob.py <@(source_path) *.cpp *.hpp)"
 		],
 		'include_dirs': [
 			"<!(node -e \"require('nan')\")",

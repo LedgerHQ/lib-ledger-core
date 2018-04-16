@@ -30,7 +30,11 @@ target_include_directories(secp256k1 PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_
 target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 
 string(FIND CMAKE_OSX_SYSROOT "iphone" IS_IOS)
-if(IS_IOS)
+
+if(IS_IOS GREATER_EQUAL 0)
+    message(STATUS "====================")
+    message(STATUS "IS_IOS = ${IS_IOS}")
+    message(STATUS "====================")
     add_custom_command(
             TARGET secp256k1
             PRE_BUILD
