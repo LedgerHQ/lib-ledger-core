@@ -11,10 +11,10 @@ add_subdirectory(sqlite3)
 add_subdirectory(openssl)
 add_subdirectory(snappy)
 add_subdirectory(leveldb)
+
 add_subdirectory(spdlog)
 
 # SOCI configuration
-
 set(SOCI_STATIC ON)
 set(SOCI_SHARED OFF)
 

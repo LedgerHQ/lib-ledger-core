@@ -2,7 +2,7 @@ version: 1.0.{build}
 branches:
   only:
   - ci-integration
-  - ci-win-integration
+  - windows-ci
 image:
 - Visual Studio 2015
 configuration:

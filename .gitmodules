@@ -4,3 +4,9 @@
 [submodule "toolchains/polly"]
 	path = toolchains/polly
 	url = git@github.com:ruslo/polly.git
+[submodule "tools/gyp"]
+	path = tools/gyp
+	url = git@github.com:bnoordhuis/gyp.git
+[submodule "core/lib/spdlog"]
+    path = core/lib/spdlog
+    url = git@github.com:gabime/spdlog.git
