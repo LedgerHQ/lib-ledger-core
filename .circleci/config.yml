@@ -17,9 +17,8 @@ jobs:
           command: |
             . .circleci/cmake-install.sh
       - run:
-          name: git version
-          command: git --version
-      - run: git submodule init
+          name: initialize submodules
+          command: git submodule update --init --recursive
       - run:
           command: |
             . .circleci/build_lib.sh
