@@ -67,13 +67,15 @@ namespace ledger {
             struct Buddy {
                 Buddy(
                         const BitcoinLikeTransactionBuildRequest& r,
+                        const BitcoinLikeGetUtxoFunction& g,
                         const std::shared_ptr<BitcoinLikeBlockchainExplorer>& e,
                         const std::shared_ptr<BitcoinLikeKeychain>& k,
                         std::shared_ptr<BitcoinLikeTransactionApi> t)
-                        : request(r), explorer(e), keychain(k), transaction(t) {
+                        : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g) {
 
                 }
                 const BitcoinLikeTransactionBuildRequest request;
+                BitcoinLikeGetUtxoFunction getUtxo;
                 std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer;
                 std::shared_ptr<BitcoinLikeKeychain> keychain;
                 std::shared_ptr<BitcoinLikeTransactionApi> transaction;

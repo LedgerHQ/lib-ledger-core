@@ -56,7 +56,6 @@ namespace ledger {
             Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
-
         };
 
         using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;

@@ -54,7 +54,7 @@ namespace ledger {
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
                     auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency);
-                    return std::make_shared<Buddy>(r, explorer, keychain, tx);
+                    return std::make_shared<Buddy>(r, getUtxo, explorer, keychain, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                     return self->fillInputs(buddy).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
                         return self->fillOutputs(buddy);
@@ -127,7 +127,7 @@ namespace ledger {
             return performFill(0).flatMap<UTXODescriptorList>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
                 return pickUtxo();
             }).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const UTXODescriptorList& utxo) mutable -> Future<Unit> {
-                int offset = static_cast<int>(inputs->size());
+                auto offset = static_cast<int>(inputs->size());
                 inputs->insert(inputs->end(), utxo.begin(), utxo.end());
                 return performFill(offset);
             });

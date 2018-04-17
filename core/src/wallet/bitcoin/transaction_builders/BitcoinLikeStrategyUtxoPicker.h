@@ -43,7 +43,10 @@ namespace ledger {
 
         protected:
             Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-
+            void filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
+                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+                                     BigInt& aggregatedAmount, UTXODescriptorList& out);
+            inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
         private:
 
         };
