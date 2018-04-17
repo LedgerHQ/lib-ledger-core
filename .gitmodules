@@ -10,3 +10,6 @@
 [submodule "core/lib/spdlog"]
 	path = core/lib/spdlog
 	url = git@github.com:gabime/spdlog.git
+[submodule "core/lib/leveldb"]
+	path = core/lib/leveldb
+	url = git@github.com:bitcoin-core/leveldb.git
