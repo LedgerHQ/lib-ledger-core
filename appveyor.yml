@@ -31,6 +31,7 @@ environment:
 build:
   verbosity: minimal
 install:
+
 #Install  Sqlite3
 - if not exist "%SQLITE3_DIR%" ( cinst -y sqlite --params '"/InstallDir:%SQLITE3_DIR%"' )
 
@@ -45,11 +46,11 @@ install:
     cmake --version
   )
 
+#Set SDK
 - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
 - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
 
 #Add mingw, Qt5, sqlite3, cmake to PATH
-#- ls -la C:\projects\deps\cmake
 - set PATH=%MINGW%\bin;%QT5%\bin;%PATH%
 - set PATH=C:\Tools\vcpkg\packages\sqlite3_x64-windows\bin;%PATH%
 - set PATH=C:\projects\deps\cmake\bin;%PATH%
@@ -69,12 +70,14 @@ install:
 - cd C:\projects\lib-ledger-core
 - git submodule update --init --recursive
 
+#Remove sh from path otherwise mingw fail to launch
+- ps: Get-Command sh.exe -All | Remove-Item
+
 build_script:
+
 - cd C:/projects/
 - mkdir lib-ledger-core-build
 - cd lib-ledger-core-build
-
-- ps: Get-Command sh.exe -All | Remove-Item
 
 #Check if build exists
 - set PATH=C:\projects\tmp\lib-ledger-core-build\core\src\build;%PATH%
@@ -84,10 +87,16 @@ build_script:
     ctest
   )
 
-##Using toolchains
+#cmake configuration
 - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_PREFIX_PATH="%QT5%" -DCMAKE_INSTALL_PREFIX="%QT5%" ../lib-ledger-core
+
+#Build
 - cmake --build . -- -j4
+
+#Launch tests
 - ctest --output-on-failure -VV
+
+#Create node module
 - cd ../lib-ledger-core/ledger-core-samples/nodejs
 - npm install
 - node sample/wallet_pool_test.js

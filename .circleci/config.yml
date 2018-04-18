@@ -15,10 +15,10 @@ jobs:
             . .circleci/setup_debian.sh
       - run:
           command: |
-            . .circleci/cmake-install.sh
+            . .circleci/init_submodules.sh
       - run:
-          name: initialize submodules
-          command: git submodule update --init --recursive
+          command: |
+            . .circleci/cmake-install.sh
       - run:
           command: |
             . .circleci/build_lib.sh
