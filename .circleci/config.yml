@@ -23,12 +23,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh
       - run:
-          name: build module
-          command: yarn
-      - run:
-          name: test
+          name: build node module
           command: |
-              node index.js && node sample/wallet_pool_test.js
+            . .circleci/build_node_module.sh
       - run:
           name: run tests
           command: |
@@ -54,7 +51,7 @@ jobs:
       - store_artifacts:
           path: /tmp/node_module
       - deploy:
-                name: Deploy to s3 bucket
-                command: |
-                  aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/ --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
-                  aws s3 ls s3://ledger-lib-ledger-core/;
+          name: Deploy to s3 bucket
+          command: |
+            aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/ --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
+            aws s3 ls s3://ledger-lib-ledger-core/;
