@@ -5,53 +5,136 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing a database */
 public abstract class DatabaseBackend {
+    /**
+     *Set database's user name
+     *@param username, string
+     *@return DatabaseBackend object, databse with user name set
+     */
     public abstract DatabaseBackend setUsername(String username);
 
+    /**
+     *Set database's password
+     *@param password, string
+     *@return DatabaseBackend object, database with password set
+     */
     public abstract DatabaseBackend setPassword(String pwd);
 
+    /**
+     *Set database's host which storing database
+     *@param host, string
+     *@return DatabaseBackend object, database with host set
+     */
     public abstract DatabaseBackend setHost(String host);
 
+    /**
+     *Set database's host's address
+     *@param hostAddr, string, host's address
+     *@return DatabaseBackend object, database with host's address set
+     */
     public abstract DatabaseBackend setHostAddr(String hostAddr);
 
+    /**
+     *Set database's port on which it connects to host
+     *@param port, string
+     *@return DatabaseBackend object, database with port set
+     */
     public abstract DatabaseBackend setPort(String port);
 
+    /**
+     *Set database's specific options
+     *@param opts, string
+     *@return DatabaseBackend object, database with options set
+     */
     public abstract DatabaseBackend setOptions(String opts);
 
+    /**
+     *Set database's mode (SSL) of security interaction of type databse/server
+     *@param mode, string
+     *@return DatabaseBackend object, database with mode set
+     */
     public abstract DatabaseBackend setSslMode(String mode);
 
+    /**
+     *Set database's Kerberos name used to secure (authentication) user/databse interaction
+     *@param name, string
+     *@return DatabaseBackend object, database with Kerberos name set
+     */
     public abstract DatabaseBackend setKerberosName(String name);
 
+    /**TODO */
     public abstract DatabaseBackend setService(String service);
 
     public abstract DatabaseBackend setConnectionPoolSize(int size);
 
     public abstract DatabaseBackend enableQueryLogging(boolean enable);
 
+    /**
+     *Return database's name
+     *@return string
+     */
     public abstract String getUsername();
 
+    /**
+     *Return database's password
+     *@return string
+     */
     public abstract String getPassword();
 
+    /**
+     *Return database's host
+     *@return string
+     */
     public abstract String getHost();
 
+    /**
+     *Return database's host's address
+     *@return string
+     */
     public abstract String getHostAddr();
 
+    /**
+     *Return database's port
+     *@return string
+     */
     public abstract String getPort();
 
+    /**
+     *Return database's options
+     *@return string
+     */
     public abstract String getOptions();
 
+    /**
+     *Return database's SSL mode
+     *@return string
+     */
     public abstract String getSslMode();
 
+    /**
+     *Return database's Kerberos name
+     *@return string
+     */
     public abstract String getKerberosName();
 
+    /**TODO */
     public abstract String getService();
 
     public abstract int getConnectionPoolSize();
 
     public abstract boolean isLoggingEnabled();
 
+    /**
+     *Create an instance of SQLite3 database
+     *@return DatabaseBackend object
+     */
     public static native DatabaseBackend getSqlite3Backend();
 
+    /**
+     *Create an instance of PostgreSQL database
+     *@return DatabaseBackend object
+     */
     public static native DatabaseBackend getPostgreSQLBackend();
 
     private static final class CppProxy extends DatabaseBackend

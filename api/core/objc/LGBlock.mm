@@ -13,7 +13,7 @@
                               height:(int64_t)height
 {
     if (self = [super init]) {
-        _hash = [hash copy];
+        _localhash = [hash copy];
         _uid = [uid copy];
         _time = time;
         _currencyName = [currencyName copy];

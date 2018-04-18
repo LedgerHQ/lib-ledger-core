@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enum of transaction level of trust */
 public enum TrustLevel {
     TRUSTED,
     PENDING,

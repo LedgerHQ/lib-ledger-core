@@ -12,6 +12,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**TODO */
 struct ExtendedKeyAccountCreationInfo final {
     int32_t index;
     std::vector<std::string> owners;

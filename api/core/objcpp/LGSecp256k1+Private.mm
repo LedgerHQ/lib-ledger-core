@@ -30,6 +30,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
++ (nullable LGSecp256k1 *)createInstance {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::Secp256k1::createInstance();
+        return ::djinni_generated::Secp256k1::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nonnull NSData *)computePubKey:(nonnull NSData *)privKey
                          compress:(BOOL)compress {
     try {

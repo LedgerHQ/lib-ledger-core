@@ -11,13 +11,22 @@ namespace ledger { namespace core { namespace api {
 
 class Runnable;
 
+/**Class representing context in which tasks get executed */
 class ExecutionContext {
 public:
     virtual ~ExecutionContext() {}
 
-    /** */
+    /**
+     *Execute a given runnable
+     *@param runnalbe, Runnable object
+     */
     virtual void execute(const std::shared_ptr<Runnable> & runnable) = 0;
 
+    /**
+     *Execute a given runnable with a delay
+     *@param runnalbe, Runnable object
+     *@param millis, 64 bits integer, delay in milli-seconds
+     */
     virtual void delay(const std::shared_ptr<Runnable> & runnable, int64_t millis) = 0;
 };
 

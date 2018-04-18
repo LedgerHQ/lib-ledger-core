@@ -6,6 +6,7 @@
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
 
+/**Structure of cryptocurrency */
 @interface LGCurrency : NSObject
 - (nonnull instancetype)initWithWalletType:(LGWalletType)walletType
                                       name:(nonnull NSString *)name
@@ -20,16 +21,25 @@
                                          units:(nonnull NSArray<LGCurrencyUnit *> *)units
                   bitcoinLikeNetworkParameters:(nullable LGBitcoinLikeNetworkParameters *)bitcoinLikeNetworkParameters;
 
+/**WalletType object defining the type of wallet the currency belongs to */
 @property (nonatomic, readonly) LGWalletType walletType;
 
+/**String which represents currency name */
 @property (nonatomic, readonly, nonnull) NSString * name;
 
+/**
+ *Integer cointype, part of BIP32 path
+ *One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+ */
 @property (nonatomic, readonly) int32_t bip44CoinType;
 
+/**String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin) */
 @property (nonatomic, readonly, nonnull) NSString * paymentUriScheme;
 
+/**List of CurrencyUnit objects (e.g. BTC, mBTC ...) */
 @property (nonatomic, readonly, nonnull) NSArray<LGCurrencyUnit *> * units;
 
+/**Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc */
 @property (nonatomic, readonly, nullable) LGBitcoinLikeNetworkParameters * bitcoinLikeNetworkParameters;
 
 @end

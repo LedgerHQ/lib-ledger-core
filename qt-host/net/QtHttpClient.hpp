@@ -31,12 +31,15 @@
 #ifndef LEDGER_CORE_QTHTTPCLIENT_HPP
 #define LEDGER_CORE_QTHTTPCLIENT_HPP
 
+#include <functional>
+
 #include <src/api/HttpClient.hpp>
 #include <src/api/HttpUrlConnection.hpp>
 #include <src/api/HttpRequest.hpp>
 #include <src/api/HttpReadBodyResult.hpp>
 #include <src/api/HttpMethod.hpp>
 #include <QtNetwork>
+#include <QNetworkReply>
 #include <QObject>
 #include "../async/QtThreadDispatcher.hpp"
 

@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.ArrayList;
 
+/**Structure of cryptocurrency */
 public final class Currency {
 
 
@@ -35,26 +36,35 @@ public final class Currency {
         this.bitcoinLikeNetworkParameters = bitcoinLikeNetworkParameters;
     }
 
+    /**WalletType object defining the type of wallet the currency belongs to */
     public WalletType getWalletType() {
         return walletType;
     }
 
+    /**String which represents currency name */
     public String getName() {
         return name;
     }
 
+    /**
+     *Integer cointype, part of BIP32 path
+     *One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+     */
     public int getBip44CoinType() {
         return bip44CoinType;
     }
 
+    /**String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin) */
     public String getPaymentUriScheme() {
         return paymentUriScheme;
     }
 
+    /**List of CurrencyUnit objects (e.g. BTC, mBTC ...) */
     public ArrayList<CurrencyUnit> getUnits() {
         return units;
     }
 
+    /**Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc */
     public BitcoinLikeNetworkParameters getBitcoinLikeNetworkParameters() {
         return bitcoinLikeNetworkParameters;
     }

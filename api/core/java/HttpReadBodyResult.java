@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Structure representing Http response body */
 public final class HttpReadBodyResult {
 
 
@@ -17,10 +18,12 @@ public final class HttpReadBodyResult {
         this.data = data;
     }
 
+    /**Optional Error structure, error in case of http request failure */
     public Error getError() {
         return error;
     }
 
+    /**Optional binary, data returned by http request in case of success */
     public byte[] getData() {
         return data;
     }

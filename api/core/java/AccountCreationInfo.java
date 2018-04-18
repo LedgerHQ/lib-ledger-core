@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.ArrayList;
 
+/**Structure of informations needed for account creation */
 public final class AccountCreationInfo {
 
 
@@ -31,22 +32,27 @@ public final class AccountCreationInfo {
         this.chainCodes = chainCodes;
     }
 
+    /**32 bits integer, index of account in user's wallet */
     public int getIndex() {
         return index;
     }
 
+    /**List of string, account's owners */
     public ArrayList<String> getOwners() {
         return owners;
     }
 
+    /**List of string, list of account's derivations */
     public ArrayList<String> getDerivations() {
         return derivations;
     }
 
+    /**List of 32 bytes, list of public keys owning the account */
     public ArrayList<byte[]> getPublicKeys() {
         return publicKeys;
     }
 
+    /**TODO */
     public ArrayList<byte[]> getChainCodes() {
         return chainCodes;
     }

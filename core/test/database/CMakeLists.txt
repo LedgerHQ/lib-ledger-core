@@ -21,4 +21,8 @@ target_link_libraries(ledger-core-database-tests ledger-test)
 target_link_libraries(ledger-core-database-tests ledger-qt-host)
 target_include_directories(ledger-core-database-tests PUBLIC ../../../qt-host)
 target_include_directories(ledger-core-database-tests PUBLIC ../../../core/src/)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-database-tests crypto ledger-core)
+
 add_test(NAME ledger-core-database-tests COMMAND ledger-core-database-tests)

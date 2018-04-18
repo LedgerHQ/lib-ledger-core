@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**TODO */
 typedef NS_ENUM(NSInteger, LGRoundingMode)
 {
     LGRoundingModeTruncated,

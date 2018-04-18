@@ -8,21 +8,49 @@
 @protocol LGOperationListCallback;
 
 
+/**Class respresenting a query for a set of operations */
 @interface LGOperationQuery : NSObject
 
+/**
+ *Apply given order to query's operation
+ *@param key, OperationOrderKey object which defines order
+ *@param descending, bool
+ *@return OperationQuery object, new ordered operation
+ */
 - (nullable LGOperationQuery *)addOrder:(LGOperationOrderKey)key
                              descending:(BOOL)descending;
 
+/**
+ *Get applied filter on operation query
+ *@return QueryFilter object
+ */
 - (nullable LGQueryFilter *)filter;
 
+/**
+ *Add offset to the operation query
+ *@param from, 64 bits integer
+ */
 - (nullable LGOperationQuery *)offset:(int64_t)from;
 
+/**
+ *Add limit to the operation query results
+ *@param count, 64 bits integer
+ */
 - (nullable LGOperationQuery *)limit:(int64_t)count;
 
+/**
+ *TODO
+ *Complete the operation query
+ */
 - (nullable LGOperationQuery *)complete;
 
+/**TODO */
 - (nullable LGOperationQuery *)partial;
 
+/**
+ *Execute query to retrieve operations
+ *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
+ */
 - (void)execute:(nullable id<LGOperationListCallback>)callback;
 
 @end

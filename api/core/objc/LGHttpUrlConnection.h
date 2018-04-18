@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 
 
+/**Class representing an Http connection */
 @protocol LGHttpUrlConnection
 
 /**

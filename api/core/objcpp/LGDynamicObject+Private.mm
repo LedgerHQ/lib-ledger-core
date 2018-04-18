@@ -32,13 +32,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return self;
 }
 
-- (BOOL)isReadOnly {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->isReadOnly();
-        return ::djinni::Bool::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 - (nullable LGDynamicObject *)putString:(nonnull NSString *)key
                                   value:(nonnull NSString *)value {
     try {
@@ -93,6 +86,24 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGDynamicObject *)putObject:(nonnull NSString *)key
+                                  value:(nullable LGDynamicObject *)value {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->putObject(::djinni::String::toCpp(key),
+                                                             ::djinni_generated::DynamicObject::toCpp(value));
+        return ::djinni_generated::DynamicObject::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGDynamicObject *)putArray:(nonnull NSString *)key
+                                 value:(nullable LGDynamicArray *)value {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->putArray(::djinni::String::toCpp(key),
+                                                            ::djinni_generated::DynamicArray::toCpp(value));
+        return ::djinni_generated::DynamicObject::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nullable NSString *)getString:(nonnull NSString *)key {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getString(::djinni::String::toCpp(key));
@@ -132,24 +143,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getBoolean(::djinni::String::toCpp(key));
         return ::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGDynamicObject *)putObject:(nonnull NSString *)key
-                                  value:(nullable LGDynamicObject *)value {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->putObject(::djinni::String::toCpp(key),
-                                                             ::djinni_generated::DynamicObject::toCpp(value));
-        return ::djinni_generated::DynamicObject::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable LGDynamicObject *)putArray:(nonnull NSString *)key
-                                 value:(nullable LGDynamicArray *)value {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->putArray(::djinni::String::toCpp(key),
-                                                            ::djinni_generated::DynamicArray::toCpp(value));
-        return ::djinni_generated::DynamicObject::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -206,6 +199,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->serialize();
         return ::djinni::Binary::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (BOOL)isReadOnly {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->isReadOnly();
+        return ::djinni::Bool::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

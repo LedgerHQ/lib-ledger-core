@@ -12,6 +12,7 @@ namespace ledger { namespace core { namespace api {
 
 struct HttpReadBodyResult;
 
+/**Class representing an Http connection */
 class HttpUrlConnection {
 public:
     virtual ~HttpUrlConnection() {}

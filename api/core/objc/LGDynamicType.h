@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enumeration of supported types in DynamicArray and DynamicObject */
 typedef NS_ENUM(NSInteger, LGDynamicType)
 {
     LGDynamicTypeOBJECT,

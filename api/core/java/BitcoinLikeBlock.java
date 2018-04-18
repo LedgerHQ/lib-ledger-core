@@ -6,11 +6,24 @@ package co.ledger.core;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing Bitcoin block */
 public abstract class BitcoinLikeBlock {
+    /**
+     *Hash of block
+     *@return string representing hash of this block
+     */
     public abstract String getHash();
 
+    /**
+     *Height of block in blockchain
+     *@return 64 bits integer, height of block
+     */
     public abstract long getHeight();
 
+    /**
+     *Timestamp when block was mined
+     *@return Date object, date when block was appended to blockchain
+     */
     public abstract Date getTime();
 
     private static final class CppProxy extends BitcoinLikeBlock

@@ -19,6 +19,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_nativeDestro
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Secp256k1_createInstance(JNIEnv* jniEnv, jobject /*this*/)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Secp256k1::createInstance();
+        return ::djinni::release(::djinni_generated::Secp256k1::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1computePubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jboolean j_compress)
 {
     try {

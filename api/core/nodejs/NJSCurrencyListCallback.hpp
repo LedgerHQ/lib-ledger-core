@@ -32,9 +32,19 @@ public:
     };
     NJSCurrencyListCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     void onCallback(const std::experimental::optional<std::vector<Currency>> & result, const std::experimental::optional<Error> & error);
 
 private:
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     static NAN_METHOD(onCallback);
 
     static NAN_METHOD(New);

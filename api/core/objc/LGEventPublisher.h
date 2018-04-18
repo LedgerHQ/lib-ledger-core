@@ -8,17 +8,39 @@
 @protocol LGExecutionContext;
 
 
+/**Class representing an event publisher */
 @interface LGEventPublisher : NSObject
 
+/**
+ *Get event bus through which publisher broadcast its events
+ *@return EventBus object
+ */
 - (nullable LGEventBus *)getEventBus;
 
+/**
+ *Broadcast an event through eventbus (to all subscribed receivers to this EventBus)
+ *@param event, Event object
+ */
 - (void)post:(nullable LGEvent *)event;
 
+/**
+ *Same as post method but with an sticky event
+ *@param event, Event object
+ *@param tag, 32 bits integer, tag of sticky event
+ */
 - (void)postSticky:(nullable LGEvent *)event
                tag:(int32_t)tag;
 
+/**
+ *Relay an event to another EventBus (other than EventPublisher's event bus)
+ *@param bus, EventBus object, through which we want to broadcast EventPublisher's event to EventPublisher's receiver
+ */
 - (void)relay:(nullable LGEventBus *)bus;
 
+/**
+ *Create a new instance of EventPublisher class
+ *@param context, executionContext object, context in which event publisher broadcast its events
+ */
 + (nullable LGEventPublisher *)newInstance:(nullable id<LGExecutionContext>)context;
 
 @end

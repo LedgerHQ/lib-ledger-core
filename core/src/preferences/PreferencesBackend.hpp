@@ -50,7 +50,7 @@ namespace ledger {
     namespace core {
         class Preferences;
         enum PreferencesChangeType {
-            PUT, DELETE
+            PUT_TYPE, DELETE_TYPE
         };
 
         struct PreferencesChange {

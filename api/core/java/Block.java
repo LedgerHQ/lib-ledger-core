@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.Date;
 
+/**Structure of a block in the blockchain */
 public final class Block {
 
 
@@ -31,22 +32,27 @@ public final class Block {
         this.height = height;
     }
 
+    /**String, block's hash */
     public String getHash() {
         return hash;
     }
 
+    /**String, id of block (usually height of block) */
     public String getUid() {
         return uid;
     }
 
+    /**Date on which block was mined */
     public Date getTime() {
         return time;
     }
 
+    /**String, currency's name of blockchain the block belongs to */
     public String getCurrencyName() {
         return currencyName;
     }
 
+    /**64 bits integer, height of block in the blockchain */
     public long getHeight() {
         return height;
     }

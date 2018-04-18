@@ -31,6 +31,8 @@
 #ifndef LEDGER_CORE_QTTHREADDISPATCHER_HPP
 #define LEDGER_CORE_QTTHREADDISPATCHER_HPP
 
+#include <functional>
+
 #include <QObject>
 #include <QMap>
 #include <QMutex>

@@ -11,10 +11,19 @@ namespace ledger { namespace core { namespace api {
 struct BitcoinLikePreparedTransaction;
 struct Error;
 
+/**
+ *Callback triggered by main completed task,
+ *returns optional result of template type T
+ */
 class BitcoinLikePreparedTransactionCallback {
 public:
     virtual ~BitcoinLikePreparedTransactionCallback() {}
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     virtual void onCallback(const std::experimental::optional<BitcoinLikePreparedTransaction> & result, const std::experimental::optional<Error> & error) = 0;
 };
 

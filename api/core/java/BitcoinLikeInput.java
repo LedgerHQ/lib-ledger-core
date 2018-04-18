@@ -5,17 +5,42 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing Bitcoin inputs */
 public abstract class BitcoinLikeInput {
+    /**
+     *Get address that spends the input
+     *@return Optional String, address emmiting input
+     */
     public abstract String getAddress();
 
+    /**
+     *Get amount of input
+     *@return Optional Amount object, amount of input
+     */
     public abstract Amount getValue();
 
+    /**
+     *Check whether input
+     *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
+     */
     public abstract boolean isCoinbase();
 
+    /**
+     *Stored data cointained in coinbase
+     *@return Optional String
+     */
     public abstract String getCoinbase();
 
+    /**
+     *Get hash of previous transaction that generates that input
+     *@return Optional String, hash of previous transaction (null if coinbase)
+     */
     public abstract String getPreviousTxHash();
 
+    /**
+     *Get output index, it identifies which UTXO from tht transaction to spend
+     *@return Optional 32 bits integer, index of previous transaction
+     */
     public abstract Integer getPreviousOutputIndex();
 
     private static final class CppProxy extends BitcoinLikeInput

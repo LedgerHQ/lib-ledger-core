@@ -12,6 +12,7 @@ namespace ledger { namespace core { namespace api {
 
 enum class TrustLevel;
 
+/**TODO */
 class TrustIndicator {
 public:
     virtual ~TrustIndicator() {}

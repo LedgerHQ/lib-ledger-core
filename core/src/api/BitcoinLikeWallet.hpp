@@ -6,6 +6,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**TODO */
 class BitcoinLikeWallet {
 public:
     virtual ~BitcoinLikeWallet() {}

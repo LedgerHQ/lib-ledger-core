@@ -1,0 +1,30 @@
+{
+  "name": "ledger-core-lib-ledger-core",
+  "title": "Ledger Core Lib Ledger Core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": {
+    "name": "khalilBellakrid",
+    "email": "khalil.bellakrid@ledger.fr"
+  },
+  "license": "Apache-2.0",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "16.0.0-alpha.6",
+    "react-native": "^0.44.1",
+    "react-native-windows": "0.41.0-rc.1"
+  },
+  "devDependencies": {
+    "react": "16.0.0-alpha.6",
+    "react-native": "^0.44.1",
+    "react-native-windows": "0.41.0-rc.1"
+  }
+}

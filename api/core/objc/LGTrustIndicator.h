@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 
 
+/**TODO */
 @interface LGTrustIndicator : NSObject
 
 - (int32_t)getTrustWeight;

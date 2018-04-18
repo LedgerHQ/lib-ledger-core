@@ -9,6 +9,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**TODO */
 class ConfigurationDefaults {
 public:
     virtual ~ConfigurationDefaults() {}

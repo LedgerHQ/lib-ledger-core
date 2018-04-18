@@ -13,4 +13,8 @@ add_executable(ledger-core-preferences-tests main.cpp preferences_test.cpp)
 target_link_libraries(ledger-core-preferences-tests gtest gtest_main)
 target_link_libraries(ledger-core-preferences-tests ledger-core)
 target_link_libraries(ledger-core-preferences-tests ledger-test)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-preferences-tests crypto ledger-core)
+
 add_test (NAME ledger-core-preferences-tests COMMAND ledger-core-preferences-tests)

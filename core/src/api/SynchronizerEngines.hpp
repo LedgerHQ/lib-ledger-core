@@ -8,12 +8,22 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**Class of constants representing the engines to rely on for synchronization */
 class SynchronizerEngines {
 public:
     virtual ~SynchronizerEngines() {}
 
+    /**
+     *String, rely on blockchain explorers to synchronize,
+     *For example to condsider a transaction valid, it should, first, be included in a block,
+     *then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
+     */
     static std::string const BLOCKCHAIN_EXPLORER;
 
+    /**
+     *String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
+     *To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
+     */
     static std::string const SPV;
 };
 

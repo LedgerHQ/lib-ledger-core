@@ -31,15 +31,31 @@ public:
     };
     NJSExecutionContext(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
-    /** */
+    /**
+     *Execute a given runnable
+     *@param runnalbe, Runnable object
+     */
     void execute(const std::shared_ptr<Runnable> & runnable);
 
+    /**
+     *Execute a given runnable with a delay
+     *@param runnalbe, Runnable object
+     *@param millis, 64 bits integer, delay in milli-seconds
+     */
     void delay(const std::shared_ptr<Runnable> & runnable, int64_t millis);
 
 private:
-    /** */
+    /**
+     *Execute a given runnable
+     *@param runnalbe, Runnable object
+     */
     static NAN_METHOD(execute);
 
+    /**
+     *Execute a given runnable with a delay
+     *@param runnalbe, Runnable object
+     *@param millis, 64 bits integer, delay in milli-seconds
+     */
     static NAN_METHOD(delay);
 
     static NAN_METHOD(New);

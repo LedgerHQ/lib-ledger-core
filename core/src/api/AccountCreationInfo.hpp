@@ -12,11 +12,17 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**Structure of informations needed for account creation */
 struct AccountCreationInfo final {
+    /**32 bits integer, index of account in user's wallet */
     int32_t index;
+    /**List of string, account's owners */
     std::vector<std::string> owners;
+    /**List of string, list of account's derivations */
     std::vector<std::string> derivations;
+    /**List of 32 bytes, list of public keys owning the account */
     std::vector<std::vector<uint8_t>> publicKeys;
+    /**TODO */
     std::vector<std::vector<uint8_t>> chainCodes;
 
     AccountCreationInfo(int32_t index_,

@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.HashMap;
 
+/**Class representing an Http connection */
 public abstract class HttpUrlConnection {
     /**
      * Gets the HTTP response status code

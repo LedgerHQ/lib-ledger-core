@@ -31,33 +31,89 @@ public:
     };
     NJSLogPrinter(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
 
+    /**
+     *Print different encountered errors
+     *@param message, string
+     */
     void printError(const std::string & message);
 
+    /**
+     *Print useful information messages
+     *@param message, string
+     */
     void printInfo(const std::string & message);
 
+    /**
+     *Print debug messages
+     *@param message string
+     */
     void printDebug(const std::string & message);
 
+    /**
+     *Print warning messages
+     *@param message, string
+     */
     void printWarning(const std::string & message);
 
+    /**
+     *Print messages from APDU comand interpretation loop
+     *@param message, string
+     */
     void printApdu(const std::string & message);
 
+    /**
+     *Print critical errors causing a core dump or error from which recovery is impossible
+     *@param message, string
+     */
     void printCriticalError(const std::string & message);
 
+    /**
+     *Get context in which printer is executed (print)
+     *@return ExecutionContext object
+     */
     std::shared_ptr<ExecutionContext> getContext();
 
 private:
+    /**
+     *Print different encountered errors
+     *@param message, string
+     */
     static NAN_METHOD(printError);
 
+    /**
+     *Print useful information messages
+     *@param message, string
+     */
     static NAN_METHOD(printInfo);
 
+    /**
+     *Print debug messages
+     *@param message string
+     */
     static NAN_METHOD(printDebug);
 
+    /**
+     *Print warning messages
+     *@param message, string
+     */
     static NAN_METHOD(printWarning);
 
+    /**
+     *Print messages from APDU comand interpretation loop
+     *@param message, string
+     */
     static NAN_METHOD(printApdu);
 
+    /**
+     *Print critical errors causing a core dump or error from which recovery is impossible
+     *@param message, string
+     */
     static NAN_METHOD(printCriticalError);
 
+    /**
+     *Get context in which printer is executed (print)
+     *@return ExecutionContext object
+     */
     static NAN_METHOD(getContext);
 
     static NAN_METHOD(New);

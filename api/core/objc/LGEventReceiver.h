@@ -5,8 +5,13 @@
 @class LGEvent;
 
 
+/**Class respresenting an event receiver */
 @protocol LGEventReceiver
 
+/**
+ *Method triggered when an event occurs
+ *@param event, Event object that triggers this method
+ */
 - (void)onEvent:(nullable LGEvent *)event;
 
 @end

@@ -11,6 +11,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**TODO */
 struct FormatRules final {
     RoundingMode roundingMode;
     int32_t maxNumberOfDecimals;

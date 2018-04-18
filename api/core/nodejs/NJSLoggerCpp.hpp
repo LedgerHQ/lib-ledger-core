@@ -29,14 +29,39 @@ public:
     std::shared_ptr<ledger::core::api::Logger> getCppImpl(){return _Logger;};
 
 private:
+    /**
+     *Print debug message to console
+     *@param tag, string
+     *@param message, string
+     */
     static NAN_METHOD(d);
 
+    /**
+     *Print information message to console
+     *@param tag, string
+     *@param message, string
+     */
     static NAN_METHOD(i);
 
+    /**
+     *Print error message to console
+     *@param tag, string
+     *@param message, string
+     */
     static NAN_METHOD(e);
 
+    /**
+     *Print warning message to console
+     *@param tag, string
+     *@param message, string
+     */
     static NAN_METHOD(w);
 
+    /**
+     *Print critical error message to console
+     *@param tag, string
+     *@param message, string
+     */
     static NAN_METHOD(c);
 
     static NAN_METHOD(New);

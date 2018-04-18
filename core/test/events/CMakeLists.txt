@@ -18,4 +18,8 @@ target_link_libraries(ledger-core-events-tests ledger-core)
 target_link_libraries(ledger-core-events-tests ledger-test)
 target_link_libraries(ledger-core-events-tests ledger-qt-host)
 target_include_directories(ledger-core-events-tests PUBLIC ../../../qt-host)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-events-tests crypto ledger-core)
+
 add_test (NAME ledger-core-events-tests COMMAND ledger-core-events-tests)

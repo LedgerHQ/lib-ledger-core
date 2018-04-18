@@ -9,6 +9,10 @@
 namespace ledger {
     namespace core {
 
+        std::shared_ptr<api::Secp256k1> ledger::core::api::Secp256k1::createInstance() {
+            return std::make_shared<Secp256k1Api>();
+        }
+
         Secp256k1Api::Secp256k1Api() {
             _context = secp256k1_context_create(SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN);
         }
