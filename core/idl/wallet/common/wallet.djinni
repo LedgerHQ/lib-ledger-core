@@ -296,13 +296,6 @@ Account = interface +c {
     #Get Last block of blockchain on which account operates
     #@param callback, Callback returning, if getLastBlock succeeds, a Block object
     getLastBlock(callback: Callback<Block>);
-    #Compute fees of transaction with a given amount, priority, data ...
-    #@param amount, Amount object
-    #@param priority, 32 bits integer priority under which transaction will be proccessed
-    #@param recipients, list of string representing recipients of transaction
-    #@param data, list of bytes, data that transaction is holding
-    #@param callback, Callback returning, if computeFees succeed, an Amount Object
-    computeFees(amount: Amount, priority: i32, recipients: list<string>, data: list<binary>, callback: Callback<Amount>);
 }
 
 #Class representing a wallet

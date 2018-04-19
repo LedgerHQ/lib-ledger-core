@@ -9,7 +9,7 @@
 	url = git@github.com:bnoordhuis/gyp.git
 [submodule "core/lib/spdlog"]
 	path = core/lib/spdlog
-	url = git@github.com:gabime/spdlog.git
+	url = https://github.com/gabime/spdlog.git
 [submodule "core/lib/leveldb"]
 	path = core/lib/leveldb
-	url = git@github.com:bitcoin-core/leveldb.git
+	url = https://github.com/bitcoin-core/leveldb.git

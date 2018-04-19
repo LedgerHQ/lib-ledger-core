@@ -3,7 +3,6 @@
 
 package co.ledger.core;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**Class representing an account */
@@ -135,16 +134,6 @@ public abstract class Account {
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     public abstract void getLastBlock(BlockCallback callback);
-
-    /**
-     *Compute fees of transaction with a given amount, priority, data ...
-     *@param amount, Amount object
-     *@param priority, 32 bits integer priority under which transaction will be proccessed
-     *@param recipients, list of string representing recipients of transaction
-     *@param data, list of bytes, data that transaction is holding
-     *@param callback, Callback returning, if computeFees succeed, an Amount Object
-     */
-    public abstract void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
 
     private static final class CppProxy extends Account
     {
@@ -312,13 +301,5 @@ public abstract class Account {
             native_getLastBlock(this.nativeRef, callback);
         }
         private native void native_getLastBlock(long _nativeRef, BlockCallback callback);
-
-        @Override
-        public void computeFees(Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_computeFees(this.nativeRef, amount, priority, recipients, data, callback);
-        }
-        private native void native_computeFees(long _nativeRef, Amount amount, int priority, ArrayList<String> recipients, ArrayList<byte[]> data, AmountCallback callback);
     }
 }

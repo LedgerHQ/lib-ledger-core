@@ -450,15 +450,6 @@ declare class NJSAccount
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     declare function getLastBlock(callback: NJSBlockCallback);
-    /**
-     *Compute fees of transaction with a given amount, priority, data ...
-     *@param amount, Amount object
-     *@param priority, 32 bits integer priority under which transaction will be proccessed
-     *@param recipients, list of string representing recipients of transaction
-     *@param data, list of bytes, data that transaction is holding
-     *@param callback, Callback returning, if computeFees succeed, an Amount Object
-     */
-    declare function computeFees(amount: NJSAmount, priority: number, recipients: Array<string>, data: Array<Object>, callback: NJSAmountCallback);
 }
 /**
  *Callback triggered by main completed task,

@@ -7,11 +7,9 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
-class Amount;
 class AmountCallback;
 class BlockCallback;
 class EventBus;
@@ -153,16 +151,6 @@ public:
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     virtual void getLastBlock(const std::shared_ptr<BlockCallback> & callback) = 0;
-
-    /**
-     *Compute fees of transaction with a given amount, priority, data ...
-     *@param amount, Amount object
-     *@param priority, 32 bits integer priority under which transaction will be proccessed
-     *@param recipients, list of string representing recipients of transaction
-     *@param data, list of bytes, data that transaction is holding
-     *@param callback, Callback returning, if computeFees succeed, an Amount Object
-     */
-    virtual void computeFees(const std::shared_ptr<Amount> & amount, int32_t priority, const std::vector<std::string> & recipients, const std::vector<std::vector<uint8_t>> & data, const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

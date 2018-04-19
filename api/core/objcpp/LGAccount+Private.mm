@@ -6,7 +6,6 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
-#import "LGAmount+Private.h"
 #import "LGAmountCallback+Private.h"
 #import "LGBlockCallback+Private.h"
 #import "LGEventBus+Private.h"
@@ -157,20 +156,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getLastBlock:(nullable id<LGBlockCallback>)callback {
     try {
         _cppRefHandle.get()->getLastBlock(::djinni_generated::BlockCallback::toCpp(callback));
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (void)computeFees:(nullable LGAmount *)amount
-           priority:(int32_t)priority
-         recipients:(nonnull NSArray<NSString *> *)recipients
-               data:(nonnull NSArray<NSData *> *)data
-           callback:(nullable id<LGAmountCallback>)callback {
-    try {
-        _cppRefHandle.get()->computeFees(::djinni_generated::Amount::toCpp(amount),
-                                         ::djinni::I32::toCpp(priority),
-                                         ::djinni::List<::djinni::String>::toCpp(recipients),
-                                         ::djinni::List<::djinni::Binary>::toCpp(data),
-                                         ::djinni_generated::AmountCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

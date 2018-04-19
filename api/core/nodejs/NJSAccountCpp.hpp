@@ -7,7 +7,6 @@
 
 #include "../../../core/src/api/WalletType.hpp"
 #include "NJSAmountCallback.hpp"
-#include "NJSAmountCpp.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSLoggerCpp.hpp"
@@ -17,7 +16,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -141,16 +139,6 @@ private:
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     static NAN_METHOD(getLastBlock);
-
-    /**
-     *Compute fees of transaction with a given amount, priority, data ...
-     *@param amount, Amount object
-     *@param priority, 32 bits integer priority under which transaction will be proccessed
-     *@param recipients, list of string representing recipients of transaction
-     *@param data, list of bytes, data that transaction is holding
-     *@param callback, Callback returning, if computeFees succeed, an Amount Object
-     */
-    static NAN_METHOD(computeFees);
 
     static NAN_METHOD(New);
 

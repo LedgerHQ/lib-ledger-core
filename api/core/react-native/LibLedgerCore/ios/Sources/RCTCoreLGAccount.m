@@ -271,21 +271,4 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(nullable id<LGBlockCallback>)callbac
 
     [self.objcImpl getLastBlock:callback];
 }
-
-/**
- *Compute fees of transaction with a given amount, priority, data ...
- *@param amount, Amount object
- *@param priority, 32 bits integer priority under which transaction will be proccessed
- *@param recipients, list of string representing recipients of transaction
- *@param data, list of bytes, data that transaction is holding
- *@param callback, Callback returning, if computeFees succeed, an Amount Object
- */
-RCT_REMAP_METHOD(computeFees,computeFees:(nullable LGAmount *)amount
-                                priority:(int32_t)priority
-                              recipients:(nonnull NSArray<NSString *> *)recipients
-                                    data:(nonnull NSArray<NSData *> *)data
-                                callback:(nullable id<LGAmountCallback>)callback) {
-
-    [self.objcImpl computeFees:amount priority:priority recipients:recipients data:data callback:callback];
-}
 @end
