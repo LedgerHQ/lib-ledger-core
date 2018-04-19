@@ -42,9 +42,12 @@ namespace ledger {
                 const std::vector<std::vector<uint8_t> > &pubKeys,
                 const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,
                 const std::shared_ptr<api::Amount> &amount, const std::string &previousTxHash, int32_t index,
-                const std::vector<uint8_t>& scriptSig) : _explorer(explorer), _context(context), _sequence(sequence),
-                                                        _pubKeys(pubKeys), _paths(paths), _address(address),
-                                                        _amount(amount), _previousHash(previousTxHash), _scriptSig(scriptSig)
+                const std::vector<uint8_t>& scriptSig,
+                const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput) : _explorer(explorer), _context(context), _sequence(sequence),
+                                                        _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
+                                                        _amount(amount), _previousHash(previousTxHash), _scriptSig(scriptSig),
+                                                                    _previousScript(previousOutput)
+
         {
 
         }
@@ -82,7 +85,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BitcoinLikeOutput> BitcoinLikeWritableInputApi::getPreviousOuput() {
-            return nullptr;
+            return _previousScript;
         }
 
         std::vector<uint8_t> BitcoinLikeWritableInputApi::getScriptSig() {

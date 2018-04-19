@@ -41,7 +41,7 @@
 #include <list>
 #include <async/Future.hpp>
 #include <math/BigInt.h>
-
+#include <spdlog/logger.h>
 namespace ledger {
     namespace core {
 
@@ -65,6 +65,7 @@ namespace ledger {
             explicit BitcoinLikeTransactionBuilder(
                     const std::shared_ptr<api::ExecutionContext>& context,
                     const api::BitcoinLikeNetworkParameters& params,
+                    const std::shared_ptr<spdlog::logger>& logger,
                     const BitcoinLikeTransactionBuildFunction& buildFunction);
             BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -106,6 +107,7 @@ namespace ledger {
             BitcoinLikeTransactionBuildFunction _build;
             BitcoinLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
+            std::shared_ptr<spdlog::logger> _logger;
 
         };
     }

@@ -92,6 +92,7 @@ namespace ledger {
             //return std::make_shared<BitcoinLikeWallet>(entry.name, observer, *keychainFactory, synchronizerFactory.getValue(), pool, currency);
             return std::make_shared<BitcoinLikeWallet>(
                     entry.name,
+                    explorer,
                     observer,
                     keychainFactory->second,
                     synchronizerFactory.getValue(),

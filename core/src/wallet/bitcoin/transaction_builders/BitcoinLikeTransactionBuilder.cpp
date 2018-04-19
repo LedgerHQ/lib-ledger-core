@@ -50,16 +50,17 @@ namespace ledger {
             _build = cpy._build;
             _request = cpy._request;
             _context = cpy._context;
+            _logger = cpy._logger;
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext>& context,
-                const api::BitcoinLikeNetworkParameters& params,
-                const BitcoinLikeTransactionBuildFunction &buildFunction)
-                : _request(std::make_shared<BigInt>(params.DustAmount)) {
+                const std::shared_ptr<api::ExecutionContext> &context, const api::BitcoinLikeNetworkParameters &params,
+                const std::shared_ptr<spdlog::logger> &logger,
+                const BitcoinLikeTransactionBuildFunction &buildFunction) : _request(std::make_shared<BigInt>(params.DustAmount)) {
             _params = params;
             _build = buildFunction;
             _context = context;
+            _logger = logger;
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -71,7 +72,7 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::addOutput(const std::shared_ptr<api::Amount> &amount,
                                                  const std::shared_ptr<api::BitcoinLikeScript> &script) {
-            auto a = std::dynamic_pointer_cast<BigInt>(std::dynamic_pointer_cast<Amount>(amount)->toBigInt());
+            auto a = std::dynamic_pointer_cast<Amount>(std::dynamic_pointer_cast<Amount>(amount))->value();
             _request.outputs.push_back(std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>(a, script));
             return shared_from_this();
         }

@@ -47,6 +47,7 @@ BitcoinLikeInput = interface +c {
     # Parse the script sig to a [[BitcoinLikeScript]]
     parseScriptSig(): BitcoinLikeScript;
 
+
     # Set the ScriptS to the given value
     # @param scriptSig The ScriptSig to use for this input
     setScriptSig(scriptSig: binary);

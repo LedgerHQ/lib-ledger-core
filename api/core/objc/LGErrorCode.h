@@ -76,6 +76,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnknownBlockchainExplorerEngine,
     LGErrorCodeUnknownBlockchainObserverEngine,
     LGErrorCodeUnknownSynchronizationEngine,
+    /** Wallet transaction */
+    LGErrorCodeNotEnoughFunds,
     /** Bad cast */
     LGErrorCodeBadCast,
     /** Query build */

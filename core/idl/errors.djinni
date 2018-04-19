@@ -86,6 +86,9 @@ ErrorCode = enum {
     unknown_blockchain_observer_engine;
     unknown_synchronization_engine;
 
+    # Wallet transaction
+    not_enough_funds;
+
     # Bad cast
     bad_cast;
 

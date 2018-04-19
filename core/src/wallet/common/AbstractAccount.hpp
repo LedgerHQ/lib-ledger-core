@@ -69,7 +69,7 @@ namespace ledger {
             void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
             virtual FuturePtr<Amount> getBalance() = 0;
 
-            void getFreshPublicAddresses(const std::shared_ptr <api::StringListCallback> &callback) override;
+            void getFreshPublicAddresses(const std::shared_ptr<api::StringListCallback> &callback) override;
             virtual Future<std::vector<std::string>> getFreshPublicAddresses() = 0;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 

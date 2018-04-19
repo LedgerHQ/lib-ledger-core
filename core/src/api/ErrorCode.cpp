@@ -61,6 +61,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE: return "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE: return "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE: return "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::NOT_ENOUGH_FUNDS: return "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST: return "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER: return "LINK_NON_TAIL_FILTER";
     };
@@ -120,6 +121,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE;
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE;
     else if (errorCode == "UNKNOWN_SYNCHRONIZATION_ENGINE") return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
+    else if (errorCode == "NOT_ENOUGH_FUNDS") return ErrorCode::NOT_ENOUGH_FUNDS;
     else if (errorCode == "BAD_CAST") return ErrorCode::BAD_CAST;
     else return ErrorCode::LINK_NON_TAIL_FILTER;
 };
@@ -180,6 +182,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE:  return os << "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::NOT_ENOUGH_FUNDS:  return os << "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST:  return os << "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER:  return os << "LINK_NON_TAIL_FILTER";
     }

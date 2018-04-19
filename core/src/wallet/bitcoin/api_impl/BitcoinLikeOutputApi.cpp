@@ -62,18 +62,18 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> BitcoinLikeOutputApi::getValue() {
-            return std::make_shared<Amount>(_currency, 0, getOuput().value);
+            return std::make_shared<Amount>(_currency, 0, getOutput().value);
         }
 
         std::vector<uint8_t> BitcoinLikeOutputApi::getScript() {
-            return hex::toByteArray(getOuput().script);
+            return hex::toByteArray(getOutput().script);
         }
 
         optional<std::string> BitcoinLikeOutputApi::getAddress() {
-            return getOuput().address.toOptional();
+            return getOutput().address.toOptional();
         }
 
-        BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOuput() {
+        BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOutput() {
             if (_backend.isLeft())
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
             return _backend.getRight();
@@ -95,6 +95,10 @@ namespace ledger {
                                                    const std::shared_ptr<api::DerivationPath> &path)
                 : BitcoinLikeOutputApi(output, currency) {
             _path = path;
+        }
+
+        const BigInt &BitcoinLikeOutputApi::value() {
+            return getOutput().value;
         }
     }
 }

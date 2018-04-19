@@ -58,8 +58,10 @@ namespace ledger {
 
             std::shared_ptr<api::DerivationPath> getDerivationPath() override;
 
+            const BigInt& value();
+
         private:
-            BitcoinLikeBlockchainExplorer::Output& getOuput();
+            BitcoinLikeBlockchainExplorer::Output& getOutput();
 
         private:
             Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorer::Output>  _backend;

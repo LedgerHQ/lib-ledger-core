@@ -47,6 +47,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi;
         class BitcoinLikeWritableInputApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
+        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> (const std::string&)>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
         public:
@@ -56,8 +57,10 @@ namespace ledger {
             );
             virtual BitcoinLikeTransactionBuildFunction getBuildFunction(
                     const BitcoinLikeGetUtxoFunction& getUtxo,
+                    const BitcoinLikeGetTxFunction& getTransaction,
                     const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                    const std::shared_ptr<BitcoinLikeKeychain>& keychain
+                    const std::shared_ptr<BitcoinLikeKeychain>& keychain,
+                    const std::shared_ptr<spdlog::logger>& logger
             );
             const api::Currency& getCurrency() const;
 
@@ -68,18 +71,26 @@ namespace ledger {
                 Buddy(
                         const BitcoinLikeTransactionBuildRequest& r,
                         const BitcoinLikeGetUtxoFunction& g,
+                        const BitcoinLikeGetTxFunction& tx,
                         const std::shared_ptr<BitcoinLikeBlockchainExplorer>& e,
                         const std::shared_ptr<BitcoinLikeKeychain>& k,
+                        const std::shared_ptr<spdlog::logger>& l,
                         std::shared_ptr<BitcoinLikeTransactionApi> t)
-                        : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g) {
-
+                        : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g),
+                          getTransaction(tx), logger(l)
+                {
+                    for (auto& output : r.outputs)
+                        outputAmount = outputAmount + *std::get<0>(output);
                 }
                 const BitcoinLikeTransactionBuildRequest request;
                 BitcoinLikeGetUtxoFunction getUtxo;
+                BitcoinLikeGetTxFunction getTransaction;
                 std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer;
                 std::shared_ptr<BitcoinLikeKeychain> keychain;
                 std::shared_ptr<BitcoinLikeTransactionApi> transaction;
-
+                BigInt outputAmount;
+                std::shared_ptr<spdlog::logger> logger;
+                BigInt changeAmount;
             };
 
             virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy>& buddy);

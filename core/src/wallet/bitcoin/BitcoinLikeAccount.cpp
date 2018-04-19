@@ -47,6 +47,8 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <spdlog/logger.h>
 
 namespace ledger {
     namespace core {
@@ -399,15 +401,31 @@ namespace ledger {
             auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
                 return self->getUTXO();
             };
+            auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> {
+                return self->getTransaction(hash);
+            };
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getContext(),
                     getWallet()->getCurrency().bitcoinLikeNetworkParameters.value(),
-                    _picker->getBuildFunction(getUTXO, _explorer, _keychain)
+                    logger(),
+                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, logger())
             );
         }
 
         const std::shared_ptr<BitcoinLikeBlockchainExplorer> &BitcoinLikeAccount::getExplorer() const {
             return _explorer;
+        }
+
+        FuturePtr<ledger::core::BitcoinLikeBlockchainExplorer::Transaction> BitcoinLikeAccount::getTransaction(const std::string& hash) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>>([=] () -> std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction> {
+                auto tx = std::make_shared<BitcoinLikeBlockchainExplorer::Transaction>();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
+                    throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);
+                }
+                return tx;
+            });
         }
 
 

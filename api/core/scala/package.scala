@@ -63,6 +63,7 @@ package object implicits {
     class UnknownBlockchainExplorerEngineException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE, message)
     class UnknownBlockchainObserverEngineException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE, message)
     class UnknownSynchronizationEngineException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_SYNCHRONIZATION_ENGINE, message)
+    class NotEnoughFundsException(message: String) extends LedgerCoreWrappedException(ErrorCode.NOT_ENOUGH_FUNDS, message)
     class BadCastException(message: String) extends LedgerCoreWrappedException(ErrorCode.BAD_CAST, message)
     class LinkNonTailFilterException(message: String) extends LedgerCoreWrappedException(ErrorCode.LINK_NON_TAIL_FILTER, message)
     private def wrapLedgerCoreError(error: co.ledger.core.Error): LedgerCoreWrappedException = {
@@ -120,6 +121,7 @@ package object implicits {
             case ErrorCode.UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE => new UnknownBlockchainExplorerEngineException(error.getMessage)
             case ErrorCode.UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE => new UnknownBlockchainObserverEngineException(error.getMessage)
             case ErrorCode.UNKNOWN_SYNCHRONIZATION_ENGINE => new UnknownSynchronizationEngineException(error.getMessage)
+            case ErrorCode.NOT_ENOUGH_FUNDS => new NotEnoughFundsException(error.getMessage)
             case ErrorCode.BAD_CAST => new BadCastException(error.getMessage)
             case ErrorCode.LINK_NON_TAIL_FILTER => new LinkNonTailFilterException(error.getMessage)
         }

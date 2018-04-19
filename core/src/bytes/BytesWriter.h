@@ -107,6 +107,13 @@ namespace ledger {
             BytesWriter& writeByteArray(const std::vector<uint8_t>& data);
 
             /**
+             * Write a byte array in reverse order.
+             * @param data
+             * @return
+             */
+            BytesWriter &writeLeByteArray(const std::vector<uint8_t> &data);
+
+            /**
              * Write a BigInt into the writer using big endian bytes ordering.
              * @param i
              * @return

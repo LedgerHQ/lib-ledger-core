@@ -40,13 +40,14 @@ namespace ledger {
         public:
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                           const api::Currency &currency);
-
         protected:
             Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-            void filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
+            Future<UTXODescriptorList> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
-                                     BigInt& aggregatedAmount, UTXODescriptorList& out);
+                                     const BigInt& aggregatedAmount);
+            bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount);
             inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
+
         private:
 
         };

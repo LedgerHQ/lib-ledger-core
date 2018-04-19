@@ -51,7 +51,8 @@ namespace ledger {
                     const std::shared_ptr<api::Amount>& amount,
                     const std::string& previousTxHash,
                     int32_t index,
-                    const std::vector<uint8_t>& scriptSig
+                    const std::vector<uint8_t>& scriptSig,
+                    const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput
             );
             optional<std::string> getAddress() override;
             std::vector<std::vector<uint8_t>> getPublicKeys() override;
@@ -87,6 +88,7 @@ namespace ledger {
             std::string _previousHash;
             int32_t  _index;
             std::vector<uint8_t> _scriptSig;
+            std::shared_ptr<api::BitcoinLikeOutput> _previousScript;
         };
     }
 }

@@ -45,6 +45,7 @@ namespace ledger {
         const api::WalletType BitcoinLikeWallet::type = api::WalletType::BITCOIN;
 
         BitcoinLikeWallet::BitcoinLikeWallet(const std::string &name,
+                                             const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
                                              const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<BitcoinLikeKeychainFactory> &keychainFactory,
                                              const BitcoinLikeAccountSynchronizerFactory &synchronizer,
@@ -53,6 +54,7 @@ namespace ledger {
                                              const DerivationScheme& scheme
         )
         : AbstractWallet(name, network, pool, configuration, scheme) {
+            _explorer = explorer;
             _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
@@ -223,6 +225,10 @@ namespace ledger {
                                                         _observer,
                                                         _synchronizerFactory(),
                                                         keychain);
+        }
+
+        std::shared_ptr<BitcoinLikeBlockchainExplorer> BitcoinLikeWallet::getBlockchainExplorer() {
+            return _explorer;
         }
 
     }

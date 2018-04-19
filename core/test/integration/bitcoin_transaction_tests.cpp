@@ -71,4 +71,25 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = ::wait(f);
+    std::cout << hex::toString(tx->serialize()) << std::endl;
+    EXPECT_EQ(
+            "0100000001f6390f2600568e3dd28af5d53e821219751d6cb7a03ec9476f96f5695f2807a2000000001976a914bfe0a15bbed6211262d3a8d8a891e738bab36ffb88acffffffff0210270000000000001976a91423cc0488e5832d8f796b88948b8af1dd186057b488ac10580100000000001976a914d642b9c546d114dc634e65f72283e3458032a3d488ac41eb0700",
+            hex::toString(tx->serialize())
+    );
+}
+
+
+TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutputAndFakeSignature) {
+    auto builder = p2pkh_tx_builder();
+    builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    tx->getInputs()[0]->pushToScriptSig({5, 'h', 'e', 'l', 'l', 'o'});
+    std::cout << hex::toString(tx->serialize()) << std::endl;
+    EXPECT_EQ(
+            "0100000001f6390f2600568e3dd28af5d53e821219751d6cb7a03ec9476f96f5695f2807a200000000060568656c6c6fffffffff0210270000000000001976a91423cc0488e5832d8f796b88948b8af1dd186057b488ac10580100000000001976a914d642b9c546d114dc634e65f72283e3458032a3d488ac41eb0700",
+            hex::toString(tx->serialize())
+    );
 }

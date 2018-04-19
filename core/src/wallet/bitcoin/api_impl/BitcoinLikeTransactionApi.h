@@ -63,6 +63,13 @@ namespace ledger {
             BitcoinLikeTransactionApi& addOutput(const std::shared_ptr<api::BitcoinLikeOutput>& output);
             BitcoinLikeTransactionApi& setLockTime(uint32_t lockTime);
 
+        public:
+            static api::EstimatedSize estimateSize(std::size_t inputCount,
+                                            std::size_t outputCount,
+                                            bool hasTimestamp,
+                                            bool useSegwit
+            );
+
         private:
             inline bool isWriteable() const;
             inline bool isReadOnly() const;

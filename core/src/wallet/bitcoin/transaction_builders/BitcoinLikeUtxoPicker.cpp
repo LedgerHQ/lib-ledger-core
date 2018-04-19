@@ -48,19 +48,25 @@ namespace ledger {
 
         BitcoinLikeTransactionBuildFunction
         BitcoinLikeUtxoPicker::getBuildFunction(const BitcoinLikeGetUtxoFunction &getUtxo,
+                                                const BitcoinLikeGetTxFunction& getTransaction,
                                                 const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
-                                                const std::shared_ptr<BitcoinLikeKeychain> &keychain) {
+                                                const std::shared_ptr<BitcoinLikeKeychain> &keychain,
+                                                const std::shared_ptr<spdlog::logger>& logger
+        ) {
             auto self = shared_from_this();
+            logger->info("Get build function");
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
                     auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency);
-                    return std::make_shared<Buddy>(r, getUtxo, explorer, keychain, tx);
+                    return std::make_shared<Buddy>(r, getUtxo, getTransaction, explorer, keychain, logger, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
+                    buddy->logger->info("Buddy created");
                     return self->fillInputs(buddy).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
                         return self->fillOutputs(buddy);
                     }).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
                         return self->fillTransactionInfo(buddy);
                     }).mapPtr<api::BitcoinLikeTransaction>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> std::shared_ptr<api::BitcoinLikeTransaction> {
+                        buddy->logger->info("Empty transaction built");
                         return buddy->transaction;
                     });;
                 });
@@ -72,10 +78,11 @@ namespace ledger {
         }
 
         Future<Unit> BitcoinLikeUtxoPicker::fillOutputs(const std::shared_ptr<Buddy>& buddy) {
+            // Fill reception outputs
             auto params = getCurrency().bitcoinLikeNetworkParameters.value();
             auto outputIndex = 0;
             for (auto &output : buddy->request.outputs) {
-                auto amount = std::dynamic_pointer_cast<Amount>(std::get<0>(output))->value();
+                auto amount = std::get<0>(output);
                 auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
                 auto address = script.parseAddress(params).map<std::string>([] (const BitcoinLikeAddress& addr) {
                     return addr.toBase58();
@@ -95,6 +102,29 @@ namespace ledger {
                 outputIndex += 1;
                 buddy->transaction->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
             }
+
+            // Fill change outputs
+
+            if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+                // TODO implement multi change
+                // TODO implement use specific change address
+                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE);
+
+                auto amount = buddy->changeAmount;
+                auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency.bitcoinLikeNetworkParameters.value());
+                BitcoinLikeBlockchainExplorer::Output out;
+                out.index = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
+                out.value = amount;
+                out.address = Option<std::string>(changeAddress).toOptional();
+                out.script = hex::toString(script.serialize());
+                std::shared_ptr<api::DerivationPath> derivationPath = nullptr;
+                auto path = buddy->keychain->getAddressDerivationPath(changeAddress);
+                if (path.nonEmpty()) {
+                    derivationPath = std::make_shared<DerivationPathApi>(DerivationPath(path.getValue()));
+                }
+                buddy->transaction->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
+            }
+
             return Future<Unit>::successful(unit);
         }
 
@@ -106,6 +136,7 @@ namespace ledger {
         }
 
         Future<Unit> BitcoinLikeUtxoPicker::fillInputs(const std::shared_ptr<Buddy>& buddy) {
+            buddy->logger->info("Filling inputs");
             auto self = shared_from_this();
             auto pickUtxo = [=] () -> Future<UTXODescriptorList> {
                 if (buddy->request.utxoPicker.nonEmpty()) {
@@ -115,21 +146,21 @@ namespace ledger {
             };
 
             auto inputs = std::make_shared<UTXODescriptorList>();
-            std::function<Future<Unit> (int)> performFill;
-            performFill = [=] (int index) mutable -> Future<Unit> {
+            static std::function<Future<Unit> (int, const std::shared_ptr<UTXODescriptorList>&, const std::shared_ptr<Buddy>&, const std::shared_ptr<BitcoinLikeUtxoPicker>&)> performFill
+            = [] (int index, const std::shared_ptr<UTXODescriptorList>& inputs, const std::shared_ptr<Buddy>& buddy, const std::shared_ptr<BitcoinLikeUtxoPicker>& self) mutable -> Future<Unit> {
                 if (index >= inputs->size())
                     return Future<Unit>::successful(unit);
                 return self->fillInput(buddy, (*inputs)[index]).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) {
-                    return performFill(index + 1);
+                    return performFill(index + 1, inputs, buddy, self);
                 });
             };
             inputs->insert(inputs->end(), buddy->request.inputs.begin(), buddy->request.inputs.end());
-            return performFill(0).flatMap<UTXODescriptorList>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
+            return performFill(0, inputs, buddy, self).flatMap<UTXODescriptorList>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
                 return pickUtxo();
             }).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const UTXODescriptorList& utxo) mutable -> Future<Unit> {
                 auto offset = static_cast<int>(inputs->size());
                 inputs->insert(inputs->end(), utxo.begin(), utxo.end());
-                return performFill(offset);
+                return performFill(offset, inputs, buddy, self);
             });
         }
 
@@ -154,7 +185,7 @@ namespace ledger {
                                 buddy->explorer, getContext(), std::get<2>(desc), pub_keys, paths,
                                 output.address.getValueOr(""),
                                 std::make_shared<Amount>(buddy->keychain->getCurrency(), 0, output.value),
-                                hash, std::get<1>(desc), {}
+                                hash, std::get<1>(desc), {}, std::make_shared<BitcoinLikeOutputApi>(output, _currency)
                         )
                 );
                 buddy->transaction->addInput(input);

@@ -116,7 +116,16 @@ namespace ledger {
 
         BitcoinLikeScript
         BitcoinLikeScript::fromAddress(const std::string &address, const api::BitcoinLikeNetworkParameters &params) {
+            auto a = api::BitcoinLikeAddress::fromBase58(params, address);
             BitcoinLikeScript script;
+            if (a->isP2PKH()) {
+                script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
+                       << btccore::OP_CHECKSIG;
+            } else if (a->isP2SH()) {
+                script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
+            } else {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
+            }
             return script;
         }
 

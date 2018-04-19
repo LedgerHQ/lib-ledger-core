@@ -75,6 +75,8 @@ public enum ErrorCode {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Wallet transaction */
+    NOT_ENOUGH_FUNDS,
     /** Bad cast */
     BAD_CAST,
     /** Query build */

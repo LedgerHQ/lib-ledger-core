@@ -123,16 +123,25 @@ namespace ledger {
                 writer.writeByte(0x01);
             }
 
+            // If all inputs are empty we need to create a signable transaction
+
             for (auto& input : _inputs) {
                 auto hash = input->getPreviousTxHash();
                 if (!hash)
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction hash");
-                writer.writeByteArray(hex::toByteArray(hash.value()));
+                writer.writeLeByteArray(hex::toByteArray(hash.value()));
                 if (!input->getPreviousOutputIndex())
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
                 auto scriptSig = input->getScriptSig();
-                writer.writeByteArray(scriptSig);
+                if (scriptSig.size() > 0) {
+                    writer.writeVarInt(scriptSig.size());
+                    writer.writeByteArray(scriptSig);
+                } else {
+                    auto prevOut = input->getPreviousOuput()->getScript();
+                    writer.writeVarInt(prevOut.size());
+                    writer.writeByteArray(prevOut);
+                }
                 writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
             }
 
@@ -150,43 +159,13 @@ namespace ledger {
         }
 
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness()");
+            // TODO Implement get witness
+            return Option<std::vector<uint8_t>>().toOptional();
         }
 
         api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
-            auto witness = getWitness();
-            auto inputCount = getInputs().size();
-            auto outputCount = getOutputs().size();
-            size_t maxSize, minSize, fixedSize, outputsSize = 0;
-
-            // Fixed size computation
-            fixedSize = 4; // Transaction version
-            if (getTimestamp())
-                fixedSize += 4; // Timestamp
-            fixedSize += BytesWriter().writeVarInt(getInputs().size()).toByteArray().size(); // Number of inputs
-            fixedSize += BytesWriter().writeVarInt(getOutputs().size()).toByteArray().size(); // Number of outputs
-            fixedSize += 4; // Timelock
-
-            // Outputs size
-            for (auto& output : getOutputs()) {
-                auto script = output->getScript();
-                outputsSize += BytesWriter().writeVarInt(script.size()).toByteArray().size(); // Output script size
-                outputsSize += script.size(); // Output script
-            }
-
-            if (witness) {
-                fixedSize += 2; // Flag and marker size (one byte each)
-                size_t noWitness, maxWitness, minWitness = 0;
-                noWitness = fixedSize + (59 * inputCount);
-                minWitness = noWitness + (106 * inputCount);
-                maxWitness = noWitness + (108 * inputCount);
-                minSize = (noWitness * 3 + minWitness) / 4;
-                maxSize = (noWitness * 3 + maxWitness) / 4;
-            } else {
-                minSize = fixedSize + (146 * inputCount);
-                maxSize = fixedSize + (148 * inputCount);
-            }
-            return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
+            // TODO implement segwit
+            return estimateSize(getInputs().size(), getOutputs().size(), _currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, false);
         }
 
         bool BitcoinLikeTransactionApi::isWriteable() const {
@@ -211,6 +190,43 @@ namespace ledger {
         BitcoinLikeTransactionApi::addOutput(const std::shared_ptr<api::BitcoinLikeOutput> &output) {
             _outputs.push_back(output);
             return *this;
+        }
+
+        api::EstimatedSize
+        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount, std::size_t outputCount, bool hasTimestamp,
+                                                bool useSegwit) {
+            // TODO Handle outputs and input for multisig P2SH
+            size_t maxSize, minSize, fixedSize = 0;
+
+            // Fixed size computation
+            fixedSize = 4; // Transaction version
+            if (hasTimestamp)
+                fixedSize += 4; // Timestamp
+            fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size(); // Number of inputs
+            fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
+            fixedSize += 4; // Timelock
+
+            minSize = fixedSize;
+            maxSize = fixedSize;
+
+            // Outputs size
+            minSize += 32 * outputCount;
+            maxSize += 34 * outputCount;
+
+            fixedSize = fixedSize + (34 * outputCount);
+            if (useSegwit) {
+                fixedSize += 2; // Flag and marker size (one byte each)
+                size_t noWitness, maxWitness, minWitness = 0;
+                noWitness = fixedSize + (59 * inputCount);
+                minWitness = noWitness + (106 * inputCount);
+                maxWitness = noWitness + (108 * inputCount);
+                minSize += (noWitness * 3 + minWitness) / 4;
+                maxSize += (noWitness * 3 + maxWitness) / 4;
+            } else {
+                minSize += 146 * inputCount;
+                maxSize += 148 * inputCount;
+            }
+            return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
         }
 
     }
