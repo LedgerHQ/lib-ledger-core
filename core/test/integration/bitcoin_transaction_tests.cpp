@@ -93,3 +93,17 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutputAndFakeSignature)
             hex::toString(tx->serialize())
     );
 }
+
+TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithMultipleInputs) {
+    auto builder = p2pkh_tx_builder();
+    builder->sendToAddress(api::Amount::fromLong(currency, 10000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    std::cout << hex::toString(tx->serialize()) << std::endl;
+    EXPECT_EQ(
+            "0100000003f6390f2600568e3dd28af5d53e821219751d6cb7a03ec9476f96f5695f2807a2000000001976a914bfe0a15bbed6211262d3a8d8a891e738bab36ffb88acffffffff02e32c49a32937f38fc25d28b8bcd90baaea7b592649af465792cac7b6a9e484000000001976a9148229692a444f0c3f75faafcfd465540a7c2f954988acffffffff1de6319dc1176cc26ee2ed80578dfdbd85a1147dcf9e10eebb5d416f33919f51000000001976a91415a3065a3c32b2d4de4dcceafca0fbd674bdcf7988acffffffff0280969800000000001976a91423cc0488e5832d8f796b88948b8af1dd186057b488acd0b51000000000001976a914d642b9c546d114dc634e65f72283e3458032a3d488ac41eb0700",
+            hex::toString(tx->serialize())
+    );
+}
