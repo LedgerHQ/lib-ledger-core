@@ -35,16 +35,36 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeOutput> getCppImpl(){return _BitcoinLikeOutput;};
 
 private:
+    /**
+     *Get transaction hash in which output was 'created'
+     *@return String, transaction hash containing output
+     */
     static NAN_METHOD(getTransactionHash);
 
+    /**
+     *Get index of output in list of all outputs contained in same transaction
+     *@return 32 bits integer, index of output
+     */
     static NAN_METHOD(getOutputIndex);
 
+    /**
+     *Get amount of output
+     *@return Amount object, amount of output
+     */
     static NAN_METHOD(getValue);
 
+    /**
+     *Get script (witness script) cryptographic puzzle that determines the conditions to spend the output
+     *@return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
+     */
     static NAN_METHOD(getScript);
 
     static NAN_METHOD(parseScript);
 
+    /**
+     *Get address that spent the output
+     *@return Optional String, address that spent
+     */
     static NAN_METHOD(getAddress);
 
     static NAN_METHOD(getDerivationPath);

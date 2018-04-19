@@ -9,6 +9,7 @@
 @protocol LGBinaryCallback;
 
 
+/**Class representing Bitcoin inputs */
 @interface LGBitcoinLikeInput : NSObject
 
 /** Returns the address of the input (if an address can be computed) */
@@ -29,12 +30,6 @@
  */
 - (nullable LGAmount *)getValue;
 
-/** Return true if the input is a coinbase input */
-- (BOOL)isCoinbase;
-
-/** Get coinbase input data */
-- (nullable NSString *)getCoinbase;
-
 /**
  * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
  * the wallet
@@ -44,6 +39,20 @@
 /**
  * Get the index at which the output is located in the transaction output spent by this input. The result can be
  * NULL if the input does not belong to the wallet
+ *Check whether input
+ *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
+ */
+- (BOOL)isCoinbase;
+
+/**
+ *Stored data cointained in coinbase
+ *@return Optional String
+ */
+- (nullable NSString *)getCoinbase;
+
+/**
+ *Get output index, it identifies which UTXO from tht transaction to spend
+ *@return Optional 32 bits integer, index of previous transaction
  */
 - (nullable NSNumber *)getPreviousOutputIndex;
 

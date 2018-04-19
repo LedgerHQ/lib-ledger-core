@@ -18,6 +18,7 @@ class BitcoinLikeOutput;
 class BitcoinLikeScript;
 class DerivationPath;
 
+/**Class representing Bitcoin inputs */
 class BitcoinLikeInput {
 public:
     virtual ~BitcoinLikeInput() {}
@@ -40,12 +41,6 @@ public:
      */
     virtual std::shared_ptr<Amount> getValue() = 0;
 
-    /** Return true if the input is a coinbase input */
-    virtual bool isCoinbase() = 0;
-
-    /** Get coinbase input data */
-    virtual std::experimental::optional<std::string> getCoinbase() = 0;
-
     /**
      * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
      * the wallet
@@ -55,6 +50,20 @@ public:
     /**
      * Get the index at which the output is located in the transaction output spent by this input. The result can be
      * NULL if the input does not belong to the wallet
+     *Check whether input
+     *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
+     */
+    virtual bool isCoinbase() = 0;
+
+    /**
+     *Stored data cointained in coinbase
+     *@return Optional String
+     */
+    virtual std::experimental::optional<std::string> getCoinbase() = 0;
+
+    /**
+     *Get output index, it identifies which UTXO from tht transaction to spend
+     *@return Optional 32 bits integer, index of previous transaction
      */
     virtual std::experimental::optional<int32_t> getPreviousOutputIndex() = 0;
 

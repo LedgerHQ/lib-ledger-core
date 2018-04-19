@@ -16,16 +16,39 @@ class BitcoinLikeOutput;
 class BitcoinLikeTransaction;
 struct BitcoinLikePreparedTransaction;
 
+/**Class providing a Bitcoin helper */
 class BitcoinLikeHelper {
 public:
     virtual ~BitcoinLikeHelper() {}
 
+    /**
+     *Constructs a BitcoinLikeOutput object from script and amount objects
+     *@param script binary please refer to BitcoinLikeOutput::getScript()
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     static std::shared_ptr<BitcoinLikeOutput> scriptToOutput(const std::vector<uint8_t> & script, const std::shared_ptr<Amount> & amount);
 
+    /**
+     *Constructs a BitcoinLikeOutput object fromn address and amount objects
+     *@param address, string, address that will own the BitcoinLikeOutput object
+     *@param amount, Amount object, amount of output
+     *@return BitcoinLikeOutput, resulting output object
+     */
     static std::shared_ptr<BitcoinLikeOutput> addressToOutput(const std::string & address, const std::shared_ptr<Amount> & amount);
 
+    /**
+     *Transforms a transaction to a binary
+     *@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
+     *@return serialized transaction
+     */
     static std::vector<uint8_t> serializeTransaction(const BitcoinLikePreparedTransaction & preparedTransaction);
 
+    /**
+     *Transform a serialized transaction to a transaction object
+     *@param transaction, binary, serialized transaction
+     *@return BitcoinLikeTransaction object
+     */
     static std::shared_ptr<BitcoinLikeTransaction> parseTransaction(const std::vector<uint8_t> & transaction);
 };
 

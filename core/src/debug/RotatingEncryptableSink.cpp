@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+#include <lib/fmt-3.0.0/fmt/format.h>
 #include "RotatingEncryptableSink.hpp"
 #include "../utils/LambdaRunnable.hpp"
 
@@ -77,7 +78,10 @@ namespace ledger {
                 _rotate();
                 _current_size = size;
             }
-            _file_helper.write(msg, size);
+
+            spdlog::details::log_msg spdlog_msg;
+            spdlog_msg.formatted << msg;
+            _file_helper.write(spdlog_msg);
         }
 
         spdlog::filename_t RotatingEncryptableSink::calc_filename(std::shared_ptr<api::PathResolver> resolver,

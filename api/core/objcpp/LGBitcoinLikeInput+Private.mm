@@ -63,6 +63,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable NSString *)getPreviousTxHash {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getPreviousTxHash();
+        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (BOOL)isCoinbase {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->isCoinbase();
@@ -73,13 +80,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (nullable NSString *)getCoinbase {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getCoinbase();
-        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-- (nullable NSString *)getPreviousTxHash {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getPreviousTxHash();
         return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

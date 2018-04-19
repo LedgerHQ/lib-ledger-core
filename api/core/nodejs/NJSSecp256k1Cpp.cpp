@@ -7,6 +7,26 @@ using namespace v8;
 using namespace node;
 using namespace std;
 
+NAN_METHOD(NJSSecp256k1::createInstance) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSSecp256k1::createInstance needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    auto result = Secp256k1::createInstance();
+
+    //Wrap result in node object
+    auto arg_0_wrap = NJSSecp256k1::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(arg_0_wrap)->handle();
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 NAN_METHOD(NJSSecp256k1::computePubKey) {
 
     //Check if method called with right number of arguments
@@ -174,18 +194,11 @@ NAN_METHOD(NJSSecp256k1::newInstance) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSSecp256k1* obj = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSSecp256k1::newInstance : implementation of Secp256k1 is not valid");
-    }
-
-    auto result = cpp_impl->newInstance();
+    auto result = Secp256k1::newInstance();
 
     //Wrap result in node object
-    auto arg_0 = NJSSecp256k1::wrap(result);
+    auto arg_0_wrap = NJSSecp256k1::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -202,13 +215,13 @@ NAN_METHOD(NJSSecp256k1::New) {
     //Check if NJSSecp256k1::New called with right number of arguments
     if(info.Length() != 0)
     {
-        return Nan::ThrowError("NJSSecp256k1::New needs same number of arguments as ledger::core::api::Secp256k1::newInstance method");
+        return Nan::ThrowError("NJSSecp256k1::New needs same number of arguments as ledger::core::api::Secp256k1::createInstance method");
     }
 
     //Unwrap objects to get C++ classes
 
     //Call factory
-    auto cpp_instance = ledger::core::api::Secp256k1::newInstance();
+    auto cpp_instance = ledger::core::api::Secp256k1::createInstance();
     NJSSecp256k1 *node_instance = new NJSSecp256k1(cpp_instance);
 
     if(node_instance)
@@ -255,9 +268,11 @@ void NJSSecp256k1::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSSecp256k1").ToLocalChecked());
 
     //SetPrototypeMethod all methods
+    Nan::SetPrototypeMethod(func_template,"createInstance", createInstance);
     Nan::SetPrototypeMethod(func_template,"computePubKey", computePubKey);
     Nan::SetPrototypeMethod(func_template,"sign", sign);
     Nan::SetPrototypeMethod(func_template,"verify", verify);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     Secp256k1_prototype.Reset(objectTemplate);
 

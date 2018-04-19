@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enum of operation types */
 typedef NS_ENUM(NSInteger, LGOperationType)
 {
     LGOperationTypeSend,

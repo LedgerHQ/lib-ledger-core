@@ -6,6 +6,7 @@ package co.ledger.core;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing Bitcoin inputs */
 public abstract class BitcoinLikeInput {
     /** Returns the address of the input (if an address can be computed) */
     public abstract String getAddress();
@@ -25,12 +26,6 @@ public abstract class BitcoinLikeInput {
      */
     public abstract Amount getValue();
 
-    /** Return true if the input is a coinbase input */
-    public abstract boolean isCoinbase();
-
-    /** Get coinbase input data */
-    public abstract String getCoinbase();
-
     /**
      * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
      * the wallet
@@ -40,6 +35,20 @@ public abstract class BitcoinLikeInput {
     /**
      * Get the index at which the output is located in the transaction output spent by this input. The result can be
      * NULL if the input does not belong to the wallet
+     *Check whether input
+     *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
+     */
+    public abstract boolean isCoinbase();
+
+    /**
+     *Stored data cointained in coinbase
+     *@return Optional String
+     */
+    public abstract String getCoinbase();
+
+    /**
+     *Get output index, it identifies which UTXO from tht transaction to spend
+     *@return Optional 32 bits integer, index of previous transaction
      */
     public abstract Integer getPreviousOutputIndex();
 
@@ -133,6 +142,14 @@ public abstract class BitcoinLikeInput {
         private native Amount native_getValue(long _nativeRef);
 
         @Override
+        public String getPreviousTxHash()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getPreviousTxHash(this.nativeRef);
+        }
+        private native String native_getPreviousTxHash(long _nativeRef);
+
+        @Override
         public boolean isCoinbase()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -147,14 +164,6 @@ public abstract class BitcoinLikeInput {
             return native_getCoinbase(this.nativeRef);
         }
         private native String native_getCoinbase(long _nativeRef);
-
-        @Override
-        public String getPreviousTxHash()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getPreviousTxHash(this.nativeRef);
-        }
-        private native String native_getPreviousTxHash(long _nativeRef);
 
         @Override
         public Integer getPreviousOutputIndex()

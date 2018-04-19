@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class of synchronization status constants */
 public abstract class SynchronizationStatus {
     public static final int STATUS_DONE = 1;
 

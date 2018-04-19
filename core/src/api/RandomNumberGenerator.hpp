@@ -9,16 +9,34 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** Class to generate random numbers */
 class RandomNumberGenerator {
 public:
     virtual ~RandomNumberGenerator() {}
 
+    /**
+     * Generates random bytes.
+     * @params size number of bytes to generate
+     * @return 'size' random bytes
+     */
     virtual std::vector<uint8_t> getRandomBytes(int32_t size) = 0;
 
+    /**
+     * Generates random 32 bits integer.
+     * @return random 32 bits integer
+     */
     virtual int32_t getRandomInt() = 0;
 
+    /**
+     * Generates random 64 bits integer.
+     * @return random 64 bits integer
+     */
     virtual int64_t getRandomLong() = 0;
 
+    /**
+     * Generates random byte.
+     * @return random byte
+     */
     virtual int8_t getRandomByte() = 0;
 };
 

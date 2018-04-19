@@ -5,17 +5,38 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing Bitcoin outputs */
 public abstract class BitcoinLikeOutput {
+    /**
+     *Get transaction hash in which output was 'created'
+     *@return String, transaction hash containing output
+     */
     public abstract String getTransactionHash();
 
+    /**
+     *Get index of output in list of all outputs contained in same transaction
+     *@return 32 bits integer, index of output
+     */
     public abstract int getOutputIndex();
 
+    /**
+     *Get amount of output
+     *@return Amount object, amount of output
+     */
     public abstract Amount getValue();
 
+    /**
+     *Get script (witness script) cryptographic puzzle that determines the conditions to spend the output
+     *@return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
+     */
     public abstract byte[] getScript();
 
     public abstract BitcoinLikeScript parseScript();
 
+    /**
+     *Get address that spent the output
+     *@return Optional String, address that spent
+     */
     public abstract String getAddress();
 
     public abstract DerivationPath getDerivationPath();

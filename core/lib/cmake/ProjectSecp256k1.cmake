@@ -1,8 +1,20 @@
 include(ExternalProject)
 
-if (MSVC)
+if (MSVC OR MINGW)
     set(_only_release_configuration -DCMAKE_CONFIGURATION_TYPES=Release)
     set(_overwrite_install_command INSTALL_COMMAND cmake --build <BINARY_DIR> --config Release --target install)
+endif()
+
+if (CMAKE_TOOLCHAIN_FILE)
+    set(_toolchain_file_ -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
+endif()
+
+if (CMAKE_OSX_ARCHITECTURES)
+    set(_osx_arch_ -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES})
+endif ()
+
+if (CMAKE_OSX_SYSROOT)
+    set(_osx_sysroot_ -DCMAKE_OSX_SYSROOT:STRING=${CMAKE_OSX_SYSROOT})
 endif()
 
 set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/secp256k1")
@@ -23,11 +35,14 @@ ExternalProject_Add(
         -DCMAKE_POSITION_INDEPENDENT_CODE=${BUILD_SHARED_LIBS}
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+        ${_toolchain_file_}
         ${_only_release_configuration}
+        CMAKE_CACHE_ARGS ${_osx_arch_} ${_osx_sysroot_}
         LOG_CONFIGURE 1
+        LOG_INSTALL 1
+        LOG_BUILD 1
         BUILD_COMMAND ""
         ${_overwrite_install_command}
-        LOG_INSTALL 1
         BUILD_BYPRODUCTS "${SECP256K1_LIBRARY}"
 )
 

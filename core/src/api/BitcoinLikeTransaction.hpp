@@ -19,6 +19,7 @@ class BitcoinLikeInput;
 class BitcoinLikeOutput;
 struct EstimatedSize;
 
+/**Class representing a Bitcoin transaction */
 class BitcoinLikeTransaction {
 public:
     virtual ~BitcoinLikeTransaction() {}

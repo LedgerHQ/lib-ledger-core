@@ -5,6 +5,7 @@
 
 extern NSString * __nonnull const LGPoolConfigurationDATABASENAME;
 
+/**TODO */
 @interface LGPoolConfiguration : NSObject
 
 @end

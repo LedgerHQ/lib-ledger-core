@@ -3,6 +3,15 @@
 
 package co.ledger.core;
 
+/**
+ *Callback triggered by main completed task,
+ *returns optional result of template type T
+ */
 public abstract class BitcoinLikeTransactionRequestCallback {
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     public abstract void onCallback(BitcoinLikeTransactionRequest result, Error error);
 }

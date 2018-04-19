@@ -36,18 +36,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::scriptToOutput) {
     auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeHelper* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeHelper>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeHelper::scriptToOutput : implementation of BitcoinLikeHelper is not valid");
-    }
-
-    auto result = cpp_impl->scriptToOutput(arg_0,arg_1);
+    auto result = BitcoinLikeHelper::scriptToOutput(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -73,18 +66,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::addressToOutput) {
     auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeHelper* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeHelper>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeHelper::addressToOutput : implementation of BitcoinLikeHelper is not valid");
-    }
-
-    auto result = cpp_impl->addressToOutput(arg_0,arg_1);
+    auto result = BitcoinLikeHelper::addressToOutput(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -162,15 +148,7 @@ NAN_METHOD(NJSBitcoinLikeHelper::serializeTransaction) {
     BitcoinLikePreparedTransaction arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5);
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeHelper* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeHelper>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeHelper::serializeTransaction : implementation of BitcoinLikeHelper is not valid");
-    }
-
-    auto result = cpp_impl->serializeTransaction(arg_0);
+    auto result = BitcoinLikeHelper::serializeTransaction(arg_0);
 
     //Wrap result in node object
     Local<Array> arg_1 = Nan::New<Array>();
@@ -205,18 +183,11 @@ NAN_METHOD(NJSBitcoinLikeHelper::parseTransaction) {
     }
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeHelper* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeHelper>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeHelper::parseTransaction : implementation of BitcoinLikeHelper is not valid");
-    }
-
-    auto result = cpp_impl->parseTransaction(arg_0);
+    auto result = BitcoinLikeHelper::parseTransaction(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransaction::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransaction::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransaction>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -275,6 +246,10 @@ void NJSBitcoinLikeHelper::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSBitcoinLikeHelper").ToLocalChecked());
 
     //SetPrototypeMethod all methods
+    Nan::SetPrototypeMethod(func_template,"scriptToOutput", scriptToOutput);
+    Nan::SetPrototypeMethod(func_template,"addressToOutput", addressToOutput);
+    Nan::SetPrototypeMethod(func_template,"serializeTransaction", serializeTransaction);
+    Nan::SetPrototypeMethod(func_template,"parseTransaction", parseTransaction);
     //Set object prototype
     BitcoinLikeHelper_prototype.Reset(objectTemplate);
 

@@ -80,7 +80,8 @@ NAN_METHOD(NJSBitcoinLikeOutput::getValue) {
     auto result = cpp_impl->getValue();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -139,7 +140,8 @@ NAN_METHOD(NJSBitcoinLikeOutput::parseScript) {
     auto result = cpp_impl->parseScript();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeScript::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeScript::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScript>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -166,7 +168,14 @@ NAN_METHOD(NJSBitcoinLikeOutput::getAddress) {
     auto result = cpp_impl->getAddress();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -192,7 +201,9 @@ NAN_METHOD(NJSBitcoinLikeOutput::getDerivationPath) {
     auto result = cpp_impl->getDerivationPath();
 
     //Wrap result in node object
-    auto arg_0 = NJSDerivationPath::wrap(result);
+    auto arg_0_wrap = NJSDerivationPath::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDerivationPath>(arg_0_wrap)->handle();
+
 
 
     //Return result

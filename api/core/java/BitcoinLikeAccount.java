@@ -5,9 +5,20 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing a Bitcoin account */
 public abstract class BitcoinLikeAccount {
+    /**
+     *Get UTXOs of account in a given range
+     *@param from, integer, lower bound for account's UTXO's index
+     *@param to, integer, upper bound for account's UTXO's index
+     *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
+     */
     public abstract void getUTXO(int from, int to, BitcoinLikeOutputListCallback callback);
 
+    /**
+     *Get UTXOs count of account
+     *@param callback, Callback object which returns number of UTXO owned by this account
+     */
     public abstract void getUTXOCount(I32Callback callback);
 
     public abstract void broadcastRawTransaction(byte[] transaction, StringCallback callback);

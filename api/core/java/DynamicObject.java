@@ -6,57 +6,191 @@ package co.ledger.core;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ *Class representing an object that stores values of different types of objects,
+ *those values are appended dynamically in a map like structure with a given key through which they can be retreived
+ */
 public abstract class DynamicObject {
-    public abstract boolean isReadOnly();
-
+    /**
+     *Store a string with a given key
+     *@param key, string, key to access stored value
+     *@param value, string
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putString(String key, String value);
 
+    /**
+     *Store a 32 bits integer with a given key
+     *@param key, string, key to access stored value
+     *@param value, 32 bits integer
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putInt(String key, int value);
 
+    /**
+     *Store a 64 bits integer with a given key
+     *@param key, string, key to access stored value
+     *@param value, 64 bits integer
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putLong(String key, long value);
 
+    /**
+     *Store a double with a given key
+     *@param key, string, key to access stored value
+     *@param value, double
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putDouble(String key, double value);
 
+    /**
+     *Store a binary integer with a given key
+     *@param key, string, key to access stored value
+     *@param value, binary
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putData(String key, byte[] value);
 
+    /**
+     *Store a boolean integer with a given key
+     *@param key, string, key to access stored value
+     *@param value, bool
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putBoolean(String key, boolean value);
 
-    public abstract String getString(String key);
-
-    public abstract Integer getInt(String key);
-
-    public abstract Long getLong(String key);
-
-    public abstract Double getDouble(String key);
-
-    public abstract byte[] getData(String key);
-
-    public abstract Boolean getBoolean(String key);
-
+    /**
+     *Store another DynamicObject object with a given key
+     *@param key, string, key to access stored value
+     *@return DynamicObject object with value stored in it
+     */
     public abstract DynamicObject putObject(String key, DynamicObject value);
 
+    /**
+     *Store a DynamicArray object with a given key
+     *@param key, string, key to access stored reference
+     *@return DynamicArray object with value stored in it
+     */
     public abstract DynamicObject putArray(String key, DynamicArray value);
 
+    /**
+     *Get, if exists, stored string having a specific key
+     *@param key, string, key of string to look for
+     *@return Optional string
+     */
+    public abstract String getString(String key);
+
+    /**
+     *Get, if exists, stored 32 bits integer having a specific key
+     *@param key, string, key of 32 bits integer to look for
+     *@return Optional 32 bits integer
+     */
+    public abstract Integer getInt(String key);
+
+    /**
+     *Get, if exists, stored 64 bits integer having a specific key
+     *@param key, string, key of 64 bits integer to look for
+     *@return Optional 64 bits integer
+     */
+    public abstract Long getLong(String key);
+
+    /**
+     *Get, if exists, stored double having a specific key
+     *@param key, string, key of double to look for
+     *@return Optional double
+     */
+    public abstract Double getDouble(String key);
+
+    /**
+     *Get, if exists, stored binary having a specific key
+     *@param key, string, key of binary to look for
+     *@return Optional binary
+     */
+    public abstract byte[] getData(String key);
+
+    /**
+     *Get, if exists, stored bool having a specific key
+     *@param key, string, key of bool to look for
+     *@return Optional bool
+     */
+    public abstract Boolean getBoolean(String key);
+
+    /**
+     *Get, if exists, stored DynamicObject having a specific key
+     *@param key, string, key of DynamicObject to look for
+     *@return Optional DynamicObject
+     */
     public abstract DynamicObject getObject(String key);
 
+    /**
+     *Get, if exists, stored DynamicArray having a specific key
+     *@param key, string, key of DynamicArray to look for
+     *@return Optional DynamicArray
+     */
     public abstract DynamicArray getArray(String key);
 
+    /**
+     *Check if a key was used to store a value
+     *@param key, string, key to look for
+     *@return bool
+     */
     public abstract boolean contains(String key);
 
+    /**
+     *Delete key and value stored with it
+     *@param key, string, key to look for
+     *@return bool, true if key exists and deletion succeeded, false otherwise
+     */
     public abstract boolean remove(String key);
 
+    /**
+     *Get list of keys
+     *@return list of string, list all stored keys
+     */
     public abstract ArrayList<String> getKeys();
 
+    /**
+     *Get type of object stored with specific key
+     *@param key, string, key to look for
+     *@return Optional DynamicType enum entry
+     */
     public abstract DynamicType getType(String key);
 
+    /**
+     *Dump whole object's content as string
+     *@return string
+     */
     public abstract String dump();
 
+    /**
+     *Serialize whole object to a binary
+     *@return binary
+     */
     public abstract byte[] serialize();
 
+    /**
+     *Get readonly status of object
+     *@param bool
+     */
+    public abstract boolean isReadOnly();
+
+    /**
+     *Get count of stored references
+     *@return 64 bits integer
+     */
     public abstract long size();
 
+    /**
+     *Create a new instance of DynamicObject class
+     *@return DynamicObject instance
+     */
     public static native DynamicObject newInstance();
 
+    /**
+     *Parse a binary to a DynamicObject
+     *@param serialized, binary to parse
+     *@return Optional DynamicObject
+     */
     public static native DynamicObject load(byte[] serialized);
 
     private static final class CppProxy extends DynamicObject
@@ -81,14 +215,6 @@ public abstract class DynamicObject {
             destroy();
             super.finalize();
         }
-
-        @Override
-        public boolean isReadOnly()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_isReadOnly(this.nativeRef);
-        }
-        private native boolean native_isReadOnly(long _nativeRef);
 
         @Override
         public DynamicObject putString(String key, String value)
@@ -139,6 +265,22 @@ public abstract class DynamicObject {
         private native DynamicObject native_putBoolean(long _nativeRef, String key, boolean value);
 
         @Override
+        public DynamicObject putObject(String key, DynamicObject value)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_putObject(this.nativeRef, key, value);
+        }
+        private native DynamicObject native_putObject(long _nativeRef, String key, DynamicObject value);
+
+        @Override
+        public DynamicObject putArray(String key, DynamicArray value)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_putArray(this.nativeRef, key, value);
+        }
+        private native DynamicObject native_putArray(long _nativeRef, String key, DynamicArray value);
+
+        @Override
         public String getString(String key)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
@@ -185,22 +327,6 @@ public abstract class DynamicObject {
             return native_getBoolean(this.nativeRef, key);
         }
         private native Boolean native_getBoolean(long _nativeRef, String key);
-
-        @Override
-        public DynamicObject putObject(String key, DynamicObject value)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_putObject(this.nativeRef, key, value);
-        }
-        private native DynamicObject native_putObject(long _nativeRef, String key, DynamicObject value);
-
-        @Override
-        public DynamicObject putArray(String key, DynamicArray value)
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_putArray(this.nativeRef, key, value);
-        }
-        private native DynamicObject native_putArray(long _nativeRef, String key, DynamicArray value);
 
         @Override
         public DynamicObject getObject(String key)
@@ -265,6 +391,14 @@ public abstract class DynamicObject {
             return native_serialize(this.nativeRef);
         }
         private native byte[] native_serialize(long _nativeRef);
+
+        @Override
+        public boolean isReadOnly()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_isReadOnly(this.nativeRef);
+        }
+        private native boolean native_isReadOnly(long _nativeRef);
 
         @Override
         public long size()

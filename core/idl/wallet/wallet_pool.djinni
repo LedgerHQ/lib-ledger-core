@@ -15,34 +15,120 @@
 @import "../utils/callback.djinni"
 @import "../collections/dynamic.djinni"
 @import "common/wallet.djinni"
+@import "../debug/logger.djinni"
 
+
+#Class respresenting a pool of wallets
 WalletPool = interface +c {
+
+    #Create a new instance of WalletPool object
+    #@param name, string, name of the wallet pool
+    #@param password, optional string, password to lock wallet pool
+    #@param http, HttpClient object, http client used for all calls made by wallet pool (and aggregated wallets)
+    #@param webSocketClient, WebSocketClient object, socket through which wallet pool observe and get notified (explorer, DBs ...)
+    #@param pathResolver, PathResolver Object, resolve paths to logs, databases, preferences ...
+    #@param logPrinter, LogPrinter object, used to dump/log for debug purpose
+    #@param dispatcher, ThreadDispatcher object, responsable of dispatching task through available threads
+    #@param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
+    #@param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
+    #@param configuration, DynamicObject object, desired configuration for this wallet pool
+    #@return WalletPool object, instance of WalletPool
+    static newInstance(name: string, password: optional<string>, httpClient: HttpClient,
+                        webSocketClient: WebSocketClient, pathResolver: PathResolver,
+                        logPrinter: LogPrinter, dispatcher: ThreadDispatcher,
+                        rng: RandomNumberGenerator, backend: DatabaseBackend,
+                        configuration: DynamicObject): WalletPool;
+
+    #Return used logger to dump logs in defined log path by PathResolver
+    #@return Logger object
     getLogger(): Logger;
+    #Return name given to wallet pool
+    #@return string
     getName(): string;
+    #Return preferences of wallet pool (deduced from configuration)
+    #@return Preferences object
     getPreferences(): Preferences;
+    #Return number of wallets instanciated under wallet pool
+    #@param callback, Callback object returns a 32 bits integer, count of wallets
     getWalletCount(callback: Callback<i32>);
+    #Get instanciated wallets having index in a given range
+    #@param from, 32 bits integer, lower bound of indices to pick
+    #@param to, 32 bits integer, upper bound of indices to pick
+    #@param callback, ListCallback object returns a list of Wallet objects
     getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);
+    #Get wallet with a giver name
+    #@param name, string, name of wallet to look for
+    #@param callback, Callback object returns a Wallet object
     getWallet(name: string, callback: Callback<Wallet>);
+    #Instanciate a new wallet under wallet pool
+    #@param name, string, name of newly created wallet
+    #@param currency, Currency object, currency of the wallet
+    #@param configuration, DynamicObject object, configuration of wallet (preferences)
+    #@param callback, Callback object returning a Wallet object
     createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
+    #Return all supported currencies by wallet pool, at least one wallet support one of returned currencies
+    #@param callback, ListCallback object, returns a list of Currency objects
     getCurrencies(callback: ListCallback<Currency>);
+    #Return currency of a specific wallet
+    #@param name, wallet's name to look for
+    #@param callback, Callback object returning a Currency object
     getCurrency(name: string, callback: Callback<Currency>);
+    #Return last block of blockchain of a given currency (if it is supported by the wallet pool)
+    #@param name, string, name of currency we are interested into getting it's blockchain's last block
+    #@param callback, Callback object returns a Block object
     getLastBlock(currencyName: string, callback: Callback<Block>);
+    #Get event bus (handler) through which wallet pool observe and gets notified (explorers, DBs ...)
+    #@param EventBus object
     getEventBus(): EventBus;
 }
 
+#Class representing a wallet pool builder (to instanciate a wallet pool)
 WalletPoolBuilder = interface +c {
+    #Set http client to be used for wallet pool build
+    #@param client, HttpClient
+    #@return WalletPoolBuilder object, instance with wallet pool http client set
     setHttpClient(client: HttpClient): WalletPoolBuilder;
+    #Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...)
+    #@param client, WebSocketClient object
+    #@reutnr WalletPoolBuilder object, instance with wallet pool web socket client set
     setWebsocketClient(client: WebSocketClient): WalletPoolBuilder;
+    #Set path resolver that will be used for wallet pool creation to resolve wallet pool's (DB's, logs, preferences ...) paths
+    #@param pathResolver, Pathresolver object
+    #@param WalletPoolBuilder object, instance with wallet pool path resolver set
     setPathResolver(pathResolver: PathResolver): WalletPoolBuilder;
+    #Set log printer that will be used for wallet pool creation to dump wallet pool's logs (for debug purposes)
+    #@param printer, LogPrinter object
+    #@param WalletPoolBuilder object, instance with wallet pool logger set
     setLogPrinter(printer: LogPrinter): WalletPoolBuilder;
+    #Set thread dispatcher that will be used for wallet pool creation to dispatch wallet pool's tasks through different threads
+    #@param dispatcher, ThreadDispatcher object
+    #@param WalletPoolBuilder object, instance with wallet pool thread dispatcher set
     setThreadDispatcher(dispatcher: ThreadDispatcher): WalletPoolBuilder;
+    #Set name that will be used for wallet pool creation
+    #@param name, string
+    #@return WalletPoolBuilder object, instance with wallet pool name set
     setName(name: string): WalletPoolBuilder;
+    #Set password that will be used for wallet pool creation
+    #@param password, string
+    #@return WalletPoolBuilder object, with wallet pool password set
     setPassword(password: string): WalletPoolBuilder;
+    #Set random number generator that will be used for wallet pool creation
+    #@param rng, RandomNumberGenerator object
+    #@return WalletPoolBuilder object, with wallet pool random number generator set
     setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
+    #Set database that will be used for wallet pool creation, it will store all wallet pool's data (created wallets, accounts, preferences ...)
+    #@param backend, DatabaseBackend object
+    #@return WalletPoolBuilder object, with wallet pool database set
     setDatabaseBackend(backend: DatabaseBackend): WalletPoolBuilder;
+    #Set configuration that will be used for wallet pool creation
+    #@param configuration, DynamicObject object
+    #@return WalletPoolBuilder object, with wallet pool configuration set
     setConfiguration(configuration: DynamicObject): WalletPoolBuilder;
+    #Create wallet pool
+    #@param callback, Callback object returning a WalletPool instance
     build(listener: Callback<WalletPool>);
-
+    #Create an instance of the wallet pool builder
+    #@return WalletPoolBuilder object
     static createInstance(): WalletPoolBuilder;
 }
 

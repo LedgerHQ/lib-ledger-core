@@ -25,23 +25,30 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSExtendedKeyAccountCreationInfoCallback()
     {
-        njs_impl.Reset();
+        persistent().Reset();
         pers_resolver.Reset();
     };
-    NJSExtendedKeyAccountCreationInfoCallback(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
+    NJSExtendedKeyAccountCreationInfoCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     void onCallback(const std::experimental::optional<ExtendedKeyAccountCreationInfo> & result, const std::experimental::optional<Error> & error);
-    void SetPromise(Local<Promise::Resolver> resolver)
-    {
-        pers_resolver.Reset(resolver);
-    }
 
 private:
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
+    static NAN_METHOD(onCallback);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);
     static NAN_METHOD(removeRef);
-    Nan::Persistent<Object> njs_impl;
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSEXTENDEDKEYACCOUNTCREATIONINFOCALLBACK_HPP

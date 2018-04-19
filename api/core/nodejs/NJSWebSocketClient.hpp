@@ -25,6 +25,8 @@ public:
     static void Initialize(Local<Object> target);
     ~NJSWebSocketClient()
     {
+        persistent().Reset();
+        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSWebSocketClient(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -36,6 +38,12 @@ public:
     void disconnect(const std::shared_ptr<WebSocketConnection> & connection);
 
 private:
+    static NAN_METHOD(connect);
+
+    static NAN_METHOD(send);
+
+    static NAN_METHOD(disconnect);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(addRef);

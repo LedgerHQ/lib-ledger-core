@@ -15,6 +15,7 @@ class Amount;
 enum class OperationType;
 enum class TrustLevel;
 
+/**TODO */
 class QueryFilter {
 public:
     virtual ~QueryFilter() {}

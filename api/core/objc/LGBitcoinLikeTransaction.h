@@ -9,6 +9,7 @@
 @class LGBitcoinLikeOutput;
 
 
+/**Class representing a Bitcoin transaction */
 @interface LGBitcoinLikeTransaction : NSObject
 
 /** Get the hash of the transaction. */

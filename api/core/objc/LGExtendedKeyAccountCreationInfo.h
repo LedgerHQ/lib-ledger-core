@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**TODO */
 @interface LGExtendedKeyAccountCreationInfo : NSObject
 - (nonnull instancetype)initWithIndex:(int32_t)index
                                owners:(nonnull NSArray<NSString *> *)owners

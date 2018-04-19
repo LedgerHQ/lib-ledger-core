@@ -5,15 +5,37 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing an event publisher */
 public abstract class EventPublisher {
+    /**
+     *Get event bus through which publisher broadcast its events
+     *@return EventBus object
+     */
     public abstract EventBus getEventBus();
 
+    /**
+     *Broadcast an event through eventbus (to all subscribed receivers to this EventBus)
+     *@param event, Event object
+     */
     public abstract void post(Event event);
 
+    /**
+     *Same as post method but with an sticky event
+     *@param event, Event object
+     *@param tag, 32 bits integer, tag of sticky event
+     */
     public abstract void postSticky(Event event, int tag);
 
+    /**
+     *Relay an event to another EventBus (other than EventPublisher's event bus)
+     *@param bus, EventBus object, through which we want to broadcast EventPublisher's event to EventPublisher's receiver
+     */
     public abstract void relay(EventBus bus);
 
+    /**
+     *Create a new instance of EventPublisher class
+     *@param context, executionContext object, context in which event publisher broadcast its events
+     */
     public static native EventPublisher newInstance(ExecutionContext context);
 
     private static final class CppProxy extends EventPublisher

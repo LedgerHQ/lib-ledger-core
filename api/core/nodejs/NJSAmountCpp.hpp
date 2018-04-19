@@ -37,22 +37,53 @@ public:
     std::shared_ptr<ledger::core::api::Amount> getCppImpl(){return _Amount;};
 
 private:
+    /**
+     *Get amount as a BitInt
+     *@return BitInt
+     */
     static NAN_METHOD(toBigInt);
 
+    /**
+     *Get currency in which amount was computed
+     *@return Currency object
+     */
     static NAN_METHOD(getCurrency);
 
+    /**
+     *Get currency unit in which amount was computed
+     *@return CurrencyUnit object
+     */
     static NAN_METHOD(getUnit);
 
+    /**
+     *Convert amount in another currency unit
+     *@param CurrencyUnit object, target currency unit
+     *@return Amount object, amount in target currency unit
+     */
     static NAN_METHOD(toUnit);
 
+    /**TODO */
     static NAN_METHOD(toMagnitude);
 
+    /**
+     *Get amount as string
+     *@return string
+     */
     static NAN_METHOD(toString);
 
+    /**
+     *Get amount as long
+     *@reutrn 64 bits integer
+     */
     static NAN_METHOD(toLong);
 
+    /**
+     *Get amount as double
+     *@return double
+     */
     static NAN_METHOD(toDouble);
 
+    /**TODO */
     static NAN_METHOD(format);
 
     static NAN_METHOD(fromHex);

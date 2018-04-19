@@ -28,6 +28,7 @@ public:
     std::shared_ptr<ledger::core::api::Runnable> getCppImpl(){return _Runnable;};
 
 private:
+    /**Trigger runnable execution */
     static NAN_METHOD(run);
 
     static NAN_METHOD(New);

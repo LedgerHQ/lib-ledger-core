@@ -9,6 +9,7 @@ extern NSString * __nonnull const LGConfigurationDefaultsBIP44DERIVATIONSCHEME;
 extern NSString * __nonnull const LGConfigurationDefaultsDEFAULTKEYCHAIN;
 extern int32_t const LGConfigurationDefaultsDEFAULTTRUSTLIMIT;
 
+/**TODO */
 @interface LGConfigurationDefaults : NSObject
 
 @end

@@ -5,15 +5,38 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing an event */
 public abstract class Event {
+    /**
+     *Get event code (for more details, please refer to EventCode enum)
+     *@return EventCode enum entry
+     */
     public abstract EventCode getCode();
 
+    /**
+     *Get payload of event
+     *@return DynamicObject object
+     */
     public abstract DynamicObject getPayload();
 
+    /**
+     *Know if event is sticky one
+     *@return bool
+     */
     public abstract boolean isSticky();
 
+    /**
+     *If event is sticky, return sticky tag
+     *@return 32 bits integer
+     */
     public abstract int getStickyTag();
 
+    /**
+     *Create a new instance of Event class
+     *@param code, EventCode enum entry
+     *@param payload, DynamicObject object
+     *@return Event instance
+     */
     public static native Event newInstance(EventCode code, DynamicObject payload);
 
     private static final class CppProxy extends Event

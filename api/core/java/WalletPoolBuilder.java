@@ -5,29 +5,88 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing a wallet pool builder (to instanciate a wallet pool) */
 public abstract class WalletPoolBuilder {
+    /**
+     *Set http client to be used for wallet pool build
+     *@param client, HttpClient
+     *@return WalletPoolBuilder object, instance with wallet pool http client set
+     */
     public abstract WalletPoolBuilder setHttpClient(HttpClient client);
 
+    /**
+     *Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...)
+     *@param client, WebSocketClient object
+     *@reutnr WalletPoolBuilder object, instance with wallet pool web socket client set
+     */
     public abstract WalletPoolBuilder setWebsocketClient(WebSocketClient client);
 
+    /**
+     *Set path resolver that will be used for wallet pool creation to resolve wallet pool's (DB's, logs, preferences ...) paths
+     *@param pathResolver, Pathresolver object
+     *@param WalletPoolBuilder object, instance with wallet pool path resolver set
+     */
     public abstract WalletPoolBuilder setPathResolver(PathResolver pathResolver);
 
+    /**
+     *Set log printer that will be used for wallet pool creation to dump wallet pool's logs (for debug purposes)
+     *@param printer, LogPrinter object
+     *@param WalletPoolBuilder object, instance with wallet pool logger set
+     */
     public abstract WalletPoolBuilder setLogPrinter(LogPrinter printer);
 
+    /**
+     *Set thread dispatcher that will be used for wallet pool creation to dispatch wallet pool's tasks through different threads
+     *@param dispatcher, ThreadDispatcher object
+     *@param WalletPoolBuilder object, instance with wallet pool thread dispatcher set
+     */
     public abstract WalletPoolBuilder setThreadDispatcher(ThreadDispatcher dispatcher);
 
+    /**
+     *Set name that will be used for wallet pool creation
+     *@param name, string
+     *@return WalletPoolBuilder object, instance with wallet pool name set
+     */
     public abstract WalletPoolBuilder setName(String name);
 
+    /**
+     *Set password that will be used for wallet pool creation
+     *@param password, string
+     *@return WalletPoolBuilder object, with wallet pool password set
+     */
     public abstract WalletPoolBuilder setPassword(String password);
 
+    /**
+     *Set random number generator that will be used for wallet pool creation
+     *@param rng, RandomNumberGenerator object
+     *@return WalletPoolBuilder object, with wallet pool random number generator set
+     */
     public abstract WalletPoolBuilder setRandomNumberGenerator(RandomNumberGenerator rng);
 
+    /**
+     *Set database that will be used for wallet pool creation, it will store all wallet pool's data (created wallets, accounts, preferences ...)
+     *@param backend, DatabaseBackend object
+     *@return WalletPoolBuilder object, with wallet pool database set
+     */
     public abstract WalletPoolBuilder setDatabaseBackend(DatabaseBackend backend);
 
+    /**
+     *Set configuration that will be used for wallet pool creation
+     *@param configuration, DynamicObject object
+     *@return WalletPoolBuilder object, with wallet pool configuration set
+     */
     public abstract WalletPoolBuilder setConfiguration(DynamicObject configuration);
 
+    /**
+     *Create wallet pool
+     *@param callback, Callback object returning a WalletPool instance
+     */
     public abstract void build(WalletPoolCallback listener);
 
+    /**
+     *Create an instance of the wallet pool builder
+     *@return WalletPoolBuilder object
+     */
     public static native WalletPoolBuilder createInstance();
 
     private static final class CppProxy extends WalletPoolBuilder

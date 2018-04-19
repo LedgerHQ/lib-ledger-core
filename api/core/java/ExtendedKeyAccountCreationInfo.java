@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.ArrayList;
 
+/**TODO */
 public final class ExtendedKeyAccountCreationInfo {
 
 

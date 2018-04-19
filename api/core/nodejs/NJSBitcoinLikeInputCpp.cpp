@@ -28,7 +28,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getAddress) {
     auto result = cpp_impl->getAddress();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -95,7 +102,8 @@ NAN_METHOD(NJSBitcoinLikeInput::getDerivationPath) {
     Local<Array> arg_0 = Nan::New<Array>();
     for(size_t arg_0_id = 0; arg_0_id < result.size(); arg_0_id++)
     {
-        auto arg_0_elem = NJSDerivationPath::wrap(result[arg_0_id]);
+        auto arg_0_elem_wrap = NJSDerivationPath::wrap(result[arg_0_id]);
+        auto arg_0_elem = Nan::ObjectWrap::Unwrap<NJSDerivationPath>(arg_0_elem_wrap)->handle();
 
         arg_0->Set((int)arg_0_id,arg_0_elem);
     }
@@ -125,7 +133,42 @@ NAN_METHOD(NJSBitcoinLikeInput::getValue) {
     auto result = cpp_impl->getValue();
 
     //Wrap result in node object
-    auto arg_0 = NJSAmount::wrap(result);
+    auto arg_0_wrap = NJSAmount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAmount>(arg_0_wrap)->handle();
+
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
+NAN_METHOD(NJSBitcoinLikeInput::getPreviousTxHash) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTxHash needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeInput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeInput>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTxHash : implementation of BitcoinLikeInput is not valid");
+    }
+
+    auto result = cpp_impl->getPreviousTxHash();
+
+    //Wrap result in node object
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
+    }
 
 
     //Return result
@@ -178,33 +221,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getCoinbase) {
     auto result = cpp_impl->getCoinbase();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
-}
-NAN_METHOD(NJSBitcoinLikeInput::getPreviousTxHash) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 0)
+    Local<Value> arg_0;
+    if(result)
     {
-        return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTxHash needs 0 arguments");
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
+        arg_0 = arg_0_tmp;
     }
 
-    //Check if parameters have correct types
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeInput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeInput>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTxHash : implementation of BitcoinLikeInput is not valid");
-    }
-
-    auto result = cpp_impl->getPreviousTxHash();
-
-    //Wrap result in node object
-    auto arg_0 = Nan::New<String>((*result)).ToLocalChecked();
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -230,7 +254,14 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousOutputIndex) {
     auto result = cpp_impl->getPreviousOutputIndex();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Int32>((*result));
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Int32>(arg_0_optional);
+        arg_0 = arg_0_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_0);
@@ -256,7 +287,8 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousOuput) {
     auto result = cpp_impl->getPreviousOuput();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeOutput::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeOutput>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -315,7 +347,8 @@ NAN_METHOD(NJSBitcoinLikeInput::parseScriptSig) {
     auto result = cpp_impl->parseScriptSig();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeScript::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeScript::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScript>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -436,13 +469,11 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTransaction) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSBinaryCallback *njs_ptr_arg_0 = static_cast<NJSBinaryCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBinaryCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSBinaryCallback *njs_ptr_arg_0 = new NJSBinaryCallback(arg_0_resolver);
+    std::shared_ptr<NJSBinaryCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -453,7 +484,7 @@ NAN_METHOD(NJSBitcoinLikeInput::getPreviousTransaction) {
         return Nan::ThrowError("NJSBitcoinLikeInput::getPreviousTransaction : implementation of BitcoinLikeInput is not valid");
     }
     cpp_impl->getPreviousTransaction(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeInput::setP2PKHSigScript) {
 
@@ -542,9 +573,9 @@ void NJSBitcoinLikeInput::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getPublicKeys", getPublicKeys);
     Nan::SetPrototypeMethod(func_template,"getDerivationPath", getDerivationPath);
     Nan::SetPrototypeMethod(func_template,"getValue", getValue);
+    Nan::SetPrototypeMethod(func_template,"getPreviousTxHash", getPreviousTxHash);
     Nan::SetPrototypeMethod(func_template,"isCoinbase", isCoinbase);
     Nan::SetPrototypeMethod(func_template,"getCoinbase", getCoinbase);
-    Nan::SetPrototypeMethod(func_template,"getPreviousTxHash", getPreviousTxHash);
     Nan::SetPrototypeMethod(func_template,"getPreviousOutputIndex", getPreviousOutputIndex);
     Nan::SetPrototypeMethod(func_template,"getPreviousOuput", getPreviousOuput);
     Nan::SetPrototypeMethod(func_template,"getScriptSig", getScriptSig);

@@ -73,7 +73,10 @@ namespace ledger {
             read(length, out);
             return out;
         }
-
+        void BytesReader::reset() {
+            _cursor = 0;
+            _offset = 0;
+        }
         unsigned long BytesReader::getCursor() const {
             return _cursor - _offset;
         }

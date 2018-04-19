@@ -35,8 +35,18 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeAccount> getCppImpl(){return _BitcoinLikeAccount;};
 
 private:
+    /**
+     *Get UTXOs of account in a given range
+     *@param from, integer, lower bound for account's UTXO's index
+     *@param to, integer, upper bound for account's UTXO's index
+     *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
+     */
     static NAN_METHOD(getUTXO);
 
+    /**
+     *Get UTXOs count of account
+     *@param callback, Callback object which returns number of UTXO owned by this account
+     */
     static NAN_METHOD(getUTXOCount);
 
     static NAN_METHOD(broadcastRawTransaction);

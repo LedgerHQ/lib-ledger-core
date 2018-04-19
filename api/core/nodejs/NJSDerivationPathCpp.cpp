@@ -161,7 +161,8 @@ NAN_METHOD(NJSDerivationPath::getParent) {
     auto result = cpp_impl->getParent();
 
     //Wrap result in node object
-    auto arg_0 = NJSDerivationPath::wrap(result);
+    auto arg_0_wrap = NJSDerivationPath::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDerivationPath>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -211,18 +212,11 @@ NAN_METHOD(NJSDerivationPath::parse) {
     String::Utf8Value string_arg_0(info[0]->ToString());
     auto arg_0 = std::string(*string_arg_0);
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDerivationPath* obj = Nan::ObjectWrap::Unwrap<NJSDerivationPath>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDerivationPath::parse : implementation of DerivationPath is not valid");
-    }
-
-    auto result = cpp_impl->parse(arg_0);
+    auto result = DerivationPath::parse(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDerivationPath::wrap(result);
+    auto arg_1_wrap = NJSDerivationPath::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDerivationPath>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -301,6 +295,7 @@ void NJSDerivationPath::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"toString", toString);
     Nan::SetPrototypeMethod(func_template,"getParent", getParent);
     Nan::SetPrototypeMethod(func_template,"toArray", toArray);
+    Nan::SetPrototypeMethod(func_template,"parse", parse);
     //Set object prototype
     DerivationPath_prototype.Reset(objectTemplate);
 

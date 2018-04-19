@@ -2,6 +2,7 @@
 @import "common/currency.djinni"
 @import "../r10n/locale.djinni"
 
+#TODO
 RoundingMode = enum {
     truncated;
     round_half_down;
@@ -9,20 +10,39 @@ RoundingMode = enum {
     round_half_up;
 }
 
+#TODO
 FormatRules = record {
     roundingMode: RoundingMode;
     maxNumberOfDecimals: i32;
 }
 
+#Class representing amount of transaction, output, inputs ...
 Amount = interface +c {
+    #Get amount as a BitInt
+    #@return BitInt
     toBigInt(): BigInt;
+    #Get currency in which amount was computed
+    #@return Currency object
     getCurrency(): Currency;
+    #Get currency unit in which amount was computed
+    #@return CurrencyUnit object
     getUnit(): CurrencyUnit;
+    #Convert amount in another currency unit
+    #@param CurrencyUnit object, target currency unit
+    #@return Amount object, amount in target currency unit
     toUnit(unit: CurrencyUnit): Amount;
+    #TODO
     toMagnitude(magnitude: i32): Amount;
+    #Get amount as string
+    #@return string
     toString(): string;
+    #Get amount as long
+    #@reutrn 64 bits integer
     toLong(): i64;
+    #Get amount as double
+    #@return double
     toDouble(): f64;
+    #TODO
     format(locale: Locale, rules: optional<FormatRules>): string;
 
     static fromHex(currency: Currency, hex: string): Amount;

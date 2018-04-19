@@ -6,6 +6,7 @@ package co.ledger.core;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**TODO */
 public abstract class QueryFilter {
     public abstract QueryFilter opAnd(QueryFilter filter);
 

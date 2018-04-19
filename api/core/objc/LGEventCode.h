@@ -3,6 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
+/**Enum of different event codes */
 typedef NS_ENUM(NSInteger, LGEventCode)
 {
     LGEventCodeUndefined,

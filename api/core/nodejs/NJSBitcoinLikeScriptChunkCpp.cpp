@@ -80,11 +80,18 @@ NAN_METHOD(NJSBitcoinLikeScriptChunk::getOperator) {
     auto result = cpp_impl->getOperator();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Object>();
-    auto arg_0_1 = Nan::New<String>((*result).name).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("name").ToLocalChecked(), arg_0_1);
-    auto arg_0_2 = Nan::New<Int>((*result).value);
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("value").ToLocalChecked(), arg_0_2);
+    Local<Value> arg_0;
+    if(result)
+    {
+        auto arg_0_optional = (result).value();
+        auto arg_0_tmp = Nan::New<Object>();
+        auto arg_0_tmp_1 = Nan::New<String>(arg_0_optional.name).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("name").ToLocalChecked(), arg_0_tmp_1);
+        auto arg_0_tmp_2 = Nan::New<Int>(arg_0_optional.value);
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("value").ToLocalChecked(), arg_0_tmp_2);
+
+        arg_0 = arg_0_tmp;
+    }
 
 
     //Return result
@@ -111,11 +118,18 @@ NAN_METHOD(NJSBitcoinLikeScriptChunk::getPushedData) {
     auto result = cpp_impl->getPushedData();
 
     //Wrap result in node object
-    Local<Array> arg_0 = Nan::New<Array>();
-    for(size_t arg_0_id = 0; arg_0_id < (*result).size(); arg_0_id++)
+    Local<Value> arg_0;
+    if(result)
     {
-        auto arg_0_elem = Nan::New<Uint32>((*result)[arg_0_id]);
-        arg_0->Set((int)arg_0_id,arg_0_elem);
+        auto arg_0_optional = (result).value();
+        Local<Array> arg_0_tmp = Nan::New<Array>();
+        for(size_t arg_0_tmp_id = 0; arg_0_tmp_id < arg_0_optional.size(); arg_0_tmp_id++)
+        {
+            auto arg_0_tmp_elem = Nan::New<Uint32>(arg_0_optional[arg_0_tmp_id]);
+            arg_0_tmp->Set((int)arg_0_tmp_id,arg_0_tmp_elem);
+        }
+
+        arg_0 = arg_0_tmp;
     }
 
 
@@ -143,7 +157,8 @@ NAN_METHOD(NJSBitcoinLikeScriptChunk::next) {
     auto result = cpp_impl->next();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeScriptChunk::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeScriptChunk::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScriptChunk>(arg_0_wrap)->handle();
 
 
     //Return result

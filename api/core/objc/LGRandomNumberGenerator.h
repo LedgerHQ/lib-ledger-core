@@ -4,14 +4,32 @@
 #import <Foundation/Foundation.h>
 
 
+/** Class to generate random numbers */
 @protocol LGRandomNumberGenerator
 
+/**
+ * Generates random bytes.
+ * @params size number of bytes to generate
+ * @return 'size' random bytes
+ */
 - (nonnull NSData *)getRandomBytes:(int32_t)size;
 
+/**
+ * Generates random 32 bits integer.
+ * @return random 32 bits integer
+ */
 - (int32_t)getRandomInt;
 
+/**
+ * Generates random 64 bits integer.
+ * @return random 64 bits integer
+ */
 - (int64_t)getRandomLong;
 
+/**
+ * Generates random byte.
+ * @return random byte
+ */
 - (int8_t)getRandomByte;
 
 @end

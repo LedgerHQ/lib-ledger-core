@@ -32,18 +32,45 @@ public:
     std::shared_ptr<ledger::core::api::OperationQuery> getCppImpl(){return _OperationQuery;};
 
 private:
+    /**
+     *Apply given order to query's operation
+     *@param key, OperationOrderKey object which defines order
+     *@param descending, bool
+     *@return OperationQuery object, new ordered operation
+     */
     static NAN_METHOD(addOrder);
 
+    /**
+     *Get applied filter on operation query
+     *@return QueryFilter object
+     */
     static NAN_METHOD(filter);
 
+    /**
+     *Add offset to the operation query
+     *@param from, 64 bits integer
+     */
     static NAN_METHOD(offset);
 
+    /**
+     *Add limit to the operation query results
+     *@param count, 64 bits integer
+     */
     static NAN_METHOD(limit);
 
+    /**
+     *TODO
+     *Complete the operation query
+     */
     static NAN_METHOD(complete);
 
+    /**TODO */
     static NAN_METHOD(partial);
 
+    /**
+     *Execute query to retrieve operations
+     *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
+     */
     static NAN_METHOD(execute);
 
     static NAN_METHOD(New);

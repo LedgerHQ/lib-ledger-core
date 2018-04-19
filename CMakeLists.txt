@@ -19,6 +19,11 @@ list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(CMAKE_MACOSX_RPATH 1)
 
+string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
+if(IS_IOS GREATER_EQUAL 0)
+    set(BUILD_TESTING OFF CACHE BOOL "iOS build fail otherwise" FORCE)
+endif()
+
 add_subdirectory(doc)
 add_subdirectory(core)
 add_subdirectory(qt-host)

@@ -30,7 +30,8 @@ NAN_METHOD(NJSOperationQuery::addOrder) {
     auto result = cpp_impl->addOrder(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSOperationQuery::wrap(result);
+    auto arg_2_wrap = NJSOperationQuery::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -57,7 +58,8 @@ NAN_METHOD(NJSOperationQuery::filter) {
     auto result = cpp_impl->filter();
 
     //Wrap result in node object
-    auto arg_0 = NJSQueryFilter::wrap(result);
+    auto arg_0_wrap = NJSQueryFilter::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSQueryFilter>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -85,7 +87,8 @@ NAN_METHOD(NJSOperationQuery::offset) {
     auto result = cpp_impl->offset(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSOperationQuery::wrap(result);
+    auto arg_1_wrap = NJSOperationQuery::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -113,7 +116,8 @@ NAN_METHOD(NJSOperationQuery::limit) {
     auto result = cpp_impl->limit(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSOperationQuery::wrap(result);
+    auto arg_1_wrap = NJSOperationQuery::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -140,7 +144,8 @@ NAN_METHOD(NJSOperationQuery::complete) {
     auto result = cpp_impl->complete();
 
     //Wrap result in node object
-    auto arg_0 = NJSOperationQuery::wrap(result);
+    auto arg_0_wrap = NJSOperationQuery::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -167,7 +172,8 @@ NAN_METHOD(NJSOperationQuery::partial) {
     auto result = cpp_impl->partial();
 
     //Wrap result in node object
-    auto arg_0 = NJSOperationQuery::wrap(result);
+    auto arg_0_wrap = NJSOperationQuery::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -182,13 +188,11 @@ NAN_METHOD(NJSOperationQuery::execute) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSOperationListCallback *njs_ptr_arg_0 = static_cast<NJSOperationListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSOperationListCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSOperationListCallback *njs_ptr_arg_0 = new NJSOperationListCallback(arg_0_resolver);
+    std::shared_ptr<NJSOperationListCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -199,7 +203,7 @@ NAN_METHOD(NJSOperationQuery::execute) {
         return Nan::ThrowError("NJSOperationQuery::execute : implementation of OperationQuery is not valid");
     }
     cpp_impl->execute(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 
 NAN_METHOD(NJSOperationQuery::New) {

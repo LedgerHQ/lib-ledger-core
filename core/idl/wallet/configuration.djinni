@@ -1,25 +1,31 @@
-
+#TODO
 BlockchainExplorerEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
 }
-
 BlockchainObserverEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
 }
-
 KeychainEngines = interface +c {
     const BIP32_P2PKH: string = "BIP32_P2PKH";
 }
 
+#Class of constants representing the engines to rely on for synchronization
 SynchronizerEngines = interface +c {
+    #String, rely on blockchain explorers to synchronize,
+    #For example to condsider a transaction valid, it should, first, be included in a block,
+    #then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
     const BLOCKCHAIN_EXPLORER: string = "BLOCKCHAIN_EXPLORER";
+    #String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
+    #To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
     const SPV: string = "SPV";
 }
 
+#TODO
 SynchronizationEngines = interface +c {
     const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION: string = "BLOCKCHAIN_EXPLORER_SYNCHRONIZATION";
 }
 
+#TODO
 ConfigurationDefaults = interface +c {
     const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://api.ledgerwallet.com";
     const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
@@ -54,6 +60,7 @@ Configuration = interface +c {
     const TRUST_LIMIT: string = "TRUST_LIMIT";
 }
 
+#TODO
 PoolConfiguration = interface +c {
     const DATABASE_NAME: string = "DATABASE_NAME";
 }

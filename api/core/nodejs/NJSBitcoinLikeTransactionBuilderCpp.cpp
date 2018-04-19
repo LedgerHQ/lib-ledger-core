@@ -32,7 +32,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::addInput) {
     auto result = cpp_impl->addInput(arg_0,arg_1,arg_2);
 
     //Wrap result in node object
-    auto arg_3 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_3_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_3 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_3_wrap)->handle();
 
 
     //Return result
@@ -75,7 +76,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::addOutput) {
     auto result = cpp_impl->addOutput(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -104,7 +106,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::addChangePath) {
     auto result = cpp_impl->addChangePath(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -134,7 +137,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::excludeUtxo) {
     auto result = cpp_impl->excludeUtxo(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -162,7 +166,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setNumberOfChangeAddresses) {
     auto result = cpp_impl->setNumberOfChangeAddresses(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -197,7 +202,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setMaxAmountOnChange) {
     auto result = cpp_impl->setMaxAmountOnChange(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -232,7 +238,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setMinAmountOnChange) {
     auto result = cpp_impl->setMinAmountOnChange(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -261,7 +268,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::pickInputs) {
     auto result = cpp_impl->pickInputs(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -298,7 +306,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::sendToAddress) {
     auto result = cpp_impl->sendToAddress(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -333,7 +342,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setFeesPerByte) {
     auto result = cpp_impl->setFeesPerByte(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -348,13 +358,11 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::build) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSBitcoinLikeTransactionCallback *njs_ptr_arg_0 = static_cast<NJSBitcoinLikeTransactionCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBitcoinLikeTransactionCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSBitcoinLikeTransactionCallback *njs_ptr_arg_0 = new NJSBitcoinLikeTransactionCallback(arg_0_resolver);
+    std::shared_ptr<NJSBitcoinLikeTransactionCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -365,7 +373,7 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::build) {
         return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::build : implementation of BitcoinLikeTransactionBuilder is not valid");
     }
     cpp_impl->build(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 NAN_METHOD(NJSBitcoinLikeTransactionBuilder::clone) {
 
@@ -388,7 +396,8 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::clone) {
     auto result = cpp_impl->clone();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_0_wrap)->handle();
 
 
     //Return result

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing a Bitcoin transaction */
 public abstract class BitcoinLikeTransaction {
     /** Get the hash of the transaction. */
     public abstract String getHash();

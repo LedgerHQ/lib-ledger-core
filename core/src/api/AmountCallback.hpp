@@ -12,10 +12,19 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 struct Error;
 
+/**
+ *Callback triggered by main completed task,
+ *returns optional result of template type T
+ */
 class AmountCallback {
 public:
     virtual ~AmountCallback() {}
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     virtual void onCallback(const std::shared_ptr<Amount> & result, const std::experimental::optional<Error> & error) = 0;
 };
 

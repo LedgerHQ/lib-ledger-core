@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enumeration of supported types in DynamicArray and DynamicObject */
 public enum DynamicType {
     OBJECT,
     INT32,

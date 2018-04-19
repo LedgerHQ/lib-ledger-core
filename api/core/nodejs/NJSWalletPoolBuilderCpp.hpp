@@ -38,28 +38,86 @@ public:
     std::shared_ptr<ledger::core::api::WalletPoolBuilder> getCppImpl(){return _WalletPoolBuilder;};
 
 private:
+    /**
+     *Set http client to be used for wallet pool build
+     *@param client, HttpClient
+     *@return WalletPoolBuilder object, instance with wallet pool http client set
+     */
     static NAN_METHOD(setHttpClient);
 
+    /**
+     *Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...)
+     *@param client, WebSocketClient object
+     *@reutnr WalletPoolBuilder object, instance with wallet pool web socket client set
+     */
     static NAN_METHOD(setWebsocketClient);
 
+    /**
+     *Set path resolver that will be used for wallet pool creation to resolve wallet pool's (DB's, logs, preferences ...) paths
+     *@param pathResolver, Pathresolver object
+     *@param WalletPoolBuilder object, instance with wallet pool path resolver set
+     */
     static NAN_METHOD(setPathResolver);
 
+    /**
+     *Set log printer that will be used for wallet pool creation to dump wallet pool's logs (for debug purposes)
+     *@param printer, LogPrinter object
+     *@param WalletPoolBuilder object, instance with wallet pool logger set
+     */
     static NAN_METHOD(setLogPrinter);
 
+    /**
+     *Set thread dispatcher that will be used for wallet pool creation to dispatch wallet pool's tasks through different threads
+     *@param dispatcher, ThreadDispatcher object
+     *@param WalletPoolBuilder object, instance with wallet pool thread dispatcher set
+     */
     static NAN_METHOD(setThreadDispatcher);
 
+    /**
+     *Set name that will be used for wallet pool creation
+     *@param name, string
+     *@return WalletPoolBuilder object, instance with wallet pool name set
+     */
     static NAN_METHOD(setName);
 
+    /**
+     *Set password that will be used for wallet pool creation
+     *@param password, string
+     *@return WalletPoolBuilder object, with wallet pool password set
+     */
     static NAN_METHOD(setPassword);
 
+    /**
+     *Set random number generator that will be used for wallet pool creation
+     *@param rng, RandomNumberGenerator object
+     *@return WalletPoolBuilder object, with wallet pool random number generator set
+     */
     static NAN_METHOD(setRandomNumberGenerator);
 
+    /**
+     *Set database that will be used for wallet pool creation, it will store all wallet pool's data (created wallets, accounts, preferences ...)
+     *@param backend, DatabaseBackend object
+     *@return WalletPoolBuilder object, with wallet pool database set
+     */
     static NAN_METHOD(setDatabaseBackend);
 
+    /**
+     *Set configuration that will be used for wallet pool creation
+     *@param configuration, DynamicObject object
+     *@return WalletPoolBuilder object, with wallet pool configuration set
+     */
     static NAN_METHOD(setConfiguration);
 
+    /**
+     *Create wallet pool
+     *@param callback, Callback object returning a WalletPool instance
+     */
     static NAN_METHOD(build);
 
+    /**
+     *Create an instance of the wallet pool builder
+     *@return WalletPoolBuilder object
+     */
     static NAN_METHOD(createInstance);
 
     static NAN_METHOD(New);

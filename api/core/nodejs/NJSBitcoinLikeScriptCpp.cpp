@@ -28,7 +28,8 @@ NAN_METHOD(NJSBitcoinLikeScript::head) {
     auto result = cpp_impl->head();
 
     //Wrap result in node object
-    auto arg_0 = NJSBitcoinLikeScriptChunk::wrap(result);
+    auto arg_0_wrap = NJSBitcoinLikeScriptChunk::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScriptChunk>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -81,18 +82,11 @@ NAN_METHOD(NJSBitcoinLikeScript::parse) {
     }
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeScript* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScript>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeScript::parse : implementation of BitcoinLikeScript is not valid");
-    }
-
-    auto result = cpp_impl->parse(arg_0);
+    auto result = BitcoinLikeScript::parse(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSBitcoinLikeScript::wrap(result);
+    auto arg_1_wrap = NJSBitcoinLikeScript::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScript>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -175,6 +169,7 @@ void NJSBitcoinLikeScript::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     Nan::SetPrototypeMethod(func_template,"head", head);
     Nan::SetPrototypeMethod(func_template,"toString", toString);
+    Nan::SetPrototypeMethod(func_template,"parse", parse);
     //Set object prototype
     BitcoinLikeScript_prototype.Reset(objectTemplate);
 

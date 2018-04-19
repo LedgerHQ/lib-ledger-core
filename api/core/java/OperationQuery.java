@@ -5,19 +5,47 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class respresenting a query for a set of operations */
 public abstract class OperationQuery {
+    /**
+     *Apply given order to query's operation
+     *@param key, OperationOrderKey object which defines order
+     *@param descending, bool
+     *@return OperationQuery object, new ordered operation
+     */
     public abstract OperationQuery addOrder(OperationOrderKey key, boolean descending);
 
+    /**
+     *Get applied filter on operation query
+     *@return QueryFilter object
+     */
     public abstract QueryFilter filter();
 
+    /**
+     *Add offset to the operation query
+     *@param from, 64 bits integer
+     */
     public abstract OperationQuery offset(long from);
 
+    /**
+     *Add limit to the operation query results
+     *@param count, 64 bits integer
+     */
     public abstract OperationQuery limit(long count);
 
+    /**
+     *TODO
+     *Complete the operation query
+     */
     public abstract OperationQuery complete();
 
+    /**TODO */
     public abstract OperationQuery partial();
 
+    /**
+     *Execute query to retrieve operations
+     *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
+     */
     public abstract void execute(OperationListCallback callback);
 
     private static final class CppProxy extends OperationQuery

@@ -54,7 +54,8 @@ NAN_METHOD(NJSEvent::getPayload) {
     auto result = cpp_impl->getPayload();
 
     //Wrap result in node object
-    auto arg_0 = NJSDynamicObject::wrap(result);
+    auto arg_0_wrap = NJSDynamicObject::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -131,18 +132,11 @@ NAN_METHOD(NJSEvent::newInstance) {
     auto arg_1 = njs_ptr_arg_1->getCppImpl();
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSEvent* obj = Nan::ObjectWrap::Unwrap<NJSEvent>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSEvent::newInstance : implementation of Event is not valid");
-    }
-
-    auto result = cpp_impl->newInstance(arg_0,arg_1);
+    auto result = Event::newInstance(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSEvent::wrap(result);
+    auto arg_2_wrap = NJSEvent::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSEvent>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -225,6 +219,7 @@ void NJSEvent::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getPayload", getPayload);
     Nan::SetPrototypeMethod(func_template,"isSticky", isSticky);
     Nan::SetPrototypeMethod(func_template,"getStickyTag", getStickyTag);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     Event_prototype.Reset(objectTemplate);
 

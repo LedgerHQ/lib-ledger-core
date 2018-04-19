@@ -32,7 +32,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setHttpClient) {
     auto result = cpp_impl->setHttpClient(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -63,7 +64,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setWebsocketClient) {
     auto result = cpp_impl->setWebsocketClient(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -94,7 +96,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setPathResolver) {
     auto result = cpp_impl->setPathResolver(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -125,7 +128,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setLogPrinter) {
     auto result = cpp_impl->setLogPrinter(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -156,7 +160,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setThreadDispatcher) {
     auto result = cpp_impl->setThreadDispatcher(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -185,7 +190,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setName) {
     auto result = cpp_impl->setName(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -214,7 +220,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setPassword) {
     auto result = cpp_impl->setPassword(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -245,7 +252,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setRandomNumberGenerator) {
     auto result = cpp_impl->setRandomNumberGenerator(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -280,7 +288,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setDatabaseBackend) {
     auto result = cpp_impl->setDatabaseBackend(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -315,7 +324,8 @@ NAN_METHOD(NJSWalletPoolBuilder::setConfiguration) {
     auto result = cpp_impl->setConfiguration(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -330,13 +340,11 @@ NAN_METHOD(NJSWalletPoolBuilder::build) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSWalletPoolCallback *njs_ptr_arg_0 = static_cast<NJSWalletPoolCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSWalletPoolCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSWalletPoolCallback *njs_ptr_arg_0 = new NJSWalletPoolCallback(arg_0_resolver);
+    std::shared_ptr<NJSWalletPoolCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -347,7 +355,7 @@ NAN_METHOD(NJSWalletPoolBuilder::build) {
         return Nan::ThrowError("NJSWalletPoolBuilder::build : implementation of WalletPoolBuilder is not valid");
     }
     cpp_impl->build(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 NAN_METHOD(NJSWalletPoolBuilder::createInstance) {
 
@@ -359,18 +367,11 @@ NAN_METHOD(NJSWalletPoolBuilder::createInstance) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSWalletPoolBuilder* obj = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSWalletPoolBuilder::createInstance : implementation of WalletPoolBuilder is not valid");
-    }
-
-    auto result = cpp_impl->createInstance();
+    auto result = WalletPoolBuilder::createInstance();
 
     //Wrap result in node object
-    auto arg_0 = NJSWalletPoolBuilder::wrap(result);
+    auto arg_0_wrap = NJSWalletPoolBuilder::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -451,6 +452,7 @@ void NJSWalletPoolBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"setDatabaseBackend", setDatabaseBackend);
     Nan::SetPrototypeMethod(func_template,"setConfiguration", setConfiguration);
     Nan::SetPrototypeMethod(func_template,"build", build);
+    Nan::SetPrototypeMethod(func_template,"createInstance", createInstance);
     //Set object prototype
     WalletPoolBuilder_prototype.Reset(objectTemplate);
 

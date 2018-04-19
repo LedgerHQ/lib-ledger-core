@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enum of picking strategies */
 public enum BitcoinLikePickingStrategy {
     DEEP_OUTPUTS_FIRST,
     OPTIMIZE_SIZE,

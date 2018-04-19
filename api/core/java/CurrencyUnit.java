@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Structure of cryptocurrency unit */
 public final class CurrencyUnit {
 
 
@@ -25,18 +26,22 @@ public final class CurrencyUnit {
         this.numberOfDecimal = numberOfDecimal;
     }
 
+    /**Currency name, e.g. milli-bitcoin */
     public String getName() {
         return name;
     }
 
+    /**UTF-8 (hex) currency symbol, e.g. hex code for m₿ */
     public String getSymbol() {
         return symbol;
     }
 
+    /**Currency code, e.g. mBTC */
     public String getCode() {
         return code;
     }
 
+    /**Number of decimal to display */
     public int getNumberOfDecimal() {
         return numberOfDecimal;
     }

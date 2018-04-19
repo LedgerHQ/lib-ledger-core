@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enum of different event codes */
 public enum EventCode {
     UNDEFINED,
     NEW_OPERATION,

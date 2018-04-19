@@ -29,6 +29,10 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeOperation> getCppImpl(){return _BitcoinLikeOperation;};
 
 private:
+    /**
+     *Get operation's transaction
+     *@return BitcoinLikeTransaction object
+     */
     static NAN_METHOD(getTransaction);
 
     static NAN_METHOD(New);

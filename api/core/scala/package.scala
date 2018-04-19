@@ -212,6 +212,20 @@ package object implicits {
             })
             promise.future
         }
+        def computeFees(amount: Amount, priority: Int, recipients: Array[String], data: Array[Array[Byte]]): Future[Amount] = {
+            val promise = Promise[Amount]()
+            self.computeFees(amount, priority, arrayList2Array(recipients), arrayList2Array(data), new AmountCallback() {
+                override def onCallback(result: Amount, error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
     }
     implicit class RichAmountCallback(val self: AmountCallback) {
     }

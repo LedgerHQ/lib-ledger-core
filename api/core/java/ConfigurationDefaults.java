@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**TODO */
 public abstract class ConfigurationDefaults {
     public static final String BLOCKCHAIN_DEFAULT_API_ENDPOINT = "https://api.ledgerwallet.com";
 

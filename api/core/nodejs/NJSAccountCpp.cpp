@@ -54,7 +54,8 @@ NAN_METHOD(NJSAccount::queryOperations) {
     auto result = cpp_impl->queryOperations();
 
     //Wrap result in node object
-    auto arg_0 = NJSOperationQuery::wrap(result);
+    auto arg_0_wrap = NJSOperationQuery::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -69,13 +70,11 @@ NAN_METHOD(NJSAccount::getBalance) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSAmountCallback *njs_ptr_arg_0 = static_cast<NJSAmountCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSAmountCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmountCallback *njs_ptr_arg_0 = new NJSAmountCallback(arg_0_resolver);
+    std::shared_ptr<NJSAmountCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -86,7 +85,7 @@ NAN_METHOD(NJSAccount::getBalance) {
         return Nan::ThrowError("NJSAccount::getBalance : implementation of Account is not valid");
     }
     cpp_impl->getBalance(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::isSynchronizing) {
 
@@ -135,7 +134,8 @@ NAN_METHOD(NJSAccount::synchronize) {
     auto result = cpp_impl->synchronize();
 
     //Wrap result in node object
-    auto arg_0 = NJSEventBus::wrap(result);
+    auto arg_0_wrap = NJSEventBus::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSEventBus>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -162,7 +162,8 @@ NAN_METHOD(NJSAccount::getPreferences) {
     auto result = cpp_impl->getPreferences();
 
     //Wrap result in node object
-    auto arg_0 = NJSPreferences::wrap(result);
+    auto arg_0_wrap = NJSPreferences::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSPreferences>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -189,7 +190,8 @@ NAN_METHOD(NJSAccount::getLogger) {
     auto result = cpp_impl->getLogger();
 
     //Wrap result in node object
-    auto arg_0 = NJSLogger::wrap(result);
+    auto arg_0_wrap = NJSLogger::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSLogger>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -218,7 +220,8 @@ NAN_METHOD(NJSAccount::getOperationPreferences) {
     auto result = cpp_impl->getOperationPreferences(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSPreferences::wrap(result);
+    auto arg_1_wrap = NJSPreferences::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSPreferences>(arg_1_wrap)->handle();
 
 
     //Return result
@@ -311,13 +314,11 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSStringListCallback *njs_ptr_arg_0 = static_cast<NJSStringListCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSStringListCallback *njs_ptr_arg_0 = new NJSStringListCallback(arg_0_resolver);
+    std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -328,7 +329,7 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
         return Nan::ThrowError("NJSAccount::getFreshPublicAddresses : implementation of Account is not valid");
     }
     cpp_impl->getFreshPublicAddresses(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
 NAN_METHOD(NJSAccount::getWalletType) {
 
@@ -377,7 +378,8 @@ NAN_METHOD(NJSAccount::getEventBus) {
     auto result = cpp_impl->getEventBus();
 
     //Wrap result in node object
-    auto arg_0 = NJSEventBus::wrap(result);
+    auto arg_0_wrap = NJSEventBus::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSEventBus>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -456,13 +458,11 @@ NAN_METHOD(NJSAccount::getLastBlock) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSBlockCallback *njs_ptr_arg_0 = static_cast<NJSBlockCallback *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
 
     //Create promise and set it into Callcack
-    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    arg_0->SetPromise(resolver);
+    auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSBlockCallback *njs_ptr_arg_0 = new NJSBlockCallback(arg_0_resolver);
+    std::shared_ptr<NJSBlockCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -473,7 +473,75 @@ NAN_METHOD(NJSAccount::getLastBlock) {
         return Nan::ThrowError("NJSAccount::getLastBlock : implementation of Account is not valid");
     }
     cpp_impl->getLastBlock(arg_0);
-    info.GetReturnValue().Set(resolver->GetPromise());
+    info.GetReturnValue().Set(arg_0_resolver->GetPromise());
+}
+NAN_METHOD(NJSAccount::computeFees) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 4)
+    {
+        return Nan::ThrowError("NJSAccount::computeFees needs 4 arguments");
+    }
+
+    //Check if parameters have correct types
+    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmount *njs_ptr_arg_0 = static_cast<NJSAmount *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
+    if(!njs_ptr_arg_0)
+    {
+        return Nan::ThrowError("NodeJs Object to NJSAmount failed");
+    }
+    auto arg_0 = njs_ptr_arg_0->getCppImpl();
+
+    auto arg_1 = Nan::To<int32_t>(info[1]).FromJust();
+    vector<std::string> arg_2;
+    Local<Array> arg_2_container = Local<Array>::Cast(info[2]);
+    for(uint32_t arg_2_id = 0; arg_2_id < arg_2_container->Length(); arg_2_id++)
+    {
+        if(arg_2_container->Get(arg_2_id)->IsString())
+        {
+            String::Utf8Value string_arg_2_elem(arg_2_container->Get(arg_2_id)->ToString());
+            auto arg_2_elem = std::string(*string_arg_2_elem);
+            arg_2.emplace_back(arg_2_elem);
+        }
+    }
+
+    vector<std::vector<uint8_t>> arg_3;
+    Local<Array> arg_3_container = Local<Array>::Cast(info[3]);
+    for(uint32_t arg_3_id = 0; arg_3_id < arg_3_container->Length(); arg_3_id++)
+    {
+        if(arg_3_container->Get(arg_3_id)->IsObject())
+        {
+            vector<uint8_t> arg_3_elem;
+            Local<Array> arg_3_elem_container = Local<Array>::Cast(arg_3_container->Get(arg_3_id));
+            for(uint32_t arg_3_elem_id = 0; arg_3_elem_id < arg_3_elem_container->Length(); arg_3_elem_id++)
+            {
+                if(arg_3_elem_container->Get(arg_3_elem_id)->IsUint32())
+                {
+                    auto arg_3_elem_elem = Nan::To<uint32_t>(arg_3_elem_container->Get(arg_3_elem_id)).FromJust();
+                    arg_3_elem.emplace_back(arg_3_elem_elem);
+                }
+            }
+
+            arg_3.emplace_back(arg_3_elem);
+        }
+    }
+
+
+    //Create promise and set it into Callcack
+    auto arg_4_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmountCallback *njs_ptr_arg_4 = new NJSAmountCallback(arg_4_resolver);
+    std::shared_ptr<NJSAmountCallback> arg_4(njs_ptr_arg_4);
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSAccount::computeFees : implementation of Account is not valid");
+    }
+    cpp_impl->computeFees(arg_0,arg_1,arg_2,arg_3,arg_4);
+    info.GetReturnValue().Set(arg_4_resolver->GetPromise());
 }
 
 NAN_METHOD(NJSAccount::New) {
@@ -546,6 +614,7 @@ void NJSAccount::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"stopBlockchainObservation", stopBlockchainObservation);
     Nan::SetPrototypeMethod(func_template,"isObservingBlockchain", isObservingBlockchain);
     Nan::SetPrototypeMethod(func_template,"getLastBlock", getLastBlock);
+    Nan::SetPrototypeMethod(func_template,"computeFees", computeFees);
     //Set object prototype
     Account_prototype.Reset(objectTemplate);
 

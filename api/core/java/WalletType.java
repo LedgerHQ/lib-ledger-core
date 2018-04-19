@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+/**Enum listing supported cryptocurrencies' families */
 public enum WalletType {
     BITCOIN,
     ETHEREUM,

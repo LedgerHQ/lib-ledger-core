@@ -5,6 +5,7 @@ package co.ledger.core;
 
 import java.util.ArrayList;
 
+/**Structure representing a bitcoin transaction request */
 public final class BitcoinLikeTransactionRequest {
 
 
@@ -31,22 +32,27 @@ public final class BitcoinLikeTransactionRequest {
         this.lockTime = lockTime;
     }
 
+    /**List of BitcoinLikeOutput objects, UTXO (Unspent Transaction Outputs) consumed by transaction's inputs */
     public ArrayList<BitcoinLikeOutput> getUtxo() {
         return utxo;
     }
 
+    /**List of BitcoinLikeOutput objects, transaction's output */
     public ArrayList<BitcoinLikeOutput> getOutputs() {
         return outputs;
     }
 
+    /**Optional Amount object, amount of base fees */
     public Amount getBaseFees() {
         return baseFees;
     }
 
+    /**Optional Amount object, amount of total fees */
     public Amount getTotalFees() {
         return totalFees;
     }
 
+    /**Optional 32 bits integer, transaction's lock time (refer to BitcoinLikeTransaction class) */
     public Integer getLockTime() {
         return lockTime;
     }

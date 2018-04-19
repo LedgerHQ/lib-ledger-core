@@ -3,6 +3,11 @@
 
 package co.ledger.core;
 
+/**Class respresenting an event receiver */
 public abstract class EventReceiver {
+    /**
+     *Method triggered when an event occurs
+     *@param event, Event object that triggers this method
+     */
     public abstract void onEvent(Event event);
 }

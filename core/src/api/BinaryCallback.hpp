@@ -12,10 +12,19 @@ namespace ledger { namespace core { namespace api {
 
 struct Error;
 
+/**
+ *Callback triggered by main completed task,
+ *returns optional result of template type T
+ */
 class BinaryCallback {
 public:
     virtual ~BinaryCallback() {}
 
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
     virtual void onCallback(const std::experimental::optional<std::vector<uint8_t>> & result, const std::experimental::optional<Error> & error) = 0;
 };
 

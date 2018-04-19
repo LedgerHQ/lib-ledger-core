@@ -3,9 +3,18 @@
 
 package co.ledger.core;
 
+/**Class representing context in which tasks get executed */
 public abstract class ExecutionContext {
-    /** */
+    /**
+     *Execute a given runnable
+     *@param runnalbe, Runnable object
+     */
     public abstract void execute(Runnable runnable);
 
+    /**
+     *Execute a given runnable with a delay
+     *@param runnalbe, Runnable object
+     *@param millis, 64 bits integer, delay in milli-seconds
+     */
     public abstract void delay(Runnable runnable, long millis);
 }

@@ -5,23 +5,55 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**Class representing amount of transaction, output, inputs ... */
 public abstract class Amount {
+    /**
+     *Get amount as a BitInt
+     *@return BitInt
+     */
     public abstract BigInt toBigInt();
 
+    /**
+     *Get currency in which amount was computed
+     *@return Currency object
+     */
     public abstract Currency getCurrency();
 
+    /**
+     *Get currency unit in which amount was computed
+     *@return CurrencyUnit object
+     */
     public abstract CurrencyUnit getUnit();
 
+    /**
+     *Convert amount in another currency unit
+     *@param CurrencyUnit object, target currency unit
+     *@return Amount object, amount in target currency unit
+     */
     public abstract Amount toUnit(CurrencyUnit unit);
 
+    /**TODO */
     public abstract Amount toMagnitude(int magnitude);
 
+    /**
+     *Get amount as string
+     *@return string
+     */
     public abstract String toString();
 
+    /**
+     *Get amount as long
+     *@reutrn 64 bits integer
+     */
     public abstract long toLong();
 
+    /**
+     *Get amount as double
+     *@return double
+     */
     public abstract double toDouble();
 
+    /**TODO */
     public abstract String format(Locale locale, FormatRules rules);
 
     public static native Amount fromHex(Currency currency, String hex);

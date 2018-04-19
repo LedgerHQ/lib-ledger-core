@@ -55,12 +55,6 @@ private:
      */
     static NAN_METHOD(getValue);
 
-    /** Return true if the input is a coinbase input */
-    static NAN_METHOD(isCoinbase);
-
-    /** Get coinbase input data */
-    static NAN_METHOD(getCoinbase);
-
     /**
      * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
      * the wallet
@@ -70,6 +64,20 @@ private:
     /**
      * Get the index at which the output is located in the transaction output spent by this input. The result can be
      * NULL if the input does not belong to the wallet
+     *Check whether input
+     *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
+     */
+    static NAN_METHOD(isCoinbase);
+
+    /**
+     *Stored data cointained in coinbase
+     *@return Optional String
+     */
+    static NAN_METHOD(getCoinbase);
+
+    /**
+     *Get output index, it identifies which UTXO from tht transaction to spend
+     *@return Optional 32 bits integer, index of previous transaction
      */
     static NAN_METHOD(getPreviousOutputIndex);
 

@@ -11,13 +11,22 @@ void NJSAccountCallback::onCallback(const std::shared_ptr<Account> & result, con
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    auto arg_0 = NJSAccount::wrap(result);
+    auto arg_0_wrap = NJSAccount::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSAccount>(arg_0_wrap)->handle();
 
-    auto arg_1 = Nan::New<Object>();
-    auto arg_1_1 = Nan::New<Integer>((int)(*error).code);
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("code").ToLocalChecked(), arg_1_1);
-    auto arg_1_2 = Nan::New<String>((*error).message).ToLocalChecked();
-    Nan::DefineOwnProperty(arg_1, Nan::New<String>("message").ToLocalChecked(), arg_1_2);
+
+    Local<Value> arg_1;
+    if(error)
+    {
+        auto arg_1_optional = (error).value();
+        auto arg_1_tmp = Nan::New<Object>();
+        auto arg_1_tmp_1 = Nan::New<Integer>((int)arg_1_optional.code);
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("code").ToLocalChecked(), arg_1_tmp_1);
+        auto arg_1_tmp_2 = Nan::New<String>(arg_1_optional.message).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_1_tmp, Nan::New<String>("message").ToLocalChecked(), arg_1_tmp_2);
+
+        arg_1 = arg_1_tmp;
+    }
 
     auto local_resolver = Nan::New<Promise::Resolver>(pers_resolver);
     if(error)
@@ -51,15 +60,8 @@ NAN_METHOD(NJSAccountCallback::New) {
         return Nan::ThrowError("NJSAccountCallback function can only be called as constructor (use New)");
     }
 
-    NJSAccountCallback *node_instance = nullptr;
-    if(info[0]->IsObject())
-    {
-        node_instance = new NJSAccountCallback(info[0]->ToObject());
-    }
-    else
-    {
-        return Nan::ThrowError("NJSAccountCallback::New requires an implementation from node");
-    }
+    auto resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAccountCallback *node_instance = new NJSAccountCallback(resolver);
 
     if(node_instance)
     {

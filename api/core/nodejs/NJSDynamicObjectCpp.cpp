@@ -7,32 +7,6 @@ using namespace v8;
 using namespace node;
 using namespace std;
 
-NAN_METHOD(NJSDynamicObject::isReadOnly) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 0)
-    {
-        return Nan::ThrowError("NJSDynamicObject::isReadOnly needs 0 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::isReadOnly : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->isReadOnly();
-
-    //Wrap result in node object
-    auto arg_0 = Nan::New<Boolean>(result);
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
-}
 NAN_METHOD(NJSDynamicObject::putString) {
 
     //Check if method called with right number of arguments
@@ -58,7 +32,8 @@ NAN_METHOD(NJSDynamicObject::putString) {
     auto result = cpp_impl->putString(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -88,7 +63,8 @@ NAN_METHOD(NJSDynamicObject::putInt) {
     auto result = cpp_impl->putInt(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -118,7 +94,8 @@ NAN_METHOD(NJSDynamicObject::putLong) {
     auto result = cpp_impl->putLong(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -148,7 +125,8 @@ NAN_METHOD(NJSDynamicObject::putDouble) {
     auto result = cpp_impl->putDouble(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -188,7 +166,8 @@ NAN_METHOD(NJSDynamicObject::putData) {
     auto result = cpp_impl->putData(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -218,185 +197,12 @@ NAN_METHOD(NJSDynamicObject::putBoolean) {
     auto result = cpp_impl->putBoolean(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
     info.GetReturnValue().Set(arg_2);
-}
-NAN_METHOD(NJSDynamicObject::getString) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getString needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getString : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getString(arg_0);
-
-    //Wrap result in node object
-    auto arg_1 = Nan::New<String>((*result)).ToLocalChecked();
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::getInt) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getInt needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getInt : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getInt(arg_0);
-
-    //Wrap result in node object
-    auto arg_1 = Nan::New<Int32>((*result));
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::getLong) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getLong needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getLong : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getLong(arg_0);
-
-    //Wrap result in node object
-    auto arg_1 = Nan::New<Number>((*result));
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::getDouble) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getDouble needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getDouble : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getDouble(arg_0);
-
-    //Wrap result in node object
-    auto arg_1 = Nan::New<Number>((*result));
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::getData) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getData needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getData : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getData(arg_0);
-
-    //Wrap result in node object
-    Local<Array> arg_1 = Nan::New<Array>();
-    for(size_t arg_1_id = 0; arg_1_id < (*result).size(); arg_1_id++)
-    {
-        auto arg_1_elem = Nan::New<Uint32>((*result)[arg_1_id]);
-        arg_1->Set((int)arg_1_id,arg_1_elem);
-    }
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
-}
-NAN_METHOD(NJSDynamicObject::getBoolean) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 1)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getBoolean needs 1 arguments");
-    }
-
-    //Check if parameters have correct types
-    String::Utf8Value string_arg_0(info[0]->ToString());
-    auto arg_0 = std::string(*string_arg_0);
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::getBoolean : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->getBoolean(arg_0);
-
-    //Wrap result in node object
-    auto arg_1 = Nan::New<Boolean>((*result));
-
-    //Return result
-    info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::putObject) {
 
@@ -429,7 +235,8 @@ NAN_METHOD(NJSDynamicObject::putObject) {
     auto result = cpp_impl->putObject(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
@@ -466,11 +273,228 @@ NAN_METHOD(NJSDynamicObject::putArray) {
     auto result = cpp_impl->putArray(arg_0,arg_1);
 
     //Wrap result in node object
-    auto arg_2 = NJSDynamicObject::wrap(result);
+    auto arg_2_wrap = NJSDynamicObject::wrap(result);
+    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_2_wrap)->handle();
 
 
     //Return result
     info.GetReturnValue().Set(arg_2);
+}
+NAN_METHOD(NJSDynamicObject::getString) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getString needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getString : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getString(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<String>(arg_1_optional).ToLocalChecked();
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSDynamicObject::getInt) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getInt needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getInt : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getInt(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Int32>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSDynamicObject::getLong) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getLong needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getLong : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getLong(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Number>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSDynamicObject::getDouble) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getDouble needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getDouble : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getDouble(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Number>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSDynamicObject::getData) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getData needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getData : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getData(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        Local<Array> arg_1_tmp = Nan::New<Array>();
+        for(size_t arg_1_tmp_id = 0; arg_1_tmp_id < arg_1_optional.size(); arg_1_tmp_id++)
+        {
+            auto arg_1_tmp_elem = Nan::New<Uint32>(arg_1_optional[arg_1_tmp_id]);
+            arg_1_tmp->Set((int)arg_1_tmp_id,arg_1_tmp_elem);
+        }
+
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSDynamicObject::getBoolean) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getBoolean needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::getBoolean : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->getBoolean(arg_0);
+
+    //Wrap result in node object
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Boolean>(arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
 }
 NAN_METHOD(NJSDynamicObject::getObject) {
 
@@ -495,7 +519,9 @@ NAN_METHOD(NJSDynamicObject::getObject) {
     auto result = cpp_impl->getObject(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap(result);
+    auto arg_1_wrap = NJSDynamicObject::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -524,7 +550,9 @@ NAN_METHOD(NJSDynamicObject::getArray) {
     auto result = cpp_impl->getArray(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicArray::wrap(result);
+    auto arg_1_wrap = NJSDynamicArray::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicArray>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -641,7 +669,14 @@ NAN_METHOD(NJSDynamicObject::getType) {
     auto result = cpp_impl->getType(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = Nan::New<Integer>((int)(*result));
+    Local<Value> arg_1;
+    if(result)
+    {
+        auto arg_1_optional = (result).value();
+        auto arg_1_tmp = Nan::New<Integer>((int)arg_1_optional);
+        arg_1 = arg_1_tmp;
+    }
+
 
     //Return result
     info.GetReturnValue().Set(arg_1);
@@ -704,6 +739,32 @@ NAN_METHOD(NJSDynamicObject::serialize) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSDynamicObject::isReadOnly) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 0)
+    {
+        return Nan::ThrowError("NJSDynamicObject::isReadOnly needs 0 arguments");
+    }
+
+    //Check if parameters have correct types
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSDynamicObject::isReadOnly : implementation of DynamicObject is not valid");
+    }
+
+    auto result = cpp_impl->isReadOnly();
+
+    //Wrap result in node object
+    auto arg_0 = Nan::New<Boolean>(result);
+
+    //Return result
+    info.GetReturnValue().Set(arg_0);
+}
 NAN_METHOD(NJSDynamicObject::size) {
 
     //Check if method called with right number of arguments
@@ -740,18 +801,11 @@ NAN_METHOD(NJSDynamicObject::newInstance) {
 
     //Check if parameters have correct types
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::newInstance : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->newInstance();
+    auto result = DynamicObject::newInstance();
 
     //Wrap result in node object
-    auto arg_0 = NJSDynamicObject::wrap(result);
+    auto arg_0_wrap = NJSDynamicObject::wrap(result);
+    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_0_wrap)->handle();
 
 
     //Return result
@@ -778,18 +832,12 @@ NAN_METHOD(NJSDynamicObject::load) {
     }
 
 
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSDynamicObject::load : implementation of DynamicObject is not valid");
-    }
-
-    auto result = cpp_impl->load(arg_0);
+    auto result = DynamicObject::load(arg_0);
 
     //Wrap result in node object
-    auto arg_1 = NJSDynamicObject::wrap(result);
+    auto arg_1_wrap = NJSDynamicObject::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(arg_1_wrap)->handle();
+
 
 
     //Return result
@@ -859,21 +907,20 @@ void NJSDynamicObject::Initialize(Local<Object> target) {
     func_template->SetClassName(Nan::New<String>("NJSDynamicObject").ToLocalChecked());
 
     //SetPrototypeMethod all methods
-    Nan::SetPrototypeMethod(func_template,"isReadOnly", isReadOnly);
     Nan::SetPrototypeMethod(func_template,"putString", putString);
     Nan::SetPrototypeMethod(func_template,"putInt", putInt);
     Nan::SetPrototypeMethod(func_template,"putLong", putLong);
     Nan::SetPrototypeMethod(func_template,"putDouble", putDouble);
     Nan::SetPrototypeMethod(func_template,"putData", putData);
     Nan::SetPrototypeMethod(func_template,"putBoolean", putBoolean);
+    Nan::SetPrototypeMethod(func_template,"putObject", putObject);
+    Nan::SetPrototypeMethod(func_template,"putArray", putArray);
     Nan::SetPrototypeMethod(func_template,"getString", getString);
     Nan::SetPrototypeMethod(func_template,"getInt", getInt);
     Nan::SetPrototypeMethod(func_template,"getLong", getLong);
     Nan::SetPrototypeMethod(func_template,"getDouble", getDouble);
     Nan::SetPrototypeMethod(func_template,"getData", getData);
     Nan::SetPrototypeMethod(func_template,"getBoolean", getBoolean);
-    Nan::SetPrototypeMethod(func_template,"putObject", putObject);
-    Nan::SetPrototypeMethod(func_template,"putArray", putArray);
     Nan::SetPrototypeMethod(func_template,"getObject", getObject);
     Nan::SetPrototypeMethod(func_template,"getArray", getArray);
     Nan::SetPrototypeMethod(func_template,"contains", contains);
@@ -882,7 +929,10 @@ void NJSDynamicObject::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getType", getType);
     Nan::SetPrototypeMethod(func_template,"dump", dump);
     Nan::SetPrototypeMethod(func_template,"serialize", serialize);
+    Nan::SetPrototypeMethod(func_template,"isReadOnly", isReadOnly);
     Nan::SetPrototypeMethod(func_template,"size", size);
+    Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
+    Nan::SetPrototypeMethod(func_template,"load", load);
     //Set object prototype
     DynamicObject_prototype.Reset(objectTemplate);
 
