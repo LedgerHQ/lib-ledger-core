@@ -96,7 +96,7 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutputAndFakeSignature)
 
 TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithMultipleInputs) {
     auto builder = p2pkh_tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 10000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
+    builder->sendToAddress(api::Amount::fromLong(currency, 100000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();

@@ -38,6 +38,7 @@ namespace ledger {
         namespace currencies {
             extern const std::vector<api::Currency> ALL;
             extern const api::Currency BITCOIN;
+            extern const api::Currency BITCOIN_TESTNET;
         };
     }
 }
