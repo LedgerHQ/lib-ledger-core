@@ -38,6 +38,7 @@ public enum ErrorCode {
     PRIVATE_DERIVATION_NOT_SUPPORTED,
     /** Bitcoin error */
     INVALID_NETWORK_ADDRESS_VERSION,
+    INCOMPLETE_TRANSACTION,
     /** Generic */
     RUNTIME_ERROR,
     OUT_OF_RANGE,
@@ -74,6 +75,8 @@ public enum ErrorCode {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Wallet transaction */
+    NOT_ENOUGH_FUNDS,
     /** Bad cast */
     BAD_CAST,
     /** Query build */

@@ -46,6 +46,11 @@ namespace ledger {
                                          const DeterministicPublicKey& key, const DerivationPath& path = DerivationPath("m/"));
             virtual std::shared_ptr<api::BitcoinLikeAddress> derive(const std::string &path) override;
             virtual std::shared_ptr<BitcoinLikeExtendedPublicKey> derive(const DerivationPath& path);
+
+            std::vector<uint8_t> derivePublicKey(const std::string &path) override;
+
+            std::vector<uint8_t> deriveHash160(const std::string &path) override;
+
             virtual std::string toBase58() override;
 
             std::string getRootPath() override;

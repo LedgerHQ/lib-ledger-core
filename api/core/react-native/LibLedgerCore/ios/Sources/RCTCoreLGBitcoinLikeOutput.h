@@ -3,6 +3,8 @@
 
 #import "LGAmount.h"
 #import "LGBitcoinLikeOutput.h"
+#import "LGBitcoinLikeScript.h"
+#import "LGDerivationPath.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
 

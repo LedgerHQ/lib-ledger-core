@@ -19,10 +19,7 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransaction)
     return self;
 }
 
-/**
- *Get transaction hash
- *@return string, transaction hash
- */
+/** Get the hash of the transaction. */
 RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl getHash]};
@@ -36,10 +33,7 @@ RCT_REMAP_METHOD(getHash,getHashWithResolver:(RCTPromiseResolveBlock)resolve rej
     }
 }
 
-/**
- *Get list of inputs aggregated under that transaction
- *@return list of BitcoinLikeInput objects
- */
+/** Get the input of the transaction */
 RCT_REMAP_METHOD(getInputs,getInputsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl getInputs]};
@@ -53,10 +47,7 @@ RCT_REMAP_METHOD(getInputs,getInputsWithResolver:(RCTPromiseResolveBlock)resolve
     }
 }
 
-/**
- *Get list of outputs aggregated under that transaction
- *@return list of BitcoinLikeOutput objects
- */
+/** Get the output of the transaction */
 RCT_REMAP_METHOD(getOutputs,getOutputsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl getOutputs]};
@@ -70,10 +61,7 @@ RCT_REMAP_METHOD(getOutputs,getOutputsWithResolver:(RCTPromiseResolveBlock)resol
     }
 }
 
-/**
- *Get block to which this transaction belongs
- *@return Optional BitcoinLikeBlock
- */
+/** Get the block in which the transaction is inserted if the transaction is confirmed. */
 RCT_REMAP_METHOD(getBlock,getBlockWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl getBlock]};
@@ -87,10 +75,7 @@ RCT_REMAP_METHOD(getBlock,getBlockWithResolver:(RCTPromiseResolveBlock)resolve r
     }
 }
 
-/**
- *Get lock time of transaction, block height from which transaction may be accepted by miners
- *@return 64 bits integer, block height after which transaction can be accepted
- */
+/** Get the lock time of the transaction. */
 RCT_REMAP_METHOD(getLockTime,getLockTimeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :@([self.objcImpl getLockTime])};if(result)
@@ -103,10 +88,7 @@ RCT_REMAP_METHOD(getLockTime,getLockTimeWithResolver:(RCTPromiseResolveBlock)res
     }
 }
 
-/**
- *Get fees payed for this transaction
- *@return Amount object, amount of fees
- */
+/** Get the amount of fees of the transaction. */
 RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl getFees]};
@@ -121,8 +103,8 @@ RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rej
 }
 
 /**
- *Get time of creation of this transaction
- *@return Date object
+ * Get the time when the transaction was issued or the time of the block including
+ * this transaction
  */
 RCT_REMAP_METHOD(getTime,getTimeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
@@ -134,6 +116,65 @@ RCT_REMAP_METHOD(getTime,getTimeWithResolver:(RCTPromiseResolveBlock)resolve rej
     else
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::getTime", nil);
+    }
+}
+
+/** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+RCT_REMAP_METHOD(getTimestamp,getTimestampWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getTimestamp]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::getTimestamp", nil);
+    }
+}
+
+/** Serialize the transaction to its raw format. */
+RCT_REMAP_METHOD(serialize,serializeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl serialize]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::serialize", nil);
+    }
+}
+
+/** Get the witness if the underlying transaction is a segwit transaction. */
+RCT_REMAP_METHOD(getWitness,getWitnessWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getWitness]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::getWitness", nil);
+    }
+}
+
+/**
+ * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+ * size.
+ */
+RCT_REMAP_METHOD(getEstimatedSize,getEstimatedSizeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getEstimatedSize]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::getEstimatedSize", nil);
     }
 }
 @end

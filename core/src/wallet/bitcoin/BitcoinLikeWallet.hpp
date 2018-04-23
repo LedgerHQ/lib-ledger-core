@@ -50,6 +50,7 @@ namespace ledger {
 
             BitcoinLikeWallet(
                 const std::string& name,
+                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
                 const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
                 const BitcoinLikeAccountSynchronizerFactory& synchronizerFactory,
@@ -72,6 +73,8 @@ namespace ledger {
             getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
 
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
+
+            std::shared_ptr<BitcoinLikeBlockchainExplorer> getBlockchainExplorer();
 
         protected:
             std::shared_ptr<AbstractAccount>

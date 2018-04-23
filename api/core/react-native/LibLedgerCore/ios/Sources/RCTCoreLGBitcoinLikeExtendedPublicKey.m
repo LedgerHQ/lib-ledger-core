@@ -32,6 +32,32 @@ RCT_REMAP_METHOD(derive,derive:(nonnull NSString *)path withResolver:(RCTPromise
     }
 }
 
+RCT_REMAP_METHOD(derivePublicKey,derivePublicKey:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl derivePublicKey:path]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeExtendedPublicKey::derivePublicKey", nil);
+    }
+}
+
+RCT_REMAP_METHOD(deriveHash160,deriveHash160:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl deriveHash160:path]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeExtendedPublicKey::deriveHash160", nil);
+    }
+}
+
 RCT_REMAP_METHOD(toBase58,toBase58WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
     id result = @{@"result" :[self.objcImpl toBase58]};

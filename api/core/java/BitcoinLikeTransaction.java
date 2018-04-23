@@ -9,47 +9,44 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**Class representing a Bitcoin transaction */
 public abstract class BitcoinLikeTransaction {
-    /**
-     *Get transaction hash
-     *@return string, transaction hash
-     */
+    /** Get the hash of the transaction. */
     public abstract String getHash();
 
-    /**
-     *Get list of inputs aggregated under that transaction
-     *@return list of BitcoinLikeInput objects
-     */
+    /** Get the input of the transaction */
     public abstract ArrayList<BitcoinLikeInput> getInputs();
 
-    /**
-     *Get list of outputs aggregated under that transaction
-     *@return list of BitcoinLikeOutput objects
-     */
+    /** Get the output of the transaction */
     public abstract ArrayList<BitcoinLikeOutput> getOutputs();
 
-    /**
-     *Get block to which this transaction belongs
-     *@return Optional BitcoinLikeBlock
-     */
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     public abstract BitcoinLikeBlock getBlock();
 
-    /**
-     *Get lock time of transaction, block height from which transaction may be accepted by miners
-     *@return 64 bits integer, block height after which transaction can be accepted
-     */
+    /** Get the lock time of the transaction. */
     public abstract long getLockTime();
 
-    /**
-     *Get fees payed for this transaction
-     *@return Amount object, amount of fees
-     */
+    /** Get the amount of fees of the transaction. */
     public abstract Amount getFees();
 
     /**
-     *Get time of creation of this transaction
-     *@return Date object
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
      */
     public abstract Date getTime();
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    public abstract Integer getTimestamp();
+
+    /** Serialize the transaction to its raw format. */
+    public abstract byte[] serialize();
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    public abstract byte[] getWitness();
+
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    public abstract EstimatedSize getEstimatedSize();
 
     private static final class CppProxy extends BitcoinLikeTransaction
     {
@@ -129,5 +126,37 @@ public abstract class BitcoinLikeTransaction {
             return native_getTime(this.nativeRef);
         }
         private native Date native_getTime(long _nativeRef);
+
+        @Override
+        public Integer getTimestamp()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getTimestamp(this.nativeRef);
+        }
+        private native Integer native_getTimestamp(long _nativeRef);
+
+        @Override
+        public byte[] serialize()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_serialize(this.nativeRef);
+        }
+        private native byte[] native_serialize(long _nativeRef);
+
+        @Override
+        public byte[] getWitness()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getWitness(this.nativeRef);
+        }
+        private native byte[] native_getWitness(long _nativeRef);
+
+        @Override
+        public EstimatedSize getEstimatedSize()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getEstimatedSize(this.nativeRef);
+        }
+        private native EstimatedSize native_getEstimatedSize(long _nativeRef);
     }
 }

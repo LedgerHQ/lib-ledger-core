@@ -121,7 +121,7 @@ std::string ledger::core::SQLite3Backend::getService() {
 }
 
 int32_t ledger::core::SQLite3Backend::getConnectionPoolSize() {
-    return 2;
+    return 1;
 }
 
 std::shared_ptr<ledger::core::api::DatabaseBackend> ledger::core::SQLite3Backend::enableQueryLogging(bool enable) {

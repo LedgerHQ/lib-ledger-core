@@ -165,4 +165,32 @@ RCT_REMAP_METHOD(format,format:(nonnull LGLocale *)locale
         reject(@"impl_call_error", @"Error while calling LGAmount::format", nil);
     }
 }
+
+RCT_REMAP_METHOD(fromHex,fromHex:(nonnull LGCurrency *)currency
+                             hex:(nonnull NSString *)hex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[LGAmount fromHex:currency hex:hex]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGAmount::fromHex", nil);
+    }
+}
+
+RCT_REMAP_METHOD(fromLong,fromLong:(nonnull LGCurrency *)currency
+                             value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[LGAmount fromLong:currency value:value]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGAmount::fromLong", nil);
+    }
+}
 @end

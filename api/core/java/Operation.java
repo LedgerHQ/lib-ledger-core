@@ -109,6 +109,8 @@ public abstract class Operation {
      */
     public abstract WalletType getWalletType();
 
+    public abstract Currency getCurrency();
+
     private static final class CppProxy extends Operation
     {
         private final long nativeRef;
@@ -267,5 +269,13 @@ public abstract class Operation {
             return native_getWalletType(this.nativeRef);
         }
         private native WalletType native_getWalletType(long _nativeRef);
+
+        @Override
+        public Currency getCurrency()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getCurrency(this.nativeRef);
+        }
+        private native Currency native_getCurrency(long _nativeRef);
     }
 }

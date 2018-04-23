@@ -63,4 +63,10 @@
 - (nonnull NSString *)format:(nonnull LGLocale *)locale
                        rules:(nullable LGFormatRules *)rules;
 
++ (nullable LGAmount *)fromHex:(nonnull LGCurrency *)currency
+                           hex:(nonnull NSString *)hex;
+
++ (nullable LGAmount *)fromLong:(nonnull LGCurrency *)currency
+                          value:(int64_t)value;
+
 @end

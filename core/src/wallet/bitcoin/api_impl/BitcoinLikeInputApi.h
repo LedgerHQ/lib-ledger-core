@@ -47,6 +47,28 @@ namespace ledger {
             optional<std::string> getPreviousTxHash() override;
             optional<int32_t> getPreviousOutputIndex() override;
 
+            std::vector<std::vector<uint8_t>> getPublicKeys() override;
+
+            std::vector<std::shared_ptr<api::DerivationPath>> getDerivationPath() override;
+
+            std::shared_ptr<api::BitcoinLikeOutput> getPreviousOuput() override;
+
+            std::vector<uint8_t> getScriptSig() override;
+
+            std::shared_ptr<api::BitcoinLikeScript> parseScriptSig() override;
+
+            void setScriptSig(const std::vector<uint8_t> &scriptSig) override;
+
+            void pushToScriptSig(const std::vector<uint8_t> &data) override;
+
+            void setSequence(int32_t sequence) override;
+
+            int32_t getSequence() override;
+
+            void getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback) override;
+
+            void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
+
         private:
             inline BitcoinLikeBlockchainExplorer::Input& getInput();
 

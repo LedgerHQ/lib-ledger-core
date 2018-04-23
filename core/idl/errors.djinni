@@ -42,6 +42,7 @@ ErrorCode = enum {
 
     # Bitcoin error
     invalid_network_address_version;
+    incomplete_transaction;
 
     # Generic
     runtime_error;
@@ -84,6 +85,9 @@ ErrorCode = enum {
     unknown_blockchain_explorer_engine;
     unknown_blockchain_observer_engine;
     unknown_synchronization_engine;
+
+    # Wallet transaction
+    not_enough_funds;
 
     # Bad cast
     bad_cast;

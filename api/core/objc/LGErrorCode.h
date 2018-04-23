@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodePrivateDerivationNotSupported,
     /** Bitcoin error */
     LGErrorCodeInvalidNetworkAddressVersion,
+    LGErrorCodeIncompleteTransaction,
     /** Generic */
     LGErrorCodeRuntimeError,
     LGErrorCodeOutOfRange,
@@ -75,6 +76,8 @@ typedef NS_ENUM(NSInteger, LGErrorCode)
     LGErrorCodeUnknownBlockchainExplorerEngine,
     LGErrorCodeUnknownBlockchainObserverEngine,
     LGErrorCodeUnknownSynchronizationEngine,
+    /** Wallet transaction */
+    LGErrorCodeNotEnoughFunds,
     /** Bad cast */
     LGErrorCodeBadCast,
     /** Query build */

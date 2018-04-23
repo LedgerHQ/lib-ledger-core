@@ -86,6 +86,19 @@ RCT_REMAP_METHOD(getScript,getScriptWithResolver:(RCTPromiseResolveBlock)resolve
     }
 }
 
+RCT_REMAP_METHOD(parseScript,parseScriptWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl parseScript]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeOutput::parseScript", nil);
+    }
+}
+
 /**
  *Get address that spent the output
  *@return Optional String, address that spent
@@ -100,6 +113,19 @@ RCT_REMAP_METHOD(getAddress,getAddressWithResolver:(RCTPromiseResolveBlock)resol
     else
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeOutput::getAddress", nil);
+    }
+}
+
+RCT_REMAP_METHOD(getDerivationPath,getDerivationPathWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getDerivationPath]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeOutput::getDerivationPath", nil);
     }
 }
 @end

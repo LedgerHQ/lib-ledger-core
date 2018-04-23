@@ -5,8 +5,10 @@
 #define DJINNI_GENERATED_BITCOINLIKEEXTENDEDPUBLICKEY_HPP
 
 #include "../utils/optional.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
@@ -18,6 +20,10 @@ public:
     virtual ~BitcoinLikeExtendedPublicKey() {}
 
     virtual std::shared_ptr<BitcoinLikeAddress> derive(const std::string & path) = 0;
+
+    virtual std::vector<uint8_t> derivePublicKey(const std::string & path) = 0;
+
+    virtual std::vector<uint8_t> deriveHash160(const std::string & path) = 0;
 
     virtual std::string toBase58() = 0;
 

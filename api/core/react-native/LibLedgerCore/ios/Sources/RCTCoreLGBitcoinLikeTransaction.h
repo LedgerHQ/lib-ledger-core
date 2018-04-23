@@ -6,6 +6,7 @@
 #import "LGBitcoinLikeInput.h"
 #import "LGBitcoinLikeOutput.h"
 #import "LGBitcoinLikeTransaction.h"
+#import "LGEstimatedSize.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
 

@@ -1,0 +1,23 @@
+
+
+BitcoinLikeOperator = record {
+    name: string;
+    value: i8;
+}
+
+
+
+BitcoinLikeScriptChunk = interface +c {
+    isOperator(): bool;
+    isPushedData(): bool;
+    getOperator(): optional<BitcoinLikeOperator>;
+    getPushedData(): optional<binary>;
+    next(): BitcoinLikeScriptChunk;
+    hasNext(): bool;
+}
+
+BitcoinLikeScript = interface +c {
+    head(): BitcoinLikeScriptChunk;
+    toString(): string;
+    static parse(data: binary): BitcoinLikeScript;
+}

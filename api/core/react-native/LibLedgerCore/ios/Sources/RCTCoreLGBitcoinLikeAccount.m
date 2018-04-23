@@ -41,51 +41,28 @@ RCT_REMAP_METHOD(getUTXOCount,getUTXOCount:(nullable id<LGI32Callback>)callback)
     [self.objcImpl getUTXOCount:callback];
 }
 
-/**
- *Get UTXOs meeting certain requirements to form a transaction request object
- *@param baseFees, Amount object, amount of base fees that the transaction will cost
- *@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
- *@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
- *@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
- */
-RCT_REMAP_METHOD(pickUTXO,pickUTXO:(nullable LGAmount *)baseFees
-                           outputs:(nonnull NSArray<LGBitcoinLikeOutput *> *)outputs
-                          strategy:(LGBitcoinLikePickingStrategy)strategy
-                          callback:(nullable id<LGBitcoinLikeTransactionRequestCallback>)callback) {
+RCT_REMAP_METHOD(broadcastRawTransaction,broadcastRawTransaction:(nonnull NSData *)transaction
+                                                        callback:(nullable id<LGStringCallback>)callback) {
 
-    [self.objcImpl pickUTXO:baseFees outputs:outputs strategy:strategy callback:callback];
+    [self.objcImpl broadcastRawTransaction:transaction callback:callback];
 }
 
-/**
- *Get an estimation of fees given a transaction
- *@param request, BitcoinLikeTransactionRequest object, request without totalFees set
- *@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
- */
-RCT_REMAP_METHOD(estimateFees,estimateFees:(nonnull LGBitcoinLikeTransactionRequest *)request
-                                  callback:(nullable id<LGBitcoinLikeTransactionRequestCallback>)callback) {
-
-    [self.objcImpl estimateFees:request callback:callback];
-}
-
-/**
- *Prepare a raw transaction to be used by user
- *@param request, BitcoinLikeTransactionRequest object, raw transaction object
- *@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
- */
-RCT_REMAP_METHOD(prepareTransaction,prepareTransaction:(nonnull LGBitcoinLikeTransactionRequest *)request
-                                              callback:(nullable id<LGBitcoinLikePreparedTransactionCallback>)callback) {
-
-    [self.objcImpl prepareTransaction:request callback:callback];
-}
-
-/**
- *Broadcast transaction to Bitcoin network (to nodes)
- *@param transaction, serialized transaction to broadcast
- *@param callback, Callback object which returning a string result
- */
-RCT_REMAP_METHOD(broadcastTransaction,broadcastTransaction:(nonnull NSData *)transaction
+RCT_REMAP_METHOD(broadcastTransaction,broadcastTransaction:(nullable LGBitcoinLikeTransaction *)transaction
                                                   callback:(nullable id<LGStringCallback>)callback) {
 
     [self.objcImpl broadcastTransaction:transaction callback:callback];
+}
+
+RCT_REMAP_METHOD(buildTransaction,buildTransactionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl buildTransaction]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeAccount::buildTransaction", nil);
+    }
 }
 @end

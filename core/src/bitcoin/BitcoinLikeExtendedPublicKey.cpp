@@ -125,6 +125,18 @@ namespace ledger {
             return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, path.getValueOr("m"));
         }
 
+        std::vector<uint8_t> BitcoinLikeExtendedPublicKey::derivePublicKey(const std::string &path) {
+            DerivationPath p(path);
+            auto key = _derive(0, p.toVector(), _key);
+            return key.getPublicKey();
+        }
+
+        std::vector<uint8_t> BitcoinLikeExtendedPublicKey::deriveHash160(const std::string &path) {
+            DerivationPath p(path);
+            auto key = _derive(0, p.toVector(), _key);
+            return key.getPublicKeyHash160();
+        }
+
         std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
         api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
                                                       const std::string &address,

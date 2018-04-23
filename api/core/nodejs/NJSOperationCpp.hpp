@@ -6,6 +6,9 @@
 
 
 #include "../../../core/src/api/../utils/optional.hpp"
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
 #include "../../../core/src/api/OperationType.hpp"
 #include "../../../core/src/api/WalletType.hpp"
 #include "NJSAmountCpp.hpp"
@@ -138,6 +141,8 @@ private:
      *@return WalletType object
      */
     static NAN_METHOD(getWalletType);
+
+    static NAN_METHOD(getCurrency);
 
     static NAN_METHOD(New);
 

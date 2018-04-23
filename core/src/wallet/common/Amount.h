@@ -41,6 +41,7 @@ namespace ledger {
         class Amount : public api::Amount {
         public:
             Amount(const api::Currency& currency, int32_t unitIndex, const BigInt& value);
+            Amount(const api::Currency& currency, int32_t unitIndex, BigInt&& value);
             std::shared_ptr<api::BigInt> toBigInt() override;
             api::Currency getCurrency() override;
             api::CurrencyUnit getUnit() override;
@@ -49,8 +50,8 @@ namespace ledger {
             int64_t toLong() override;
             double toDouble() override;
             std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
-
             std::shared_ptr<api::Amount> toMagnitude(int32_t magnitude) override;
+            std::shared_ptr<ledger::core::BigInt> value() const;
 
         private:
             int32_t getMagnitude() const;

@@ -32,6 +32,9 @@
 #include <utils/hex.h>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <utils/Exception.hpp>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 
 namespace ledger {
     namespace core {
@@ -43,7 +46,7 @@ namespace ledger {
         }
 
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output, const api::Currency& currency) : _backend(output) {
-            _outputIndex = output.index;
+            _outputIndex = static_cast<int32_t>(output.index);
             _currency = currency;
         }
 
@@ -59,23 +62,43 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> BitcoinLikeOutputApi::getValue() {
-            return std::make_shared<Amount>(_currency, 0, getOuput().value);
+            return std::make_shared<Amount>(_currency, 0, getOutput().value);
         }
 
         std::vector<uint8_t> BitcoinLikeOutputApi::getScript() {
-            return hex::toByteArray(getOuput().script);
+            return hex::toByteArray(getOutput().script);
         }
 
         optional<std::string> BitcoinLikeOutputApi::getAddress() {
-            return getOuput().address.toOptional();
+            return getOutput().address.toOptional();
         }
 
-        BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOuput() {
+        BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOutput() {
             if (_backend.isLeft())
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
-            else
-                return _backend.getRight();
+            return _backend.getRight();
         }
 
+        std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {
+            auto result = BitcoinLikeScript::parse(getScript());
+            if (result.isFailure())
+                throw result.getFailure();
+            return std::make_shared<BitcoinLikeScriptApi>(result.getValue());
+        }
+
+        std::shared_ptr<api::DerivationPath> BitcoinLikeOutputApi::getDerivationPath() {
+            return _path;
+        }
+
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output,
+                                                   const api::Currency &currency,
+                                                   const std::shared_ptr<api::DerivationPath> &path)
+                : BitcoinLikeOutputApi(output, currency) {
+            _path = path;
+        }
+
+        const BigInt &BitcoinLikeOutputApi::value() {
+            return getOutput().value;
+        }
     }
 }

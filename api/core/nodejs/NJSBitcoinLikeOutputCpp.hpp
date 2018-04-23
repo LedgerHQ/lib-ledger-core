@@ -7,6 +7,8 @@
 
 #include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSAmountCpp.hpp"
+#include "NJSBitcoinLikeScriptCpp.hpp"
+#include "NJSDerivationPathCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -57,11 +59,15 @@ private:
      */
     static NAN_METHOD(getScript);
 
+    static NAN_METHOD(parseScript);
+
     /**
      *Get address that spent the output
      *@return Optional String, address that spent
      */
     static NAN_METHOD(getAddress);
+
+    static NAN_METHOD(getDerivationPath);
 
     static NAN_METHOD(New);
 

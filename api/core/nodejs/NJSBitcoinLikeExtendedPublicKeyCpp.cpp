@@ -37,6 +37,74 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::derive) {
     //Return result
     info.GetReturnValue().Set(arg_1);
 }
+NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::derivePublicKey) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey::derivePublicKey needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeExtendedPublicKey* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeExtendedPublicKey>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey::derivePublicKey : implementation of BitcoinLikeExtendedPublicKey is not valid");
+    }
+
+    auto result = cpp_impl->derivePublicKey(arg_0);
+
+    //Wrap result in node object
+    Local<Array> arg_1 = Nan::New<Array>();
+    for(size_t arg_1_id = 0; arg_1_id < result.size(); arg_1_id++)
+    {
+        auto arg_1_elem = Nan::New<Uint32>(result[arg_1_id]);
+        arg_1->Set((int)arg_1_id,arg_1_elem);
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
+NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::deriveHash160) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey::deriveHash160 needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeExtendedPublicKey* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeExtendedPublicKey>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeExtendedPublicKey::deriveHash160 : implementation of BitcoinLikeExtendedPublicKey is not valid");
+    }
+
+    auto result = cpp_impl->deriveHash160(arg_0);
+
+    //Wrap result in node object
+    Local<Array> arg_1 = Nan::New<Array>();
+    for(size_t arg_1_id = 0; arg_1_id < result.size(); arg_1_id++)
+    {
+        auto arg_1_elem = Nan::New<Uint32>(result[arg_1_id]);
+        arg_1->Set((int)arg_1_id,arg_1_elem);
+    }
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
 NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::toBase58) {
 
     //Check if method called with right number of arguments
@@ -298,6 +366,8 @@ void NJSBitcoinLikeExtendedPublicKey::Initialize(Local<Object> target) {
 
     //SetPrototypeMethod all methods
     Nan::SetPrototypeMethod(func_template,"derive", derive);
+    Nan::SetPrototypeMethod(func_template,"derivePublicKey", derivePublicKey);
+    Nan::SetPrototypeMethod(func_template,"deriveHash160", deriveHash160);
     Nan::SetPrototypeMethod(func_template,"toBase58", toBase58);
     Nan::SetPrototypeMethod(func_template,"getRootPath", getRootPath);
     Nan::SetPrototypeMethod(func_template,"fromBase58", fromBase58);

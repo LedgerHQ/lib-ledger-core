@@ -8,6 +8,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BitcoinLikeExtendedPublicKey {
     public abstract BitcoinLikeAddress derive(String path);
 
+    public abstract byte[] derivePublicKey(String path);
+
+    public abstract byte[] deriveHash160(String path);
+
     public abstract String toBase58();
 
     public abstract String getRootPath();
@@ -44,6 +48,22 @@ public abstract class BitcoinLikeExtendedPublicKey {
             return native_derive(this.nativeRef, path);
         }
         private native BitcoinLikeAddress native_derive(long _nativeRef, String path);
+
+        @Override
+        public byte[] derivePublicKey(String path)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_derivePublicKey(this.nativeRef, path);
+        }
+        private native byte[] native_derivePublicKey(long _nativeRef, String path);
+
+        @Override
+        public byte[] deriveHash160(String path)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_deriveHash160(this.nativeRef, path);
+        }
+        private native byte[] native_deriveHash160(long _nativeRef, String path);
 
         @Override
         public String toBase58()

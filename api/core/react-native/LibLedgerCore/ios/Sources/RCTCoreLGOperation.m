@@ -298,4 +298,17 @@ RCT_REMAP_METHOD(getWalletType,getWalletTypeWithResolver:(RCTPromiseResolveBlock
         reject(@"impl_call_error", @"Error while calling LGOperation::getWalletType", nil);
     }
 }
+
+RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getCurrency]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGOperation::getCurrency", nil);
+    }
+}
 @end

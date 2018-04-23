@@ -38,30 +38,54 @@
 #include "BitcoinLikeOutputApi.h"
 #include <api/BitcoinLikeBlock.hpp>
 #include "BitcoinLikeBlockApi.h"
+#include <api/EstimatedSize.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
-            BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi>& operation);
+            explicit BitcoinLikeTransactionApi(const api::Currency& currency);
+            explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi>& operation);
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> getInputs() override;
             std::vector<std::shared_ptr<api::BitcoinLikeOutput>> getOutputs() override;
             std::shared_ptr<api::BitcoinLikeBlock> getBlock() override;
             int64_t getLockTime() override;
             std::shared_ptr<api::Amount> getFees() override;
             std::string getHash() override;
-
             std::chrono::system_clock::time_point getTime() override;
+            optional<int32_t> getTimestamp() override;
+            std::vector<uint8_t> serialize() override;
+            optional<std::vector<uint8_t>> getWitness() override;
+            api::EstimatedSize getEstimatedSize() override;
 
+            BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);
+            BitcoinLikeTransactionApi& addOutput(const std::shared_ptr<api::BitcoinLikeOutput>& output);
+            BitcoinLikeTransactionApi& setLockTime(uint32_t lockTime);
+
+        public:
+            static api::EstimatedSize estimateSize(std::size_t inputCount,
+                                            std::size_t outputCount,
+                                            bool hasTimestamp,
+                                            bool useSegwit
+            );
 
         private:
+            inline bool isWriteable() const;
+            inline bool isReadOnly() const;
+
+        private:
+            int32_t _version;
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> _inputs;
             std::vector<std::shared_ptr<api::BitcoinLikeOutput>> _outputs;
-            int64_t _lockTime;
+            int32_t _lockTime;
             std::shared_ptr<api::Amount> _fees;
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<BitcoinLikeBlockApi> _block;
             std::string _hash;
+            api::Currency _currency;
+            Option<int32_t> _timestamp;
+            bool _writable;
         };
     }
 }

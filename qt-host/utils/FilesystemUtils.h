@@ -32,11 +32,13 @@
 #ifndef LEDGER_CORE_FILESYSTEMUTILS_H
 #define LEDGER_CORE_FILESYSTEMUTILS_H
 
+#include <string>
+
 namespace ledger {
     namespace qt {
         class FilesystemUtils {
         public:
-            static void clearFs();
+            static void clearFs(const std::string& rootDirPath);
         };
     }
 }

@@ -30,6 +30,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::INVALID_VERSION: return "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED: return "PRIVATE_DERIVATION_NOT_SUPPORTED";
         case ErrorCode::INVALID_NETWORK_ADDRESS_VERSION: return "INVALID_NETWORK_ADDRESS_VERSION";
+        case ErrorCode::INCOMPLETE_TRANSACTION: return "INCOMPLETE_TRANSACTION";
         case ErrorCode::RUNTIME_ERROR: return "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE: return "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT: return "ILLEGAL_ARGUMENT";
@@ -60,6 +61,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE: return "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE: return "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE: return "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::NOT_ENOUGH_FUNDS: return "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST: return "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER: return "LINK_NON_TAIL_FILTER";
     };
@@ -88,6 +90,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "INVALID_VERSION") return ErrorCode::INVALID_VERSION;
     else if (errorCode == "PRIVATE_DERIVATION_NOT_SUPPORTED") return ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED;
     else if (errorCode == "INVALID_NETWORK_ADDRESS_VERSION") return ErrorCode::INVALID_NETWORK_ADDRESS_VERSION;
+    else if (errorCode == "INCOMPLETE_TRANSACTION") return ErrorCode::INCOMPLETE_TRANSACTION;
     else if (errorCode == "RUNTIME_ERROR") return ErrorCode::RUNTIME_ERROR;
     else if (errorCode == "OUT_OF_RANGE") return ErrorCode::OUT_OF_RANGE;
     else if (errorCode == "ILLEGAL_ARGUMENT") return ErrorCode::ILLEGAL_ARGUMENT;
@@ -118,6 +121,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE;
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE;
     else if (errorCode == "UNKNOWN_SYNCHRONIZATION_ENGINE") return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
+    else if (errorCode == "NOT_ENOUGH_FUNDS") return ErrorCode::NOT_ENOUGH_FUNDS;
     else if (errorCode == "BAD_CAST") return ErrorCode::BAD_CAST;
     else return ErrorCode::LINK_NON_TAIL_FILTER;
 };
@@ -147,6 +151,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::INVALID_VERSION:  return os << "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED:  return os << "PRIVATE_DERIVATION_NOT_SUPPORTED";
         case ErrorCode::INVALID_NETWORK_ADDRESS_VERSION:  return os << "INVALID_NETWORK_ADDRESS_VERSION";
+        case ErrorCode::INCOMPLETE_TRANSACTION:  return os << "INCOMPLETE_TRANSACTION";
         case ErrorCode::RUNTIME_ERROR:  return os << "RUNTIME_ERROR";
         case ErrorCode::OUT_OF_RANGE:  return os << "OUT_OF_RANGE";
         case ErrorCode::ILLEGAL_ARGUMENT:  return os << "ILLEGAL_ARGUMENT";
@@ -177,6 +182,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE:  return os << "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::NOT_ENOUGH_FUNDS:  return os << "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST:  return os << "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER:  return os << "LINK_NON_TAIL_FILTER";
     }

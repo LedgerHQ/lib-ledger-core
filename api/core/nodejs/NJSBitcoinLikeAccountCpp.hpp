@@ -5,13 +5,9 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEACCOUNT_HPP
 
 
-#include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
-#include "../../../core/src/api/BitcoinLikeTransactionRequest.hpp"
-#include "NJSAmountCpp.hpp"
-#include "NJSBitcoinLikeOutputCpp.hpp"
 #include "NJSBitcoinLikeOutputListCallback.hpp"
-#include "NJSBitcoinLikePreparedTransactionCallback.hpp"
-#include "NJSBitcoinLikeTransactionRequestCallback.hpp"
+#include "NJSBitcoinLikeTransactionBuilderCpp.hpp"
+#include "NJSBitcoinLikeTransactionCpp.hpp"
 #include "NJSI32Callback.hpp"
 #include "NJSStringCallback.hpp"
 #include <cstdint>
@@ -53,35 +49,11 @@ private:
      */
     static NAN_METHOD(getUTXOCount);
 
-    /**
-     *Get UTXOs meeting certain requirements to form a transaction request object
-     *@param baseFees, Amount object, amount of base fees that the transaction will cost
-     *@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
-     *@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
-     *@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
-     */
-    static NAN_METHOD(pickUTXO);
+    static NAN_METHOD(broadcastRawTransaction);
 
-    /**
-     *Get an estimation of fees given a transaction
-     *@param request, BitcoinLikeTransactionRequest object, request without totalFees set
-     *@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
-     */
-    static NAN_METHOD(estimateFees);
-
-    /**
-     *Prepare a raw transaction to be used by user
-     *@param request, BitcoinLikeTransactionRequest object, raw transaction object
-     *@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
-     */
-    static NAN_METHOD(prepareTransaction);
-
-    /**
-     *Broadcast transaction to Bitcoin network (to nodes)
-     *@param transaction, serialized transaction to broadcast
-     *@param callback, Callback object which returning a string result
-     */
     static NAN_METHOD(broadcastTransaction);
+
+    static NAN_METHOD(buildTransaction);
 
     static NAN_METHOD(New);
 

@@ -3,6 +3,8 @@
 
 #import <Foundation/Foundation.h>
 @class LGAmount;
+@class LGBitcoinLikeScript;
+@class LGDerivationPath;
 
 
 /**Class representing Bitcoin outputs */
@@ -32,10 +34,14 @@
  */
 - (nonnull NSData *)getScript;
 
+- (nullable LGBitcoinLikeScript *)parseScript;
+
 /**
  *Get address that spent the output
  *@return Optional String, address that spent
  */
 - (nullable NSString *)getAddress;
+
+- (nullable LGDerivationPath *)getDerivationPath;
 
 @end

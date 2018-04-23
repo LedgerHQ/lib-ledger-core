@@ -71,11 +71,15 @@ namespace ledger {
 
             virtual Option<KeyPurpose> getAddressPurpose(const std::string& address) const = 0;
             virtual Option<std::string> getAddressDerivationPath(const std::string& address) const = 0;
+            virtual Option<std::string> getHash160DerivationPath(const std::vector<uint8_t>& hash160) const = 0;
             virtual bool isEmpty() const = 0;
 
             int getAccountIndex() const;
             const api::BitcoinLikeNetworkParameters& getNetworkParameters() const;
             const api::Currency& getCurrency() const;
+
+            virtual Option<std::vector<uint8_t>> getPublicKey(const std::string& address) const = 0;
+
 
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;

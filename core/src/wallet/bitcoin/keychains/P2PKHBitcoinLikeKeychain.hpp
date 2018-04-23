@@ -81,6 +81,10 @@ namespace ledger {
 
             int32_t getObservableRangeSize() const override;
 
+            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
+
+            Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
+
         private:
             std::string derive(KeyPurpose purpose, off_t index);
             void saveState();

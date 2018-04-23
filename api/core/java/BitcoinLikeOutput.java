@@ -31,11 +31,15 @@ public abstract class BitcoinLikeOutput {
      */
     public abstract byte[] getScript();
 
+    public abstract BitcoinLikeScript parseScript();
+
     /**
      *Get address that spent the output
      *@return Optional String, address that spent
      */
     public abstract String getAddress();
+
+    public abstract DerivationPath getDerivationPath();
 
     private static final class CppProxy extends BitcoinLikeOutput
     {
@@ -93,11 +97,27 @@ public abstract class BitcoinLikeOutput {
         private native byte[] native_getScript(long _nativeRef);
 
         @Override
+        public BitcoinLikeScript parseScript()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_parseScript(this.nativeRef);
+        }
+        private native BitcoinLikeScript native_parseScript(long _nativeRef);
+
+        @Override
         public String getAddress()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getAddress(this.nativeRef);
         }
         private native String native_getAddress(long _nativeRef);
+
+        @Override
+        public DerivationPath getDerivationPath()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getDerivationPath(this.nativeRef);
+        }
+        private native DerivationPath native_getDerivationPath(long _nativeRef);
     }
 }

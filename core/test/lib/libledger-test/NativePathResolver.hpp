@@ -33,9 +33,12 @@
 
 #include <src/api/PathResolver.hpp>
 #include <vector>
+#include <utils/Option.hpp>
 
 class NativePathResolver : public ledger::core::api::PathResolver {
 public:
+    NativePathResolver();
+    explicit NativePathResolver(const ledger::core::Option<std::string>& rootDirPath);
     virtual std::string resolveDatabasePath(const std::string &path) override;
 
     virtual std::string resolveLogFilePath(const std::string &path) override;
@@ -44,6 +47,7 @@ public:
     void clean();
 private:
     std::vector<std::string> _createdPaths;
+    ledger::core::Option<std::string> _rootDirPath;
 };
 
 

@@ -30,8 +30,13 @@
  */
 
 #include <gtest/gtest.h>
+#include <QCoreApplication>
+#include <QDir>
+#include <QDebug>
+#include "IntegrationEnvironment.h"
 
 int main(int argc, char **argv) {
+    IntegrationEnvironment::initInstance(argc, argv);
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -75,32 +75,26 @@ namespace ledger {
             }
 
             void setValue(const T& value) {
-                {
-                    std::lock_guard<std::mutex> lock(_lock);
-                    ensureNotCompleted();
-                    _value = Try<T>(value);
-                }
-                trigger();
+                std::lock_guard<std::mutex> lock(_lock);
+                ensureNotCompleted();
+                _value = Try<T>(value);
+                _trigger();
             };
 
             void setError(const Exception& exception) {
-                {
-                    std::lock_guard<std::mutex> lock(_lock);
-                    ensureNotCompleted();
-                    Try<T> ex;
-                    ex.fail(exception);
-                    _value = ex;
-                }
-                trigger();
+                std::lock_guard<std::mutex> lock(_lock);
+                ensureNotCompleted();
+                Try<T> ex;
+                ex.fail(exception);
+                _value = ex;
+                _trigger();
             }
 
             void addCallback(Callback callback, std::shared_ptr<api::ExecutionContext> context) {
                 // Add to the queue
-                {
-                    std::lock_guard<std::mutex> lock(_lock);
-                    _callbacks.push(std::make_tuple(callback, context));
-                }
-                trigger();
+                std::lock_guard<std::mutex> lock(_lock);
+                _callbacks.push(std::make_tuple(callback, context));
+                _trigger();
             }
 
             Option<Try<T>> getValue() const {
@@ -115,6 +109,16 @@ namespace ledger {
 
             void trigger() {
                 std::lock_guard<std::mutex> lock(_lock);
+                _trigger();
+            }
+
+        private:
+            inline void ensureNotCompleted() {
+                if (_value.hasValue())
+                    throw Exception(api::ErrorCode::ALREADY_COMPLETED, "This promise is already completed");
+            };
+
+            inline void _trigger() {
                 if (_value.isEmpty() || _callbacks.empty()) {
                     return ;
                 }
@@ -128,12 +132,6 @@ namespace ledger {
                     _callbacks.pop();
                 }
             }
-
-        private:
-            inline void ensureNotCompleted() {
-                if (_value.hasValue())
-                    throw Exception(api::ErrorCode::ALREADY_COMPLETED, "This promise is already completed");
-            };
 
         private:
             mutable std::mutex _lock;

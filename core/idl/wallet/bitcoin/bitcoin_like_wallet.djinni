@@ -2,6 +2,8 @@
 @import "../../preferences/preferences.djinni"
 @import "../amount.djinni"
 @import "../../bitcoin/addresses.djinni"
+@import "./bitcoin_script.djinni"
+@import "../../utils/tuples.djinni"
 
 #Class of constants to set Bitcoin like wallet configurations
 BitcoinLikeWalletConfiguration = interface +c {
@@ -25,24 +27,57 @@ BitcoinLikeWalletConfiguration = interface +c {
 
 #Class representing Bitcoin inputs
 BitcoinLikeInput = interface +c {
-    #Get address that spends the input
-    #@return Optional String, address emmiting input
+    # Returns the address of the input (if an address can be computed)
     getAddress(): optional<string>;
-    #Get amount of input
-    #@return Optional Amount object, amount of input
+    # Returns the public associated with the address. This value can be NULL if you are building a transaction with an
+    # address which does not belong to your wallet.
+    getPublicKeys(): list<binary>;
+    # Returns the derivation path of this input if the address is owned by the wallet
+    getDerivationPath(): list<DerivationPath>;
+    # Returns the value of the amount. Depending on the backend this value may not exist if the input is not owned by
+    # the wallet.
     getValue(): optional<Amount>;
+    # Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
+    # the wallet
+    getPreviousTxHash(): optional<string>;
+    # Get the index at which the output is located in the transaction output spent by this input. The result can be
+    # NULL if the input does not belong to the wallet
     #Check whether input
     #@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
     isCoinbase(): bool;
     #Stored data cointained in coinbase
     #@return Optional String
     getCoinbase(): optional<string>;
-    #Get hash of previous transaction that generates that input
-    #@return Optional String, hash of previous transaction (null if coinbase)
-    getPreviousTxHash(): optional<string>;
     #Get output index, it identifies which UTXO from tht transaction to spend
     #@return Optional 32 bits integer, index of previous transaction
     getPreviousOutputIndex(): optional<i32>;
+    # Retrieve the output spent by this input. Depending on the implementation this method may
+    # use a lock to fetch data from a database. Therefore it may have poor performance, use with
+    # caution.
+    # @return The output spent by this input.
+    getPreviousOuput(): BitcoinLikeOutput;
+    # Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output.
+    getScriptSig(): binary;
+    # Parse the script sig to a [[BitcoinLikeScript]]
+    parseScriptSig(): BitcoinLikeScript;
+
+
+    # Set the ScriptS to the given value
+    # @param scriptSig The ScriptSig to use for this input
+    setScriptSig(scriptSig: binary);
+    # Push data to the end of the current ScriptSig
+    pushToScriptSig(data: binary);
+
+    # Set the sequence number of this input
+    setSequence(sequence: i32);
+    # Get the sequence number of this input
+    getSequence(): i32;
+
+    getPreviousTransaction(callback: Callback<binary>);
+
+    # Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature)
+    setP2PKHSigScript(signature: binary);
+
 }
 
 #Class representing Bitcoin outputs
@@ -59,9 +94,11 @@ BitcoinLikeOutput = interface +c {
     #Get script (witness script) cryptographic puzzle that determines the conditions to spend the output
     #@return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
     getScript(): binary;
+    parseScript(): BitcoinLikeScript;
     #Get address that spent the output
     #@return Optional String, address that spent
     getAddress(): optional<string>;
+    getDerivationPath(): optional<DerivationPath>;
 }
 
 #Class representing Bitcoin block
@@ -79,27 +116,30 @@ BitcoinLikeBlock = interface +c {
 
 #Class representing a Bitcoin transaction
 BitcoinLikeTransaction = interface +c {
-    #Get transaction hash
-    #@return string, transaction hash
+    # Get the hash of the transaction.
     getHash(): string;
-    #Get list of inputs aggregated under that transaction
-    #@return list of BitcoinLikeInput objects
+    # Get the input of the transaction
     getInputs(): list<BitcoinLikeInput>;
-    #Get list of outputs aggregated under that transaction
-    #@return list of BitcoinLikeOutput objects
+    # Get the output of the transaction
     getOutputs(): list<BitcoinLikeOutput>;
-    #Get block to which this transaction belongs
-    #@return Optional BitcoinLikeBlock
+    # Get the block in which the transaction is inserted if the transaction is confirmed.
     getBlock(): optional<BitcoinLikeBlock>;
-    #Get lock time of transaction, block height from which transaction may be accepted by miners
-    #@return 64 bits integer, block height after which transaction can be accepted
+    # Get the lock time of the transaction.
     getLockTime(): i64;
-    #Get fees payed for this transaction
-    #@return Amount object, amount of fees
+    # Get the amount of fees of the transaction.
     getFees(): Amount;
-    #Get time of creation of this transaction
-    #@return Date object
+    # Get the time when the transaction was issued or the time of the block including
+    # this transaction
     getTime(): date;
+    # Get the timestamps serialized in the raw transaction if the underlying currency handles it.
+    getTimestamp(): optional<i32>;
+    # Serialize the transaction to its raw format.
+    serialize(): binary;
+    # Get the witness if the underlying transaction is a segwit transaction.
+    getWitness(): optional<binary>;
+    # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+    # size.
+    getEstimatedSize(): EstimatedSize;
 }
 
 #Class representing a Bitcoin Operation
@@ -166,6 +206,68 @@ BitcoinLikePickingStrategy = enum {
     merge_outputs;
 }
 
+BitcoinLikeTransactionBuilder = interface +c {
+    # Add the given input to the final transaction.
+    # @param transactionhash The hash of the transaction in where the UTXO can be located.
+    # @params index Index of the UTXO in the previous transaction
+    # @params sequence Sequence number to add at the end of the input serialization. This can be used for RBF transaction
+    # @return A reference on the same builder in order to chain calls.
+    addInput(transactionHash: string, index: i32, sequence: i32): BitcoinLikeTransactionBuilder;
+
+    # Add the given output to the final transaction
+    # @return A reference on the same builder in order to chain calls.
+    addOutput(amount: Amount, script: BitcoinLikeScript): BitcoinLikeTransactionBuilder;
+
+    # If needed the transaction will send its change to the given path. It is possible to add multiple change path.
+    # @return A reference on the same builder in order to chain calls.
+    addChangePath(path: string): BitcoinLikeTransactionBuilder;
+
+    # Exclude UTXO from the coin selection (alias UTXO picking). You can call this method multiple times to exclude multiple
+    # UTXO.
+    # @param transactionHash The hash of the transaction in which this UTXO can be found.
+    # @param outputIndex The position of the output in the previous transaction,
+    # @return A reference on the same builder in order to chain calls.
+    excludeUtxo(transactionHash: string, outputIndex: i32): BitcoinLikeTransactionBuilder;
+
+    # @return A reference on the same builder in order to chain calls.
+    setNumberOfChangeAddresses(count: i32): BitcoinLikeTransactionBuilder;
+
+    # Set the maximum amount per change output. By default there is no max amount.
+    # @return A reference on the same builder in order to chain calls.
+    setMaxAmountOnChange(amount: Amount): BitcoinLikeTransactionBuilder;
+
+    # Set the minimum amount per change output. By default this value is the dust value of the currency.
+    # @return A reference on the same builder in order to chain calls.
+    setMinAmountOnChange(amount: Amount): BitcoinLikeTransactionBuilder;
+
+    # Set the UTXO picking strategy (see [[BitcoinLikePickingStrategy]]).
+    # @param strategy The strategy to adopt in order to select which input to use in the transaction.
+    # @param sequence The sequence value serialized at the end of the raw transaction. If you don't know what to put here
+    # just use 0xFFFFFF
+    # @return A reference on the same builder in order to chain calls.
+    pickInputs(strategy: BitcoinLikePickingStrategy, sequence: i32): BitcoinLikeTransactionBuilder;
+
+    # Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+    # @param amount The value to send
+    # @param address Address of the recipient
+    # @return A reference on the same builder in order to chain calls.
+    sendToAddress(amount: Amount, address: string): BitcoinLikeTransactionBuilder;
+
+    # Set the amount of fees per byte (of the raw transaction).
+    # @return A reference on the same builder in order to chain calls.
+    setFeesPerByte(fees: Amount): BitcoinLikeTransactionBuilder;
+
+    # Build a transaction from the given builder parameters.
+    build(callback: Callback<BitcoinLikeTransaction>);
+
+    # Creates a clone of this builder.
+    # @return A copy of the current builder instance.
+    clone(): BitcoinLikeTransactionBuilder;
+
+    # Reset the current instance to its initial state
+    reset();
+}
+
 #Class representing a Bitcoin account
 BitcoinLikeAccount = interface +c {
     #Get UTXOs of account in a given range
@@ -176,27 +278,11 @@ BitcoinLikeAccount = interface +c {
     #Get UTXOs count of account
     #@param callback, Callback object which returns number of UTXO owned by this account
     getUTXOCount(callback: Callback<i32>);
-    #Get UTXOs meeting certain requirements to form a transaction request object
-    #@param baseFees, Amount object, amount of base fees that the transaction will cost
-    #@param outputs, List of BitcoinLikeOutput objects, outputs from which we will pick to construct the transaction
-    #@param strategy, BitcoinLikePickingStrategy object, determine strategy followed to pick outputs to spend
-    #@param callback, Callback object which returns the constructed transaction (BitcoinLikeTransactionRequest object)
-    pickUTXO(baseFees: Amount, outputs: list<BitcoinLikeOutput>, strategy: BitcoinLikePickingStrategy, callback: Callback<BitcoinLikeTransactionRequest>);
-    #Get an estimation of fees given a transaction
-    #@param request, BitcoinLikeTransactionRequest object, request without totalFees set
-    #@param callback, Callback returning BitcoinLikeTransactionRequest object with totalFees set if estimateFees succeed
-    estimateFees(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikeTransactionRequest>);
-    #Prepare a raw transaction to be used by user
-    #@param request, BitcoinLikeTransactionRequest object, raw transaction object
-    #@param callback, Callback object returning, is case of success of prepareTransaction, a BitcoinLikePreparedTransaction object which is an usable transaction
-    prepareTransaction(request: BitcoinLikeTransactionRequest, callback: Callback<BitcoinLikePreparedTransaction>);
-    #Broadcast transaction to Bitcoin network (to nodes)
-    #@param transaction, serialized transaction to broadcast
-    #@param callback, Callback object which returning a string result
-    broadcastTransaction(transaction: binary, callback: Callback<string>);
+    broadcastRawTransaction(transaction: binary, callback: Callback<string>);
+    broadcastTransaction(transaction: BitcoinLikeTransaction, callback: Callback<string>);
+    buildTransaction(): BitcoinLikeTransactionBuilder;
 }
 
-#TODO
 BitcoinLikeWallet = interface +c {
 
 }

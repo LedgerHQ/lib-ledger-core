@@ -6,6 +6,7 @@
 
 
 #include "../../../core/src/api/../utils/optional.hpp"
+#include "../../../core/src/api/EstimatedSize.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeInputCpp.hpp"
@@ -37,47 +38,44 @@ public:
     std::shared_ptr<ledger::core::api::BitcoinLikeTransaction> getCppImpl(){return _BitcoinLikeTransaction;};
 
 private:
-    /**
-     *Get transaction hash
-     *@return string, transaction hash
-     */
+    /** Get the hash of the transaction. */
     static NAN_METHOD(getHash);
 
-    /**
-     *Get list of inputs aggregated under that transaction
-     *@return list of BitcoinLikeInput objects
-     */
+    /** Get the input of the transaction */
     static NAN_METHOD(getInputs);
 
-    /**
-     *Get list of outputs aggregated under that transaction
-     *@return list of BitcoinLikeOutput objects
-     */
+    /** Get the output of the transaction */
     static NAN_METHOD(getOutputs);
 
-    /**
-     *Get block to which this transaction belongs
-     *@return Optional BitcoinLikeBlock
-     */
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     static NAN_METHOD(getBlock);
 
-    /**
-     *Get lock time of transaction, block height from which transaction may be accepted by miners
-     *@return 64 bits integer, block height after which transaction can be accepted
-     */
+    /** Get the lock time of the transaction. */
     static NAN_METHOD(getLockTime);
 
-    /**
-     *Get fees payed for this transaction
-     *@return Amount object, amount of fees
-     */
+    /** Get the amount of fees of the transaction. */
     static NAN_METHOD(getFees);
 
     /**
-     *Get time of creation of this transaction
-     *@return Date object
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
      */
     static NAN_METHOD(getTime);
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    static NAN_METHOD(getTimestamp);
+
+    /** Serialize the transaction to its raw format. */
+    static NAN_METHOD(serialize);
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    static NAN_METHOD(getWitness);
+
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    static NAN_METHOD(getEstimatedSize);
 
     static NAN_METHOD(New);
 

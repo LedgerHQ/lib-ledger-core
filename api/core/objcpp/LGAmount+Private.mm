@@ -100,6 +100,24 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
++ (nullable LGAmount *)fromHex:(nonnull LGCurrency *)currency
+                           hex:(nonnull NSString *)hex {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::Amount::fromHex(::djinni_generated::Currency::toCpp(currency),
+                                                                   ::djinni::String::toCpp(hex));
+        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
++ (nullable LGAmount *)fromLong:(nonnull LGCurrency *)currency
+                          value:(int64_t)value {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::Amount::fromLong(::djinni_generated::Currency::toCpp(currency),
+                                                                    ::djinni::I64::toCpp(value));
+        return ::djinni_generated::Amount::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 namespace djinni_generated {
 
 auto Amount::toCpp(ObjcType objc) -> CppType

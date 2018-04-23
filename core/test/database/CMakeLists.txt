@@ -12,7 +12,7 @@ endif (APPLE)
 include_directories(../lib/libledger-test/)
 
 add_executable(ledger-core-database-tests main.cpp pool_tests.cpp query_filters_tests.cpp query_builder_tests.cpp
-            BaseFixture.cpp BaseFixture.h
+            BaseFixture.cpp BaseFixture.h IntegrationEnvironment.cpp IntegrationEnvironment.h
         )
 
 target_link_libraries(ledger-core-database-tests gtest gtest_main)

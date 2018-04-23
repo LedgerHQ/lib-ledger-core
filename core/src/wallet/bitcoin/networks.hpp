@@ -37,6 +37,7 @@ namespace ledger {
     namespace core {
         namespace networks {
             extern const api::BitcoinLikeNetworkParameters BITCOIN;
+            extern const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET;
             extern const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             template<class Archive>

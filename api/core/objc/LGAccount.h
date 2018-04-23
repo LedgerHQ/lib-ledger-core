@@ -3,7 +3,6 @@
 
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
-@class LGAmount;
 @class LGEventBus;
 @class LGLogger;
 @class LGOperationQuery;
@@ -134,19 +133,5 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
  *@param callback, Callback returning, if getLastBlock succeeds, a Block object
  */
 - (void)getLastBlock:(nullable id<LGBlockCallback>)callback;
-
-/**
- *Compute fees of transaction with a given amount, priority, data ...
- *@param amount, Amount object
- *@param priority, 32 bits integer priority under which transaction will be proccessed
- *@param recipients, list of string representing recipients of transaction
- *@param data, list of bytes, data that transaction is holding
- *@param callback, Callback returning, if computeFees succeed, an Amount Object
- */
-- (void)computeFees:(nullable LGAmount *)amount
-           priority:(int32_t)priority
-         recipients:(nonnull NSArray<NSString *> *)recipients
-               data:(nonnull NSArray<NSData *> *)data
-           callback:(nullable id<LGAmountCallback>)callback;
 
 @end

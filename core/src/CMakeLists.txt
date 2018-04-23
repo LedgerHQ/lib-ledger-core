@@ -198,7 +198,9 @@ add_library(
         net/WebSocketClient.cpp net/WebSocketClient.h
         net/WebSocketConnection.cpp net/WebSocketConnection.h
         math/Fibonacci.cpp math/Fibonacci.h
-        wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h bitcoin/BitcoinLikeHelper.cpp bitcoin/BitcoinLikeHelper.h bitcoin/ScriptParser.cpp bitcoin/ScriptParser.h bitcoin/opcodes.h bitcoin/opcodes.cpp)
+        wallet/bitcoin/explorers/api/WebSocketNotificationParser.cpp wallet/bitcoin/explorers/api/WebSocketNotificationParser.h
+        wallet/common/api_impl/DerivationPathApi.cpp
+        wallet/common/api_impl/DerivationPathApi.h wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.cpp wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.cpp wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h wallet/bitcoin/types.h wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.cpp wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h wallet/bitcoin/scripts/operators.h wallet/bitcoin/scripts/operators.cpp wallet/bitcoin/scripts/BitcoinLikeScript.cpp wallet/bitcoin/scripts/BitcoinLikeScript.h wallet/bitcoin/api_impl/BitcoinLikeScriptApi.cpp wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.cpp wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h)
 
 target_link_libraries(ledger-core bigd)
 if(MINGW)

@@ -1,0 +1,5 @@
+
+EstimatedSize = record {
+    min: i32;
+    max: i32;
+}

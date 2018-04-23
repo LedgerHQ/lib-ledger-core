@@ -5,7 +5,6 @@ package co.ledger.core;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**TODO */
 public abstract class BitcoinLikeWallet {
 
     private static final class CppProxy extends BitcoinLikeWallet

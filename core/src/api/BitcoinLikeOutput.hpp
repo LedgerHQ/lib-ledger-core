@@ -13,6 +13,8 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BitcoinLikeScript;
+class DerivationPath;
 
 /**Class representing Bitcoin outputs */
 class BitcoinLikeOutput {
@@ -43,11 +45,15 @@ public:
      */
     virtual std::vector<uint8_t> getScript() = 0;
 
+    virtual std::shared_ptr<BitcoinLikeScript> parseScript() = 0;
+
     /**
      *Get address that spent the output
      *@return Optional String, address that spent
      */
     virtual std::experimental::optional<std::string> getAddress() = 0;
+
+    virtual std::shared_ptr<DerivationPath> getDerivationPath() = 0;
 };
 
 } } }  // namespace ledger::core::api

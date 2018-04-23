@@ -8,8 +8,10 @@
 #include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include "NJSBitcoinLikeAddressCpp.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -33,6 +35,10 @@ public:
 
 private:
     static NAN_METHOD(derive);
+
+    static NAN_METHOD(derivePublicKey);
+
+    static NAN_METHOD(deriveHash160);
 
     static NAN_METHOD(toBase58);
 

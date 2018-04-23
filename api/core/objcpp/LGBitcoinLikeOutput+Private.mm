@@ -7,6 +7,8 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmount+Private.h"
+#import "LGBitcoinLikeScript+Private.h"
+#import "LGDerivationPath+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -59,10 +61,24 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGBitcoinLikeScript *)parseScript {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->parseScript();
+        return ::djinni_generated::BitcoinLikeScript::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nullable NSString *)getAddress {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getAddress();
         return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGDerivationPath *)getDerivationPath {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->getDerivationPath();
+        return ::djinni::Optional<std::experimental::optional, ::djinni_generated::DerivationPath>::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

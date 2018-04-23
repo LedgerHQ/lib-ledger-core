@@ -86,6 +86,10 @@ private:
     /**TODO */
     static NAN_METHOD(format);
 
+    static NAN_METHOD(fromHex);
+
+    static NAN_METHOD(fromLong);
+
     static NAN_METHOD(New);
 
     std::shared_ptr<ledger::core::api::Amount> _Amount;

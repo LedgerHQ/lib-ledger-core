@@ -56,7 +56,7 @@ namespace ledger {
                 _defer = future._defer;
             }
 
-            Future(Future<T>&& future) : _defer(std::move(future._defer)) {}
+            Future(Future<T>&& future) : _defer(future._defer) {}
             Future<T>& operator=(const Future<T>& future) {
                 if (this != &future)
                     _defer = future._defer;
@@ -64,7 +64,7 @@ namespace ledger {
             }
             Future<T>& operator=(Future<T>&& future) {
                 if (this != &future)
-                    _defer = std::move(future._defer);
+                    _defer = future._defer;
                 return *this;
             }
 
@@ -255,12 +255,6 @@ namespace ledger {
 
 
             static Future<T> successful(T value) {
-                Promise<T> p;
-                p.success(value);
-                return p.getFuture();
-            }
-
-            static Future<T> successful(T&& value) {
                 Promise<T> p;
                 p.success(value);
                 return p.getFuture();

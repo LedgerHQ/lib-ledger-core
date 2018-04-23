@@ -6,7 +6,6 @@
 #import <React/RCTBridgeModule.h>
 
 
-/**TODO */
 @interface RCTCoreLGBitcoinLikeWallet : NSObject <RCTBridgeModule>
 @property (nonatomic, strong) LGBitcoinLikeWallet *objcImpl;
 @end

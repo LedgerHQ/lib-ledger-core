@@ -17,53 +17,51 @@ class Amount;
 class BitcoinLikeBlock;
 class BitcoinLikeInput;
 class BitcoinLikeOutput;
+struct EstimatedSize;
 
 /**Class representing a Bitcoin transaction */
 class BitcoinLikeTransaction {
 public:
     virtual ~BitcoinLikeTransaction() {}
 
-    /**
-     *Get transaction hash
-     *@return string, transaction hash
-     */
+    /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;
 
-    /**
-     *Get list of inputs aggregated under that transaction
-     *@return list of BitcoinLikeInput objects
-     */
+    /** Get the input of the transaction */
     virtual std::vector<std::shared_ptr<BitcoinLikeInput>> getInputs() = 0;
 
-    /**
-     *Get list of outputs aggregated under that transaction
-     *@return list of BitcoinLikeOutput objects
-     */
+    /** Get the output of the transaction */
     virtual std::vector<std::shared_ptr<BitcoinLikeOutput>> getOutputs() = 0;
 
-    /**
-     *Get block to which this transaction belongs
-     *@return Optional BitcoinLikeBlock
-     */
+    /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     virtual std::shared_ptr<BitcoinLikeBlock> getBlock() = 0;
 
-    /**
-     *Get lock time of transaction, block height from which transaction may be accepted by miners
-     *@return 64 bits integer, block height after which transaction can be accepted
-     */
+    /** Get the lock time of the transaction. */
     virtual int64_t getLockTime() = 0;
 
-    /**
-     *Get fees payed for this transaction
-     *@return Amount object, amount of fees
-     */
+    /** Get the amount of fees of the transaction. */
     virtual std::shared_ptr<Amount> getFees() = 0;
 
     /**
-     *Get time of creation of this transaction
-     *@return Date object
+     * Get the time when the transaction was issued or the time of the block including
+     * this transaction
      */
     virtual std::chrono::system_clock::time_point getTime() = 0;
+
+    /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
+    virtual std::experimental::optional<int32_t> getTimestamp() = 0;
+
+    /** Serialize the transaction to its raw format. */
+    virtual std::vector<uint8_t> serialize() = 0;
+
+    /** Get the witness if the underlying transaction is a segwit transaction. */
+    virtual std::experimental::optional<std::vector<uint8_t>> getWitness() = 0;
+
+    /**
+     * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
+     * size.
+     */
+    virtual EstimatedSize getEstimatedSize() = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -3,6 +3,7 @@
 
 #import "LGAmount.h"
 #import "LGBitcoinLikeOperation.h"
+#import "LGCurrency.h"
 #import "LGOperation.h"
 #import "LGOperationType.h"
 #import "LGPreferences.h"

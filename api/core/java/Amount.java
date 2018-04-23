@@ -56,6 +56,10 @@ public abstract class Amount {
     /**TODO */
     public abstract String format(Locale locale, FormatRules rules);
 
+    public static native Amount fromHex(Currency currency, String hex);
+
+    public static native Amount fromLong(Currency currency, long value);
+
     private static final class CppProxy extends Amount
     {
         private final long nativeRef;
