@@ -30,7 +30,7 @@
  */
 
 #include "BitcoinLikeTransactionBuilder.h"
-#include "../../../../../cmake-build-debug/include/ledger/core/api/BitcoinLikeAddress.hpp"
+#include <api/BitcoinLikeAddress.hpp>
 #include <wallet/common/Amount.h>
 #include <api/BitcoinLikeTransactionCallback.hpp>
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
