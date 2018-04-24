@@ -1,7 +1,7 @@
 {
 	'variables': {
 		'core_library%': "../../../../../lib-ledger-core-build",
-		'run_path%': "../../../../../lib-ledger-core-build/core/src/Release-iphoneos",
+		'run_path%': "../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator",
 		'header_path%': "../../objc",
 	},
 	'targets': [
