@@ -65,7 +65,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::addInput(const std::string &transactionHash, int32_t index, int32_t sequence) {
-            _request.inputs.push_back({transactionHash, index, sequence});
+            //Fix: use uniform initialization
+            using InputType = std::tuple<std::string, int32_t, uint32_t>;
+            InputType new_input{transactionHash, index, sequence};
+            _request.inputs.emplace_back(std::move(new_input));
             return shared_from_this();
         }
 
@@ -85,7 +88,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::excludeUtxo(const std::string &transactionHash, int32_t outputIndex) {
-            _request.excludedUtxo.push_back({transactionHash, outputIndex});
+            //Fix: use uniform initialization
+            using UTXOType = std::tuple<std::string, int32_t>;
+            UTXOType excluded_utxo{transactionHash, outputIndex};
+            _request.excludedUtxo.push_back(excluded_utxo);
             return shared_from_this();
         }
 

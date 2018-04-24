@@ -102,10 +102,12 @@ namespace ledger {
                 buddy->logger->info("GET TX 2");
                 return buddy->getTransaction(hash).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) mutable -> Future<Unit> {
                     buddy->logger->info("GOT TX 2");
-                    if (tx->block.nonEmpty())
-                        richutxo->push_back(RichUTXO({tx->block.getValue().height, utxo[index]}));
-                    else
-                        richutxo->push_back(RichUTXO({std::numeric_limits<uint64_t>::max(), utxo[index]}));
+                    uint64_t block_height = (tx->block.nonEmpty()) ? tx->block.getValue().height :
+                                            std::numeric_limits<uint64_t>::max();
+                    //Fix: use uniform initialization
+                    RichUTXO curr_richutxo{block_height, utxo[index]};
+                    richutxo->emplace_back(std::move(curr_richutxo));
+
                     buddy->logger->info("Go {} on {}", index + 1, utxo.size());
                     return go(index + 1, buddy, utxo, richutxo);
                 });
@@ -138,7 +140,9 @@ namespace ledger {
                 for (auto index = 0; index < pickedInputs; index++) {
                     const std::shared_ptr<BitcoinLikeOutputApi>& output =
                             std::dynamic_pointer_cast<BitcoinLikeOutputApi>(std::get<1>((*richutxo)[index]));
-                    out.push_back(UTXODescriptor({output->getTransactionHash(), output->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())}));
+                    //Fix: use uniform initialization
+                    UTXODescriptor utxoDescriptor{output->getTransactionHash(), output->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
+                    out.emplace_back(std::move(utxoDescriptor));
                 }
 
                 return out;
