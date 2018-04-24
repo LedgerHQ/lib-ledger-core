@@ -103,7 +103,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence) {
-            _request.utxoPicker = Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>>({strategy, sequence});
+            //Fix: use uniform initialization
+            using UTXOPickerType = std::tuple<api::BitcoinLikePickingStrategy, uint32_t>;
+            UTXOPickerType new_utxo_picker{strategy, sequence};
+            _request.utxoPicker = Option<UTXOPickerType>(std::move(new_utxo_picker));
             return shared_from_this();
         }
 
