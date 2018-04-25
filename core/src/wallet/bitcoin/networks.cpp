@@ -46,8 +46,8 @@ namespace ledger {
 
             const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET(
                     "btc_testnet",
-                    {0x6f},
-                    {0xc4},
+                    {0x6F},
+                    {0xC4},
                     {0x04, 0x35, 0x87, 0xCF},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     5430,

@@ -86,6 +86,8 @@ public abstract class BitcoinLikeTransactionBuilder {
     /** Reset the current instance to its initial state */
     public abstract void reset();
 
+    public static native BitcoinLikeTransaction parseRawUnsignedTransaction(Currency currency, byte[] rawTransaction);
+
     private static final class CppProxy extends BitcoinLikeTransactionBuilder
     {
         private final long nativeRef;

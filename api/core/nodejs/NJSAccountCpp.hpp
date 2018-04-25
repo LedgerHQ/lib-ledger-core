@@ -142,6 +142,8 @@ private:
      */
     static NAN_METHOD(getLastBlock);
 
+    static NAN_METHOD(asBitcoinLikeAccount);
+
     static NAN_METHOD(New);
 
     std::shared_ptr<ledger::core::api::Account> _Account;

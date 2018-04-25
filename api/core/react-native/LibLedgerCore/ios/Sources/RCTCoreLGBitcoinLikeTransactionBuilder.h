@@ -4,8 +4,10 @@
 #import "LGAmount.h"
 #import "LGBitcoinLikePickingStrategy.h"
 #import "LGBitcoinLikeScript.h"
+#import "LGBitcoinLikeTransaction.h"
 #import "LGBitcoinLikeTransactionBuilder.h"
 #import "LGBitcoinLikeTransactionCallback.h"
+#import "LGCurrency.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
 

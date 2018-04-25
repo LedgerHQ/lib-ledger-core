@@ -62,7 +62,8 @@ namespace ledger {
             BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);
             BitcoinLikeTransactionApi& addOutput(const std::shared_ptr<api::BitcoinLikeOutput>& output);
             BitcoinLikeTransactionApi& setLockTime(uint32_t lockTime);
-
+            BitcoinLikeTransactionApi& setVersion(uint32_t version);
+            BitcoinLikeTransactionApi& setTimestamp(uint32_t timestamp);
         public:
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                             std::size_t outputCount,
@@ -84,7 +85,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
-            Option<int32_t> _timestamp;
+            Option<uint32_t> _timestamp;
             bool _writable;
         };
     }

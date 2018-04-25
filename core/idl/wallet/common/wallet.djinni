@@ -296,6 +296,9 @@ Account = interface +c {
     #Get Last block of blockchain on which account operates
     #@param callback, Callback returning, if getLastBlock succeeds, a Block object
     getLastBlock(callback: Callback<Block>);
+
+
+    asBitcoinLikeAccount(): BitcoinLikeAccount;
 }
 
 #Class representing a wallet

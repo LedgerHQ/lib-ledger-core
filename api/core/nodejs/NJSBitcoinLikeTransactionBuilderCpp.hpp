@@ -5,13 +5,18 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTIONBUILDER_HPP
 
 
+#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
+#include "../../../core/src/api/Currency.hpp"
+#include "../../../core/src/api/CurrencyUnit.hpp"
 #include "NJSAmountCpp.hpp"
 #include "NJSBitcoinLikeScriptCpp.hpp"
 #include "NJSBitcoinLikeTransactionCallback.hpp"
+#include "NJSBitcoinLikeTransactionCpp.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <nan.h>
 #include <node.h>
@@ -113,6 +118,8 @@ private:
 
     /** Reset the current instance to its initial state */
     static NAN_METHOD(reset);
+
+    static NAN_METHOD(parseRawUnsignedTransaction);
 
     static NAN_METHOD(New);
 

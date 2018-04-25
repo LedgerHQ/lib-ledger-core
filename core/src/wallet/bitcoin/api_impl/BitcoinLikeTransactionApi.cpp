@@ -30,8 +30,10 @@
  */
 #include "BitcoinLikeTransactionApi.h"
 #include <bytes/BytesWriter.h>
+#include <bytes/BytesReader.h>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 
 namespace ledger {
     namespace core {
@@ -102,14 +104,15 @@ namespace ledger {
         }
 
         optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "optional<std::chrono::time_point> BitcoinLikeTransactionApi::getTimestamp()");
+            return _timestamp.map<int32_t>([] (const uint32_t& v) {
+                return (int32_t)v;
+            }).toOptional();
         }
 
         std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
             BytesWriter writer;
 
             writer.writeLeValue<int32_t>(_version);
-            writer.writeVarInt(_inputs.size());
 
             if (_currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
                 auto ts = getTimestamp();
@@ -123,8 +126,8 @@ namespace ledger {
                 writer.writeByte(0x01);
             }
 
-            // If all inputs are empty we need to create a signable transaction
-
+            // If all inputs are empty we need to create an unsigned transaction
+            writer.writeVarInt(_inputs.size());
             for (auto& input : _inputs) {
                 auto hash = input->getPreviousTxHash();
                 if (!hash)
@@ -227,6 +230,83 @@ namespace ledger {
                 maxSize += 148 * inputCount;
             }
             return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
+        }
+
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setVersion(uint32_t version) {
+            _version = version;
+            return *this;
+        }
+
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setTimestamp(uint32_t ts) {
+            _timestamp = Option<uint32_t>(ts);
+            return *this;
+        }
+
+        std::shared_ptr<api::BitcoinLikeTransaction> api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(
+                const Currency &currency, const std::vector<uint8_t> &rawTransaction) {
+            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency);
+            BytesReader reader(rawTransaction);
+            // Parse version
+            tx->setVersion(reader.readNextLeUint());
+
+            // Parse timestamp
+            if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
+                tx->setTimestamp(reader.readNextLeUint());
+            }
+
+            // Parse segwit marker and flag
+            auto marker = reader.peek();
+
+            if (marker == 0x00) {
+                marker = reader.readNextByte();
+                auto flag = reader.readNextByte();
+                // TODO Implement segwit
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Segwit transaction parsing is not handled");
+            }
+
+            // Parse inputs
+            auto inputsCount = reader.readNextVarInt();
+            for (auto index = 0; index < inputsCount; index++) {
+                auto previousTxHash = hex::toString(reader.readNextLeBigInt(32).toByteArray());
+                auto outputIndex = reader.readNextLeUint();
+                auto scriptSize = reader.readNextVarInt();
+                auto scriptSig = reader.read(scriptSize);
+                auto sequence = reader.readNextLeUint();
+                auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
+                std::string address;
+                if (parsedScript.isSuccess()) {
+                   auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                    if (parsedAddress.hasValue())
+                        address = parsedAddress.getValue().toBase58();
+                }
+                tx->addInput(std::shared_ptr<BitcoinLikeWritableInputApi>(new BitcoinLikeWritableInputApi(
+                        nullptr, nullptr, sequence, {}, {}, address, nullptr, previousTxHash, outputIndex, {},
+                        nullptr
+                )));
+            }
+
+            auto outputsCount = reader.readNextVarInt();
+            for (auto index = 0; index < outputsCount; index++) {
+                ledger::core::BitcoinLikeBlockchainExplorer::Output output;
+                output.index = index;
+                output.value = reader.readNextLeBigInt(8);
+                auto scriptSize = reader.readNextVarInt();
+                auto scriptSig = reader.read(scriptSize);
+                auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
+                if (parsedScript.isSuccess()) {
+                    auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                    if (parsedAddress.hasValue())
+                        output.address = Option<std::string>(parsedAddress.getValue().toBase58());
+                }
+                tx->addOutput(std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
+                    output, currency
+                )));
+            }
+
+            tx->setLockTime(reader.readNextLeUint());
+
+            // Parse outputs
+            return tx;
         }
 
     }

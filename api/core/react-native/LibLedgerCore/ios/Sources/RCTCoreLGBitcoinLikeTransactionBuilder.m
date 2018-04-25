@@ -231,4 +231,18 @@ RCT_EXPORT_METHOD(reset) {
 
     [self.objcImpl reset];
 }
+
+RCT_REMAP_METHOD(parseRawUnsignedTransaction,parseRawUnsignedTransaction:(nonnull LGCurrency *)currency
+                                                          rawTransaction:(nonnull NSData *)rawTransaction withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[LGBitcoinLikeTransactionBuilder parseRawUnsignedTransaction:currency rawTransaction:rawTransaction]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransactionBuilder::parseRawUnsignedTransaction", nil);
+    }
+}
 @end

@@ -23,3 +23,5 @@ set(SOCI_SHARED OFF)
 
 add_subdirectory(soci)
 add_subdirectory(soci_sqlite3)
+
+#add_subdirectory(soci_mysql)

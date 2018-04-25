@@ -31,7 +31,7 @@
 #ifndef LEDGER_CORE_ABSTRACTACCOUNT_HPP
 #define LEDGER_CORE_ABSTRACTACCOUNT_HPP
 
-#include <src/api/Account.hpp>
+#include <api/Account.hpp>
 #include "AbstractWallet.hpp"
 #include "OperationQuery.h"
 #include <async/Future.hpp>

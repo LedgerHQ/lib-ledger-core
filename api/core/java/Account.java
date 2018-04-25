@@ -136,6 +136,8 @@ public abstract class Account {
      */
     public abstract void getLastBlock(BlockCallback callback);
 
+    public abstract BitcoinLikeAccount asBitcoinLikeAccount();
+
     private static final class CppProxy extends Account
     {
         private final long nativeRef;
@@ -310,5 +312,13 @@ public abstract class Account {
             native_getLastBlock(this.nativeRef, callback);
         }
         private native void native_getLastBlock(long _nativeRef, BlockCallback callback);
+
+        @Override
+        public BitcoinLikeAccount asBitcoinLikeAccount()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_asBitcoinLikeAccount(this.nativeRef);
+        }
+        private native BitcoinLikeAccount native_asBitcoinLikeAccount(long _nativeRef);
     }
 }

@@ -49,7 +49,7 @@ namespace ledger {
                                                                     _previousScript(previousOutput)
 
         {
-
+            // TODO handle the case where explorer, context are missing properly
         }
 
         optional<std::string> BitcoinLikeWritableInputApi::getAddress() {

@@ -428,6 +428,10 @@ namespace ledger {
             });
         }
 
+        std::shared_ptr<api::BitcoinLikeAccount> BitcoinLikeAccount::asBitcoinLikeAccount() {
+            return std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+        }
+
 
     }
 }

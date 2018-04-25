@@ -283,4 +283,17 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(nullable id<LGBlockCallback>)callbac
 
     [self.objcImpl getLastBlock:callback];
 }
+
+RCT_REMAP_METHOD(asBitcoinLikeAccount,asBitcoinLikeAccountWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl asBitcoinLikeAccount]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGAccount::asBitcoinLikeAccount", nil);
+    }
+}
 @end
