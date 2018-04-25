@@ -145,8 +145,20 @@ RCT_REMAP_METHOD(getOperationPreferences,getOperationPreferences:(nonnull NSStri
     }
 }
 
+RCT_REMAP_METHOD(asBitcoinLikeAccount,asBitcoinLikeAccountWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl asBitcoinLikeAccount]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGAccount::asBitcoinLikeAccount", nil);
+    }
+}
+
 /**
- * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
  * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
  * asRippleLikeAccount(): Callback<RippleLikeAccount>;
  *Check if account is a Bitcoin one

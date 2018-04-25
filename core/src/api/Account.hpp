@@ -11,6 +11,7 @@
 namespace ledger { namespace core { namespace api {
 
 class AmountCallback;
+class BitcoinLikeAccount;
 class BlockCallback;
 class EventBus;
 class Logger;
@@ -98,8 +99,9 @@ public:
      */
     virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
 
+    virtual std::shared_ptr<BitcoinLikeAccount> asBitcoinLikeAccount() = 0;
+
     /**
-     * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
      * asRippleLikeAccount(): Callback<RippleLikeAccount>;
      *Check if account is a Bitcoin one

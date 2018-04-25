@@ -39,7 +39,7 @@
 #include <events/EventPublisher.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
-
+#include <api/BitcoinLikeAccount.hpp>
 namespace ledger {
     namespace core {
         class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
@@ -53,6 +53,7 @@ namespace ledger {
             bool isInstanceOfRippleLikeAccount() override;
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
+            std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;

@@ -86,6 +86,10 @@ namespace ledger {
             return getOperationExternalPreferences(uid);
         }
 
+        std::shared_ptr<api::BitcoinLikeAccount> AbstractAccount::asBitcoinLikeAccount() {
+            return std::dynamic_pointer_cast<api::BitcoinLikeAccount>(shared_from_this());
+        }
+
         std::shared_ptr<spdlog::logger> AbstractAccount::logger() const {
             return _logger;
         }

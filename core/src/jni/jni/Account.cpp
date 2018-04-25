@@ -3,6 +3,7 @@
 
 #include "Account.hpp"  // my header
 #include "AmountCallback.hpp"
+#include "BitcoinLikeAccount.hpp"
 #include "BlockCallback.hpp"
 #include "EventBus.hpp"
 #include "Logger.hpp"
@@ -103,6 +104,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->getOperationPreferences(::djinni::String::toCpp(jniEnv, j_uid));
         return ::djinni::release(::djinni_generated::Preferences::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asBitcoinLikeAccount();
+        return ::djinni::release(::djinni_generated::BitcoinLikeAccount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

@@ -266,7 +266,7 @@ Account = interface +c {
     #Return operation for a specific operation
     #@param uid, string of operation id
     getOperationPreferences(uid: string): Preferences;
-    # asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
+    asBitcoinLikeAccount() : BitcoinLikeAccount;
     # asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
     # asRippleLikeAccount(): Callback<RippleLikeAccount>;
     #Check if account is a Bitcoin one

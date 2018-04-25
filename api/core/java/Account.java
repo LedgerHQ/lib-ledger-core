@@ -81,8 +81,9 @@ public abstract class Account {
      */
     public abstract Preferences getOperationPreferences(String uid);
 
+    public abstract BitcoinLikeAccount asBitcoinLikeAccount();
+
     /**
-     * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
      * asRippleLikeAccount(): Callback<RippleLikeAccount>;
      *Check if account is a Bitcoin one
@@ -221,6 +222,14 @@ public abstract class Account {
             return native_getOperationPreferences(this.nativeRef, uid);
         }
         private native Preferences native_getOperationPreferences(long _nativeRef, String uid);
+
+        @Override
+        public BitcoinLikeAccount asBitcoinLikeAccount()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_asBitcoinLikeAccount(this.nativeRef);
+        }
+        private native BitcoinLikeAccount native_asBitcoinLikeAccount(long _nativeRef);
 
         @Override
         public boolean isInstanceOfBitcoinLikeAccount()
