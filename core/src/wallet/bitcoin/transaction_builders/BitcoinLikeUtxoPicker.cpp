@@ -58,7 +58,8 @@ namespace ledger {
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
                     auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency);
-                    return std::make_shared<Buddy>(r, getUtxo, getTransaction, explorer, keychain, logger, tx);
+                    auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
+                    return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                     buddy->logger->info("Buddy created");
                     return self->fillInputs(buddy).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
@@ -191,6 +192,20 @@ namespace ledger {
                 buddy->transaction->addInput(input);
                 return unit;
             });
+        }
+
+        BitcoinLikeGetUtxoFunction
+        BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &buddy,
+                                                          const BitcoinLikeGetUtxoFunction &getUtxo) {
+            return [=] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
+                return getUtxo().map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) {
+                    std::vector<std::shared_ptr<api::BitcoinLikeOutput>> filtered;
+                    for (auto& output : utxo) {
+                        filtered.push_back(output);
+                    }
+                    return filtered;
+                });
+            };
         }
     }
 }
