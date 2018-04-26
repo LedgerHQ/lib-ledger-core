@@ -48,7 +48,7 @@ namespace ledger {
 
             const api::Currency BITCOIN_TESTNET =
                     Currency("bitcoin_testnet")
-                            .forkOfBitcoin(networks::BITCOIN)
+                            .forkOfBitcoin(networks::BITCOIN_TESTNET)
                             .bip44(1)
                             .paymentUri("bitcoin")
                             .unit("satoshi", 0, "satoshi")

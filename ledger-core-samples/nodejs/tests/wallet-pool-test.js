@@ -6,7 +6,9 @@ const {
   createAccount,
   createAmount,
   getCurrency,
-  subscribeToEventBus
+  getEventReceiver,
+  subscribeToEventBus,
+  EVENT_CODE
 } = require("../index");
 
 console.log(`>> Waiting for device...`);
@@ -66,13 +68,22 @@ CommNodeHid.listen({
 
         const eventBus = account.synchronize();
 
-        subscribeToEventBus(eventBus, async e => {
+        const eventReceiver = getEventReceiver(e => {
           console.log(`we are here-----------------------------------------`);
           console.log(e.getPayload().dump());
+          console.log(e.getCode());
           // const balance = await account.getBalance();
           // console.log(e);
+          const code = e.getCode();
+          if(code === EVENT_CODE.UNDEFINED || code === EVENT_CODE.SYNCHRONIZATION_FAILED) {
+            console.log("==========Sync failed !");
+            process.exit();
+          }
+
         });
 
+        subscribeToEventBus(eventBus, eventReceiver);
+        console.log("=====after subscribeToEventBus");
         return;
 
         const balance = await account.getBalance();

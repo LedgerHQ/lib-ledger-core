@@ -92,6 +92,16 @@ const METHODS = {
   3: "DELETE"
 };
 
+const EVENT_CODE = {
+    UNDEFINED : 0,
+    NEW_OPERATION : 1,
+    NEW_BLOCK : 2,
+    SYNCHRONIZATION_STARTED : 3,
+    SYNCHRONIZATION_FAILED : 4,
+    SYNCHRONIZATION_SUCCEED : 5,
+    SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT : 6
+}
+
 const NJSHttpClientImpl = {
   execute: async r => {
     const method = r.getMethod();
@@ -325,6 +335,7 @@ NJSWalletPool.getWalletCount().then(res => {
 //   }
 //   return bitcoinLikeNetworkParameters;
 // };
+exports.EVENT_CODE = EVENT_CODE;
 
 exports.createWallet = async (name, currency) => {
   const NJSDynamicObjectWallet = new binding.NJSDynamicObject();
@@ -361,9 +372,12 @@ exports.createWalletUid = function createWalletUid(walletName) {
     .digest("hex");
 };
 
-exports.subscribeToEventBus = function subscribeToEventBus(eventBus, cb) {
-  const receiver = new binding.NJSEventReceiver({
+exports.getEventReceiver = function getEventReceiver(cb) {
+  return new binding.NJSEventReceiver({
     onEvent: event => cb(event)
   });
+}
+
+exports.subscribeToEventBus = function subscribeToEventBus(eventBus, receiver) {
   eventBus.subscribe(NJSThreadDispatcherImpl.contexts.main, receiver);
 };
