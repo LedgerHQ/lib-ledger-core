@@ -69,17 +69,19 @@ CommNodeHid.listen({
         const eventBus = account.synchronize();
 
         const eventReceiver = getEventReceiver(e => {
-          console.log(`we are here-----------------------------------------`);
+          console.log(`tests/wallet-pool-test.js  getEventReceiver`);
           console.log(e.getPayload().dump());
-          console.log(e.getCode());
+          // console.log(e.getCode());
           // const balance = await account.getBalance();
           // console.log(e);
           const code = e.getCode();
-          if(code === EVENT_CODE.UNDEFINED || code === EVENT_CODE.SYNCHRONIZATION_FAILED) {
+          if (
+            code === EVENT_CODE.UNDEFINED ||
+            code === EVENT_CODE.SYNCHRONIZATION_FAILED
+          ) {
             console.log("==========Sync failed !");
             process.exit();
           }
-
         });
 
         subscribeToEventBus(eventBus, eventReceiver);
