@@ -379,9 +379,9 @@ namespace ledger {
         }
 
         Future<std::string> BitcoinLikeAccount::broadcastTransaction(const std::vector<uint8_t> &transaction) {
-            Promise<std::string> p;
-
-            return p.getFuture();
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& hash) -> std::string {
+                return hash.str();
+            });
         }
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,

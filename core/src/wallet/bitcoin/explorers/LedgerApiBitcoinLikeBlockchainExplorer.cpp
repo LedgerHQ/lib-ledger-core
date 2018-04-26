@@ -38,6 +38,8 @@
 #include "api/TransactionParser.hpp"
 #include "api/BlockParser.hpp"
 #include "api/LedgerApiParser.hpp"
+#include <utils/JSONUtils.h>
+#include <sstream>
 
 namespace ledger {
     namespace core {
@@ -72,8 +74,16 @@ namespace ledger {
         }
 
         Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            Promise<String> promise;
-            return promise.getFuture();
+            std::stringstream body;
+            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
+            auto bodyString = body.str();
+            return _http
+                ->POST(fmt::format("/blockchain/v2/{}/transactions/send", _parameters.Identifier),
+                    std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+                ).json().map<String>(getContext(), [] (const HttpRequest::JsonResult& result) -> String {
+                auto& json = *std::get<1>(result);
+                return json["transaction_hash"].GetString();
+            });
         }
 
         Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String& transactionHash) {
