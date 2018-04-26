@@ -119,14 +119,14 @@ const NJSHttpClientImpl = {
         res,
         stringToBytesArray(res.data.token)
       );
-      r.complete(urlConnection, null);
+      r.complete(urlConnection, { code: 0, message: "no errors" });
     } catch (err) {
       const urlConnection = createHttpConnection(
         res,
         stringToBytesArray("something went wrong"),
         "something went wrong"
       );
-      r.complete(urlConnection, null);
+      r.complete(urlConnection, { code: 0, message: "something went wrong" });
       // const urlConnection = createHttpConnection(res);
       // r.complete(
       //   {
@@ -148,13 +148,18 @@ function createHttpConnection(res, data, err) {
       headersMap.set(key, res.headers[key]);
     }
   });
+  console.log(`----`);
+  console.log(data);
+  console.log(`----`);
+  console.log(res.data);
+  console.log(`----`);
   const NJSHttpUrlConnectionImpl = {
     getStatusCode: () => Number(res.status),
     getStatusText: () => res.statusText,
     getHeaders: () => headersMap,
     readBody: () => ({
-      error: err ? { code: 0, message: "something went wrong" } : null,
-      data
+      error: { code: 0, message: "something went wrong" },
+      data: stringToBytesArray(JSON.stringify(res.data))
     })
   };
   return new binding.NJSHttpUrlConnection(NJSHttpUrlConnectionImpl);
