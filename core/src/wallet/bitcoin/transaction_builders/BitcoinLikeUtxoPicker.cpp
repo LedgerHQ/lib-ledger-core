@@ -99,6 +99,10 @@ namespace ledger {
                     if (path.nonEmpty()) {
                         derivationPath = std::make_shared<DerivationPathApi>(DerivationPath(path.getValue()));
                     }
+                } else {
+                    auto addressFromScript = script.parseAddress(params);
+                    if (addressFromScript.nonEmpty())
+                        out.address = addressFromScript.getValue().toBase58();
                 }
                 outputIndex += 1;
                 buddy->transaction->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
@@ -195,13 +199,24 @@ namespace ledger {
         }
 
         BitcoinLikeGetUtxoFunction
-        BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &buddy,
+        BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
             return [=] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                return getUtxo().map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) {
+                return getUtxo().map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [=] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) {
                     std::vector<std::shared_ptr<api::BitcoinLikeOutput>> filtered;
+                    auto isExcluded = [&] (const std::shared_ptr<api::BitcoinLikeOutput>& output) -> bool {
+                        for (auto& o : request.excludedUtxo) {
+                            auto hash = std::get<0>(o);
+                            auto index = std::get<1>(o);
+                            if (output->getTransactionHash() == hash && output->getOutputIndex() == index)
+                                return true;
+                        }
+                        return false;
+                    };
                     for (auto& output : utxo) {
-                        filtered.push_back(output);
+                        if (!isExcluded(output)) {
+                            filtered.push_back(output);
+                        }
                     }
                     return filtered;
                 });

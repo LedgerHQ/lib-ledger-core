@@ -66,12 +66,16 @@ struct BitcoinMakeTransaction : public BaseFixture {
 
 TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = p2pkh_tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
+    builder->sendToAddress(api::Amount::fromLong(currency, 10000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = ::wait(f);
     std::cout << hex::toString(tx->serialize()) << std::endl;
+    std::cout << tx->getOutputs()[0]->getAddress().value_or("NOP") << std::endl;
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    std::cout << hex::toString(parsedTx->serialize()) << std::endl;
+    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 //    EXPECT_EQ(
 //            "0100000001f6390f2600568e3dd28af5d53e821219751d6cb7a03ec9476f96f5695f2807a2000000001976a914bfe0a15bbed6211262d3a8d8a891e738bab36ffb88acffffffff0210270000000000001976a91423cc0488e5832d8f796b88948b8af1dd186057b488ac10580100000000001976a914d642b9c546d114dc634e65f72283e3458032a3d488ac41eb0700",
 //            hex::toString(tx->serialize())

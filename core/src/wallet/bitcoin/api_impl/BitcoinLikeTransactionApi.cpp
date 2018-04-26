@@ -287,15 +287,23 @@ namespace ledger {
                 auto scriptSig = reader.read(scriptSize);
                 auto sequence = reader.readNextLeUint();
                 auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
+                ledger::core::BitcoinLikeBlockchainExplorer::Output output;
                 std::string address;
                 if (parsedScript.isSuccess()) {
                    auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
-                    if (parsedAddress.hasValue())
+                    if (parsedAddress.hasValue()) {
                         address = parsedAddress.getValue().toBase58();
+                        output.address = address;
+                    }
                 }
+                output.transactionHash = previousTxHash;
+                output.script = hex::toString(scriptSig);
+                output.index = outputIndex;
                 tx->addInput(std::shared_ptr<BitcoinLikeWritableInputApi>(new BitcoinLikeWritableInputApi(
                         nullptr, nullptr, sequence, {}, {}, address, nullptr, previousTxHash, outputIndex, {},
-                        nullptr
+                        std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
+                                output, currency
+                        ))
                 )));
             }
 
@@ -312,6 +320,7 @@ namespace ledger {
                     if (parsedAddress.hasValue())
                         output.address = Option<std::string>(parsedAddress.getValue().toBase58());
                 }
+                output.script = hex::toString(scriptSig);
                 tx->addOutput(std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
                     output, currency
                 )));
