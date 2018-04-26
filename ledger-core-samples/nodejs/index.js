@@ -93,14 +93,14 @@ const METHODS = {
 };
 
 const EVENT_CODE = {
-    UNDEFINED : 0,
-    NEW_OPERATION : 1,
-    NEW_BLOCK : 2,
-    SYNCHRONIZATION_STARTED : 3,
-    SYNCHRONIZATION_FAILED : 4,
-    SYNCHRONIZATION_SUCCEED : 5,
-    SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT : 6
-}
+  UNDEFINED: 0,
+  NEW_OPERATION: 1,
+  NEW_BLOCK: 2,
+  SYNCHRONIZATION_STARTED: 3,
+  SYNCHRONIZATION_FAILED: 4,
+  SYNCHRONIZATION_SUCCEED: 5,
+  SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: 6
+};
 
 const NJSHttpClientImpl = {
   execute: async r => {
@@ -108,33 +108,57 @@ const NJSHttpClientImpl = {
     const headers = r.getHeaders();
     const data = r.getBody();
     const url = r.getUrl();
-    console.log(headers);
-    console.log(url);
-    console.log(data);
+    console.log(`NJSHttpClientImpl execute`);
+    console.log({ method, headers, data, url });
+    let res;
     try {
-      const res = await axios({ method: METHODS[method], url, headers, data });
-      r.complete(
-        {
-          getStatusCode: () => res.status,
-          getStatusText: () => res.statusText,
-          getHeaders: () => res.headers,
-          readBody: () => ({ error: null, data: res.body })
-        },
-        ""
+      res = await axios({ method: METHODS[method], url, headers, data });
+      console.log(`axios result: `);
+      console.log(res.data);
+      const urlConnection = createHttpConnection(
+        res,
+        stringToBytesArray(res.data.token)
       );
+      r.complete(urlConnection, null);
     } catch (err) {
-      r.complete(
-        {
-          getStatusCode: () => res.status,
-          getStatusText: () => res.statusText,
-          getHeaders: () => res.headers,
-          readBody: () => ({ error: "something went wrong" })
-        },
-        ""
+      const urlConnection = createHttpConnection(
+        res,
+        stringToBytesArray("something went wrong"),
+        "something went wrong"
       );
+      r.complete(urlConnection, null);
+      // const urlConnection = createHttpConnection(res);
+      // r.complete(
+      //   {
+      //     getStatusCode: () => res.status,
+      //     getStatusText: () => res.statusText,
+      //     getHeaders: () => res.headers,
+      //     readBody: () => ({ error: "something went wrong" })
+      //   },
+      //   ""
+      // );
     }
   }
 };
+
+function createHttpConnection(res, data, err) {
+  const headersMap = new Map();
+  Object.keys(res.headers).forEach(key => {
+    if (typeof res.headers[key] === "string") {
+      headersMap.set(key, res.headers[key]);
+    }
+  });
+  const NJSHttpUrlConnectionImpl = {
+    getStatusCode: () => Number(res.status),
+    getStatusText: () => res.statusText,
+    getHeaders: () => headersMap,
+    readBody: () => ({
+      error: err ? { code: 0, message: "something went wrong" } : null,
+      data
+    })
+  };
+  return new binding.NJSHttpUrlConnection(NJSHttpUrlConnectionImpl);
+}
 
 /*
   @param: httpRequest: NJSHttprequest
@@ -376,8 +400,16 @@ exports.getEventReceiver = function getEventReceiver(cb) {
   return new binding.NJSEventReceiver({
     onEvent: event => cb(event)
   });
-}
+};
 
 exports.subscribeToEventBus = function subscribeToEventBus(eventBus, receiver) {
   eventBus.subscribe(NJSThreadDispatcherImpl.contexts.main, receiver);
 };
+
+function stringToBytesArray(str) {
+  const arr = [];
+  for (let i = 0; i < str.length; i++) {
+    arr.push(str.charCodeAt(i));
+  }
+  return arr;
+}
