@@ -6,124 +6,75 @@ const {
   createAccount,
   createAmount,
   getCurrency,
-  getEventReceiver,
-  subscribeToEventBus,
+  syncAccount,
   EVENT_CODE
 } = require("../index");
 
-console.log(`>> Waiting for device...`);
+waitForDevices(async device => {
+  try {
+    console.log(`> Creating transport`);
+    const transport = await CommNodeHid.open(device.path);
 
-// const CURRENCY = {
-//   walletType: "bitcoin",
-//   name: "bitcoin",
-//   bip44CoinType: 0,
-//   paymentUriScheme: "bitcoin",
-//   units: [
-//     {
-//       name: "bitcoin",
-//       symbol: "BTC",
-//       code: "BTC",
-//       numberOfDecimal: 8
-//     }
-//   ],
-//   bitcoinLikeNetworkParameters: getBitcoinLikeNetworkParameters()
-// };
+    console.log(`> Instanciate BTC app`);
+    const hwApp = new Btc(transport);
 
-CommNodeHid.listen({
-  error: () => {},
-  complete: () => {},
-  next: async e => {
-    if (!e.device) {
-      return;
-    }
+    console.log(`> Get currency`);
+    const currency = await getCurrency("bitcoin_testnet");
 
-    if (e.type === "add") {
-      console.log(`added ${JSON.stringify(e)}`);
-      try {
-        const transport = await CommNodeHid.open(e.device.path);
-        const btc = new Btc(transport);
+    console.log(`> Create wallet`);
+    const wallet = await createWallet("khalil", currency);
 
-        const currency = await getCurrency("bitcoin_testnet");
+    console.log(`> Create account`);
+    const account = await createAccount(wallet, hwApp);
 
-        const wallet = await createWallet("khalil", currency);
-        const accountCreationInfos = await wallet.getNextAccountCreationInfo();
+    console.log(`> Sync account`);
+    await syncAccount(account);
 
-        await accountCreationInfos.derivations.reduce((promise, derivation) => {
-          return promise.then(async () => {
-            const {
-              publicKey,
-              chainCode,
-              bitcoinAddress
-            } = await btc.getWalletPublicKey(derivation);
-            accountCreationInfos.publicKeys.push(fromHexToBytes(publicKey));
-            accountCreationInfos.chainCodes.push(fromHexToBytes(chainCode));
-          });
-        }, Promise.resolve());
+    console.log(`> Create transaction`);
+    const transaction = await createTransaction(wallet, account);
 
-        const ADDRESS_TO_SEND = "mzaYScsZFRECzTnn6kbcbK2UcX6bri5Ck4";
-
-        console.log(`> Creating account...`);
-        const account = await createAccount(wallet, accountCreationInfos);
-        const freshAddresses = await account.getFreshPublicAddresses();
-
-        const eventBus = account.synchronize();
-
-        const eventReceiver = getEventReceiver(e => {
-          console.log(`tests/wallet-pool-test.js  getEventReceiver`);
-          console.log(e.getPayload().dump());
-          // console.log(e.getCode());
-          // const balance = await account.getBalance();
-          // console.log(e);
-          const code = e.getCode();
-          if (
-            code === EVENT_CODE.UNDEFINED ||
-            code === EVENT_CODE.SYNCHRONIZATION_FAILED
-          ) {
-            console.log("==========Sync failed !");
-            process.exit();
-          }
-        });
-
-        subscribeToEventBus(eventBus, eventReceiver);
-        console.log("=====after subscribeToEventBus");
-        return;
-
-        const balance = await account.getBalance();
-        console.log(balance.toString());
-
-        console.log(balance);
-
-        console.log(`> Creating transaction...`);
-        const bitcoinLikeAccount = account.asBitcoinLikeAccount();
-        const walletCurrency = wallet.getCurrency();
-        const amount = createAmount(walletCurrency, 10000);
-        const fees = createAmount(walletCurrency, 10);
-
-        const transactionBuilder = bitcoinLikeAccount.buildTransaction();
-        transactionBuilder.sendToAddress(amount, ADDRESS_TO_SEND);
-        transactionBuilder.pickInputs(1, 0xffffff);
-        transactionBuilder.setFeesPerByte(fees);
-        const bitcoinLikeTransaction = await transactionBuilder.build();
-        console.log(bitcoinLikeTransaction);
-
-        process.exit(0);
-
-        // console.log(account.getIndex());
-        // console.log(account.isSynchronizing());
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    if (e.type === "remove") {
-      console.log(`removed ${JSON.stringify(e)}`);
-    }
+    console.log(transaction);
+    process.exit(0);
+    // console.log(account.getIndex());
+    // console.log(account.isSynchronizing());
+  } catch (err) {
+    console.log(err);
   }
 });
 
-function fromHexToBytes(str) {
-  for (var bytes = [], c = 0; c < str.length; c += 2) {
-    bytes.push(parseInt(str.substr(c, 2), 16));
-  }
-  return bytes;
+function waitForDevices(onDevice) {
+  console.log(`>> Waiting for device...`);
+  CommNodeHid.listen({
+    error: () => {},
+    complete: () => {},
+    next: async e => {
+      if (!e.device) {
+        return;
+      }
+      if (e.type === "add") {
+        console.log(`added ${JSON.stringify(e)}`);
+        onDevice(e.device);
+      }
+      if (e.type === "remove") {
+        console.log(`removed ${JSON.stringify(e)}`);
+      }
+    }
+  });
+}
+
+async function createTransaction(wallet, account) {
+  const ADDRESS_TO_SEND = "mzaYScsZFRECzTnn6kbcbK2UcX6bri5Ck4";
+  const balance = await account.getBalance();
+
+  const bitcoinLikeAccount = account.asBitcoinLikeAccount();
+  const walletCurrency = wallet.getCurrency();
+  const amount = createAmount(walletCurrency, 10000);
+  const fees = createAmount(walletCurrency, 10);
+
+  const transactionBuilder = bitcoinLikeAccount.buildTransaction();
+  transactionBuilder.sendToAddress(amount, ADDRESS_TO_SEND);
+  transactionBuilder.pickInputs(0, 0xffffff);
+  transactionBuilder.setFeesPerByte(fees);
+
+  return transactionBuilder.build();
 }
