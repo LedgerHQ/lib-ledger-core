@@ -6,7 +6,9 @@ const {
   createAccount,
   createAmount,
   getCurrency,
+  getWallet,
   syncAccount,
+  signTransaction,
   EVENT_CODE
 } = require("../index");
 
@@ -19,21 +21,24 @@ waitForDevices(async device => {
     const hwApp = new Btc(transport);
 
     console.log(`> Get currency`);
-    const currency = await getCurrency("bitcoin_testnet");
+    // const currency = await getCurrency("bitcoin_testnet");
 
     console.log(`> Create wallet`);
-    const wallet = await createWallet("khalil", currency);
+    // const wallet = await createWallet("khalil", currency);
+    const wallet = await getWallet("khalil");
 
     console.log(`> Create account`);
-    const account = await createAccount(wallet, hwApp);
+    // const account = await createAccount(wallet, hwApp);
+    const account = await wallet.getAccount(0);
 
     console.log(`> Sync account`);
-    await syncAccount(account);
+    // await syncAccount(account);
 
     console.log(`> Create transaction`);
     const transaction = await createTransaction(wallet, account);
 
-    console.log(transaction);
+    signTransaction(hwApp, transaction);
+
     process.exit(0);
     // console.log(account.getIndex());
     // console.log(account.isSynchronizing());

@@ -6,6 +6,9 @@ const MAX_RANDOM = 2684869021;
 
 const binding = require("bindings")("ledgerapp_nodejs");
 
+const signTransaction = require("./signTransaction");
+const { stringToBytesArray, hexToBytes } = require("./helpers");
+
 const logger = (title, message) => {
   console.log(`======${title}======`);
   if (message) {
@@ -342,6 +345,10 @@ NJSWalletPool.getWalletCount().then(res => {
 
 exports.EVENT_CODE = EVENT_CODE;
 
+exports.getWallet = function getWallet(walletName) {
+  return NJSWalletPool.getWallet(walletName);
+};
+
 exports.createWallet = async (name, currency) => {
   const NJSDynamicObjectWallet = new binding.NJSDynamicObject();
   const wallet = await NJSWalletPool.createWallet(
@@ -423,17 +430,4 @@ exports.syncAccount = function syncAccount(account) {
   });
 };
 
-function stringToBytesArray(str = "") {
-  const arr = [];
-  for (let i = 0; i < str.length; i++) {
-    arr.push(str.charCodeAt(i));
-  }
-  return arr;
-}
-
-function hexToBytes(str) {
-  for (var bytes = [], c = 0; c < str.length; c += 2) {
-    bytes.push(parseInt(str.substr(c, 2), 16));
-  }
-  return bytes;
-}
+exports.signTransaction = signTransaction;
