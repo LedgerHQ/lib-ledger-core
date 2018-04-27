@@ -32,6 +32,7 @@
 #include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 
 struct BitcoinMakeTransaction : public BaseFixture {
 
@@ -66,16 +67,20 @@ struct BitcoinMakeTransaction : public BaseFixture {
 
 TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = p2pkh_tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 10000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
+    builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
-    builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
+    builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
     auto tx = ::wait(f);
     std::cout << hex::toString(tx->serialize()) << std::endl;
     std::cout << tx->getOutputs()[0]->getAddress().value_or("NOP") << std::endl;
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     std::cout << hex::toString(parsedTx->serialize()) << std::endl;
     std::cout << parsedTx->getInputs().size() << std::endl;
+    std::cout << hex::toString(rawPrevious) << std::endl;
+    std::cout << tx->getFees()->toLong() << std::endl;
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 //    EXPECT_EQ(
 //            "0100000001f6390f2600568e3dd28af5d53e821219751d6cb7a03ec9476f96f5695f2807a2000000001976a914bfe0a15bbed6211262d3a8d8a891e738bab36ffb88acffffffff0210270000000000001976a91423cc0488e5832d8f796b88948b8af1dd186057b488ac10580100000000001976a914d642b9c546d114dc634e65f72283e3458032a3d488ac41eb0700",
