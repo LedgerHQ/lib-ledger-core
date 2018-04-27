@@ -21,29 +21,31 @@ waitForDevices(async device => {
     const hwApp = new Btc(transport);
 
     console.log(`> Get currency`);
-    // const currency = await getCurrency("bitcoin_testnet");
+    const currency = await getCurrency("bitcoin_testnet");
 
     console.log(`> Create wallet`);
-    // const wallet = await createWallet("khalil", currency);
-    const wallet = await getWallet("khalil");
+    const wallet = await createWallet("khalil", currency);
+    // const wallet = await getWallet("khalil");
 
     console.log(`> Create account`);
-    // const account = await createAccount(wallet, hwApp);
-    const account = await wallet.getAccount(0);
+    const account = await createAccount(wallet, hwApp);
+    // const account = await wallet.getAccount(0);
 
     console.log(`> Sync account`);
-    // await syncAccount(account);
+    await syncAccount(account);
 
     console.log(`> Create transaction`);
     const transaction = await createTransaction(wallet, account);
 
-    signTransaction(hwApp, transaction);
+    const signedTransaction = await signTransaction(hwApp, transaction);
+    console.log(signedTransaction);
 
     process.exit(0);
     // console.log(account.getIndex());
     // console.log(account.isSynchronizing());
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
 });
 

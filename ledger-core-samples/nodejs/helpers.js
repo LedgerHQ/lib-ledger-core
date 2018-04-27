@@ -1,5 +1,10 @@
 const binding = require("bindings")("ledgerapp_nodejs");
 
+function bytesArrayToString(bytesArray = []) {
+  return bytesArray.map(b => String.fromCharCode(b)).join("");
+}
+exports.bytesArrayToString = bytesArrayToString;
+
 function stringToBytesArray(str = "") {
   const arr = [];
   for (let i = 0; i < str.length; i++) {
@@ -16,8 +21,14 @@ function hexToBytes(str) {
   }
   return bytes;
 }
-
 exports.hexToBytes = hexToBytes;
+
+function bytesToHex(bytes = []) {
+  return Array.from(bytes, byte => {
+    return ("0" + (byte & 0xff).toString(16)).slice(-2);
+  }).join("");
+}
+exports.bytesToHex = bytesToHex;
 
 function createBitcoinLikeHelper() {
   return new binding.NJSBitcoinLikeHelper();
