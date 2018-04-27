@@ -15,7 +15,6 @@
 		B91D3013207F4F8800EC285F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D3012207F4F8800EC285F /* main.m */; };
 		B91D3024207F501D00EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D301E207F4FAD00EC285F /* libledger-core-objc.a */; };
 		B91D3056207F53D200EC285F /* private.txt in Resources */ = {isa = PBXBuildFile; fileRef = B91D3055207F53D200EC285F /* private.txt */; };
-		B91D3223207F5F4F00EC285F /* libdjinni_objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3224207F5F4F00EC285F /* libdjinni_objc.a */; };
 		B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3225207F5F9300EC285F /* Foundation.framework */; };
 		B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3227207F5FA500EC285F /* UIKit.framework */; };
 		B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D322B207F68C800EC285F /* libc++.1.dylib */; };
@@ -75,7 +74,6 @@
 				B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */,
 				B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */,
 				B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */,
-				B91D3223207F5F4F00EC285F /* libdjinni_objc.a in Frameworks */,
 				B9A5639E20848C9A00BA1BC1 /* libledger-core.dylib in Frameworks */,
 				B91D3024207F501D00EC285F /* libledger-core-objc.a in Frameworks */,
 			);

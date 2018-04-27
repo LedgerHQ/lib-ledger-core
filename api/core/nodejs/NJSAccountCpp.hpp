@@ -7,6 +7,7 @@
 
 #include "../../../core/src/api/WalletType.hpp"
 #include "NJSAmountCallback.hpp"
+#include "NJSBitcoinLikeAccountCpp.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSLoggerCpp.hpp"
@@ -86,8 +87,9 @@ private:
      */
     static NAN_METHOD(getOperationPreferences);
 
+    static NAN_METHOD(asBitcoinLikeAccount);
+
     /**
-     * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
      * asRippleLikeAccount(): Callback<RippleLikeAccount>;
      *Check if account is a Bitcoin one

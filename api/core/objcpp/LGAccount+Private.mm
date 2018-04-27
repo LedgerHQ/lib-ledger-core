@@ -7,6 +7,7 @@
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
 #import "LGAmountCallback+Private.h"
+#import "LGBitcoinLikeAccount+Private.h"
 #import "LGBlockCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGLogger+Private.h"
@@ -90,6 +91,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getOperationPreferences(::djinni::String::toCpp(uid));
         return ::djinni_generated::Preferences::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (nullable LGBitcoinLikeAccount *)asBitcoinLikeAccount {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->asBitcoinLikeAccount();
+        return ::djinni_generated::BitcoinLikeAccount::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

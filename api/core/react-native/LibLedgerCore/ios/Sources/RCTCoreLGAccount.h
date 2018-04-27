@@ -3,6 +3,7 @@
 
 #import "LGAccount.h"
 #import "LGAmountCallback.h"
+#import "LGBitcoinLikeAccount.h"
 #import "LGBlockCallback.h"
 #import "LGEventBus.h"
 #import "LGLogger.h"

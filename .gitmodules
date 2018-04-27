@@ -1,6 +1,6 @@
 [submodule "djinni"]
 	path = djinni
-	url = git@github.com:KhalilBellakrid/djinni.git
+	url = git@github.com:LedgerHQ/djinni.git
 [submodule "toolchains/polly"]
 	path = toolchains/polly
 	url = git@github.com:ruslo/polly.git

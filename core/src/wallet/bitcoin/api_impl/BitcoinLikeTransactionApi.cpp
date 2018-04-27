@@ -29,7 +29,7 @@
  *
  */
 #include "BitcoinLikeTransactionApi.h"
-#include "../../../../../cmake-build-debug/include/ledger/core/bytes/BytesWriter.h"
+#include <bytes/BytesWriter.h>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
 

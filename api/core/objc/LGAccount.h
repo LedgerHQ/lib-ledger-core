@@ -3,6 +3,7 @@
 
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
+@class LGBitcoinLikeAccount;
 @class LGEventBus;
 @class LGLogger;
 @class LGOperationQuery;
@@ -80,8 +81,9 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
  */
 - (nullable LGPreferences *)getOperationPreferences:(nonnull NSString *)uid;
 
+- (nullable LGBitcoinLikeAccount *)asBitcoinLikeAccount;
+
 /**
- * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
  * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
  * asRippleLikeAccount(): Callback<RippleLikeAccount>;
  *Check if account is a Bitcoin one

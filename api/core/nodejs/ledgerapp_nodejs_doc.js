@@ -406,8 +406,8 @@ declare class NJSAccount
      *@param uid, string of operation id
      */
     declare function getOperationPreferences(uid: string): NJSPreferences;
+    declare function asBitcoinLikeAccount(): NJSBitcoinLikeAccount;
     /**
-     * asBitcoinLikeAccount(): Callback<BitcoinLikeAccount>;
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
      * asRippleLikeAccount(): Callback<RippleLikeAccount>;
      *Check if account is a Bitcoin one
