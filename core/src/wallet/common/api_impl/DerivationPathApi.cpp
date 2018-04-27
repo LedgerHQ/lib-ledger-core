@@ -52,10 +52,14 @@ std::string ledger::core::DerivationPathApi::toString() {
 }
 
 std::shared_ptr<ledger::core::api::DerivationPath> ledger::core::DerivationPathApi::getParent() {
-    return std::make_shared<ledger::core::DerivationPathApi>( _path.getParent());
+    return std::make_shared<ledger::core::DerivationPathApi>(_path.getParent());
 }
 
 std::vector<int32_t> ledger::core::DerivationPathApi::toArray() {
     auto vector = _path.toVector();
     return std::vector<int32_t>(vector.begin(), vector.end());
+}
+
+std::shared_ptr<ledger::core::api::DerivationPath> ledger::core::api::DerivationPath::parse(const std::string &path) {
+    return std::make_shared<DerivationPathApi>(ledger::core::DerivationPath(path));
 }

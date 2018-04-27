@@ -39,6 +39,9 @@ public abstract class BitcoinLikeTransaction {
     /** Serialize the transaction to its raw format. */
     public abstract byte[] serialize();
 
+    /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+    public abstract byte[] serializeOutputs();
+
     /** Get the witness if the underlying transaction is a segwit transaction. */
     public abstract byte[] getWitness();
 
@@ -142,6 +145,14 @@ public abstract class BitcoinLikeTransaction {
             return native_serialize(this.nativeRef);
         }
         private native byte[] native_serialize(long _nativeRef);
+
+        @Override
+        public byte[] serializeOutputs()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_serializeOutputs(this.nativeRef);
+        }
+        private native byte[] native_serializeOutputs(long _nativeRef);
 
         @Override
         public byte[] getWitness()

@@ -68,6 +68,9 @@ private:
     /** Serialize the transaction to its raw format. */
     static NAN_METHOD(serialize);
 
+    /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+    static NAN_METHOD(serializeOutputs);
+
     /** Get the witness if the underlying transaction is a segwit transaction. */
     static NAN_METHOD(getWitness);
 

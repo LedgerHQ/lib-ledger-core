@@ -42,6 +42,9 @@
 /** Serialize the transaction to its raw format. */
 - (nonnull NSData *)serialize;
 
+/** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+- (nonnull NSData *)serializeOutputs;
+
 /** Get the witness if the underlying transaction is a segwit transaction. */
 - (nullable NSData *)getWitness;
 

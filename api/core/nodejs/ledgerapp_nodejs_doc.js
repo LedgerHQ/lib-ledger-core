@@ -1551,6 +1551,8 @@ declare class NJSBitcoinLikeTransaction
     declare function getTimestamp(): ?number;
     /** Serialize the transaction to its raw format. */
     declare function serialize(): Object;
+    /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+    declare function serializeOutputs(): Object;
     /** Get the witness if the underlying transaction is a segwit transaction. */
     declare function getWitness(): ?Object;
     /**
@@ -1567,36 +1569,6 @@ declare class NJSBitcoinLikeOperation
      *@return BitcoinLikeTransaction object
      */
     declare function getTransaction(): NJSBitcoinLikeTransaction;
-}
-/**Class providing a Bitcoin helper */
-declare class NJSBitcoinLikeHelper
-{
-    /**
-     *Constructs a BitcoinLikeOutput object from script and amount objects
-     *@param script binary please refer to BitcoinLikeOutput::getScript()
-     *@param amount, Amount object, amount of output
-     *@return BitcoinLikeOutput, resulting output object
-     */
-    static declare function scriptToOutput(script: Object, amount: NJSAmount): NJSBitcoinLikeOutput;
-    /**
-     *Constructs a BitcoinLikeOutput object fromn address and amount objects
-     *@param address, string, address that will own the BitcoinLikeOutput object
-     *@param amount, Amount object, amount of output
-     *@return BitcoinLikeOutput, resulting output object
-     */
-    static declare function addressToOutput(address: string, amount: NJSAmount): NJSBitcoinLikeOutput;
-    /**
-     *Transforms a transaction to a binary
-     *@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
-     *@return serialized transaction
-     */
-    static declare function serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): Object;
-    /**
-     *Transform a serialized transaction to a transaction object
-     *@param transaction, binary, serialized transaction
-     *@return BitcoinLikeTransaction object
-     */
-    static declare function parseTransaction(transaction: Object): NJSBitcoinLikeTransaction;
 }
 declare class NJSBitcoinLikeTransactionBuilder
 {
@@ -1667,6 +1639,7 @@ declare class NJSBitcoinLikeTransactionBuilder
     declare function clone(): NJSBitcoinLikeTransactionBuilder;
     /** Reset the current instance to its initial state */
     declare function reset();
+    static declare function parseRawUnsignedTransaction(currency: Currency, rawTransaction: Object): NJSBitcoinLikeTransaction;
 }
 /**
  *Callback triggered by main completed task,

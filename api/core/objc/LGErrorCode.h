@@ -5,9 +5,11 @@
 
 typedef NS_ENUM(NSInteger, LGErrorCode)
 {
-    /** Pool errors */
-    LGErrorCodeUnknownNetworkParameters,
-    /** Crypto errors */
+    /**
+     * Pool errors
+     *unknown_network_parameters;
+     * Crypto errors
+     */
     LGErrorCodeEcPrivKeyInvalidFormat,
     LGErrorCodeEcPubKeyInvalid,
     LGErrorCodeEcDerSignatureInvalid,

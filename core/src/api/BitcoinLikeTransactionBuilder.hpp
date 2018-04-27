@@ -7,13 +7,16 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeScript;
+class BitcoinLikeTransaction;
 class BitcoinLikeTransactionCallback;
 enum class BitcoinLikePickingStrategy;
+struct Currency;
 
 class BitcoinLikeTransactionBuilder {
 public:
@@ -98,6 +101,8 @@ public:
 
     /** Reset the current instance to its initial state */
     virtual void reset() = 0;
+
+    static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
 };
 
 } } }  // namespace ledger::core::api

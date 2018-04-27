@@ -136,7 +136,7 @@ namespace ledger {
         }
 
         bool BitcoinLikeScript::isP2SH() const {
-            return (size() >= 4 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20)
+            return (size() >= 3 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20)
                     && (*this)[22].isEqualTo(btccore::OP_EQUAL));
         }
 

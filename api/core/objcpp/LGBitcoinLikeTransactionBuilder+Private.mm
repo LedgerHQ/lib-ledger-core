@@ -9,7 +9,9 @@
 #import "LGAmount+Private.h"
 #import "LGBitcoinLikePickingStrategy+Private.h"
 #import "LGBitcoinLikeScript+Private.h"
+#import "LGBitcoinLikeTransaction+Private.h"
 #import "LGBitcoinLikeTransactionCallback+Private.h"
+#import "LGCurrency+Private.h"
 #include <exception>
 #include <stdexcept>
 #include <utility>
@@ -132,6 +134,15 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)reset {
     try {
         _cppRefHandle.get()->reset();
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
++ (nullable LGBitcoinLikeTransaction *)parseRawUnsignedTransaction:(nonnull LGCurrency *)currency
+                                                    rawTransaction:(nonnull NSData *)rawTransaction {
+    try {
+        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(::djinni_generated::Currency::toCpp(currency),
+                                                                                                              ::djinni::Binary::toCpp(rawTransaction));
+        return ::djinni_generated::BitcoinLikeTransaction::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

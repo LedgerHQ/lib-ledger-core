@@ -135,6 +135,8 @@ BitcoinLikeTransaction = interface +c {
     getTimestamp(): optional<i32>;
     # Serialize the transaction to its raw format.
     serialize(): binary;
+    # Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format.
+    serializeOutputs(): binary;
     # Get the witness if the underlying transaction is a segwit transaction.
     getWitness(): optional<binary>;
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
@@ -175,28 +177,6 @@ BitcoinLikePreparedTransaction = record {
     outputs: list<BitcoinLikeOutput>;
     #32 bits integer, block height after which transaction can be accepted
     lockTime: i32;
-}
-
-#Class providing a Bitcoin helper
-BitcoinLikeHelper = interface +c {
-    #Constructs a BitcoinLikeOutput object from script and amount objects
-    #@param script binary please refer to BitcoinLikeOutput::getScript()
-    #@param amount, Amount object, amount of output
-    #@return BitcoinLikeOutput, resulting output object
-    static scriptToOutput(script: binary, amount: Amount): BitcoinLikeOutput;
-    #Constructs a BitcoinLikeOutput object fromn address and amount objects
-    #@param address, string, address that will own the BitcoinLikeOutput object
-    #@param amount, Amount object, amount of output
-    #@return BitcoinLikeOutput, resulting output object
-    static addressToOutput(address: string, amount: Amount): BitcoinLikeOutput;
-    #Transforms a transaction to a binary
-    #@param preparedTransaction, BitcoinLikePreparedTransaction object, transaction to serialize
-    #@return serialized transaction
-    static serializeTransaction(preparedTransaction: BitcoinLikePreparedTransaction): binary;
-    #Transform a serialized transaction to a transaction object
-    #@param transaction, binary, serialized transaction
-    #@return BitcoinLikeTransaction object
-    static parseTransaction(transaction: binary): BitcoinLikeTransaction;
 }
 
 #Enum of picking strategies
@@ -266,6 +246,8 @@ BitcoinLikeTransactionBuilder = interface +c {
 
     # Reset the current instance to its initial state
     reset();
+
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): BitcoinLikeTransaction;
 }
 
 #Class representing a Bitcoin account

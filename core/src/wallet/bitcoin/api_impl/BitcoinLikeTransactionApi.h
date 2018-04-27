@@ -43,6 +43,7 @@
 
 namespace ledger {
     namespace core {
+        class BytesWriter;
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
             explicit BitcoinLikeTransactionApi(const api::Currency& currency);
@@ -58,10 +59,15 @@ namespace ledger {
             std::vector<uint8_t> serialize() override;
             optional<std::vector<uint8_t>> getWitness() override;
             api::EstimatedSize getEstimatedSize() override;
+            std::vector<uint8_t> serializeOutputs() override;
+
 
             BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);
             BitcoinLikeTransactionApi& addOutput(const std::shared_ptr<api::BitcoinLikeOutput>& output);
             BitcoinLikeTransactionApi& setLockTime(uint32_t lockTime);
+            BitcoinLikeTransactionApi& setVersion(uint32_t version);
+            BitcoinLikeTransactionApi& setTimestamp(uint32_t timestamp);
+
 
         public:
             static api::EstimatedSize estimateSize(std::size_t inputCount,
@@ -73,6 +79,10 @@ namespace ledger {
         private:
             inline bool isWriteable() const;
             inline bool isReadOnly() const;
+            inline void serializeProlog(BytesWriter& out);
+            inline void serializeInputs(BytesWriter& out);
+            inline void serializeOutputs(BytesWriter& out);
+            inline void serializeEpilogue(BytesWriter& out);
 
         private:
             int32_t _version;
@@ -84,7 +94,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
-            Option<int32_t> _timestamp;
+            Option<uint32_t> _timestamp;
             bool _writable;
         };
     }

@@ -178,6 +178,7 @@ namespace ledger {
                 // The change amount is bigger than the dust so we need to create a change output,
                 // let's see if we have enough fees to handle this output
                 auto minimumNeededAmountWithChange = computeAmountWithFees(1);
+                buddy->changeAmount = aggregatedAmount - minimumNeededAmountWithChange;
                 buddy->logger->debug("Minimum required with change {} got {}", minimumNeededAmountWithChange.toString(), aggregatedAmount.toString());
                 if (buddy->outputAmount > minimumNeededAmountWithChange) return false;
             }

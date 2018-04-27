@@ -10,7 +10,6 @@ import scala.concurrent.{Future, Promise}
 
 package object implicits {
     class LedgerCoreWrappedException(val code: ErrorCode, message: String) extends Exception(message)
-    class UnknownNetworkParametersException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_NETWORK_PARAMETERS, message)
     class EcPrivKeyInvalidFormatException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PRIV_KEY_INVALID_FORMAT, message)
     class EcPubKeyInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PUB_KEY_INVALID, message)
     class EcDerSignatureInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_DER_SIGNATURE_INVALID, message)
@@ -68,7 +67,6 @@ package object implicits {
     class LinkNonTailFilterException(message: String) extends LedgerCoreWrappedException(ErrorCode.LINK_NON_TAIL_FILTER, message)
     private def wrapLedgerCoreError(error: co.ledger.core.Error): LedgerCoreWrappedException = {
         error.getCode match {
-            case ErrorCode.UNKNOWN_NETWORK_PARAMETERS => new UnknownNetworkParametersException(error.getMessage)
             case ErrorCode.EC_PRIV_KEY_INVALID_FORMAT => new EcPrivKeyInvalidFormatException(error.getMessage)
             case ErrorCode.EC_PUB_KEY_INVALID => new EcPubKeyInvalidException(error.getMessage)
             case ErrorCode.EC_DER_SIGNATURE_INVALID => new EcDerSignatureInvalidException(error.getMessage)
@@ -432,10 +430,10 @@ package object implicits {
     implicit class RichBitcoinLikeWalletConfiguration(val self: BitcoinLikeWalletConfiguration) {
     }
     implicit class RichBitcoinLikeInput(val self: BitcoinLikeInput) {
-        def getPreviousTransaction(): Future[Binary] = {
-            val promise = Promise[Binary]()
+        def getPreviousTransaction(): Future[Array[Byte]] = {
+            val promise = Promise[Array[Byte]]()
             self.getPreviousTransaction(new BinaryCallback() {
-                override def onCallback(result: Binary, error: co.ledger.core.Error): Unit =  {
+                override def onCallback(result: Array[Byte], error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -456,8 +454,6 @@ package object implicits {
     implicit class RichBitcoinLikeTransaction(val self: BitcoinLikeTransaction) {
     }
     implicit class RichBitcoinLikeOperation(val self: BitcoinLikeOperation) {
-    }
-    implicit class RichBitcoinLikeHelper(val self: BitcoinLikeHelper) {
     }
     implicit class RichBitcoinLikeTransactionBuilder(val self: BitcoinLikeTransactionBuilder) {
         def build(): Future[BitcoinLikeTransaction] = {

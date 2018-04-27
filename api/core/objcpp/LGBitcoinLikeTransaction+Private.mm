@@ -98,6 +98,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nonnull NSData *)serializeOutputs {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->serializeOutputs();
+        return ::djinni::Binary::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nullable NSData *)getWitness {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getWitness();

@@ -101,5 +101,12 @@ namespace ledger {
             return _chunk;
         }
 
+        std::shared_ptr<api::BitcoinLikeScript> api::BitcoinLikeScript::parse(const std::vector<uint8_t> &data) {
+            auto result = ledger::core::BitcoinLikeScript::parse(data);
+            if (result.isFailure())
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, result.getFailure().getMessage());
+            return std::make_shared<BitcoinLikeScriptApi>(result.getValue());
+        }
+
     }
 }

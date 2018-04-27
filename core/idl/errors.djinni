@@ -1,7 +1,7 @@
 
 ErrorCode = enum {
     # Pool errors
-    unknown_network_parameters;
+    #unknown_network_parameters;
 
     # Crypto errors
     ec_priv_key_invalid_format;

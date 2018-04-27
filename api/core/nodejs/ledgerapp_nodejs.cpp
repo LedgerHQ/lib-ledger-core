@@ -57,7 +57,6 @@
 #include "NJSBitcoinLikeBlockCpp.hpp"
 #include "NJSBitcoinLikeTransactionCpp.hpp"
 #include "NJSBitcoinLikeOperationCpp.hpp"
-#include "NJSBitcoinLikeHelperCpp.hpp"
 #include "NJSBitcoinLikeTransactionBuilderCpp.hpp"
 #include "NJSBitcoinLikeTransactionCallback.hpp"
 #include "NJSBitcoinLikeAccountCpp.hpp"
@@ -145,7 +144,6 @@ static void initAll(Local<Object> target)
     NJSBitcoinLikeBlock::Initialize(target);
     NJSBitcoinLikeTransaction::Initialize(target);
     NJSBitcoinLikeOperation::Initialize(target);
-    NJSBitcoinLikeHelper::Initialize(target);
     NJSBitcoinLikeTransactionBuilder::Initialize(target);
     NJSBitcoinLikeTransactionCallback::Initialize(target);
     NJSBitcoinLikeAccount::Initialize(target);

@@ -70,6 +70,8 @@ namespace ledger {
                                const std::shared_ptr<BitcoinLikeKeychain>& keychain
             );
 
+            std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
+
             /**
              *
              * @param transaction

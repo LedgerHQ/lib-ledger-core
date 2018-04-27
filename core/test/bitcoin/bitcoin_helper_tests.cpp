@@ -30,11 +30,3 @@
  */
 
 #include <gtest/gtest.h>
-#include <api/BitcoinLikeHelper.hpp>
-
-using namespace ledger::core::api;
-
-TEST(BitcoinLikeHelper, CreateOutputToAddress) {
-
-
-}

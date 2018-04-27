@@ -5,7 +5,9 @@
 #include "Amount.hpp"
 #include "BitcoinLikePickingStrategy.hpp"
 #include "BitcoinLikeScript.hpp"
+#include "BitcoinLikeTransaction.hpp"
 #include "BitcoinLikeTransactionCallback.hpp"
+#include "Currency.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -155,6 +157,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024C
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
         ref->reset();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
+                                                                                                 ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+        return ::djinni::release(::djinni_generated::BitcoinLikeTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

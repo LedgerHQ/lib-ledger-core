@@ -100,7 +100,8 @@ namespace ledger {
 
         private:
             Future<Unit> fillInput(const std::shared_ptr<Buddy>& buddy, const UTXODescriptor& desc);
-
+            BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest& buddy,
+                                                                  const BitcoinLikeGetUtxoFunction& getUtxo);
         private:
             api::Currency _currency;
         };
