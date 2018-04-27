@@ -42,22 +42,48 @@ async function signTransaction(hwApp, transaction) {
   });
 
   const outputs = transaction.getOutputs();
-  console.log(outputs[0].getDerivationPath().getDepth());
-  console.log(outputs[1].getDerivationPath().getDepth());
-  const changePath = outputs.find(output => {
+  const output = outputs.find((output, i) => {
+    // FIXME: remove that when we get the fix
+    if (i === 0) {
+      return false;
+    }
     const derivationPath = output.getDerivationPath();
-    console.log(derivationPath);
     const strDerivationPath = derivationPath.toString();
+    const derivationArr = strDerivationPath.split("/");
+    return derivationArr[derivationArr.length - 2] === "1";
   });
-  console.log(outputs);
+  const changePath = output.getDerivationPath().toString();
+
+  // TODO: serialize transaction here, and cut it to get outputScript
+  const outputScriptHex = "";
+
+  // TODO: detect it with address
+  const segwit = false;
+
+  const lockTime = transaction.getLockTime();
+  console.log(`before get timestamp`);
+  const initialTimestamp = transaction.getTimestamp();
+  console.log(`after get timestamp`);
 
   console.log(`INPUTS`);
-  console.log(transformedInputs);
+  console.log(inputs);
   console.log(``);
 
   console.log(`ASSOCIATEDKEYSETS`);
   console.log(associatedKeysets);
   console.log(``);
+
+  console.log(`CHANGEPATH`);
+  console.log(changePath);
+
+  console.log(`LOCKTIME`);
+  console.log(lockTime);
+
+  console.log(`SEGWIT`);
+  console.log(segwit);
+
+  console.log(`TIMESTAMP`);
+  console.log(initialTimestamp);
 }
 
 module.exports = signTransaction;
