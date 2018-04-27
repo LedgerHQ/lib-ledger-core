@@ -18,6 +18,7 @@ const logger = (title, message) => {
 //////////ExecutionContext Implementation////
 ////////////////////////////////////////////
 const NJSExecutionContextImpl = {};
+
 /*
   @param: runnable: NJSRunnable
 */
@@ -28,6 +29,7 @@ NJSExecutionContextImpl.execute = runnable => {
     console.log(e);
   }
 };
+
 /*
   @param: runnable: NJSRunnable
   @param: millis: delay (integer)
@@ -46,18 +48,21 @@ const NJSExecutionContext = new binding.NJSExecutionContext(
 const NJSThreadDispatcherImpl = {
   contexts: {}
 };
+
 /*
   @param: name: string, context's name
   @return: NJSExecutionContext
 */
 NJSThreadDispatcherImpl.getMainExecutionContext = () =>
   NJSThreadDispatcherImpl.getSerialExecutionContext("main");
+
 /*
   @param: name: string, context's name
   @return: NJSExecutionContext
 */
 NJSThreadDispatcherImpl.getThreadPoolExecutionContext = name =>
   NJSThreadDispatcherImpl.getSerialExecutionContext(name);
+
 /*
   @param: name: string, context's name
   @return: NJSExecutionContext
@@ -70,6 +75,7 @@ NJSThreadDispatcherImpl.getSerialExecutionContext = name => {
   }
   return currentContext;
 };
+
 /*
   @return: NJSLock
 */
@@ -105,54 +111,33 @@ const EVENT_CODE = {
 const NJSHttpClientImpl = {
   execute: async r => {
     const method = r.getMethod();
-    const headers = r.getHeaders();
+    const headersMap = r.getHeaders();
     const data = r.getBody();
     const url = r.getUrl();
-    console.log(`NJSHttpClientImpl execute`);
-    console.log({ method, headers, data, url });
+    const headers = {};
+    headersMap.forEach((v, k) => {
+      headers[k] = v;
+    });
     let res;
     try {
       res = await axios({ method: METHODS[method], url, headers, data });
-      console.log(`axios result: `);
-      console.log(res.data);
-      const urlConnection = createHttpConnection(
-        res,
-        stringToBytesArray(res.data.token)
-      );
+      const urlConnection = createHttpConnection(res);
       r.complete(urlConnection, { code: 0, message: "no errors" });
     } catch (err) {
-      const urlConnection = createHttpConnection(
-        res,
-        stringToBytesArray("something went wrong"),
-        "something went wrong"
-      );
+      console.log(err);
+      const urlConnection = createHttpConnection(res, "something went wrong");
       r.complete(urlConnection, { code: 0, message: "something went wrong" });
-      // const urlConnection = createHttpConnection(res);
-      // r.complete(
-      //   {
-      //     getStatusCode: () => res.status,
-      //     getStatusText: () => res.statusText,
-      //     getHeaders: () => res.headers,
-      //     readBody: () => ({ error: "something went wrong" })
-      //   },
-      //   ""
-      // );
     }
   }
 };
 
-function createHttpConnection(res, data, err) {
+function createHttpConnection(res, err) {
   const headersMap = new Map();
   Object.keys(res.headers).forEach(key => {
     if (typeof res.headers[key] === "string") {
       headersMap.set(key, res.headers[key]);
     }
   });
-  console.log(`----`);
-  console.log(data);
-  console.log(`----`);
-  console.log(res.data);
-  console.log(`----`);
   const NJSHttpUrlConnectionImpl = {
     getStatusCode: () => Number(res.status),
     getStatusText: () => res.statusText,
@@ -355,15 +340,6 @@ NJSWalletPool.getWalletCount().then(res => {
   Create a new wallet
 */
 
-// exports.getBitcoinLikeNetworkParameters = () => {
-//   let bitcoinLikeNetworkParameters;
-//   try {
-//     bitcoinLikeNetworkParameters = NJSNetworks.bitcoin();
-//   } catch (e) {
-//     throw e;
-//   }
-//   return bitcoinLikeNetworkParameters;
-// };
 exports.EVENT_CODE = EVENT_CODE;
 
 exports.createWallet = async (name, currency) => {
@@ -389,7 +365,19 @@ exports.getNextAccountCreationInfo = wallet => {
   return wallet.getNextAccountCreationInfo();
 };
 
-exports.createAccount = (wallet, accountCreationInfos) => {
+exports.createAccount = async (wallet, hwApp) => {
+  const accountCreationInfos = await wallet.getNextAccountCreationInfo();
+  await accountCreationInfos.derivations.reduce((promise, derivation) => {
+    return promise.then(async () => {
+      const {
+        publicKey,
+        chainCode,
+        bitcoinAddress
+      } = await hwApp.getWalletPublicKey(derivation);
+      accountCreationInfos.publicKeys.push(hexToBytes(publicKey));
+      accountCreationInfos.chainCodes.push(hexToBytes(chainCode));
+    });
+  }, Promise.resolve());
   return wallet.newAccountWithInfo(accountCreationInfos);
 };
 
@@ -401,20 +389,51 @@ exports.createWalletUid = function createWalletUid(walletName) {
     .digest("hex");
 };
 
-exports.getEventReceiver = function getEventReceiver(cb) {
+function createEventReceiver(cb) {
   return new binding.NJSEventReceiver({
     onEvent: event => cb(event)
   });
-};
+}
+exports.createEventReceiver = createEventReceiver;
 
-exports.subscribeToEventBus = function subscribeToEventBus(eventBus, receiver) {
+function subscribeToEventBus(eventBus, receiver) {
   eventBus.subscribe(NJSThreadDispatcherImpl.contexts.main, receiver);
+}
+exports.subscribeToEventBus = subscribeToEventBus;
+
+exports.syncAccount = function syncAccount(account) {
+  return new Promise((resolve, reject) => {
+    const eventReceiver = createEventReceiver(e => {
+      const code = e.getCode();
+      if (
+        code === EVENT_CODE.UNDEFINED ||
+        code === EVENT_CODE.SYNCHRONIZATION_FAILED
+      ) {
+        return reject(new Error("Sync failed"));
+      }
+      if (
+        code === EVENT_CODE.SYNCHRONIZATION_SUCCEED ||
+        code === EVENT_CODE.SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT
+      ) {
+        resolve();
+      }
+    });
+    const eventBus = account.synchronize();
+    subscribeToEventBus(eventBus, eventReceiver);
+  });
 };
 
-function stringToBytesArray(str) {
+function stringToBytesArray(str = "") {
   const arr = [];
   for (let i = 0; i < str.length; i++) {
     arr.push(str.charCodeAt(i));
   }
   return arr;
+}
+
+function hexToBytes(str) {
+  for (var bytes = [], c = 0; c < str.length; c += 2) {
+    bytes.push(parseInt(str.substr(c, 2), 16));
+  }
+  return bytes;
 }
