@@ -450,7 +450,6 @@ declare class NJSAccount
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     declare function getLastBlock(callback: NJSBlockCallback);
-    declare function asBitcoinLikeAccount(): NJSBitcoinLikeAccount;
 }
 /**
  *Callback triggered by main completed task,
@@ -1552,6 +1551,8 @@ declare class NJSBitcoinLikeTransaction
     declare function getTimestamp(): ?number;
     /** Serialize the transaction to its raw format. */
     declare function serialize(): Object;
+    /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+    declare function serializeOutputs(): Object;
     /** Get the witness if the underlying transaction is a segwit transaction. */
     declare function getWitness(): ?Object;
     /**

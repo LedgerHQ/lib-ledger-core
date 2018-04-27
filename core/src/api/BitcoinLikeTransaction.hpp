@@ -54,6 +54,9 @@ public:
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 
+    /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+    virtual std::vector<uint8_t> serializeOutputs() = 0;
+
     /** Get the witness if the underlying transaction is a segwit transaction. */
     virtual std::experimental::optional<std::vector<uint8_t>> getWitness() = 0;
 

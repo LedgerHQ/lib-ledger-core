@@ -4,9 +4,11 @@
 package co.ledger.core;
 
 public enum ErrorCode {
-    /** Pool errors */
-    UNKNOWN_NETWORK_PARAMETERS,
-    /** Crypto errors */
+    /**
+     * Pool errors
+     *unknown_network_parameters;
+     * Crypto errors
+     */
     EC_PRIV_KEY_INVALID_FORMAT,
     EC_PUB_KEY_INVALID,
     EC_DER_SIGNATURE_INVALID,

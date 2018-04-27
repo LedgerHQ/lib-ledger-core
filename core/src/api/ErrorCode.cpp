@@ -8,7 +8,6 @@ namespace ledger { namespace core { namespace api {
 
 std::string to_string(const ErrorCode& errorCode) {
     switch (errorCode) {
-        case ErrorCode::UNKNOWN_NETWORK_PARAMETERS: return "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::EC_PRIV_KEY_INVALID_FORMAT: return "EC_PRIV_KEY_INVALID_FORMAT";
         case ErrorCode::EC_PUB_KEY_INVALID: return "EC_PUB_KEY_INVALID";
         case ErrorCode::EC_DER_SIGNATURE_INVALID: return "EC_DER_SIGNATURE_INVALID";
@@ -68,8 +67,7 @@ std::string to_string(const ErrorCode& errorCode) {
 };
 template <>
 ErrorCode from_string(const std::string& errorCode) {
-    if (errorCode == "UNKNOWN_NETWORK_PARAMETERS") return ErrorCode::UNKNOWN_NETWORK_PARAMETERS;
-    else if (errorCode == "EC_PRIV_KEY_INVALID_FORMAT") return ErrorCode::EC_PRIV_KEY_INVALID_FORMAT;
+    if (errorCode == "EC_PRIV_KEY_INVALID_FORMAT") return ErrorCode::EC_PRIV_KEY_INVALID_FORMAT;
     else if (errorCode == "EC_PUB_KEY_INVALID") return ErrorCode::EC_PUB_KEY_INVALID;
     else if (errorCode == "EC_DER_SIGNATURE_INVALID") return ErrorCode::EC_DER_SIGNATURE_INVALID;
     else if (errorCode == "EC_SIGN_FAILED") return ErrorCode::EC_SIGN_FAILED;
@@ -129,7 +127,6 @@ ErrorCode from_string(const std::string& errorCode) {
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
 {
     switch (o) {
-        case ErrorCode::UNKNOWN_NETWORK_PARAMETERS:  return os << "UNKNOWN_NETWORK_PARAMETERS";
         case ErrorCode::EC_PRIV_KEY_INVALID_FORMAT:  return os << "EC_PRIV_KEY_INVALID_FORMAT";
         case ErrorCode::EC_PUB_KEY_INVALID:  return os << "EC_PUB_KEY_INVALID";
         case ErrorCode::EC_DER_SIGNATURE_INVALID:  return os << "EC_DER_SIGNATURE_INVALID";

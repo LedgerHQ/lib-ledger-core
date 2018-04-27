@@ -135,6 +135,8 @@ BitcoinLikeTransaction = interface +c {
     getTimestamp(): optional<i32>;
     # Serialize the transaction to its raw format.
     serialize(): binary;
+    # Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format.
+    serializeOutputs(): binary;
     # Get the witness if the underlying transaction is a segwit transaction.
     getWitness(): optional<binary>;
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated

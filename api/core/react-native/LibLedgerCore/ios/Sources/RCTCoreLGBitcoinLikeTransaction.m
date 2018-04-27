@@ -147,6 +147,20 @@ RCT_REMAP_METHOD(serialize,serializeWithResolver:(RCTPromiseResolveBlock)resolve
     }
 }
 
+/** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
+RCT_REMAP_METHOD(serializeOutputs,serializeOutputsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl serializeOutputs]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::serializeOutputs", nil);
+    }
+}
+
 /** Get the witness if the underlying transaction is a segwit transaction. */
 RCT_REMAP_METHOD(getWitness,getWitnessWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

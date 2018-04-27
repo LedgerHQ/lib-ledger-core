@@ -503,34 +503,6 @@ NAN_METHOD(NJSAccount::getLastBlock) {
     cpp_impl->getLastBlock(arg_0);
     info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
-NAN_METHOD(NJSAccount::asBitcoinLikeAccount) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 0)
-    {
-        return Nan::ThrowError("NJSAccount::asBitcoinLikeAccount needs 0 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSAccount::asBitcoinLikeAccount : implementation of Account is not valid");
-    }
-
-    auto result = cpp_impl->asBitcoinLikeAccount();
-
-    //Wrap result in node object
-    auto arg_0_wrap = NJSBitcoinLikeAccount::wrap(result);
-    auto arg_0 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAccount>(arg_0_wrap)->handle();
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
-}
 
 NAN_METHOD(NJSAccount::New) {
     //Only new allowed
@@ -603,7 +575,6 @@ void NJSAccount::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"stopBlockchainObservation", stopBlockchainObservation);
     Nan::SetPrototypeMethod(func_template,"isObservingBlockchain", isObservingBlockchain);
     Nan::SetPrototypeMethod(func_template,"getLastBlock", getLastBlock);
-    Nan::SetPrototypeMethod(func_template,"asBitcoinLikeAccount", asBitcoinLikeAccount);
     //Set object prototype
     Account_prototype.Reset(objectTemplate);
 

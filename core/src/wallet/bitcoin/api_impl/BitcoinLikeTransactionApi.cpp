@@ -125,53 +125,10 @@ namespace ledger {
 
         std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
             BytesWriter writer;
-
-            writer.writeLeValue<int32_t>(_version);
-
-            if (_currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
-                auto ts = getTimestamp();
-                if (!ts)
-                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing transaction timestamp");
-                writer.writeLeValue<uint32_t>(ts.value());
-            }
-            auto witness = getWitness();
-            if (witness) {
-                writer.writeByte(0x00);
-                writer.writeByte(0x01);
-            }
-
-            // If all inputs are empty we need to create an unsigned transaction
-            writer.writeVarInt(_inputs.size());
-            for (auto& input : _inputs) {
-                auto hash = input->getPreviousTxHash();
-                if (!hash)
-                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction hash");
-                writer.writeLeByteArray(hex::toByteArray(hash.value()));
-                if (!input->getPreviousOutputIndex())
-                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
-                writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
-                auto scriptSig = input->getScriptSig();
-                if (scriptSig.size() > 0) {
-                    writer.writeVarInt(scriptSig.size());
-                    writer.writeByteArray(scriptSig);
-                } else {
-                    auto prevOut = input->getPreviousOuput()->getScript();
-                    writer.writeVarInt(prevOut.size());
-                    writer.writeByteArray(prevOut);
-                }
-                writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
-            }
-
-            writer.writeVarInt(_outputs.size());
-
-            for (auto& output : _outputs) {
-                writer.writeLeValue<uint64_t>(static_cast<const uint64_t>(output->getValue()->toLong()));
-                auto script = output->getScript();
-                writer.writeVarInt(script.size());
-                writer.writeByteArray(script);
-            }
-
-            writer.writeLeValue<int32_t>(_lockTime);
+            serializeProlog(writer);
+            serializeInputs(writer);
+            serializeOutputs(writer);
+            serializeEpilogue(writer);
             return writer.toByteArray();
         }
 
@@ -255,6 +212,68 @@ namespace ledger {
             _timestamp = Option<uint32_t>(ts);
             return *this;
         }
+
+        std::vector<uint8_t> BitcoinLikeTransactionApi::serializeOutputs() {
+            BytesWriter writer;
+            serializeOutputs(writer);
+            return writer.toByteArray();
+        }
+
+        void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
+            writer.writeLeValue<int32_t>(_version);
+
+            if (_currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
+                auto ts = getTimestamp();
+                if (!ts)
+                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing transaction timestamp");
+                writer.writeLeValue<uint32_t>(ts.value());
+            }
+            auto witness = getWitness();
+            if (witness) {
+                writer.writeByte(0x00);
+                writer.writeByte(0x01);
+            }
+        }
+
+        void BitcoinLikeTransactionApi::serializeInputs(BytesWriter &writer) {
+            // If all inputs are empty we need to create an unsigned transaction
+            writer.writeVarInt(_inputs.size());
+            for (auto& input : _inputs) {
+                auto hash = input->getPreviousTxHash();
+                if (!hash)
+                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction hash");
+                writer.writeLeByteArray(hex::toByteArray(hash.value()));
+                if (!input->getPreviousOutputIndex())
+                    throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
+                writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
+                auto scriptSig = input->getScriptSig();
+                if (scriptSig.size() > 0) {
+                    writer.writeVarInt(scriptSig.size());
+                    writer.writeByteArray(scriptSig);
+                } else {
+                    auto prevOut = input->getPreviousOuput()->getScript();
+                    writer.writeVarInt(prevOut.size());
+                    writer.writeByteArray(prevOut);
+                }
+                writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
+            }
+        }
+
+        void BitcoinLikeTransactionApi::serializeOutputs(BytesWriter &writer) {
+            writer.writeVarInt(_outputs.size());
+
+            for (auto& output : _outputs) {
+                writer.writeLeValue<uint64_t>(static_cast<const uint64_t>(output->getValue()->toLong()));
+                auto script = output->getScript();
+                writer.writeVarInt(script.size());
+                writer.writeByteArray(script);
+            }
+        }
+
+        void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
+            writer.writeLeValue<int32_t>(_lockTime);
+        }
+
 
         std::shared_ptr<api::BitcoinLikeTransaction> api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(
                 const Currency &currency, const std::vector<uint8_t> &rawTransaction) {

@@ -10,7 +10,6 @@ import scala.concurrent.{Future, Promise}
 
 package object implicits {
     class LedgerCoreWrappedException(val code: ErrorCode, message: String) extends Exception(message)
-    class UnknownNetworkParametersException(message: String) extends LedgerCoreWrappedException(ErrorCode.UNKNOWN_NETWORK_PARAMETERS, message)
     class EcPrivKeyInvalidFormatException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PRIV_KEY_INVALID_FORMAT, message)
     class EcPubKeyInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_PUB_KEY_INVALID, message)
     class EcDerSignatureInvalidException(message: String) extends LedgerCoreWrappedException(ErrorCode.EC_DER_SIGNATURE_INVALID, message)
@@ -68,7 +67,6 @@ package object implicits {
     class LinkNonTailFilterException(message: String) extends LedgerCoreWrappedException(ErrorCode.LINK_NON_TAIL_FILTER, message)
     private def wrapLedgerCoreError(error: co.ledger.core.Error): LedgerCoreWrappedException = {
         error.getCode match {
-            case ErrorCode.UNKNOWN_NETWORK_PARAMETERS => new UnknownNetworkParametersException(error.getMessage)
             case ErrorCode.EC_PRIV_KEY_INVALID_FORMAT => new EcPrivKeyInvalidFormatException(error.getMessage)
             case ErrorCode.EC_PUB_KEY_INVALID => new EcPubKeyInvalidException(error.getMessage)
             case ErrorCode.EC_DER_SIGNATURE_INVALID => new EcDerSignatureInvalidException(error.getMessage)

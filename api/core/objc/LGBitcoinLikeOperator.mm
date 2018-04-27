@@ -6,7 +6,7 @@
 
 @implementation LGBitcoinLikeOperator
 
-- (nonnull instancetype)initBitcoinLikeOperatorWithName:(nonnull NSString *)name
+- (nonnull instancetype)initWithName:(nonnull NSString *)name
                                value:(int8_t)value
 {
     if (self = [super init]) {
@@ -19,7 +19,7 @@
 + (nonnull instancetype)BitcoinLikeOperatorWithName:(nonnull NSString *)name
                                               value:(int8_t)value
 {
-    return [[self alloc] initBitcoinLikeOperatorWithName:name
+    return [[self alloc] initWithName:name
                                 value:value];
 }
 
