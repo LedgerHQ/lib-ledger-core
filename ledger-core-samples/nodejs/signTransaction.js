@@ -16,7 +16,6 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
       const rawPreviousTransactionHash = await input.getPreviousTxHash();
       const rawPreviousTransaction = await input.getPreviousTransaction();
       const hexPreviousTransaction = bytesToHex(rawPreviousTransaction);
-      console.log(hexPreviousTransaction);
       const previousTransaction = hwApp.splitTransaction(
         hexPreviousTransaction,
         isSegwitSupported
@@ -57,41 +56,22 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
       return false;
     }
   });
+
   const changePath = output.getDerivationPath().toString();
 
   // TODO: serialize transaction here, and cut it to get outputScript
-  const outputScriptHex = transaction.getHash();
+  const outputScriptHex = transaction.serializeOutputs();
+
+  console.log(`outputScriptHex:`);
+  console.log(`[${outputScriptHex}]`);
 
   // TODO: detect it with address
   const segwit = false;
 
   const lockTime = transaction.getLockTime();
-  // const initialTimestamp = transaction.getTimestamp();
+  const initialTimestamp = transaction.getTimestamp();
 
-  console.log(`INPUTS`);
-  console.log(JSON.stringify(inputs, null, 2));
-  console.log(``);
-
-  console.log(`ASSOCIATEDKEYSETS`);
-  console.log(associatedKeysets);
-  console.log(``);
-
-  console.log(`CHANGEPATH`);
-  console.log(changePath);
-  console.log(``);
-
-  console.log(`LOCKTIME`);
-  console.log(lockTime);
-  console.log(``);
-
-  console.log(`SEGWIT`);
-  console.log(segwit);
-  console.log(``);
-
-  console.log(`OUTPUTSCRIPTHEX`);
-  console.log(outputScriptHex);
-  console.log(``);
-
+  return;
   const something = await hwApp.createPaymentTransactionNew(
     inputs,
     associatedKeysets,
@@ -99,8 +79,6 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
     outputScriptHex,
     lockTime
   );
-
-  console.log(something);
 }
 
 module.exports = signTransaction;

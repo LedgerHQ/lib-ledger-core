@@ -1,6 +1,8 @@
 const CommNodeHid = require("@ledgerhq/hw-transport-node-hid").default;
 const Btc = require("@ledgerhq/hw-app-btc").default;
 
+const { CREATE_ACCOUNT } = process.env;
+
 const {
   createWallet,
   createAccount,
@@ -24,21 +26,25 @@ waitForDevices(async device => {
     const currency = await getCurrency("bitcoin_testnet");
 
     console.log(`> Create wallet`);
-    const wallet = await createWallet("khalil", currency);
-    // const wallet = await getWallet("khalil");
+    const wallet = CREATE_ACCOUNT
+      ? await createWallet("khalil", currency)
+      : await getWallet("khalil");
 
     console.log(`> Create account`);
-    const account = await createAccount(wallet, hwApp);
-    // const account = await wallet.getAccount(0);
+    const account = CREATE_ACCOUNT
+      ? await createAccount(wallet, hwApp)
+      : await wallet.getAccount(0);
 
     console.log(`> Sync account`);
-    await syncAccount(account);
+    if (CREATE_ACCOUNT) {
+      await syncAccount(account);
+    }
 
     console.log(`> Create transaction`);
     const transaction = await createTransaction(wallet, account);
 
     const signedTransaction = await signTransaction(hwApp, transaction);
-    console.log(signedTransaction);
+    // console.log(signedTransaction);
 
     process.exit(0);
     // console.log(account.getIndex());
@@ -50,7 +56,7 @@ waitForDevices(async device => {
 });
 
 function waitForDevices(onDevice) {
-  console.log(`>> Waiting for device...`);
+  console.log(`> Waiting for device...`);
   CommNodeHid.listen({
     error: () => {},
     complete: () => {},
@@ -59,7 +65,7 @@ function waitForDevices(onDevice) {
         return;
       }
       if (e.type === "add") {
-        console.log(`added ${JSON.stringify(e)}`);
+        console.log(`> Detected ${e.device.manufacturer} ${e.device.product}`);
         onDevice(e.device);
       }
       if (e.type === "remove") {
