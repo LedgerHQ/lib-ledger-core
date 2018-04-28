@@ -4,7 +4,7 @@ const {
   createBitcoinLikeHelper
 } = require("./helpers");
 
-async function signTransaction(hwApp, transaction) {
+async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const rawInputs = transaction.getInputs();
 
   // const s = transaction.serialize();
@@ -13,10 +13,13 @@ async function signTransaction(hwApp, transaction) {
   const inputs = await Promise.all(
     rawInputs.map(async input => {
       // previous transaction
+      const rawPreviousTransactionHash = await input.getPreviousTxHash();
       const rawPreviousTransaction = await input.getPreviousTransaction();
       const hexPreviousTransaction = bytesToHex(rawPreviousTransaction);
+      console.log(hexPreviousTransaction);
       const previousTransaction = hwApp.splitTransaction(
-        hexPreviousTransaction
+        hexPreviousTransaction,
+        isSegwitSupported
       );
 
       // output index
@@ -43,30 +46,30 @@ async function signTransaction(hwApp, transaction) {
 
   const outputs = transaction.getOutputs();
   const output = outputs.find((output, i) => {
-    // FIXME: remove that when we get the fix
-    if (i === 0) {
+    // FIXME: remove that when we get the fix (by khalil: "add method `isNull`
+    // to check if C++ implementation is null")
+    try {
+      const derivationPath = output.getDerivationPath();
+      const strDerivationPath = derivationPath.toString();
+      const derivationArr = strDerivationPath.split("/");
+      return derivationArr[derivationArr.length - 2] === "1";
+    } catch (err) {
       return false;
     }
-    const derivationPath = output.getDerivationPath();
-    const strDerivationPath = derivationPath.toString();
-    const derivationArr = strDerivationPath.split("/");
-    return derivationArr[derivationArr.length - 2] === "1";
   });
   const changePath = output.getDerivationPath().toString();
 
   // TODO: serialize transaction here, and cut it to get outputScript
-  const outputScriptHex = "";
+  const outputScriptHex = transaction.getHash();
 
   // TODO: detect it with address
   const segwit = false;
 
   const lockTime = transaction.getLockTime();
-  console.log(`before get timestamp`);
-  const initialTimestamp = transaction.getTimestamp();
-  console.log(`after get timestamp`);
+  // const initialTimestamp = transaction.getTimestamp();
 
   console.log(`INPUTS`);
-  console.log(inputs);
+  console.log(JSON.stringify(inputs, null, 2));
   console.log(``);
 
   console.log(`ASSOCIATEDKEYSETS`);
@@ -75,15 +78,29 @@ async function signTransaction(hwApp, transaction) {
 
   console.log(`CHANGEPATH`);
   console.log(changePath);
+  console.log(``);
 
   console.log(`LOCKTIME`);
   console.log(lockTime);
+  console.log(``);
 
   console.log(`SEGWIT`);
   console.log(segwit);
+  console.log(``);
 
-  console.log(`TIMESTAMP`);
-  console.log(initialTimestamp);
+  console.log(`OUTPUTSCRIPTHEX`);
+  console.log(outputScriptHex);
+  console.log(``);
+
+  const something = await hwApp.createPaymentTransactionNew(
+    inputs,
+    associatedKeysets,
+    changePath,
+    outputScriptHex,
+    lockTime
+  );
+
+  console.log(something);
 }
 
 module.exports = signTransaction;

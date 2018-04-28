@@ -24,15 +24,15 @@ waitForDevices(async device => {
     const currency = await getCurrency("bitcoin_testnet");
 
     console.log(`> Create wallet`);
-    // const wallet = await createWallet("khalil", currency);
-    const wallet = await getWallet("khalil");
+    const wallet = await createWallet("khalil", currency);
+    // const wallet = await getWallet("khalil");
 
     console.log(`> Create account`);
-    // const account = await createAccount(wallet, hwApp);
-    const account = await wallet.getAccount(0);
+    const account = await createAccount(wallet, hwApp);
+    // const account = await wallet.getAccount(0);
 
     console.log(`> Sync account`);
-    // await syncAccount(account);
+    await syncAccount(account);
 
     console.log(`> Create transaction`);
     const transaction = await createTransaction(wallet, account);
