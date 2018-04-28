@@ -38,7 +38,7 @@ waitForDevices(async device => {
     const transaction = await createTransaction(wallet, account);
 
     const signedTransaction = await signTransaction(hwApp, transaction);
-    console.log(signedTransaction);
+    // console.log(signedTransaction);
 
     process.exit(0);
     // console.log(account.getIndex());
