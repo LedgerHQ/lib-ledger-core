@@ -16,7 +16,6 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
       const rawPreviousTransactionHash = await input.getPreviousTxHash();
       const rawPreviousTransaction = await input.getPreviousTransaction();
       const hexPreviousTransaction = bytesToHex(rawPreviousTransaction);
-      console.log(hexPreviousTransaction);
       const previousTransaction = hwApp.splitTransaction(
         hexPreviousTransaction,
         isSegwitSupported
@@ -61,7 +60,7 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const changePath = output.getDerivationPath().toString();
 
   // TODO: serialize transaction here, and cut it to get outputScript
-  const outputScriptHex = transaction.getHash();
+  const outputScriptHex = transaction.serializeOutputs();
 
   console.log(`outputScriptHex:`);
   console.log(`[${outputScriptHex}]`);
@@ -72,6 +71,7 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const lockTime = transaction.getLockTime();
   const initialTimestamp = transaction.getTimestamp();
 
+  return;
   const something = await hwApp.createPaymentTransactionNew(
     inputs,
     associatedKeysets,

@@ -10,11 +10,9 @@ const signTransaction = require("./signTransaction");
 const { stringToBytesArray, hexToBytes } = require("./helpers");
 
 const logger = (title, message) => {
-  console.log(`======${title}======`);
   if (message) {
-    console.log(message);
+    // console.log(message);
   }
-  console.log("===================");
 };
 
 /////////////////////////////////////////////
@@ -390,10 +388,7 @@ exports.createAccount = async (wallet, hwApp) => {
 
 exports.createWalletUid = function createWalletUid(walletName) {
   // TODO: use poolname in the wallet uid, if multiple pools
-  return crypto
-    .createHash("sha256")
-    .update(walletName)
-    .digest("hex");
+  return crypto.createHash("sha256").update(walletName).digest("hex");
 };
 
 function createEventReceiver(cb) {
