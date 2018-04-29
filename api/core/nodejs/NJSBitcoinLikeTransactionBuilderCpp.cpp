@@ -476,63 +476,69 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::parseRawUnsignedTransaction) {
 
 
     auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("bitcoinLikeNetworkParameters").ToLocalChecked()).ToLocalChecked();
-
-    auto field_arg_0_6_1 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_6_1(field_arg_0_6_1->ToString());
-    auto arg_0_6_1 = std::string(*string_arg_0_6_1);
-
-    auto field_arg_0_6_2 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_6_2;
-    Local<Array> arg_0_6_2_container = Local<Array>::Cast(field_arg_0_6_2);
-    for(uint32_t arg_0_6_2_id = 0; arg_0_6_2_id < arg_0_6_2_container->Length(); arg_0_6_2_id++)
+    auto arg_0_6 = std::experimental::optional<BitcoinLikeNetworkParameters>();
+    if(!field_arg_0_6->IsNull())
     {
-        if(arg_0_6_2_container->Get(arg_0_6_2_id)->IsUint32())
+
+        auto field_opt_arg_0_6_1 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
+        String::Utf8Value string_opt_arg_0_6_1(field_opt_arg_0_6_1->ToString());
+        auto opt_arg_0_6_1 = std::string(*string_opt_arg_0_6_1);
+
+        auto field_opt_arg_0_6_2 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_2;
+        Local<Array> opt_arg_0_6_2_container = Local<Array>::Cast(field_opt_arg_0_6_2);
+        for(uint32_t opt_arg_0_6_2_id = 0; opt_arg_0_6_2_id < opt_arg_0_6_2_container->Length(); opt_arg_0_6_2_id++)
         {
-            auto arg_0_6_2_elem = Nan::To<uint32_t>(arg_0_6_2_container->Get(arg_0_6_2_id)).FromJust();
-            arg_0_6_2.emplace_back(arg_0_6_2_elem);
+            if(opt_arg_0_6_2_container->Get(opt_arg_0_6_2_id)->IsUint32())
+            {
+                auto opt_arg_0_6_2_elem = Nan::To<uint32_t>(opt_arg_0_6_2_container->Get(opt_arg_0_6_2_id)).FromJust();
+                opt_arg_0_6_2.emplace_back(opt_arg_0_6_2_elem);
+            }
         }
-    }
 
 
-    auto field_arg_0_6_3 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_6_3;
-    Local<Array> arg_0_6_3_container = Local<Array>::Cast(field_arg_0_6_3);
-    for(uint32_t arg_0_6_3_id = 0; arg_0_6_3_id < arg_0_6_3_container->Length(); arg_0_6_3_id++)
-    {
-        if(arg_0_6_3_container->Get(arg_0_6_3_id)->IsUint32())
+        auto field_opt_arg_0_6_3 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_3;
+        Local<Array> opt_arg_0_6_3_container = Local<Array>::Cast(field_opt_arg_0_6_3);
+        for(uint32_t opt_arg_0_6_3_id = 0; opt_arg_0_6_3_id < opt_arg_0_6_3_container->Length(); opt_arg_0_6_3_id++)
         {
-            auto arg_0_6_3_elem = Nan::To<uint32_t>(arg_0_6_3_container->Get(arg_0_6_3_id)).FromJust();
-            arg_0_6_3.emplace_back(arg_0_6_3_elem);
+            if(opt_arg_0_6_3_container->Get(opt_arg_0_6_3_id)->IsUint32())
+            {
+                auto opt_arg_0_6_3_elem = Nan::To<uint32_t>(opt_arg_0_6_3_container->Get(opt_arg_0_6_3_id)).FromJust();
+                opt_arg_0_6_3.emplace_back(opt_arg_0_6_3_elem);
+            }
         }
-    }
 
 
-    auto field_arg_0_6_4 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_6_4;
-    Local<Array> arg_0_6_4_container = Local<Array>::Cast(field_arg_0_6_4);
-    for(uint32_t arg_0_6_4_id = 0; arg_0_6_4_id < arg_0_6_4_container->Length(); arg_0_6_4_id++)
-    {
-        if(arg_0_6_4_container->Get(arg_0_6_4_id)->IsUint32())
+        auto field_opt_arg_0_6_4 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_4;
+        Local<Array> opt_arg_0_6_4_container = Local<Array>::Cast(field_opt_arg_0_6_4);
+        for(uint32_t opt_arg_0_6_4_id = 0; opt_arg_0_6_4_id < opt_arg_0_6_4_container->Length(); opt_arg_0_6_4_id++)
         {
-            auto arg_0_6_4_elem = Nan::To<uint32_t>(arg_0_6_4_container->Get(arg_0_6_4_id)).FromJust();
-            arg_0_6_4.emplace_back(arg_0_6_4_elem);
+            if(opt_arg_0_6_4_container->Get(opt_arg_0_6_4_id)->IsUint32())
+            {
+                auto opt_arg_0_6_4_elem = Nan::To<uint32_t>(opt_arg_0_6_4_container->Get(opt_arg_0_6_4_id)).FromJust();
+                opt_arg_0_6_4.emplace_back(opt_arg_0_6_4_elem);
+            }
         }
+
+
+        auto field_opt_arg_0_6_5 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_opt_arg_0_6_5).FromJust();
+
+        auto field_opt_arg_0_6_6 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_6 = Nan::To<int64_t>(field_opt_arg_0_6_6).FromJust();
+
+        auto field_opt_arg_0_6_7 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
+        String::Utf8Value string_opt_arg_0_6_7(field_opt_arg_0_6_7->ToString());
+        auto opt_arg_0_6_7 = std::string(*string_opt_arg_0_6_7);
+
+        auto field_opt_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_8 = Nan::To<bool>(field_opt_arg_0_6_8).FromJust();
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8);
+
+        arg_0_6.emplace(opt_arg_0_6);
     }
-
-
-    auto field_arg_0_6_5 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_6_5).FromJust();
-
-    auto field_arg_0_6_6 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6_6 = Nan::To<int64_t>(field_arg_0_6_6).FromJust();
-
-    auto field_arg_0_6_7 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_6_7(field_arg_0_6_7->ToString());
-    auto arg_0_6_7 = std::string(*string_arg_0_6_7);
-
-    auto field_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6_8 = Nan::To<bool>(field_arg_0_6_8).FromJust();
-    BitcoinLikeNetworkParameters arg_0_6(arg_0_6_1, arg_0_6_2, arg_0_6_3, arg_0_6_4, arg_0_6_5, arg_0_6_6, arg_0_6_7, arg_0_6_8);
 
     Currency arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6);
 
@@ -601,6 +607,13 @@ Handle<Object> NJSBitcoinLikeTransactionBuilder::wrap(const std::shared_ptr<ledg
     return obj;
 }
 
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::isNull) {
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSBitcoinLikeTransactionBuilder::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -627,6 +640,7 @@ void NJSBitcoinLikeTransactionBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"parseRawUnsignedTransaction", parseRawUnsignedTransaction);
     //Set object prototype
     BitcoinLikeTransactionBuilder_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeTransactionBuilder").ToLocalChecked(), func_template->GetFunction());

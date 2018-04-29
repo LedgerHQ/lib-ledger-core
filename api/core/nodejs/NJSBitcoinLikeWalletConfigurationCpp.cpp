@@ -50,6 +50,13 @@ Handle<Object> NJSBitcoinLikeWalletConfiguration::wrap(const std::shared_ptr<led
     return obj;
 }
 
+NAN_METHOD(NJSBitcoinLikeWalletConfiguration::isNull) {
+    NJSBitcoinLikeWalletConfiguration* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeWalletConfiguration>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSBitcoinLikeWalletConfiguration::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -62,6 +69,7 @@ void NJSBitcoinLikeWalletConfiguration::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     //Set object prototype
     BitcoinLikeWalletConfiguration_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeWalletConfiguration").ToLocalChecked(), func_template->GetFunction());

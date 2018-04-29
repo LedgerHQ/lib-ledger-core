@@ -888,6 +888,13 @@ Handle<Object> NJSWallet::wrap(const std::shared_ptr<ledger::core::api::Wallet> 
     return obj;
 }
 
+NAN_METHOD(NJSWallet::isNull) {
+    NJSWallet* obj = Nan::ObjectWrap::Unwrap<NJSWallet>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSWallet::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -924,6 +931,7 @@ void NJSWallet::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"newAccountWithExtendedKeyInfo", newAccountWithExtendedKeyInfo);
     //Set object prototype
     Wallet_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSWallet").ToLocalChecked(), func_template->GetFunction());

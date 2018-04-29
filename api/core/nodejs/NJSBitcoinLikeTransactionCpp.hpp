@@ -82,6 +82,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BitcoinLikeTransaction> _BitcoinLikeTransaction;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKETRANSACTION_HPP

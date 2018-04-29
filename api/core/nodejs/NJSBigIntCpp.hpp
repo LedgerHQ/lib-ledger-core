@@ -129,6 +129,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BigInt> _BigInt;
 };
 #endif //DJINNI_GENERATED_NJSBIGINT_HPP

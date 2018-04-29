@@ -60,10 +60,11 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const changePath = output.getDerivationPath().toString();
 
   // TODO: serialize transaction here, and cut it to get outputScript
-  const outputScriptHex = transaction.serializeOutputs();
+  const outputScriptHexArray = transaction.serializeOutputs();
+  const outputScriptHex = bytesToHex(outputScriptHexArray);
 
   console.log(`outputScriptHex:`);
-  console.log(`[${outputScriptHex}]`);
+  console.log(`${outputScriptHex}`);
 
   // TODO: detect it with address
   const segwit = false;
@@ -71,7 +72,7 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const lockTime = transaction.getLockTime();
   const initialTimestamp = transaction.getTimestamp();
 
-  return;
+  //return;
   const something = await hwApp.createPaymentTransactionNew(
     inputs,
     associatedKeysets,
@@ -79,6 +80,7 @@ async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
     outputScriptHex,
     lockTime
   );
+  return;
 }
 
 module.exports = signTransaction;

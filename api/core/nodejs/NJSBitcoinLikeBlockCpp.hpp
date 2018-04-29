@@ -51,6 +51,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BitcoinLikeBlock> _BitcoinLikeBlock;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEBLOCK_HPP

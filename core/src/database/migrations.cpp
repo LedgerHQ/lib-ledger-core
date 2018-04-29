@@ -67,6 +67,7 @@ namespace ledger {
                 "magnitude INTEGER NOT NULL,"
                 "symbol VARCHAR(255) NOT NULL,"
                 "code VARCHAR(255) NOT NULL,"
+                "type VARCHAR(255) NOT NULL,"
                 "currency_name VARCHAR(255) REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE"
             ")";
 

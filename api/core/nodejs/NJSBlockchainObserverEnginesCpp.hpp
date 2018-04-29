@@ -30,6 +30,7 @@ public:
 private:
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BlockchainObserverEngines> _BlockchainObserverEngines;
 };
 #endif //DJINNI_GENERATED_NJSBLOCKCHAINOBSERVERENGINES_HPP

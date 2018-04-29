@@ -123,10 +123,11 @@ const NJSHttpClientImpl = {
     try {
       res = await axios({ method: METHODS[method], url, headers, data });
       const urlConnection = createHttpConnection(res);
-      r.complete(urlConnection, { code: 0, message: "no errors" });
+      r.complete(urlConnection, null);
     } catch (err) {
+      console.log("=============NJSHttpClientImpl Fail");
       console.log(err);
-      const urlConnection = createHttpConnection(res, "something went wrong");
+      const urlConnection = createHttpConnection(res, err);
       r.complete(urlConnection, { code: 0, message: "something went wrong" });
     }
   }
@@ -144,7 +145,7 @@ function createHttpConnection(res, err) {
     getStatusText: () => res.statusText,
     getHeaders: () => headersMap,
     readBody: () => ({
-      error: { code: 0, message: "something went wrong" },
+      error: err ? { code: 0, message: err } : null,
       data: stringToBytesArray(JSON.stringify(res.data))
     })
   };

@@ -515,6 +515,13 @@ Handle<Object> NJSBitcoinLikeAddress::wrap(const std::shared_ptr<ledger::core::a
     return obj;
 }
 
+NAN_METHOD(NJSBitcoinLikeAddress::isNull) {
+    NJSBitcoinLikeAddress* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSBitcoinLikeAddress::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -536,6 +543,7 @@ void NJSBitcoinLikeAddress::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"isAddressValid", isAddressValid);
     //Set object prototype
     BitcoinLikeAddress_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeAddress").ToLocalChecked(), func_template->GetFunction());

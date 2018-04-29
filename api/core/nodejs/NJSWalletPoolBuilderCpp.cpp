@@ -431,6 +431,13 @@ Handle<Object> NJSWalletPoolBuilder::wrap(const std::shared_ptr<ledger::core::ap
     return obj;
 }
 
+NAN_METHOD(NJSWalletPoolBuilder::isNull) {
+    NJSWalletPoolBuilder* obj = Nan::ObjectWrap::Unwrap<NJSWalletPoolBuilder>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSWalletPoolBuilder::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -455,6 +462,7 @@ void NJSWalletPoolBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"createInstance", createInstance);
     //Set object prototype
     WalletPoolBuilder_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSWalletPoolBuilder").ToLocalChecked(), func_template->GetFunction());

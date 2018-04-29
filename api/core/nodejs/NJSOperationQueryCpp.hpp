@@ -75,6 +75,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::OperationQuery> _OperationQuery;
 };
 #endif //DJINNI_GENERATED_NJSOPERATIONQUERY_HPP
