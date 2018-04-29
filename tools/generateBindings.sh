@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PACKAGE_NAME=ledger-core
+PACKAGE_NAME=ledgercore
 DEST=../lib-ledger-core-node-bindings
 CORE_BUILD=../lib-ledger-core-build
 
