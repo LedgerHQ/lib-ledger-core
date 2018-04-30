@@ -2,72 +2,60 @@ const crypto = require("crypto");
 const path = require("path");
 const axios = require("axios");
 
+const binding = require("bindings")("ledger-core");
+
 const MAX_RANDOM = 2684869021;
 
-const binding = require("bindings")("ledgerapp_nodejs");
-
 const signTransaction = require("./signTransaction");
-const { stringToBytesArray, hexToBytes } = require("./helpers");
+const {
+  stringToBytesArray,
+  bytesToHex,
+  hexToBytes,
+  bytesArrayToString
+} = require("./helpers");
 
-const logger = (title, message) => {
-  if (message) {
-    // console.log(message);
-  }
+/**
+ * NJSExecutionContext
+ * -------------------
+ */
+
+const NJSExecutionContextImpl = {
+  execute: runnable => {
+    try {
+      runnable.run();
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  delay: (runnable, ms) => setTimeout(() => runnable.run(), ms)
 };
 
-/////////////////////////////////////////////
-//////////ExecutionContext Implementation////
-////////////////////////////////////////////
-const NJSExecutionContextImpl = {};
+/**
+ * ThreadDispatcher
+ * ----------------
+ */
 
-/*
-  @param: runnable: NJSRunnable
-*/
-NJSExecutionContextImpl.execute = runnable => {
-  try {
-    runnable.run();
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-/*
-  @param: runnable: NJSRunnable
-  @param: millis: delay (integer)
-*/
-NJSExecutionContextImpl.delay = (runnable, millis) => {
-  setTimeout(() => runnable.run(), millis);
-};
-
-const NJSExecutionContext = new binding.NJSExecutionContext(
-  NJSExecutionContextImpl
-);
-
-/////////////////////////////////////////////
-//////////ThreadDispatcher Implementation////
-////////////////////////////////////////////
 const NJSThreadDispatcherImpl = {
   contexts: {}
 };
 
-/*
-  @param: name: string, context's name
-  @return: NJSExecutionContext
-*/
-NJSThreadDispatcherImpl.getMainExecutionContext = () =>
-  NJSThreadDispatcherImpl.getSerialExecutionContext("main");
-
-/*
-  @param: name: string, context's name
-  @return: NJSExecutionContext
-*/
+/**
+ * @param: name: string, context's name
+ * @return: NJSExecutionContext
+ */
 NJSThreadDispatcherImpl.getThreadPoolExecutionContext = name =>
   NJSThreadDispatcherImpl.getSerialExecutionContext(name);
 
-/*
-  @param: name: string, context's name
-  @return: NJSExecutionContext
-*/
+/**
+ * @return: NJSExecutionContext
+ */
+NJSThreadDispatcherImpl.getMainExecutionContext = () =>
+  NJSThreadDispatcherImpl.getSerialExecutionContext("main");
+
+/**
+ * @param: name: string, context's name
+ * @return: NJSExecutionContext
+ */
 NJSThreadDispatcherImpl.getSerialExecutionContext = name => {
   let currentContext = NJSThreadDispatcherImpl.contexts[name];
   if (currentContext === undefined) {
@@ -77,9 +65,9 @@ NJSThreadDispatcherImpl.getSerialExecutionContext = name => {
   return currentContext;
 };
 
-/*
-  @return: NJSLock
-*/
+/**
+ * @return: NJSLock
+ */
 NJSThreadDispatcherImpl.newLock = () => {
   console.log("Not implemented"); // eslint-disable-line no-console
 };
@@ -88,9 +76,9 @@ const NJSThreadDispatcher = new binding.NJSThreadDispatcher(
   NJSThreadDispatcherImpl
 );
 
-/////////////////////////////////////////////
-//////////HttpClient Implementation//////////
-////////////////////////////////////////////
+// ///////////////////////////////////////////
+// ////////HttpClient Implementation//////////
+// //////////////////////////////////////////
 
 const METHODS = {
   0: "GET",
@@ -113,7 +101,13 @@ const NJSHttpClientImpl = {
   execute: async r => {
     const method = r.getMethod();
     const headersMap = r.getHeaders();
-    const data = r.getBody();
+    let data = r.getBody();
+    if (Array.isArray(data)) {
+      const dataStr = bytesArrayToString(data);
+      try {
+        data = JSON.parse(dataStr);
+      } catch (err) {}
+    }
     const url = r.getUrl();
     const headers = {};
     headersMap.forEach((v, k) => {
@@ -125,15 +119,17 @@ const NJSHttpClientImpl = {
       const urlConnection = createHttpConnection(res);
       r.complete(urlConnection, null);
     } catch (err) {
-      console.log("=============NJSHttpClientImpl Fail");
       console.log(err);
-      const urlConnection = createHttpConnection(res, err);
+      const urlConnection = createHttpConnection(res, "something went wrong");
       r.complete(urlConnection, { code: 0, message: "something went wrong" });
     }
   }
 };
 
 function createHttpConnection(res, err) {
+  if (!res) {
+    return null;
+  }
   const headersMap = new Map();
   Object.keys(res.headers).forEach(key => {
     if (typeof res.headers[key] === "string") {
@@ -145,7 +141,7 @@ function createHttpConnection(res, err) {
     getStatusText: () => res.statusText,
     getHeaders: () => headersMap,
     readBody: () => ({
-      error: err ? { code: 0, message: err } : null,
+      error: err ? { code: 0, message: "something went wrong" } : null,
       data: stringToBytesArray(JSON.stringify(res.data))
     })
   };
@@ -158,9 +154,9 @@ function createHttpConnection(res, err) {
 
 const NJSHttpClient = new binding.NJSHttpClient(NJSHttpClientImpl);
 
-/////////////////////////////////////////////////////
-//////////NJSWebSocketClient Implementation//////////
-////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////
+// ////////NJSWebSocketClient Implementation//////////
+// //////////////////////////////////////////////////
 const NJSWebSocketClientImpl = {};
 /*
   @param: url: string
@@ -185,9 +181,9 @@ NJSWebSocketClientImpl.disconnect = connection => {
 const NJSWebSocketClient = new binding.NJSWebSocketClient(
   NJSWebSocketClientImpl
 );
-/////////////////////////////////////////////////////
-//////////NJSPathResolver Implementation////////////
-////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////
+// ////////NJSPathResolver Implementation////////////
+// //////////////////////////////////////////////////
 const NJSPathResolverImpl = {};
 /*
   Resolves the path for a SQLite database file.
@@ -196,7 +192,7 @@ const NJSPathResolverImpl = {};
 */
 NJSPathResolverImpl.resolveDatabasePath = pathToResolve => {
   let result = pathToResolve.replace(/\//g, "__");
-  result = "./database_" + result;
+  result = `./database_${result}`;
   const resolvedPath = path.resolve(__dirname, "tmp", result);
   return resolvedPath;
 };
@@ -207,7 +203,7 @@ NJSPathResolverImpl.resolveDatabasePath = pathToResolve => {
 */
 NJSPathResolverImpl.resolveLogFilePath = pathToResolve => {
   let result = pathToResolve.replace(/\//g, "__");
-  result = "./log_file_" + result;
+  result = `./log_file_${result}`;
   const resolvedPath = path.resolve(__dirname, "tmp", result);
   return resolvedPath;
 };
@@ -218,20 +214,27 @@ NJSPathResolverImpl.resolveLogFilePath = pathToResolve => {
 */
 NJSPathResolverImpl.resolvePreferencesPath = pathToResolve => {
   let result = pathToResolve.replace(/\//g, "__");
-  result = "./preferences_" + result;
+  result = `./preferences_${result}`;
   const resolvedPath = path.resolve(__dirname, "tmp", result);
   return resolvedPath;
 };
 const NJSPathResolver = new binding.NJSPathResolver(NJSPathResolverImpl);
-/////////////////////////////////////////////
-//////////LogPrinter Implementation//////////
-////////////////////////////////////////////
+// ///////////////////////////////////////////
+// ////////LogPrinter Implementation//////////
+// //////////////////////////////////////////
 const NJSLogPrinterImpl = {
   context: {}
 };
 /*
   @param: message: string
 */
+
+const logger = (title, message) => {
+  if (message) {
+    // console.log(message);
+  }
+};
+
 NJSLogPrinterImpl.printError = message => {
   logger("Error", message);
 };
@@ -268,37 +271,29 @@ NJSLogPrinterImpl.printCriticalError = message => {
 /*
   @return: main NJSExecutionContext
 */
-NJSLogPrinterImpl.getContext = () => {
-  return NJSThreadDispatcher.getMainExecutionContext();
-};
+NJSLogPrinterImpl.getContext = () =>
+  NJSThreadDispatcher.getMainExecutionContext();
 
 const NJSLogPrinter = new binding.NJSLogPrinter(NJSLogPrinterImpl);
 
-////////////////////////////////////////////////////////
-//////////RandomNumberGenerator Implementation//////////
-///////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////
+// ////////RandomNumberGenerator Implementation//////////
+// /////////////////////////////////////////////////////
 const NJSRandomNumberGeneratorImpl = {};
 /*
   @param: size: integer
 */
-NJSRandomNumberGeneratorImpl.getRandomBytes = size => {
-  return crypto.randomBytes(size);
-};
-NJSRandomNumberGeneratorImpl.getRandomInt = () => {
-  return Math.random() * MAX_RANDOM;
-};
-NJSRandomNumberGeneratorImpl.getRandomLong = () => {
-  return Math.random() * MAX_RANDOM * MAX_RANDOM;
-};
-NJSRandomNumberGeneratorImpl.getRandomLong = () => {
-  return crypto.randomBytes(1);
-};
+NJSRandomNumberGeneratorImpl.getRandomBytes = size => crypto.randomBytes(size);
+NJSRandomNumberGeneratorImpl.getRandomInt = () => Math.random() * MAX_RANDOM;
+NJSRandomNumberGeneratorImpl.getRandomLong = () =>
+  Math.random() * MAX_RANDOM * MAX_RANDOM;
+NJSRandomNumberGeneratorImpl.getRandomLong = () => crypto.randomBytes(1);
 const NJSRandomNumberGenerator = new binding.NJSRandomNumberGenerator(
   NJSRandomNumberGeneratorImpl
 );
-////////////////////////////////////////////////////////
-///////////////Instanciate C++ objects/////////////////
-///////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////
+// /////////////Instanciate C++ objects/////////////////
+// /////////////////////////////////////////////////////
 const NJSDatabaseBackend = new binding.NJSDatabaseBackend();
 const NJSDynamicObject = new binding.NJSDynamicObject();
 const NJSNetworks = new binding.NJSNetworks();
@@ -360,36 +355,39 @@ exports.createWallet = async (name, currency) => {
 };
 
 exports.createAmount = (currency, amount) => {
-  return new binding.NJSAmount(currency, amount);
+  const a = new binding.NJSAmount(currency, amount);
+  return a.fromLong(currency, amount);
 };
 
-exports.getCurrency = currencyName => {
-  return NJSWalletPool.getCurrency(currencyName);
-};
+exports.getCurrency = currencyName => NJSWalletPool.getCurrency(currencyName);
 
-exports.getNextAccountCreationInfo = wallet => {
-  return wallet.getNextAccountCreationInfo();
-};
+exports.getNextAccountCreationInfo = wallet =>
+  wallet.getNextAccountCreationInfo();
 
 exports.createAccount = async (wallet, hwApp) => {
   const accountCreationInfos = await wallet.getNextAccountCreationInfo();
-  await accountCreationInfos.derivations.reduce((promise, derivation) => {
-    return promise.then(async () => {
-      const {
-        publicKey,
-        chainCode,
-        bitcoinAddress
-      } = await hwApp.getWalletPublicKey(derivation);
-      accountCreationInfos.publicKeys.push(hexToBytes(publicKey));
-      accountCreationInfos.chainCodes.push(hexToBytes(chainCode));
-    });
-  }, Promise.resolve());
+  await accountCreationInfos.derivations.reduce(
+    (promise, derivation) =>
+      promise.then(async () => {
+        const {
+          publicKey,
+          chainCode,
+          bitcoinAddress
+        } = await hwApp.getWalletPublicKey(derivation);
+        accountCreationInfos.publicKeys.push(hexToBytes(publicKey));
+        accountCreationInfos.chainCodes.push(hexToBytes(chainCode));
+      }),
+    Promise.resolve()
+  );
   return wallet.newAccountWithInfo(accountCreationInfos);
 };
 
 exports.createWalletUid = function createWalletUid(walletName) {
   // TODO: use poolname in the wallet uid, if multiple pools
-  return crypto.createHash("sha256").update(walletName).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(walletName)
+    .digest("hex");
 };
 
 function createEventReceiver(cb) {
