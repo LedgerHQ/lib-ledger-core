@@ -1,36 +1,23 @@
-const {
-  stringToBytesArray,
-  bytesToHex,
-  createBitcoinLikeHelper
-} = require("./helpers");
+const { bytesToHex, stringToBytesArray, hexToBytes } = require("./helpers");
 
-async function signTransaction(hwApp, transaction) {
+async function signTransaction(hwApp, transaction, isSegwitSupported = true) {
   const rawInputs = transaction.getInputs();
-
-  // const s = transaction.serialize();
-  // const bitcoinLikeHelper = createBitcoinLikeHelper();
 
   const inputs = await Promise.all(
     rawInputs.map(async input => {
-      // previous transaction
+      // const rawPreviousTransactionHash = await input.getPreviousTxHash()
       const rawPreviousTransaction = await input.getPreviousTransaction();
       const hexPreviousTransaction = bytesToHex(rawPreviousTransaction);
       const previousTransaction = hwApp.splitTransaction(
-        hexPreviousTransaction
+        hexPreviousTransaction,
+        isSegwitSupported
       );
-
-      // output index
       const outputIndex = input.getPreviousOutputIndex();
-
-      // sequence
       const sequence = input.getSequence();
-
       return [
         previousTransaction,
         outputIndex,
-        // we don't use that
-        // TODO: document
-        null,
+        null, // we don't use that TODO: document
         sequence
       ];
     })
@@ -42,22 +29,35 @@ async function signTransaction(hwApp, transaction) {
   });
 
   const outputs = transaction.getOutputs();
-  console.log(outputs[0].getDerivationPath().getDepth());
-  console.log(outputs[1].getDerivationPath().getDepth());
-  const changePath = outputs.find(output => {
+
+  const output = outputs.find((output, i) => {
     const derivationPath = output.getDerivationPath();
-    console.log(derivationPath);
+    if (derivationPath.isNull()) {
+      return false;
+    }
     const strDerivationPath = derivationPath.toString();
+    const derivationArr = strDerivationPath.split("/");
+    return derivationArr[derivationArr.length - 2] === "1";
   });
-  console.log(outputs);
 
-  console.log(`INPUTS`);
-  console.log(transformedInputs);
-  console.log(``);
+  const changePath = output.getDerivationPath().toString();
+  const outputScriptHex = bytesToHex(transaction.serializeOutputs());
+  const lockTime = transaction.getLockTime();
+  const initialTimestamp = transaction.getTimestamp();
 
-  console.log(`ASSOCIATEDKEYSETS`);
-  console.log(associatedKeysets);
-  console.log(``);
+  // console.log(`outputs = ${transaction.getOutputs().map(o => o.getValue().toLong())}`)
+  // console.log(`fees = ${transaction.getFees().toLong()}`)
+  // console.log(`estimated size = `, transaction.getEstimatedSize())
+
+  const signedTransaction = await hwApp.createPaymentTransactionNew(
+    inputs,
+    associatedKeysets,
+    changePath,
+    outputScriptHex,
+    lockTime
+  );
+
+  return hexToBytes(signedTransaction);
 }
 
 module.exports = signTransaction;

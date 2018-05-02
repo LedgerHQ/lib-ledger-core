@@ -50,6 +50,13 @@ Handle<Object> NJSBlockchainObserverEngines::wrap(const std::shared_ptr<ledger::
     return obj;
 }
 
+NAN_METHOD(NJSBlockchainObserverEngines::isNull) {
+    NJSBlockchainObserverEngines* obj = Nan::ObjectWrap::Unwrap<NJSBlockchainObserverEngines>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSBlockchainObserverEngines::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -62,6 +69,7 @@ void NJSBlockchainObserverEngines::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     //Set object prototype
     BlockchainObserverEngines_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBlockchainObserverEngines").ToLocalChecked(), func_template->GetFunction());

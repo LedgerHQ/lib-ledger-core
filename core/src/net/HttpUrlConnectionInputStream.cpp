@@ -40,10 +40,10 @@ namespace ledger {
             _connection = connection;
             _index = 0;
             _offset = 0;
+            refill();
         }
 
         HttpUrlConnectionInputStream::Ch HttpUrlConnectionInputStream::Peek() {
-            refill();
             if (_index >= _buffer.size())
                 return '\0';
             else
@@ -51,7 +51,6 @@ namespace ledger {
         }
 
         HttpUrlConnectionInputStream::Ch HttpUrlConnectionInputStream::Take() {
-            refill();
             if (_index >= _buffer.size())
                 return '\0';
             else {

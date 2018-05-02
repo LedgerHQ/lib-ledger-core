@@ -3,6 +3,7 @@
 
 #include "NJSHttpRequestCpp.hpp"
 
+
 using namespace v8;
 using namespace node;
 using namespace std;
@@ -133,18 +134,30 @@ NAN_METHOD(NJSHttpRequest::complete) {
     }
 
     //Check if parameters have correct types
-    Local<Object> njs_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSHttpUrlConnection *njs_ptr_arg_0 = static_cast<NJSHttpUrlConnection *>(Nan::GetInternalFieldPointer(njs_arg_0,0));
-    std::shared_ptr<NJSHttpUrlConnection> arg_0(njs_ptr_arg_0);
+    std::shared_ptr<NJSHttpUrlConnection> arg_0 = nullptr;
+    if(!info[0]->IsNull())
+    {
+        Local<Object> njs_opt_arg_0 = info[0]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
+        NJSHttpUrlConnection *njs_ptr_opt_arg_0 = static_cast<NJSHttpUrlConnection *>(Nan::GetInternalFieldPointer(njs_opt_arg_0,0));
+        std::shared_ptr<NJSHttpUrlConnection> opt_arg_0(njs_ptr_opt_arg_0);
 
+        arg_0 = opt_arg_0;
+    }
 
-    auto field_arg_1_1 = Nan::Get(info[1]->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
-    auto arg_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_arg_1_1).FromJust();
+    auto arg_1 = std::experimental::optional<Error>();
 
-    auto field_arg_1_2 = Nan::Get(info[1]->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_1_2(field_arg_1_2->ToString());
-    auto arg_1_2 = std::string(*string_arg_1_2);
-    Error arg_1(arg_1_1, arg_1_2);
+    if(!info[1]->IsNull())
+    {
+        auto field_opt_arg_1_1 = Nan::Get(info[1]->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_opt_arg_1_1).FromJust();
+
+        auto field_opt_arg_1_2 = Nan::Get(info[1]->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
+        String::Utf8Value string_opt_arg_1_2(field_opt_arg_1_2->ToString());
+        auto opt_arg_1_2 = std::string(*string_opt_arg_1_2);
+        Error opt_arg_1(opt_arg_1_1, opt_arg_1_2);
+
+        arg_1.emplace(opt_arg_1);
+    }
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -199,6 +212,13 @@ Handle<Object> NJSHttpRequest::wrap(const std::shared_ptr<ledger::core::api::Htt
     return obj;
 }
 
+NAN_METHOD(NJSHttpRequest::isNull) {
+    NJSHttpRequest* obj = Nan::ObjectWrap::Unwrap<NJSHttpRequest>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSHttpRequest::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -216,6 +236,7 @@ void NJSHttpRequest::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"complete", complete);
     //Set object prototype
     HttpRequest_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSHttpRequest").ToLocalChecked(), func_template->GetFunction());

@@ -110,26 +110,38 @@ HttpReadBodyResult NJSHttpUrlConnection::readBody()
     auto checkedResult_readBody = result_readBody.ToLocalChecked();
 
     auto field_fResult_readBody_1 = Nan::Get(checkedResult_readBody->ToObject(), Nan::New<String>("error").ToLocalChecked()).ToLocalChecked();
+    auto fResult_readBody_1 = std::experimental::optional<Error>();
+    if(!field_fResult_readBody_1->IsNull())
+    {
 
-    auto field_fResult_readBody_1_1 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
-    auto fResult_readBody_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_fResult_readBody_1_1).FromJust();
+        auto field_opt_fResult_readBody_1_1 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
+        auto opt_fResult_readBody_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_opt_fResult_readBody_1_1).FromJust();
 
-    auto field_fResult_readBody_1_2 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_fResult_readBody_1_2(field_fResult_readBody_1_2->ToString());
-    auto fResult_readBody_1_2 = std::string(*string_fResult_readBody_1_2);
-    Error fResult_readBody_1(fResult_readBody_1_1, fResult_readBody_1_2);
+        auto field_opt_fResult_readBody_1_2 = Nan::Get(field_fResult_readBody_1->ToObject(), Nan::New<String>("message").ToLocalChecked()).ToLocalChecked();
+        String::Utf8Value string_opt_fResult_readBody_1_2(field_opt_fResult_readBody_1_2->ToString());
+        auto opt_fResult_readBody_1_2 = std::string(*string_opt_fResult_readBody_1_2);
+        Error opt_fResult_readBody_1(opt_fResult_readBody_1_1, opt_fResult_readBody_1_2);
+
+        fResult_readBody_1.emplace(opt_fResult_readBody_1);
+    }
 
 
     auto field_fResult_readBody_2 = Nan::Get(checkedResult_readBody->ToObject(), Nan::New<String>("data").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> fResult_readBody_2;
-    Local<Array> fResult_readBody_2_container = Local<Array>::Cast(field_fResult_readBody_2);
-    for(uint32_t fResult_readBody_2_id = 0; fResult_readBody_2_id < fResult_readBody_2_container->Length(); fResult_readBody_2_id++)
+    auto fResult_readBody_2 = std::experimental::optional<std::vector<uint8_t>>();
+    if(!field_fResult_readBody_2->IsNull())
     {
-        if(fResult_readBody_2_container->Get(fResult_readBody_2_id)->IsUint32())
+        vector<uint8_t> opt_fResult_readBody_2;
+        Local<Array> opt_fResult_readBody_2_container = Local<Array>::Cast(field_fResult_readBody_2);
+        for(uint32_t opt_fResult_readBody_2_id = 0; opt_fResult_readBody_2_id < opt_fResult_readBody_2_container->Length(); opt_fResult_readBody_2_id++)
         {
-            auto fResult_readBody_2_elem = Nan::To<uint32_t>(fResult_readBody_2_container->Get(fResult_readBody_2_id)).FromJust();
-            fResult_readBody_2.emplace_back(fResult_readBody_2_elem);
+            if(opt_fResult_readBody_2_container->Get(opt_fResult_readBody_2_id)->IsUint32())
+            {
+                auto opt_fResult_readBody_2_elem = Nan::To<uint32_t>(opt_fResult_readBody_2_container->Get(opt_fResult_readBody_2_id)).FromJust();
+                opt_fResult_readBody_2.emplace_back(opt_fResult_readBody_2_elem);
+            }
         }
+
+        fResult_readBody_2.emplace(opt_fResult_readBody_2);
     }
 
     HttpReadBodyResult fResult_readBody(fResult_readBody_1, fResult_readBody_2);

@@ -65,6 +65,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::Secp256k1> _Secp256k1;
 };
 #endif //DJINNI_GENERATED_NJSSECP256K1_HPP

@@ -71,6 +71,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BitcoinLikeOutput> _BitcoinLikeOutput;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEOUTPUT_HPP

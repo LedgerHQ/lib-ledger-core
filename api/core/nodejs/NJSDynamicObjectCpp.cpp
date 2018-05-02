@@ -897,6 +897,13 @@ Handle<Object> NJSDynamicObject::wrap(const std::shared_ptr<ledger::core::api::D
     return obj;
 }
 
+NAN_METHOD(NJSDynamicObject::isNull) {
+    NJSDynamicObject* obj = Nan::ObjectWrap::Unwrap<NJSDynamicObject>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSDynamicObject::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -935,6 +942,7 @@ void NJSDynamicObject::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"load", load);
     //Set object prototype
     DynamicObject_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSDynamicObject").ToLocalChecked(), func_template->GetFunction());

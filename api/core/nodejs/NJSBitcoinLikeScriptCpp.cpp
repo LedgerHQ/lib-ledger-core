@@ -157,6 +157,13 @@ Handle<Object> NJSBitcoinLikeScript::wrap(const std::shared_ptr<ledger::core::ap
     return obj;
 }
 
+NAN_METHOD(NJSBitcoinLikeScript::isNull) {
+    NJSBitcoinLikeScript* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScript>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSBitcoinLikeScript::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -172,6 +179,7 @@ void NJSBitcoinLikeScript::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"parse", parse);
     //Set object prototype
     BitcoinLikeScript_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeScript").ToLocalChecked(), func_template->GetFunction());

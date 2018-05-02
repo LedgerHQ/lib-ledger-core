@@ -39,3 +39,9 @@ Generate binding (under `build/Release/ledgerapp_nodejs.node`):
 ```
 npm i
 ```
+
+## Test NodeJs
+
+```
+node ledger-core-samples/nodejs/tests/wallet-pool-test.js
+```

@@ -92,6 +92,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::Amount> _Amount;
 };
 #endif //DJINNI_GENERATED_NJSAMOUNT_HPP
