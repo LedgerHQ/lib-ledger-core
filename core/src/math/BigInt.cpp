@@ -242,7 +242,7 @@ namespace ledger {
         }
 
         void BigInt::operator=(const BigInt &a) {
-           bdSetEqual(_bigd, a._bigd);
+            bdSetEqual(_bigd, a._bigd);
             _negative = a._negative;
         }
 
@@ -363,7 +363,7 @@ namespace ledger {
             }
         }
 
-        BigInt::BigInt(BigInt &mov) {
+        BigInt::BigInt(BigInt &&mov) {
             _bigd = mov._bigd;
             _negative = mov._negative;
             mov._bigd = nullptr;
