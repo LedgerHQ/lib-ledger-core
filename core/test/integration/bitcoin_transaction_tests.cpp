@@ -69,8 +69,8 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = p2pkh_tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
-    builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
-    builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
+    //builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
     auto f = builder->build();
     auto tx = ::wait(f);
     std::cout << hex::toString(tx->serialize()) << std::endl;

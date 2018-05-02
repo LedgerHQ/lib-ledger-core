@@ -92,18 +92,15 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> BitcoinLikeTransactionApi::getFees() {
-            ledger::core::BigInt value;
-
+            ledger::core::BigInt value(0);
             for (auto& input : getInputs()) {
-                auto v = std::dynamic_pointer_cast<ledger::core::Amount>(input->getValue())->value();
+                auto v = std::dynamic_pointer_cast<ledger::core::Amount>(input->getValue());
                 if (v == nullptr)
                     return nullptr;
-                value = value + *v;
+                value = value + *(v->value());
             }
             for (auto& output : getOutputs()) {
                 auto v = std::dynamic_pointer_cast<ledger::core::Amount>(output->getValue())->value();
-                if (v == nullptr)
-                    return nullptr;
                 value = value - *v;
             }
             return std::make_shared<ledger::core::Amount>(_currency, 0, value);
