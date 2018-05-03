@@ -13,6 +13,8 @@ public:
     virtual ~KeychainEngines() {}
 
     static std::string const BIP32_P2PKH;
+
+    static std::string const BIP49_P2SH;
 };
 
 } } }  // namespace ledger::core::api

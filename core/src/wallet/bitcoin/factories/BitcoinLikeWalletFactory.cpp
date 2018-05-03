@@ -41,6 +41,7 @@
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <api/SynchronizationEngines.hpp>
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h>
+#include <wallet/bitcoin/factories/keystores/BitcoinLikeP2SHKeychainFactory.h>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
 
@@ -107,7 +108,8 @@ namespace ledger {
                                                            const std::shared_ptr<WalletPool> &pool)
         : AbstractWalletFactory(currency, pool) {
             _keychainFactories = {
-                {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeP2PKHKeychainFactory>()}
+                {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeP2PKHKeychainFactory>()},
+                {api::KeychainEngines::BIP49_P2SH, std::make_shared<BitcoinLikeP2SHKeychainFactory>()}
             };
         }
 

@@ -15,19 +15,13 @@ file(GLOB ledger-core-fixtures-srcs
         "../fixtures/*.cpp"
         "../fixtures/*.h"
         )
+
+file(GLOB_RECURSE TEST_FILES *.cpp)
 add_executable(ledger-core-integration-tests
-        main.cpp
-        initialization_test.cpp
-        p2pkh_keychain_test.cpp
-        ledger_api_blockchain_explorer_tests.cpp
-        wallet_database_tests.cpp
-        synchronization_tests.cpp
-        account_info_test.cpp
-        wallet_tests.cpp
-        pool_tests.cpp
-        BaseFixture.cpp BaseFixture.h accounts_public_interfaces_test.cpp
-        account_creation_tests.cpp
-        ${ledger-core-fixtures-srcs} account_blockchain_observation.cpp IntegrationEnvironment.cpp IntegrationEnvironment.h bitcoin_transaction_tests.cpp)
+        ${ledger-core-fixtures-srcs}
+        ${TEST_FILES}
+        IntegrationEnvironment.h
+        )
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
 target_link_libraries(ledger-core-integration-tests ledger-core)

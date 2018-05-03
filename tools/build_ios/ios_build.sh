@@ -1,3 +1,4 @@
+#WARNING: for iphonesimulator build don't forget to remove FORCE in iphone.cmake (polly toolchain)
 #ID used for bundle
 export POLLY_IOS_BUNDLE_IDENTIFIER="com.ledger.ledgertestapp"
 #Root to polly toolchains
