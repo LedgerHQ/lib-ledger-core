@@ -57,7 +57,7 @@ namespace ledger {
             logger->info("Get build function");
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
-                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency);
+                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->isSegwit());
                     auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
                     return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {

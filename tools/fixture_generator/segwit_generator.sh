@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+#python generate_bitcoin_fixtures_testnet.py segwit_xpub "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF"
+python generate_bitcoin_fixtures_testnet.py "segwit_xpub" "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF" "tpubDCcvqEHx7prGddpWTfEviiew5YLMrrKy4oJbt14teJZenSi6AYMAs2SNXwYXFzkrNYwECSmobwxESxMCrpfqw4gsUt88bcr8iMrJmbb8P2q"

@@ -33,7 +33,7 @@
 #include <src/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include <src/wallet/bitcoin/networks.hpp>
 #include <src/wallet/currencies.hpp>
-#include "BaseFixture.h"
+#include "../BaseFixture.h"
 
 const std::string XPUB = "xpub6DCi5iJ57ZPd5qPzvTm5hUt6X23TJdh9H4NjNsNbt7t7UuTMJfawQWsdWRFhfLwkiMkB1rQ4ZJWLB9YBnzR7kbs9N8b2PsKZgKUHQm1X4or";
 

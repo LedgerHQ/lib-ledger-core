@@ -355,8 +355,7 @@ exports.createWallet = async (name, currency) => {
 };
 
 exports.createAmount = (currency, amount) => {
-  const a = new binding.NJSAmount(currency, amount);
-  return a.fromLong(currency, amount);
+  return new binding.NJSAmount(currency, amount).fromLong(currency, amount);
 };
 
 exports.getCurrency = currencyName => NJSWalletPool.getCurrency(currencyName);

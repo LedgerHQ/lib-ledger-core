@@ -7,4 +7,6 @@ namespace ledger { namespace core { namespace api {
 
 std::string const KeychainEngines::BIP32_P2PKH = {"BIP32_P2PKH"};
 
+std::string const KeychainEngines::BIP49_P2SH = {"BIP49_P2SH"};
+
 } } }  // namespace ledger::core::api
