@@ -314,13 +314,6 @@ Handle<Object> NJSPreferences::wrap(const std::shared_ptr<ledger::core::api::Pre
     return obj;
 }
 
-NAN_METHOD(NJSPreferences::isNull) {
-    NJSPreferences* obj = Nan::ObjectWrap::Unwrap<NJSPreferences>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSPreferences::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -341,7 +334,6 @@ void NJSPreferences::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"edit", edit);
     //Set object prototype
     Preferences_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSPreferences").ToLocalChecked(), func_template->GetFunction());

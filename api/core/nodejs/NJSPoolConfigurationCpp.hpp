@@ -30,7 +30,6 @@ public:
 private:
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::PoolConfiguration> _PoolConfiguration;
 };
 #endif //DJINNI_GENERATED_NJSPOOLCONFIGURATION_HPP

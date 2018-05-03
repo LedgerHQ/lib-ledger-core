@@ -248,13 +248,6 @@ Handle<Object> NJSOperationQuery::wrap(const std::shared_ptr<ledger::core::api::
     return obj;
 }
 
-NAN_METHOD(NJSOperationQuery::isNull) {
-    NJSOperationQuery* obj = Nan::ObjectWrap::Unwrap<NJSOperationQuery>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSOperationQuery::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -274,7 +267,6 @@ void NJSOperationQuery::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"execute", execute);
     //Set object prototype
     OperationQuery_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSOperationQuery").ToLocalChecked(), func_template->GetFunction());

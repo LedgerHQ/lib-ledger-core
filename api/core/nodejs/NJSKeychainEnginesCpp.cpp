@@ -50,13 +50,6 @@ Handle<Object> NJSKeychainEngines::wrap(const std::shared_ptr<ledger::core::api:
     return obj;
 }
 
-NAN_METHOD(NJSKeychainEngines::isNull) {
-    NJSKeychainEngines* obj = Nan::ObjectWrap::Unwrap<NJSKeychainEngines>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSKeychainEngines::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -69,7 +62,6 @@ void NJSKeychainEngines::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     //Set object prototype
     KeychainEngines_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSKeychainEngines").ToLocalChecked(), func_template->GetFunction());

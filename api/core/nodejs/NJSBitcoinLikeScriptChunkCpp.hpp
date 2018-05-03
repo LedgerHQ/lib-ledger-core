@@ -46,7 +46,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BitcoinLikeScriptChunk> _BitcoinLikeScriptChunk;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKESCRIPTCHUNK_HPP

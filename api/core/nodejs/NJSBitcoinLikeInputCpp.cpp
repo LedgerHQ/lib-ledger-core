@@ -559,13 +559,6 @@ Handle<Object> NJSBitcoinLikeInput::wrap(const std::shared_ptr<ledger::core::api
     return obj;
 }
 
-NAN_METHOD(NJSBitcoinLikeInput::isNull) {
-    NJSBitcoinLikeInput* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeInput>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSBitcoinLikeInput::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -595,7 +588,6 @@ void NJSBitcoinLikeInput::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"setP2PKHSigScript", setP2PKHSigScript);
     //Set object prototype
     BitcoinLikeInput_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeInput").ToLocalChecked(), func_template->GetFunction());

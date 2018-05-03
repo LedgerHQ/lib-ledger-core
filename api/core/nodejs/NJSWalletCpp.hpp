@@ -193,7 +193,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::Wallet> _Wallet;
 };
 #endif //DJINNI_GENERATED_NJSWALLET_HPP

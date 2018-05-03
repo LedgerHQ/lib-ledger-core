@@ -619,13 +619,6 @@ Handle<Object> NJSOperation::wrap(const std::shared_ptr<ledger::core::api::Opera
     return obj;
 }
 
-NAN_METHOD(NJSOperation::isNull) {
-    NJSOperation* obj = Nan::ObjectWrap::Unwrap<NJSOperation>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSOperation::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -656,7 +649,6 @@ void NJSOperation::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getCurrency", getCurrency);
     //Set object prototype
     Operation_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSOperation").ToLocalChecked(), func_template->GetFunction());

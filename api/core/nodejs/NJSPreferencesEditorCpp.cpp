@@ -307,13 +307,6 @@ Handle<Object> NJSPreferencesEditor::wrap(const std::shared_ptr<ledger::core::ap
     return obj;
 }
 
-NAN_METHOD(NJSPreferencesEditor::isNull) {
-    NJSPreferencesEditor* obj = Nan::ObjectWrap::Unwrap<NJSPreferencesEditor>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSPreferencesEditor::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -334,7 +327,6 @@ void NJSPreferencesEditor::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"commit", commit);
     //Set object prototype
     PreferencesEditor_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSPreferencesEditor").ToLocalChecked(), func_template->GetFunction());

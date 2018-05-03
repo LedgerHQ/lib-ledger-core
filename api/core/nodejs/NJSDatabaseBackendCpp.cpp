@@ -715,13 +715,6 @@ Handle<Object> NJSDatabaseBackend::wrap(const std::shared_ptr<ledger::core::api:
     return obj;
 }
 
-NAN_METHOD(NJSDatabaseBackend::isNull) {
-    NJSDatabaseBackend* obj = Nan::ObjectWrap::Unwrap<NJSDatabaseBackend>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSDatabaseBackend::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -758,7 +751,6 @@ void NJSDatabaseBackend::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getPostgreSQLBackend", getPostgreSQLBackend);
     //Set object prototype
     DatabaseBackend_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSDatabaseBackend").ToLocalChecked(), func_template->GetFunction());

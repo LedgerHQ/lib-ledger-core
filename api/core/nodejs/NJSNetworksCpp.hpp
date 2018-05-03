@@ -33,7 +33,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::Networks> _Networks;
 };
 #endif //DJINNI_GENERATED_NJSNETWORKS_HPP

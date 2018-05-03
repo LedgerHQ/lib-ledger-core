@@ -199,13 +199,6 @@ Handle<Object> NJSEventPublisher::wrap(const std::shared_ptr<ledger::core::api::
     return obj;
 }
 
-NAN_METHOD(NJSEventPublisher::isNull) {
-    NJSEventPublisher* obj = Nan::ObjectWrap::Unwrap<NJSEventPublisher>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSEventPublisher::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -223,7 +216,6 @@ void NJSEventPublisher::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     EventPublisher_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSEventPublisher").ToLocalChecked(), func_template->GetFunction());

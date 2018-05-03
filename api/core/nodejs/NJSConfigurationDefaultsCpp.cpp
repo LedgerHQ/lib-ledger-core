@@ -50,13 +50,6 @@ Handle<Object> NJSConfigurationDefaults::wrap(const std::shared_ptr<ledger::core
     return obj;
 }
 
-NAN_METHOD(NJSConfigurationDefaults::isNull) {
-    NJSConfigurationDefaults* obj = Nan::ObjectWrap::Unwrap<NJSConfigurationDefaults>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSConfigurationDefaults::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -69,7 +62,6 @@ void NJSConfigurationDefaults::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     //Set object prototype
     ConfigurationDefaults_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSConfigurationDefaults").ToLocalChecked(), func_template->GetFunction());

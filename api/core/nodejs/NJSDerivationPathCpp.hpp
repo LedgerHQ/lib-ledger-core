@@ -62,7 +62,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::DerivationPath> _DerivationPath;
 };
 #endif //DJINNI_GENERATED_NJSDERIVATIONPATH_HPP

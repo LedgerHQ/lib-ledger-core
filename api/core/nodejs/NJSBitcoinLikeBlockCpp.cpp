@@ -129,13 +129,6 @@ Handle<Object> NJSBitcoinLikeBlock::wrap(const std::shared_ptr<ledger::core::api
     return obj;
 }
 
-NAN_METHOD(NJSBitcoinLikeBlock::isNull) {
-    NJSBitcoinLikeBlock* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeBlock>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSBitcoinLikeBlock::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -151,7 +144,6 @@ void NJSBitcoinLikeBlock::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getTime", getTime);
     //Set object prototype
     BitcoinLikeBlock_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeBlock").ToLocalChecked(), func_template->GetFunction());

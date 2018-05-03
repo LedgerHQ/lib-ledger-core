@@ -91,7 +91,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::PreferencesEditor> _PreferencesEditor;
 };
 #endif //DJINNI_GENERATED_NJSPREFERENCESEDITOR_HPP

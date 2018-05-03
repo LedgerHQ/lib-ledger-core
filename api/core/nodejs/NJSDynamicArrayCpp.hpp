@@ -206,7 +206,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::DynamicArray> _DynamicArray;
 };
 #endif //DJINNI_GENERATED_NJSDYNAMICARRAY_HPP

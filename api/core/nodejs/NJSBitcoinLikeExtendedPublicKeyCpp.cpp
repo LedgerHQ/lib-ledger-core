@@ -226,14 +226,8 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::fromBase58) {
 
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);
-    auto arg_2 = std::experimental::optional<std::string>();
-    if(!info[2]->IsNull())
-    {
-        String::Utf8Value string_opt_arg_2(info[2]->ToString());
-        auto opt_arg_2 = std::string(*string_opt_arg_2);
-        arg_2.emplace(opt_arg_2);
-    }
-
+    String::Utf8Value string_arg_2(info[2]->ToString());
+    auto arg_2 = std::string(*string_arg_2);
 
     auto result = BitcoinLikeExtendedPublicKey::fromBase58(arg_0,arg_1,arg_2);
 
@@ -320,14 +314,8 @@ NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::New) {
 
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);
-    auto arg_2 = std::experimental::optional<std::string>();
-    if(!info[2]->IsNull())
-    {
-        String::Utf8Value string_opt_arg_2(info[2]->ToString());
-        auto opt_arg_2 = std::string(*string_opt_arg_2);
-        arg_2.emplace(opt_arg_2);
-    }
-
+    String::Utf8Value string_arg_2(info[2]->ToString());
+    auto arg_2 = std::string(*string_arg_2);
 
     //Call factory
     auto cpp_instance = ledger::core::api::BitcoinLikeExtendedPublicKey::fromBase58(arg_0,arg_1,arg_2);
@@ -367,13 +355,6 @@ Handle<Object> NJSBitcoinLikeExtendedPublicKey::wrap(const std::shared_ptr<ledge
     return obj;
 }
 
-NAN_METHOD(NJSBitcoinLikeExtendedPublicKey::isNull) {
-    NJSBitcoinLikeExtendedPublicKey* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeExtendedPublicKey>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSBitcoinLikeExtendedPublicKey::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -392,7 +373,6 @@ void NJSBitcoinLikeExtendedPublicKey::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"fromBase58", fromBase58);
     //Set object prototype
     BitcoinLikeExtendedPublicKey_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeExtendedPublicKey").ToLocalChecked(), func_template->GetFunction());

@@ -258,13 +258,6 @@ Handle<Object> NJSSecp256k1::wrap(const std::shared_ptr<ledger::core::api::Secp2
     return obj;
 }
 
-NAN_METHOD(NJSSecp256k1::isNull) {
-    NJSSecp256k1* obj = Nan::ObjectWrap::Unwrap<NJSSecp256k1>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSSecp256k1::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -282,7 +275,6 @@ void NJSSecp256k1::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"newInstance", newInstance);
     //Set object prototype
     Secp256k1_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSSecp256k1").ToLocalChecked(), func_template->GetFunction());

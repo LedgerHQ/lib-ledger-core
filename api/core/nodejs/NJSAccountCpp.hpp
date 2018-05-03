@@ -144,7 +144,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::Account> _Account;
 };
 #endif //DJINNI_GENERATED_NJSACCOUNT_HPP

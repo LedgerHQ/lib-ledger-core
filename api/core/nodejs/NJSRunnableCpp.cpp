@@ -69,13 +69,6 @@ Handle<Object> NJSRunnable::wrap(const std::shared_ptr<ledger::core::api::Runnab
     return obj;
 }
 
-NAN_METHOD(NJSRunnable::isNull) {
-    NJSRunnable* obj = Nan::ObjectWrap::Unwrap<NJSRunnable>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSRunnable::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -89,7 +82,6 @@ void NJSRunnable::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"run", run);
     //Set object prototype
     Runnable_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSRunnable").ToLocalChecked(), func_template->GetFunction());

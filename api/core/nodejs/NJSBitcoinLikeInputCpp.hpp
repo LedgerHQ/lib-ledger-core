@@ -117,7 +117,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::BitcoinLikeInput> _BitcoinLikeInput;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEINPUT_HPP

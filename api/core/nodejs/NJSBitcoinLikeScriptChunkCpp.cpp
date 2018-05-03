@@ -87,7 +87,7 @@ NAN_METHOD(NJSBitcoinLikeScriptChunk::getOperator) {
         auto arg_0_tmp = Nan::New<Object>();
         auto arg_0_tmp_1 = Nan::New<String>(arg_0_optional.name).ToLocalChecked();
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("name").ToLocalChecked(), arg_0_tmp_1);
-        auto arg_0_tmp_2 = Nan::New<Int32>(arg_0_optional.value);
+        auto arg_0_tmp_2 = Nan::New<Int>(arg_0_optional.value);
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("value").ToLocalChecked(), arg_0_tmp_2);
 
         arg_0 = arg_0_tmp;
@@ -233,13 +233,6 @@ Handle<Object> NJSBitcoinLikeScriptChunk::wrap(const std::shared_ptr<ledger::cor
     return obj;
 }
 
-NAN_METHOD(NJSBitcoinLikeScriptChunk::isNull) {
-    NJSBitcoinLikeScriptChunk* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeScriptChunk>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSBitcoinLikeScriptChunk::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -258,7 +251,6 @@ void NJSBitcoinLikeScriptChunk::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"hasNext", hasNext);
     //Set object prototype
     BitcoinLikeScriptChunk_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSBitcoinLikeScriptChunk").ToLocalChecked(), func_template->GetFunction());

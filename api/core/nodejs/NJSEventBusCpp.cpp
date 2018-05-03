@@ -100,13 +100,6 @@ Handle<Object> NJSEventBus::wrap(const std::shared_ptr<ledger::core::api::EventB
     return obj;
 }
 
-NAN_METHOD(NJSEventBus::isNull) {
-    NJSEventBus* obj = Nan::ObjectWrap::Unwrap<NJSEventBus>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSEventBus::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -121,7 +114,6 @@ void NJSEventBus::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"unsubscribe", unsubscribe);
     //Set object prototype
     EventBus_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSEventBus").ToLocalChecked(), func_template->GetFunction());

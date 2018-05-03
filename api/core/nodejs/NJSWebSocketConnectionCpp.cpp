@@ -158,13 +158,6 @@ Handle<Object> NJSWebSocketConnection::wrap(const std::shared_ptr<ledger::core::
     return obj;
 }
 
-NAN_METHOD(NJSWebSocketConnection::isNull) {
-    NJSWebSocketConnection* obj = Nan::ObjectWrap::Unwrap<NJSWebSocketConnection>(info.This());
-    auto cpp_implementation = obj->getCppImpl();
-    auto isNull = !cpp_implementation ? true : false;
-    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
-}
-
 void NJSWebSocketConnection::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -182,7 +175,6 @@ void NJSWebSocketConnection::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getConnectionId", getConnectionId);
     //Set object prototype
     WebSocketConnection_prototype.Reset(objectTemplate);
-    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSWebSocketConnection").ToLocalChecked(), func_template->GetFunction());
