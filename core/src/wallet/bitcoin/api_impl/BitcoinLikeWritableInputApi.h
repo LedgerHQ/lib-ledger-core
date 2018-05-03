@@ -70,7 +70,7 @@ namespace ledger {
             void setScriptSig(const std::vector<uint8_t> &scriptSig) override;
             void pushToScriptSig(const std::vector<uint8_t> &data) override;
             void setSequence(int32_t sequence) override;
-            int32_t getSequence() override;
+            int64_t getSequence() override;
             void getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback) override;
             Future<std::vector<uint8_t>> getPreviousTransaction();
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;

@@ -83,7 +83,7 @@
 - (void)setSequence:(int32_t)sequence;
 
 /** Get the sequence number of this input */
-- (int32_t)getSequence;
+- (int64_t)getSequence;
 
 - (void)getPreviousTransaction:(nullable id<LGBinaryCallback>)callback;
 

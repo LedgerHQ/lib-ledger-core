@@ -63,7 +63,7 @@ namespace ledger {
 
             void setSequence(int32_t sequence) override;
 
-            int32_t getSequence() override;
+            int64_t getSequence() override;
 
             void getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback) override;
 

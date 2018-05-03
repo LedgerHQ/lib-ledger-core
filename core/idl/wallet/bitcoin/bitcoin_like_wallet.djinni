@@ -71,7 +71,7 @@ BitcoinLikeInput = interface +c {
     # Set the sequence number of this input
     setSequence(sequence: i32);
     # Get the sequence number of this input
-    getSequence(): i32;
+    getSequence(): i64;
 
     getPreviousTransaction(callback: Callback<binary>);
 

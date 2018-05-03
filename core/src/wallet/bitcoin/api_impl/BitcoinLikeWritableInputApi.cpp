@@ -111,7 +111,7 @@ namespace ledger {
             _sequence = (uint32_t) sequence;
         }
 
-        int32_t BitcoinLikeWritableInputApi::getSequence() {
+        int64_t BitcoinLikeWritableInputApi::getSequence() {
             return (int32_t) _sequence;
         }
 
