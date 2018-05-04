@@ -50,6 +50,13 @@ Handle<Object> NJSSynchronizationEngines::wrap(const std::shared_ptr<ledger::cor
     return obj;
 }
 
+NAN_METHOD(NJSSynchronizationEngines::isNull) {
+    NJSSynchronizationEngines* obj = Nan::ObjectWrap::Unwrap<NJSSynchronizationEngines>(info.This());
+    auto cpp_implementation = obj->getCppImpl();
+    auto isNull = !cpp_implementation ? true : false;
+    return info.GetReturnValue().Set(Nan::New<Boolean>(isNull));
+}
+
 void NJSSynchronizationEngines::Initialize(Local<Object> target) {
     Nan::HandleScope scope;
 
@@ -62,6 +69,7 @@ void NJSSynchronizationEngines::Initialize(Local<Object> target) {
     //SetPrototypeMethod all methods
     //Set object prototype
     SynchronizationEngines_prototype.Reset(objectTemplate);
+    Nan::SetPrototypeMethod(func_template,"isNull", isNull);
 
     //Add template to target
     target->Set(Nan::New<String>("NJSSynchronizationEngines").ToLocalChecked(), func_template->GetFunction());

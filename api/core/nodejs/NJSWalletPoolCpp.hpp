@@ -143,6 +143,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::WalletPool> _WalletPool;
 };
 #endif //DJINNI_GENERATED_NJSWALLETPOOL_HPP

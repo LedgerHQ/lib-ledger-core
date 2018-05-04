@@ -162,6 +162,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::DatabaseBackend> _DatabaseBackend;
 };
 #endif //DJINNI_GENERATED_NJSDATABASEBACKEND_HPP

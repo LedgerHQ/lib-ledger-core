@@ -116,6 +116,7 @@ private:
 
     static NAN_METHOD(New);
 
+    static NAN_METHOD(isNull);
     std::shared_ptr<ledger::core::api::QueryFilter> _QueryFilter;
 };
 #endif //DJINNI_GENERATED_NJSQUERYFILTER_HPP
