@@ -455,7 +455,7 @@ NAN_METHOD(NJSBitcoinLikeInput::getSequence) {
     auto result = cpp_impl->getSequence();
 
     //Wrap result in node object
-    auto arg_0 = Nan::New<Int32>(result);
+    auto arg_0 = Nan::New<Number>(result);
 
     //Return result
     info.GetReturnValue().Set(arg_0);

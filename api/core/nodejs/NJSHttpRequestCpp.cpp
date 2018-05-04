@@ -3,7 +3,6 @@
 
 #include "NJSHttpRequestCpp.hpp"
 
-
 using namespace v8;
 using namespace node;
 using namespace std;
@@ -145,9 +144,9 @@ NAN_METHOD(NJSHttpRequest::complete) {
     }
 
     auto arg_1 = std::experimental::optional<Error>();
-
     if(!info[1]->IsNull())
     {
+
         auto field_opt_arg_1_1 = Nan::Get(info[1]->ToObject(), Nan::New<String>("code").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_1_1 = (ledger::core::api::ErrorCode)Nan::To<int>(field_opt_arg_1_1).FromJust();
 

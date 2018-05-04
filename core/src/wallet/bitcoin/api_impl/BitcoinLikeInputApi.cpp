@@ -104,7 +104,7 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::setSequence(int32_t sequence)");
         }
 
-        int32_t BitcoinLikeInputApi::getSequence() {
+        int64_t BitcoinLikeInputApi::getSequence() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "int32_t BitcoinLikeInputApi::getSequence()");
         }
 

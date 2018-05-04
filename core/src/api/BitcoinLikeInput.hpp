@@ -94,7 +94,7 @@ public:
     virtual void setSequence(int32_t sequence) = 0;
 
     /** Get the sequence number of this input */
-    virtual int32_t getSequence() = 0;
+    virtual int64_t getSequence() = 0;
 
     virtual void getPreviousTransaction(const std::shared_ptr<BinaryCallback> & callback) = 0;
 

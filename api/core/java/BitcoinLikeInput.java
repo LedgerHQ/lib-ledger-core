@@ -79,7 +79,7 @@ public abstract class BitcoinLikeInput {
     public abstract void setSequence(int sequence);
 
     /** Get the sequence number of this input */
-    public abstract int getSequence();
+    public abstract long getSequence();
 
     public abstract void getPreviousTransaction(BinaryCallback callback);
 
@@ -222,12 +222,12 @@ public abstract class BitcoinLikeInput {
         private native void native_setSequence(long _nativeRef, int sequence);
 
         @Override
-        public int getSequence()
+        public long getSequence()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             return native_getSequence(this.nativeRef);
         }
-        private native int native_getSequence(long _nativeRef);
+        private native long native_getSequence(long _nativeRef);
 
         @Override
         public void getPreviousTransaction(BinaryCallback callback)

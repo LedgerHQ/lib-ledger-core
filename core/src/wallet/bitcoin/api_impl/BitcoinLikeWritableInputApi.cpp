@@ -45,11 +45,12 @@ namespace ledger {
                 const std::vector<uint8_t>& scriptSig,
                 const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput) : _explorer(explorer), _context(context), _sequence(sequence),
                                                         _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
-                                                        _amount(amount), _previousHash(previousTxHash), _scriptSig(scriptSig),
+                                                        _amount(amount), _previousHash(previousTxHash),
                                                                     _previousScript(previousOutput)
 
         {
             // TODO handle the case where explorer, context are missing properly
+            // TODO handle script sig initialization
         }
 
         optional<std::string> BitcoinLikeWritableInputApi::getAddress() {
@@ -89,29 +90,26 @@ namespace ledger {
         }
 
         std::vector<uint8_t> BitcoinLikeWritableInputApi::getScriptSig() {
-            return _scriptSig;
+            return _scriptSig.serialize();
         }
 
         std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeWritableInputApi::parseScriptSig() {
-            auto result = BitcoinLikeScript::parse(_scriptSig);
-            if (result.isFailure())
-                throw result.getFailure();
-            return std::make_shared<BitcoinLikeScriptApi>(result.getValue());
+            return std::make_shared<BitcoinLikeScriptApi>(_scriptSig);
         }
 
         void BitcoinLikeWritableInputApi::setScriptSig(const std::vector<uint8_t> &scriptSig) {
-            _scriptSig = scriptSig;
+            _scriptSig = BitcoinLikeScript::parse(scriptSig).getValue();
         }
 
         void BitcoinLikeWritableInputApi::pushToScriptSig(const std::vector<uint8_t> &data) {
-            _scriptSig.insert(_scriptSig.end(), data.begin(), data.end());
+            _scriptSig << data;
         }
 
         void BitcoinLikeWritableInputApi::setSequence(int32_t sequence) {
             _sequence = (uint32_t) sequence;
         }
 
-        int32_t BitcoinLikeWritableInputApi::getSequence() {
+        int64_t BitcoinLikeWritableInputApi::getSequence() {
             return (int32_t) _sequence;
         }
 

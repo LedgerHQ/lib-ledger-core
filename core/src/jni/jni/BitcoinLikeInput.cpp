@@ -161,13 +161,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jlong JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getSequence();
-        return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::I64::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

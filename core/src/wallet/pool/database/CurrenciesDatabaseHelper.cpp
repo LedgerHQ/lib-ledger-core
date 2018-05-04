@@ -124,15 +124,8 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
 
 void ledger::core::CurrenciesDatabaseHelper::getAllUnits(soci::session &sql, ledger::core::api::Currency &currency) {
 
-    int count = 0;
-    sql << "SELECT COUNT(*) FROM units WHERE currency_name = :currency", use(currency.name), into(count);
     rowset<row> rows = (sql.prepare <<
                                     "SELECT name, magnitude, symbol, code FROM units WHERE currency_name = :currency", use(currency.name));
-    if(count == 0) {
-        rows = (sql.prepare <<
-                            "SELECT name, magnitude, symbol, code FROM units WHERE type = :type", use(api::to_string(currency.walletType)));
-    }
-
     for (auto& row : rows) {
         api::CurrencyUnit unit;
         unit.name = row.get<std::string>(0);
@@ -149,8 +142,8 @@ ledger::core::CurrenciesDatabaseHelper::insertUnits(soci::session &sql, const le
         int count;
         sql << "SELECT COUNT(*) FROM units WHERE name = :name", use(unit.name), into(count);
         if (count == 0) {
-            sql << "INSERT INTO units VALUES(:name, :magnitude, :symbol, :code, :type, :currency_name)",
-            use(unit.name), use(unit.numberOfDecimal), use(unit.symbol), use(unit.code), use(api::to_string(currency.walletType)), use(currency.name);
+            sql << "INSERT INTO units VALUES(:name, :magnitude, :symbol, :code, :currency_name)",
+            use(unit.name), use(unit.numberOfDecimal), use(unit.symbol), use(unit.code), use(currency.name);
         }
     }
 }
