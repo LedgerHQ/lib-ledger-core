@@ -42,7 +42,7 @@ ledger::core::ConfigurationMatchable::match(const std::shared_ptr<ledger::core::
         if (valueType == _configuration->getType(key).value_or(api::DynamicType::UNDEFINED)) {
             switch (valueType) {
                 case api::DynamicType::OBJECT:
-                    //TODO Make the matcher works with array
+                    //TODO Make the matcher works with object
                     return false;
                     break;
                 case api::DynamicType::INT32:

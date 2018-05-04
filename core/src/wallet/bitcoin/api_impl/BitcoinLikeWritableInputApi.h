@@ -35,6 +35,7 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/common/api_impl/DerivationPathApi.h>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 
 
 namespace ledger {
@@ -87,7 +88,7 @@ namespace ledger {
             std::shared_ptr<api::Amount> _amount;
             std::string _previousHash;
             int32_t  _index;
-            std::vector<uint8_t> _scriptSig;
+            BitcoinLikeScript _scriptSig;
             std::shared_ptr<api::BitcoinLikeOutput> _previousScript;
         };
     }
