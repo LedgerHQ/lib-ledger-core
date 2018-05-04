@@ -13,6 +13,7 @@ BitcoinLikeNetworkParameters = record {
     DustAmount: i64;
     MessagePrefix: string;
     UsesTimestampedTransaction: bool;
+    SigHash: binary;
 }
 
 # Helper class for manipulating Bitcoin like addresses

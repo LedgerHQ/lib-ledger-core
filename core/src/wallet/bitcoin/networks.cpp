@@ -32,7 +32,17 @@
 
 namespace ledger {
     namespace core {
+
         namespace networks {
+
+            enum sigHashType : uint8_t {
+                SIGHASH_ALL = 0x01,
+                SIGHASH_NONE = 0x02,
+                SIGHASH_SINGLE = 0x03,
+                SIGHASH_ANYONECANPAY = 0x80,
+                SIGHASH_BTC_FORKS = 0x41
+            };
+
             const api::BitcoinLikeNetworkParameters BITCOIN(
                     "btc",
                     {0x00},
@@ -41,7 +51,8 @@ namespace ledger {
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     546,
                     "Bitcoin signed message:\n",
-                    false
+                    false,
+                    {sigHashType::SIGHASH_ALL}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET(
@@ -52,12 +63,40 @@ namespace ledger {
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     546,
                     "Bitcoin signed message:\n",
-                    false
+                    false,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
+                    "abc",
+                    {0x00},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    5430,
+                    "Bitcoin signed message:\n",
+                    false,
+                    {sigHashType::SIGHASH_BTC_FORKS}
+            );
+
+            const api::BitcoinLikeNetworkParameters BITCOIN_GOLD(
+                    "btg",
+                    {0x00},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    5430,
+                    "Bitcoin gold signed message:\n",
+                    false,
+                    {sigHashType::SIGHASH_BTC_FORKS}
             );
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
-                BITCOIN
+                BITCOIN,
+                BITCOIN_TESTNET,
+                BITCOIN_CASH,
+                BITCOIN_GOLD
             });
         }
     }

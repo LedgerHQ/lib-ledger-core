@@ -160,7 +160,7 @@ namespace ledger {
                 auto size = BitcoinLikeTransactionApi::estimateSize(
                         inputCount,
                         buddy->request.outputs.size() + addedOutputCount,
-                        getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, false
+                        getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, (buddy->keychain)->isSegwit()
                 );
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount,  buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.min, size.max);

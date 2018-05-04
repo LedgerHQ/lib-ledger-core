@@ -356,7 +356,20 @@ NAN_METHOD(NJSWalletPool::createWallet) {
 
         auto field_opt_arg_1_6_8 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_1_6_8 = Nan::To<bool>(field_opt_arg_1_6_8).FromJust();
-        BitcoinLikeNetworkParameters opt_arg_1_6(opt_arg_1_6_1, opt_arg_1_6_2, opt_arg_1_6_3, opt_arg_1_6_4, opt_arg_1_6_5, opt_arg_1_6_6, opt_arg_1_6_7, opt_arg_1_6_8);
+
+        auto field_opt_arg_1_6_9 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_1_6_9;
+        Local<Array> opt_arg_1_6_9_container = Local<Array>::Cast(field_opt_arg_1_6_9);
+        for(uint32_t opt_arg_1_6_9_id = 0; opt_arg_1_6_9_id < opt_arg_1_6_9_container->Length(); opt_arg_1_6_9_id++)
+        {
+            if(opt_arg_1_6_9_container->Get(opt_arg_1_6_9_id)->IsUint32())
+            {
+                auto opt_arg_1_6_9_elem = Nan::To<uint32_t>(opt_arg_1_6_9_container->Get(opt_arg_1_6_9_id)).FromJust();
+                opt_arg_1_6_9.emplace_back(opt_arg_1_6_9_elem);
+            }
+        }
+
+        BitcoinLikeNetworkParameters opt_arg_1_6(opt_arg_1_6_1, opt_arg_1_6_2, opt_arg_1_6_3, opt_arg_1_6_4, opt_arg_1_6_5, opt_arg_1_6_6, opt_arg_1_6_7, opt_arg_1_6_8, opt_arg_1_6_9);
 
         arg_1_6.emplace(opt_arg_1_6);
     }

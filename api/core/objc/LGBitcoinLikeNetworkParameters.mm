@@ -14,6 +14,7 @@
                                 DustAmount:(int64_t)DustAmount
                              MessagePrefix:(nonnull NSString *)MessagePrefix
                 UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                                   SigHash:(nonnull NSData *)SigHash
 {
     if (self = [super init]) {
         _Identifier = [Identifier copy];
@@ -24,6 +25,7 @@
         _DustAmount = DustAmount;
         _MessagePrefix = [MessagePrefix copy];
         _UsesTimestampedTransaction = UsesTimestampedTransaction;
+        _SigHash = [SigHash copy];
     }
     return self;
 }
@@ -36,6 +38,7 @@
                                                         DustAmount:(int64_t)DustAmount
                                                      MessagePrefix:(nonnull NSString *)MessagePrefix
                                         UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                                                           SigHash:(nonnull NSData *)SigHash
 {
     return [[self alloc] initWithIdentifier:Identifier
                                P2PKHVersion:P2PKHVersion
@@ -44,12 +47,13 @@
                                   FeePolicy:FeePolicy
                                  DustAmount:DustAmount
                               MessagePrefix:MessagePrefix
-                 UsesTimestampedTransaction:UsesTimestampedTransaction];
+                 UsesTimestampedTransaction:UsesTimestampedTransaction
+                                    SigHash:SigHash];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p Identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ FeePolicy:%@ DustAmount:%@ MessagePrefix:%@ UsesTimestampedTransaction:%@>", self.class, (void *)self, self.Identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.FeePolicy), @(self.DustAmount), self.MessagePrefix, @(self.UsesTimestampedTransaction)];
+    return [NSString stringWithFormat:@"<%@ %p Identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ FeePolicy:%@ DustAmount:%@ MessagePrefix:%@ UsesTimestampedTransaction:%@ SigHash:%@>", self.class, (void *)self, self.Identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.FeePolicy), @(self.DustAmount), self.MessagePrefix, @(self.UsesTimestampedTransaction), self.SigHash];
 }
 
 @end
