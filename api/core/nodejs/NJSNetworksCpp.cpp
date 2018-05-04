@@ -55,6 +55,14 @@ NAN_METHOD(NJSNetworks::bitcoin) {
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_7);
     auto arg_0_8 = Nan::New<Boolean>(result.UsesTimestampedTransaction);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_8);
+    Local<Array> arg_0_9 = Nan::New<Array>();
+    for(size_t arg_0_9_id = 0; arg_0_9_id < result.SigHash.size(); arg_0_9_id++)
+    {
+        auto arg_0_9_elem = Nan::New<Uint32>(result.SigHash[arg_0_9_id]);
+        arg_0_9->Set((int)arg_0_9_id,arg_0_9_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_9);
 
 
     //Return result

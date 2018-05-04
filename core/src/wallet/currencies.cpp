@@ -56,8 +56,31 @@ namespace ledger {
                             .unit("milli-bitcoin", 5, "mBTC")
                             .unit("micro-bitcoin", 2, "μBTC");
 
+            const api::Currency BITCOIN_CASH =
+                    Currency("bitcoin_cash")
+                            .forkOfBitcoin(networks::BITCOIN_CASH)
+                            .bip44(0)
+                            .paymentUri("bitcoin_cash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("bitcoin cash", 8, "BTH")
+                            .unit("mBCH", 5, "mBCH")
+                            .unit("bit", 2, "bit");
+
+            const api::Currency BITCOIN_GOLD =
+                    Currency("bitcoin_gold")
+                            .forkOfBitcoin(networks::BITCOIN_GOLD)
+                            .bip44(0)
+                            .paymentUri("bitcoin_gold")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("bitcoin gold", 8, "BTG")
+                            .unit("mBCG", 5, "mBCG")
+                            .unit("bit", 2, "bit");
+
+
             const std::vector<api::Currency> ALL({
-                BITCOIN, BITCOIN_TESTNET
+                BITCOIN,
+                BITCOIN_TESTNET,
+                BITCOIN_CASH
             });
         }
     }
