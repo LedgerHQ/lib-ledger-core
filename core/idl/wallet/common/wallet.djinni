@@ -249,6 +249,11 @@ Address = interface +c {
     static isValid(address: string, currency: Currency): bool;
 }
 
+TimePeriod = enum {
+    day;
+    week;
+    month;
+}
 #Class representing an account
 Account = interface +c {
     #Key of the synchronization duration time in the synchronize event payload.
@@ -274,6 +279,12 @@ Account = interface +c {
     #Get balance of account
     #@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
     getBalance(callback: Callback<Amount>);
+    #Get balance of account at a precise interval with a certain granularity
+    #@param start, lower bound of search range
+    #@param end, upper bound of search range
+    #@param precision, granularity at which we want results
+    #@param callback, ListCallback returning a list of Amount object which represents account's balance
+    getBalanceHistory(start: string, end: string, period: TimePeriod, callback: ListCallback<Amount>);
     #Get synchronization status of account
     #@return bool
     isSynchronizing(): bool;

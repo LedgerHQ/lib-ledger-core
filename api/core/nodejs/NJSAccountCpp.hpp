@@ -5,9 +5,11 @@
 #define DJINNI_GENERATED_NJSACCOUNT_HPP
 
 
+#include "../../../core/src/api/TimePeriod.hpp"
 #include "../../../core/src/api/WalletType.hpp"
 #include "NJSAddressListCallback.hpp"
 #include "NJSAmountCallback.hpp"
+#include "NJSAmountListCallback.hpp"
 #include "NJSBitcoinLikeAccountCpp.hpp"
 #include "NJSBlockCallback.hpp"
 #include "NJSEventBusCpp.hpp"
@@ -53,6 +55,15 @@ private:
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     static NAN_METHOD(getBalance);
+
+    /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    static NAN_METHOD(getBalanceHistory);
 
     /**
      *Get synchronization status of account

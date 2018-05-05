@@ -82,3 +82,29 @@ std::string ledger::core::DateUtils::toJSON(const std::chrono::system_clock::tim
 std::chrono::system_clock::time_point ledger::core::DateUtils::now() {
     return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
 }
+
+std::chrono::system_clock::time_point ledger::core::DateUtils::incrementDate(const std::chrono::system_clock::time_point &date,
+                                                           api::TimePeriod precision) {
+    std::tm tm = {0};
+    std::time_t tt = std::chrono::system_clock::to_time_t(date);
+#ifdef __MINGW32__
+    gmtime_s(&tm, &tt);
+#else
+    gmtime_r(&tt, &tm);
+#endif
+
+    switch (precision){
+        case api::TimePeriod::DAY:
+            tm.tm_mday += 1;
+            break;
+        case api::TimePeriod::WEEK:
+            tm.tm_mday += 7;
+            break;
+        case api::TimePeriod::MONTH:
+            tm.tm_mon += 1;
+            break;
+        default:
+            break;
+    }
+    return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(timegm(&tm)));
+}

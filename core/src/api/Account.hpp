@@ -12,12 +12,15 @@ namespace ledger { namespace core { namespace api {
 
 class AddressListCallback;
 class AmountCallback;
+class AmountListCallback;
 class BitcoinLikeAccount;
 class BlockCallback;
 class EventBus;
 class Logger;
 class OperationQuery;
 class Preferences;
+class StringListCallback;
+enum class TimePeriod;
 enum class WalletType;
 
 /**Class representing an account */
@@ -65,6 +68,15 @@ public:
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     virtual void getBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    virtual void getBalanceHistory(const std::string & start, const std::string & end, TimePeriod period, const std::shared_ptr<AmountListCallback> & callback) = 0;
 
     /**
      *Get synchronization status of account

@@ -70,8 +70,8 @@ namespace ledger {
                 BigInt value;
                 Option<std::string> address;
                 std::string script;
-
                 Output() = default;
+                std::string time;
             };
 
             struct Transaction {

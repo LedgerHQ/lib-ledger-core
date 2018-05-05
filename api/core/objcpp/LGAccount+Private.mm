@@ -8,12 +8,15 @@
 #import "DJIMarshal+Private.h"
 #import "LGAddressListCallback+Private.h"
 #import "LGAmountCallback+Private.h"
+#import "LGAmountListCallback+Private.h"
 #import "LGBitcoinLikeAccount+Private.h"
 #import "LGBlockCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGLogger+Private.h"
 #import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
+#import "LGStringListCallback+Private.h"
+#import "LGTimePeriod+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -56,6 +59,18 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getBalance:(nullable id<LGAmountCallback>)callback {
     try {
         _cppRefHandle.get()->getBalance(::djinni_generated::AmountCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getBalanceHistory:(nonnull NSString *)start
+                      end:(nonnull NSString *)end
+                   period:(LGTimePeriod)period
+                 callback:(nullable id<LGAmountListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getBalanceHistory(::djinni::String::toCpp(start),
+                                               ::djinni::String::toCpp(end),
+                                               ::djinni::Enum<::ledger::core::api::TimePeriod, LGTimePeriod>::toCpp(period),
+                                               ::djinni_generated::AmountListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

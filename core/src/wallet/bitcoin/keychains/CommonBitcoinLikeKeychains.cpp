@@ -224,7 +224,6 @@ namespace ledger {
             }
             return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
         }
-
     }
 }
 
