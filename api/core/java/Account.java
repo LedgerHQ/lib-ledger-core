@@ -49,6 +49,15 @@ public abstract class Account {
     public abstract void getBalance(AmountCallback callback);
 
     /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    public abstract void getBalanceHistory(String start, String end, TimePeriod period, AmountListCallback callback);
+
+    /**
      *Get synchronization status of account
      *@return bool
      */
@@ -185,6 +194,14 @@ public abstract class Account {
             native_getBalance(this.nativeRef, callback);
         }
         private native void native_getBalance(long _nativeRef, AmountCallback callback);
+
+        @Override
+        public void getBalanceHistory(String start, String end, TimePeriod period, AmountListCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getBalanceHistory(this.nativeRef, start, end, period, callback);
+        }
+        private native void native_getBalanceHistory(long _nativeRef, String start, String end, TimePeriod period, AmountListCallback callback);
 
         @Override
         public boolean isSynchronizing()

@@ -78,6 +78,18 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
     EXPECT_EQ(uxtoCount, 8);
 }
 
+TEST_F(AccountsPublicInterfaceTest, GetBalanceHistoryOnAccountWithSomeTxs) {
+    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto fromDate = "2016-10-12T13:38:23Z";
+    auto toDate = "2016-11-23T13:38:23Z";
+    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod ::DAY));
+    EXPECT_EQ(balanceHistory.size(), 42);
+    EXPECT_EQ(balanceHistory[0]->toLong(), 0L);
+    EXPECT_EQ(balanceHistory[1]->toLong(), 1000000L);
+    EXPECT_EQ(balanceHistory[39]->toLong(), 11000000L);
+    EXPECT_EQ(balanceHistory[40]->toLong(), 21000000L);
+}
+
 TEST_F(AccountsPublicInterfaceTest, QueryOperations) {
     auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
     auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());

@@ -49,7 +49,7 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <spdlog/logger.h>
-
+#include <utils/DateUtils.hpp>
 namespace ledger {
     namespace core {
 
@@ -377,6 +377,61 @@ namespace ledger {
                     sum = sum + utxo.value;
                 }
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+            });
+        }
+
+        Future<std::vector<std::shared_ptr<api::Amount>>> BitcoinLikeAccount::getBalanceHistory(const std::string & start,
+                                                                                           const std::string & end,
+                                                                                           api::TimePeriod precision) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
+
+                const int32_t BATCH_SIZE = 100;
+                const auto& uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<BitcoinLikeBlockchainExplorer::Output> utxos;
+                auto offset = 0;
+                std::size_t count = 0;
+
+                auto keychain = self->getKeychain();
+                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+
+                //Query all utxos in date range
+                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, start, end, utxos, filter)) == BATCH_SIZE; offset += count) {}
+
+                auto startDate = DateUtils::fromJSON(start);
+                auto endDate = DateUtils::fromJSON(end);
+                auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+                std::vector<std::shared_ptr<api::Amount>> amounts;
+                std::size_t utxoCount = 0;
+                bool increment = true;
+                BigInt sum(0);
+                while (upperDate <= endDate) {
+
+                    if(utxoCount < utxos.size()) {
+                        auto utxo = utxos[utxoCount];
+                        auto utxoDate = DateUtils::fromJSON(utxo.time);
+                        if (utxoDate <= upperDate) {
+                            increment = false;
+                            sum = sum + utxo.value;
+                            utxoCount += 1;
+                        }
+                    }
+
+                    if(increment) {
+                        //Save amount
+                        amounts.emplace_back(std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                        //Increment Date
+                        upperDate = DateUtils::incrementDate(upperDate, precision);
+                    }
+
+                    increment = true;
+                }
+
+                return amounts;
             });
         }
 

@@ -142,6 +142,13 @@ namespace ledger {
             getBalance().callback(getMainExecutionContext(), callback);
         }
 
+        void AbstractAccount::getBalanceHistory(const std::string & start,
+                               const std::string & end,
+                               api::TimePeriod precision,
+                               const std::shared_ptr<api::AmountListCallback> & callback) {
+            getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);
+        }
+
         std::shared_ptr<api::EventBus> AbstractAccount::getEventBus() {
             return _publisher->getEventBus();
         }

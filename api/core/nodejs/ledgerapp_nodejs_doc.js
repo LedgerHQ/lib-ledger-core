@@ -410,6 +410,14 @@ declare class NJSAccount
      */
     declare function getBalance(callback: NJSAmountCallback);
     /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    declare function getBalanceHistory(start: string, end: string, period: TimePeriod, callback: NJSAmountListCallback);
+    /**
      *Get synchronization status of account
      *@return bool
      */
@@ -501,7 +509,21 @@ declare class NJSAmountCallback
  *Callback triggered by main completed task,
  *returns optional result as list of template type T
  */
-declare class NJSAddressListCallback
+
+declare class NJSAmountListCallback
+{
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
+    declare function onCallback(result: ?Array<NJSAmount>, error: ?Error);
+}
+/**
+ *Callback triggered by main completed task,
+ *returns optional result as list of template type T
+ */
+declare class NJSStringListCallback
 {
     /**
      * Method triggered when main task complete
