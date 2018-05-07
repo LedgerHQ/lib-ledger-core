@@ -33,8 +33,7 @@
 #include "BitcoinLikeUTXODatabaseHelper.h"
 #include <database/soci-number.h>
 #include <database/soci-option.h>
-#include <iostream>
-using namespace std;
+
 using namespace soci;
 
 namespace ledger {
@@ -87,34 +86,7 @@ namespace ledger {
             return c;
         }
 
-        std::size_t
-        BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, const std::string &fromDate,
-                                                 const std::string &toDate, std::vector<BitcoinLikeBlockchainExplorer::Output> &out,
-                                                 std::function<bool(const std::string &address)> filter) {
-            rowset<row> rows = (sql.prepare <<
-                                            "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, tx.time"
-                                                    " FROM bitcoin_outputs AS o"
-                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_hash = o.transaction_hash "
-                                                    " AND i.previous_output_idx = o.idx"
-                                                    " LEFT OUTER JOIN bitcoin_transactions AS tx ON  tx.hash = o.transaction_hash "
-                                                    " WHERE i.previous_tx_hash IS NULL AND tx.time BETWEEN :fromDate and :toDate AND o.account_uid = :uid",
-                                                    use(fromDate), use(toDate), use(accountUid));
-            std::size_t c = 0;
-            for (auto& row : rows) {
-                if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
-                    out.resize(out.size() + 1);
-                    auto& output = out[out.size() - 1];
-                    output.address = row.get<Option<std::string>>(0);
-                    output.index = static_cast<uint64_t>(row.get<int32_t>(1));
-                    output.transactionHash = row.get<std::string>(2);
-                    output.value = row.get<BigInt>(3);
-                    output.script = row.get<std::string>(4);
-                    output.time = row.get<std::string>(5);
-                    c += 1;
-                }
-            }
-            return c;
-        }
+
 
     }
 }

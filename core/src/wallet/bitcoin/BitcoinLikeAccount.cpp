@@ -48,6 +48,7 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <spdlog/logger.h>
 #include <utils/DateUtils.hpp>
 namespace ledger {
@@ -389,7 +390,7 @@ namespace ledger {
                 const int32_t BATCH_SIZE = 100;
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                std::vector<BitcoinLikeBlockchainExplorer::Output> utxos;
+                std::vector<Operation> operations;
                 auto offset = 0;
                 std::size_t count = 0;
 
@@ -399,25 +400,35 @@ namespace ledger {
                 };
 
                 //Query all utxos in date range
-                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, start, end, utxos, filter)) == BATCH_SIZE; offset += count) {}
+                for (; (count = OperationDatabaseHelper::queryOperations(sql, uid, operations, filter)) == BATCH_SIZE; offset += count) {}
 
                 auto startDate = DateUtils::fromJSON(start);
                 auto endDate = DateUtils::fromJSON(end);
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
 
                 std::vector<std::shared_ptr<api::Amount>> amounts;
-                std::size_t utxoCount = 0;
+                std::size_t operationsCount = 0;
                 bool increment = true;
                 BigInt sum(0);
                 while (upperDate <= endDate) {
 
-                    if(utxoCount < utxos.size()) {
-                        auto utxo = utxos[utxoCount];
-                        auto utxoDate = DateUtils::fromJSON(utxo.time);
-                        if (utxoDate <= upperDate) {
+                    if(operationsCount < operations.size()) {
+                        auto operation = operations[operationsCount];
+                        if (operation.date <= upperDate) {
                             increment = false;
-                            sum = sum + utxo.value;
-                            utxoCount += 1;
+                            switch (operation.type) {
+                                case api::OperationType::RECEIVE:
+                                {
+                                    sum = sum + operation.amount;
+                                    break;
+                                }
+                                case api::OperationType::SEND:
+                                {
+                                    sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                    break;
+                                }
+                            }
+                            operationsCount += 1;
                         }
                     }
 

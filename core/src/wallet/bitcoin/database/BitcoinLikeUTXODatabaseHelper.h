@@ -48,11 +48,6 @@ namespace ledger {
                            std::vector<BitcoinLikeBlockchainExplorer::Output>& out,
                            std::function<bool (const std::string& address)> filter);
 
-            static std::size_t queryUTXO(soci::session &sql, const std::string &accountUid,
-                                         const std::string &from,
-                                         const std::string &to,
-                                         std::vector<BitcoinLikeBlockchainExplorer::Output>& out,
-                                         std::function<bool (const std::string& address)> filter);
 
             static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid,
                                          std::function<bool (const std::string& address)> filter);
