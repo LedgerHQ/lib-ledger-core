@@ -46,6 +46,11 @@ namespace ledger {
                                          const api::OperationType type);
             static void queryOperations(soci::session& sql, int32_t from, int32_t to,
                                         bool complete, bool excludeDropped, std::vector<Operation>& out);
+
+            static std::size_t queryOperations(soci::session &sql,
+                                               const std::string &accountUid,
+                                               std::vector<Operation>& out,
+                                               std::function<bool (const std::string& address)> filter);
         private:
             static void updateBitcoinOperation(soci::session& sql, const Operation& operation, bool insert);
         };
