@@ -121,14 +121,16 @@ NAN_METHOD(NJSAmount::getCurrency) {
         Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_6_tmp_7);
         auto arg_0_6_tmp_8 = Nan::New<Boolean>(arg_0_6_optional.UsesTimestampedTransaction);
         Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_6_tmp_8);
-        Local<Array> arg_0_6_tmp_9 = Nan::New<Array>();
-        for(size_t arg_0_6_tmp_9_id = 0; arg_0_6_tmp_9_id < arg_0_6_optional.SigHash.size(); arg_0_6_tmp_9_id++)
+        auto arg_0_6_tmp_9 = Nan::New<Number>(arg_0_6_optional.TimestampDelay);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_6_tmp_9);
+        Local<Array> arg_0_6_tmp_10 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_10_id = 0; arg_0_6_tmp_10_id < arg_0_6_optional.SigHash.size(); arg_0_6_tmp_10_id++)
         {
-            auto arg_0_6_tmp_9_elem = Nan::New<Uint32>(arg_0_6_optional.SigHash[arg_0_6_tmp_9_id]);
-            arg_0_6_tmp_9->Set((int)arg_0_6_tmp_9_id,arg_0_6_tmp_9_elem);
+            auto arg_0_6_tmp_10_elem = Nan::New<Uint32>(arg_0_6_optional.SigHash[arg_0_6_tmp_10_id]);
+            arg_0_6_tmp_10->Set((int)arg_0_6_tmp_10_id,arg_0_6_tmp_10_elem);
         }
 
-        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_6_tmp_9);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_6_tmp_10);
 
         arg_0_6 = arg_0_6_tmp;
     }
@@ -493,19 +495,22 @@ NAN_METHOD(NJSAmount::fromHex) {
         auto field_opt_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_0_6_8 = Nan::To<bool>(field_opt_arg_0_6_8).FromJust();
 
-        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
-        vector<uint8_t> opt_arg_0_6_9;
-        Local<Array> opt_arg_0_6_9_container = Local<Array>::Cast(field_opt_arg_0_6_9);
-        for(uint32_t opt_arg_0_6_9_id = 0; opt_arg_0_6_9_id < opt_arg_0_6_9_container->Length(); opt_arg_0_6_9_id++)
+        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_9 = Nan::To<int64_t>(field_opt_arg_0_6_9).FromJust();
+
+        auto field_opt_arg_0_6_10 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_10;
+        Local<Array> opt_arg_0_6_10_container = Local<Array>::Cast(field_opt_arg_0_6_10);
+        for(uint32_t opt_arg_0_6_10_id = 0; opt_arg_0_6_10_id < opt_arg_0_6_10_container->Length(); opt_arg_0_6_10_id++)
         {
-            if(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)->IsUint32())
+            if(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)->IsUint32())
             {
-                auto opt_arg_0_6_9_elem = Nan::To<uint32_t>(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)).FromJust();
-                opt_arg_0_6_9.emplace_back(opt_arg_0_6_9_elem);
+                auto opt_arg_0_6_10_elem = Nan::To<uint32_t>(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)).FromJust();
+                opt_arg_0_6_10.emplace_back(opt_arg_0_6_10_elem);
             }
         }
 
-        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9);
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10);
 
         arg_0_6.emplace(opt_arg_0_6);
     }
@@ -639,19 +644,22 @@ NAN_METHOD(NJSAmount::fromLong) {
         auto field_opt_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_0_6_8 = Nan::To<bool>(field_opt_arg_0_6_8).FromJust();
 
-        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
-        vector<uint8_t> opt_arg_0_6_9;
-        Local<Array> opt_arg_0_6_9_container = Local<Array>::Cast(field_opt_arg_0_6_9);
-        for(uint32_t opt_arg_0_6_9_id = 0; opt_arg_0_6_9_id < opt_arg_0_6_9_container->Length(); opt_arg_0_6_9_id++)
+        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_9 = Nan::To<int64_t>(field_opt_arg_0_6_9).FromJust();
+
+        auto field_opt_arg_0_6_10 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_10;
+        Local<Array> opt_arg_0_6_10_container = Local<Array>::Cast(field_opt_arg_0_6_10);
+        for(uint32_t opt_arg_0_6_10_id = 0; opt_arg_0_6_10_id < opt_arg_0_6_10_container->Length(); opt_arg_0_6_10_id++)
         {
-            if(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)->IsUint32())
+            if(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)->IsUint32())
             {
-                auto opt_arg_0_6_9_elem = Nan::To<uint32_t>(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)).FromJust();
-                opt_arg_0_6_9.emplace_back(opt_arg_0_6_9_elem);
+                auto opt_arg_0_6_10_elem = Nan::To<uint32_t>(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)).FromJust();
+                opt_arg_0_6_10.emplace_back(opt_arg_0_6_10_elem);
             }
         }
 
-        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9);
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10);
 
         arg_0_6.emplace(opt_arg_0_6);
     }
@@ -790,19 +798,22 @@ NAN_METHOD(NJSAmount::New) {
         auto field_opt_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_0_6_8 = Nan::To<bool>(field_opt_arg_0_6_8).FromJust();
 
-        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
-        vector<uint8_t> opt_arg_0_6_9;
-        Local<Array> opt_arg_0_6_9_container = Local<Array>::Cast(field_opt_arg_0_6_9);
-        for(uint32_t opt_arg_0_6_9_id = 0; opt_arg_0_6_9_id < opt_arg_0_6_9_container->Length(); opt_arg_0_6_9_id++)
+        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_9 = Nan::To<int64_t>(field_opt_arg_0_6_9).FromJust();
+
+        auto field_opt_arg_0_6_10 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_10;
+        Local<Array> opt_arg_0_6_10_container = Local<Array>::Cast(field_opt_arg_0_6_10);
+        for(uint32_t opt_arg_0_6_10_id = 0; opt_arg_0_6_10_id < opt_arg_0_6_10_container->Length(); opt_arg_0_6_10_id++)
         {
-            if(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)->IsUint32())
+            if(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)->IsUint32())
             {
-                auto opt_arg_0_6_9_elem = Nan::To<uint32_t>(opt_arg_0_6_9_container->Get(opt_arg_0_6_9_id)).FromJust();
-                opt_arg_0_6_9.emplace_back(opt_arg_0_6_9_elem);
+                auto opt_arg_0_6_10_elem = Nan::To<uint32_t>(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)).FromJust();
+                opt_arg_0_6_10.emplace_back(opt_arg_0_6_10_elem);
             }
         }
 
-        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9);
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10);
 
         arg_0_6.emplace(opt_arg_0_6);
     }

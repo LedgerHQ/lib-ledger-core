@@ -52,6 +52,7 @@ namespace ledger {
                     546,
                     "Bitcoin signed message:\n",
                     false,
+                    0,
                     {sigHashType::SIGHASH_ALL}
             );
 
@@ -64,6 +65,7 @@ namespace ledger {
                     546,
                     "Bitcoin signed message:\n",
                     false,
+                    0,
                     {sigHashType::SIGHASH_ALL}
             );
 
@@ -76,6 +78,7 @@ namespace ledger {
                     5430,
                     "Bitcoin signed message:\n",
                     false,
+                    0,
                     {sigHashType::SIGHASH_BTC_FORKS}
             );
 
@@ -88,6 +91,7 @@ namespace ledger {
                     5430,
                     "Bitcoin gold signed message:\n",
                     false,
+                    0,
                     {sigHashType::SIGHASH_BTC_FORKS}
             );
 

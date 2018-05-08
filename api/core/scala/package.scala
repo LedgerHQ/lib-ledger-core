@@ -451,10 +451,10 @@ package object implicits {
     implicit class RichBitcoinLikeWalletConfiguration(val self: BitcoinLikeWalletConfiguration) {
     }
     implicit class RichBitcoinLikeInput(val self: BitcoinLikeInput) {
-        def getPreviousTransaction(): Future[Array[Byte]] = {
-            val promise = Promise[Array[Byte]]()
+        def getPreviousTransaction(): Future[Binary] = {
+            val promise = Promise[Binary]()
             self.getPreviousTransaction(new BinaryCallback() {
-                override def onCallback(result: Array[Byte], error: co.ledger.core.Error): Unit =  {
+                override def onCallback(result: Binary, error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }

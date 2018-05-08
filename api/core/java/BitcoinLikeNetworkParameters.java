@@ -22,6 +22,8 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final boolean UsesTimestampedTransaction;
 
+    /*package*/ final long TimestampDelay;
+
     /*package*/ final byte[] SigHash;
 
     public BitcoinLikeNetworkParameters(
@@ -33,6 +35,7 @@ public final class BitcoinLikeNetworkParameters {
             long DustAmount,
             String MessagePrefix,
             boolean UsesTimestampedTransaction,
+            long TimestampDelay,
             byte[] SigHash) {
         this.Identifier = Identifier;
         this.P2PKHVersion = P2PKHVersion;
@@ -42,6 +45,7 @@ public final class BitcoinLikeNetworkParameters {
         this.DustAmount = DustAmount;
         this.MessagePrefix = MessagePrefix;
         this.UsesTimestampedTransaction = UsesTimestampedTransaction;
+        this.TimestampDelay = TimestampDelay;
         this.SigHash = SigHash;
     }
 
@@ -77,6 +81,10 @@ public final class BitcoinLikeNetworkParameters {
         return UsesTimestampedTransaction;
     }
 
+    public long getTimestampDelay() {
+        return TimestampDelay;
+    }
+
     public byte[] getSigHash() {
         return SigHash;
     }
@@ -92,6 +100,7 @@ public final class BitcoinLikeNetworkParameters {
                 "," + "DustAmount=" + DustAmount +
                 "," + "MessagePrefix=" + MessagePrefix +
                 "," + "UsesTimestampedTransaction=" + UsesTimestampedTransaction +
+                "," + "TimestampDelay=" + TimestampDelay +
                 "," + "SigHash=" + SigHash +
         "}";
     }

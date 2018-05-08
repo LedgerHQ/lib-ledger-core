@@ -13,6 +13,7 @@ BitcoinLikeNetworkParameters = record {
     DustAmount: i64;
     MessagePrefix: string;
     UsesTimestampedTransaction: bool;
+    TimestampDelay: i64;
     SigHash: binary;
 }
 

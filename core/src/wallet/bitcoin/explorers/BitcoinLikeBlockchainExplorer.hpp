@@ -110,6 +110,7 @@ namespace ledger {
             virtual Future<Bytes> getRawTransaction(const String& transactionHash) = 0;
             virtual FuturePtr<Transaction> getTransactionByHash(const String& transactionHash) = 0;
             virtual Future<String> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
+            virtual Future<int64_t> getTimestamp() = 0;
         };
     }
 }

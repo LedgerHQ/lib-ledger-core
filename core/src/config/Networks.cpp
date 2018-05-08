@@ -43,6 +43,7 @@ namespace ledger {
                     5420,
                     "Bitcoin Signed Message:\n",
                     false,
+                    0,
                     {0x01}
                 );
             }
