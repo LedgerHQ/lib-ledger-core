@@ -56,6 +56,7 @@ namespace ledger {
                     p.DustAmount,
                     p.MessagePrefix,
                     p.UsesTimestampedTransaction,
+                    p.TimestampDelay,
                     p.SigHash
                 );
             }

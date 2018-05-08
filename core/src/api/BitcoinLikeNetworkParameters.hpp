@@ -22,6 +22,7 @@ struct BitcoinLikeNetworkParameters final {
     int64_t DustAmount;
     std::string MessagePrefix;
     bool UsesTimestampedTransaction;
+    int64_t TimestampDelay;
     std::vector<uint8_t> SigHash;
 
     BitcoinLikeNetworkParameters(std::string Identifier_,
@@ -32,6 +33,7 @@ struct BitcoinLikeNetworkParameters final {
                                  int64_t DustAmount_,
                                  std::string MessagePrefix_,
                                  bool UsesTimestampedTransaction_,
+                                 int64_t TimestampDelay_,
                                  std::vector<uint8_t> SigHash_)
     : Identifier(std::move(Identifier_))
     , P2PKHVersion(std::move(P2PKHVersion_))
@@ -41,6 +43,7 @@ struct BitcoinLikeNetworkParameters final {
     , DustAmount(std::move(DustAmount_))
     , MessagePrefix(std::move(MessagePrefix_))
     , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
+    , TimestampDelay(std::move(TimestampDelay_))
     , SigHash(std::move(SigHash_))
     {}
 
@@ -53,6 +56,7 @@ struct BitcoinLikeNetworkParameters final {
        this->DustAmount = cpy.DustAmount;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
+       this->TimestampDelay = cpy.TimestampDelay;
        this->SigHash = cpy.SigHash;
     }
 
@@ -68,18 +72,19 @@ struct BitcoinLikeNetworkParameters final {
        this->DustAmount = cpy.DustAmount;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
+       this->TimestampDelay = cpy.TimestampDelay;
        this->SigHash = cpy.SigHash;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, SigHash);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, SigHash);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash);
     }
 };
 

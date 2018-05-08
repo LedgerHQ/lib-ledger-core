@@ -127,14 +127,16 @@ NAN_METHOD(NJSBitcoinLikeAddress::getNetworkParameters) {
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_7);
     auto arg_0_8 = Nan::New<Boolean>(result.UsesTimestampedTransaction);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_8);
-    Local<Array> arg_0_9 = Nan::New<Array>();
-    for(size_t arg_0_9_id = 0; arg_0_9_id < result.SigHash.size(); arg_0_9_id++)
+    auto arg_0_9 = Nan::New<Number>(result.TimestampDelay);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_9);
+    Local<Array> arg_0_10 = Nan::New<Array>();
+    for(size_t arg_0_10_id = 0; arg_0_10_id < result.SigHash.size(); arg_0_10_id++)
     {
-        auto arg_0_9_elem = Nan::New<Uint32>(result.SigHash[arg_0_9_id]);
-        arg_0_9->Set((int)arg_0_9_id,arg_0_9_elem);
+        auto arg_0_10_elem = Nan::New<Uint32>(result.SigHash[arg_0_10_id]);
+        arg_0_10->Set((int)arg_0_10_id,arg_0_10_elem);
     }
 
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_9);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_10);
 
 
     //Return result
@@ -318,19 +320,22 @@ NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
     auto field_arg_0_8 = Nan::Get(info[0]->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
     auto arg_0_8 = Nan::To<bool>(field_arg_0_8).FromJust();
 
-    auto field_arg_0_9 = Nan::Get(info[0]->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_9;
-    Local<Array> arg_0_9_container = Local<Array>::Cast(field_arg_0_9);
-    for(uint32_t arg_0_9_id = 0; arg_0_9_id < arg_0_9_container->Length(); arg_0_9_id++)
+    auto field_arg_0_9 = Nan::Get(info[0]->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_9 = Nan::To<int64_t>(field_arg_0_9).FromJust();
+
+    auto field_arg_0_10 = Nan::Get(info[0]->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_10;
+    Local<Array> arg_0_10_container = Local<Array>::Cast(field_arg_0_10);
+    for(uint32_t arg_0_10_id = 0; arg_0_10_id < arg_0_10_container->Length(); arg_0_10_id++)
     {
-        if(arg_0_9_container->Get(arg_0_9_id)->IsUint32())
+        if(arg_0_10_container->Get(arg_0_10_id)->IsUint32())
         {
-            auto arg_0_9_elem = Nan::To<uint32_t>(arg_0_9_container->Get(arg_0_9_id)).FromJust();
-            arg_0_9.emplace_back(arg_0_9_elem);
+            auto arg_0_10_elem = Nan::To<uint32_t>(arg_0_10_container->Get(arg_0_10_id)).FromJust();
+            arg_0_10.emplace_back(arg_0_10_elem);
         }
     }
 
-    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8, arg_0_9);
+    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8, arg_0_9, arg_0_10);
 
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);
@@ -417,19 +422,22 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
     auto field_arg_0_8 = Nan::Get(info[0]->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
     auto arg_0_8 = Nan::To<bool>(field_arg_0_8).FromJust();
 
-    auto field_arg_0_9 = Nan::Get(info[0]->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_9;
-    Local<Array> arg_0_9_container = Local<Array>::Cast(field_arg_0_9);
-    for(uint32_t arg_0_9_id = 0; arg_0_9_id < arg_0_9_container->Length(); arg_0_9_id++)
+    auto field_arg_0_9 = Nan::Get(info[0]->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+    auto arg_0_9 = Nan::To<int64_t>(field_arg_0_9).FromJust();
+
+    auto field_arg_0_10 = Nan::Get(info[0]->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+    vector<uint8_t> arg_0_10;
+    Local<Array> arg_0_10_container = Local<Array>::Cast(field_arg_0_10);
+    for(uint32_t arg_0_10_id = 0; arg_0_10_id < arg_0_10_container->Length(); arg_0_10_id++)
     {
-        if(arg_0_9_container->Get(arg_0_9_id)->IsUint32())
+        if(arg_0_10_container->Get(arg_0_10_id)->IsUint32())
         {
-            auto arg_0_9_elem = Nan::To<uint32_t>(arg_0_9_container->Get(arg_0_9_id)).FromJust();
-            arg_0_9.emplace_back(arg_0_9_elem);
+            auto arg_0_10_elem = Nan::To<uint32_t>(arg_0_10_container->Get(arg_0_10_id)).FromJust();
+            arg_0_10.emplace_back(arg_0_10_elem);
         }
     }
 
-    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8, arg_0_9);
+    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8, arg_0_9, arg_0_10);
 
     String::Utf8Value string_arg_1(info[1]->ToString());
     auto arg_1 = std::string(*string_arg_1);

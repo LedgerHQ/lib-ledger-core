@@ -13,6 +13,7 @@
                                 DustAmount:(int64_t)DustAmount
                              MessagePrefix:(nonnull NSString *)MessagePrefix
                 UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                            TimestampDelay:(int64_t)TimestampDelay
                                    SigHash:(nonnull NSData *)SigHash;
 + (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)Identifier
                                                       P2PKHVersion:(nonnull NSData *)P2PKHVersion
@@ -22,6 +23,7 @@
                                                         DustAmount:(int64_t)DustAmount
                                                      MessagePrefix:(nonnull NSString *)MessagePrefix
                                         UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                                                    TimestampDelay:(int64_t)TimestampDelay
                                                            SigHash:(nonnull NSData *)SigHash;
 
 @property (nonatomic, readonly, nonnull) NSString * Identifier;
@@ -39,6 +41,8 @@
 @property (nonatomic, readonly, nonnull) NSString * MessagePrefix;
 
 @property (nonatomic, readonly) BOOL UsesTimestampedTransaction;
+
+@property (nonatomic, readonly) int64_t TimestampDelay;
 
 @property (nonatomic, readonly, nonnull) NSData * SigHash;
 

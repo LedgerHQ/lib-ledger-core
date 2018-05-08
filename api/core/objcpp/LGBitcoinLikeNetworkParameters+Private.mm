@@ -19,6 +19,7 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
             ::djinni::I64::toCpp(obj.DustAmount),
             ::djinni::String::toCpp(obj.MessagePrefix),
             ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction),
+            ::djinni::I64::toCpp(obj.TimestampDelay),
             ::djinni::Binary::toCpp(obj.SigHash)};
 }
 
@@ -32,6 +33,7 @@ auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
                                                            DustAmount:(::djinni::I64::fromCpp(cpp.DustAmount))
                                                         MessagePrefix:(::djinni::String::fromCpp(cpp.MessagePrefix))
                                            UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))
+                                                       TimestampDelay:(::djinni::I64::fromCpp(cpp.TimestampDelay))
                                                               SigHash:(::djinni::Binary::fromCpp(cpp.SigHash))];
 }
 
