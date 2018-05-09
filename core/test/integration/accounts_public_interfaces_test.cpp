@@ -31,8 +31,11 @@
 
 #include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
+#include "../fixtures/segwit_xpub_fixtures.h"
 #include <wallet/common/OperationQuery.h>
-
+#include <api/KeychainEngines.hpp>
+#include <iostream>
+using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
 public:
     void SetUp() override {
@@ -99,4 +102,22 @@ TEST_F(AccountsPublicInterfaceTest, QueryOperationsOnEmptyAccount) {
     auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
     auto operations = wait(query->execute());
     EXPECT_EQ(operations.size(), 0);
+}
+
+TEST_F(AccountsPublicInterfaceTest, GetTestnetUnits) {
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
+    wallet = wait(pool->createWallet("my_wallet_testnet", "bitcoin_testnet", configuration));
+    auto currency = pool->getCurrency("bitcoin");
+    EXPECT_EQ(currency->name, "bitcoin");
+    cout<<">>>> Get account"<<endl;
+    auto account = ledger::testing::segwit_xpub::inflate(pool, wallet);
+    cout<<">>>> Get balance"<<endl;
+    auto balance = wait(account->getBalance());
+    cout<<">>>> Get balance toLong"<<endl;
+    auto balanceLong = balance->toLong();
+    //EXPECT_EQ(balanceLong, 100L);
+    //auto balance = wait(account->getBalance());
+    //auto balance =
+    //EXPECT_EQ();
 }
