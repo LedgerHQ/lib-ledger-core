@@ -126,7 +126,9 @@ namespace ledger {
                 "dust_amount BIGINT NOT NULL,"
                 "fee_policy VARCHAR(20) NOT NULL,"
                 "message_prefix VARCHAR(255) NOT NULL,"
-                "has_timestamped_transaction INTEGER NOT NULL"
+                "has_timestamped_transaction INTEGER NOT NULL",
+                "timestamp_delay BIGINT",
+                "sighash_type VARCHAR(255)"
             ")";
 
             // Bitcoin transaction table
