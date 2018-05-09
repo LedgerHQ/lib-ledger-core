@@ -57,7 +57,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             case api::WalletType::BITCOIN: {
                 auto &params = currency.bitcoinLikeNetworkParameters.value();
                 sql
-                << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction)",
+                << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType)",
                 use(currency.name),
                 use(params.Identifier),
                 use(hex::toString(params.P2PKHVersion)),
@@ -66,7 +66,9 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(params.DustAmount),
                 use(api::to_string(params.FeePolicy)),
                 use(params.MessagePrefix),
-                use(params.UsesTimestampedTransaction ? 1 : 0);
+                use(params.UsesTimestampedTransaction ? 1 : 0),
+                use(params.TimestampDelay),
+                use(hex::toString(params.SigHash));
                 break;
             }
             case api::WalletType::ETHEREUM:break; // TODO INSERT ETHEREUM NETWORK PARAMS
@@ -85,7 +87,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
         "SELECT currencies.name, currencies.type, currencies.bip44_coin_type, currencies.payment_uri_scheme, "
         "       bitcoin_currencies.p2pkh_version, bitcoin_currencies.p2sh_version, bitcoin_currencies.xpub_version,"
         "       bitcoin_currencies.dust_amount, bitcoin_currencies.fee_policy, bitcoin_currencies.has_timestamped_transaction,"
-        "       bitcoin_currencies.message_prefix, bitcoin_currencies.identifier "
+        "       bitcoin_currencies.message_prefix, bitcoin_currencies.identifier, bitcoin_currencies.timestamp_delay, bitcoin_currencies.sighash_type "
         "FROM currencies "
         "LEFT OUTER JOIN bitcoin_currencies ON bitcoin_currencies.name = currencies.name");
     for (auto& row : rows) {
@@ -110,6 +112,8 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 params.UsesTimestampedTransaction = row.get<int>(9) == 1;
                 params.MessagePrefix = row.get<std::string>(10);
                 params.Identifier = row.get<std::string>(11);
+                params.TimestampDelay = row.get<long long>(12);
+                params.SigHash = hex::toByteArray(row.get<std::string>(13));
                 currency.bitcoinLikeNetworkParameters = params;
                 break;
             }
