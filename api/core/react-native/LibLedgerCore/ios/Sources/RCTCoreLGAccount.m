@@ -283,4 +283,18 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(nullable id<LGBlockCallback>)callbac
 
     [self.objcImpl getLastBlock:callback];
 }
+
+/** Get the key used to generate the account */
+RCT_REMAP_METHOD(getRestoreKey,getRestoreKeyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl getRestoreKey]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGAccount::getRestoreKey", nil);
+    }
+}
 @end

@@ -136,6 +136,9 @@ public abstract class Account {
      */
     public abstract void getLastBlock(BlockCallback callback);
 
+    /** Get the key used to generate the account */
+    public abstract String getRestoreKey();
+
     private static final class CppProxy extends Account
     {
         private final long nativeRef;
@@ -310,5 +313,13 @@ public abstract class Account {
             native_getLastBlock(this.nativeRef, callback);
         }
         private native void native_getLastBlock(long _nativeRef, BlockCallback callback);
+
+        @Override
+        public String getRestoreKey()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getRestoreKey(this.nativeRef);
+        }
+        private native String native_getRestoreKey(long _nativeRef);
     }
 }

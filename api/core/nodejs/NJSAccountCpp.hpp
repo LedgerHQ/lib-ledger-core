@@ -142,6 +142,9 @@ private:
      */
     static NAN_METHOD(getLastBlock);
 
+    /** Get the key used to generate the account */
+    static NAN_METHOD(getRestoreKey);
+
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);

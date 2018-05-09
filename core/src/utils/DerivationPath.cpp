@@ -46,8 +46,8 @@ namespace ledger {
 
         }
 
-        DerivationPath::DerivationPath(const std::vector<uint32_t> &path) {
-            _path = path;
+        DerivationPath::DerivationPath(const std::vector<uint32_t> &path) : _path(path) {
+
         }
 
         std::vector<uint32_t> DerivationPath::parse(const std::string &path) throw(Exception) {
@@ -202,6 +202,25 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, fmt::format("{} - Cannot get parent of root derivation path", method));
             }
         }
+
+        DerivationPath::DerivationPath(const DerivationPath &path) : _path(path._path) {
+
+        }
+
+        DerivationPath::DerivationPath(DerivationPath &&path) : _path(path._path) {
+
+        }
+
+        DerivationPath& DerivationPath::operator=(DerivationPath &&path) {
+            this->_path = path._path;
+            return *this;
+        }
+
+        DerivationPath& DerivationPath::operator=(const DerivationPath &path) {
+            this->_path = path._path;
+            return *this;
+        }
+
 
     }
 }

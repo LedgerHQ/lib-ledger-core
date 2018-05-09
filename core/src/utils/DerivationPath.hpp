@@ -39,8 +39,12 @@ namespace ledger {
     namespace core {
         class DerivationPath {
         public:
-            DerivationPath(const std::string& path);
-            DerivationPath(const std::vector<uint32_t>& path);
+            explicit DerivationPath(const std::string& path);
+            explicit DerivationPath(const std::vector<uint32_t>& path);
+            DerivationPath(const DerivationPath& path);
+            DerivationPath(DerivationPath&& path);
+            DerivationPath& operator=(DerivationPath&& path);
+            DerivationPath& operator=(const DerivationPath& path);
             uint32_t getDepth() const;
             uint32_t getLastChildNum() const throw(ledger::core::Exception);
             uint32_t getNonHardenedChildNum(int index) const throw(ledger::core::Exception);

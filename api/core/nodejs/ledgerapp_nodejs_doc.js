@@ -450,6 +450,8 @@ declare class NJSAccount
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     declare function getLastBlock(callback: NJSBlockCallback);
+    /** Get the key used to generate the account */
+    declare function getRestoreKey(): string;
 }
 /**
  *Callback triggered by main completed task,

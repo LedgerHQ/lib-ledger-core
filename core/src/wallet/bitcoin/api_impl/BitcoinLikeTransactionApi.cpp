@@ -244,10 +244,13 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
                 auto scriptSig = input->getScriptSig();
+                std::cout << "BEFORE SCRIPT SIG SERIALIZATION" << std::endl;
                 if (scriptSig.size() > 0) {
+                    std::cout << "SCRIPT SIG SERIAL" << std::endl;
                     writer.writeVarInt(scriptSig.size());
                     writer.writeByteArray(scriptSig);
                 } else {
+                    std::cout << "PREVOUT" << std::endl;
                     auto prevOut = input->getPreviousOuput()->getScript();
                     writer.writeVarInt(prevOut.size());
                     writer.writeByteArray(prevOut);

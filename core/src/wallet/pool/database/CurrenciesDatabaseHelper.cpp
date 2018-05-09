@@ -140,7 +140,7 @@ void
 ledger::core::CurrenciesDatabaseHelper::insertUnits(soci::session &sql, const ledger::core::api::Currency &currency) {
     for (const auto& unit : currency.units) {
         int count;
-        sql << "SELECT COUNT(*) FROM units WHERE name = :name", use(unit.name), into(count);
+        sql << "SELECT COUNT(*) FROM units WHERE name = :name AND currency_name = :cname", use(unit.name), use(currency.name), into(count);
         if (count == 0) {
             sql << "INSERT INTO units VALUES(:name, :magnitude, :symbol, :code, :currency_name)",
             use(unit.name), use(unit.numberOfDecimal), use(unit.symbol), use(unit.code), use(currency.name);

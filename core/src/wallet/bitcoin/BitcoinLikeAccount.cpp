@@ -116,8 +116,8 @@ namespace ledger {
                     if (path.nonEmpty()) {
                         // This address is part of the account.
                         sentAmount += input.value.getValue().toUint64();
-                        accountInputs.push_back(std::move(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Input *>(&input), path.getValue())));
-                        if (_keychain->markPathAsUsed(path.getValue())) {
+                        accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Input *>(&input), DerivationPath(path.getValue())));
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
@@ -137,7 +137,7 @@ namespace ledger {
                     auto path = _keychain->getAddressDerivationPath(output.address.getValue());
                     if (path.nonEmpty()) {
                         DerivationPath p(path.getValue());
-                        accountOutputs.push_back(std::move(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Output *>(&output), path.getValue())));
+                        accountOutputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Output *>(&output), p));
                         if (p.getNonHardenedChildNum(nodeIndex) == 1) {
                             if (sentAmount == 0L) {
                                 receivedAmount +=  output.value.toUint64();
@@ -149,7 +149,7 @@ namespace ledger {
                             receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
-                        if (_keychain->markPathAsUsed(path.getValue())) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
@@ -192,7 +192,7 @@ namespace ledger {
             }
 
             if (accountOutputs.size() > 0) {
-
+                // Receive
                 BigInt amount;
                 auto flag = 0;
                 bool filterChangeAddresses = true;
@@ -201,11 +201,22 @@ namespace ledger {
                     filterChangeAddresses = false;
                 }
 
-                operation.amount.assignI64(receivedAmount);
-                operation.type = api::OperationType::RECEIVE;
-                operation.refreshUid();
-                if(OperationDatabaseHelper::putOperation(sql, operation))
-                    emitNewOperationEvent(operation);
+                BigInt finalAmount;
+                auto accountOutputCount = 0;
+                for (auto& o : accountOutputs) {
+                    if (filterChangeAddresses && o.second.getNonHardenedChildNum(nodeIndex) == 1)
+                        continue;
+                    finalAmount = finalAmount + o.first->value;
+                    accountOutputCount += 1;
+                }
+
+                if (accountOutputCount > 0) {
+                    operation.amount = finalAmount;
+                    operation.type = api::OperationType::RECEIVE;
+                    operation.refreshUid();
+                    if (OperationDatabaseHelper::putOperation(sql, operation))
+                        emitNewOperationEvent(operation);
+                }
             }
 
             return result;
@@ -430,6 +441,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeAccount> BitcoinLikeAccount::asBitcoinLikeAccount() {
             return std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+        }
+
+        std::string BitcoinLikeAccount::getRestoreKey() {
+            return _keychain->getRestoreKey();
         }
 
 

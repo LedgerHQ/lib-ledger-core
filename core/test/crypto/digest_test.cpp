@@ -34,6 +34,7 @@
 #include <ledger/core/crypto/RIPEMD160.hpp>
 #include <ledger/core/utils/hex.h>
 #include <ledger/core/crypto/HMAC.hpp>
+#include <ledger/core/crypto/HASH160.hpp>
 
 using namespace ledger::core;
 
@@ -73,4 +74,10 @@ TEST(Digest, HMACSHA256) {
         auto expected = i[2];
         EXPECT_EQ(hash, expected);
     }
+}
+
+TEST(Digest, HASH160) {
+    auto pk = hex::toByteArray("02e73960f79f6637b773cf50f148cff54004669fd36045f8f9a36ffd669bcce71c");
+    auto hash160 = HASH160::hash(pk);
+    EXPECT_EQ(hex::toString(hash160), "253f5a6b1dd3f7d971807a5f3f2dcc9158002303");
 }
