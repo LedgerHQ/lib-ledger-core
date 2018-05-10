@@ -144,6 +144,8 @@ namespace ledger {
                     _transaction->lockTime = value.toUint64();
                 } else if (_lastKey == "fees") {
                     _transaction->fees = Option<BigInt>(value);
+                } else if (_lastKey == "confirmations") {
+                    _transaction->confirmations = value.toUint64();
                 }
                 return true;
             }

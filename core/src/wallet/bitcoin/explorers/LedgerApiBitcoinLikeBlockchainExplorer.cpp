@@ -166,6 +166,7 @@ namespace ledger {
                     transaction->inputs = tx.inputs;
                     transaction->outputs = tx.outputs;
                     transaction->receivedAt = tx.receivedAt;
+                    transaction->confirmations = tx.confirmations;
                     return transaction;
                 }
             });
