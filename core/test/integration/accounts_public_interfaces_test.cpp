@@ -34,6 +34,7 @@
 #include "../fixtures/segwit_xpub_fixtures.h"
 #include <wallet/common/OperationQuery.h>
 #include <api/KeychainEngines.hpp>
+#include <utils/DateUtils.hpp>
 #include <iostream>
 using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
@@ -84,10 +85,10 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
 TEST_F(AccountsPublicInterfaceTest, GetBalanceHistoryOnAccountWithSomeTxs) {
     auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
     auto fromDate = "2017-10-12T13:38:23Z";
-    auto toDate = "2018-10-12T13:38:23Z";
-    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::WEEK));
-    EXPECT_EQ(balanceHistory.size(), 52);
-    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), 91890664L);
+    auto toDate = DateUtils::toJSON(DateUtils::now());
+    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
+    auto balance = wait(account->getBalance());
+    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 }
 
 TEST_F(AccountsPublicInterfaceTest, QueryOperations) {

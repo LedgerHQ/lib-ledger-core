@@ -154,7 +154,6 @@ namespace ledger {
                                                       int inputCount) {
             if (buddy->outputAmount > aggregatedAmount) return false;
             // TODO Handle multiple outputs
-            // TODO Handle segwit
 
             auto computeAmountWithFees = [&] (int addedOutputCount) -> BigInt {
                 auto size = BitcoinLikeTransactionApi::estimateSize(

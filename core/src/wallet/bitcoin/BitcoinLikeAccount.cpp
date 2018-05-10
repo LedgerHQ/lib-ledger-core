@@ -226,7 +226,15 @@ namespace ledger {
         void
         BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
-            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+            if(tx.confirmations > 5) {
+                operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+            } else if (tx.confirmations > 0 && tx.confirmations < 6) {
+                operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
+            } else if (tx.confirmations == 0) {
+                operation.trust->setTrustLevel(api::TrustLevel::PENDING);
+            } else if (tx.confirmations < 0) {
+                operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
+            }
         }
 
         std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {

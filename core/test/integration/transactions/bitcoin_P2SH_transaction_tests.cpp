@@ -64,12 +64,8 @@ struct BitcoinMakeP2SHTransaction : public BaseFixture {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         wallet = wait(pool->createWallet("my_wallet", "bitcoin_testnet", configuration));
-        auto currency_testnet = pool->getCurrency("bitcoin_testnet");
         p2sh_account = ledger::testing::segwit_xpub::inflate(pool, wallet);
-        auto freshAddress = wait(p2sh_account->getFreshPublicAddresses())[0];
-        auto balance = wait(p2sh_account->getBalance());
-        auto utxos = wait(p2sh_account->getUTXO());
-        auto uxtoCount = wait(p2sh_account->getUTXOCount());
+        currency = wallet->getCurrency();
     }
 
     void TearDown() override {

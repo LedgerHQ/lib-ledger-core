@@ -83,9 +83,10 @@ namespace ledger {
                 std::vector<Input> inputs;
                 std::vector<Output> outputs;
                 Option<BigInt> fees;
-
+                uint64_t confirmations;
                 Transaction() {
                     version = 1;
+                    confirmations = -1;
                 }
             };
 
