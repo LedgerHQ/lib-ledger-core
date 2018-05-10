@@ -82,7 +82,7 @@ namespace ledger {
                     std::vector<uint8_t>(bodyString.begin(), bodyString.end())
                 ).json().map<String>(getContext(), [] (const HttpRequest::JsonResult& result) -> String {
                 auto& json = *std::get<1>(result);
-                return json["transaction_hash"].GetString();
+                return json["result"].GetString();
             });
         }
 

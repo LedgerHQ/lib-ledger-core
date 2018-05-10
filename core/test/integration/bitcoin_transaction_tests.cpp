@@ -121,7 +121,7 @@ TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithMultipleInputs) {
 TEST_F(BitcoinMakeTransaction, Toto) {
     std::shared_ptr<AbstractWallet> w = wait(pool->createWallet("my_btc_wallet", "bitcoin_testnet", DynamicObject::newInstance()));
     api::ExtendedKeyAccountCreationInfo info = wait(w->getNextExtendedKeyAccountCreationInfo());
-    info.extendedKeys.push_back("tpubDC2Q4xK4XH73Ath4DqGLgcJgZvu9eQSJvyUbozhjUVP5uW7wC2QnfGWVGgudpTxRqQzfhFmkkhZpzcewB8jx2Q72QfG2W63MmuAWTmjeaqv");
+    info.extendedKeys.push_back("tpubDCJarhe7f951cUufTWeGKh1w6hDgdBcJfvQgyMczbxWvwvLdryxZuchuNK3KmTKXwBNH6Ze6tHGrUqvKGJd1VvSZUhTVx58DrLn9hR16DVr");
     std::shared_ptr<AbstractAccount> account = std::dynamic_pointer_cast<AbstractAccount>(wait(w->newAccountWithExtendedKeyInfo(info)));
     std::shared_ptr<BitcoinLikeAccount> bla = std::dynamic_pointer_cast<BitcoinLikeAccount>(account);
     Promise<Unit> p;

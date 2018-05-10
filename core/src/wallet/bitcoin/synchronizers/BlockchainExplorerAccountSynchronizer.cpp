@@ -153,6 +153,7 @@ namespace ledger {
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
             auto self = shared_from_this();
             return _explorer->startSession().map<Unit>(account->getContext(), [buddy] (void * const& t) -> Unit {
+                buddy->logger->info("GOT A TOKEN");
                 buddy->token = Option<void *>(t);
                 return unit;
             }).flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
@@ -171,6 +172,7 @@ namespace ledger {
                         (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                 buddy->logger->error("Error during during synchronization for account#{} of wallet {} in {} ms", buddy->account->getIndex(),
                                     buddy->account->getWallet()->getName(), duration.count());
+                buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
                 throw ex;
             });
         }
@@ -178,6 +180,7 @@ namespace ledger {
         Future<Unit> BlockchainExplorerAccountSynchronizer::synchronizeBatches(uint32_t currentBatchIndex,
                                                                                std::shared_ptr<BlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy) {
 
+            buddy->logger->info("SYNC BATCHES");
             auto done = (currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1);
             if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
                 buddy->savedState.getValue().batches.push_back(BlockchainExplorerAccountSynchronizationBatchSavedState());
@@ -199,6 +202,7 @@ namespace ledger {
         Future<bool> BlockchainExplorerAccountSynchronizer::synchronizeBatch(uint32_t currentBatchIndex,
                                                                              std::shared_ptr<BlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy,
                                                                              bool hadTransactions) {
+            buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
             Option<std::string> blockHash;
             auto self = shared_from_this();
             auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
