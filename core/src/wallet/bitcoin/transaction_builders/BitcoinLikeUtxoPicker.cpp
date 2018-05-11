@@ -173,6 +173,7 @@ namespace ledger {
                                                       const BitcoinLikeUtxoPicker::UTXODescriptor &desc) {
             const std::string& hash = std::get<0>(desc);
             return buddy->explorer->getTransactionByHash(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) {
+                buddy->logger->debug("Get output {} on {}", std::get<1>(desc), tx->outputs.size());
                 auto output = tx->outputs[std::get<1>(desc)];
                 std::vector<std::vector<uint8_t>> pub_keys;
                 std::vector<std::shared_ptr<api::DerivationPath>> paths;

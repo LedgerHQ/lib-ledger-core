@@ -39,7 +39,7 @@ namespace ledger {
                     {0x05},
                     {0x04, 0x88, 0xB2, 0x1E},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
-                    5430,
+                    546,
                     "Bitcoin signed message:\n",
                     false
             );
@@ -50,7 +50,7 @@ namespace ledger {
                     {0xC4},
                     {0x04, 0x35, 0x87, 0xCF},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
-                    5430,
+                    546,
                     "Bitcoin signed message:\n",
                     false
             );

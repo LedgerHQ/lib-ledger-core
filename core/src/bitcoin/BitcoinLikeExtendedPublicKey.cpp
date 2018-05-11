@@ -122,7 +122,7 @@ namespace ledger {
             DeterministicPublicKey k(
                 publicKey, chainCode, childNum, depth, fingerprint
             );
-            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, path.getValueOr("m"));
+            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, DerivationPath(path.getValueOr("m")));
         }
 
         std::vector<uint8_t> BitcoinLikeExtendedPublicKey::derivePublicKey(const std::string &path) {

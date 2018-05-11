@@ -326,7 +326,7 @@ namespace ledger {
             auto outputsCount = reader.readNextVarInt();
             for (auto index = 0; index < outputsCount; index++) {
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
-                output.index = index;
+                output.index = static_cast<uint64_t>(index);
                 output.value = reader.readNextLeBigInt(8);
                 auto scriptSize = reader.readNextVarInt();
                 auto scriptSig = reader.read(scriptSize);

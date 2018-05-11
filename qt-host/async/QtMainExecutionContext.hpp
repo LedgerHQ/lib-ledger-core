@@ -36,6 +36,7 @@
 #include <src/api/ExecutionContext.hpp>
 #include <src/api/Runnable.hpp>
 #include <QCoreApplication>
+#include <atomic>
 
 namespace ledger {
     namespace qt {

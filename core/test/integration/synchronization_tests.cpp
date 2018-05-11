@@ -144,3 +144,53 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeFromLastBlock) {
         EXPECT_NE(b1, b2);
     }
 }
+
+TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
+    auto pool = newDefaultPool();
+    {
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin_testnet",
+                                              api::DynamicObject::newInstance()));
+        std::set<std::string> emittedOperations;
+        {
+            auto nextIndex = wait(wallet->getNextAccountIndex());
+            auto info = wait(wallet->getNextExtendedKeyAccountCreationInfo());
+            info.extendedKeys.push_back("tpubDCJarhe7f951cUufTWeGKh1w6hDgdBcJfvQgyMczbxWvwvLdryxZuchuNK3KmTKXwBNH6Ze6tHGrUqvKGJd1VvSZUhTVx58DrLn9hR16DVr");
+            EXPECT_EQ(nextIndex, 0);
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
+
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                    auto uid = event->getPayload()->getString(
+                            api::Account::EV_NEW_OP_UID).value();
+                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                }
+            });
+
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
+            receiver.reset();
+            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                //EXPECT_EQ(event->getCode(),
+                //          api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                auto amount = wait(account->getBalance());
+                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Amount: " << amount->toLong() << std::endl;
+                std::cout << "Ops: " << ops.size() << std::endl;
+                for (auto& op : ops) {
+                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
+                dispatcher->stop();
+            });
+
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
+            dispatcher->waitUntilStopped();
+        }
+    }
+}

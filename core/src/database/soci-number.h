@@ -56,7 +56,6 @@ namespace soci {
         auto prop = row.get_properties(pos);
         switch (prop.get_data_type()) {
             case dt_string:
-            std::cout << pos << " " << row.get<std::string>(pos) << std::endl;
                 return boost::lexical_cast<T>(row.get<std::string>(pos));
             case dt_date: throw ledger::core::Exception(ledger::core::api::ErrorCode::RUNTIME_ERROR, "SQL date cannot be casted to number");
             case dt_double: return (T) row.get<double>(pos);

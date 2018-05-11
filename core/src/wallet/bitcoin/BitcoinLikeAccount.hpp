@@ -123,6 +123,8 @@ namespace ledger {
 
             Future<std::string> broadcastTransaction(const std::vector<uint8_t>& transaction);
 
+            std::string getRestoreKey() override;
+
             const std::shared_ptr<BitcoinLikeBlockchainExplorer>& getExplorer() const;
 
         protected:

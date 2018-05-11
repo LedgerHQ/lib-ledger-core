@@ -153,6 +153,9 @@ public:
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     virtual void getLastBlock(const std::shared_ptr<BlockCallback> & callback) = 0;
+
+    /** Get the key used to generate the account */
+    virtual std::string getRestoreKey() = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -71,7 +71,7 @@ namespace ledger {
                 Option<std::string> address;
                 std::string script;
 
-                Output() {};
+                Output() = default;
             };
 
             struct Transaction {
