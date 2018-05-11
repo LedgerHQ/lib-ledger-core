@@ -8,7 +8,7 @@ apt-get install -y awscli
 
 echo "========> Install C++ dependencies"
 apt-get install -y g++ make
-export PATH=/root/cmake-3.10.3/bin:$PATH
+export PATH=$HOME/cmake-3.10.3/bin:$PATH
 #For debug
 apt-get install -y gdb nano valgrind
 echo "========> Install Qt5"
