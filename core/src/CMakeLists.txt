@@ -265,5 +265,8 @@ target_include_directories(ledger-core PUBLIC ../lib/cereal/)
 target_include_directories(ledger-core PUBLIC ../lib/date/)
 target_include_directories(ledger-core PUBLIC ../lib/secp256k1)
 
+target_compile_definitions(ledger-core PRIVATE LIB_VERSION_MAJOR=${VERSION_MAJOR} LIB_VERSION_MINOR=${VERSION_MINOR}
+        LIB_VERSION_PATCH=${VERSION_PATCH})
+
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

@@ -11,10 +11,10 @@ git clone --recurse-submodules https://github.com/LedgerHQ/lib-ledger-core.git
 ## Dependencies
 
 ### Build
-This project is based on **_cmake_** as a build system so you should install it before starting.
+This project is based on **_cmake_** as a build system so you should install it before starting (at least version 3.7).
 
 ### External dependencies:
-* [Qt5](https://www.qt.io/download) is needed to build the C++ library.
+* [Qt5](https://www.qt.io/download) is needed to build tests of the library.
 * Generation of binding is automated with [Djinni](https://github.com/dropbox/djinni).
 * Build on multiple Operating Systems is based on [polly](https://github.com/ruslo/polly) toolchains.
 
@@ -31,6 +31,15 @@ If you respect this folder structure (and naming), after `cd lib-ledger-core-bui
 ```
 cmake -DCMAKE_INSTALL_PREFIX=/path/to/qt5 ../lib-ledger-core && make
 ```
+
+### Building for JNI
+
+Building with JNI (Java Native Interface), allows you to use the library with Java based software. In order to enable JNI mode use
+```
+cmake -DTARGET_JNI=ON
+``` 
+
+This will add JNI files to the library compilation and remove tests. You need at least a JDK 7 to build for JNI (OpenJDK or Oracle JDK)
 
 ## Binding to node JS
 
