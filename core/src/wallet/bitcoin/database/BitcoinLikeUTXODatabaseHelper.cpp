@@ -72,7 +72,7 @@ namespace ledger {
                         out.resize(out.size() + 1);
                         auto& output = out[out.size() - 1];
                         output.address = row.get<Option<std::string>>(0);
-                        output.index = static_cast<uint64_t>(row.get<int32_t>(1));
+                        output.index = get_number(row, 1);
                         output.transactionHash = row.get<std::string>(2);
                         output.value = row.get<BigInt>(3);
                         output.script = row.get<std::string>(4);

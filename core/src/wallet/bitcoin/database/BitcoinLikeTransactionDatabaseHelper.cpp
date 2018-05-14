@@ -138,7 +138,7 @@ namespace ledger {
             if (row.get_indicator(4) != i_null) {
                 BitcoinLikeBlockchainExplorer::Block block;
                 block.hash = row.get<std::string>(4);
-                block.height = (uint64_t) row.get<long long>(5);
+                block.height = get_number<uint64_t>(row, 5);
                 block.time = row.get<std::chrono::system_clock::time_point>(6);
                 block.currencyName = row.get<std::string>(7);
                 out.block = block;

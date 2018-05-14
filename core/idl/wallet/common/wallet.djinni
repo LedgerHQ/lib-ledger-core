@@ -223,6 +223,15 @@ ExtendedKeyAccountCreationInfo = record {
     extendedKeys: list<string>;
 }
 
+Address = interface +c {
+    getDerivationPath(): optional<string>;
+    toString(): optional<string>;
+    asBitcoinLikeAddress(): optional<BitcoinLikeAddress>;
+
+
+    static parse(address: String): optional<Address>;
+}
+
 #Class representing an account
 Account = interface +c {
     #Key of the synchronization duration time in the synchronize event payload.
