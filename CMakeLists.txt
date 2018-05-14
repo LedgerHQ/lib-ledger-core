@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.7)
 project(ledger-core)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
