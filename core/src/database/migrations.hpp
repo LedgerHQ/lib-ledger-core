@@ -59,6 +59,7 @@ namespace ledger {
         // Migrations
         template <> void migrate<0>(soci::session& sql);
         template <> void migrate<1>(soci::session& sql);
+        template <> void migrate<2>(soci::session& sql);
     }
 }
 
