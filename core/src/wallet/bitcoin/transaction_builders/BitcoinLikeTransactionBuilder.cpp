@@ -62,6 +62,7 @@ namespace ledger {
             _build = buildFunction;
             _context = context;
             _logger = logger;
+            _request.wipe = false;
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -114,18 +115,21 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                      const std::string &address) {
-            auto a = std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, _currency));
-            BitcoinLikeScript script;
-            if (a->isP2PKH()) {
-                script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
-                                                                                          << btccore::OP_CHECKSIG;
-            } else if (a->isP2SH()) {
-                script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
-            } else {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
-            }
-            addOutput(amount, std::make_shared<BitcoinLikeScriptApi>(script));
+            addOutput(amount, createSendScript(address));
             return shared_from_this();
+        }
+
+        std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+        BitcoinLikeTransactionBuilder::wipeToAddress(const std::string &address) {
+            //First reset request
+            reset();
+            //Wipe mode
+            _request.wipe = true;
+            //We don't have the amount yet, will be set when we fill outputs in BitcoinLikeUtxoPicker
+            auto a = std::shared_ptr<BigInt>();
+            auto script = createSendScript(address);
+            _request.outputs.push_back(std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>(a, script));
+            return sendToAddress(std::make_shared<Amount>(), address);
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -163,6 +167,21 @@ namespace ledger {
 
         Future<std::shared_ptr<api::BitcoinLikeTransaction>> BitcoinLikeTransactionBuilder::build() {
             return _build(_request);
+        }
+
+        std::shared_ptr<api::BitcoinLikeScript>
+        BitcoinLikeTransactionBuilder::createSendScript(const std::string &address) {
+            auto a = std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, _currency));
+            BitcoinLikeScript script;
+            if (a->isP2PKH()) {
+                script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
+                       << btccore::OP_CHECKSIG;
+            } else if (a->isP2SH()) {
+                script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
+            } else {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
+            }
+            return std::make_shared<BitcoinLikeScriptApi>(script);
         }
 
         BitcoinLikeTransactionBuildRequest::BitcoinLikeTransactionBuildRequest(

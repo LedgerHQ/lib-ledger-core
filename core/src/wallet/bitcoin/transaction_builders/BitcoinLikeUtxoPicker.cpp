@@ -84,6 +84,10 @@ namespace ledger {
             auto outputIndex = 0;
             for (auto &output : buddy->request.outputs) {
                 auto amount = std::get<0>(output);
+                //Set right amount if we are in wipe mode
+                if(buddy->request.wipe) {
+                    amount = buddy->outputAmount;
+                }
                 auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
                 auto address = script.parseAddress(getCurrency()).map<std::string>([] (const BitcoinLikeAddress& addr) {
                     return addr.toBase58();

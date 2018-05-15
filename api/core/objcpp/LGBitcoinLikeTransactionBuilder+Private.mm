@@ -111,6 +111,13 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (nullable LGBitcoinLikeTransactionBuilder *)wipeToAddress:(nonnull NSString *)address {
+    try {
+        auto objcpp_result_ = _cppRefHandle.get()->wipeToAddress(::djinni::String::toCpp(address));
+        return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 - (nullable LGBitcoinLikeTransactionBuilder *)setFeesPerByte:(nullable LGAmount *)fees {
     try {
         auto objcpp_result_ = _cppRefHandle.get()->setFeesPerByte(::djinni_generated::Amount::toCpp(fees));

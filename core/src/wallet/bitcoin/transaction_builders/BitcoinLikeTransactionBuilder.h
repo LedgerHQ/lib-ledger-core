@@ -58,6 +58,7 @@ namespace ledger {
             Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
+            bool wipe;
         };
 
         using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;
@@ -90,6 +91,9 @@ namespace ledger {
             sendToAddress(const std::shared_ptr<api::Amount> &amount, const std::string &address) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            wipeToAddress(const std::string &address) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
             setFeesPerByte(const std::shared_ptr<api::Amount> &fees) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -106,6 +110,7 @@ namespace ledger {
             Future<std::shared_ptr<api::BitcoinLikeTransaction>> build();
         private:
             api::Currency _currency;
+            std::shared_ptr<api::BitcoinLikeScript> createSendScript(const std::string &address);
             BitcoinLikeTransactionBuildFunction _build;
             BitcoinLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;

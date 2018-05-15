@@ -1664,6 +1664,12 @@ declare class NJSBitcoinLikeTransactionBuilder
      */
     declare function sendToAddress(amount: NJSAmount, address: string): NJSBitcoinLikeTransactionBuilder;
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function wipeToAddress(address: string): NJSBitcoinLikeTransactionBuilder;
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */

@@ -313,6 +313,36 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::sendToAddress) {
     //Return result
     info.GetReturnValue().Set(arg_2);
 }
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::wipeToAddress) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::wipeToAddress needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::wipeToAddress : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->wipeToAddress(arg_0);
+
+    //Wrap result in node object
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
 NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setFeesPerByte) {
 
     //Check if method called with right number of arguments
@@ -649,6 +679,7 @@ void NJSBitcoinLikeTransactionBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"setMinAmountOnChange", setMinAmountOnChange);
     Nan::SetPrototypeMethod(func_template,"pickInputs", pickInputs);
     Nan::SetPrototypeMethod(func_template,"sendToAddress", sendToAddress);
+    Nan::SetPrototypeMethod(func_template,"wipeToAddress", wipeToAddress);
     Nan::SetPrototypeMethod(func_template,"setFeesPerByte", setFeesPerByte);
     Nan::SetPrototypeMethod(func_template,"build", build);
     Nan::SetPrototypeMethod(func_template,"clone", clone);
