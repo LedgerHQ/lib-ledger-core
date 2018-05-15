@@ -20,7 +20,7 @@ void NJSBlockCallback::onCallback(const std::experimental::optional<Block> & res
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("hash").ToLocalChecked(), arg_0_tmp_1);
         auto arg_0_tmp_2 = Nan::New<String>(arg_0_optional.uid).ToLocalChecked();
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("uid").ToLocalChecked(), arg_0_tmp_2);
-        auto date_arg_0_tmp_3 = chrono::duration_cast<chrono::milliseconds>(arg_0_optional.time.time_since_epoch()).count();
+        auto date_arg_0_tmp_3 = chrono::duration_cast<chrono::seconds>(arg_0_optional.time.time_since_epoch()).count();
         auto arg_0_tmp_3 = Nan::New<Date>(date_arg_0_tmp_3).ToLocalChecked();
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("time").ToLocalChecked(), arg_0_tmp_3);
         auto arg_0_tmp_4 = Nan::New<String>(arg_0_optional.currencyName).ToLocalChecked();

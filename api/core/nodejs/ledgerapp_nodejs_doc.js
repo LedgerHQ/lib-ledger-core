@@ -509,7 +509,6 @@ declare class NJSAmountCallback
  *Callback triggered by main completed task,
  *returns optional result as list of template type T
  */
-
 declare class NJSAmountListCallback
 {
     /**
@@ -523,7 +522,7 @@ declare class NJSAmountListCallback
  *Callback triggered by main completed task,
  *returns optional result as list of template type T
  */
-declare class NJSStringListCallback
+declare class NJSAddressListCallback
 {
     /**
      * Method triggered when main task complete

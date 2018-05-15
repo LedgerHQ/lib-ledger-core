@@ -15,7 +15,6 @@
 #import "LGLogger+Private.h"
 #import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
-#import "LGStringListCallback+Private.h"
 #import "LGTimePeriod+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>

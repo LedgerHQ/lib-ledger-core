@@ -11,7 +11,6 @@
 #import "LGLogger.h"
 #import "LGOperationQuery.h"
 #import "LGPreferences.h"
-#import "LGStringListCallback.h"
 #import "LGTimePeriod.h"
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
