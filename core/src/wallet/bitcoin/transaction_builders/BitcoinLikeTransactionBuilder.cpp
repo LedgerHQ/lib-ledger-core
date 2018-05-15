@@ -129,7 +129,7 @@ namespace ledger {
             auto a = std::shared_ptr<BigInt>();
             auto script = createSendScript(address);
             _request.outputs.push_back(std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>(a, script));
-            return sendToAddress(std::make_shared<Amount>(), address);
+            return shared_from_this();
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>

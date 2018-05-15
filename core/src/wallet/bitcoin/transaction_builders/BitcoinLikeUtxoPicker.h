@@ -79,8 +79,12 @@ namespace ledger {
                         : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g),
                           getTransaction(tx), logger(l)
                 {
-                    for (auto& output : r.outputs)
-                        outputAmount = outputAmount + *std::get<0>(output);
+                    if(request.wipe) {
+                        outputAmount = ledger::core::BigInt::ZERO;
+                    } else {
+                        for (auto& output : r.outputs)
+                            outputAmount = outputAmount + *std::get<0>(output);
+                    }
                 }
                 const BitcoinLikeTransactionBuildRequest request;
                 BitcoinLikeGetUtxoFunction getUtxo;

@@ -38,7 +38,6 @@
 #include <api/BlockchainObserverEngines.hpp>
 #include <api/SynchronizationEngines.hpp>
 
-
 //Examples taken from https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
 //Serialized signed segwit transactions, first has 2 inputs with witnesses, second has 2 inputs and only one of them has a witness
 const std::vector<std::string> rawSegwitTxs {
@@ -92,5 +91,22 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     auto tx = ::wait(f);
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
     //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
+    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+}
+
+TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
+    auto builder = p2sh_tx_builder();
+    builder->wipeToAddress("2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    auto outputs = tx->getOutputs();
+    auto fees = tx->getFees();
+    auto balance = wait(p2sh_account->getBalance());
+    EXPECT_EQ(outputs.size(), 1);
+    auto maxAmount = outputs[0]->getValue();
+    EXPECT_EQ(balance->toLong(), maxAmount->toLong() + fees->toLong());
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }

@@ -232,7 +232,7 @@ namespace ledger {
                 operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
             } else if (tx.confirmations == 0) {
                 operation.trust->setTrustLevel(api::TrustLevel::PENDING);
-            } else if (tx.confirmations < 0) {
+            } else {
                 operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
             }
         }
