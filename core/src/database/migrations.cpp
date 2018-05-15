@@ -126,9 +126,7 @@ namespace ledger {
                 "dust_amount BIGINT NOT NULL,"
                 "fee_policy VARCHAR(20) NOT NULL,"
                 "message_prefix VARCHAR(255) NOT NULL,"
-                "has_timestamped_transaction INTEGER NOT NULL,"
-                "timestamp_delay BIGINT NOT NULL,"
-                "sighash_type VARCHAR(255) NOT NULL"
+                "has_timestamped_transaction INTEGER NOT NULL"
             ")";
 
             // Bitcoin transaction table
@@ -184,6 +182,11 @@ namespace ledger {
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                     "transaction_hash VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions ON DELETE CASCADE"
                     ")";
+        }
+
+        template <> void migrate<2>(soci::session& sql) {
+            sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
+            sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
     }
