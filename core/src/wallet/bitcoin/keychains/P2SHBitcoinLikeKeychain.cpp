@@ -45,7 +45,7 @@ namespace ledger {
             getAllObservableAddresses(0, _observableRange);
         }
 
-        std::string P2SHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
+        BitcoinLikeKeychain::Address P2SHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
 
             auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
             auto localPath = getDerivationScheme()

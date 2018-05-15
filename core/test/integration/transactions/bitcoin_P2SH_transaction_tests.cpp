@@ -39,9 +39,6 @@
 #include <api/SynchronizationEngines.hpp>
 
 
-#include <iostream>
-using namespace std;
-
 //Examples taken from https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
 //Serialized signed segwit transactions, first has 2 inputs with witnesses, second has 2 inputs and only one of them has a witness
 const std::vector<std::string> rawSegwitTxs {
@@ -64,6 +61,7 @@ struct BitcoinMakeP2SHTransaction : public BaseFixture {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         wallet = wait(pool->createWallet("my_wallet", "bitcoin_testnet", configuration));
+
         p2sh_account = ledger::testing::segwit_xpub::inflate(pool, wallet);
         currency = wallet->getCurrency();
     }
