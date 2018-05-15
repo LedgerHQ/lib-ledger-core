@@ -235,6 +235,7 @@ const logger = (title, message) => {
         // console.log(message);
     }
 }
+<<<<<<< HEAD
 
 NJSLogPrinterImpl.printError = message => logger('Error', message)
 NJSLogPrinterImpl.printInfo = message => logger('Info', message)
@@ -256,6 +257,29 @@ const NJSLogPrinter = new binding.NJSLogPrinter(NJSLogPrinterImpl)
 
 const NJSRandomNumberGeneratorImpl = {}
 
+=======
+
+NJSLogPrinterImpl.printError = message => logger('Error', message)
+NJSLogPrinterImpl.printInfo = message => logger('Info', message)
+NJSLogPrinterImpl.printDebug = message => logger('Debug', message)
+NJSLogPrinterImpl.printWarning = message => logger('Warning', message)
+NJSLogPrinterImpl.printApdu = message => logger('Apdu', message)
+NJSLogPrinterImpl.printCriticalError = message => logger('Critical Error', message)
+
+/**
+ * @return: main NJSExecutionContext
+ */
+NJSLogPrinterImpl.getContext = () => NJSThreadDispatcher.getMainExecutionContext()
+
+const NJSLogPrinter = new binding.NJSLogPrinter(NJSLogPrinterImpl)
+
+//                    ------------------------------------
+//                    RandomNumberGenerator implementation
+//                    ------------------------------------
+
+const NJSRandomNumberGeneratorImpl = {}
+
+>>>>>>> update ledger-core-samples/nodejs
 NJSRandomNumberGeneratorImpl.getRandomBytes = size => crypto.randomBytes(size)
 NJSRandomNumberGeneratorImpl.getRandomInt = () => Math.random() * MAX_RANDOM
 NJSRandomNumberGeneratorImpl.getRandomLong = () => Math.random() * MAX_RANDOM * MAX_RANDOM
