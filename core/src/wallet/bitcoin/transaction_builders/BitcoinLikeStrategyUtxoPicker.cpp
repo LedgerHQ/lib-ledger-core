@@ -34,8 +34,7 @@
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <iostream>
-using namespace std;
+
 namespace ledger {
     namespace core {
 
@@ -134,7 +133,6 @@ namespace ledger {
                         throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                     }
                 }
-                cout<<" >>>> BitcoinLikeStrategyUtxoPicker::filterWithDeepFirst amoint : "<<amount.toInt64()<<endl;
 
                 buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedInputs, amount.toString(), buddy->outputAmount.toString());
 

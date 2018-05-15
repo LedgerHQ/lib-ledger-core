@@ -59,6 +59,7 @@ struct BitcoinMakeP2SHTransaction : public BaseFixture {
         pool = newDefaultPool();
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         wallet = wait(pool->createWallet("my_wallet", "bitcoin_testnet", configuration));
 
         p2sh_account = ledger::testing::segwit_xpub::inflate(pool, wallet);
