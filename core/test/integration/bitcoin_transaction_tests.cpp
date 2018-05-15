@@ -33,6 +33,8 @@
 #include "../fixtures/medium_xpub_fixtures.h"
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
+#include <iostream>
+using namespace std;
 
 struct BitcoinMakeTransaction : public BaseFixture {
 
@@ -67,6 +69,10 @@ struct BitcoinMakeTransaction : public BaseFixture {
 
 TEST_F(BitcoinMakeTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = p2pkh_tx_builder();
+
+    auto balance = wait(p2pkh_account->getBalance());
+    cout<<" >>>>>> Current balance: "<<balance->toLong()<<endl;
+
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     //builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);

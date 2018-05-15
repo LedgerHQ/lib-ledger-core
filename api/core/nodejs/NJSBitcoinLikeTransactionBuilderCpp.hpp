@@ -102,6 +102,13 @@ private:
     static NAN_METHOD(sendToAddress);
 
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    static NAN_METHOD(wipeToAddress);
+
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */
