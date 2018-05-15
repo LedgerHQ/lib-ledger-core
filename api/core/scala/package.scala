@@ -184,7 +184,6 @@ package object implicits {
             })
             promise.future
         }
-
         def getBalanceHistory(start: String, end: String, period: TimePeriod): Future[ArrayList[Amount]] = {
             val promise = Promise[ArrayList[Amount]]()
             self.getBalanceHistory(start, end, period, new AmountListCallback() {
@@ -201,9 +200,8 @@ package object implicits {
         }
         def getFreshPublicAddresses(): Future[ArrayList[Address]] = {
             val promise = Promise[ArrayList[Address]]()
-                        self.getFreshPublicAddresses(new AddressListCallback() {
-                            override def onCallback(result: ArrayList[Address], error: co.ledger.core.Error): Unit =  {
-
+            self.getFreshPublicAddresses(new AddressListCallback() {
+                override def onCallback(result: ArrayList[Address], error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -231,7 +229,6 @@ package object implicits {
     }
     implicit class RichAmountCallback(val self: AmountCallback) {
     }
-
     implicit class RichAmountListCallback(val self: AmountListCallback) {
     }
     implicit class RichAddressListCallback(val self: AddressListCallback) {
@@ -451,10 +448,10 @@ package object implicits {
     implicit class RichBitcoinLikeWalletConfiguration(val self: BitcoinLikeWalletConfiguration) {
     }
     implicit class RichBitcoinLikeInput(val self: BitcoinLikeInput) {
-        def getPreviousTransaction(): Future[Binary] = {
-            val promise = Promise[Binary]()
+        def getPreviousTransaction(): Future[Array[Byte]] = {
+            val promise = Promise[Array[Byte]]()
             self.getPreviousTransaction(new BinaryCallback() {
-                override def onCallback(result: Binary, error: co.ledger.core.Error): Unit =  {
+                override def onCallback(result: Array[Byte], error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }

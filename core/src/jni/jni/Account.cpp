@@ -12,7 +12,6 @@
 #include "Marshal.hpp"
 #include "OperationQuery.hpp"
 #include "Preferences.hpp"
-#include "StringListCallback.hpp"
 #include "TimePeriod.hpp"
 #include "WalletType.hpp"
 

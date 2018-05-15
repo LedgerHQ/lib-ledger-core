@@ -56,7 +56,10 @@ namespace ledger {
                     p.DustAmount,
                     p.MessagePrefix,
                     p.UsesTimestampedTransaction,
+<<<<<<< HEAD
                     p.TimestampDelay,
+=======
+>>>>>>> add sigHash to BitcoinLikeNetworksParameters
                     p.SigHash
                 );
             }

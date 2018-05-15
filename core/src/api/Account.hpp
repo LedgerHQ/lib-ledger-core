@@ -19,7 +19,6 @@ class EventBus;
 class Logger;
 class OperationQuery;
 class Preferences;
-class StringListCallback;
 enum class TimePeriod;
 enum class WalletType;
 
