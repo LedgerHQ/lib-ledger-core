@@ -33,8 +33,7 @@
 #include "BitcoinLikeUTXODatabaseHelper.h"
 #include <database/soci-number.h>
 #include <database/soci-option.h>
-#include <iostream>
-using namespace std;
+
 using namespace soci;
 
 namespace ledger {
