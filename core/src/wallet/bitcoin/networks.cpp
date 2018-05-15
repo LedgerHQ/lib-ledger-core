@@ -82,18 +82,6 @@ namespace ledger {
                     {sigHashType::SIGHASH_ALL}
             );
 
-            const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
-                    "abc",
-                    {0x00},
-                    {0x05},
-                    {0x04, 0x88, 0xB2, 0x1E},
-                    api::BitcoinLikeFeePolicy::PER_BYTE,
-                    5430,
-                    "Bitcoin signed message:\n",
-                    false,
-                    0,
-                    {sigHashType::SIGHASH_BTC_FORKS}
-            );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_GOLD(
                     "btg",
