@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "BaseFixture.h"
+#include "../BaseFixture.h"
 #include <set>
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
