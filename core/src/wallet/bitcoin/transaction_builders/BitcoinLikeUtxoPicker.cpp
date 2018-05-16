@@ -85,7 +85,7 @@ namespace ledger {
             for (auto &output : buddy->request.outputs) {
                 auto amount = std::get<0>(output);
                 auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
-                auto address = script.parseAddress(params).map<std::string>([] (const BitcoinLikeAddress& addr) {
+                auto address = script.parseAddress(getCurrency()).map<std::string>([] (const BitcoinLikeAddress& addr) {
                     return addr.toBase58();
                 });
                 BitcoinLikeBlockchainExplorer::Output out;
@@ -100,7 +100,7 @@ namespace ledger {
                         derivationPath = std::make_shared<DerivationPathApi>(DerivationPath(path.getValue()));
                     }
                 } else {
-                    auto addressFromScript = script.parseAddress(params);
+                    auto addressFromScript = script.parseAddress(getCurrency());
                     if (addressFromScript.nonEmpty())
                         out.address = addressFromScript.getValue().toBase58();
                 }
@@ -113,10 +113,10 @@ namespace ledger {
             if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
                 // TODO implement multi change
                 // TODO implement use specific change address
-                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE);
+                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
 
                 auto amount = buddy->changeAmount;
-                auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency.bitcoinLikeNetworkParameters.value());
+                auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
                 BitcoinLikeBlockchainExplorer::Output out;
                 out.index = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
                 out.value = amount;

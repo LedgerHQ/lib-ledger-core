@@ -209,7 +209,7 @@ RCT_REMAP_METHOD(isInstanceOfRippleLikeAccount,isInstanceOfRippleLikeAccountWith
 }
 
 /**TODO */
-RCT_REMAP_METHOD(getFreshPublicAddresses,getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback) {
+RCT_REMAP_METHOD(getFreshPublicAddresses,getFreshPublicAddresses:(nullable id<LGAddressListCallback>)callback) {
 
     [self.objcImpl getFreshPublicAddresses:callback];
 }

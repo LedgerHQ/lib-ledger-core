@@ -39,7 +39,8 @@ namespace ledger {
 
         SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
             _pubKey = new secp256k1_pubkey();
-            secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size());
+            if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == -1)
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to parse secp256k1 point");
         }
 
         SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const {

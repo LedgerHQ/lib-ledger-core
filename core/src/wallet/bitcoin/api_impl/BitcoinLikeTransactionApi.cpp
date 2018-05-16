@@ -306,7 +306,7 @@ namespace ledger {
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
                 std::string address;
                 if (parsedScript.isSuccess()) {
-                   auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                   auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue()) {
                         address = parsedAddress.getValue().toBase58();
                         output.address = address;
@@ -332,7 +332,7 @@ namespace ledger {
                 auto scriptSig = reader.read(scriptSize);
                 auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
                 if (parsedScript.isSuccess()) {
-                    auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                    auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue())
                         output.address = Option<std::string>(parsedAddress.getValue().toBase58());
                 }

@@ -345,8 +345,8 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
 
     //Create promise and set it into Callcack
     auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSStringListCallback *njs_ptr_arg_0 = new NJSStringListCallback(arg_0_resolver);
-    std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
+    NJSAddressListCallback *njs_ptr_arg_0 = new NJSAddressListCallback(arg_0_resolver);
+    std::shared_ptr<NJSAddressListCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation

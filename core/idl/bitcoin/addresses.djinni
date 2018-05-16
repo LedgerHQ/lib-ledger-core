@@ -1,3 +1,4 @@
+
 BitcoinLikeFeePolicy = enum {
     PER_BYTE;
     PER_KBYTE;
@@ -37,17 +38,6 @@ BitcoinLikeAddress = interface +c {
     # Checks if the given address is a P2PKH address
     # @return True if the version byte matches the P2PKH byte version of the address network parameters
     isP2PKH(): bool;
-    # Gets an optional derivation path (if the address comes from an extended public key)
-    # @return The derivation path of the address
-    getDerivationPath(): optional<string>;
-
-    # Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
-    # the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
-    # @return A BitcoinLikeAddress
-    static fromBase58(params: BitcoinLikeNetworkParameters, address: string): BitcoinLikeAddress;
-    # Check if the given address is valid
-    # @return true if the address is valid, false otherwise
-    static isAddressValid(params: BitcoinLikeNetworkParameters, address: string): bool;
 }
 
 BitcoinLikeExtendedPublicKey = interface +c {
@@ -56,6 +46,4 @@ BitcoinLikeExtendedPublicKey = interface +c {
     deriveHash160(path: string): binary;
     toBase58(): string;
     getRootPath(): string;
-
-    static fromBase58(params: BitcoinLikeNetworkParameters, address: string, path: optional<string>): BitcoinLikeExtendedPublicKey;
 }

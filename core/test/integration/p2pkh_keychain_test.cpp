@@ -51,7 +51,7 @@ public:
                     configuration,
                     ledger::core::currencies::BITCOIN,
                     0,
-                    api::BitcoinLikeExtendedPublicKey::fromBase58(networks::BITCOIN, xpub, optional<std::string>("44'/0'/0'")),
+                    BitcoinLikeExtendedPublicKey::fromBase58(currencies::BITCOIN, xpub, optional<std::string>("44'/0'/0'")),
                     backend->getPreferences("keychain")
             );
             f(keychain);
@@ -63,8 +63,8 @@ public:
 
 TEST_F(BitcoinKeychains, KeychainDerivation) {
     testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
     });
 }
 
@@ -72,10 +72,10 @@ TEST_F(BitcoinKeychains, SimpleUsedReceiveAddresses) {
     testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
         EXPECT_TRUE(keychain.markAsUsed("151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR"));
         EXPECT_FALSE(keychain.markAsUsed("151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "18tMkbibtxJPQoTPUv8s3mSXqYzEsrbeRb");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "18tMkbibtxJPQoTPUv8s3mSXqYzEsrbeRb");
     });
 }
 
@@ -83,10 +83,10 @@ TEST_F(BitcoinKeychains, SimpleUsedChangeAddresses) {
     testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
         EXPECT_TRUE(keychain.markAsUsed("13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv"));
         EXPECT_FALSE(keychain.markAsUsed("13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "1DYvv8T2q2UFv9hQnbLaPZAuQw8mYx3DAD");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "1DYvv8T2q2UFv9hQnbLaPZAuQw8mYx3DAD");
     });
 }
 
@@ -95,9 +95,9 @@ TEST_F(BitcoinKeychains, NonConsecutivesReceiveUsed) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("18tMkbibtxJPQoTPUv8s3mSXqYzEsrbeRb"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 11);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
         EXPECT_TRUE(keychain.markAsUsed("151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "1GJr9FHZ1pbR4hjhX24M4L1BDUd2QogYYA");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "1GJr9FHZ1pbR4hjhX24M4L1BDUd2QogYYA");
     });
 }
 
@@ -106,9 +106,9 @@ TEST_F(BitcoinKeychains, NonConsecutivesChangeUsed) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("1DYvv8T2q2UFv9hQnbLaPZAuQw8mYx3DAD"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 10);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
         EXPECT_TRUE(keychain.markAsUsed("13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "1F2arsfX5JEDryBVftmzbVFWaGsJaTVwcg");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "1F2arsfX5JEDryBVftmzbVFWaGsJaTVwcg");
     });
 }
 
@@ -121,7 +121,7 @@ TEST_F(BitcoinKeychains, CheckIfEmpty) {
         EXPECT_TRUE(keychain.isEmpty());
         keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE);
         EXPECT_TRUE(keychain.isEmpty());
-        EXPECT_TRUE(keychain.markAsUsed(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)));
+        EXPECT_TRUE(keychain.markAsUsed(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58()));
         EXPECT_FALSE(keychain.isEmpty());
     });
 }

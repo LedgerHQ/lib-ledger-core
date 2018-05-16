@@ -31,7 +31,6 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
 #include <wallet/common/OperationQuery.h>
-#include <api/StringListCallback.hpp>
 #include <api/AmountCallback.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -135,7 +134,7 @@ namespace ledger {
             return _externalPreferences;
         }
 
-        void AbstractAccount::getFreshPublicAddresses(const std::shared_ptr<api::StringListCallback> &callback) {
+        void AbstractAccount::getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) {
             getFreshPublicAddresses().callback(getMainExecutionContext(), callback);
         }
 

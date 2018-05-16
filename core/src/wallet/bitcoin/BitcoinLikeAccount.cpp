@@ -337,10 +337,17 @@ namespace ledger {
             return _keychain->isEmpty();
         }
 
-        Future<std::vector<std::string>> BitcoinLikeAccount::getFreshPublicAddresses() {
+        Future<AbstractAccount::AddressList> BitcoinLikeAccount::getFreshPublicAddresses() {
             auto keychain = getKeychain();
-            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
-                return keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
+            return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
+                auto addrs = keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
+                AbstractAccount::AddressList result(addrs.size());
+                auto i = 0;
+                for (auto& addr : addrs) {
+                    result[i] = std::dynamic_pointer_cast<api::Address>(addr);
+                    i += 1;
+                }
+                return result;
             });
         }
 
@@ -417,7 +424,7 @@ namespace ledger {
             };
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getContext(),
-                    getWallet()->getCurrency().bitcoinLikeNetworkParameters.value(),
+                    getWallet()->getCurrency(),
                     logger(),
                     _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, logger())
             );
@@ -446,7 +453,6 @@ namespace ledger {
         std::string BitcoinLikeAccount::getRestoreKey() {
             return _keychain->getRestoreKey();
         }
-
 
     }
 }

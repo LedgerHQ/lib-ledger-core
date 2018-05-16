@@ -115,8 +115,8 @@ namespace ledger {
         }
 
         BitcoinLikeScript
-        BitcoinLikeScript::fromAddress(const std::string &address, const api::BitcoinLikeNetworkParameters &params) {
-            auto a = api::BitcoinLikeAddress::fromBase58(params, address);
+        BitcoinLikeScript::fromAddress(const std::string &address, const api::Currency &currency) {
+            auto a = BitcoinLikeAddress::fromBase58(address, currency);
             BitcoinLikeScript script;
             if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
@@ -153,11 +153,12 @@ namespace ledger {
         }
 
         Option<BitcoinLikeAddress>
-        BitcoinLikeScript::parseAddress(const api::BitcoinLikeNetworkParameters &params) const {
+        BitcoinLikeScript::parseAddress(const api::Currency &currency) const {
+            const auto& params = currency.bitcoinLikeNetworkParameters.value();
             if (isP2SH())
-                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(params, (*this)[1].getBytes(), params.P2SHVersion));
+                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
             else if (isP2PKH())
-                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(params, (*this)[2].getBytes(), params.P2PKHVersion));
+                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(currency, (*this)[2].getBytes(), params.P2PKHVersion));
             return Option<BitcoinLikeAddress>();
         }
 

@@ -8,9 +8,9 @@
 @class LGLogger;
 @class LGOperationQuery;
 @class LGPreferences;
+@protocol LGAddressListCallback;
 @protocol LGAmountCallback;
 @protocol LGBlockCallback;
-@protocol LGStringListCallback;
 
 /**
  *Key of the synchronization duration time in the synchronize event payload.
@@ -104,7 +104,7 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
 - (BOOL)isInstanceOfRippleLikeAccount;
 
 /**TODO */
-- (void)getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback;
+- (void)getFreshPublicAddresses:(nullable id<LGAddressListCallback>)callback;
 
 /**
  *Get type of wallet to which account belongs

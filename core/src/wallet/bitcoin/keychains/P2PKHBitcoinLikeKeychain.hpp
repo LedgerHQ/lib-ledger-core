@@ -34,6 +34,7 @@
 #include "BitcoinLikeKeychain.hpp"
 #include <set>
 #include "../../../collections/DynamicObject.hpp"
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
@@ -67,12 +68,12 @@ namespace ledger {
 
             bool markPathAsUsed(const DerivationPath &path) override;
 
-            std::string getFreshAddress(KeyPurpose purpose) override;
-            std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to) override;
-            std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) override;
+            BitcoinLikeKeychain::Address getFreshAddress(KeyPurpose purpose) override;
+            std::vector<BitcoinLikeKeychain::Address> getAllObservableAddresses(uint32_t from, uint32_t to) override;
+            std::vector<BitcoinLikeKeychain::Address> getFreshAddresses(KeyPurpose purpose, size_t n) override;
             Option<KeyPurpose> getAddressPurpose(const std::string &address) const override;
             Option<std::string> getAddressDerivationPath(const std::string &address) const override;
-            std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
+            std::vector<BitcoinLikeKeychain::Address> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
             bool isEmpty() const override;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
             std::string getRestoreKey() const override;
@@ -86,7 +87,7 @@ namespace ledger {
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
         private:
-            std::string derive(KeyPurpose purpose, off_t index);
+            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState();
         private:
             P2PKHKeychainPersistentState _state;

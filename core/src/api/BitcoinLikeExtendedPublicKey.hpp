@@ -4,7 +4,6 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEEXTENDEDPUBLICKEY_HPP
 #define DJINNI_GENERATED_BITCOINLIKEEXTENDEDPUBLICKEY_HPP
 
-#include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -13,7 +12,6 @@
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeAddress;
-struct BitcoinLikeNetworkParameters;
 
 class BitcoinLikeExtendedPublicKey {
 public:
@@ -28,8 +26,6 @@ public:
     virtual std::string toBase58() = 0;
 
     virtual std::string getRootPath() = 0;
-
-    static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(const BitcoinLikeNetworkParameters & params, const std::string & address, const std::experimental::optional<std::string> & path);
 };
 
 } } }  // namespace ledger::core::api
