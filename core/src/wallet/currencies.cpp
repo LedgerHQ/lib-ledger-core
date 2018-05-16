@@ -76,11 +76,28 @@ namespace ledger {
                             .unit("mBCG", 5, "mBCG")
                             .unit("bit", 2, "bit");
 
+            const api::Currency ZCASH =
+                    Currency("zcash")
+                            .forkOfBitcoin(networks::ZCASH)
+                            .bip44(133)
+                            .paymentUri("zcash")
+                            .unit("zatoshi", 0, "zatoshi")
+                            .unit("zcash", 8, "ZEC");
+
+            const api::Currency ZENCASH =
+                    Currency("zencash")
+                            .forkOfBitcoin(networks::ZCASH)
+                            .bip44(121)
+                            .paymentUri("zencash")
+                            .unit("zencash", 8, "ZEN");
 
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
-                BITCOIN_CASH
+                BITCOIN_CASH,
+                BITCOIN_GOLD,
+                ZCASH,
+                ZENCASH
             });
         }
     }

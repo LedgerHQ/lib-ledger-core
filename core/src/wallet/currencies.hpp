@@ -39,6 +39,10 @@ namespace ledger {
             extern const std::vector<api::Currency> ALL;
             extern const api::Currency BITCOIN;
             extern const api::Currency BITCOIN_TESTNET;
+            extern const api::Currency BITCOIN_CASH;
+            extern const api::Currency BITCOIN_GOLD;
+            extern const api::Currency ZCASH;
+            extern const api::Currency ZENCASH;
         };
     }
 }

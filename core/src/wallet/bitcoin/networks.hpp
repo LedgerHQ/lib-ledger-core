@@ -41,6 +41,8 @@ namespace ledger {
             extern const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET;
             extern const api::BitcoinLikeNetworkParameters BITCOIN_CASH;
             extern const api::BitcoinLikeNetworkParameters BITCOIN_GOLD;
+            extern const api::BitcoinLikeNetworkParameters ZCASH;
+            extern const api::BitcoinLikeNetworkParameters ZENCASH;
             extern const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             template<class Archive>
