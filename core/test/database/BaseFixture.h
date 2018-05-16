@@ -78,12 +78,18 @@ public:
     void SetUp() override;
     void TearDown() override;
     std::shared_ptr<WalletPool> newDefaultPool(std::string poolName = "my_ppol");
-    void createWallet(const std::shared_ptr<WalletPool>& pool, const std::string& walletName);
+    void createWallet(const std::shared_ptr<WalletPool>& pool,
+                      const std::string& walletName,
+                      const std::string& currencyName,
+                      const std::shared_ptr<api::DynamicObject> &configuration);
+
     void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index);
     BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool>& pool,
-                                         const std::string& walletName,
-                                         int32_t index,
-                                         const std::string& xpub);
+                                                const std::string& walletName,
+                                                const std::string& currencyName,
+                                                const std::shared_ptr<api::DynamicObject> &configuration,
+                                                int32_t index,
+                                                const std::string& xpub);
     std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                 int32_t index,
                                                                 const api::AccountCreationInfo &info
