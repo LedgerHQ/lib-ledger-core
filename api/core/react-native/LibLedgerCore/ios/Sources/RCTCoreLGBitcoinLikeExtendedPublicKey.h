@@ -3,7 +3,6 @@
 
 #import "LGBitcoinLikeAddress.h"
 #import "LGBitcoinLikeExtendedPublicKey.h"
-#import "LGBitcoinLikeNetworkParameters.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
 

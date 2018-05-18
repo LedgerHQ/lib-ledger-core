@@ -59,7 +59,7 @@ TEST_F(AccountsPublicInterfaceTest, GetAddressOnEmptyAccount) {
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto addresses = wait(account->getFreshPublicAddresses());
     EXPECT_EQ(addresses.size(), 20);
-    EXPECT_EQ(addresses.front(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    EXPECT_EQ(addresses.front()->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetBalanceOnEmptyAccount) {

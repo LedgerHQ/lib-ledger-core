@@ -46,7 +46,7 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-set(LIB_BUILD_TYPE SHARED)
+set(LIB_BUILD_TYPE SHARED wallet/common/AbstractAddress.cpp wallet/common/AbstractAddress.h ledger-core.cpp)
 
 add_library(
         ledger-core ${LIB_BUILD_TYPE}

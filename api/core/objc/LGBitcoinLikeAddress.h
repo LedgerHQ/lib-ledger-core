@@ -3,7 +3,6 @@
 
 #import "LGBitcoinLikeNetworkParameters.h"
 #import <Foundation/Foundation.h>
-@class LGBitcoinLikeAddress;
 
 
 /** Helper class for manipulating Bitcoin like addresses */
@@ -47,26 +46,5 @@
  * @return True if the version byte matches the P2PKH byte version of the address network parameters
  */
 - (BOOL)isP2PKH;
-
-/**
- * Gets an optional derivation path (if the address comes from an extended public key)
- * @return The derivation path of the address
- */
-- (nullable NSString *)getDerivationPath;
-
-/**
- * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
- * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
- * @return A BitcoinLikeAddress
- */
-+ (nullable LGBitcoinLikeAddress *)fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
-                                      address:(nonnull NSString *)address;
-
-/**
- * Check if the given address is valid
- * @return true if the address is valid, false otherwise
- */
-+ (BOOL)isAddressValid:(nonnull LGBitcoinLikeNetworkParameters *)params
-               address:(nonnull NSString *)address;
 
 @end

@@ -45,14 +45,14 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
-            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
+            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
             dispatcher->stop();
         }
     });
     ws->setOnConnectCallback([&] () {
        ws->push(NOTIF_WITH_TX);
     });
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
     account->startBlockchainObservation();
     dispatcher->waitUntilStopped();
@@ -64,14 +64,14 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
-            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
+            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
             dispatcher->stop();
         }
     });
     ws->setOnConnectCallback([&] () {
         ws->push(NOTIF_WITH_TX);
     });
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
     account->startBlockchainObservation();
     dispatcher->waitUntilStopped();

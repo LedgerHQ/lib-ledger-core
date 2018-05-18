@@ -6,6 +6,7 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGAddressListCallback+Private.h"
 #import "LGAmountCallback+Private.h"
 #import "LGBitcoinLikeAccount+Private.h"
 #import "LGBlockCallback+Private.h"
@@ -13,7 +14,6 @@
 #import "LGLogger+Private.h"
 #import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
-#import "LGStringListCallback+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -122,9 +122,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback {
+- (void)getFreshPublicAddresses:(nullable id<LGAddressListCallback>)callback {
     try {
-        _cppRefHandle.get()->getFreshPublicAddresses(::djinni_generated::StringListCallback::toCpp(callback));
+        _cppRefHandle.get()->getFreshPublicAddresses(::djinni_generated::AddressListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

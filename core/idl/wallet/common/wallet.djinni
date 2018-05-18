@@ -224,12 +224,29 @@ ExtendedKeyAccountCreationInfo = record {
 }
 
 Address = interface +c {
+    # Gets an optional derivation path (if the address is owned by an account)
+    # @return The derivation path of the address
     getDerivationPath(): optional<string>;
-    toString(): optional<string>;
+    # Serialize the address to a string. The serialization method depends of the underlying currency and
+    # format (Base58, Bech32, Ethereum...)
+    toString(): string;
     asBitcoinLikeAddress(): optional<BitcoinLikeAddress>;
+    isInstanceOfBitcoinLikeAddress(): bool;
 
+    getCurrency(): Currency;
 
-    static parse(address: String): optional<Address>;
+    # Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
+    # (depending on you host this may be a null, nil, None...)
+    # @param address The string to parse
+    # @param currency The currency used to parse the address
+    # @return If successful returns the address object otherwise null.
+    static parse(address: string, currency: Currency): optional<Address>;
+
+    # Checks if the given string formatted address is valid or not.
+    # @param address The string to parse
+    # @param currency The currency used to parse the address
+    # @return If successful returns true, false otherwise.
+    static isValid(address: string, currency: Currency): bool;
 }
 
 #Class representing an account
@@ -288,7 +305,7 @@ Account = interface +c {
     #@return bool
     isInstanceOfRippleLikeAccount(): bool;
     #TODO
-    getFreshPublicAddresses(callback: ListCallback<string>);
+    getFreshPublicAddresses(callback: ListCallback<Address>);
     #Get type of wallet to which account belongs
     #@return WalletType object
     getWalletType(): WalletType;

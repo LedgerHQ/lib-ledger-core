@@ -16,8 +16,6 @@ public abstract class BitcoinLikeExtendedPublicKey {
 
     public abstract String getRootPath();
 
-    public static native BitcoinLikeExtendedPublicKey fromBase58(BitcoinLikeNetworkParameters params, String address, String path);
-
     private static final class CppProxy extends BitcoinLikeExtendedPublicKey
     {
         private final long nativeRef;

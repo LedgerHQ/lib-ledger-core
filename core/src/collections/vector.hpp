@@ -32,6 +32,7 @@
 #define LEDGER_CORE_VECTOR_HPP
 
 #include <vector>
+#include <functional>
 
 namespace ledger {
     namespace core {
@@ -45,6 +46,16 @@ namespace ledger {
                 result.insert(result.end(), b.begin(), b.end());
                 return result;
             }
+
+            template <typename U, typename T>
+            inline std::vector<U> map(const std::vector<T>& source,
+                     const std::function<U (const T&)>& f) {
+                std::vector<U> out;
+                for (const auto& item : source) {
+                    out.push_back(f(item));
+                }
+                return out;
+            };
         };
     }
 }

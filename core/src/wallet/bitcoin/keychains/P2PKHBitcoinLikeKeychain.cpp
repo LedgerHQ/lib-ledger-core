@@ -118,7 +118,7 @@ namespace ledger {
             }
         }
 
-        std::string P2PKHBitcoinLikeKeychain::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
+        BitcoinLikeKeychain::Address P2PKHBitcoinLikeKeychain::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
             return derive(purpose, (purpose == KeyPurpose::RECEIVE ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex));
         }
 
@@ -126,9 +126,9 @@ namespace ledger {
             return _state.empty;
         }
 
-        std::vector<std::string> P2PKHBitcoinLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
+        std::vector<BitcoinLikeKeychain::Address> P2PKHBitcoinLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
             auto length = to - from;
-            std::vector<std::string> result;
+            std::vector<BitcoinLikeKeychain::Address> result;
             result.reserve((length + 1) * 2);
             for (auto i = 0; i <= length; i++) {
                 result.push_back(derive(KeyPurpose::RECEIVE, from + i));
@@ -137,10 +137,10 @@ namespace ledger {
             return result;
         }
 
-        std::vector<std::string>
+        std::vector<BitcoinLikeKeychain::Address>
         P2PKHBitcoinLikeKeychain::getFreshAddresses(BitcoinLikeKeychain::KeyPurpose purpose, size_t n) {
             auto startOffset = (purpose == KeyPurpose::RECEIVE) ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex;
-            std::vector<std::string> result(n);
+            std::vector<BitcoinLikeKeychain::Address> result(n);
             for (auto i = 0; i < n; i++) {
                 result[i] = derive(purpose, startOffset + i);
             }
@@ -169,12 +169,12 @@ namespace ledger {
             }
         }
 
-        std::vector<std::string>
+        std::vector<BitcoinLikeKeychain::Address>
         P2PKHBitcoinLikeKeychain::getAllObservableAddresses(BitcoinLikeKeychain::KeyPurpose purpose, uint32_t from,
                                                             uint32_t to) {
             auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
-            std::vector<std::string> result(length +1);
+            std::vector<BitcoinLikeKeychain::Address> result(length +1);
             for (auto i = 0; i <= length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
@@ -185,7 +185,7 @@ namespace ledger {
             return result;
         }
 
-        std::string P2PKHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
+        BitcoinLikeKeychain::Address P2PKHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
             auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
             auto localPath = getDerivationScheme()
                                 .setAccountIndex(getAccountIndex())
@@ -210,7 +210,7 @@ namespace ledger {
                         ->putString(fmt::format("address:{}", address), localPath)
                         ->commit();
             }
-            return address;
+            return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
         }
 
         void P2PKHBitcoinLikeKeychain::saveState() {
@@ -248,7 +248,7 @@ namespace ledger {
         Option<std::string>
         P2PKHBitcoinLikeKeychain::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
             const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(params, hash160, params.P2PKHVersion);
+            BitcoinLikeAddress address(getCurrency(), hash160, params.P2PKHVersion);
             return getAddressDerivationPath(address.toBase58());
         }
 

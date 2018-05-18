@@ -37,6 +37,7 @@
 #include <async/algorithm.h>
 #include <debug/Benchmarker.h>
 #include <utils/DurationUtils.h>
+#include <collections/vector.hpp>
 
 namespace ledger {
     namespace core {
@@ -152,8 +153,14 @@ namespace ledger {
 
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
             auto self = shared_from_this();
+            _explorer->getCurrentBlock().onComplete(account->getContext(), [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
+                if (block.isSuccess()) {
+                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                    buddy->account->putBlock(sql, *block.getValue());
+                }
+            });
             return _explorer->startSession().map<Unit>(account->getContext(), [buddy] (void * const& t) -> Unit {
-                buddy->logger->info("GOT A TOKEN");
+                buddy->logger->info("Synchronization token obtained");
                 buddy->token = Option<void *>(t);
                 return unit;
             }).flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
@@ -210,8 +217,14 @@ namespace ledger {
                 blockHash = Option<std::string>(batchState.blockHash);
             auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
             derivationBenchmark->start();
-            auto batch = buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
-                                                                    (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
+            auto batch = vector::map<std::string, BitcoinLikeKeychain::Address>(
+                    buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
+                                                               (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1)),
+                [] (const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
+                    return addr->toString();
+                }
+            );
+
             derivationBenchmark->stop();
             auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
             benchmark->start();

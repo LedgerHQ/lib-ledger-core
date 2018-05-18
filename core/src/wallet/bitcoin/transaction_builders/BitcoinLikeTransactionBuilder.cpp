@@ -45,8 +45,8 @@ namespace ledger {
         )); // Max ui512
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder &cpy)
-                : _request(std::make_shared<BigInt>(cpy._params.DustAmount)) {
-            _params = cpy._params;
+                : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+            _currency = cpy._currency;
             _build = cpy._build;
             _request = cpy._request;
             _context = cpy._context;
@@ -54,10 +54,11 @@ namespace ledger {
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext> &context, const api::BitcoinLikeNetworkParameters &params,
+                const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency,
                 const std::shared_ptr<spdlog::logger> &logger,
-                const BitcoinLikeTransactionBuildFunction &buildFunction) : _request(std::make_shared<BigInt>(params.DustAmount)) {
-            _params = params;
+                const BitcoinLikeTransactionBuildFunction &buildFunction) :
+                _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+            _currency = currency;
             _build = buildFunction;
             _context = context;
             _logger = logger;
@@ -113,7 +114,7 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                      const std::string &address) {
-            auto a = api::BitcoinLikeAddress::fromBase58(_params, address);
+            auto a = std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, _currency));
             BitcoinLikeScript script;
             if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
@@ -155,7 +156,9 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionBuilder::reset() {
-            _request = BitcoinLikeTransactionBuildRequest(std::make_shared<BigInt>(_params.DustAmount));
+            _request = BitcoinLikeTransactionBuildRequest(std::make_shared<BigInt>(
+                    _currency.bitcoinLikeNetworkParameters.value().DustAmount)
+            );
         }
 
         Future<std::shared_ptr<api::BitcoinLikeTransaction>> BitcoinLikeTransactionBuilder::build() {

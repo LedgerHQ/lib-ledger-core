@@ -6,6 +6,7 @@
 
 
 #include "../../../core/src/api/WalletType.hpp"
+#include "NJSAddressListCallback.hpp"
 #include "NJSAmountCallback.hpp"
 #include "NJSBitcoinLikeAccountCpp.hpp"
 #include "NJSBlockCallback.hpp"
@@ -13,7 +14,6 @@
 #include "NJSLoggerCpp.hpp"
 #include "NJSOperationQueryCpp.hpp"
 #include "NJSPreferencesCpp.hpp"
-#include "NJSStringListCallback.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>

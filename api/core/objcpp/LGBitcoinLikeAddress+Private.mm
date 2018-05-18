@@ -73,31 +73,6 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable NSString *)getDerivationPath {
-    try {
-        auto objcpp_result_ = _cppRefHandle.get()->getDerivationPath();
-        return ::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-+ (nullable LGBitcoinLikeAddress *)fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
-                                      address:(nonnull NSString *)address {
-    try {
-        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeAddress::fromBase58(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params),
-                                                                                  ::djinni::String::toCpp(address));
-        return ::djinni_generated::BitcoinLikeAddress::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
-+ (BOOL)isAddressValid:(nonnull LGBitcoinLikeNetworkParameters *)params
-               address:(nonnull NSString *)address {
-    try {
-        auto objcpp_result_ = ::ledger::core::api::BitcoinLikeAddress::isAddressValid(::djinni_generated::BitcoinLikeNetworkParameters::toCpp(params),
-                                                                                      ::djinni::String::toCpp(address));
-        return ::djinni::Bool::fromCpp(objcpp_result_);
-    } DJINNI_TRANSLATE_EXCEPTIONS()
-}
-
 namespace djinni_generated {
 
 auto BitcoinLikeAddress::toCpp(ObjcType objc) -> CppType

@@ -104,7 +104,7 @@ public abstract class Account {
     public abstract boolean isInstanceOfRippleLikeAccount();
 
     /**TODO */
-    public abstract void getFreshPublicAddresses(StringListCallback callback);
+    public abstract void getFreshPublicAddresses(AddressListCallback callback);
 
     /**
      *Get type of wallet to which account belongs
@@ -259,12 +259,12 @@ public abstract class Account {
         private native boolean native_isInstanceOfRippleLikeAccount(long _nativeRef);
 
         @Override
-        public void getFreshPublicAddresses(StringListCallback callback)
+        public void getFreshPublicAddresses(AddressListCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
             native_getFreshPublicAddresses(this.nativeRef, callback);
         }
-        private native void native_getFreshPublicAddresses(long _nativeRef, StringListCallback callback);
+        private native void native_getFreshPublicAddresses(long _nativeRef, AddressListCallback callback);
 
         @Override
         public WalletType getWalletType()
