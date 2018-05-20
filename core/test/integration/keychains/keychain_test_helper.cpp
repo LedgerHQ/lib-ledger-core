@@ -62,4 +62,9 @@ KeychainTestData ZCASH_DATA(ledger::core::networks::ZCASH,
                   "xpub6CoAz6o5a3XWqnLYTMD1NnkbiEnwSaSXr8mtqnfGdGtLw6383aDr3EuMUMqpmkoRwtbGtkk9ChYPxm9Bv4YftfyA8PP4quotPYtNyEWJEmZ",
                   "44'/133'/0'");
 
+KeychainTestData ZENCASH_DATA(ledger::core::networks::ZENCASH,
+                            ledger::core::currencies::ZENCASH,
+                            "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8",
+                            "44'/121'/0'");
+
 

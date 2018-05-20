@@ -31,6 +31,8 @@
 
 #include "../BaseFixture.h"
 #include "../../fixtures/medium_xpub_fixtures.h"
+#include "../../fixtures/bch_xpub_fixtures.h"
+#include "../../fixtures/zec_xpub_fixtures.h"
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include "transaction_test_helper.h"
@@ -127,5 +129,48 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
     std::cout << parsedTx->getInputs().size() << std::endl;
     std::cout << hex::toString(rawPrevious) << std::endl;
     std::cout << tx->getFees()->toLong() << std::endl;
+    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+}
+
+struct BCHMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
+    void SetUpConfig() override {
+        testData.configuration = DynamicObject::newInstance();
+        testData.walletName = "my_wallet";
+        testData.currencyName = "bitcoin_cash";
+        testData.inflate = ledger::testing::bch_xpub::inflate;
+    }
+};
+
+TEST_F(BCHMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
+    //TODO: Need an account with UTXOs in it
+    auto builder = tx_builder();
+    builder->sendToAddress(api::Amount::fromLong(currency, 2000), "1MAFxPyajFm2BQ3DsrRv6PwSnKi4QSEfGQ");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
+    //auto f = builder->build();
+    //auto tx = ::wait(f);
+    //auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
+    //EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+}
+
+struct ZCASHMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
+    void SetUpConfig() override {
+        testData.configuration = DynamicObject::newInstance();
+        testData.walletName = "my_wallet";
+        testData.currencyName = "zcash";
+        testData.inflate = ledger::testing::zec_xpub::inflate;
+    }
+};
+
+TEST_F(ZCASHMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
+    auto builder = tx_builder();
+    builder->sendToAddress(api::Amount::fromLong(currency, 2000), "t1MepQJABxoWarqMvgBHGiFprtuvA47Hiv8");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }

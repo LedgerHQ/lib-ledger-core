@@ -8,37 +8,47 @@ import dateutil.parser
 import time
 
 if len(sys.argv) < 3:
-    print("Should have at least two params <name> <address> <xpub>")
+    print("Should have at least two params <coin> <name> <address> <xpub>")
     sys.exit(-1)
 
 path = "../../core/test/fixtures/"
 
 arguments = sys.argv[1:]
-namespace = str(arguments[0])
-address = (arguments[1])
-xpub = (arguments[2])
-if len(arguments) > 3:
-  limitDate = int(arguments[3])
+coin = str(arguments[0])
+namespace = str(arguments[1])
+address = (arguments[2])
+xpub = (arguments[3])
+if len(arguments) > 4:
+  limitDate = int(arguments[4])
 else:
   limitDate = None
 
-def getHashs(txsHash, offset=0):
-  url = 'https://api.blockcypher.com/v1/btc/test3/addrs/' + address
-  call = requests.get(url)
+def getHashs(txsHash):
+
+  #Get sync token
+  syncUrl = 'https://api.ledgerwallet.com/blockchain/v2/' + coin + '/syncToken'
+  token = requests.get(syncUrl)
+
+  token = json.loads(token.content)['token']
+  headers = {'X-LedgerWallet-SyncToken' : token}
+
+
+  #Get txs related to address
+  url = 'https://api.ledgerwallet.com/blockchain/v2/'+ coin +'/addresses/' + address + '/transactions'
+  call = requests.get(url, headers = headers)
+
   bytes = call.content
   text = bytes.decode('utf8')
   response = json.loads(text)
-  for i in range(len(response['txrefs'])) :
-    txsHash.append(response['txrefs'][i]['tx_hash'])
-  if i == 49:
-    offset += 50
-    return getHashs(txsHash, offset=offset)
-  else:
-    return txsHash
+  for i in range(len(response['txs'])) :
+    txsHash.append(response['txs'][i]['hash'])
+
+  requests.delete(syncUrl, headers = headers)
+  return txsHash
 
 def getTxs(hashs):
   txs = []
-  url = 'https://api.ledgerwallet.com/blockchain/v2/btc_testnet/transactions/'
+  url = 'https://api.ledgerwallet.com/blockchain/v2/'+ coin +'/transactions/'
   for i in range(len(hashs)):
     bytes = requests.get(url+hashs[-i-1]).content
     text = bytes.decode('utf8')
@@ -86,7 +96,7 @@ def makeCPP(namespace, txs):
   newLines.append("\t\tnamespace "+namespace+" {\n")
   apiCalls = []
   apiCalls.append("core::api::ExtendedKeyAccountCreationInfo XPUB_INFO(\n")
-  apiCalls.append('        0, {"testnet"}, {"49\'/1\'/0\'"}, {"'+xpub+'"}\n')
+  apiCalls.append('        0, {"'+coin+'"}, {"49\'/1\'/0\'"}, {"'+xpub+'"}\n')
   apiCalls.append(');\n')
   apiCalls.append("std::shared_ptr<core::BitcoinLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {\n")
   apiCalls.append("\tauto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));\n")
@@ -110,13 +120,13 @@ def makeCPP(namespace, txs):
     file.close()
 
 
-makeH(namespace, getTxs(getHashs([],0)))
+makeH(namespace, getTxs(getHashs([])))
 
 end = time.time()
 
 print("make H over after "+str(end-start))
 
-makeCPP(namespace, getTxs(getHashs([],0)))
+makeCPP(namespace, getTxs(getHashs([])))
 
 end2 = time.time()
 

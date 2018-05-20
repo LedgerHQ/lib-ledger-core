@@ -31,11 +31,9 @@
 
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-//#include <src/wallet/bitcoin/networks.hpp>
-//#include <src/wallet/currencies.hpp>
+
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
-#include "keychain_test_helper.h"
 
 
 
@@ -72,30 +70,32 @@ TEST_F(BitcoinKeychains, KeychainDerivation) {
 
 TEST_F(BitcoinKeychains, BCHKeychainDerivation) {
     testP2PKHKeychain(BCH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
-        auto receiveAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58();
-        auto changeAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58();
-        EXPECT_EQ(receiveAddress, "1BW6hLyZKY9AnUwrU9CwHQJ2c79ho49q4f");
-        EXPECT_EQ(changeAddress, "1ETcGdzh7XGgP2HRUqkYuYEMifihTt8ZiF");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "1BW6hLyZKY9AnUwrU9CwHQJ2c79ho49q4f");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "1ETcGdzh7XGgP2HRUqkYuYEMifihTt8ZiF");
     });
 }
 
 TEST_F(BitcoinKeychains, BTGKeychainDerivation) {
     testP2PKHKeychain(BTG_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
-        auto receiveAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58();
-        auto changeAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58();
-        EXPECT_EQ(receiveAddress, "GeB2eVacdg6T5U4beqXZgL6vPPPspgqBic");
-        EXPECT_EQ(changeAddress, "GWzECqesKKgjH5RXVt9Na5MYbH2BmeKveF");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "GeB2eVacdg6T5U4beqXZgL6vPPPspgqBic");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "GWzECqesKKgjH5RXVt9Na5MYbH2BmeKveF");
     });
 }
 
 TEST_F(BitcoinKeychains, ZCASHKeychainDerivation) {
     testP2PKHKeychain(ZCASH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
-        auto receiveAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58();
-        auto changeAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58();
-        EXPECT_EQ(receiveAddress, "t1Y1C1GiyhffDV3AMCAcBdYT2H2J9ng2eoY");
-        EXPECT_EQ(changeAddress, "t1eHTEWDziaKtBqaZrSqAPgvm6tBGZezgBR");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "t1Y1C1GiyhffDV3AMCAcBdYT2H2J9ng2eoY");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "t1eHTEWDziaKtBqaZrSqAPgvm6tBGZezgBR");
     });
 }
+
+TEST_F(BitcoinKeychains, ZENCASHKeychainDerivation) {
+    testP2PKHKeychain(ZENCASH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "znSHF3jfG9REjJWjFoRrr1WWpNFj4NWeyCW");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "zno29sgBi7CdERRqqjs39mHTdkRHhuodZDa");
+    });
+}
+
 
 TEST_F(BitcoinKeychains, SimpleUsedReceiveAddresses) {
     testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
