@@ -75,5 +75,6 @@ extern KeychainTestData BTC_TESTNET_DATA;
 extern KeychainTestData BCH_DATA;
 extern KeychainTestData BTG_DATA;
 extern KeychainTestData ZCASH_DATA;
+extern KeychainTestData ZENCASH_DATA;
 
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

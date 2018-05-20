@@ -31,7 +31,7 @@
 
 #include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
-#include "../fixtures/segwit_xpub_fixtures.h"
+#include "../fixtures/testnet_xpub_fixtures.h"
 #include <wallet/common/OperationQuery.h>
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
@@ -112,7 +112,7 @@ TEST_F(AccountsPublicInterfaceTest, GetTestnetUnits) {
     auto currency = pool->getCurrency("bitcoin");
     EXPECT_EQ(currency->name, "bitcoin");
     cout<<">>>> Get account"<<endl;
-    auto account = ledger::testing::segwit_xpub::inflate(pool, wallet);
+    auto account = ledger::testing::testnet_xpub::inflate(pool, wallet);
     cout<<">>>> Get balance"<<endl;
     auto balance = wait(account->getBalance());
     cout<<">>>> Get balance toLong"<<endl;
