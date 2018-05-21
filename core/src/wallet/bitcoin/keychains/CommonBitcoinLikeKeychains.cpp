@@ -126,9 +126,9 @@ namespace ledger {
             return _state.empty;
         }
 
-        std::vector<std::string> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
+        std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
             auto length = to - from;
-            std::vector<std::string> result;
+            std::vector<BitcoinLikeKeychain::Address> result;
             result.reserve((length + 1) * 2);
             for (auto i = 0; i <= length; i++) {
                 result.push_back(derive(KeyPurpose::RECEIVE, from + i));
@@ -137,10 +137,10 @@ namespace ledger {
             return result;
         }
 
-        std::vector<std::string>
+        std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getFreshAddresses(BitcoinLikeKeychain::KeyPurpose purpose, size_t n) {
             auto startOffset = (purpose == KeyPurpose::RECEIVE) ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex;
-            std::vector<std::string> result(n);
+            std::vector<BitcoinLikeKeychain::Address> result(n);
             for (auto i = 0; i < n; i++) {
                 result[i] = derive(purpose, startOffset + i);
             }
@@ -169,12 +169,12 @@ namespace ledger {
             }
         }
 
-        std::vector<std::string>
+        std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getAllObservableAddresses(BitcoinLikeKeychain::KeyPurpose purpose, uint32_t from,
                                                             uint32_t to) {
             auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
-            std::vector<std::string> result(length +1);
+            std::vector<BitcoinLikeKeychain::Address> result(length +1);
             for (auto i = 0; i <= length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));

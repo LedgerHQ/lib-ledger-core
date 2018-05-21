@@ -46,11 +46,11 @@ namespace ledger {
         }
 
         BitcoinLikeKeychain::Address P2SHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
-
+            auto currency = getCurrency();
             auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
             auto localPath = getDerivationScheme()
                     .setAccountIndex(getAccountIndex())
-                    .setCoinType(getCurrency().bip44CoinType)
+                    .setCoinType(currency.bip44CoinType)
                     .setNode(iPurpose)
                     .setAddressIndex((int) index).getPath().toString();
 
@@ -61,7 +61,7 @@ namespace ledger {
 
                 auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
                         .setAccountIndex(getAccountIndex())
-                        .setCoinType(getCurrency().bip44CoinType)
+                        .setCoinType(currency.bip44CoinType)
                         .setNode(iPurpose)
                         .setAddressIndex((int) index).getPath().toString();
                 auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
@@ -73,8 +73,8 @@ namespace ledger {
                 script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                 //Hash script
                 auto hash160 = HASH160::hash(script);
-                const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-                BitcoinLikeAddress btcLikeAddress(params, hash160, params.P2SHVersion);
+                const auto& params = currency.bitcoinLikeNetworkParameters.value();
+                BitcoinLikeAddress btcLikeAddress(currency, hash160, params.P2SHVersion);
                 address = btcLikeAddress.toBase58();
 
                 // Feed path -> address cache
@@ -85,13 +85,14 @@ namespace ledger {
                         ->putString(fmt::format("address:{}", address), localPath)
                         ->commit();
             }
-            return address;
+            return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
         }
 
         Option<std::string>
         P2SHBitcoinLikeKeychain::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
-            const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(params, hash160, params.P2SHVersion);
+            auto currency = getCurrency();
+            const auto& params = currency.bitcoinLikeNetworkParameters.value();
+            BitcoinLikeAddress address(currency, hash160, params.P2SHVersion);
             return getAddressDerivationPath(address.toBase58());
         }
 
