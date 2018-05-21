@@ -86,7 +86,6 @@ namespace ledger {
                                                                                    const std::string & end,
                                                                                    api::TimePeriod precision) = 0;
 
-            virtual Future<std::vector<std::string>> getFreshPublicAddresses() = 0;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             std::shared_ptr<api::EventBus> getEventBus() override;

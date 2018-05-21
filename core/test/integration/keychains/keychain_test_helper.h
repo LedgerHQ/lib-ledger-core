@@ -52,7 +52,9 @@ struct KeychainTestData {
             currency(std::move(currency_)),
             xpub(std::move(xpub_)),
             derivationPath(std::move(derivationPath_))
-    {}
+    {
+        currency.bitcoinLikeNetworkParameters = parameters;
+    }
 
     KeychainTestData(const KeychainTestData &data) {
         this->parameters = data.parameters;

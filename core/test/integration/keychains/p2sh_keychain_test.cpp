@@ -50,7 +50,7 @@ public:
                 dispatcher->getMainExecutionContext(),
                 resolver
         );
-        auto xPubBtc = api::BitcoinLikeExtendedPublicKey::fromBase58(data.parameters,
+        auto xPubBtc = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
                                                                      data.xpub,
                                                                      optional<std::string>(data.derivationPath));
 
@@ -72,36 +72,36 @@ public:
 
 TEST_F(BitcoinP2SHKeychains, KeychainDerivation) {
     testP2SHKeychain(BTC_TESTNET_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
     });
 }
 
 TEST_F(BitcoinP2SHKeychains, BCHKeychainDerivation) {
     testP2SHKeychain(BCH_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "386ufVmVhuv9AgakZvFno1XsKhuYyF4xGm");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "34oRCa2pifjRjMqkRhadH51BwMXedS3deg");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "386ufVmVhuv9AgakZvFno1XsKhuYyF4xGm");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "34oRCa2pifjRjMqkRhadH51BwMXedS3deg");
     });
 }
 
 TEST_F(BitcoinP2SHKeychains, BTGKeychainDerivation) {
     testP2SHKeychain(BTG_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "ASos7TVvSieocAHzjQy6K2wANaKLsi45cD");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "AHqYBQpa58aLuW6eydeKJyaq21v2oCg8TU");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "ASos7TVvSieocAHzjQy6K2wANaKLsi45cD");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "AHqYBQpa58aLuW6eydeKJyaq21v2oCg8TU");
     });
 }
 
 TEST_F(BitcoinP2SHKeychains, ZCASHKeychainDerivation) {
     testP2SHKeychain(ZCASH_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "t3fyoi4hioJYbsUtt2rPamWTpzTZLQUddjz");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "t3VrHbQGP1jTVpqbWGcaXY4Z5BHMDYa19xt");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "t3fyoi4hioJYbsUtt2rPamWTpzTZLQUddjz");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "t3VrHbQGP1jTVpqbWGcaXY4Z5BHMDYa19xt");
     });
 }
 
 //TEST_F(BitcoinP2SHKeychains, ZENCASHKeychainDerivation) {
 //    testP2SHKeychain(ZENCASH_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
-//        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "t3TYay3EKTp8Mn47TUwqvv66M6Q7AEaUMRi");
-//        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "t3NTdnrqvcfA6yBibbULYdoVMhSttcF4rHX");
+//        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "t3TYay3EKTp8Mn47TUwqvv66M6Q7AEaUMRi");
+//        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "t3NTdnrqvcfA6yBibbULYdoVMhSttcF4rHX");
 //    });
 //}
 
@@ -109,10 +109,10 @@ TEST_F(BitcoinP2SHKeychains, SimpleUsedReceiveAddresses) {
     testP2SHKeychain(BTC_TESTNET_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
         EXPECT_TRUE(keychain.markAsUsed("2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF"));
         EXPECT_FALSE(keychain.markAsUsed("2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "2MwgNx8CZuPbivNX3fXVUFhvNunf9u5q3wJ");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "2MwgNx8CZuPbivNX3fXVUFhvNunf9u5q3wJ");
     });
 }
 
@@ -120,10 +120,10 @@ TEST_F(BitcoinP2SHKeychains, SimpleUsedChangeAddresses) {
     testP2SHKeychain(BTC_TESTNET_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
         EXPECT_TRUE(keychain.markAsUsed("2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c"));
         EXPECT_FALSE(keychain.markAsUsed("2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "2N3uTrmyNePhAbiUxi8uq7P2J7SxS2bCaji");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "2N3uTrmyNePhAbiUxi8uq7P2J7SxS2bCaji");
     });
 }
 
@@ -132,9 +132,9 @@ TEST_F(BitcoinP2SHKeychains, NonConsecutivesReceiveUsed) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("2MwgNx8CZuPbivNX3fXVUFhvNunf9u5q3wJ"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 11);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
         EXPECT_TRUE(keychain.markAsUsed("2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE), "2N8BfQZXJPJetK6GuBhfWaKmgQxTzKuAa4j");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "2N8BfQZXJPJetK6GuBhfWaKmgQxTzKuAa4j");
     });
 }
 
@@ -143,9 +143,9 @@ TEST_F(BitcoinP2SHKeychains, NonConsecutivesChangeUsed) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("2N3uTrmyNePhAbiUxi8uq7P2J7SxS2bCaji"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 10);
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
         EXPECT_TRUE(keychain.markAsUsed("2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c"));
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE), "2NDQh3V5suxHfzXbFXyroDYjLVRZB8WCAPc");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "2NDQh3V5suxHfzXbFXyroDYjLVRZB8WCAPc");
     });
 }
 
@@ -158,7 +158,7 @@ TEST_F(BitcoinP2SHKeychains, CheckIfEmpty) {
         EXPECT_TRUE(keychain.isEmpty());
         keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE);
         EXPECT_TRUE(keychain.isEmpty());
-        EXPECT_TRUE(keychain.markAsUsed(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)));
+        EXPECT_TRUE(keychain.markAsUsed(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58()));
         EXPECT_FALSE(keychain.isEmpty());
     });
 }
