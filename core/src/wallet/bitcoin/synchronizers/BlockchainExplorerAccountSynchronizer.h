@@ -97,6 +97,7 @@ namespace ledger {
                 Option<BlockchainExplorerAccountSynchronizationSavedState> savedState;
                 Option<void *> token;
                 std::shared_ptr<BitcoinLikeAccount> account;
+                std::map<std::string, std::string> droppedTransactions;
             };
 
 
