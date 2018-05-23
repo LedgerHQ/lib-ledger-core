@@ -11,7 +11,7 @@ if [[ "$unamestr" == 'Linux' ]]; then
    cmake -DCMAKE_INSTALL_PREFIX=$HOME ../lib-ledger-core
 elif [[ "$unamestr" == 'Darwin' ]]; then
 	echo "======> Build for macOS"
-	version=`ls /usr/local/Cellar/qt | grep 5.10 `
+	version=`ls /usr/local/Cellar/qt | grep 5.`
 	echo "====> Get qt5 version"
 	echo $version
 	export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
