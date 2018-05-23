@@ -16,6 +16,7 @@
 #include "NJSLoggerCpp.hpp"
 #include "NJSOperationQueryCpp.hpp"
 #include "NJSPreferencesCpp.hpp"
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -155,6 +156,12 @@ private:
 
     /** Get the key used to generate the account */
     static NAN_METHOD(getRestoreKey);
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    static NAN_METHOD(eraseDataSince);
 
     static NAN_METHOD(New);
 

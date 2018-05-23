@@ -38,6 +38,9 @@
 #include <api/AccountListCallback.hpp>
 #include <async/algorithm.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 
 namespace ledger {
     namespace core {
@@ -302,6 +305,14 @@ namespace ledger {
 
         void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
             getLastBlock().callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+            soci::session sql(_database->getPool());
+            sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid created_at <= :date ", soci::use(getWalletUid()), soci::use(date);
+            for (auto& account : _accounts) {
+                account.second->eraseDataSince(date);
+            }
         }
 
     }

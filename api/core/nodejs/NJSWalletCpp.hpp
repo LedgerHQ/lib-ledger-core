@@ -21,6 +21,7 @@
 #include "NJSI32Callback.hpp"
 #include "NJSLoggerCpp.hpp"
 #include "NJSPreferencesCpp.hpp"
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -190,6 +191,12 @@ private:
 
     /**TODO */
     static NAN_METHOD(newAccountWithExtendedKeyInfo);
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    static NAN_METHOD(eraseDataSince);
 
     static NAN_METHOD(New);
 

@@ -172,4 +172,10 @@
 - (void)newAccountWithExtendedKeyInfo:(nonnull LGExtendedKeyAccountCreationInfo *)extendedKeyAccountCreationInfo
                              callback:(nullable id<LGAccountCallback>)callback;
 
+/**
+ *Erase data (in user's DB) relative to wallet since given date
+ *@param date, start date of data deletion
+ */
+- (void)eraseDataSince:(nonnull NSDate *)date;
+
 @end
