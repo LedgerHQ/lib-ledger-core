@@ -92,6 +92,8 @@ namespace ledger {
 
             void emitEventsNow();
 
+            void eraseDataSince(const std::chrono::system_clock::time_point & date) override;
+
         protected:
             void emitNewOperationEvent(const Operation& operation);
             void emitNewBlockEvent(const Block& block);

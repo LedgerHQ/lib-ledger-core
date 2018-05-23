@@ -855,6 +855,27 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     cpp_impl->newAccountWithExtendedKeyInfo(arg_0,arg_1);
     info.GetReturnValue().Set(arg_1_resolver->GetPromise());
 }
+NAN_METHOD(NJSWallet::eraseDataSince) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSWallet::eraseDataSince needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSWallet* obj = Nan::ObjectWrap::Unwrap<NJSWallet>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSWallet::eraseDataSince : implementation of Wallet is not valid");
+    }
+    cpp_impl->eraseDataSince(arg_0);
+}
 
 NAN_METHOD(NJSWallet::New) {
     //Only new allowed
@@ -939,6 +960,7 @@ void NJSWallet::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getNextExtendedKeyAccountCreationInfo", getNextExtendedKeyAccountCreationInfo);
     Nan::SetPrototypeMethod(func_template,"newAccountWithInfo", newAccountWithInfo);
     Nan::SetPrototypeMethod(func_template,"newAccountWithExtendedKeyInfo", newAccountWithExtendedKeyInfo);
+    Nan::SetPrototypeMethod(func_template,"eraseDataSince", eraseDataSince);
     //Set object prototype
     Wallet_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_WALLET_HPP
 #define DJINNI_GENERATED_WALLET_HPP
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -173,6 +174,12 @@ public:
 
     /**TODO */
     virtual void newAccountWithExtendedKeyInfo(const ExtendedKeyAccountCreationInfo & extendedKeyAccountCreationInfo, const std::shared_ptr<AccountCallback> & callback) = 0;
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 };
 
 } } }  // namespace ledger::core::api

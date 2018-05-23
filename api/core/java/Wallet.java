@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**Class representing a wallet */
@@ -150,6 +151,12 @@ public abstract class Wallet {
 
     /**TODO */
     public abstract void newAccountWithExtendedKeyInfo(ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback);
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    public abstract void eraseDataSince(Date date);
 
     private static final class CppProxy extends Wallet
     {
@@ -365,5 +372,13 @@ public abstract class Wallet {
             native_newAccountWithExtendedKeyInfo(this.nativeRef, extendedKeyAccountCreationInfo, callback);
         }
         private native void native_newAccountWithExtendedKeyInfo(long _nativeRef, ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback);
+
+        @Override
+        public void eraseDataSince(Date date)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_eraseDataSince(this.nativeRef, date);
+        }
+        private native void native_eraseDataSince(long _nativeRef, Date date);
     }
 }

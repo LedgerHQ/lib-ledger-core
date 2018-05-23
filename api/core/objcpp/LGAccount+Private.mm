@@ -188,6 +188,12 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
+- (void)eraseDataSince:(nonnull NSDate *)date {
+    try {
+        _cppRefHandle.get()->eraseDataSince(::djinni::Date::toCpp(date));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
 
 namespace djinni_generated {
 
