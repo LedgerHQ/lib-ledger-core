@@ -34,7 +34,13 @@
 #include <boost/lexical_cast.hpp>
 #include <ctime>
 
-#ifdef __MINGW32__
+
+#if defined(_WIN32) || defined(_WIN64)
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        long shift = 0;
+        int result = _get_timezone(&shift);
+        #define timezone  shift
+    #endif
 time_t timegm(struct tm* tm) { return mktime(tm) - timezone; }
 #endif
 
@@ -71,7 +77,7 @@ std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const st
 std::string ledger::core::DateUtils::toJSON(const std::chrono::system_clock::time_point &date) {
     std::tm tm = {0};
     std::time_t tt = std::chrono::system_clock::to_time_t(date);
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     gmtime_s(&tm, &tt);
 #else
     gmtime_r(&tt, &tm);
@@ -87,7 +93,7 @@ std::chrono::system_clock::time_point ledger::core::DateUtils::incrementDate(con
                                                            api::TimePeriod precision) {
     std::tm tm = {0};
     std::time_t tt = std::chrono::system_clock::to_time_t(date);
-#ifdef __MINGW32__
+#if defined(_WIN32) || defined(_WIN64)
     gmtime_s(&tm, &tt);
 #else
     gmtime_r(&tt, &tm);

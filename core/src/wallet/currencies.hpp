@@ -31,18 +31,26 @@
 #ifndef LEDGER_CORE_CURRENCIES_HPP
 #define LEDGER_CORE_CURRENCIES_HPP
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
         namespace currencies {
-            extern const std::vector<api::Currency> ALL;
-            extern const api::Currency BITCOIN;
-            extern const api::Currency BITCOIN_TESTNET;
-            extern const api::Currency BITCOIN_CASH;
-            extern const api::Currency BITCOIN_GOLD;
-            extern const api::Currency ZCASH;
-            extern const api::Currency ZENCASH;
+            extern LIBCORE_EXPORT const std::vector<api::Currency> ALL;
+            extern LIBCORE_EXPORT const api::Currency BITCOIN;
+            extern LIBCORE_EXPORT const api::Currency BITCOIN_TESTNET;
+            extern LIBCORE_EXPORT const api::Currency BITCOIN_CASH;
+            extern LIBCORE_EXPORT const api::Currency BITCOIN_GOLD;
+            extern LIBCORE_EXPORT const api::Currency ZCASH;
+            extern LIBCORE_EXPORT const api::Currency ZENCASH;
         };
     }
 }

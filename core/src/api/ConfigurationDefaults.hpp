@@ -6,6 +6,13 @@
 
 #include <cstdint>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -14,15 +21,15 @@ class ConfigurationDefaults {
 public:
     virtual ~ConfigurationDefaults() {}
 
-    static std::string const BLOCKCHAIN_DEFAULT_API_ENDPOINT;
+    static LIBCORE_EXPORT std::string const BLOCKCHAIN_DEFAULT_API_ENDPOINT;
 
-    static std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
+    static LIBCORE_EXPORT std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
 
-    static std::string const BIP44_DERIVATION_SCHEME;
+    static LIBCORE_EXPORT std::string const BIP44_DERIVATION_SCHEME;
 
-    static std::string const DEFAULT_KEYCHAIN;
+    static LIBCORE_EXPORT std::string const DEFAULT_KEYCHAIN;
 
-    static int32_t const DEFAULT_TRUST_LIMIT;
+    static LIBCORE_EXPORT int32_t const DEFAULT_TRUST_LIMIT;
 };
 
 } } }  // namespace ledger::core::api

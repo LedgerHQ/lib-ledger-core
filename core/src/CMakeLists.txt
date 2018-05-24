@@ -2,27 +2,9 @@ cmake_minimum_required(VERSION 2.8.11)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-list(APPEND ledger-core-sources
-        bytes/BytesReader.cpp
-        ledger-core.h
-        math/BigInt.h
-        math/BigInt.cpp
-
-        utils/endian.cpp
-        utils/endian.h
-        utils/hex.cpp
-        utils/optional.hpp
-
-        bytes/BytesWriter.cpp
-        bytes/BytesWriter.h
-        async/ExecutionContext.hpp
-        async/Callback.hpp
-        async/EventEmitter.hpp
-        api/BigInt.hpp
-
-        api_impl/LedgerCoreImpl.cpp
-        api_impl/LedgerCoreImpl.hpp
-        )
+if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif(MSVC)
 
 set(ANDROID_CPP_FEATURES exceptions)
 
@@ -66,31 +48,35 @@ add_library(
         ${HEADERS_FILES}
 )
 
+if(MSVC)
+    include(GenerateExportHeader)
+    generate_export_header(ledger-core EXPORT_MACRO_NAME LIBCORE_EXPORT
+            EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/ledger/core/libcore_export.h)
+    target_include_directories(ledger-core PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
+endif(MSVC)
+
 target_link_libraries(ledger-core bigd)
-if(MINGW)
+if(MINGW OR MSVC)
     target_link_libraries(ledger-core fmt-header-only)
 else()
     target_link_libraries(ledger-core fmt)
-endif(MINGW)
+endif(MINGW OR MSVC)
+
 target_link_libraries(ledger-core crypto)
 target_link_libraries(ledger-core sqlite3)
 target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 target_link_libraries(ledger-core leveldb)
 target_link_libraries(ledger-core spdlog)
-#Secp256k1
-target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/libsecp256k1.a")
-link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
 
-string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
-if(IS_IOS GREATER_EQUAL 0)
-    target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
-    link_directories($<TARGET_FILE_DIR:sqlite3>)
-else()
-    #SQlite3
-    target_link_libraries(ledger-core "${CMAKE_BINARY_DIR}/core/lib/sqlite3/libsqlite3.a")
-    link_directories("${CMAKE_BINARY_DIR}/core/lib/sqlite3")
-endif()
+#Secp256k1
+target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
+link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
+add_dependencies(ledger-core secp256k1)
+
+#Sqlite
+target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
+link_directories($<TARGET_FILE_DIR:sqlite3>)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"

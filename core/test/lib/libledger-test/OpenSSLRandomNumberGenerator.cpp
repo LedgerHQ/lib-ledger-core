@@ -32,9 +32,9 @@
 #include <openssl/rand.h>
 
 std::vector<uint8_t> OpenSSLRandomNumberGenerator::getRandomBytes(int32_t size) {
-    uint8_t result[size];
-    RAND_bytes(result, size);
-    return std::vector<uint8_t>(result, result + size);
+    std::vector<uint8_t> result(size);
+    RAND_bytes(result.data(), size);
+    return result;
 }
 
 int32_t OpenSSLRandomNumberGenerator::getRandomInt() {

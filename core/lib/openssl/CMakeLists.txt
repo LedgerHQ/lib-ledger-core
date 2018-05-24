@@ -38,7 +38,7 @@ if( WIN32 AND NOT CYGWIN )
 
 endif ( )
 
-if( MINGW )
+if( MINGW OR MSVC)
   set( CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all" )
 endif()
 

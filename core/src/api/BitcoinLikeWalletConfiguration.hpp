@@ -5,6 +5,13 @@
 #define DJINNI_GENERATED_BITCOINLIKEWALLETCONFIGURATION_HPP
 
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -14,28 +21,28 @@ public:
     virtual ~BitcoinLikeWalletConfiguration() {}
 
     /**String keychain's name */
-    static std::string const KEYCHAIN;
+    static LIBCORE_EXPORT std::string const KEYCHAIN;
 
     /**String observer's name */
-    static std::string const OBSERVER;
+    static LIBCORE_EXPORT std::string const OBSERVER;
 
     /**String explorer's name */
-    static std::string const EXPLORER;
+    static LIBCORE_EXPORT std::string const EXPLORER;
 
     /**String synchronizer's name */
-    static std::string const SYNCHRONIZER;
+    static LIBCORE_EXPORT std::string const SYNCHRONIZER;
 
     /**String with Payment Script type and BIP on which hierarchical wallet is based */
-    static std::string const KEYCHAIN_P2PKH_BIP44;
+    static LIBCORE_EXPORT std::string const KEYCHAIN_P2PKH_BIP44;
 
     /**String websocket on which observer receives notifications from explorer */
-    static std::string const OBSERVER_LEDGER_WEBSOCKET;
+    static LIBCORE_EXPORT std::string const OBSERVER_LEDGER_WEBSOCKET;
 
     /**String explorer api */
-    static std::string const EXPLORER_LEDGER_API;
+    static LIBCORE_EXPORT std::string const EXPLORER_LEDGER_API;
 
     /**TODO */
-    static std::string const SYNCHRONIZER_DEFAULT;
+    static LIBCORE_EXPORT std::string const SYNCHRONIZER_DEFAULT;
 };
 
 } } }  // namespace ledger::core::api

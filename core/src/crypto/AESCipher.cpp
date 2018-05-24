@@ -45,6 +45,8 @@ namespace ledger {
         }
 
         void AESCipher::encrypt(std::istream *input, std::ostream *output) {
+#if defined(_WIN32) || defined(_WIN64)
+#else
             input->seekg(0, input->beg);
             uint32_t maxRead = 254 * AES256::BLOCK_SIZE;
             uint8_t buffer[maxRead];
@@ -66,9 +68,12 @@ namespace ledger {
                 // Store encrypted data
                 output->write((char *)encrypted.data(), encrypted.size());
             } while (!input->eof());
+#endif
         }
 
         void AESCipher::decrypt(std::istream *input, std::ostream *output) {
+#if defined(_WIN32) || defined(_WIN64)
+#else
             input->seekg(0, input->beg);
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
             uint8_t buffer[maxRead];
@@ -87,6 +92,7 @@ namespace ledger {
                 auto decrypted = AES256::decrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + (blocksCount * AES256::BLOCK_SIZE)));
                 output->write((char *)decrypted.data(), dataSize);
             } while (!input->eof());
+#endif
         }
 
         void AESCipher::encrypt(BytesReader& input, BytesWriter& output) {
