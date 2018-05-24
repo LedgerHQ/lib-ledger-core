@@ -7,6 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -31,27 +38,27 @@ public:
      *Key of the synchronization duration time in the synchronize event payload.
      *The value is stored in a int 64 time expressed in miliseconds.
      */
-    static std::string const EV_SYNC_DURATION_MS;
+    static LIBCORE_EXPORT std::string const EV_SYNC_DURATION_MS;
 
     /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
-    static std::string const EV_SYNC_ERROR_CODE;
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE;
 
     /**Key of the synchronization error message. The message is stored as a string. */
-    static std::string const EV_SYNC_ERROR_MESSAGE;
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_MESSAGE;
 
     /**TODO */
-    static std::string const EV_NEW_BLOCK_CURRENCY_NAME;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_CURRENCY_NAME;
 
-    static std::string const EV_NEW_BLOCK_HASH;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HASH;
 
-    static std::string const EV_NEW_BLOCK_HEIGHT;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HEIGHT;
 
     /**TODO */
-    static std::string const EV_NEW_OP_WALLET_NAME;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_WALLET_NAME;
 
-    static std::string const EV_NEW_OP_ACCOUNT_INDEX;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_ACCOUNT_INDEX;
 
-    static std::string const EV_NEW_OP_UID;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_UID;
 
     /**
      *Get index of account in user's wallet
