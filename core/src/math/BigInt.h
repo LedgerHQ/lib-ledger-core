@@ -101,7 +101,7 @@ namespace ledger {
             static LIBCORE_EXPORT BigInt fromString(const std::string& str);
 
             template <typename T>
-            static LIBCORE_EXPORT BigInt fromScalar(T value) {
+            static BigInt fromScalar(T value) {
               BigInt result;
               result.assignScalar<T>(value);
               return result;
