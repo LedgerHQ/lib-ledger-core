@@ -65,12 +65,15 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup
           command: |
             . .circleci/setup_macos.sh
       - run:
+          name: Submodule initialization
           command: |
             . .circleci/init_submodules.sh
       - run:
+          name: Build library
           command: |
             . .circleci/build_lib.sh
       - deploy:
@@ -79,14 +82,13 @@ jobs:
             only: develop
           name: Deploy to s3 bucket
           command: |
-            aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/latest/macos --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
-            aws s3 ls s3://ledger-lib-ledger-core/latest/macos;
+            . .circleci/deploy.sh
       - run:
-          name: build node module
+          name: Build node module
           command: |
             . .circleci/build_node_module.sh
       - run:
-          name: run tests
+          name: Run tests
           command: |
               cd ../lib-ledger-core-build
               ctest
