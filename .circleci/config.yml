@@ -23,6 +23,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh
       - deploy:
+          filters:
+            branches:
+            only: develop
           name: Deploy to s3 bucket
           command: |
             aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/latest/linux --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
@@ -71,6 +74,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh
       - deploy:
+          filters:
+            branches:
+            only: develop
           name: Deploy to s3 bucket
           command: |
             aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/latest/macos --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \

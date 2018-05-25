@@ -120,15 +120,17 @@ artifacts:
   - path: win\%BUILD_CONFIG%\%DLL_NAME%
     name: core_library
 deploy:
-  provider: S3
-  access_key_id: AKIAJSAWFEBNBALPW4LQ
-  secret_access_key:
-    secure: ULBO2dVcftolkrtW0MAvJ4EWcWMCFdmkmsHxfuAjG9/a6U/JrKkzD/f2CUukj4hV
-  bucket: ledger-lib-ledger-core
-  region: eu-west-1
-  set_public: true
-  folder: latest
-  artifact: core_library
+  - provider: S3
+    on:
+      branch: develop
+    access_key_id: AKIAJSAWFEBNBALPW4LQ
+    secret_access_key:
+      secure: ULBO2dVcftolkrtW0MAvJ4EWcWMCFdmkmsHxfuAjG9/a6U/JrKkzD/f2CUukj4hV
+    bucket: ledger-lib-ledger-core
+    region: eu-west-1
+    set_public: true
+    folder: latest
+    artifact: core_library
 
 on_finish:
 - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
