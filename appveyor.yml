@@ -92,18 +92,21 @@ build_script:
     msbuild ledger-core.sln /m:4
   )
 
+- set DLL_NAME=libledger-core.dll
+#Visual naming it ledger-core instead of libledger-core
+- if %BUILD_CONFIG% == vs2015 set DLL_NAME=ledger-core.dll
+
 #Copy dll in a lib-ledger-core's child directory:
 #Only build directory child is supported for artifacts deployment
 - set LIB_DIR=core\src\build
-- if %BUILD_CONFIG% == vs2015 (
-    set LIB_DIR=%LIB_DIR%\%configuration%
-  )
+- if %BUILD_CONFIG% == vs2015 set LIB_DIR=%LIB_DIR%\%configuration%
 
-- ls -la core\src
-- ls -la %LIB_DIR% || echo "No directory with LIB_DIR path"
+- set DLL_PATH=%LIB_DIR%\%DLL_NAME%
+
 - cd ..\lib-ledger-core
 - mkdir win\%BUILD_CONFIG%
-- cp ..\lib-ledger-core-build\%LIB_DIR%\ledger-core.dll .\win\%BUILD_CONFIG%
+
+- cp "..\lib-ledger-core-build\%DLL_PATH%" ".\win\%BUILD_CONFIG%" || echo "FAIL TO COPY DLL"
 
 #Launch tests
 - ctest --output-on-failure -VV
@@ -114,7 +117,7 @@ build_script:
 #- node sample/wallet-pool-test.js
 
 artifacts:
-  - path: win\%BUILD_CONFIG%\ledger-core.dll
+  - path: win\%BUILD_CONFIG%\%DLL_NAME%
     name: core_library
 deploy:
   provider: S3
