@@ -98,6 +98,9 @@ build_script:
 - if %BUILD_CONFIG% == vs2015 (
     set LIB_DIR=%LIB_DIR%\%configuration%
   )
+
+- ls -la core\src
+- ls -la %LIB_DIR% || echo "No directory with LIB_DIR path"
 - cd ..\lib-ledger-core
 - mkdir win\%BUILD_CONFIG%
 - cp ..\lib-ledger-core-build\%LIB_DIR%\ledger-core.dll .\win\%BUILD_CONFIG%
