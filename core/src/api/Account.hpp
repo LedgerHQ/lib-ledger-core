@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_ACCOUNT_HPP
 #define DJINNI_GENERATED_ACCOUNT_HPP
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -174,6 +175,12 @@ public:
 
     /** Get the key used to generate the account */
     virtual std::string getRestoreKey() = 0;
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 };
 
 } } }  // namespace ledger::core::api

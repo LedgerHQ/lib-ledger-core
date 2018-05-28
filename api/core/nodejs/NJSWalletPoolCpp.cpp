@@ -514,6 +514,27 @@ NAN_METHOD(NJSWalletPool::getEventBus) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSWalletPool::eraseDataSince) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSWalletPool::eraseDataSince needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSWalletPool* obj = Nan::ObjectWrap::Unwrap<NJSWalletPool>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSWalletPool::eraseDataSince : implementation of WalletPool is not valid");
+    }
+    cpp_impl->eraseDataSince(arg_0);
+}
 
 NAN_METHOD(NJSWalletPool::New) {
     //Only new allowed
@@ -647,6 +668,7 @@ void NJSWalletPool::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getCurrency", getCurrency);
     Nan::SetPrototypeMethod(func_template,"getLastBlock", getLastBlock);
     Nan::SetPrototypeMethod(func_template,"getEventBus", getEventBus);
+    Nan::SetPrototypeMethod(func_template,"eraseDataSince", eraseDataSince);
     //Set object prototype
     WalletPool_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

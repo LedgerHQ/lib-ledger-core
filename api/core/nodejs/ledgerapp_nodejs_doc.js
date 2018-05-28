@@ -491,6 +491,11 @@ declare class NJSAccount
     declare function getLastBlock(callback: NJSBlockCallback);
     /** Get the key used to generate the account */
     declare function getRestoreKey(): string;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -667,6 +672,11 @@ declare class NJSWallet
     declare function newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: NJSAccountCallback);
     /**TODO */
     declare function newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: NJSAccountCallback);
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -1826,6 +1836,11 @@ declare class NJSWalletPool
      *@param EventBus object
      */
     declare function getEventBus(): NJSEventBus;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,

@@ -340,4 +340,13 @@ RCT_REMAP_METHOD(newAccountWithExtendedKeyInfo,newAccountWithExtendedKeyInfo:(no
 
     [self.objcImpl newAccountWithExtendedKeyInfo:extendedKeyAccountCreationInfo callback:callback];
 }
+
+/**
+ *Erase data (in user's DB) relative to wallet since given date
+ *@param date, start date of data deletion
+ */
+RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(nonnull NSDate *)date) {
+
+    [self.objcImpl eraseDataSince:date];
+}
 @end

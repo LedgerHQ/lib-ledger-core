@@ -153,4 +153,10 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
 /** Get the key used to generate the account */
 - (nonnull NSString *)getRestoreKey;
 
+/**
+ *Erase data (in user's DB) relative to wallet since given date
+ *@param date, start date of data deletion
+ */
+- (void)eraseDataSince:(nonnull NSDate *)date;
+
 @end
