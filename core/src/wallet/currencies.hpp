@@ -51,6 +51,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency BITCOIN_GOLD;
             extern LIBCORE_EXPORT const api::Currency ZCASH;
             extern LIBCORE_EXPORT const api::Currency ZENCASH;
+            extern LIBCORE_EXPORT const api::Currency LITECOIN;
         };
     }
 }
