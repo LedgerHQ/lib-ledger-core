@@ -210,13 +210,16 @@ namespace ledger {
                     finalAmount = finalAmount + o.first->value;
                     accountOutputCount += 1;
                 }
-
                 if (accountOutputCount > 0) {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
                     if (OperationDatabaseHelper::putOperation(sql, operation))
                         emitNewOperationEvent(operation);
+
+                    //Update account_uid column of bitcoin_outputs table
+                    sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE transaction_hash = :tx_hash",
+                            soci::use(getAccountUid()), soci::use(transaction.hash);
                 }
             }
 
