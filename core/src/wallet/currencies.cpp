@@ -86,7 +86,7 @@ namespace ledger {
 
             const api::Currency ZENCASH =
                     Currency("zencash")
-                            .forkOfBitcoin(networks::ZCASH)
+                            .forkOfBitcoin(networks::ZENCASH)
                             .bip44(121)
                             .paymentUri("zencash")
                             .unit("zencash", 8, "ZEN");
