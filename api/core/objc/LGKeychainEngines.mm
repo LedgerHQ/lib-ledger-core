@@ -5,3 +5,5 @@
 
 
 NSString * __nonnull const LGKeychainEnginesBIP32P2PKH = @"BIP32_P2PKH";
+
+NSString * __nonnull const LGKeychainEnginesBIP49P2SH = @"BIP49_P2SH";

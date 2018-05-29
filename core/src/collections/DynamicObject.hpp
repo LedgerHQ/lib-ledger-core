@@ -88,7 +88,7 @@ namespace ledger {
             template<typename T>
             optional<T> getNumber(const std::string& key) const {
                 auto v = _values.lift(key);
-                if (_values.empty())
+                if (_values.empty() || !v.hasValue())
                     return optional<T>();
                 switch (v.getValue().type) {
                     case api::DynamicType::INT32:

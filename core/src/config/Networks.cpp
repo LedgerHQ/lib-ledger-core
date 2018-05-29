@@ -29,7 +29,6 @@
  *
  */
 #include "Networks.hpp"
-
 namespace ledger {
     namespace core {
         namespace api {
@@ -43,7 +42,9 @@ namespace ledger {
                     BitcoinLikeFeePolicy::PER_BYTE,
                     5420,
                     "Bitcoin Signed Message:\n",
-                    false
+                    false,
+                    0,
+                    {0x01}
                 );
             }
 

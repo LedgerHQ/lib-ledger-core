@@ -32,7 +32,17 @@
 
 namespace ledger {
     namespace core {
+
         namespace networks {
+
+            enum sigHashType : uint8_t {
+                SIGHASH_ALL = 1,
+                SIGHASH_NONE = 2,
+                SIGHASH_SINGLE = 3,
+                SIGHASH_FORKID = 0x40,
+                SIGHASH_ANYONECANPAY = 0x80
+            };
+
             const api::BitcoinLikeNetworkParameters BITCOIN(
                     "btc",
                     {0x00},
@@ -41,7 +51,9 @@ namespace ledger {
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     546,
                     "Bitcoin signed message:\n",
-                    false
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET(
@@ -52,12 +64,73 @@ namespace ledger {
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     546,
                     "Bitcoin signed message:\n",
-                    false
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
             );
+
+            const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
+                    "abc",
+                    {0x00},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    5430,
+                    "Bitcoin signed message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+            );
+
+
+            const api::BitcoinLikeNetworkParameters BITCOIN_GOLD(
+                    "btg",
+                    {0x26},//{0x00}, TODO: check if tx use old or new
+                    {0x17},//{0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    5430,
+                    "Bitcoin gold signed message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+            );
+
+            const api::BitcoinLikeNetworkParameters ZCASH(
+                    "zec",
+                    {0x1C, 0xB8},
+                    {0x1C, 0xBD},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Zcash Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters ZENCASH(
+                    "zen",
+                    {0x20, 0x89},
+                    {0x20, 0x96},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Zencash Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
-                BITCOIN
+                BITCOIN,
+                BITCOIN_TESTNET,
+                BITCOIN_CASH,
+                BITCOIN_GOLD,
+                ZCASH,
+                ZENCASH
             });
         }
     }

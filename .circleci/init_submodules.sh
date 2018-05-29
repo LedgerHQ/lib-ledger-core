@@ -3,10 +3,10 @@
 #!/usr/bin/env bash
 
 echo "========> Add github as known host"
-[ -d /root/.ssh ] || mkdir /root/.ssh
-ssh-keyscan github.com >> /root/.ssh/known_hosts
+[ -d "${HOME}/.ssh" ] || mkdir "${HOME}/.ssh"
+ssh-keyscan github.com >> "${HOME}/.ssh/known_hosts"
 
-cd /root/lib-ledger-core
+cd $HOME/lib-ledger-core
 
 git submodule init
 git submodule sync
@@ -20,4 +20,4 @@ git submodule update -- core/lib/spdlog || echo "===========spdlog submodule alr
 git submodule update -- core/lib/leveldb || echo "===========leveldb submodule already updated"
 
 #should checkout leveldb bitcoin-fork branch
-cd /root/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork
+cd $HOME/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork

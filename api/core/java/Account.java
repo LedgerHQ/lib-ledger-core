@@ -3,6 +3,7 @@
 
 package co.ledger.core;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**Class representing an account */
@@ -47,6 +48,15 @@ public abstract class Account {
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     public abstract void getBalance(AmountCallback callback);
+
+    /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    public abstract void getBalanceHistory(String start, String end, TimePeriod period, AmountListCallback callback);
 
     /**
      *Get synchronization status of account
@@ -139,6 +149,12 @@ public abstract class Account {
     /** Get the key used to generate the account */
     public abstract String getRestoreKey();
 
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    public abstract void eraseDataSince(Date date);
+
     private static final class CppProxy extends Account
     {
         private final long nativeRef;
@@ -185,6 +201,14 @@ public abstract class Account {
             native_getBalance(this.nativeRef, callback);
         }
         private native void native_getBalance(long _nativeRef, AmountCallback callback);
+
+        @Override
+        public void getBalanceHistory(String start, String end, TimePeriod period, AmountListCallback callback)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_getBalanceHistory(this.nativeRef, start, end, period, callback);
+        }
+        private native void native_getBalanceHistory(long _nativeRef, String start, String end, TimePeriod period, AmountListCallback callback);
 
         @Override
         public boolean isSynchronizing()
@@ -321,5 +345,13 @@ public abstract class Account {
             return native_getRestoreKey(this.nativeRef);
         }
         private native String native_getRestoreKey(long _nativeRef);
+
+        @Override
+        public void eraseDataSince(Date date)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            native_eraseDataSince(this.nativeRef, date);
+        }
+        private native void native_eraseDataSince(long _nativeRef, Date date);
     }
 }

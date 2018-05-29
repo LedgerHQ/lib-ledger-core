@@ -33,6 +33,9 @@
 #include <wallet/common/OperationQuery.h>
 #include <api/AmountCallback.hpp>
 #include <events/Event.hpp>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
@@ -142,6 +145,13 @@ namespace ledger {
             getBalance().callback(getMainExecutionContext(), callback);
         }
 
+        void AbstractAccount::getBalanceHistory(const std::string & start,
+                               const std::string & end,
+                               api::TimePeriod precision,
+                               const std::shared_ptr<api::AmountListCallback> & callback) {
+            getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);
+        }
+
         std::shared_ptr<api::EventBus> AbstractAccount::getEventBus() {
             return _publisher->getEventBus();
         }
@@ -190,7 +200,10 @@ namespace ledger {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
-
+        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+            soci::session sql(getWallet()->getDatabase()->getPool());
+            sql << "DELETE FROM operations WHERE wallet_uid = :wallet_uid AND created_at <= :date ", soci::use(getAccountUid()), soci::use(date);
+        }
 
     }
 }

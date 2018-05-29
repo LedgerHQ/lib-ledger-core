@@ -184,6 +184,20 @@ package object implicits {
             })
             promise.future
         }
+        def getBalanceHistory(start: String, end: String, period: TimePeriod): Future[ArrayList[Amount]] = {
+            val promise = Promise[ArrayList[Amount]]()
+            self.getBalanceHistory(start, end, period, new AmountListCallback() {
+                override def onCallback(result: ArrayList[Amount], error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
         def getFreshPublicAddresses(): Future[ArrayList[Address]] = {
             val promise = Promise[ArrayList[Address]]()
             self.getFreshPublicAddresses(new AddressListCallback() {
@@ -214,6 +228,8 @@ package object implicits {
         }
     }
     implicit class RichAmountCallback(val self: AmountCallback) {
+    }
+    implicit class RichAmountListCallback(val self: AmountListCallback) {
     }
     implicit class RichAddressListCallback(val self: AddressListCallback) {
     }

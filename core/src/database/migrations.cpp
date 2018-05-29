@@ -184,5 +184,10 @@ namespace ledger {
                     ")";
         }
 
+        template <> void migrate<2>(soci::session& sql) {
+            sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
+            sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
+        }
+
     }
 }

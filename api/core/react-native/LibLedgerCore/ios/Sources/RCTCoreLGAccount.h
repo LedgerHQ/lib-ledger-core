@@ -4,12 +4,14 @@
 #import "LGAccount.h"
 #import "LGAddressListCallback.h"
 #import "LGAmountCallback.h"
+#import "LGAmountListCallback.h"
 #import "LGBitcoinLikeAccount.h"
 #import "LGBlockCallback.h"
 #import "LGEventBus.h"
 #import "LGLogger.h"
 #import "LGOperationQuery.h"
 #import "LGPreferences.h"
+#import "LGTimePeriod.h"
 #import "LGWalletType.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>

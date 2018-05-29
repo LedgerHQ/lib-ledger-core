@@ -69,6 +69,13 @@ public abstract class BitcoinLikeTransactionBuilder {
     public abstract BitcoinLikeTransactionBuilder sendToAddress(Amount amount, String address);
 
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    public abstract BitcoinLikeTransactionBuilder wipeToAddress(String address);
+
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */
@@ -182,6 +189,14 @@ public abstract class BitcoinLikeTransactionBuilder {
             return native_sendToAddress(this.nativeRef, amount, address);
         }
         private native BitcoinLikeTransactionBuilder native_sendToAddress(long _nativeRef, Amount amount, String address);
+
+        @Override
+        public BitcoinLikeTransactionBuilder wipeToAddress(String address)
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_wipeToAddress(this.nativeRef, address);
+        }
+        private native BitcoinLikeTransactionBuilder native_wipeToAddress(long _nativeRef, String address);
 
         @Override
         public BitcoinLikeTransactionBuilder setFeesPerByte(Amount fees)

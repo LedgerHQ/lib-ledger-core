@@ -45,7 +45,7 @@ namespace ledger {
             Future<UTXODescriptorList> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
                                      const BigInt& aggregatedAmount);
-            bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount);
+            bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount, bool computeOutputAmount = false);
             inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
 
         private:

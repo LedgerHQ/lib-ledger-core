@@ -42,7 +42,8 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
-
+#include <api/AmountListCallback.hpp>
+#include <api/TimePeriod.hpp>
 namespace ledger {
     namespace core {
         class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
@@ -77,11 +78,21 @@ namespace ledger {
 
             void getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) override;
             virtual Future<AddressList> getFreshPublicAddresses() = 0;
+            void getBalanceHistory(const std::string & start,
+                                   const std::string & end,
+                                   api::TimePeriod precision,
+                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
+            virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
+                                                                                   const std::string & end,
+                                                                                   api::TimePeriod precision) = 0;
+
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
             void emitEventsNow();
+
+            void eraseDataSince(const std::chrono::system_clock::time_point & date) override;
 
         protected:
             void emitNewOperationEvent(const Operation& operation);

@@ -4,6 +4,7 @@
 #include "Account.hpp"  // my header
 #include "AddressListCallback.hpp"
 #include "AmountCallback.hpp"
+#include "AmountListCallback.hpp"
 #include "BitcoinLikeAccount.hpp"
 #include "BlockCallback.hpp"
 #include "EventBus.hpp"
@@ -11,6 +12,7 @@
 #include "Marshal.hpp"
 #include "OperationQuery.hpp"
 #include "Preferences.hpp"
+#include "TimePeriod.hpp"
 #include "WalletType.hpp"
 
 namespace djinni_generated {
@@ -54,6 +56,18 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBal
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         ref->getBalance(::djinni_generated::AmountCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBalanceHistory(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_start, jstring j_end, jobject j_period, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        ref->getBalanceHistory(::djinni::String::toCpp(jniEnv, j_start),
+                               ::djinni::String::toCpp(jniEnv, j_end),
+                               ::djinni_generated::TimePeriod::toCpp(jniEnv, j_period),
+                               ::djinni_generated::AmountListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
@@ -221,6 +235,15 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
         auto r = ref->getRestoreKey();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

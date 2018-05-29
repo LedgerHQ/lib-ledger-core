@@ -59,7 +59,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
     EXPECT_FALSE(db.accountExists(0));
 
     // We need to create the abstract entry first to satisfy the foreign key constraint
-    createWallet(pool, "my_wallet");
+    createWallet(pool, "my_wallet", "bitcoin", DynamicObject::newInstance());
     createAccount(pool, "my_wallet", 0);
 
     db.createAccount(0, XPUB_1);
@@ -71,12 +71,14 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
 
     EXPECT_EQ(db.getAccountsCount(), 1);
     EXPECT_EQ(db.getNextAccountIndex(), 1);
     for (auto i = 1; i < 100; i++) {
-        newBitcoinAccount(pool, "my_wallet", i, XPUB_1);
+        newBitcoinAccount(pool, "my_wallet", currencyName, configuration, i, XPUB_1);
     }
     EXPECT_EQ(db.getAccountsCount(), 100);
 
@@ -94,7 +96,10 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
 TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     auto transaction = JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION);
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
@@ -117,7 +122,10 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
 TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION),
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_2),

@@ -97,7 +97,7 @@ namespace ledger {
 
         optional<std::string> DynamicObject::getString(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::STRING)
+            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::STRING)
                 return optional<std::string>();
             return optional<std::string>(v.getValue().string);
         }
@@ -116,7 +116,7 @@ namespace ledger {
 
         optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::DATA)
+            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::DATA)
                 return optional<std::vector<uint8_t >>();
             return optional<std::vector<uint8_t>>(v.getValue().bytes);
         }
@@ -147,14 +147,14 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject> DynamicObject::getObject(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::OBJECT)
+            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::OBJECT)
                 return nullptr;
             return v.getValue().object;
         }
 
         std::shared_ptr<api::DynamicArray> DynamicObject::getArray(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty() || v.getValue().type != api::DynamicType::ARRAY)
+            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::ARRAY)
                 return nullptr;
             return v.getValue().array;
         }
@@ -173,7 +173,7 @@ namespace ledger {
 
         optional<api::DynamicType> DynamicObject::getType(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty())
+            if (_values.empty() || !v.hasValue())
                 return optional<api::DynamicType>();
             return optional<api::DynamicType>(v.getValue().type);
         }

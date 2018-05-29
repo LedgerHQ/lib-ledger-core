@@ -34,10 +34,8 @@
 #include <utils/DateUtils.hpp>
 #include <cereal/types/vector.hpp>
 #include <algorithm>
-#include <async/algorithm.h>
 #include <debug/Benchmarker.h>
 #include <utils/DurationUtils.h>
-#include <collections/vector.hpp>
 
 namespace ledger {
     namespace core {
@@ -142,6 +140,19 @@ namespace ledger {
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
 
+            //Get all transactions in DB that may be dropped (txs without block_uid)
+            soci::session sql(buddy->wallet->getDatabase()->getPool());
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT btc_op.transaction_hash, btc_op.uid FROM bitcoin_operations AS btc_op "
+                                                            "LEFT OUTER JOIN bitcoin_transactions AS tx ON tx.hash = btc_op.transaction_hash "
+                                                            "LEFT OUTER JOIN operations AS op ON op.account_uid = :uid "
+                                                            "WHERE tx.block_uid IS NULL", soci::use(account->getAccountUid()));
+
+            for (auto &row : rows) {
+                if (row.get_indicator(0) != soci::i_null) {
+                    buddy->droppedTransactions.insert(std::pair<std::string, std::string>(row.get<std::string>(0), row.get<std::string>(1)));
+                }
+            }
+
             buddy->logger
                  ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
                         account->getIndex(),
@@ -172,6 +183,15 @@ namespace ledger {
                         (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                 buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                              buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
+
+                //Delete dropped txs from DB
+                soci::session sql(buddy->wallet->getDatabase()->getPool());
+                for (auto& tx : buddy->droppedTransactions) {
+                    //delete tx.second from DB (from operations)
+                    sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                }
+                buddy->droppedTransactions.clear();
+
                 self->_currentAccount = nullptr;
                 return unit;
             }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
@@ -239,6 +259,8 @@ namespace ledger {
                         soci::transaction tr(sql);
                         for (const auto& tx : bulk->transactions) {
                             buddy->account->putTransaction(sql, tx);
+                            //Remove returned explorer's txs from buddy->droppedTransactions
+                            buddy->droppedTransactions.erase(tx.hash);
                         }
                         tr.commit();
                         buddy->account->emitEventsNow();

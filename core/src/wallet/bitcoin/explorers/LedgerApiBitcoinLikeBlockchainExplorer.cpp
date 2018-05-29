@@ -166,9 +166,20 @@ namespace ledger {
                     transaction->inputs = tx.inputs;
                     transaction->outputs = tx.outputs;
                     transaction->receivedAt = tx.receivedAt;
+                    transaction->confirmations = tx.confirmations;
                     return transaction;
                 }
             });
+        }
+
+        Future<int64_t > LedgerApiBitcoinLikeBlockchainExplorer::getTimestamp() {
+            auto delay = 60*_parameters.TimestampDelay;
+            return _http->GET(fmt::format("/timestamp"))
+                    .json().map<int64_t>(getContext(), [delay] (const HttpRequest::JsonResult& result) {
+                    auto& json = *std::get<1>(result);
+                    return json["timestamp"].GetInt64() - delay;
+            });
+
         }
 
     }

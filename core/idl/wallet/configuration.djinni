@@ -7,6 +7,7 @@ BlockchainObserverEngines = interface +c {
 }
 KeychainEngines = interface +c {
     const BIP32_P2PKH: string = "BIP32_P2PKH";
+    const BIP49_P2SH: string = "BIP49_P2SH";
 }
 
 #Class of constants representing the engines to rely on for synchronization

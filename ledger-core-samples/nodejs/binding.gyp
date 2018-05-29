@@ -5,7 +5,7 @@
 		'source_path%': "../../api/core/nodejs",
 	},
 	'targets': [{
-		'target_name': 'ledgerapp_nodejs',
+		'target_name': 'ledger-core',
 		'sources': [
 			"<!@(python glob.py <@(source_path) *.cpp *.hpp)"
 		],

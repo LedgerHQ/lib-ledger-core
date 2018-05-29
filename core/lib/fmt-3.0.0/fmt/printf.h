@@ -10,6 +10,11 @@
 #ifndef FMT_PRINTF_H_
 #define FMT_PRINTF_H_
 
+#if (_MSC_VER <= 1900)
+#undef min
+#undef max
+#endif
+
 #include <algorithm>  // std::fill_n
 #include <limits>     // std::numeric_limits
 

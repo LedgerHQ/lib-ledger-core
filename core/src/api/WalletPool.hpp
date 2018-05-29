@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_WALLETPOOL_HPP
 
 #include "../utils/optional.hpp"
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -124,6 +125,12 @@ public:
      *@param EventBus object
      */
     virtual std::shared_ptr<EventBus> getEventBus() = 0;
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 };
 
 } } }  // namespace ledger::core::api

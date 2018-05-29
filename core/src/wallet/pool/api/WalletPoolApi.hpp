@@ -68,6 +68,7 @@ namespace ledger {
             void
             getLastBlock(const std::string &currencyName, const std::shared_ptr<api::BlockCallback> &callback) override;
 
+            void eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
             ~WalletPoolApi();
 
         private:

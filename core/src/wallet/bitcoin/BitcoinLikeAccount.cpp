@@ -48,8 +48,9 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <spdlog/logger.h>
-
+#include <utils/DateUtils.hpp>
 namespace ledger {
     namespace core {
 
@@ -225,7 +226,24 @@ namespace ledger {
         void
         BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
-            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+            if (tx.block.nonEmpty()) {
+                auto txBlockHeight = tx.block.getValue().height;
+                _explorer->getCurrentBlock().onComplete(getContext(), [txBlockHeight, operation] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
+                    if (block.isSuccess()) {
+                        auto height = block.getValue()->height;
+                        if (height > txBlockHeight + 5 ) {
+                            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+                        } else if (height > txBlockHeight) {
+                            operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
+                        } else if (height == txBlockHeight) {
+                            operation.trust->setTrustLevel(api::TrustLevel::PENDING);
+                        }
+                    }
+                });
+
+            } else {
+                operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
+            }
         }
 
         std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
@@ -377,6 +395,71 @@ namespace ledger {
                     sum = sum + utxo.value;
                 }
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+            });
+        }
+
+        Future<std::vector<std::shared_ptr<api::Amount>>> BitcoinLikeAccount::getBalanceHistory(const std::string & start,
+                                                                                           const std::string & end,
+                                                                                           api::TimePeriod precision) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
+
+                const int32_t BATCH_SIZE = 100;
+                const auto& uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<Operation> operations;
+                auto offset = 0;
+                std::size_t count = 0;
+
+                auto keychain = self->getKeychain();
+                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+
+                //Query all utxos in date range
+                for (; (count = OperationDatabaseHelper::queryOperations(sql, uid, operations, filter)) == BATCH_SIZE; offset += count) {}
+
+                auto startDate = DateUtils::fromJSON(start);
+                auto endDate = DateUtils::fromJSON(end);
+                auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+                std::vector<std::shared_ptr<api::Amount>> amounts;
+                std::size_t operationsCount = 0;
+                bool increment = true;
+                BigInt sum(0);
+                while (upperDate <= endDate) {
+
+                    if(operationsCount < operations.size()) {
+                        auto operation = operations[operationsCount];
+                        if (operation.date <= upperDate) {
+                            increment = false;
+                            switch (operation.type) {
+                                case api::OperationType::RECEIVE:
+                                {
+                                    sum = sum + operation.amount;
+                                    break;
+                                }
+                                case api::OperationType::SEND:
+                                {
+                                    sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                    break;
+                                }
+                            }
+                            operationsCount += 1;
+                        }
+                    }
+
+                    if(increment) {
+                        //Save amount
+                        amounts.emplace_back(std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                        //Increment Date
+                        upperDate = DateUtils::incrementDate(upperDate, precision);
+                    }
+
+                    increment = true;
+                }
+
+                return amounts;
             });
         }
 

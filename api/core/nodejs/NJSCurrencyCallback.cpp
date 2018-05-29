@@ -80,6 +80,16 @@ void NJSCurrencyCallback::onCallback(const std::experimental::optional<Currency>
             Nan::DefineOwnProperty(arg_0_tmp_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_tmp_6_tmp_7);
             auto arg_0_tmp_6_tmp_8 = Nan::New<Boolean>(arg_0_tmp_6_optional.UsesTimestampedTransaction);
             Nan::DefineOwnProperty(arg_0_tmp_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_tmp_6_tmp_8);
+            auto arg_0_tmp_6_tmp_9 = Nan::New<Number>(arg_0_tmp_6_optional.TimestampDelay);
+            Nan::DefineOwnProperty(arg_0_tmp_6_tmp, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_tmp_6_tmp_9);
+            Local<Array> arg_0_tmp_6_tmp_10 = Nan::New<Array>();
+            for(size_t arg_0_tmp_6_tmp_10_id = 0; arg_0_tmp_6_tmp_10_id < arg_0_tmp_6_optional.SigHash.size(); arg_0_tmp_6_tmp_10_id++)
+            {
+                auto arg_0_tmp_6_tmp_10_elem = Nan::New<Uint32>(arg_0_tmp_6_optional.SigHash[arg_0_tmp_6_tmp_10_id]);
+                arg_0_tmp_6_tmp_10->Set((int)arg_0_tmp_6_tmp_10_id,arg_0_tmp_6_tmp_10_elem);
+            }
+
+            Nan::DefineOwnProperty(arg_0_tmp_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_tmp_6_tmp_10);
 
             arg_0_tmp_6 = arg_0_tmp_6_tmp;
         }

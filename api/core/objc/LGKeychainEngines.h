@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString * __nonnull const LGKeychainEnginesBIP32P2PKH;
+extern NSString * __nonnull const LGKeychainEnginesBIP49P2SH;
 
 @interface LGKeychainEngines : NSObject
 

@@ -20,7 +20,9 @@
 
 #ifdef _MSC_VER
 #pragma warning(disable:4355 4996)
+#if (_MSC_VER < 1900)
 #define snprintf _snprintf // TODO: use soci-platform.h
+#endif
 #endif
 
 using namespace soci;

@@ -31,7 +31,7 @@
 
 #include <api/Currency.hpp>
 #include "BitcoinLikeKeychain.hpp"
-
+#include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
@@ -95,6 +95,12 @@ namespace ledger {
 
         const DerivationScheme &BitcoinLikeKeychain::getFullDerivationScheme() const {
             return _fullScheme;
+        }
+
+        bool BitcoinLikeKeychain::isSegwit() const {
+            //TODO: find a better way to know whether it's segwit or not
+            auto keychainEngine = _configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH);
+            return (keychainEngine == api::KeychainEngines::BIP49_P2SH) ? true : false;
         }
     }
 }

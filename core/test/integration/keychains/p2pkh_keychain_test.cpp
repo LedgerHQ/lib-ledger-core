@@ -31,15 +31,15 @@
 
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <src/wallet/bitcoin/networks.hpp>
-#include <src/wallet/currencies.hpp>
-#include "BaseFixture.h"
 
-const std::string XPUB = "xpub6DCi5iJ57ZPd5qPzvTm5hUt6X23TJdh9H4NjNsNbt7t7UuTMJfawQWsdWRFhfLwkiMkB1rQ4ZJWLB9YBnzR7kbs9N8b2PsKZgKUHQm1X4or";
+#include "keychain_test_helper.h"
+#include "../BaseFixture.h"
+
+
 
 class BitcoinKeychains : public BaseFixture {
 public:
-    void testP2PKHKeychain(std::string xpub, std::function<void (P2PKHBitcoinLikeKeychain&)> f) {
+    void testP2PKHKeychain(const KeychainTestData &data, std::function<void (P2PKHBitcoinLikeKeychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getMainExecutionContext(),
@@ -49,9 +49,9 @@ public:
         dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
             P2PKHBitcoinLikeKeychain keychain(
                     configuration,
-                    ledger::core::currencies::BITCOIN,
+                    data.currency,
                     0,
-                    BitcoinLikeExtendedPublicKey::fromBase58(currencies::BITCOIN, xpub, optional<std::string>("44'/0'/0'")),
+                    ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency, data.xpub, optional<std::string>(data.derivationPath)),
                     backend->getPreferences("keychain")
             );
             f(keychain);
@@ -62,14 +62,43 @@ public:
 };
 
 TEST_F(BitcoinKeychains, KeychainDerivation) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
     });
 }
 
+TEST_F(BitcoinKeychains, BCHKeychainDerivation) {
+    testP2PKHKeychain(BCH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "1BW6hLyZKY9AnUwrU9CwHQJ2c79ho49q4f");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "1ETcGdzh7XGgP2HRUqkYuYEMifihTt8ZiF");
+    });
+}
+
+TEST_F(BitcoinKeychains, BTGKeychainDerivation) {
+    testP2PKHKeychain(BTG_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "GeB2eVacdg6T5U4beqXZgL6vPPPspgqBic");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "GWzECqesKKgjH5RXVt9Na5MYbH2BmeKveF");
+    });
+}
+
+TEST_F(BitcoinKeychains, ZCASHKeychainDerivation) {
+    testP2PKHKeychain(ZCASH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "t1Y1C1GiyhffDV3AMCAcBdYT2H2J9ng2eoY");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "t1eHTEWDziaKtBqaZrSqAPgvm6tBGZezgBR");
+    });
+}
+
+TEST_F(BitcoinKeychains, ZENCASHKeychainDerivation) {
+    testP2PKHKeychain(ZENCASH_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "znSHF3jfG9REjJWjFoRrr1WWpNFj4NWeyCW");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "zno29sgBi7CdERRqqjs39mHTdkRHhuodZDa");
+    });
+}
+
+
 TEST_F(BitcoinKeychains, SimpleUsedReceiveAddresses) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "151krzHgfkNoH3XHBzEVi6tSn4db7pVjmR");
@@ -80,7 +109,7 @@ TEST_F(BitcoinKeychains, SimpleUsedReceiveAddresses) {
 }
 
 TEST_F(BitcoinKeychains, SimpleUsedChangeAddresses) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(addresses.size() < 50000);
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "13hSrTAvfRzyEcjRcGS5gLEcNVNDhPvvUv");
@@ -91,7 +120,7 @@ TEST_F(BitcoinKeychains, SimpleUsedChangeAddresses) {
 }
 
 TEST_F(BitcoinKeychains, NonConsecutivesReceiveUsed) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("18tMkbibtxJPQoTPUv8s3mSXqYzEsrbeRb"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 11);
@@ -102,7 +131,7 @@ TEST_F(BitcoinKeychains, NonConsecutivesReceiveUsed) {
 }
 
 TEST_F(BitcoinKeychains, NonConsecutivesChangeUsed) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("1DYvv8T2q2UFv9hQnbLaPZAuQw8mYx3DAD"));
         auto newAddresses = keychain.getAllObservableAddresses(0, 10);
@@ -113,7 +142,7 @@ TEST_F(BitcoinKeychains, NonConsecutivesChangeUsed) {
 }
 
 TEST_F(BitcoinKeychains, CheckIfEmpty) {
-    testP2PKHKeychain(XPUB, [] (P2PKHBitcoinLikeKeychain& keychain) {
+    testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         EXPECT_TRUE(keychain.isEmpty());
         auto addresses = keychain.getAllObservableAddresses(0, 40);
         EXPECT_TRUE(keychain.isEmpty());

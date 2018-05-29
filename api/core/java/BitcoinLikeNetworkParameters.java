@@ -22,6 +22,10 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final boolean UsesTimestampedTransaction;
 
+    /*package*/ final long TimestampDelay;
+
+    /*package*/ final byte[] SigHash;
+
     public BitcoinLikeNetworkParameters(
             String Identifier,
             byte[] P2PKHVersion,
@@ -30,7 +34,9 @@ public final class BitcoinLikeNetworkParameters {
             BitcoinLikeFeePolicy FeePolicy,
             long DustAmount,
             String MessagePrefix,
-            boolean UsesTimestampedTransaction) {
+            boolean UsesTimestampedTransaction,
+            long TimestampDelay,
+            byte[] SigHash) {
         this.Identifier = Identifier;
         this.P2PKHVersion = P2PKHVersion;
         this.P2SHVersion = P2SHVersion;
@@ -39,6 +45,8 @@ public final class BitcoinLikeNetworkParameters {
         this.DustAmount = DustAmount;
         this.MessagePrefix = MessagePrefix;
         this.UsesTimestampedTransaction = UsesTimestampedTransaction;
+        this.TimestampDelay = TimestampDelay;
+        this.SigHash = SigHash;
     }
 
     public String getIdentifier() {
@@ -73,6 +81,14 @@ public final class BitcoinLikeNetworkParameters {
         return UsesTimestampedTransaction;
     }
 
+    public long getTimestampDelay() {
+        return TimestampDelay;
+    }
+
+    public byte[] getSigHash() {
+        return SigHash;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeNetworkParameters{" +
@@ -84,6 +100,8 @@ public final class BitcoinLikeNetworkParameters {
                 "," + "DustAmount=" + DustAmount +
                 "," + "MessagePrefix=" + MessagePrefix +
                 "," + "UsesTimestampedTransaction=" + UsesTimestampedTransaction +
+                "," + "TimestampDelay=" + TimestampDelay +
+                "," + "SigHash=" + SigHash +
         "}";
     }
 

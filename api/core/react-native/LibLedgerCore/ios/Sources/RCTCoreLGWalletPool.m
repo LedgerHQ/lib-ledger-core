@@ -201,4 +201,13 @@ RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)res
         reject(@"impl_call_error", @"Error while calling LGWalletPool::getEventBus", nil);
     }
 }
+
+/**
+ *Erase data (in user's DB) relative to wallet since given date
+ *@param date, start date of data deletion
+ */
+RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(nonnull NSDate *)date) {
+
+    [self.objcImpl eraseDataSince:date];
+}
 @end

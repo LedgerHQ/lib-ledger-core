@@ -59,6 +59,21 @@ RCT_REMAP_METHOD(getBalance,getBalance:(nullable id<LGAmountCallback>)callback) 
 }
 
 /**
+ *Get balance of account at a precise interval with a certain granularity
+ *@param start, lower bound of search range
+ *@param end, upper bound of search range
+ *@param precision, granularity at which we want results
+ *@param callback, ListCallback returning a list of Amount object which represents account's balance
+ */
+RCT_REMAP_METHOD(getBalanceHistory,getBalanceHistory:(nonnull NSString *)start
+                                                 end:(nonnull NSString *)end
+                                              period:(LGTimePeriod)period
+                                            callback:(nullable id<LGAmountListCallback>)callback) {
+
+    [self.objcImpl getBalanceHistory:start end:end period:period callback:callback];
+}
+
+/**
  *Get synchronization status of account
  *@return bool
  */
@@ -296,5 +311,14 @@ RCT_REMAP_METHOD(getRestoreKey,getRestoreKeyWithResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGAccount::getRestoreKey", nil);
     }
+}
+
+/**
+ *Erase data (in user's DB) relative to wallet since given date
+ *@param date, start date of data deletion
+ */
+RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(nonnull NSDate *)date) {
+
+    [self.objcImpl eraseDataSince:date];
 }
 @end

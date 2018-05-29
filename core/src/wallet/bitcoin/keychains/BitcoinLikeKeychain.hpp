@@ -88,6 +88,7 @@ namespace ledger {
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;
             const DerivationScheme& getFullDerivationScheme() const;
+            bool isSegwit() const;
 
             virtual std::string getRestoreKey() const = 0;
             virtual int32_t getObservableRangeSize() const = 0;

@@ -99,6 +99,10 @@ namespace ledger {
 
             FuturePtr<ledger::core::Amount> getBalance() override;
 
+            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
+                                                                           const std::string & end,
+                                                                           api::TimePeriod precision) override;
+
             FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> getTransaction(const std::string& hash);
 
             std::shared_ptr<api::EventBus> synchronize() override;

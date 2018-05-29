@@ -356,7 +356,23 @@ NAN_METHOD(NJSWalletPool::createWallet) {
 
         auto field_opt_arg_1_6_8 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_1_6_8 = Nan::To<bool>(field_opt_arg_1_6_8).FromJust();
-        BitcoinLikeNetworkParameters opt_arg_1_6(opt_arg_1_6_1, opt_arg_1_6_2, opt_arg_1_6_3, opt_arg_1_6_4, opt_arg_1_6_5, opt_arg_1_6_6, opt_arg_1_6_7, opt_arg_1_6_8);
+
+        auto field_opt_arg_1_6_9 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_1_6_9 = Nan::To<int64_t>(field_opt_arg_1_6_9).FromJust();
+
+        auto field_opt_arg_1_6_10 = Nan::Get(field_arg_1_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_1_6_10;
+        Local<Array> opt_arg_1_6_10_container = Local<Array>::Cast(field_opt_arg_1_6_10);
+        for(uint32_t opt_arg_1_6_10_id = 0; opt_arg_1_6_10_id < opt_arg_1_6_10_container->Length(); opt_arg_1_6_10_id++)
+        {
+            if(opt_arg_1_6_10_container->Get(opt_arg_1_6_10_id)->IsUint32())
+            {
+                auto opt_arg_1_6_10_elem = Nan::To<uint32_t>(opt_arg_1_6_10_container->Get(opt_arg_1_6_10_id)).FromJust();
+                opt_arg_1_6_10.emplace_back(opt_arg_1_6_10_elem);
+            }
+        }
+
+        BitcoinLikeNetworkParameters opt_arg_1_6(opt_arg_1_6_1, opt_arg_1_6_2, opt_arg_1_6_3, opt_arg_1_6_4, opt_arg_1_6_5, opt_arg_1_6_6, opt_arg_1_6_7, opt_arg_1_6_8, opt_arg_1_6_9, opt_arg_1_6_10);
 
         arg_1_6.emplace(opt_arg_1_6);
     }
@@ -498,6 +514,27 @@ NAN_METHOD(NJSWalletPool::getEventBus) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSWalletPool::eraseDataSince) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSWalletPool::eraseDataSince needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSWalletPool* obj = Nan::ObjectWrap::Unwrap<NJSWalletPool>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSWalletPool::eraseDataSince : implementation of WalletPool is not valid");
+    }
+    cpp_impl->eraseDataSince(arg_0);
+}
 
 NAN_METHOD(NJSWalletPool::New) {
     //Only new allowed
@@ -631,6 +668,7 @@ void NJSWalletPool::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getCurrency", getCurrency);
     Nan::SetPrototypeMethod(func_template,"getLastBlock", getLastBlock);
     Nan::SetPrototypeMethod(func_template,"getEventBus", getEventBus);
+    Nan::SetPrototypeMethod(func_template,"eraseDataSince", eraseDataSince);
     //Set object prototype
     WalletPool_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

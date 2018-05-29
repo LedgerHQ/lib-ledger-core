@@ -125,11 +125,13 @@ namespace ledger {
                     amount = amount + output->value();
                     buddy->logger->debug("Collected: {} Needed: {}", amount.toString(), buddy->outputAmount.toString());
                     pickedInputs += 1;
-
-                    if (hasEnough(buddy, amount, pickedInputs))
+                    bool computeOutputAmount = pickedInputs == utxo.size();
+                    if (hasEnough(buddy, amount, pickedInputs, computeOutputAmount)) {
                         break;
-                    if (pickedInputs >= richutxo->size())
+                    }
+                    if (pickedInputs >= richutxo->size() && !buddy->request.wipe) {
                         throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+                    }
                 }
 
                 buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedInputs, amount.toString(), buddy->outputAmount.toString());
@@ -151,16 +153,17 @@ namespace ledger {
 
         bool BitcoinLikeStrategyUtxoPicker::hasEnough(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                       const BigInt &aggregatedAmount,
-                                                      int inputCount) {
+                                                      int inputCount,
+                                                      bool computeOutputAmount) {
             if (buddy->outputAmount > aggregatedAmount) return false;
             // TODO Handle multiple outputs
-            // TODO Handle segwit
 
             auto computeAmountWithFees = [&] (int addedOutputCount) -> BigInt {
+                auto outputCount = buddy->request.outputs.size() + addedOutputCount;
                 auto size = BitcoinLikeTransactionApi::estimateSize(
                         inputCount,
-                        buddy->request.outputs.size() + addedOutputCount,
-                        getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, false
+                        outputCount,
+                        getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, (buddy->keychain)->isSegwit()
                 );
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount,  buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.min, size.max);
@@ -171,18 +174,24 @@ namespace ledger {
             auto minimumNeededAmount = computeAmountWithFees(0);
             buddy->logger->debug("Minimum required with fees {} got {}", minimumNeededAmount.toString(), aggregatedAmount.toString());
             if (buddy->outputAmount > minimumNeededAmount) return false;
-            BigInt changeAmount = aggregatedAmount - minimumNeededAmount;
-            buddy->changeAmount = changeAmount;
-            buddy->logger->debug("Change amount {}, dust {}", changeAmount.toString(), BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount).toString());
-            if (changeAmount > BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount)) {
-                // The change amount is bigger than the dust so we need to create a change output,
-                // let's see if we have enough fees to handle this output
-                auto minimumNeededAmountWithChange = computeAmountWithFees(1);
-                buddy->changeAmount = aggregatedAmount - minimumNeededAmountWithChange;
-                buddy->logger->debug("Minimum required with change {} got {}", minimumNeededAmountWithChange.toString(), aggregatedAmount.toString());
-                if (buddy->outputAmount > minimumNeededAmountWithChange) return false;
+
+            //No need for change if we're wiping
+            if(!buddy->request.wipe) {
+                BigInt changeAmount = aggregatedAmount - minimumNeededAmount;
+                buddy->changeAmount = changeAmount;
+                buddy->logger->debug("Change amount {}, dust {}", changeAmount.toString(), BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount).toString());
+                if (changeAmount > BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount)) {
+                    // The change amount is bigger than the dust so we need to create a change output,
+                    // let's see if we have enough fees to handle this output
+                    auto minimumNeededAmountWithChange = computeAmountWithFees(1);
+                    buddy->changeAmount = aggregatedAmount - minimumNeededAmountWithChange;
+                    buddy->logger->debug("Minimum required with change {} got {}", minimumNeededAmountWithChange.toString(), aggregatedAmount.toString());
+                    if (buddy->outputAmount > minimumNeededAmountWithChange) return false;
+                }
+            } else if(computeOutputAmount) {
+                buddy->outputAmount = aggregatedAmount - minimumNeededAmount;
             }
-            return true;
+            return !buddy->request.wipe;
         }
 
     }

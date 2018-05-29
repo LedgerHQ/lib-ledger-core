@@ -31,8 +31,12 @@
 
 #include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
+#include "../fixtures/testnet_xpub_fixtures.h"
 #include <wallet/common/OperationQuery.h>
-
+#include <api/KeychainEngines.hpp>
+#include <utils/DateUtils.hpp>
+#include <iostream>
+using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
 public:
     void SetUp() override {
@@ -78,6 +82,15 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
     EXPECT_EQ(uxtoCount, 8);
 }
 
+TEST_F(AccountsPublicInterfaceTest, GetBalanceHistoryOnAccountWithSomeTxs) {
+    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto fromDate = "2017-10-12T13:38:23Z";
+    auto toDate = DateUtils::toJSON(DateUtils::now());
+    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
+    auto balance = wait(account->getBalance());
+    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
+}
+
 TEST_F(AccountsPublicInterfaceTest, QueryOperations) {
     auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
     auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
@@ -90,4 +103,22 @@ TEST_F(AccountsPublicInterfaceTest, QueryOperationsOnEmptyAccount) {
     auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
     auto operations = wait(query->execute());
     EXPECT_EQ(operations.size(), 0);
+}
+
+TEST_F(AccountsPublicInterfaceTest, GetTestnetUnits) {
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
+    wallet = wait(pool->createWallet("my_wallet_testnet", "bitcoin_testnet", configuration));
+    auto currency = pool->getCurrency("bitcoin");
+    EXPECT_EQ(currency->name, "bitcoin");
+    cout<<">>>> Get account"<<endl;
+    auto account = ledger::testing::testnet_xpub::inflate(pool, wallet);
+    cout<<">>>> Get balance"<<endl;
+    auto balance = wait(account->getBalance());
+    cout<<">>>> Get balance toLong"<<endl;
+    auto balanceLong = balance->toLong();
+    //EXPECT_EQ(balanceLong, 100L);
+    //auto balance = wait(account->getBalance());
+    //auto balance =
+    //EXPECT_EQ();
 }

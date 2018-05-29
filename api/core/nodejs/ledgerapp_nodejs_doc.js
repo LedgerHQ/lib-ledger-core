@@ -410,6 +410,14 @@ declare class NJSAccount
      */
     declare function getBalance(callback: NJSAmountCallback);
     /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    declare function getBalanceHistory(start: string, end: string, period: TimePeriod, callback: NJSAmountListCallback);
+    /**
      *Get synchronization status of account
      *@return bool
      */
@@ -483,6 +491,11 @@ declare class NJSAccount
     declare function getLastBlock(callback: NJSBlockCallback);
     /** Get the key used to generate the account */
     declare function getRestoreKey(): string;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -496,6 +509,19 @@ declare class NJSAmountCallback
      * @params error optional of type Error, non null if main task succeeded
      */
     declare function onCallback(result: ?NJSAmount, error: ?Error);
+}
+/**
+ *Callback triggered by main completed task,
+ *returns optional result as list of template type T
+ */
+declare class NJSAmountListCallback
+{
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
+    declare function onCallback(result: ?Array<NJSAmount>, error: ?Error);
 }
 /**
  *Callback triggered by main completed task,
@@ -646,6 +672,11 @@ declare class NJSWallet
     declare function newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: NJSAccountCallback);
     /**TODO */
     declare function newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: NJSAccountCallback);
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -1642,6 +1673,12 @@ declare class NJSBitcoinLikeTransactionBuilder
      */
     declare function sendToAddress(amount: NJSAmount, address: string): NJSBitcoinLikeTransactionBuilder;
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function wipeToAddress(address: string): NJSBitcoinLikeTransactionBuilder;
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */
@@ -1799,6 +1836,11 @@ declare class NJSWalletPool
      *@param EventBus object
      */
     declare function getEventBus(): NJSEventBus;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
