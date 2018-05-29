@@ -122,6 +122,19 @@ namespace ledger {
                     {sigHashType::SIGHASH_ALL}
             );
 
+            const api::BitcoinLikeNetworkParameters LITECOIN(
+                    "ltc",
+                    {0x30},
+                    {0x05},
+                    {0x01, 0x9D, 0xA4, 0x62},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Litecoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
@@ -130,7 +143,8 @@ namespace ledger {
                 BITCOIN_CASH,
                 BITCOIN_GOLD,
                 ZCASH,
-                ZENCASH
+                ZENCASH,
+                LITECOIN
             });
         }
     }

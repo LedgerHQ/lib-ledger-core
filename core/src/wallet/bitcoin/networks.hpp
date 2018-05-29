@@ -51,6 +51,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters BITCOIN_GOLD;
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters ZCASH;
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters ZENCASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters LITECOIN;
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             template<class Archive>

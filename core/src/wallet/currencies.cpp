@@ -91,13 +91,22 @@ namespace ledger {
                             .paymentUri("zencash")
                             .unit("zencash", 8, "ZEN");
 
+            const api::Currency LITECOIN =
+                    Currency("litecoin")
+                            .forkOfBitcoin(networks::LITECOIN)
+                            .bip44(2)
+                            .paymentUri("litecoin")
+                            .unit("litecoin", 8, "LTC");
+
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
                 BITCOIN_CASH,
                 BITCOIN_GOLD,
                 ZCASH,
-                ZENCASH
+                ZENCASH,
+                LITECOIN
             });
         }
     }
