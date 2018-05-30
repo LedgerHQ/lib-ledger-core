@@ -71,7 +71,9 @@ install:
 #Init submodules
 - cd C:\projects\lib-ledger-core
 - git submodule update --init --recursive
-
+#Checkout leveldb bitcoin-fork branch
+- cd core\lib\leveldb
+- git checkout bitcoin-fork || echo 'Checkout of bitcoin-fork branch on leveldb submodule failed'
 #Remove sh from path otherwise mingw fail to launch
 - ps: Get-Command sh.exe -All | Remove-Item
 

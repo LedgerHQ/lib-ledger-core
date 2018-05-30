@@ -80,5 +80,6 @@ extern KeychainTestData ZCASH_DATA;
 extern KeychainTestData ZENCASH_DATA;
 extern KeychainTestData LTC_DATA_LEGACY;
 extern KeychainTestData LTC_DATA_SEGWIT;
+extern KeychainTestData PEERCOIN_DATA;
 
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
