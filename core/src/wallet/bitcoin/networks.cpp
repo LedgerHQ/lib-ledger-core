@@ -147,6 +147,163 @@ namespace ledger {
                     0,
                     {sigHashType::SIGHASH_ALL}
             );
+
+            const api::BitcoinLikeNetworkParameters DIGIBYTE(
+                    "dgb",
+                    {0x1E},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DigiByte Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters HCASH(
+                    "hsr",
+                    {0x28},
+                    {0x78},
+                    {0x04, 0x88, 0xC2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "HShare Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters QTUM(
+                    "qtum",
+                    {0x3A},
+                    {0x32},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Qtum Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters STEALTHCOIN(
+                    "xst",
+                    {0x3E},
+                    {0x55},
+                    {0x8F, 0x62, 0x4B, 0x66},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "StealthCoin Signed Message:\n",
+                    true,
+                    15,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters VERTCOIN(
+                    "vtc",
+                    {0x47},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "VertCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters VIACOIN(
+                    "via",
+                    {0x47},
+                    {0x21},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "ViaCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters DASH(
+                    "dash",
+                    {0x4C},
+                    {0x01},
+                    {0x02, 0xFE, 0x52, 0xF8},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DarkCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters DOGECOIN(
+                    "dogecoin",
+                    {0x1E},
+                    {0x16},
+                    {0x02, 0xFA, 0xCA, 0xFD},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DogeCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters STRATIS(
+                    "stratis",
+                    {0x3F},
+                    {0x7D},
+                    {0x04, 0x88, 0xC2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Stratis Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters KOMODO(
+                    "komodo",
+                    {0x3C},
+                    {0x55},
+                    {0xF9, 0xEE, 0xE4, 0x8D},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Komodo Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters POSWALLET(
+                    "poswallet",
+                    {0x37},
+                    {0x55},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "PosWallet Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
+            const api::BitcoinLikeNetworkParameters PIVX(
+                    "pivx",
+                    {0x1E},
+                    {0x0D},
+                    {0x02, 0x2D, 0x25, 0x33},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DarkNet Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
+
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
                 BITCOIN,
@@ -156,7 +313,19 @@ namespace ledger {
                 ZCASH,
                 ZENCASH,
                 LITECOIN,
-                PEERCOIN
+                PEERCOIN,
+                DIGIBYTE,
+                HCASH,
+                QTUM,
+                STEALTHCOIN,
+                VERTCOIN,
+                VIACOIN,
+                DASH,
+                DOGECOIN,
+                STRATIS,
+                KOMODO,
+                POSWALLET,
+                PIVX
             });
         }
     }

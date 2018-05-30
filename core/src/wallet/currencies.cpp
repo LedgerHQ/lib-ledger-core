@@ -103,7 +103,97 @@ namespace ledger {
                             .forkOfBitcoin(networks::PEERCOIN)
                             .bip44(6)
                             .paymentUri("peercoin")
-                            .unit("peercoin", 6, "PPC");
+                            .unit("peercoin", 6, "PPC")
+                            .unit("milli-peercoin", 3, "mPPC");
+
+            const api::Currency DIGIBYTE =
+                    Currency("digibyte")
+                            .forkOfBitcoin(networks::DIGIBYTE)
+                            .bip44(20)
+                            .paymentUri("digibyte")
+                            .unit("digibyte", 8, "DGB");
+
+            const api::Currency HCASH =
+                    Currency("hcash")
+                            .forkOfBitcoin(networks::HCASH)
+                            .bip44(171)
+                            .paymentUri("hcash")
+                            .unit("hshare", 8, "HSR");
+
+            const api::Currency QTUM =
+                    Currency("hcash")
+                            .forkOfBitcoin(networks::QTUM)
+                            .bip44(88)
+                            .paymentUri("qtum")
+                            .unit("qtum", 8, "QTUM");
+
+            const api::Currency STEALTHCOIN =
+                    Currency("stealthcoin")
+                            .forkOfBitcoin(networks::STEALTHCOIN)
+                            .bip44(125)
+                            .paymentUri("stealthcoin")
+                            .unit("stealthcoin", 6, "XST")
+                            .unit("milli-stealthcoin", 3, "mXST");
+
+            const api::Currency VERTCOIN =
+                    Currency("vertcoin")
+                            .forkOfBitcoin(networks::VERTCOIN)
+                            .bip44(128)
+                            .paymentUri("vertcoin")
+                            .unit("vertcoin", 8, "VTC")
+                            .unit("milli-vertcoin", 5, "mVTC");
+
+            const api::Currency VIACOIN =
+                    Currency("viacoin")
+                            .forkOfBitcoin(networks::VIACOIN)
+                            .bip44(14)
+                            .paymentUri("viacoin")
+                            .unit("viacoin", 8, "VIA")
+                            .unit("milli-viacoin", 5, "mVIA");
+
+            const api::Currency DASH =
+                    Currency("dash")
+                            .forkOfBitcoin(networks::DASH)
+                            .bip44(5)
+                            .paymentUri("dash")
+                            .unit("dash", 8, "DASH");
+
+            const api::Currency DOGECOIN =
+                    Currency("dogecoin")
+                            .forkOfBitcoin(networks::DOGECOIN)
+                            .bip44(3)
+                            .paymentUri("dogecoin")
+                            .unit("dogecoin", 8, "DOGE")
+                            .unit("milli-dogecoin", 5, "mDOGE");
+
+            const api::Currency STRATIS =
+                    Currency("stratis")
+                            .forkOfBitcoin(networks::STRATIS)
+                            .bip44(105)
+                            .paymentUri("stratis")
+                            .unit("stratis", 8, "STRAT");
+
+            const api::Currency KOMODO =
+                    Currency("komodo")
+                            .forkOfBitcoin(networks::KOMODO)
+                            .bip44(141)
+                            .paymentUri("komodo")
+                            .unit("komodo", 8, "KMD");
+
+            const api::Currency POSWALLET =
+                    Currency("poswallet")
+                            .forkOfBitcoin(networks::POSWALLET)
+                            .bip44(47)
+                            .paymentUri("poswallet")
+                            .unit("poswallet", 8, "POSW");
+
+            const api::Currency PIVX =
+                    Currency("pivx")
+                            .forkOfBitcoin(networks::PIVX)
+                            .bip44(77)
+                            .paymentUri("pivx")
+                            .unit("pivx", 8, "PIVX")
+                            .unit("milli-pivx", 5, "mPIVX");
 
             const std::vector<api::Currency> ALL({
                 BITCOIN,
@@ -113,7 +203,19 @@ namespace ledger {
                 ZCASH,
                 ZENCASH,
                 LITECOIN,
-                PEERCOIN
+                PEERCOIN,
+                DIGIBYTE,
+                HCASH,
+                QTUM,
+                STEALTHCOIN,
+                VERTCOIN,
+                VIACOIN,
+                DASH,
+                DOGECOIN,
+                STRATIS,
+                KOMODO,
+                POSWALLET,
+                PIVX
             });
         }
     }

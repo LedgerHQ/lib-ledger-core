@@ -53,6 +53,18 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency ZENCASH;
             extern LIBCORE_EXPORT const api::Currency LITECOIN;
             extern LIBCORE_EXPORT const api::Currency PEERCOIN;
+            extern LIBCORE_EXPORT const api::Currency DIGIBYTE;
+            extern LIBCORE_EXPORT const api::Currency HCASH;
+            extern LIBCORE_EXPORT const api::Currency QTUM;
+            extern LIBCORE_EXPORT const api::Currency STEALTHCOIN;
+            extern LIBCORE_EXPORT const api::Currency VERTCOIN;
+            extern LIBCORE_EXPORT const api::Currency VIACOIN;
+            extern LIBCORE_EXPORT const api::Currency DASH;
+            extern LIBCORE_EXPORT const api::Currency DOGECOIN;
+            extern LIBCORE_EXPORT const api::Currency STRATIS;
+            extern LIBCORE_EXPORT const api::Currency KOMODO;
+            extern LIBCORE_EXPORT const api::Currency POSWALLET;
+            extern LIBCORE_EXPORT const api::Currency PIVX;
         };
     }
 }

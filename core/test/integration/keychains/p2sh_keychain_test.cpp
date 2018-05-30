@@ -105,6 +105,20 @@ TEST_F(BitcoinP2SHKeychains, LTCKeychainDerivation) {
     });
 }
 
+TEST_F(BitcoinP2SHKeychains, VertCoinKeychainDerivation) {
+    testP2SHKeychain(VTC_DATA_SEGWIT, [] (P2SHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "32Q13F9yNnp55Li3oJ832EnTY5D2skVV6M");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "31jepsZDaBeRzdf8qcrV83gZY4GHKuamPe");
+    });
+}
+
+TEST_F(BitcoinP2SHKeychains, ViaCoinKeychainDerivation) {
+    testP2SHKeychain(VIA_DATA_SEGWIT, [] (P2SHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "EMJaVjLFKoB4a5F256DxiMNh6SCR7Um1dZ");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "Ec6sBX4MZDBitLJ9sk6GZ6sfNzEzfReuzA");
+    });
+}
+
 TEST_F(BitcoinP2SHKeychains, SimpleUsedReceiveAddresses) {
     testP2SHKeychain(BTC_TESTNET_DATA, [] (P2SHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
