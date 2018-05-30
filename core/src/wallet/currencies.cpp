@@ -98,6 +98,12 @@ namespace ledger {
                             .paymentUri("litecoin")
                             .unit("litecoin", 8, "LTC");
 
+            const api::Currency PEERCOIN =
+                    Currency("peercoin")
+                            .forkOfBitcoin(networks::PEERCOIN)
+                            .bip44(6)
+                            .paymentUri("peercoin")
+                            .unit("peercoin", 6, "PPC");
 
             const std::vector<api::Currency> ALL({
                 BITCOIN,
@@ -106,7 +112,8 @@ namespace ledger {
                 BITCOIN_GOLD,
                 ZCASH,
                 ZENCASH,
-                LITECOIN
+                LITECOIN,
+                PEERCOIN
             });
         }
     }

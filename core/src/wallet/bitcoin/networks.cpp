@@ -135,7 +135,18 @@ namespace ledger {
                     {sigHashType::SIGHASH_ALL}
             );
 
-
+            const api::BitcoinLikeNetworkParameters PEERCOIN(
+                    "ppc",
+                    {0x37},
+                    {0x75},
+                    {0xE6, 0xE8, 0xE9, 0xE5},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "PPCoin Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL}
+            );
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
                 BITCOIN,
@@ -144,7 +155,8 @@ namespace ledger {
                 BITCOIN_GOLD,
                 ZCASH,
                 ZENCASH,
-                LITECOIN
+                LITECOIN,
+                PEERCOIN
             });
         }
     }

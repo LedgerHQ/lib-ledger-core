@@ -70,10 +70,15 @@ KeychainTestData ZENCASH_DATA(ledger::core::networks::ZENCASH,
 KeychainTestData LTC_DATA_LEGACY(ledger::core::networks::LITECOIN,
                               ledger::core::currencies::LITECOIN,
                               "Ltub2YPzVPhWX8TxWJ7XqGm9pogX1sHAH9FX85wUCLVEJyjCftKMELDNRoBqUMTozzweMi9rBhzD748mAYF3y9x36BzBXGZdQYmLQXfkhAknaJo",
-                              "44'/121'/0'");
+                              "44'/2'/0'");
 
 KeychainTestData LTC_DATA_SEGWIT(ledger::core::networks::LITECOIN,
                                       ledger::core::currencies::LITECOIN,
                                       "Ltub2ZBG1gnknDGm4ezDZmZRmbvfKqQr7sxge7oQwLJLCMVJRC7xxWhWRkpEBgvFw5dP8c3hXhswSoZviH3vKh2hg4GBuCR5GM5DaG9YZVT6TNT",
-                                      "49'/121'/0'");
+                                      "49'/2'/0'");
+
+KeychainTestData PEERCOIN_DATA(ledger::core::networks::PEERCOIN,
+                                 ledger::core::currencies::PEERCOIN,
+                                 "r29uBq5Q9CB7aRvUAcj5rj4DsqrkTfSr8KczaATNrkm4Wo8odYxDAxE2T8y9mwZpDVNuEdUYVddi8c3E86EvJK36SFUP421yF5qAfY8A5RDn865p",
+                                 "44'/6'/0'");
 
