@@ -240,7 +240,7 @@ namespace ledger {
             );
 
             const api::BitcoinLikeNetworkParameters DOGECOIN(
-                    "dogecoin",
+                    "doge",
                     {0x1E},
                     {0x16},
                     {0x02, 0xFA, 0xCA, 0xFD},
@@ -253,7 +253,7 @@ namespace ledger {
             );
 
             const api::BitcoinLikeNetworkParameters STRATIS(
-                    "stratis",
+                    "strat",
                     {0x3F},
                     {0x7D},
                     {0x04, 0x88, 0xC2, 0x1E},
@@ -266,7 +266,7 @@ namespace ledger {
             );
 
             const api::BitcoinLikeNetworkParameters KOMODO(
-                    "komodo",
+                    "kmd",
                     {0x3C},
                     {0x55},
                     {0xF9, 0xEE, 0xE4, 0x8D},
@@ -279,7 +279,7 @@ namespace ledger {
             );
 
             const api::BitcoinLikeNetworkParameters POSWALLET(
-                    "poswallet",
+                    "posw",
                     {0x37},
                     {0x55},
                     {0x04, 0x88, 0xB2, 0x1E},
