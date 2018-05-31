@@ -216,11 +216,20 @@ namespace ledger {
                     operation.refreshUid();
                     if (OperationDatabaseHelper::putOperation(sql, operation))
                         emitNewOperationEvent(operation);
-
-                    //Update account_uid column of bitcoin_outputs table
-                    sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE transaction_hash = :tx_hash",
-                            soci::use(getAccountUid()), soci::use(transaction.hash);
                 }
+
+                //Update account_uid column of bitcoin_outputs table
+                for (auto& o : accountOutputs) {
+                    if (o.first->address.nonEmpty()) {
+                        int count = 0;
+                        sql << "SELECT COUNT(*) FROM bitcoin_outputs WHERE address = :address", soci::use(o.first->address.getValue()), soci::into(count);
+                        if (count > 0) {
+                            sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address",
+                                    soci::use(getAccountUid()), soci::use(o.first->address.getValue());
+                        }
+                    }
+                }
+
             }
 
             return result;
