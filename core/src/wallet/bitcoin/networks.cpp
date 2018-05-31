@@ -125,7 +125,7 @@ namespace ledger {
             const api::BitcoinLikeNetworkParameters LITECOIN(
                     "ltc",
                     {0x30},
-                    {0x05},
+                    {0x32},
                     {0x01, 0x9D, 0xA4, 0x62},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     10000,

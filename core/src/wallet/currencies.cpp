@@ -96,7 +96,9 @@ namespace ledger {
                             .forkOfBitcoin(networks::LITECOIN)
                             .bip44(2)
                             .paymentUri("litecoin")
-                            .unit("litecoin", 8, "LTC");
+                            .unit("litecoin", 8, "LTC")
+                            .unit("milli-litecoin", 5, "mLTC")
+                            .unit("micro-litecoin", 2, "μLTC");
 
             const api::Currency PEERCOIN =
                     Currency("peercoin")
@@ -121,7 +123,7 @@ namespace ledger {
                             .unit("hshare", 8, "HSR");
 
             const api::Currency QTUM =
-                    Currency("hcash")
+                    Currency("qtum")
                             .forkOfBitcoin(networks::QTUM)
                             .bip44(88)
                             .paymentUri("qtum")
