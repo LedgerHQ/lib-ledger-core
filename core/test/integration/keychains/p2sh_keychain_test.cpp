@@ -100,8 +100,8 @@ TEST_F(BitcoinP2SHKeychains, ZCASHKeychainDerivation) {
 
 TEST_F(BitcoinP2SHKeychains, LTCKeychainDerivation) {
     testP2SHKeychain(LTC_DATA_SEGWIT, [] (P2SHBitcoinLikeKeychain& keychain) {
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "3C4g5RoRhbKRcNjaG692sxzDHviTMiV2v1");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "395xTEfWQWPYdRxkf9cetwi3uWNsM6C3SE");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "MJGpPKDPeiArQt1UMy8NhcEccdJuRNkbMj");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "MFJ6m85UMdEyRwEem2bziaxTECyKKWnjGp");
     });
 }
 
