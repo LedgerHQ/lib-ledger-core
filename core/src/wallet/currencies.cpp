@@ -59,7 +59,7 @@ namespace ledger {
             const api::Currency BITCOIN_CASH =
                     Currency("bitcoin_cash")
                             .forkOfBitcoin(networks::BITCOIN_CASH)
-                            .bip44(0)
+                            .bip44(145)
                             .paymentUri("bitcoin_cash")
                             .unit("satoshi", 0, "satoshi")
                             .unit("bitcoin cash", 8, "BTH")
@@ -69,7 +69,7 @@ namespace ledger {
             const api::Currency BITCOIN_GOLD =
                     Currency("bitcoin_gold")
                             .forkOfBitcoin(networks::BITCOIN_GOLD)
-                            .bip44(0)
+                            .bip44(156)
                             .paymentUri("bitcoin_gold")
                             .unit("satoshi", 0, "satoshi")
                             .unit("bitcoin gold", 8, "BTG")
@@ -81,7 +81,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::ZCASH)
                             .bip44(133)
                             .paymentUri("zcash")
-                            .unit("zatoshi", 0, "zatoshi")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("zcash", 8, "ZEC");
 
             const api::Currency ZENCASH =
@@ -89,6 +89,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::ZENCASH)
                             .bip44(121)
                             .paymentUri("zencash")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("zencash", 8, "ZEN");
 
             const api::Currency LITECOIN =
@@ -96,6 +97,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::LITECOIN)
                             .bip44(2)
                             .paymentUri("litecoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("litecoin", 8, "LTC")
                             .unit("milli-litecoin", 5, "mLTC")
                             .unit("micro-litecoin", 2, "μLTC");
@@ -105,6 +107,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::PEERCOIN)
                             .bip44(6)
                             .paymentUri("peercoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("peercoin", 6, "PPC")
                             .unit("milli-peercoin", 3, "mPPC");
 
@@ -113,6 +116,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::DIGIBYTE)
                             .bip44(20)
                             .paymentUri("digibyte")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("digibyte", 8, "DGB");
 
             const api::Currency HCASH =
@@ -120,6 +124,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::HCASH)
                             .bip44(171)
                             .paymentUri("hcash")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("hshare", 8, "HSR");
 
             const api::Currency QTUM =
@@ -127,6 +132,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::QTUM)
                             .bip44(88)
                             .paymentUri("qtum")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("qtum", 8, "QTUM");
 
             const api::Currency STEALTHCOIN =
@@ -134,6 +140,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::STEALTHCOIN)
                             .bip44(125)
                             .paymentUri("stealthcoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("stealthcoin", 6, "XST")
                             .unit("milli-stealthcoin", 3, "mXST");
 
@@ -142,6 +149,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::VERTCOIN)
                             .bip44(128)
                             .paymentUri("vertcoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("vertcoin", 8, "VTC")
                             .unit("milli-vertcoin", 5, "mVTC");
 
@@ -150,6 +158,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::VIACOIN)
                             .bip44(14)
                             .paymentUri("viacoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("viacoin", 8, "VIA")
                             .unit("milli-viacoin", 5, "mVIA");
 
@@ -158,6 +167,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::DASH)
                             .bip44(5)
                             .paymentUri("dash")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("dash", 8, "DASH");
 
             const api::Currency DOGECOIN =
@@ -165,6 +175,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::DOGECOIN)
                             .bip44(3)
                             .paymentUri("dogecoin")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("dogecoin", 8, "DOGE")
                             .unit("milli-dogecoin", 5, "mDOGE");
 
@@ -173,6 +184,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::STRATIS)
                             .bip44(105)
                             .paymentUri("stratis")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("stratis", 8, "STRAT");
 
             const api::Currency KOMODO =
@@ -180,6 +192,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::KOMODO)
                             .bip44(141)
                             .paymentUri("komodo")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("komodo", 8, "KMD");
 
             const api::Currency POSWALLET =
@@ -187,6 +200,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::POSWALLET)
                             .bip44(47)
                             .paymentUri("poswallet")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("poswallet", 8, "POSW");
 
             const api::Currency PIVX =
@@ -194,6 +208,7 @@ namespace ledger {
                             .forkOfBitcoin(networks::PIVX)
                             .bip44(77)
                             .paymentUri("pivx")
+                            .unit("satoshi", 0, "satoshi")
                             .unit("pivx", 8, "PIVX")
                             .unit("milli-pivx", 5, "mPIVX");
 
