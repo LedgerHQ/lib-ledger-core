@@ -37,7 +37,6 @@ namespace ledger {
 		namespace bch_xpub {
 			extern core::api::ExtendedKeyAccountCreationInfo XPUB_INFO;
 			extern const std::string TX_1;
-			extern const std::string TX_2;
 
 			std::shared_ptr<core::BitcoinLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
 		}
