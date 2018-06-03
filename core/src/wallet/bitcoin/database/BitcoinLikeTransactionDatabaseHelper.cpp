@@ -54,7 +54,10 @@ namespace ledger {
                                });
             if (transactionExists(sql, tx.hash)) {
                 // UPDATE (we only update block information)
-
+                if (tx.block.nonEmpty()) {
+                    sql << "UPDATE bitcoin_transactions SET block_uid = :uid WHERE hash = :tx_hash",
+                            use(blockUid), use(tx.hash);
+                }
                 return false;
             } else {
                 // Insert

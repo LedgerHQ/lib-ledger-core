@@ -154,6 +154,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeUtxoPicker> _picker;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
+            uint64_t _currentBlockHeight;
         };
     }
 }
