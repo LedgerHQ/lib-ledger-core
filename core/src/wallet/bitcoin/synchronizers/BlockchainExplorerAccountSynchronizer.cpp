@@ -140,29 +140,30 @@ namespace ledger {
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
 
+            buddy->logger
+                    ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
+                           account->getIndex(),
+                           account->getKeychain()
+                                   ->getRestoreKey(),
+                           account->getWallet()
+                                   ->getName(), DateUtils::toJSON(buddy->startDate)
+                    );
+
+            initializeSavedState(buddy->savedState, buddy->halfBatchSize);
+
             //Get all transactions in DB that may be dropped (txs without block_uid)
             soci::session sql(buddy->wallet->getDatabase()->getPool());
-            soci::rowset<soci::row> rows = (sql.prepare << "SELECT btc_op.transaction_hash, btc_op.uid FROM bitcoin_operations AS btc_op "
-                                                            "LEFT OUTER JOIN bitcoin_transactions AS tx ON tx.hash = btc_op.transaction_hash "
-                                                            "LEFT OUTER JOIN operations AS op ON op.account_uid = :uid "
-                                                            "WHERE tx.block_uid IS NULL", soci::use(account->getAccountUid()));
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, btc_op.transaction_hash FROM operations AS op "
+                                                            "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
+                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",
+                                                            soci::use(account->getAccountUid()));
 
             for (auto &row : rows) {
-                if (row.get_indicator(0) != soci::i_null) {
-                    buddy->droppedTransactions.insert(std::pair<std::string, std::string>(row.get<std::string>(0), row.get<std::string>(1)));
+                if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
+                    buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
                 }
             }
 
-            buddy->logger
-                 ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
-                        account->getIndex(),
-                        account->getKeychain()
-                               ->getRestoreKey(),
-                        account->getWallet()
-                               ->getName(), DateUtils::toJSON(buddy->startDate)
-                 );
-
-            initializeSavedState(buddy->savedState, buddy->halfBatchSize);
             auto self = shared_from_this();
             _explorer->getCurrentBlock().onComplete(account->getContext(), [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
                 if (block.isSuccess()) {
@@ -186,11 +187,14 @@ namespace ledger {
 
                 //Delete dropped txs from DB
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
-                for (auto& tx : buddy->droppedTransactions) {
-                    //delete tx.second from DB (from operations)
-                    sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                for (auto& tx : buddy->transactionsToDrop) {
+                    //Check if tx is pending
+                    auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
+                    if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
+                        //delete tx.second from DB (from operations)
+                        sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                    }
                 }
-                buddy->droppedTransactions.clear();
 
                 self->_currentAccount = nullptr;
                 return unit;
@@ -259,8 +263,19 @@ namespace ledger {
                         soci::transaction tr(sql);
                         for (const auto& tx : bulk->transactions) {
                             buddy->account->putTransaction(sql, tx);
-                            //Remove returned explorer's txs from buddy->droppedTransactions
-                            buddy->droppedTransactions.erase(tx.hash);
+
+                            //Update first pendingTxHash in savedState
+                            auto it = buddy->transactionsToDrop.find(tx.hash);
+                            if (it != buddy->transactionsToDrop.end()) {
+                                //If block non empty, tx is no longer pending
+                                if (tx.block.nonEmpty()) {
+                                    buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                                } else { //Otherwise tx is in mempool but pending
+                                    buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                                }
+                            }
+                            //Remove from tx to drop
+                            buddy->transactionsToDrop.erase(tx.hash);
                         }
                         tr.commit();
                         buddy->account->emitEventsNow();
