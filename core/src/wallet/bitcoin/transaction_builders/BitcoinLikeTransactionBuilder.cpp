@@ -37,8 +37,7 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/networks.hpp>
 #include <utils/hex.h>
-#include <iostream>
-using namespace std;
+
 namespace ledger {
     namespace core {
 
@@ -192,9 +191,6 @@ namespace ledger {
                        << std::vector<uint8_t>({0x03})
                        << networks::BIP115_PARAMETERS.blockHeight
                        << btccore::OP_CHECKBLOCKATHEIGHT;
-                cout<<"========================================"<<endl;
-                cout<<script.toString()<<endl;
-                cout<<"========================================"<<endl;
             }
             return std::make_shared<BitcoinLikeScriptApi>(script);
         }
