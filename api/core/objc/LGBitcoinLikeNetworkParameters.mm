@@ -16,6 +16,7 @@
                 UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                             TimestampDelay:(int64_t)TimestampDelay
                                    SigHash:(nonnull NSData *)SigHash
+                            AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs
 {
     if (self = [super init]) {
         _Identifier = [Identifier copy];
@@ -28,6 +29,7 @@
         _UsesTimestampedTransaction = UsesTimestampedTransaction;
         _TimestampDelay = TimestampDelay;
         _SigHash = [SigHash copy];
+        _AdditionalBIPs = [AdditionalBIPs copy];
     }
     return self;
 }
@@ -42,6 +44,7 @@
                                         UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                                                     TimestampDelay:(int64_t)TimestampDelay
                                                            SigHash:(nonnull NSData *)SigHash
+                                                    AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs
 {
     return [[self alloc] initWithIdentifier:Identifier
                                P2PKHVersion:P2PKHVersion
@@ -52,12 +55,13 @@
                               MessagePrefix:MessagePrefix
                  UsesTimestampedTransaction:UsesTimestampedTransaction
                              TimestampDelay:TimestampDelay
-                                    SigHash:SigHash];
+                                    SigHash:SigHash
+                             AdditionalBIPs:AdditionalBIPs];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p Identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ FeePolicy:%@ DustAmount:%@ MessagePrefix:%@ UsesTimestampedTransaction:%@ TimestampDelay:%@ SigHash:%@>", self.class, (void *)self, self.Identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.FeePolicy), @(self.DustAmount), self.MessagePrefix, @(self.UsesTimestampedTransaction), @(self.TimestampDelay), self.SigHash];
+    return [NSString stringWithFormat:@"<%@ %p Identifier:%@ P2PKHVersion:%@ P2SHVersion:%@ XPUBVersion:%@ FeePolicy:%@ DustAmount:%@ MessagePrefix:%@ UsesTimestampedTransaction:%@ TimestampDelay:%@ SigHash:%@ AdditionalBIPs:%@>", self.class, (void *)self, self.Identifier, self.P2PKHVersion, self.P2SHVersion, self.XPUBVersion, @(self.FeePolicy), @(self.DustAmount), self.MessagePrefix, @(self.UsesTimestampedTransaction), @(self.TimestampDelay), self.SigHash, self.AdditionalBIPs];
 }
 
 @end

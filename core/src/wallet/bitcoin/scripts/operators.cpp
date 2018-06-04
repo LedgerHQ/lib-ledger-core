@@ -261,8 +261,8 @@ namespace ledger {
                         return "OP_CHECKSEQUENCEVERIFY";
                     case OP_NOP4                   :
                         return "OP_NOP4";
-                    case OP_NOP5                   :
-                        return "OP_NOP5";
+                    case OP_CHECKBLOCKATHEIGHT                   :
+                        return "OP_CHECKBLOCKATHEIGHT";
                     case OP_NOP6                   :
                         return "OP_NOP6";
                     case OP_NOP7                   :

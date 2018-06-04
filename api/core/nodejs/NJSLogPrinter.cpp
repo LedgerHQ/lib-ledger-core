@@ -131,7 +131,7 @@ std::shared_ptr<ExecutionContext> NJSLogPrinter::getContext()
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    Handle<Value> args[0] = {};
+    Handle<Value> args[1];
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
     if(!local_njs_impl->IsObject())
     {

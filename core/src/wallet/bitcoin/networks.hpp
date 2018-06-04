@@ -67,6 +67,13 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters PIVX;
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
+            extern LIBCORE_EXPORT const std::string BIP115;
+            struct BIP115Parameters {
+                std::string blockHash;
+                std::vector<uint8_t> blockHeight;
+            };
+            extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
+
             template<class Archive>
             void serialize(Archive & archive,
                            api::BitcoinLikeNetworkParameters & p)
@@ -81,7 +88,8 @@ namespace ledger {
                     p.MessagePrefix,
                     p.UsesTimestampedTransaction,
                     p.TimestampDelay,
-                    p.SigHash
+                    p.SigHash,
+                    p.AdditionalBIPs
                 );
             }
 

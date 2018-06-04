@@ -93,6 +93,14 @@ void NJSCurrencyListCallback::onCallback(const std::experimental::optional<std::
                 }
 
                 Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_tmp_elem_6_tmp_10);
+                Local<Array> arg_0_tmp_elem_6_tmp_11 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_11_id = 0; arg_0_tmp_elem_6_tmp_11_id < arg_0_tmp_elem_6_optional.AdditionalBIPs.size(); arg_0_tmp_elem_6_tmp_11_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_11_elem = Nan::New<String>(arg_0_tmp_elem_6_optional.AdditionalBIPs[arg_0_tmp_elem_6_tmp_11_id]).ToLocalChecked();
+                    arg_0_tmp_elem_6_tmp_11->Set((int)arg_0_tmp_elem_6_tmp_11_id,arg_0_tmp_elem_6_tmp_11_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_tmp_elem_6_tmp_11);
 
                 arg_0_tmp_elem_6 = arg_0_tmp_elem_6_tmp;
             }
