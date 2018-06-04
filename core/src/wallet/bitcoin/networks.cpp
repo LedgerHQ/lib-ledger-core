@@ -43,6 +43,12 @@ namespace ledger {
                 SIGHASH_ANYONECANPAY = 0x80
             };
 
+            const std::string BIP115 = "BIP115";
+            const BIP115Parameters BIP115_PARAMETERS = {
+                    "209ec9845acb02fab24e1c0368b3b517c1a4488fba97f0e3459ac053ea01000000",
+                    {0xC0,0x1F,0x02}
+            };
+
             const api::BitcoinLikeNetworkParameters BITCOIN(
                     "btc",
                     {0x00},
@@ -53,7 +59,8 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET(
@@ -66,7 +73,8 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
@@ -79,21 +87,23 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID},
+                    {}
             );
 
 
             const api::BitcoinLikeNetworkParameters BITCOIN_GOLD(
                     "btg",
-                    {0x26},//{0x00}, TODO: check if tx use old or new
-                    {0x17},//{0x05},
+                    {0x26},
+                    {0x17},
                     {0x04, 0x88, 0xB2, 0x1E},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     5430,
                     "Bitcoin gold signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters ZCASH(
@@ -106,7 +116,8 @@ namespace ledger {
                     "Zcash Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters ZENCASH(
@@ -119,7 +130,8 @@ namespace ledger {
                     "Zencash Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {BIP115}
             );
 
             const api::BitcoinLikeNetworkParameters LITECOIN(
@@ -132,7 +144,8 @@ namespace ledger {
                     "Litecoin Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters PEERCOIN(
@@ -145,7 +158,8 @@ namespace ledger {
                     "PPCoin Signed Message:\n",
                     true,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters DIGIBYTE(
@@ -158,7 +172,8 @@ namespace ledger {
                     "DigiByte Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters HCASH(
@@ -171,7 +186,8 @@ namespace ledger {
                     "HShare Signed Message:\n",
                     true,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters QTUM(
@@ -184,7 +200,8 @@ namespace ledger {
                     "Qtum Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters STEALTHCOIN(
@@ -197,7 +214,8 @@ namespace ledger {
                     "StealthCoin Signed Message:\n",
                     true,
                     15,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters VERTCOIN(
@@ -210,7 +228,8 @@ namespace ledger {
                     "VertCoin Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters VIACOIN(
@@ -223,7 +242,8 @@ namespace ledger {
                     "ViaCoin Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters DASH(
@@ -236,7 +256,8 @@ namespace ledger {
                     "DarkCoin Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters DOGECOIN(
@@ -249,7 +270,8 @@ namespace ledger {
                     "DogeCoin Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters STRATIS(
@@ -261,8 +283,9 @@ namespace ledger {
                     10000,
                     "Stratis Signed Message:\n",
                     true,
-                    0,
-                    {sigHashType::SIGHASH_ALL}
+                    15,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters KOMODO(
@@ -275,7 +298,8 @@ namespace ledger {
                     "Komodo Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters POSWALLET(
@@ -288,7 +312,8 @@ namespace ledger {
                     "PosWallet Signed Message:\n",
                     true,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters PIVX(
@@ -301,7 +326,8 @@ namespace ledger {
                     "DarkNet Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL

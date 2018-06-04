@@ -44,7 +44,7 @@ int32_t NJSRandomNumberGenerator::getRandomInt()
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    Handle<Value> args[0] = {};
+    Handle<Value> args[1];
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
     if(!local_njs_impl->IsObject())
     {
@@ -66,7 +66,7 @@ int64_t NJSRandomNumberGenerator::getRandomLong()
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    Handle<Value> args[0] = {};
+    Handle<Value> args[1];
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
     if(!local_njs_impl->IsObject())
     {
@@ -88,7 +88,7 @@ int8_t NJSRandomNumberGenerator::getRandomByte()
 {
     Nan::HandleScope scope;
     //Wrap parameters
-    Handle<Value> args[0] = {};
+    Handle<Value> args[1];
     Local<Object> local_njs_impl = Nan::New<Object>(njs_impl);
     if(!local_njs_impl->IsObject())
     {

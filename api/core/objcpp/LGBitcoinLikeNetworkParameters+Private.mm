@@ -20,7 +20,8 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
             ::djinni::String::toCpp(obj.MessagePrefix),
             ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction),
             ::djinni::I64::toCpp(obj.TimestampDelay),
-            ::djinni::Binary::toCpp(obj.SigHash)};
+            ::djinni::Binary::toCpp(obj.SigHash),
+            ::djinni::List<::djinni::String>::toCpp(obj.AdditionalBIPs)};
 }
 
 auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
@@ -34,7 +35,8 @@ auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
                                                         MessagePrefix:(::djinni::String::fromCpp(cpp.MessagePrefix))
                                            UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))
                                                        TimestampDelay:(::djinni::I64::fromCpp(cpp.TimestampDelay))
-                                                              SigHash:(::djinni::Binary::fromCpp(cpp.SigHash))];
+                                                              SigHash:(::djinni::Binary::fromCpp(cpp.SigHash))
+                                                       AdditionalBIPs:(::djinni::List<::djinni::String>::fromCpp(cpp.AdditionalBIPs))];
 }
 
 }  // namespace djinni_generated
