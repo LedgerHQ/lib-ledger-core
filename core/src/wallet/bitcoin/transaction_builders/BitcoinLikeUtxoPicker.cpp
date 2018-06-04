@@ -138,6 +138,14 @@ namespace ledger {
         }
 
         Future<Unit> BitcoinLikeUtxoPicker::fillTransactionInfo(const std::shared_ptr<Buddy>& buddy) {
+
+            //Set timestamp
+            buddy->explorer->getTimestamp().onComplete(ImmediateExecutionContext::INSTANCE, [=] (const Try<int64_t> &timestamp){
+                if (timestamp.isSuccess()) {
+                    buddy->transaction->setTimestamp(timestamp.getValue());
+                }
+            });
+
             return buddy->explorer->getCurrentBlock().map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) -> Unit{
                 buddy->transaction->setLockTime(static_cast<uint32_t>(block->height));
                 return unit;
