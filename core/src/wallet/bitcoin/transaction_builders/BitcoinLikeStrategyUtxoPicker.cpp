@@ -166,8 +166,8 @@ namespace ledger {
                         getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, (buddy->keychain)->isSegwit()
                 );
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount,  buddy->request.outputs.size() + addedOutputCount);
-                buddy->logger->debug("Estimated size {} <> {}", size.min, size.max);
-                return buddy->outputAmount + (*buddy->request.feePerByte * BigInt(size.max));
+                buddy->logger->debug("Estimated size {} <> {}", size.Min, size.Max);
+                return buddy->outputAmount + (*buddy->request.feePerByte * BigInt(size.Max));
             };
 
             // Check the amount of fees needed when we don't need to add a change output to the transaction

@@ -6,30 +6,30 @@ package co.ledger.core;
 public final class EstimatedSize {
 
 
-    /*package*/ final int min;
+    /*package*/ final int Min;
 
-    /*package*/ final int max;
+    /*package*/ final int Max;
 
     public EstimatedSize(
-            int min,
-            int max) {
-        this.min = min;
-        this.max = max;
+            int Min,
+            int Max) {
+        this.Min = Min;
+        this.Max = Max;
     }
 
     public int getMin() {
-        return min;
+        return Min;
     }
 
     public int getMax() {
-        return max;
+        return Max;
     }
 
     @Override
     public String toString() {
         return "EstimatedSize{" +
-                "min=" + min +
-                "," + "max=" + max +
+                "Min=" + Min +
+                "," + "Max=" + Max +
         "}";
     }
 

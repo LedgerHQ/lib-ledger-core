@@ -369,10 +369,10 @@ NAN_METHOD(NJSBitcoinLikeTransaction::getEstimatedSize) {
 
     //Wrap result in node object
     auto arg_0 = Nan::New<Object>();
-    auto arg_0_1 = Nan::New<Int32>(result.min);
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("min").ToLocalChecked(), arg_0_1);
-    auto arg_0_2 = Nan::New<Int32>(result.max);
-    Nan::DefineOwnProperty(arg_0, Nan::New<String>("max").ToLocalChecked(), arg_0_2);
+    auto arg_0_1 = Nan::New<Int32>(result.Min);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("Min").ToLocalChecked(), arg_0_1);
+    auto arg_0_2 = Nan::New<Int32>(result.Max);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("Max").ToLocalChecked(), arg_0_2);
 
 
     //Return result
