@@ -10,14 +10,14 @@ namespace djinni_generated {
 auto EstimatedSize::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
-    return {::djinni::I32::toCpp(obj.min),
-            ::djinni::I32::toCpp(obj.max)};
+    return {::djinni::I32::toCpp(obj.Min),
+            ::djinni::I32::toCpp(obj.Max)};
 }
 
 auto EstimatedSize::fromCpp(const CppType& cpp) -> ObjcType
 {
-    return [[LGEstimatedSize alloc] initWithMin:(::djinni::I32::fromCpp(cpp.min))
-                                            max:(::djinni::I32::fromCpp(cpp.max))];
+    return [[LGEstimatedSize alloc] initWithMin:(::djinni::I32::fromCpp(cpp.Min))
+                                            Max:(::djinni::I32::fromCpp(cpp.Max))];
 }
 
 }  // namespace djinni_generated

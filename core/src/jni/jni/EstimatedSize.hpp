@@ -27,8 +27,8 @@ private:
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EstimatedSize") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(II)V") };
-    const jfieldID field_min { ::djinni::jniGetFieldID(clazz.get(), "min", "I") };
-    const jfieldID field_max { ::djinni::jniGetFieldID(clazz.get(), "max", "I") };
+    const jfieldID field_Min { ::djinni::jniGetFieldID(clazz.get(), "Min", "I") };
+    const jfieldID field_Max { ::djinni::jniGetFieldID(clazz.get(), "Max", "I") };
 };
 
 }  // namespace djinni_generated
