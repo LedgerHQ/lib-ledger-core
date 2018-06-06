@@ -330,6 +330,20 @@ namespace ledger {
                     {}
             );
 
+            const api::BitcoinLikeNetworkParameters CLUBCOIN(
+                    "club",
+                    {0x1C},
+                    {0x55},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Clubcoin Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
                 BITCOIN,
@@ -351,7 +365,8 @@ namespace ledger {
                 STRATIS,
                 KOMODO,
                 POSWALLET,
-                PIVX
+                PIVX,
+                CLUBCOIN
             });
         }
     }

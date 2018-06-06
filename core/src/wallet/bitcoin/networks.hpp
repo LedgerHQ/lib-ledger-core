@@ -65,6 +65,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters KOMODO;
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters POSWALLET;
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters PIVX;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters CLUBCOIN;
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             extern LIBCORE_EXPORT const std::string BIP115;

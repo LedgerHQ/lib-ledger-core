@@ -212,6 +212,14 @@ namespace ledger {
                             .unit("pivx", 8, "PIVX")
                             .unit("milli-pivx", 5, "mPIVX");
 
+            const api::Currency CLUBCOIN =
+                    Currency("clubcoin")
+                            .forkOfBitcoin(networks::CLUBCOIN)
+                            .bip44(79)
+                            .paymentUri("clubcoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("clubcoin", 8, "CLUB");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -232,7 +240,8 @@ namespace ledger {
                 STRATIS,
                 KOMODO,
                 POSWALLET,
-                PIVX
+                PIVX,
+                CLUBCOIN
             });
         }
     }
