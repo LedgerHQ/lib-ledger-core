@@ -194,6 +194,13 @@ TEST_F(BitcoinKeychains, PivxKeychainDerivation) {
     });
 }
 
+TEST_F(BitcoinKeychains, ClubcoinKeychainDerivation) {
+    testP2PKHKeychain(CLUBCOIN_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "CGnEJw3yCK5MgmA6ivbLBuk8KsWpgtFRXu");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "CSQuTH3kDbnGAG6LmVaLje7kySj6pueego");
+    });
+}
+
 TEST_F(BitcoinKeychains, SimpleUsedReceiveAddresses) {
     testP2PKHKeychain(BTC_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);

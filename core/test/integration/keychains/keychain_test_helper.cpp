@@ -151,3 +151,8 @@ KeychainTestData PIVX_DATA(ledger::core::networks::PIVX,
                                 ledger::core::currencies::PIVX,
                                 "ToEA6n4e91QmX5GdCrTPcxmACuxgh4sUYx1QQYv1vQqSBRARTNqs7zfkwAGGHyidVXaJSThDtqquFq8txx3GnTqqAfBMNwoXTUntZtxz8Z7UWkq",
                                 "44'/77'/0'");
+
+KeychainTestData CLUBCOIN_DATA(ledger::core::networks::CLUBCOIN,
+                           ledger::core::currencies::CLUBCOIN,
+                           "xpub6DP5DgaoV75F7oGi3UjSo5EDTGKH3aBVLX18AJFdBEZG6fHwcqQ324n4oRf1MaPpK8UjXok4hcxvtxCRVWEeaKkyvuY8y9E4Xn3uGDs6Z3X",
+                           "44'/79'/0'");
