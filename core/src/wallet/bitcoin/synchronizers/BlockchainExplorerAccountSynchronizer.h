@@ -58,7 +58,7 @@ namespace ledger {
         struct BlockchainExplorerAccountSynchronizationSavedState {
             uint32_t halfBatchSize;
             std::vector<BlockchainExplorerAccountSynchronizationBatchSavedState> batches;
-
+            std::map<std::string, std::string> pendingTxsHash;
             BlockchainExplorerAccountSynchronizationSavedState() {
                 halfBatchSize = 0;
             }
@@ -66,7 +66,7 @@ namespace ledger {
             template<class Archive>
             void serialize(Archive & archive)
             {
-                archive(halfBatchSize, batches); // serialize things by passing them to the archive
+                archive(halfBatchSize, batches, pendingTxsHash); // serialize things by passing them to the archive
             }
         };
 
@@ -97,7 +97,7 @@ namespace ledger {
                 Option<BlockchainExplorerAccountSynchronizationSavedState> savedState;
                 Option<void *> token;
                 std::shared_ptr<BitcoinLikeAccount> account;
-                std::map<std::string, std::string> droppedTransactions;
+                std::map<std::string, std::string> transactionsToDrop;
             };
 
 

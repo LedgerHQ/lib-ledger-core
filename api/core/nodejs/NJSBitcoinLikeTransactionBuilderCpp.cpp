@@ -581,7 +581,21 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::parseRawUnsignedTransaction) {
             }
         }
 
-        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10);
+
+        auto field_opt_arg_0_6_11 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("AdditionalBIPs").ToLocalChecked()).ToLocalChecked();
+        vector<std::string> opt_arg_0_6_11;
+        Local<Array> opt_arg_0_6_11_container = Local<Array>::Cast(field_opt_arg_0_6_11);
+        for(uint32_t opt_arg_0_6_11_id = 0; opt_arg_0_6_11_id < opt_arg_0_6_11_container->Length(); opt_arg_0_6_11_id++)
+        {
+            if(opt_arg_0_6_11_container->Get(opt_arg_0_6_11_id)->IsString())
+            {
+                String::Utf8Value string_opt_arg_0_6_11_elem(opt_arg_0_6_11_container->Get(opt_arg_0_6_11_id)->ToString());
+                auto opt_arg_0_6_11_elem = std::string(*string_opt_arg_0_6_11_elem);
+                opt_arg_0_6_11.emplace_back(opt_arg_0_6_11_elem);
+            }
+        }
+
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10, opt_arg_0_6_11);
 
         arg_0_6.emplace(opt_arg_0_6);
     }

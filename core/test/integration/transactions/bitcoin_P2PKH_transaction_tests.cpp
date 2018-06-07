@@ -37,6 +37,11 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include "transaction_test_helper.h"
 
+#include <iostream>
+using namespace std;
+
+#include <utils/hex.h>
+
 struct BitcoinMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
@@ -142,16 +147,15 @@ struct BCHMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
 };
 
 TEST_F(BCHMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
-    //TODO: Need an account with UTXOs in it
     auto builder = tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 2000), "1MAFxPyajFm2BQ3DsrRv6PwSnKi4QSEfGQ");
+    builder->sendToAddress(api::Amount::fromLong(currency, 5000), "14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
-    //auto f = builder->build();
-    //auto tx = ::wait(f);
-    //auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
     //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
-    //EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }
 
 struct ZCASHMakeP2SHTransaction : public BitcoinMakeBaseTransaction {

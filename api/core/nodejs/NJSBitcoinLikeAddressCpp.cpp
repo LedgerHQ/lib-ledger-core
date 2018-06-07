@@ -137,6 +137,14 @@ NAN_METHOD(NJSBitcoinLikeAddress::getNetworkParameters) {
     }
 
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_10);
+    Local<Array> arg_0_11 = Nan::New<Array>();
+    for(size_t arg_0_11_id = 0; arg_0_11_id < result.AdditionalBIPs.size(); arg_0_11_id++)
+    {
+        auto arg_0_11_elem = Nan::New<String>(result.AdditionalBIPs[arg_0_11_id]).ToLocalChecked();
+        arg_0_11->Set((int)arg_0_11_id,arg_0_11_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_11);
 
 
     //Return result

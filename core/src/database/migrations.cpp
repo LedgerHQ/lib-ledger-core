@@ -189,5 +189,9 @@ namespace ledger {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
+        template <> void migrate<3>(soci::session& sql) {
+            sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
+        }
+
     }
 }

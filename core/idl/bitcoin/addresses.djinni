@@ -15,6 +15,7 @@ BitcoinLikeNetworkParameters = record {
     UsesTimestampedTransaction: bool;
     TimestampDelay: i64;
     SigHash: binary;
+    AdditionalBIPs: list<string>;
 }
 
 # Helper class for manipulating Bitcoin like addresses

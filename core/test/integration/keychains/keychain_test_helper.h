@@ -78,5 +78,22 @@ extern KeychainTestData BCH_DATA;
 extern KeychainTestData BTG_DATA;
 extern KeychainTestData ZCASH_DATA;
 extern KeychainTestData ZENCASH_DATA;
-
+extern KeychainTestData LTC_DATA_LEGACY;
+extern KeychainTestData LTC_DATA_SEGWIT;
+extern KeychainTestData PEERCOIN_DATA;
+extern KeychainTestData DIGIBYTE_DATA;
+extern KeychainTestData HCASH_DATA;
+extern KeychainTestData QTUM_DATA;
+extern KeychainTestData XST_DATA;
+extern KeychainTestData VTC_DATA_LEGACY;
+extern KeychainTestData VTC_DATA_SEGWIT;
+extern KeychainTestData VIA_DATA_LEGACY;
+extern KeychainTestData VIA_DATA_SEGWIT;
+extern KeychainTestData DASH_DATA;
+extern KeychainTestData DOGE_DATA;
+extern KeychainTestData STRATIS_DATA;
+extern KeychainTestData KOMODO_DATA;
+extern KeychainTestData POSWALLET_DATA;
+extern KeychainTestData PIVX_DATA;
+extern KeychainTestData CLUBCOIN_DATA;
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

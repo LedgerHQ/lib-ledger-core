@@ -66,6 +66,7 @@ namespace ledger {
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
             _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getContext(), getWallet()->getCurrency());
+            _currentBlockHeight = 0;
         }
 
         void
@@ -210,7 +211,6 @@ namespace ledger {
                     finalAmount = finalAmount + o.first->value;
                     accountOutputCount += 1;
                 }
-
                 if (accountOutputCount > 0) {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
@@ -218,6 +218,19 @@ namespace ledger {
                     if (OperationDatabaseHelper::putOperation(sql, operation))
                         emitNewOperationEvent(operation);
                 }
+
+                //Update account_uid column of bitcoin_outputs table
+                for (auto& o : accountOutputs) {
+                    if (o.first->address.nonEmpty()) {
+                        int count = 0;
+                        sql << "SELECT COUNT(*) FROM bitcoin_outputs WHERE address = :address", soci::use(o.first->address.getValue()), soci::into(count);
+                        if (count > 0) {
+                            sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address",
+                                    soci::use(getAccountUid()), soci::use(o.first->address.getValue());
+                        }
+                    }
+                }
+
             }
 
             return result;
@@ -228,18 +241,13 @@ namespace ledger {
                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
             if (tx.block.nonEmpty()) {
                 auto txBlockHeight = tx.block.getValue().height;
-                _explorer->getCurrentBlock().onComplete(getContext(), [txBlockHeight, operation] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
-                    if (block.isSuccess()) {
-                        auto height = block.getValue()->height;
-                        if (height > txBlockHeight + 5 ) {
-                            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
-                        } else if (height > txBlockHeight) {
-                            operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
-                        } else if (height == txBlockHeight) {
-                            operation.trust->setTrustLevel(api::TrustLevel::PENDING);
-                        }
-                    }
-                });
+                if (_currentBlockHeight > txBlockHeight + 5 ) {
+                    operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+                } else if (_currentBlockHeight > txBlockHeight) {
+                    operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
+                } else if (_currentBlockHeight == txBlockHeight) {
+                    operation.trust->setTrustLevel(api::TrustLevel::PENDING);
+                }
 
             } else {
                 operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
@@ -265,6 +273,14 @@ namespace ledger {
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future = _synchronizer->synchronize(std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+
+            //Update current block height (needed to compute trust level)
+            _explorer->getCurrentBlock().onComplete(getContext(), [self] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) mutable {
+                if (block.isSuccess()) {
+                    self->_currentBlockHeight = block.getValue()->height;
+                }
+            });
+
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
             future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime] (const Try<Unit>& result) {

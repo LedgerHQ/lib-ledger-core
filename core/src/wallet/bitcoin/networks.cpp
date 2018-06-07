@@ -43,6 +43,12 @@ namespace ledger {
                 SIGHASH_ANYONECANPAY = 0x80
             };
 
+            const std::string BIP115 = "BIP115";
+            const BIP115Parameters BIP115_PARAMETERS = {
+                    "209ec9845acb02fab24e1c0368b3b517c1a4488fba97f0e3459ac053ea01000000",
+                    {0xC0,0x1F,0x02}
+            };
+
             const api::BitcoinLikeNetworkParameters BITCOIN(
                     "btc",
                     {0x00},
@@ -53,7 +59,8 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET(
@@ -66,7 +73,8 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
@@ -79,21 +87,23 @@ namespace ledger {
                     "Bitcoin signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID},
+                    {}
             );
 
 
             const api::BitcoinLikeNetworkParameters BITCOIN_GOLD(
                     "btg",
-                    {0x26},//{0x00}, TODO: check if tx use old or new
-                    {0x17},//{0x05},
+                    {0x26},
+                    {0x17},
                     {0x04, 0x88, 0xB2, 0x1E},
                     api::BitcoinLikeFeePolicy::PER_BYTE,
                     5430,
                     "Bitcoin gold signed message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID}
+                    {sigHashType::SIGHASH_ALL | sigHashType::SIGHASH_FORKID},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters ZCASH(
@@ -106,7 +116,8 @@ namespace ledger {
                     "Zcash Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {}
             );
 
             const api::BitcoinLikeNetworkParameters ZENCASH(
@@ -119,9 +130,219 @@ namespace ledger {
                     "Zencash Signed Message:\n",
                     false,
                     0,
-                    {sigHashType::SIGHASH_ALL}
+                    {sigHashType::SIGHASH_ALL},
+                    {BIP115}
             );
 
+            const api::BitcoinLikeNetworkParameters LITECOIN(
+                    "ltc",
+                    {0x30},
+                    {0x32},
+                    {0x01, 0x9D, 0xA4, 0x62},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Litecoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters PEERCOIN(
+                    "ppc",
+                    {0x37},
+                    {0x75},
+                    {0xE6, 0xE8, 0xE9, 0xE5},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "PPCoin Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters DIGIBYTE(
+                    "dgb",
+                    {0x1E},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DigiByte Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters HCASH(
+                    "hsr",
+                    {0x28},
+                    {0x78},
+                    {0x04, 0x88, 0xC2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "HShare Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters QTUM(
+                    "qtum",
+                    {0x3A},
+                    {0x32},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Qtum Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters STEALTHCOIN(
+                    "xst",
+                    {0x3E},
+                    {0x55},
+                    {0x8F, 0x62, 0x4B, 0x66},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "StealthCoin Signed Message:\n",
+                    true,
+                    15,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters VERTCOIN(
+                    "vtc",
+                    {0x47},
+                    {0x05},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "VertCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters VIACOIN(
+                    "via",
+                    {0x47},
+                    {0x21},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "ViaCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters DASH(
+                    "dash",
+                    {0x4C},
+                    {0x01},
+                    {0x02, 0xFE, 0x52, 0xF8},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DarkCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters DOGECOIN(
+                    "doge",
+                    {0x1E},
+                    {0x16},
+                    {0x02, 0xFA, 0xCA, 0xFD},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DogeCoin Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters STRATIS(
+                    "strat",
+                    {0x3F},
+                    {0x7D},
+                    {0x04, 0x88, 0xC2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Stratis Signed Message:\n",
+                    true,
+                    15,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters KOMODO(
+                    "kmd",
+                    {0x3C},
+                    {0x55},
+                    {0xF9, 0xEE, 0xE4, 0x8D},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Komodo Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters POSWALLET(
+                    "posw",
+                    {0x37},
+                    {0x55},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "PosWallet Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters PIVX(
+                    "pivx",
+                    {0x1E},
+                    {0x0D},
+                    {0x02, 0x2D, 0x25, 0x33},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "DarkNet Signed Message:\n",
+                    false,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
+
+            const api::BitcoinLikeNetworkParameters CLUBCOIN(
+                    "club",
+                    {0x1C},
+                    {0x55},
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    api::BitcoinLikeFeePolicy::PER_BYTE,
+                    10000,
+                    "Clubcoin Signed Message:\n",
+                    true,
+                    0,
+                    {sigHashType::SIGHASH_ALL},
+                    {}
+            );
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({
@@ -130,7 +351,22 @@ namespace ledger {
                 BITCOIN_CASH,
                 BITCOIN_GOLD,
                 ZCASH,
-                ZENCASH
+                ZENCASH,
+                LITECOIN,
+                PEERCOIN,
+                DIGIBYTE,
+                HCASH,
+                QTUM,
+                STEALTHCOIN,
+                VERTCOIN,
+                VIACOIN,
+                DASH,
+                DOGECOIN,
+                STRATIS,
+                KOMODO,
+                POSWALLET,
+                PIVX,
+                CLUBCOIN
             });
         }
     }

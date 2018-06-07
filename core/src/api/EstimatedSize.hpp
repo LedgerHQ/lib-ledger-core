@@ -11,37 +11,37 @@
 namespace ledger { namespace core { namespace api {
 
 struct EstimatedSize final {
-    int32_t min;
-    int32_t max;
+    int32_t Min;
+    int32_t Max;
 
-    EstimatedSize(int32_t min_,
-                  int32_t max_)
-    : min(std::move(min_))
-    , max(std::move(max_))
+    EstimatedSize(int32_t Min_,
+                  int32_t Max_)
+    : Min(std::move(Min_))
+    , Max(std::move(Max_))
     {}
 
     EstimatedSize(const EstimatedSize& cpy) {
-       this->min = cpy.min;
-       this->max = cpy.max;
+       this->Min = cpy.Min;
+       this->Max = cpy.Max;
     }
 
     EstimatedSize() = default;
 
 
     EstimatedSize& operator=(const EstimatedSize& cpy) {
-       this->min = cpy.min;
-       this->max = cpy.max;
+       this->Min = cpy.Min;
+       this->Max = cpy.Max;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(min, max);
+        archive(Min, Max);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(min, max);
+        archive(Min, Max);
     }
 };
 

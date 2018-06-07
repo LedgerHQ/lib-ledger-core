@@ -14,7 +14,8 @@
                              MessagePrefix:(nonnull NSString *)MessagePrefix
                 UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                             TimestampDelay:(int64_t)TimestampDelay
-                                   SigHash:(nonnull NSData *)SigHash;
+                                   SigHash:(nonnull NSData *)SigHash
+                            AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs;
 + (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)Identifier
                                                       P2PKHVersion:(nonnull NSData *)P2PKHVersion
                                                        P2SHVersion:(nonnull NSData *)P2SHVersion
@@ -24,7 +25,8 @@
                                                      MessagePrefix:(nonnull NSString *)MessagePrefix
                                         UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                                                     TimestampDelay:(int64_t)TimestampDelay
-                                                           SigHash:(nonnull NSData *)SigHash;
+                                                           SigHash:(nonnull NSData *)SigHash
+                                                    AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs;
 
 @property (nonatomic, readonly, nonnull) NSString * Identifier;
 
@@ -45,5 +47,7 @@
 @property (nonatomic, readonly) int64_t TimestampDelay;
 
 @property (nonatomic, readonly, nonnull) NSData * SigHash;
+
+@property (nonatomic, readonly, nonnull) NSArray<NSString *> * AdditionalBIPs;
 
 @end

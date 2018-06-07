@@ -145,6 +145,8 @@ namespace ledger {
             void addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount>& account);
 
         private:
+            FuturePtr<api::Account> getAccount(soci::session &sql, int32_t index);
+
             std::string _name;
             std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;
