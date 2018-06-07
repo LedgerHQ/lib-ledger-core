@@ -227,6 +227,40 @@ namespace ledger {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
                 }
                 return Future<Unit>::successful(unit);
+            }).recoverWith(ImmediateExecutionContext::INSTANCE, [=] (const Exception &exception) -> Future<Unit> {
+
+                //Get its block/block height
+                auto failedBlockHeight = buddy->savedState.getValue().batches[currentBatchIndex].blockHeight;
+                if (failedBlockHeight > 0) {
+
+                    //Get previous block
+                    auto previousBlockHeight = failedBlockHeight - 1;
+                    std::string previousBlockHash;
+                    //Get Previous block hash from db
+                    soci::session sql(buddy->wallet->getDatabase()->getPool());
+                    sql << "SELECT hash FROM blocks WHERE height := previousHeight",
+                            soci::use(previousBlockHeight), soci::into(previousBlockHash);
+
+                    //if not found we reset synchro
+                    if (previousBlockHash.size() == 0) {
+                        previousBlockHeight = 0;
+                        previousBlockHash = "";
+                    }
+
+                    //Update savedState
+                    for (auto& batch : buddy->savedState.getValue().batches) {
+                        if (batch.blockHeight > previousBlockHeight) {
+                            batch.blockHeight = previousBlockHeight;
+                            batch.blockHash = previousBlockHeight;
+                        }
+                    }
+                    buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
+
+                    //Delete data related to failedBlock
+                    sql << "DELETE FROM blocks where height := failedBlockHeight", soci::use(failedBlockHeight);
+
+                    return self->synchronizeBatches(currentBatchIndex, buddy);
+                }
             });
         }
 
