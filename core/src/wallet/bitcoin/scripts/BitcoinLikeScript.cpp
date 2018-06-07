@@ -33,7 +33,7 @@
 #include <bytes/BytesReader.h>
 #include <bytes/BytesWriter.h>
 #include <utils/hex.h>
-
+#include <wallet/bitcoin/networks.hpp>
 namespace ledger {
     namespace core {
 
@@ -125,6 +125,15 @@ namespace ledger {
                 script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
             } else {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
+            }
+
+            auto &additionalBIPS = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), networks::BIP115);
+            if (it != additionalBIPS.end()) {
+                script << hex::toByteArray(networks::BIP115_PARAMETERS.blockHash)
+                       << std::vector<uint8_t>({0x03})
+                       << networks::BIP115_PARAMETERS.blockHeight
+                       << btccore::OP_CHECKBLOCKATHEIGHT;
             }
             return script;
         }
