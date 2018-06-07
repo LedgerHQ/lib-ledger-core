@@ -131,10 +131,10 @@ namespace ledger {
             auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), networks::BIP115);
             if (it != additionalBIPS.end()) {
                 script << hex::toByteArray(networks::BIP115_PARAMETERS.blockHash)
-                       << std::vector<uint8_t>({0x03})
                        << networks::BIP115_PARAMETERS.blockHeight
                        << btccore::OP_CHECKBLOCKATHEIGHT;
             }
+
             return script;
         }
 
