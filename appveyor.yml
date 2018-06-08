@@ -5,8 +5,6 @@ branches:
   - develop
 image:
 - Visual Studio 2015
-configuration:
-  - Debug
 environment:
   nodejs_version: "9"
   appveyor_rdp_password:
@@ -120,7 +118,7 @@ build_script:
 #Copy dll in a lib-ledger-core's child directory:
 #Only build directory child is supported for artifacts deployment
 - set LIB_DIR=core\src\build
-- if %TOOL_CONFIG% == vs2015 set LIB_DIR=%LIB_DIR%\%configuration%
+- if %TOOL_CONFIG% == vs2015 set LIB_DIR=%LIB_DIR%\%BUILD_CONFIG%
 
 - set DLL_PATH=%LIB_DIR%\%DLL_NAME%
 
