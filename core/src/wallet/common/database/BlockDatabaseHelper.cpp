@@ -80,5 +80,22 @@ namespace ledger {
             }
             return Option<api::Block>();
         }
+
+        Option<api::Block> BlockDatabaseHelper::getPreviousBlockInDatabase(soci::session &sql, const std::string &currencyName, int64_t blockHeight) {
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT uid, hash, height, time FROM blocks WHERE "
+                    "currency_name = :name AND height < :blockHeight ORDER BY height DESC LIMIT 1",
+                    soci::use(currencyName), soci::use(blockHeight));
+
+            for (auto& row : rows) {
+                auto uid = row.get<std::string>(0);
+                auto hash = row.get<std::string>(1);
+                auto height = get_number<int64_t>(row, 2);
+                auto time = row.get<std::chrono::system_clock::time_point>(3);
+                return Option<api::Block>(
+                        api::Block(hash, uid, time, currencyName, height)
+                );
+            }
+            return Option<api::Block>();
+        }
     }
 }

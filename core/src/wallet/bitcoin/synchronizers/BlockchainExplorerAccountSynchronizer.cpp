@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <debug/Benchmarker.h>
 #include <utils/DurationUtils.h>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -139,7 +140,6 @@ namespace ledger {
             buddy->keychain = account->getKeychain();
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
-
             buddy->logger
                     ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
                            account->getIndex(),
@@ -149,10 +149,43 @@ namespace ledger {
                                    ->getName(), DateUtils::toJSON(buddy->startDate)
                     );
 
+            //Check if reorganization happened
+            soci::session sql(buddy->wallet->getDatabase()->getPool());
+            if (buddy->savedState.nonEmpty()) {
+                
+                //Get deepest block saved in batches to be part of reorg
+                auto sortedBatches = buddy->savedState.getValue().batches;
+                std::sort(sortedBatches.begin(), sortedBatches.end(), [](const BlockchainExplorerAccountSynchronizationBatchSavedState &lhs,
+                                                             const BlockchainExplorerAccountSynchronizationBatchSavedState &rhs) -> bool {
+                    return lhs.blockHeight < rhs.blockHeight;
+                });
+                
+                auto currencyName = buddy->wallet->getCurrency().name;
+                size_t index = 0;
+                //Reorg can't happen until genesis block, safely initialize with 0
+                uint64_t deepestFailedBlockHeight = 0;
+                while (index < sortedBatches.size() && !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
+                    deepestFailedBlockHeight = sortedBatches[index].blockHeight;
+                    index ++;
+                }
+
+                //TODO: Be sure that in case of deepestFailedBlockHeight > firstReorgBlock no account's txs appear in [firstReorgBlock, deepestFailedBlockHeight[
+                //Case of reorg, update savedState's batches
+                if (deepestFailedBlockHeight > 0) {
+                    //Get from DB the block right before (in height) deepestFailedBlockHeight (which is not part of reorg)
+                    auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, currencyName, deepestFailedBlockHeight);
+                    for (auto& batch : buddy->savedState.getValue().batches) {
+                        if (batch.blockHeight >= deepestFailedBlockHeight) {
+                            batch.blockHeight = previousBlock.nonEmpty() ? (uint32_t)previousBlock.getValue().height : 0;
+                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().hash : "";
+                        }
+                    }
+                }
+            }
+
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
 
             //Get all transactions in DB that may be dropped (txs without block_uid)
-            soci::session sql(buddy->wallet->getDatabase()->getPool());
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, btc_op.transaction_hash FROM operations AS op "
                                                             "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
                                                             "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",
@@ -229,37 +262,50 @@ namespace ledger {
                 return Future<Unit>::successful(unit);
             }).recoverWith(ImmediateExecutionContext::INSTANCE, [=] (const Exception &exception) -> Future<Unit> {
 
-                //Get its block/block height
-                auto failedBlockHeight = buddy->savedState.getValue().batches[currentBatchIndex].blockHeight;
-                if (failedBlockHeight > 0) {
+                //A block reorganization happened
+                if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
+                    buddy->savedState.nonEmpty()) {
 
-                    //Get previous block
-                    auto previousBlockHeight = failedBlockHeight - 1;
-                    std::string previousBlockHash;
-                    //Get Previous block hash from db
-                    soci::session sql(buddy->wallet->getDatabase()->getPool());
-                    sql << "SELECT hash FROM blocks WHERE height := previousHeight",
-                            soci::use(previousBlockHeight), soci::into(previousBlockHash);
+                    //Get its block/block height
+                    auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                    auto failedBlockHeight = failedBatch.blockHeight;
+                    auto failedBlockHash = failedBatch.blockHash;
+                    if (failedBlockHeight > 0) {
 
-                    //if not found we reset synchro
-                    if (previousBlockHash.size() == 0) {
-                        previousBlockHeight = 0;
-                        previousBlockHash = "";
-                    }
+                        //Delete data related to failedBlock (and all blocks above it)
+                        soci::session sql(buddy->wallet->getDatabase()->getPool());
+                        sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(failedBlockHeight);
 
-                    //Update savedState
-                    for (auto& batch : buddy->savedState.getValue().batches) {
-                        if (batch.blockHeight > previousBlockHeight) {
-                            batch.blockHeight = previousBlockHeight;
-                            batch.blockHash = previousBlockHeight;
+                        //Get last block not part from reorg
+                        auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
+
+                        //Resync from the "beginning" if no last block in DB
+                        int64_t lastBlockHeight = 0;
+                        std::string lastBlockHash;
+                        if (lastBlock.nonEmpty()) {
+                            lastBlockHeight = lastBlock.getValue().height;
+                            lastBlockHash = lastBlock.getValue().hash;
                         }
+
+                        //Update savedState's batches
+                        for (auto &batch : buddy->savedState.getValue().batches) {
+                            if (batch.blockHeight > lastBlockHeight) {
+                                batch.blockHeight = (uint32_t)lastBlockHeight;
+                                batch.blockHash = lastBlockHash;
+                            }
+                        }
+
+                        //Save new savedState
+                        buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>(
+                                "state", buddy->savedState.getValue())->commit();
+                        
+                        //Synchronize same batch now with an existing block (of hash lastBlockHash)
+                        //if failedBatch was not the deepest block part of that reorg, this recursive call
+                        //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                        return self->synchronizeBatches(currentBatchIndex, buddy);
                     }
-                    buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-
-                    //Delete data related to failedBlock
-                    sql << "DELETE FROM blocks where height := failedBlockHeight", soci::use(failedBlockHeight);
-
-                    return self->synchronizeBatches(currentBatchIndex, buddy);
+                } else {
+                    return Future<Unit>::failure(exception);
                 }
             });
         }

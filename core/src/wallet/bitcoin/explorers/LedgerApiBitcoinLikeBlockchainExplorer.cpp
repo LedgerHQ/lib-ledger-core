@@ -124,9 +124,13 @@ namespace ledger {
             return _http
             ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
             .json<BitcoinLikeBlockchainExplorer::TransactionsBulk, Exception>(LedgerApiParser<BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsBulkParser>())
-            .mapPtr<TransactionsBulk>(_executionContext, [] (const Either<Exception, std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& result) {
+            .mapPtr<TransactionsBulk>(_executionContext, [fromBlockHash] (const Either<Exception, std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& result) {
                 if (result.isLeft()) {
-                    throw result.getLeft();
+                    if (fromBlockHash.isEmpty()) {
+                        throw result.getLeft();
+                    } else {
+                        throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
+                    }
                 } else {
                     return result.getRight();
                 }
