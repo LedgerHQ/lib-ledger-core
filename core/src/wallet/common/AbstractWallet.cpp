@@ -314,7 +314,7 @@ namespace ledger {
 
         void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point & date) {
             soci::session sql(_database->getPool());
-            sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid created_at <= :date ", soci::use(getWalletUid()), soci::use(date);
+            sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid created_at >= :date ", soci::use(getWalletUid()), soci::use(date);
             for (auto& account : _accounts) {
                 account.second->eraseDataSince(date);
             }

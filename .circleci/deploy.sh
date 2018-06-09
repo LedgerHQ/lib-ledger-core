@@ -7,7 +7,7 @@ branchstr=`git rev-parse --abbrev-ref HEAD`
 
 echo "======> Deploy from $branchstr branch"
 
-if [ "$branchstr" == "develop" ]; then
+if [ "$branchstr" == "develop" -o "$branchstr" == "HEAD" ]; then
 	echo "======> Start deploy for $unamestr"
 	if [ "$unamestr" == "Linux" ]; then
 		export BUILD_TYPE=linux

@@ -66,17 +66,20 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", blockhash, currencyName));
         }
 
+        static Option<api::Block> getBlockFromRow(row &databaseRow, const std::string &currencyName) {
+            auto uid = databaseRow.get<std::string>(0);
+            auto hash = databaseRow.get<std::string>(1);
+            auto height = get_number<int64_t>(databaseRow, 2);
+            auto time = databaseRow.get<std::chrono::system_clock::time_point>(3);
+            return Option<api::Block>(
+                    api::Block(hash, uid, time, currencyName, height)
+            );
+        }
         Option<api::Block> BlockDatabaseHelper::getLastBlock(soci::session &sql, const std::string &currencyName) {
             rowset<row> rows = (sql.prepare << "SELECT uid, hash, height, time FROM blocks WHERE "
                     "currency_name = :name ORDER BY height DESC LIMIT 1", use(currencyName));
             for (auto& row : rows) {
-                auto uid = row.get<std::string>(0);
-                auto hash = row.get<std::string>(1);
-                auto height = get_number<int64_t>(row, 2);
-                auto time = row.get<std::chrono::system_clock::time_point>(3);
-                return Option<api::Block>(
-                        api::Block(hash, uid, time, currencyName, height)
-                );
+                return getBlockFromRow(row, currencyName);
             }
             return Option<api::Block>();
         }
@@ -87,13 +90,18 @@ namespace ledger {
                     soci::use(currencyName), soci::use(blockHeight));
 
             for (auto& row : rows) {
-                auto uid = row.get<std::string>(0);
-                auto hash = row.get<std::string>(1);
-                auto height = get_number<int64_t>(row, 2);
-                auto time = row.get<std::chrono::system_clock::time_point>(3);
-                return Option<api::Block>(
-                        api::Block(hash, uid, time, currencyName, height)
-                );
+                return getBlockFromRow(row, currencyName);
+            }
+            return Option<api::Block>();
+        }
+
+        Option<api::Block> BlockDatabaseHelper::getPreviousBlockInDatabase(soci::session &sql, const std::string &currencyName, std::chrono::system_clock::time_point date) {
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT uid, hash, height, time FROM blocks WHERE "
+                    "currency_name = :name AND time < :date ORDER BY height DESC LIMIT 1",
+                    soci::use(currencyName), soci::use(date));
+
+            for (auto& row : rows) {
+                return getBlockFromRow(row, currencyName);
             }
             return Option<api::Block>();
         }

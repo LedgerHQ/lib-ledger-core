@@ -47,6 +47,7 @@ namespace ledger {
             static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
             static Option<api::Block> getLastBlock(soci::session& sql, const std::string& currencyName);
             static Option<api::Block> getPreviousBlockInDatabase(soci::session& sql, const std::string& currencyName, int64_t blockHeight);
+            static Option<api::Block> getPreviousBlockInDatabase(soci::session &sql, const std::string &currencyName, std::chrono::system_clock::time_point date);
         };
     }
 }
