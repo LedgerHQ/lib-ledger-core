@@ -56,7 +56,9 @@ namespace ledger {
             soci::session sql(getPool());
             int version = -1;
             try {
-                sql << "SELECT version FROM __database_meta__ WHERE id == 0", soci::into(version);
+                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id == 0", soci::into(version));
+                st.execute();
+                st.fetch();
             } catch (...) {
                 // Ignore
             }
