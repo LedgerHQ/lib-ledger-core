@@ -11,6 +11,8 @@ std::string const Account::EV_SYNC_DURATION_MS = {"EV_SYNC_DURATION_MS"};
 
 std::string const Account::EV_SYNC_ERROR_CODE = {"EV_SYNC_ERROR_CODE"};
 
+std::string const Account::EV_SYNC_ERROR_CODE_INT = {"EV_SYNC_ERROR_CODE_INT"};
+
 std::string const Account::EV_SYNC_ERROR_MESSAGE = {"EV_SYNC_ERROR_MESSAGE"};
 
 std::string const Account::EV_NEW_BLOCK_CURRENCY_NAME = {"EV_NEW_BLOCK_CURRENCY_NAME"};

@@ -21,6 +21,7 @@
 extern NSString * __nonnull const LGAccountEVSYNCDURATIONMS;
 /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
 extern NSString * __nonnull const LGAccountEVSYNCERRORCODE;
+extern NSString * __nonnull const LGAccountEVSYNCERRORCODEINT;
 /**Key of the synchronization error message. The message is stored as a string. */
 extern NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE;
 /**TODO */

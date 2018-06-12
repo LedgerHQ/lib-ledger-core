@@ -261,6 +261,7 @@ Account = interface +c {
     const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
     #Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
+    const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
     #Key of the synchronization error message. The message is stored as a string.
     const EV_SYNC_ERROR_MESSAGE: string = "EV_SYNC_ERROR_MESSAGE";
     #TODO
