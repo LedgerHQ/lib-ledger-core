@@ -36,11 +36,6 @@ file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
-file(GLOB_RECURSE SRC_FILES *.cpp)
-file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
-list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
-list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
-
 add_library(
         ledger-core ${LIB_BUILD_TYPE}
         ${ledger-core-sources}

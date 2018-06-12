@@ -307,6 +307,7 @@ namespace ledger {
                 } else {
                     return Future<Unit>::failure(exception);
                 }
+                return Future<Unit>::successful(unit);
             });
         }
 
