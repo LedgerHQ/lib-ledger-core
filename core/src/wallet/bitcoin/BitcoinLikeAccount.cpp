@@ -295,6 +295,8 @@ namespace ledger {
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
+                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t)result.getFailure().getErrorCode());
+                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
                 }
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
                 std::lock_guard<std::mutex> lock(self->_synchronizationLock);

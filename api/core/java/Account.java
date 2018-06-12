@@ -17,6 +17,8 @@ public abstract class Account {
     /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
     public static final String EV_SYNC_ERROR_CODE = "EV_SYNC_ERROR_CODE";
 
+    public static final String EV_SYNC_ERROR_CODE_INT = "EV_SYNC_ERROR_CODE_INT";
+
     /**Key of the synchronization error message. The message is stored as a string. */
     public static final String EV_SYNC_ERROR_MESSAGE = "EV_SYNC_ERROR_MESSAGE";
 
