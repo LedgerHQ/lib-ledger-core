@@ -5,6 +5,13 @@
 #define DJINNI_GENERATED_POOLCONFIGURATION_HPP
 
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -13,7 +20,7 @@ class PoolConfiguration {
 public:
     virtual ~PoolConfiguration() {}
 
-    static std::string const DATABASE_NAME;
+    static LIBCORE_EXPORT std::string const DATABASE_NAME;
 };
 
 } } }  // namespace ledger::core::api

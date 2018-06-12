@@ -23,13 +23,13 @@ set(CMAKE_MACOSX_RPATH 1)
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI)
     set(BUILD_TESTING OFF CACHE BOOL "iOS build fail otherwise" FORCE)
-    set(ENABLE_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
+    set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
 add_subdirectory(doc)
 add_subdirectory(core)
 
-if (ENABLE_TESTS)
+if (BUILD_TESTS)
     add_subdirectory(qt-host)
 endif()
 

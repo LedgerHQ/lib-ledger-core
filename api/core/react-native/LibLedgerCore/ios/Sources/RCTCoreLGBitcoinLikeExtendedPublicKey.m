@@ -83,19 +83,4 @@ RCT_REMAP_METHOD(getRootPath,getRootPathWithResolver:(RCTPromiseResolveBlock)res
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeExtendedPublicKey::getRootPath", nil);
     }
 }
-
-RCT_REMAP_METHOD(fromBase58,fromBase58:(nonnull LGBitcoinLikeNetworkParameters *)params
-                               address:(nonnull NSString *)address
-                                  path:(nullable NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[LGBitcoinLikeExtendedPublicKey fromBase58:params address:address path:path]};
-    if(result)
-    {
-        resolve(result);
-    }
-    else
-    {
-        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeExtendedPublicKey::fromBase58", nil);
-    }
-}
 @end

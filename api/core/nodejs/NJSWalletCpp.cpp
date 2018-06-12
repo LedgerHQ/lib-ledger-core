@@ -421,6 +421,24 @@ NAN_METHOD(NJSWallet::getCurrency) {
         Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_6_tmp_7);
         auto arg_0_6_tmp_8 = Nan::New<Boolean>(arg_0_6_optional.UsesTimestampedTransaction);
         Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_6_tmp_8);
+        auto arg_0_6_tmp_9 = Nan::New<Number>(arg_0_6_optional.TimestampDelay);
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_6_tmp_9);
+        Local<Array> arg_0_6_tmp_10 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_10_id = 0; arg_0_6_tmp_10_id < arg_0_6_optional.SigHash.size(); arg_0_6_tmp_10_id++)
+        {
+            auto arg_0_6_tmp_10_elem = Nan::New<Uint32>(arg_0_6_optional.SigHash[arg_0_6_tmp_10_id]);
+            arg_0_6_tmp_10->Set((int)arg_0_6_tmp_10_id,arg_0_6_tmp_10_elem);
+        }
+
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_6_tmp_10);
+        Local<Array> arg_0_6_tmp_11 = Nan::New<Array>();
+        for(size_t arg_0_6_tmp_11_id = 0; arg_0_6_tmp_11_id < arg_0_6_optional.AdditionalBIPs.size(); arg_0_6_tmp_11_id++)
+        {
+            auto arg_0_6_tmp_11_elem = Nan::New<String>(arg_0_6_optional.AdditionalBIPs[arg_0_6_tmp_11_id]).ToLocalChecked();
+            arg_0_6_tmp_11->Set((int)arg_0_6_tmp_11_id,arg_0_6_tmp_11_elem);
+        }
+
+        Nan::DefineOwnProperty(arg_0_6_tmp, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_6_tmp_11);
 
         arg_0_6 = arg_0_6_tmp;
     }
@@ -845,6 +863,27 @@ NAN_METHOD(NJSWallet::newAccountWithExtendedKeyInfo) {
     cpp_impl->newAccountWithExtendedKeyInfo(arg_0,arg_1);
     info.GetReturnValue().Set(arg_1_resolver->GetPromise());
 }
+NAN_METHOD(NJSWallet::eraseDataSince) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSWallet::eraseDataSince needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSWallet* obj = Nan::ObjectWrap::Unwrap<NJSWallet>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSWallet::eraseDataSince : implementation of Wallet is not valid");
+    }
+    cpp_impl->eraseDataSince(arg_0);
+}
 
 NAN_METHOD(NJSWallet::New) {
     //Only new allowed
@@ -929,6 +968,7 @@ void NJSWallet::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getNextExtendedKeyAccountCreationInfo", getNextExtendedKeyAccountCreationInfo);
     Nan::SetPrototypeMethod(func_template,"newAccountWithInfo", newAccountWithInfo);
     Nan::SetPrototypeMethod(func_template,"newAccountWithExtendedKeyInfo", newAccountWithExtendedKeyInfo);
+    Nan::SetPrototypeMethod(func_template,"eraseDataSince", eraseDataSince);
     //Set object prototype
     Wallet_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

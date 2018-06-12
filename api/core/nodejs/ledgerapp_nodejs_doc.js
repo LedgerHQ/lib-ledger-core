@@ -363,6 +363,37 @@ declare class NJSOperationListCallback
      */
     declare function onCallback(result: ?Array<NJSOperation>, error: ?Error);
 }
+declare class NJSAddress
+{
+    /**
+     * Gets an optional derivation path (if the address is owned by an account)
+     * @return The derivation path of the address
+     */
+    declare function getDerivationPath(): ?string;
+    /**
+     * Serialize the address to a string. The serialization method depends of the underlying currency and
+     * format (Base58, Bech32, Ethereum...)
+     */
+    declare function toString(): string;
+    declare function asBitcoinLikeAddress(): ?NJSBitcoinLikeAddress;
+    declare function isInstanceOfBitcoinLikeAddress(): boolean;
+    declare function getCurrency(): Currency;
+    /**
+     * Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
+     * (depending on you host this may be a null, nil, None...)
+     * @param address The string to parse
+     * @param currency The currency used to parse the address
+     * @return If successful returns the address object otherwise null.
+     */
+    static declare function parse(address: string, currency: Currency): ?NJSAddress;
+    /**
+     * Checks if the given string formatted address is valid or not.
+     * @param address The string to parse
+     * @param currency The currency used to parse the address
+     * @return If successful returns true, false otherwise.
+     */
+    static declare function isValid(address: string, currency: Currency): boolean;
+}
 /**Class representing an account */
 declare class NJSAccount
 {
@@ -378,6 +409,14 @@ declare class NJSAccount
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     declare function getBalance(callback: NJSAmountCallback);
+    /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    declare function getBalanceHistory(start: string, end: string, period: TimePeriod, callback: NJSAmountListCallback);
     /**
      *Get synchronization status of account
      *@return bool
@@ -425,7 +464,7 @@ declare class NJSAccount
      */
     declare function isInstanceOfRippleLikeAccount(): boolean;
     /**TODO */
-    declare function getFreshPublicAddresses(callback: NJSStringListCallback);
+    declare function getFreshPublicAddresses(callback: NJSAddressListCallback);
     /**
      *Get type of wallet to which account belongs
      *@return WalletType object
@@ -452,6 +491,11 @@ declare class NJSAccount
     declare function getLastBlock(callback: NJSBlockCallback);
     /** Get the key used to generate the account */
     declare function getRestoreKey(): string;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -470,14 +514,27 @@ declare class NJSAmountCallback
  *Callback triggered by main completed task,
  *returns optional result as list of template type T
  */
-declare class NJSStringListCallback
+declare class NJSAmountListCallback
 {
     /**
      * Method triggered when main task complete
      * @params result optional of type list<T>, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    declare function onCallback(result: ?Array<string>, error: ?Error);
+    declare function onCallback(result: ?Array<NJSAmount>, error: ?Error);
+}
+/**
+ *Callback triggered by main completed task,
+ *returns optional result as list of template type T
+ */
+declare class NJSAddressListCallback
+{
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type list<T>, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
+    declare function onCallback(result: ?Array<NJSAddress>, error: ?Error);
 }
 /**
  *Callback triggered by main completed task,
@@ -615,6 +672,11 @@ declare class NJSWallet
     declare function newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: NJSAccountCallback);
     /**TODO */
     declare function newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: NJSAccountCallback);
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,
@@ -1222,22 +1284,6 @@ declare class NJSBitcoinLikeAddress
      * @return True if the version byte matches the P2PKH byte version of the address network parameters
      */
     declare function isP2PKH(): boolean;
-    /**
-     * Gets an optional derivation path (if the address comes from an extended public key)
-     * @return The derivation path of the address
-     */
-    declare function getDerivationPath(): ?string;
-    /**
-     * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
-     * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
-     * @return A BitcoinLikeAddress
-     */
-    static declare function fromBase58(params: BitcoinLikeNetworkParameters, address: string): NJSBitcoinLikeAddress;
-    /**
-     * Check if the given address is valid
-     * @return true if the address is valid, false otherwise
-     */
-    static declare function isAddressValid(params: BitcoinLikeNetworkParameters, address: string): boolean;
 }
 declare class NJSBitcoinLikeExtendedPublicKey
 {
@@ -1246,7 +1292,6 @@ declare class NJSBitcoinLikeExtendedPublicKey
     declare function deriveHash160(path: string): Object;
     declare function toBase58(): string;
     declare function getRootPath(): string;
-    static declare function fromBase58(params: BitcoinLikeNetworkParameters, address: string, path: ?string): NJSBitcoinLikeExtendedPublicKey;
 }
 /**Class representing amount of transaction, output, inputs ... */
 declare class NJSAmount
@@ -1628,6 +1673,12 @@ declare class NJSBitcoinLikeTransactionBuilder
      */
     declare function sendToAddress(amount: NJSAmount, address: string): NJSBitcoinLikeTransactionBuilder;
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    declare function wipeToAddress(address: string): NJSBitcoinLikeTransactionBuilder;
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */
@@ -1785,6 +1836,11 @@ declare class NJSWalletPool
      *@param EventBus object
      */
     declare function getEventBus(): NJSEventBus;
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    declare function eraseDataSince(date: Date);
 }
 /**
  *Callback triggered by main completed task,

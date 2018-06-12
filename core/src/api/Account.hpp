@@ -4,20 +4,30 @@
 #ifndef DJINNI_GENERATED_ACCOUNT_HPP
 #define DJINNI_GENERATED_ACCOUNT_HPP
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
+class AddressListCallback;
 class AmountCallback;
+class AmountListCallback;
 class BitcoinLikeAccount;
 class BlockCallback;
 class EventBus;
 class Logger;
 class OperationQuery;
 class Preferences;
-class StringListCallback;
+enum class TimePeriod;
 enum class WalletType;
 
 /**Class representing an account */
@@ -29,27 +39,29 @@ public:
      *Key of the synchronization duration time in the synchronize event payload.
      *The value is stored in a int 64 time expressed in miliseconds.
      */
-    static std::string const EV_SYNC_DURATION_MS;
+    static LIBCORE_EXPORT std::string const EV_SYNC_DURATION_MS;
 
     /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
-    static std::string const EV_SYNC_ERROR_CODE;
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE;
+
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE_INT;
 
     /**Key of the synchronization error message. The message is stored as a string. */
-    static std::string const EV_SYNC_ERROR_MESSAGE;
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_MESSAGE;
 
     /**TODO */
-    static std::string const EV_NEW_BLOCK_CURRENCY_NAME;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_CURRENCY_NAME;
 
-    static std::string const EV_NEW_BLOCK_HASH;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HASH;
 
-    static std::string const EV_NEW_BLOCK_HEIGHT;
+    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HEIGHT;
 
     /**TODO */
-    static std::string const EV_NEW_OP_WALLET_NAME;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_WALLET_NAME;
 
-    static std::string const EV_NEW_OP_ACCOUNT_INDEX;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_ACCOUNT_INDEX;
 
-    static std::string const EV_NEW_OP_UID;
+    static LIBCORE_EXPORT std::string const EV_NEW_OP_UID;
 
     /**
      *Get index of account in user's wallet
@@ -65,6 +77,15 @@ public:
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     virtual void getBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /**
+     *Get balance of account at a precise interval with a certain granularity
+     *@param start, lower bound of search range
+     *@param end, upper bound of search range
+     *@param precision, granularity at which we want results
+     *@param callback, ListCallback returning a list of Amount object which represents account's balance
+     */
+    virtual void getBalanceHistory(const std::string & start, const std::string & end, TimePeriod period, const std::shared_ptr<AmountListCallback> & callback) = 0;
 
     /**
      *Get synchronization status of account
@@ -122,7 +143,7 @@ public:
     virtual bool isInstanceOfRippleLikeAccount() = 0;
 
     /**TODO */
-    virtual void getFreshPublicAddresses(const std::shared_ptr<StringListCallback> & callback) = 0;
+    virtual void getFreshPublicAddresses(const std::shared_ptr<AddressListCallback> & callback) = 0;
 
     /**
      *Get type of wallet to which account belongs
@@ -156,6 +177,12 @@ public:
 
     /** Get the key used to generate the account */
     virtual std::string getRestoreKey() = 0;
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 };
 
 } } }  // namespace ledger::core::api

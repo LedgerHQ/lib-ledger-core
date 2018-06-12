@@ -46,25 +46,6 @@ public abstract class BitcoinLikeAddress {
      */
     public abstract boolean isP2PKH();
 
-    /**
-     * Gets an optional derivation path (if the address comes from an extended public key)
-     * @return The derivation path of the address
-     */
-    public abstract String getDerivationPath();
-
-    /**
-     * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
-     * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
-     * @return A BitcoinLikeAddress
-     */
-    public static native BitcoinLikeAddress fromBase58(BitcoinLikeNetworkParameters params, String address);
-
-    /**
-     * Check if the given address is valid
-     * @return true if the address is valid, false otherwise
-     */
-    public static native boolean isAddressValid(BitcoinLikeNetworkParameters params, String address);
-
     private static final class CppProxy extends BitcoinLikeAddress
     {
         private final long nativeRef;
@@ -135,13 +116,5 @@ public abstract class BitcoinLikeAddress {
             return native_isP2PKH(this.nativeRef);
         }
         private native boolean native_isP2PKH(long _nativeRef);
-
-        @Override
-        public String getDerivationPath()
-        {
-            assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_getDerivationPath(this.nativeRef);
-        }
-        private native String native_getDerivationPath(long _nativeRef);
     }
 }

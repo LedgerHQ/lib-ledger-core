@@ -54,7 +54,10 @@ namespace ledger {
                                });
             if (transactionExists(sql, tx.hash)) {
                 // UPDATE (we only update block information)
-
+                if (tx.block.nonEmpty()) {
+                    sql << "UPDATE bitcoin_transactions SET block_uid = :uid WHERE hash = :tx_hash",
+                            use(blockUid), use(tx.hash);
+                }
                 return false;
             } else {
                 // Insert
@@ -85,9 +88,9 @@ namespace ledger {
                                                                 const std::string& accountUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorer::Output &output) {
-            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :hash, :amount, :script, :address, :account_uid)",
+            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :hash, :amount, :script, :address, NULL)",
                     use(output.index), use(transactionHash), use(output.value.toUint64()), use(output.script),
-                    use(output.address), use(accountUid);
+                    use(output.address);
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertInput(soci::session &sql,

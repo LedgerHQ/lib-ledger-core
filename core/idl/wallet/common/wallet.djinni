@@ -224,14 +224,36 @@ ExtendedKeyAccountCreationInfo = record {
 }
 
 Address = interface +c {
+    # Gets an optional derivation path (if the address is owned by an account)
+    # @return The derivation path of the address
     getDerivationPath(): optional<string>;
-    toString(): optional<string>;
+    # Serialize the address to a string. The serialization method depends of the underlying currency and
+    # format (Base58, Bech32, Ethereum...)
+    toString(): string;
     asBitcoinLikeAddress(): optional<BitcoinLikeAddress>;
+    isInstanceOfBitcoinLikeAddress(): bool;
 
+    getCurrency(): Currency;
 
-    static parse(address: String): optional<Address>;
+    # Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
+    # (depending on you host this may be a null, nil, None...)
+    # @param address The string to parse
+    # @param currency The currency used to parse the address
+    # @return If successful returns the address object otherwise null.
+    static parse(address: string, currency: Currency): optional<Address>;
+
+    # Checks if the given string formatted address is valid or not.
+    # @param address The string to parse
+    # @param currency The currency used to parse the address
+    # @return If successful returns true, false otherwise.
+    static isValid(address: string, currency: Currency): bool;
 }
 
+TimePeriod = enum {
+    day;
+    week;
+    month;
+}
 #Class representing an account
 Account = interface +c {
     #Key of the synchronization duration time in the synchronize event payload.
@@ -239,6 +261,7 @@ Account = interface +c {
     const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
     #Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
+    const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
     #Key of the synchronization error message. The message is stored as a string.
     const EV_SYNC_ERROR_MESSAGE: string = "EV_SYNC_ERROR_MESSAGE";
     #TODO
@@ -257,6 +280,12 @@ Account = interface +c {
     #Get balance of account
     #@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
     getBalance(callback: Callback<Amount>);
+    #Get balance of account at a precise interval with a certain granularity
+    #@param start, lower bound of search range
+    #@param end, upper bound of search range
+    #@param precision, granularity at which we want results
+    #@param callback, ListCallback returning a list of Amount object which represents account's balance
+    getBalanceHistory(start: string, end: string, period: TimePeriod, callback: ListCallback<Amount>);
     #Get synchronization status of account
     #@return bool
     isSynchronizing(): bool;
@@ -288,7 +317,7 @@ Account = interface +c {
     #@return bool
     isInstanceOfRippleLikeAccount(): bool;
     #TODO
-    getFreshPublicAddresses(callback: ListCallback<string>);
+    getFreshPublicAddresses(callback: ListCallback<Address>);
     #Get type of wallet to which account belongs
     #@return WalletType object
     getWalletType(): WalletType;
@@ -308,6 +337,9 @@ Account = interface +c {
 
     # Get the key used to generate the account
     getRestoreKey(): string;
+    #Erase data (in user's DB) relative to wallet since given date
+    #@param date, start date of data deletion
+    eraseDataSince(date: date);
 }
 
 #Class representing a wallet
@@ -390,4 +422,7 @@ Wallet = interface +c {
     newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: Callback<Account>);
     #TODO
     newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: Callback<Account>);
+    #Erase data (in user's DB) relative to wallet since given date
+    #@param date, start date of data deletion
+    eraseDataSince(date: date);
 }

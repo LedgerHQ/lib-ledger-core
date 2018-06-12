@@ -4,7 +4,7 @@ dependencies:
   cache_directories:
     - ~/cmake-3.10.3
 jobs:
-  build:
+  build_linux:
     docker:
       - image: debian:stretch
     working_directory: ~/lib-ledger-core
@@ -22,6 +22,14 @@ jobs:
       - run:
           command: |
             . .circleci/build_lib.sh
+      - deploy:
+          filters:
+            branches:
+            only: develop
+          name: Deploy to s3 bucket
+          command: |
+            aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/latest/linux --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
+            aws s3 ls s3://ledger-lib-ledger-core/latest/linux;
       - run:
           name: build node module
           command: |
@@ -50,8 +58,51 @@ jobs:
               cp ./build/Release/ledgerapp_nodejs.node /tmp/node_module
       - store_artifacts:
           path: /tmp/node_module
+  build_macos:
+    macos:
+      xcode: "9.2.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_macos.sh
+      - run:
+          name: Submodule initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Build library
+          command: |
+            . .circleci/build_lib.sh
       - deploy:
+          filters:
+            branches:
+            only: develop
           name: Deploy to s3 bucket
           command: |
-            aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/ --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
-            aws s3 ls s3://ledger-lib-ledger-core/;
+            . .circleci/deploy.sh
+      - run:
+          name: Build node module
+          command: |
+            . .circleci/build_node_module.sh
+      - run:
+          name: Run tests
+          command: |
+              cd ../lib-ledger-core-build
+              ctest
+      - run:
+          command: |
+              mkdir -p /tmp/core_dumps
+              cp ./sample/tmp/log_file_test_instance-l.log /tmp/core_dumps
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/core_dumps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_linux
+      - build_macos

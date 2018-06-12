@@ -12,7 +12,10 @@
                                  FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
                                 DustAmount:(int64_t)DustAmount
                              MessagePrefix:(nonnull NSString *)MessagePrefix
-                UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction;
+                UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                            TimestampDelay:(int64_t)TimestampDelay
+                                   SigHash:(nonnull NSData *)SigHash
+                            AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs;
 + (nonnull instancetype)BitcoinLikeNetworkParametersWithIdentifier:(nonnull NSString *)Identifier
                                                       P2PKHVersion:(nonnull NSData *)P2PKHVersion
                                                        P2SHVersion:(nonnull NSData *)P2SHVersion
@@ -20,7 +23,10 @@
                                                          FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
                                                         DustAmount:(int64_t)DustAmount
                                                      MessagePrefix:(nonnull NSString *)MessagePrefix
-                                        UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction;
+                                        UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
+                                                    TimestampDelay:(int64_t)TimestampDelay
+                                                           SigHash:(nonnull NSData *)SigHash
+                                                    AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs;
 
 @property (nonatomic, readonly, nonnull) NSString * Identifier;
 
@@ -37,5 +43,11 @@
 @property (nonatomic, readonly, nonnull) NSString * MessagePrefix;
 
 @property (nonatomic, readonly) BOOL UsesTimestampedTransaction;
+
+@property (nonatomic, readonly) int64_t TimestampDelay;
+
+@property (nonatomic, readonly, nonnull) NSData * SigHash;
+
+@property (nonatomic, readonly, nonnull) NSArray<NSString *> * AdditionalBIPs;
 
 @end

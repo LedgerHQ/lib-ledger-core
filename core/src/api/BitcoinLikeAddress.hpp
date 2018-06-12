@@ -4,9 +4,7 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEADDRESS_HPP
 #define DJINNI_GENERATED_BITCOINLIKEADDRESS_HPP
 
-#include "../utils/optional.hpp"
 #include <cstdint>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -57,25 +55,6 @@ public:
      * @return True if the version byte matches the P2PKH byte version of the address network parameters
      */
     virtual bool isP2PKH() = 0;
-
-    /**
-     * Gets an optional derivation path (if the address comes from an extended public key)
-     * @return The derivation path of the address
-     */
-    virtual std::experimental::optional<std::string> getDerivationPath() = 0;
-
-    /**
-     * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
-     * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
-     * @return A BitcoinLikeAddress
-     */
-    static std::shared_ptr<BitcoinLikeAddress> fromBase58(const BitcoinLikeNetworkParameters & params, const std::string & address);
-
-    /**
-     * Check if the given address is valid
-     * @return true if the address is valid, false otherwise
-     */
-    static bool isAddressValid(const BitcoinLikeNetworkParameters & params, const std::string & address);
 };
 
 } } }  // namespace ledger::core::api

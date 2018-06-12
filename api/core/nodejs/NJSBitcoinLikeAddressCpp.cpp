@@ -127,6 +127,24 @@ NAN_METHOD(NJSBitcoinLikeAddress::getNetworkParameters) {
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_7);
     auto arg_0_8 = Nan::New<Boolean>(result.UsesTimestampedTransaction);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_8);
+    auto arg_0_9 = Nan::New<Number>(result.TimestampDelay);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_9);
+    Local<Array> arg_0_10 = Nan::New<Array>();
+    for(size_t arg_0_10_id = 0; arg_0_10_id < result.SigHash.size(); arg_0_10_id++)
+    {
+        auto arg_0_10_elem = Nan::New<Uint32>(result.SigHash[arg_0_10_id]);
+        arg_0_10->Set((int)arg_0_10_id,arg_0_10_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_10);
+    Local<Array> arg_0_11 = Nan::New<Array>();
+    for(size_t arg_0_11_id = 0; arg_0_11_id < result.AdditionalBIPs.size(); arg_0_11_id++)
+    {
+        auto arg_0_11_elem = Nan::New<String>(result.AdditionalBIPs[arg_0_11_id]).ToLocalChecked();
+        arg_0_11->Set((int)arg_0_11_id,arg_0_11_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_11);
 
 
     //Return result
@@ -210,197 +228,6 @@ NAN_METHOD(NJSBitcoinLikeAddress::isP2PKH) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
-NAN_METHOD(NJSBitcoinLikeAddress::getDerivationPath) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 0)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::getDerivationPath needs 0 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    //Unwrap current object and retrieve its Cpp Implementation
-    NJSBitcoinLikeAddress* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(info.This());
-    auto cpp_impl = obj->getCppImpl();
-    if(!cpp_impl)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::getDerivationPath : implementation of BitcoinLikeAddress is not valid");
-    }
-
-    auto result = cpp_impl->getDerivationPath();
-
-    //Wrap result in node object
-    Local<Value> arg_0;
-    if(result)
-    {
-        auto arg_0_optional = (result).value();
-        auto arg_0_tmp = Nan::New<String>(arg_0_optional).ToLocalChecked();
-        arg_0 = arg_0_tmp;
-    }
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_0);
-}
-NAN_METHOD(NJSBitcoinLikeAddress::fromBase58) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::fromBase58 needs 2 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_1(field_arg_0_1->ToString());
-    auto arg_0_1 = std::string(*string_arg_0_1);
-
-    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_2;
-    Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
-    {
-        if(arg_0_2_container->Get(arg_0_2_id)->IsUint32())
-        {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(arg_0_2_id)).FromJust();
-            arg_0_2.emplace_back(arg_0_2_elem);
-        }
-    }
-
-
-    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_3;
-    Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
-    {
-        if(arg_0_3_container->Get(arg_0_3_id)->IsUint32())
-        {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(arg_0_3_id)).FromJust();
-            arg_0_3.emplace_back(arg_0_3_elem);
-        }
-    }
-
-
-    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_4;
-    Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
-    {
-        if(arg_0_4_container->Get(arg_0_4_id)->IsUint32())
-        {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(arg_0_4_id)).FromJust();
-            arg_0_4.emplace_back(arg_0_4_elem);
-        }
-    }
-
-
-    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_5).FromJust();
-
-    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6 = Nan::To<int64_t>(field_arg_0_6).FromJust();
-
-    auto field_arg_0_7 = Nan::Get(info[0]->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_7(field_arg_0_7->ToString());
-    auto arg_0_7 = std::string(*string_arg_0_7);
-
-    auto field_arg_0_8 = Nan::Get(info[0]->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_8 = Nan::To<bool>(field_arg_0_8).FromJust();
-    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8);
-
-    String::Utf8Value string_arg_1(info[1]->ToString());
-    auto arg_1 = std::string(*string_arg_1);
-
-    auto result = BitcoinLikeAddress::fromBase58(arg_0,arg_1);
-
-    //Wrap result in node object
-    auto arg_2_wrap = NJSBitcoinLikeAddress::wrap(result);
-    auto arg_2 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeAddress>(arg_2_wrap)->handle();
-
-
-    //Return result
-    info.GetReturnValue().Set(arg_2);
-}
-NAN_METHOD(NJSBitcoinLikeAddress::isAddressValid) {
-
-    //Check if method called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::isAddressValid needs 2 arguments");
-    }
-
-    //Check if parameters have correct types
-
-    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_1(field_arg_0_1->ToString());
-    auto arg_0_1 = std::string(*string_arg_0_1);
-
-    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_2;
-    Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
-    {
-        if(arg_0_2_container->Get(arg_0_2_id)->IsUint32())
-        {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(arg_0_2_id)).FromJust();
-            arg_0_2.emplace_back(arg_0_2_elem);
-        }
-    }
-
-
-    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_3;
-    Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
-    {
-        if(arg_0_3_container->Get(arg_0_3_id)->IsUint32())
-        {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(arg_0_3_id)).FromJust();
-            arg_0_3.emplace_back(arg_0_3_elem);
-        }
-    }
-
-
-    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_4;
-    Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
-    {
-        if(arg_0_4_container->Get(arg_0_4_id)->IsUint32())
-        {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(arg_0_4_id)).FromJust();
-            arg_0_4.emplace_back(arg_0_4_elem);
-        }
-    }
-
-
-    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_5).FromJust();
-
-    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6 = Nan::To<int64_t>(field_arg_0_6).FromJust();
-
-    auto field_arg_0_7 = Nan::Get(info[0]->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_7(field_arg_0_7->ToString());
-    auto arg_0_7 = std::string(*string_arg_0_7);
-
-    auto field_arg_0_8 = Nan::Get(info[0]->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_8 = Nan::To<bool>(field_arg_0_8).FromJust();
-    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8);
-
-    String::Utf8Value string_arg_1(info[1]->ToString());
-    auto arg_1 = std::string(*string_arg_1);
-
-    auto result = BitcoinLikeAddress::isAddressValid(arg_0,arg_1);
-
-    //Wrap result in node object
-    auto arg_2 = Nan::New<Boolean>(result);
-
-    //Return result
-    info.GetReturnValue().Set(arg_2);
-}
 
 NAN_METHOD(NJSBitcoinLikeAddress::New) {
     //Only new allowed
@@ -408,78 +235,7 @@ NAN_METHOD(NJSBitcoinLikeAddress::New) {
     {
         return Nan::ThrowError("NJSBitcoinLikeAddress function can only be called as constructor (use New)");
     }
-
-    //Check if NJSBitcoinLikeAddress::New called with right number of arguments
-    if(info.Length() != 2)
-    {
-        return Nan::ThrowError("NJSBitcoinLikeAddress::New needs same number of arguments as ledger::core::api::BitcoinLikeAddress::fromBase58 method");
-    }
-
-    //Unwrap objects to get C++ classes
-
-    auto field_arg_0_1 = Nan::Get(info[0]->ToObject(), Nan::New<String>("Identifier").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_1(field_arg_0_1->ToString());
-    auto arg_0_1 = std::string(*string_arg_0_1);
-
-    auto field_arg_0_2 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2PKHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_2;
-    Local<Array> arg_0_2_container = Local<Array>::Cast(field_arg_0_2);
-    for(uint32_t arg_0_2_id = 0; arg_0_2_id < arg_0_2_container->Length(); arg_0_2_id++)
-    {
-        if(arg_0_2_container->Get(arg_0_2_id)->IsUint32())
-        {
-            auto arg_0_2_elem = Nan::To<uint32_t>(arg_0_2_container->Get(arg_0_2_id)).FromJust();
-            arg_0_2.emplace_back(arg_0_2_elem);
-        }
-    }
-
-
-    auto field_arg_0_3 = Nan::Get(info[0]->ToObject(), Nan::New<String>("P2SHVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_3;
-    Local<Array> arg_0_3_container = Local<Array>::Cast(field_arg_0_3);
-    for(uint32_t arg_0_3_id = 0; arg_0_3_id < arg_0_3_container->Length(); arg_0_3_id++)
-    {
-        if(arg_0_3_container->Get(arg_0_3_id)->IsUint32())
-        {
-            auto arg_0_3_elem = Nan::To<uint32_t>(arg_0_3_container->Get(arg_0_3_id)).FromJust();
-            arg_0_3.emplace_back(arg_0_3_elem);
-        }
-    }
-
-
-    auto field_arg_0_4 = Nan::Get(info[0]->ToObject(), Nan::New<String>("XPUBVersion").ToLocalChecked()).ToLocalChecked();
-    vector<uint8_t> arg_0_4;
-    Local<Array> arg_0_4_container = Local<Array>::Cast(field_arg_0_4);
-    for(uint32_t arg_0_4_id = 0; arg_0_4_id < arg_0_4_container->Length(); arg_0_4_id++)
-    {
-        if(arg_0_4_container->Get(arg_0_4_id)->IsUint32())
-        {
-            auto arg_0_4_elem = Nan::To<uint32_t>(arg_0_4_container->Get(arg_0_4_id)).FromJust();
-            arg_0_4.emplace_back(arg_0_4_elem);
-        }
-    }
-
-
-    auto field_arg_0_5 = Nan::Get(info[0]->ToObject(), Nan::New<String>("FeePolicy").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_5 = (ledger::core::api::BitcoinLikeFeePolicy)Nan::To<int>(field_arg_0_5).FromJust();
-
-    auto field_arg_0_6 = Nan::Get(info[0]->ToObject(), Nan::New<String>("DustAmount").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_6 = Nan::To<int64_t>(field_arg_0_6).FromJust();
-
-    auto field_arg_0_7 = Nan::Get(info[0]->ToObject(), Nan::New<String>("MessagePrefix").ToLocalChecked()).ToLocalChecked();
-    String::Utf8Value string_arg_0_7(field_arg_0_7->ToString());
-    auto arg_0_7 = std::string(*string_arg_0_7);
-
-    auto field_arg_0_8 = Nan::Get(info[0]->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
-    auto arg_0_8 = Nan::To<bool>(field_arg_0_8).FromJust();
-    BitcoinLikeNetworkParameters arg_0(arg_0_1, arg_0_2, arg_0_3, arg_0_4, arg_0_5, arg_0_6, arg_0_7, arg_0_8);
-
-    String::Utf8Value string_arg_1(info[1]->ToString());
-    auto arg_1 = std::string(*string_arg_1);
-
-    //Call factory
-    auto cpp_instance = ledger::core::api::BitcoinLikeAddress::fromBase58(arg_0,arg_1);
-    NJSBitcoinLikeAddress *node_instance = new NJSBitcoinLikeAddress(cpp_instance);
+    NJSBitcoinLikeAddress *node_instance = new NJSBitcoinLikeAddress(nullptr);
 
     if(node_instance)
     {
@@ -538,9 +294,6 @@ void NJSBitcoinLikeAddress::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"toBase58", toBase58);
     Nan::SetPrototypeMethod(func_template,"isP2SH", isP2SH);
     Nan::SetPrototypeMethod(func_template,"isP2PKH", isP2PKH);
-    Nan::SetPrototypeMethod(func_template,"getDerivationPath", getDerivationPath);
-    Nan::SetPrototypeMethod(func_template,"fromBase58", fromBase58);
-    Nan::SetPrototypeMethod(func_template,"isAddressValid", isAddressValid);
     //Set object prototype
     BitcoinLikeAddress_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

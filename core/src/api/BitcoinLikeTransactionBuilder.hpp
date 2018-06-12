@@ -85,6 +85,13 @@ public:
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> sendToAddress(const std::shared_ptr<Amount> & amount, const std::string & address) = 0;
 
     /**
+     * Send all available funds to the given address.
+     * @param address Address of the recipient
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> wipeToAddress(const std::string & address) = 0;
+
+    /**
      * Set the amount of fees per byte (of the raw transaction).
      * @return A reference on the same builder in order to chain calls.
      */

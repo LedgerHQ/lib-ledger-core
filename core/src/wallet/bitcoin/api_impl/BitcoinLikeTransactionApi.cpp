@@ -39,10 +39,11 @@ namespace ledger {
     namespace core {
 
 
-        BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency& currency) {
+        BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency& currency, bool isSegwit) {
             _currency = currency;
             _version = 1;
             _writable = true;
+            _isSegwit = isSegwit;
         }
 
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) : BitcoinLikeTransactionApi(operation->getCurrency()) {
@@ -130,13 +131,18 @@ namespace ledger {
         }
 
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
-            // TODO Implement get witness
-            return Option<std::vector<uint8_t>>().toOptional();
+            std::vector<uint8_t> witness;
+            if(_isSegwit) {
+                for (auto& input : _inputs) {
+                    auto scriptSig = input->getScriptSig();
+                    witness.insert(witness.end(), scriptSig.begin(), scriptSig.end());
+                }
+            }
+            return Option<std::vector<uint8_t>>(witness).toOptional();
         }
 
         api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
-            // TODO implement segwit
-            return estimateSize(getInputs().size(), getOutputs().size(), _currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, false);
+            return estimateSize(getInputs().size(), getOutputs().size(), _currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, _isSegwit);
         }
 
         bool BitcoinLikeTransactionApi::isWriteable() const {
@@ -225,9 +231,11 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing transaction timestamp");
                 writer.writeLeValue<uint32_t>(ts.value());
             }
-            auto witness = getWitness();
-            if (witness) {
+
+            if(_isSegwit) {
+                //write marker
                 writer.writeByte(0x00);
+                //write flag
                 writer.writeByte(0x01);
             }
         }
@@ -243,15 +251,19 @@ namespace ledger {
                 if (!input->getPreviousOutputIndex())
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
+
                 auto scriptSig = input->getScriptSig();
-                if (scriptSig.size() > 0) {
+                if(!_isSegwit && scriptSig.size() > 0) {
                     writer.writeVarInt(scriptSig.size());
                     writer.writeByteArray(scriptSig);
+                } else if (_isSegwit && scriptSig.size() > 1) {
+                    writer.writeVarInt(0);
                 } else {
                     auto prevOut = input->getPreviousOuput()->getScript();
                     writer.writeVarInt(prevOut.size());
                     writer.writeByteArray(prevOut);
                 }
+
                 writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
             }
         }
@@ -268,30 +280,38 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
+            auto witness = getWitness();
+            writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             writer.writeLeValue<int32_t>(_lockTime);
         }
 
 
         std::shared_ptr<api::BitcoinLikeTransaction> api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(
                 const Currency &currency, const std::vector<uint8_t> &rawTransaction) {
-            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency);
+
             BytesReader reader(rawTransaction);
             // Parse version
-            tx->setVersion(reader.readNextLeUint());
-
+            auto version = reader.readNextLeUint();
             // Parse timestamp
-            if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
-                tx->setTimestamp(reader.readNextLeUint());
+            auto usesTimeStamp = currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction;
+            uint32_t timeStamp = 0;
+            if (usesTimeStamp) {
+                timeStamp = reader.readNextLeUint();
             }
 
             // Parse segwit marker and flag
+            bool isSegwit = false;
             auto marker = reader.peek();
-
             if (marker == 0x00) {
+                isSegwit = true;
                 marker = reader.readNextByte();
                 auto flag = reader.readNextByte();
-                // TODO Implement segwit
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Segwit transaction parsing is not handled");
+            }
+
+            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, isSegwit);
+            tx->setVersion(version);
+            if (usesTimeStamp) {
+                tx->setTimestamp(timeStamp);
             }
 
             // Parse inputs
@@ -306,7 +326,7 @@ namespace ledger {
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
                 std::string address;
                 if (parsedScript.isSuccess()) {
-                   auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                   auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue()) {
                         address = parsedAddress.getValue().toBase58();
                         output.address = address;
@@ -332,7 +352,7 @@ namespace ledger {
                 auto scriptSig = reader.read(scriptSize);
                 auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
                 if (parsedScript.isSuccess()) {
-                    auto parsedAddress = parsedScript.getValue().parseAddress(currency.bitcoinLikeNetworkParameters.value());
+                    auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue())
                         output.address = Option<std::string>(parsedAddress.getValue().toBase58());
                 }

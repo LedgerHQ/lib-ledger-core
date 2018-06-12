@@ -26,7 +26,7 @@ private:
     friend ::djinni::JniClass<BitcoinLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[B[B[BLco/ledger/core/BitcoinLikeFeePolicy;JLjava/lang/String;Z)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[B[B[BLco/ledger/core/BitcoinLikeFeePolicy;JLjava/lang/String;ZJ[BLjava/util/ArrayList;)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_P2PKHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2PKHVersion", "[B") };
     const jfieldID field_P2SHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2SHVersion", "[B") };
@@ -35,6 +35,9 @@ private:
     const jfieldID field_DustAmount { ::djinni::jniGetFieldID(clazz.get(), "DustAmount", "J") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };
     const jfieldID field_UsesTimestampedTransaction { ::djinni::jniGetFieldID(clazz.get(), "UsesTimestampedTransaction", "Z") };
+    const jfieldID field_TimestampDelay { ::djinni::jniGetFieldID(clazz.get(), "TimestampDelay", "J") };
+    const jfieldID field_SigHash { ::djinni::jniGetFieldID(clazz.get(), "SigHash", "[B") };
+    const jfieldID field_AdditionalBIPs { ::djinni::jniGetFieldID(clazz.get(), "AdditionalBIPs", "Ljava/util/ArrayList;") };
 };
 
 }  // namespace djinni_generated

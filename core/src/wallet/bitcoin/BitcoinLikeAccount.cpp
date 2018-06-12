@@ -48,8 +48,9 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <spdlog/logger.h>
-
+#include <utils/DateUtils.hpp>
 namespace ledger {
     namespace core {
 
@@ -65,6 +66,7 @@ namespace ledger {
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
             _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getContext(), getWallet()->getCurrency());
+            _currentBlockHeight = 0;
         }
 
         void
@@ -209,7 +211,6 @@ namespace ledger {
                     finalAmount = finalAmount + o.first->value;
                     accountOutputCount += 1;
                 }
-
                 if (accountOutputCount > 0) {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
@@ -217,6 +218,19 @@ namespace ledger {
                     if (OperationDatabaseHelper::putOperation(sql, operation))
                         emitNewOperationEvent(operation);
                 }
+
+                //Update account_uid column of bitcoin_outputs table
+                for (auto& o : accountOutputs) {
+                    if (o.first->address.nonEmpty()) {
+                        int count = 0;
+                        sql << "SELECT COUNT(*) FROM bitcoin_outputs WHERE address = :address", soci::use(o.first->address.getValue()), soci::into(count);
+                        if (count > 0) {
+                            sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address",
+                                    soci::use(getAccountUid()), soci::use(o.first->address.getValue());
+                        }
+                    }
+                }
+
             }
 
             return result;
@@ -225,7 +239,19 @@ namespace ledger {
         void
         BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
-            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+            if (tx.block.nonEmpty()) {
+                auto txBlockHeight = tx.block.getValue().height;
+                if (_currentBlockHeight > txBlockHeight + 5 ) {
+                    operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+                } else if (_currentBlockHeight > txBlockHeight) {
+                    operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
+                } else if (_currentBlockHeight == txBlockHeight) {
+                    operation.trust->setTrustLevel(api::TrustLevel::PENDING);
+                }
+
+            } else {
+                operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
+            }
         }
 
         std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
@@ -247,6 +273,14 @@ namespace ledger {
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future = _synchronizer->synchronize(std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+
+            //Update current block height (needed to compute trust level)
+            _explorer->getCurrentBlock().onComplete(getContext(), [self] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) mutable {
+                if (block.isSuccess()) {
+                    self->_currentBlockHeight = block.getValue()->height;
+                }
+            });
+
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
             future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime] (const Try<Unit>& result) {
@@ -261,6 +295,8 @@ namespace ledger {
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
+                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t)result.getFailure().getErrorCode());
+                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
                 }
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
                 std::lock_guard<std::mutex> lock(self->_synchronizationLock);
@@ -337,10 +373,17 @@ namespace ledger {
             return _keychain->isEmpty();
         }
 
-        Future<std::vector<std::string>> BitcoinLikeAccount::getFreshPublicAddresses() {
+        Future<AbstractAccount::AddressList> BitcoinLikeAccount::getFreshPublicAddresses() {
             auto keychain = getKeychain();
-            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
-                return keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
+            return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
+                auto addrs = keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
+                AbstractAccount::AddressList result(addrs.size());
+                auto i = 0;
+                for (auto& addr : addrs) {
+                    result[i] = std::dynamic_pointer_cast<api::Address>(addr);
+                    i += 1;
+                }
+                return result;
             });
         }
 
@@ -370,6 +413,71 @@ namespace ledger {
                     sum = sum + utxo.value;
                 }
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+            });
+        }
+
+        Future<std::vector<std::shared_ptr<api::Amount>>> BitcoinLikeAccount::getBalanceHistory(const std::string & start,
+                                                                                           const std::string & end,
+                                                                                           api::TimePeriod precision) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
+
+                const int32_t BATCH_SIZE = 100;
+                const auto& uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<Operation> operations;
+                auto offset = 0;
+                std::size_t count = 0;
+
+                auto keychain = self->getKeychain();
+                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+
+                //Query all utxos in date range
+                for (; (count = OperationDatabaseHelper::queryOperations(sql, uid, operations, filter)) == BATCH_SIZE; offset += count) {}
+
+                auto startDate = DateUtils::fromJSON(start);
+                auto endDate = DateUtils::fromJSON(end);
+                auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+                std::vector<std::shared_ptr<api::Amount>> amounts;
+                std::size_t operationsCount = 0;
+                bool increment = true;
+                BigInt sum(0);
+                while (upperDate <= endDate) {
+
+                    if(operationsCount < operations.size()) {
+                        auto operation = operations[operationsCount];
+                        if (operation.date <= upperDate) {
+                            increment = false;
+                            switch (operation.type) {
+                                case api::OperationType::RECEIVE:
+                                {
+                                    sum = sum + operation.amount;
+                                    break;
+                                }
+                                case api::OperationType::SEND:
+                                {
+                                    sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                    break;
+                                }
+                            }
+                            operationsCount += 1;
+                        }
+                    }
+
+                    if(increment) {
+                        //Save amount
+                        amounts.emplace_back(std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                        //Increment Date
+                        upperDate = DateUtils::incrementDate(upperDate, precision);
+                    }
+
+                    increment = true;
+                }
+
+                return amounts;
             });
         }
 
@@ -417,7 +525,7 @@ namespace ledger {
             };
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getContext(),
-                    getWallet()->getCurrency().bitcoinLikeNetworkParameters.value(),
+                    getWallet()->getCurrency(),
                     logger(),
                     _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, logger())
             );
@@ -446,7 +554,6 @@ namespace ledger {
         std::string BitcoinLikeAccount::getRestoreKey() {
             return _keychain->getRestoreKey();
         }
-
 
     }
 }

@@ -3,6 +3,8 @@
 
 package co.ledger.core;
 
+import java.util.ArrayList;
+
 public final class BitcoinLikeNetworkParameters {
 
 
@@ -22,6 +24,12 @@ public final class BitcoinLikeNetworkParameters {
 
     /*package*/ final boolean UsesTimestampedTransaction;
 
+    /*package*/ final long TimestampDelay;
+
+    /*package*/ final byte[] SigHash;
+
+    /*package*/ final ArrayList<String> AdditionalBIPs;
+
     public BitcoinLikeNetworkParameters(
             String Identifier,
             byte[] P2PKHVersion,
@@ -30,7 +38,10 @@ public final class BitcoinLikeNetworkParameters {
             BitcoinLikeFeePolicy FeePolicy,
             long DustAmount,
             String MessagePrefix,
-            boolean UsesTimestampedTransaction) {
+            boolean UsesTimestampedTransaction,
+            long TimestampDelay,
+            byte[] SigHash,
+            ArrayList<String> AdditionalBIPs) {
         this.Identifier = Identifier;
         this.P2PKHVersion = P2PKHVersion;
         this.P2SHVersion = P2SHVersion;
@@ -39,6 +50,9 @@ public final class BitcoinLikeNetworkParameters {
         this.DustAmount = DustAmount;
         this.MessagePrefix = MessagePrefix;
         this.UsesTimestampedTransaction = UsesTimestampedTransaction;
+        this.TimestampDelay = TimestampDelay;
+        this.SigHash = SigHash;
+        this.AdditionalBIPs = AdditionalBIPs;
     }
 
     public String getIdentifier() {
@@ -73,6 +87,18 @@ public final class BitcoinLikeNetworkParameters {
         return UsesTimestampedTransaction;
     }
 
+    public long getTimestampDelay() {
+        return TimestampDelay;
+    }
+
+    public byte[] getSigHash() {
+        return SigHash;
+    }
+
+    public ArrayList<String> getAdditionalBIPs() {
+        return AdditionalBIPs;
+    }
+
     @Override
     public String toString() {
         return "BitcoinLikeNetworkParameters{" +
@@ -84,6 +110,9 @@ public final class BitcoinLikeNetworkParameters {
                 "," + "DustAmount=" + DustAmount +
                 "," + "MessagePrefix=" + MessagePrefix +
                 "," + "UsesTimestampedTransaction=" + UsesTimestampedTransaction +
+                "," + "TimestampDelay=" + TimestampDelay +
+                "," + "SigHash=" + SigHash +
+                "," + "AdditionalBIPs=" + AdditionalBIPs +
         "}";
     }
 

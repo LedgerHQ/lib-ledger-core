@@ -78,25 +78,32 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
 }
 
 BitcoinLikeWalletDatabase
-BaseFixture::newBitcoinAccount(const std::shared_ptr<WalletPool> &pool, const std::string &walletName, int32_t index,
-                        const std::string &xpub) {
+BaseFixture::newBitcoinAccount(const std::shared_ptr<WalletPool> &pool,
+                               const std::string &walletName,
+                               const std::string &currencyName,
+                               const std::shared_ptr<api::DynamicObject> &configuration,
+                               int32_t index,
+                               const std::string &xpub) {
     BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
     if (!db.accountExists(index)) {
-        createWallet(pool, walletName);
+        createWallet(pool, walletName, currencyName, configuration);
         createAccount(pool, walletName, index);
         db.createAccount(index, xpub);
     }
     return db;
 }
 
-void BaseFixture::createWallet(const std::shared_ptr<WalletPool> &pool, const std::string &walletName) {
+void BaseFixture::createWallet(const std::shared_ptr<WalletPool> &pool,
+                               const std::string &walletName,
+                               const std::string &currencyName,
+                               const std::shared_ptr<api::DynamicObject> &configuration) {
     soci::session sql(pool->getDatabaseSessionPool()
                               ->getPool());
     WalletDatabaseEntry entry;
-    entry.configuration = std::static_pointer_cast<DynamicObject>(DynamicObject::newInstance());
+    entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
     entry.name = walletName;
     entry.poolName = pool->getName();
-    entry.currencyName = "bitcoin";
+    entry.currencyName = currencyName;
     entry.updateUid();
     PoolDatabaseHelper::putWallet(sql, entry);
 }

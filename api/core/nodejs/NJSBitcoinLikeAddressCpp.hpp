@@ -5,7 +5,6 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEADDRESS_HPP
 
 
-#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include <cstdint>
 #include <memory>
@@ -71,25 +70,6 @@ private:
      * @return True if the version byte matches the P2PKH byte version of the address network parameters
      */
     static NAN_METHOD(isP2PKH);
-
-    /**
-     * Gets an optional derivation path (if the address comes from an extended public key)
-     * @return The derivation path of the address
-     */
-    static NAN_METHOD(getDerivationPath);
-
-    /**
-     * Deserializes the given address (note that this function will throw an exception wether the address doesn't belong to
-     * the given network parameters, or if the address contains invalid Base58 characters or if the checksum is invalid).
-     * @return A BitcoinLikeAddress
-     */
-    static NAN_METHOD(fromBase58);
-
-    /**
-     * Check if the given address is valid
-     * @return true if the address is valid, false otherwise
-     */
-    static NAN_METHOD(isAddressValid);
 
     static NAN_METHOD(New);
 

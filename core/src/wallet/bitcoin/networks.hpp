@@ -31,14 +31,49 @@
 #ifndef LEDGER_CORE_NETWORKS_HPP
 #define LEDGER_CORE_NETWORKS_HPP
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include "../../api/BitcoinLikeNetworkParameters.hpp"
 
 namespace ledger {
     namespace core {
+
         namespace networks {
-            extern const api::BitcoinLikeNetworkParameters BITCOIN;
-            extern const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET;
-            extern const std::vector<api::BitcoinLikeNetworkParameters> ALL;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters BITCOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters BITCOIN_CASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters BITCOIN_GOLD;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters ZCASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters ZENCASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters LITECOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters PEERCOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters DIGIBYTE;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters HCASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters QTUM;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters STEALTHCOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters VERTCOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters VIACOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters DASH;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters DOGECOIN;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters STRATIS;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters KOMODO;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters POSWALLET;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters PIVX;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters CLUBCOIN;
+            extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
+
+            extern LIBCORE_EXPORT const std::string BIP115;
+            struct BIP115Parameters {
+                std::string blockHash;
+                std::vector<uint8_t> blockHeight;
+            };
+            extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
 
             template<class Archive>
             void serialize(Archive & archive,
@@ -52,7 +87,10 @@ namespace ledger {
                     p.FeePolicy,
                     p.DustAmount,
                     p.MessagePrefix,
-                    p.UsesTimestampedTransaction
+                    p.UsesTimestampedTransaction,
+                    p.TimestampDelay,
+                    p.SigHash,
+                    p.AdditionalBIPs
                 );
             }
 

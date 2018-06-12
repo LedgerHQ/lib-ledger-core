@@ -72,7 +72,7 @@ TEST_F(WalletPoolTest, InitializeCurrencies) {
 TEST_F(WalletPoolTest, AddCurrency) {
     api::BitcoinLikeNetworkParameters params(
     "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
-    "Wonder Coin Signed Message:\n", false
+    "Wonder Coin Signed Message:\n", false, 0, {0x01}, {}
     );
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");
@@ -114,7 +114,7 @@ TEST_F(WalletPoolTest, AddCurrency) {
 TEST_F(WalletPoolTest, RemoveCurrency) {
     api::BitcoinLikeNetworkParameters params(
     "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
-    "Wonder Coin Signed Message:\n", false
+    "Wonder Coin Signed Message:\n", false, 0, {0x01}, {}
     );
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");

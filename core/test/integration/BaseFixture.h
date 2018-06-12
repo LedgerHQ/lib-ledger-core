@@ -68,6 +68,8 @@ using namespace ledger::qt; // Djeez
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
+extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
+
 extern const std::string TX_1;
 extern const std::string TX_2;
 extern const std::string TX_3;
@@ -79,12 +81,17 @@ public:
     void SetUp() override;
     void TearDown() override;
     std::shared_ptr<WalletPool> newDefaultPool(std::string poolName = "my_ppol");
-    void createWallet(const std::shared_ptr<WalletPool>& pool, const std::string& walletName);
-    void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index);
+    void createWallet(const std::shared_ptr<WalletPool>& pool,
+                      const std::string& walletName,
+                      const std::string& currencyName,
+                      const std::shared_ptr<api::DynamicObject> &configuration);
+    void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string &walletName, int32_t index);
     BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool>& pool,
-                                         const std::string& walletName,
-                                         int32_t index,
-                                         const std::string& xpub);
+                                                const std::string& walletName,
+                                                const std::string& currencyName,
+                                                const std::shared_ptr<api::DynamicObject> &configuration,
+                                                int32_t index,
+                                                const std::string& xpub);
     std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                 int32_t index,
                                                                 const api::AccountCreationInfo &info

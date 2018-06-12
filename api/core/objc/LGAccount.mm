@@ -8,6 +8,8 @@ NSString * __nonnull const LGAccountEVSYNCDURATIONMS = @"EV_SYNC_DURATION_MS";
 
 NSString * __nonnull const LGAccountEVSYNCERRORCODE = @"EV_SYNC_ERROR_CODE";
 
+NSString * __nonnull const LGAccountEVSYNCERRORCODEINT = @"EV_SYNC_ERROR_CODE_INT";
+
 NSString * __nonnull const LGAccountEVSYNCERRORMESSAGE = @"EV_SYNC_ERROR_MESSAGE";
 
 NSString * __nonnull const LGAccountEVNEWBLOCKCURRENCYNAME = @"EV_NEW_BLOCK_CURRENCY_NAME";

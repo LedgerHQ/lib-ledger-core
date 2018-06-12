@@ -70,8 +70,8 @@ namespace ledger {
                 BigInt value;
                 Option<std::string> address;
                 std::string script;
-
                 Output() = default;
+                std::string time;
             };
 
             struct Transaction {
@@ -83,9 +83,10 @@ namespace ledger {
                 std::vector<Input> inputs;
                 std::vector<Output> outputs;
                 Option<BigInt> fees;
-
+                uint64_t confirmations;
                 Transaction() {
                     version = 1;
+                    confirmations = -1;
                 }
             };
 
@@ -110,6 +111,7 @@ namespace ledger {
             virtual Future<Bytes> getRawTransaction(const String& transactionHash) = 0;
             virtual FuturePtr<Transaction> getTransactionByHash(const String& transactionHash) = 0;
             virtual Future<String> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
+            virtual Future<int64_t> getTimestamp() = 0;
         };
     }
 }

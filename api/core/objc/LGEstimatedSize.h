@@ -4,13 +4,13 @@
 #import <Foundation/Foundation.h>
 
 @interface LGEstimatedSize : NSObject
-- (nonnull instancetype)initWithMin:(int32_t)min
-                                max:(int32_t)max;
-+ (nonnull instancetype)EstimatedSizeWithMin:(int32_t)min
-                                         max:(int32_t)max;
+- (nonnull instancetype)initWithMin:(int32_t)Min
+                                Max:(int32_t)Max;
++ (nonnull instancetype)EstimatedSizeWithMin:(int32_t)Min
+                                         Max:(int32_t)Max;
 
-@property (nonatomic, readonly) int32_t min;
+@property (nonatomic, readonly) int32_t Min;
 
-@property (nonatomic, readonly) int32_t max;
+@property (nonatomic, readonly) int32_t Max;
 
 @end

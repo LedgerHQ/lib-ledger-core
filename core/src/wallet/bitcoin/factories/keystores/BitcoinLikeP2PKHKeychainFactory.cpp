@@ -45,7 +45,7 @@ namespace ledger {
             if (!info.extendedKeys.empty()) {
                 auto xpub = make_try<std::shared_ptr<BitcoinLikeExtendedPublicKey>>([&] () -> std::shared_ptr<BitcoinLikeExtendedPublicKey> {
                     return BitcoinLikeExtendedPublicKey::fromBase58(
-                            currency.bitcoinLikeNetworkParameters.value(),
+                            currency,
                             info.extendedKeys[0],
                             Option<std::string>(path.toString())
                     );
@@ -72,7 +72,7 @@ namespace ledger {
                                                  const api::Currency &currency) {
             auto keychain = std::make_shared<P2PKHBitcoinLikeKeychain>(
                     configuration, currency, index, BitcoinLikeExtendedPublicKey::fromBase58(
-                            currency.bitcoinLikeNetworkParameters.value(),
+                            currency,
                             databaseXpubEntry, Option<std::string>(path.toString())
                     ),
                     accountPreferences

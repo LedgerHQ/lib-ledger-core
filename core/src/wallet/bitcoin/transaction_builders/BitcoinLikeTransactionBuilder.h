@@ -42,6 +42,8 @@
 #include <async/Future.hpp>
 #include <math/BigInt.h>
 #include <spdlog/logger.h>
+#include <api/Currency.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -56,6 +58,7 @@ namespace ledger {
             Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
+            bool wipe;
         };
 
         using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;
@@ -64,7 +67,7 @@ namespace ledger {
         public:
             explicit BitcoinLikeTransactionBuilder(
                     const std::shared_ptr<api::ExecutionContext>& context,
-                    const api::BitcoinLikeNetworkParameters& params,
+                    const api::Currency& params,
                     const std::shared_ptr<spdlog::logger>& logger,
                     const BitcoinLikeTransactionBuildFunction& buildFunction);
             BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
@@ -88,6 +91,9 @@ namespace ledger {
             sendToAddress(const std::shared_ptr<api::Amount> &amount, const std::string &address) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            wipeToAddress(const std::string &address) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
             setFeesPerByte(const std::shared_ptr<api::Amount> &fees) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
@@ -103,7 +109,8 @@ namespace ledger {
             void build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) override;
             Future<std::shared_ptr<api::BitcoinLikeTransaction>> build();
         private:
-            api::BitcoinLikeNetworkParameters _params;
+            api::Currency _currency;
+            std::shared_ptr<api::BitcoinLikeScript> createSendScript(const std::string &address);
             BitcoinLikeTransactionBuildFunction _build;
             BitcoinLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;

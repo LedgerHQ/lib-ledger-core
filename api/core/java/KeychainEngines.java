@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class KeychainEngines {
     public static final String BIP32_P2PKH = "BIP32_P2PKH";
 
+    public static final String BIP49_P2SH = "BIP49_P2SH";
+
 
     private static final class CppProxy extends KeychainEngines
     {

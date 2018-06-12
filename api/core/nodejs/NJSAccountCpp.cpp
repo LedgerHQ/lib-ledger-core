@@ -87,6 +87,37 @@ NAN_METHOD(NJSAccount::getBalance) {
     cpp_impl->getBalance(arg_0);
     info.GetReturnValue().Set(arg_0_resolver->GetPromise());
 }
+NAN_METHOD(NJSAccount::getBalanceHistory) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 3)
+    {
+        return Nan::ThrowError("NJSAccount::getBalanceHistory needs 3 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+    String::Utf8Value string_arg_1(info[1]->ToString());
+    auto arg_1 = std::string(*string_arg_1);
+    auto arg_2 = (ledger::core::api::TimePeriod)Nan::To<int>(info[2]).FromJust();
+
+    //Create promise and set it into Callcack
+    auto arg_3_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSAmountListCallback *njs_ptr_arg_3 = new NJSAmountListCallback(arg_3_resolver);
+    std::shared_ptr<NJSAmountListCallback> arg_3(njs_ptr_arg_3);
+
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSAccount::getBalanceHistory : implementation of Account is not valid");
+    }
+    cpp_impl->getBalanceHistory(arg_0,arg_1,arg_2,arg_3);
+    info.GetReturnValue().Set(arg_3_resolver->GetPromise());
+}
 NAN_METHOD(NJSAccount::isSynchronizing) {
 
     //Check if method called with right number of arguments
@@ -345,8 +376,8 @@ NAN_METHOD(NJSAccount::getFreshPublicAddresses) {
 
     //Create promise and set it into Callcack
     auto arg_0_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
-    NJSStringListCallback *njs_ptr_arg_0 = new NJSStringListCallback(arg_0_resolver);
-    std::shared_ptr<NJSStringListCallback> arg_0(njs_ptr_arg_0);
+    NJSAddressListCallback *njs_ptr_arg_0 = new NJSAddressListCallback(arg_0_resolver);
+    std::shared_ptr<NJSAddressListCallback> arg_0(njs_ptr_arg_0);
 
 
     //Unwrap current object and retrieve its Cpp Implementation
@@ -529,6 +560,27 @@ NAN_METHOD(NJSAccount::getRestoreKey) {
     //Return result
     info.GetReturnValue().Set(arg_0);
 }
+NAN_METHOD(NJSAccount::eraseDataSince) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSAccount::eraseDataSince needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
+    auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSAccount::eraseDataSince : implementation of Account is not valid");
+    }
+    cpp_impl->eraseDataSince(arg_0);
+}
 
 NAN_METHOD(NJSAccount::New) {
     //Only new allowed
@@ -592,6 +644,7 @@ void NJSAccount::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"getIndex", getIndex);
     Nan::SetPrototypeMethod(func_template,"queryOperations", queryOperations);
     Nan::SetPrototypeMethod(func_template,"getBalance", getBalance);
+    Nan::SetPrototypeMethod(func_template,"getBalanceHistory", getBalanceHistory);
     Nan::SetPrototypeMethod(func_template,"isSynchronizing", isSynchronizing);
     Nan::SetPrototypeMethod(func_template,"synchronize", synchronize);
     Nan::SetPrototypeMethod(func_template,"getPreferences", getPreferences);
@@ -609,6 +662,7 @@ void NJSAccount::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"isObservingBlockchain", isObservingBlockchain);
     Nan::SetPrototypeMethod(func_template,"getLastBlock", getLastBlock);
     Nan::SetPrototypeMethod(func_template,"getRestoreKey", getRestoreKey);
+    Nan::SetPrototypeMethod(func_template,"eraseDataSince", eraseDataSince);
     //Set object prototype
     Account_prototype.Reset(objectTemplate);
     Nan::SetPrototypeMethod(func_template,"isNull", isNull);

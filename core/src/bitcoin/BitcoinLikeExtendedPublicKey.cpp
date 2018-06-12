@@ -42,10 +42,10 @@
 namespace ledger {
     namespace core {
 
-        BitcoinLikeExtendedPublicKey::BitcoinLikeExtendedPublicKey(const api::BitcoinLikeNetworkParameters &params,
+        BitcoinLikeExtendedPublicKey::BitcoinLikeExtendedPublicKey(const api::Currency &currency,
                                                                    const DeterministicPublicKey& key,
                                                                    const DerivationPath& path) :
-            _params(params), _key(key), _path(path)
+            _currency(currency), _key(key), _path(path)
         {
 
         }
@@ -60,21 +60,21 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeAddress> BitcoinLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
             auto key = _derive(0, p.toVector(), _key);
-            return std::make_shared<BitcoinLikeAddress>(_params, key.getPublicKeyHash160(), _params.P2PKHVersion, optional<std::string>((_path + p).toString()));
+            return std::make_shared<BitcoinLikeAddress>(_currency, key.getPublicKeyHash160(), _currency.bitcoinLikeNetworkParameters.value().P2PKHVersion, optional<std::string>((_path + p).toString()));
         }
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey> BitcoinLikeExtendedPublicKey::derive(
                 const DerivationPath &path) {
             auto dpk = _derive(0, path.toVector(), _key);
-            return std::make_shared<BitcoinLikeExtendedPublicKey>(_params, dpk, _path + path);
+            return std::make_shared<BitcoinLikeExtendedPublicKey>(_currency, dpk, _path + path);
         }
 
         std::string BitcoinLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithChecksum(_key.toByteArray(_params.XPUBVersion));
+            return Base58::encodeWithChecksum(_key.toByteArray(params().XPUBVersion));
         }
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey>
-        BitcoinLikeExtendedPublicKey::fromRaw(const api::BitcoinLikeNetworkParameters &params,
+        BitcoinLikeExtendedPublicKey::fromRaw(const api::Currency &currency,
                                               const optional<std::vector<uint8_t>> &parentPublicKey,
                                               const std::vector<uint8_t> &publicKey,
                                               const std::vector<uint8_t> &chainCode,
@@ -96,7 +96,7 @@ namespace ledger {
             DeterministicPublicKey k(
                     pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
             );
-            return std::make_shared<BitcoinLikeExtendedPublicKey>(params, k, p);
+            return std::make_shared<BitcoinLikeExtendedPublicKey>(currency, k, p);
         }
 
         std::string BitcoinLikeExtendedPublicKey::getRootPath() {
@@ -104,8 +104,9 @@ namespace ledger {
         }
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey>
-        BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
+        BitcoinLikeExtendedPublicKey::fromBase58(const api::Currency &currency,
                                                  const std::string &xpubBase58, const Option<std::string> &path) {
+            auto& params = currency.bitcoinLikeNetworkParameters.value();
             auto decodeResult = Base58::checkAndDecode(xpubBase58);
             if (decodeResult.isFailure())
                 throw decodeResult.getFailure();
@@ -122,7 +123,7 @@ namespace ledger {
             DeterministicPublicKey k(
                 publicKey, chainCode, childNum, depth, fingerprint
             );
-            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(params, k, DerivationPath(path.getValueOr("m")));
+            return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
         }
 
         std::vector<uint8_t> BitcoinLikeExtendedPublicKey::derivePublicKey(const std::string &path) {
@@ -137,11 +138,9 @@ namespace ledger {
             return key.getPublicKeyHash160();
         }
 
-        std::shared_ptr<api::BitcoinLikeExtendedPublicKey>
-        api::BitcoinLikeExtendedPublicKey::fromBase58(const api::BitcoinLikeNetworkParameters &params,
-                                                      const std::string &address,
-                                                      const std::experimental::optional<std::string> & path) {
-            return ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(params, address, path);
+        const api::BitcoinLikeNetworkParameters &BitcoinLikeExtendedPublicKey::params() const {
+            return _currency.bitcoinLikeNetworkParameters.value();
         }
+
     }
 }

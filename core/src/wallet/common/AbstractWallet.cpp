@@ -38,6 +38,9 @@
 #include <api/AccountListCallback.hpp>
 #include <async/algorithm.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 
 namespace ledger {
     namespace core {
@@ -238,15 +241,20 @@ namespace ledger {
         }
 
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
+            soci::session sql(getDatabase()->getPool());
+            return getAccount(sql, index);
+        }
+
+        FuturePtr<api::Account> AbstractWallet::getAccount(soci::session &sql, int32_t index) {
             auto self = shared_from_this();
-            return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([self, index, &sql] () -> std::shared_ptr<api::Account> {
                 auto it = self->_accounts.find(index);
                 if (it != self->_accounts.end()) {
                     auto ptr = it->second;
                     if (ptr != nullptr)
                         return ptr;
                 }
-                soci::session sql(self->getDatabase()->getPool());
+
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
                     throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
                 }
@@ -271,7 +279,7 @@ namespace ledger {
                 soci::session sql(getDatabase()->getPool());
                 AccountDatabaseHelper::getAccountsIndexes(sql, getWalletUid(), offset, count, indexes);
                 for (auto& index : indexes) {
-                    accounts.push_back(getAccount(index));
+                    accounts.push_back(getAccount(sql, index));
                 }
                 return core::async::sequence(getMainExecutionContext(), accounts);
             });
@@ -302,6 +310,14 @@ namespace ledger {
 
         void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
             getLastBlock().callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+            soci::session sql(_database->getPool());
+            sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid created_at <= :date ", soci::use(getWalletUid()), soci::use(date);
+            for (auto& account : _accounts) {
+                account.second->eraseDataSince(date);
+            }
         }
 
     }

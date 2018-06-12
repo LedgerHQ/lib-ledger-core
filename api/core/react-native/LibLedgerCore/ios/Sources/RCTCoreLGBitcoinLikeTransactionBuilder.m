@@ -187,6 +187,24 @@ RCT_REMAP_METHOD(sendToAddress,sendToAddress:(nullable LGAmount *)amount
 }
 
 /**
+ * Send all available funds to the given address.
+ * @param address Address of the recipient
+ * @return A reference on the same builder in order to chain calls.
+ */
+RCT_REMAP_METHOD(wipeToAddress,wipeToAddress:(nonnull NSString *)address withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :[self.objcImpl wipeToAddress:address]};
+    if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransactionBuilder::wipeToAddress", nil);
+    }
+}
+
+/**
  * Set the amount of fees per byte (of the raw transaction).
  * @return A reference on the same builder in order to chain calls.
  */

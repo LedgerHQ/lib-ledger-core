@@ -56,8 +56,192 @@ namespace ledger {
                             .unit("milli-bitcoin", 5, "mBTC")
                             .unit("micro-bitcoin", 2, "μBTC");
 
+            const api::Currency BITCOIN_CASH =
+                    Currency("bitcoin_cash")
+                            .forkOfBitcoin(networks::BITCOIN_CASH)
+                            .bip44(145)
+                            .paymentUri("bitcoin_cash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("bitcoin cash", 8, "BTH")
+                            .unit("mBCH", 5, "mBCH")
+                            .unit("bit", 2, "bit");
+
+            const api::Currency BITCOIN_GOLD =
+                    Currency("bitcoin_gold")
+                            .forkOfBitcoin(networks::BITCOIN_GOLD)
+                            .bip44(156)
+                            .paymentUri("bitcoin_gold")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("bitcoin gold", 8, "BTG")
+                            .unit("mBCG", 5, "mBCG")
+                            .unit("bit", 2, "bit");
+
+            const api::Currency ZCASH =
+                    Currency("zcash")
+                            .forkOfBitcoin(networks::ZCASH)
+                            .bip44(133)
+                            .paymentUri("zcash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("zcash", 8, "ZEC");
+
+            const api::Currency ZENCASH =
+                    Currency("zencash")
+                            .forkOfBitcoin(networks::ZENCASH)
+                            .bip44(121)
+                            .paymentUri("zencash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("zencash", 8, "ZEN");
+
+            const api::Currency LITECOIN =
+                    Currency("litecoin")
+                            .forkOfBitcoin(networks::LITECOIN)
+                            .bip44(2)
+                            .paymentUri("litecoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("litecoin", 8, "LTC")
+                            .unit("milli-litecoin", 5, "mLTC")
+                            .unit("micro-litecoin", 2, "μLTC");
+
+            const api::Currency PEERCOIN =
+                    Currency("peercoin")
+                            .forkOfBitcoin(networks::PEERCOIN)
+                            .bip44(6)
+                            .paymentUri("peercoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("peercoin", 6, "PPC")
+                            .unit("milli-peercoin", 3, "mPPC");
+
+            const api::Currency DIGIBYTE =
+                    Currency("digibyte")
+                            .forkOfBitcoin(networks::DIGIBYTE)
+                            .bip44(20)
+                            .paymentUri("digibyte")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("digibyte", 8, "DGB");
+
+            const api::Currency HCASH =
+                    Currency("hcash")
+                            .forkOfBitcoin(networks::HCASH)
+                            .bip44(171)
+                            .paymentUri("hcash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("hshare", 8, "HSR");
+
+            const api::Currency QTUM =
+                    Currency("qtum")
+                            .forkOfBitcoin(networks::QTUM)
+                            .bip44(88)
+                            .paymentUri("qtum")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("qtum", 8, "QTUM");
+
+            const api::Currency STEALTHCOIN =
+                    Currency("stealthcoin")
+                            .forkOfBitcoin(networks::STEALTHCOIN)
+                            .bip44(125)
+                            .paymentUri("stealthcoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("stealthcoin", 6, "XST")
+                            .unit("milli-stealthcoin", 3, "mXST");
+
+            const api::Currency VERTCOIN =
+                    Currency("vertcoin")
+                            .forkOfBitcoin(networks::VERTCOIN)
+                            .bip44(128)
+                            .paymentUri("vertcoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("vertcoin", 8, "VTC")
+                            .unit("milli-vertcoin", 5, "mVTC");
+
+            const api::Currency VIACOIN =
+                    Currency("viacoin")
+                            .forkOfBitcoin(networks::VIACOIN)
+                            .bip44(14)
+                            .paymentUri("viacoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("viacoin", 8, "VIA")
+                            .unit("milli-viacoin", 5, "mVIA");
+
+            const api::Currency DASH =
+                    Currency("dash")
+                            .forkOfBitcoin(networks::DASH)
+                            .bip44(5)
+                            .paymentUri("dash")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("dash", 8, "DASH");
+
+            const api::Currency DOGECOIN =
+                    Currency("dogecoin")
+                            .forkOfBitcoin(networks::DOGECOIN)
+                            .bip44(3)
+                            .paymentUri("dogecoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("dogecoin", 8, "DOGE")
+                            .unit("milli-dogecoin", 5, "mDOGE");
+
+            const api::Currency STRATIS =
+                    Currency("stratis")
+                            .forkOfBitcoin(networks::STRATIS)
+                            .bip44(105)
+                            .paymentUri("stratis")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("stratis", 8, "STRAT");
+
+            const api::Currency KOMODO =
+                    Currency("komodo")
+                            .forkOfBitcoin(networks::KOMODO)
+                            .bip44(141)
+                            .paymentUri("komodo")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("komodo", 8, "KMD");
+
+            const api::Currency POSWALLET =
+                    Currency("poswallet")
+                            .forkOfBitcoin(networks::POSWALLET)
+                            .bip44(47)
+                            .paymentUri("poswallet")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("poswallet", 8, "POSW");
+
+            const api::Currency PIVX =
+                    Currency("pivx")
+                            .forkOfBitcoin(networks::PIVX)
+                            .bip44(77)
+                            .paymentUri("pivx")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("pivx", 8, "PIVX")
+                            .unit("milli-pivx", 5, "mPIVX");
+
+            const api::Currency CLUBCOIN =
+                    Currency("clubcoin")
+                            .forkOfBitcoin(networks::CLUBCOIN)
+                            .bip44(79)
+                            .paymentUri("clubcoin")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("clubcoin", 8, "CLUB");
+
             const std::vector<api::Currency> ALL({
-                BITCOIN, BITCOIN_TESTNET
+                BITCOIN,
+                BITCOIN_TESTNET,
+                BITCOIN_CASH,
+                BITCOIN_GOLD,
+                ZCASH,
+                ZENCASH,
+                LITECOIN,
+                PEERCOIN,
+                DIGIBYTE,
+                HCASH,
+                QTUM,
+                STEALTHCOIN,
+                VERTCOIN,
+                VIACOIN,
+                DASH,
+                DOGECOIN,
+                STRATIS,
+                KOMODO,
+                POSWALLET,
+                PIVX,
+                CLUBCOIN
             });
         }
     }

@@ -5,6 +5,13 @@
 #define DJINNI_GENERATED_SYNCHRONIZERENGINES_HPP
 
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -18,13 +25,13 @@ public:
      *For example to condsider a transaction valid, it should, first, be included in a block,
      *then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
      */
-    static std::string const BLOCKCHAIN_EXPLORER;
+    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER;
 
     /**
      *String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
      *To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
      */
-    static std::string const SPV;
+    static LIBCORE_EXPORT std::string const SPV;
 };
 
 } } }  // namespace ledger::core::api

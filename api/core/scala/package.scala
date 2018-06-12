@@ -167,6 +167,8 @@ package object implicits {
     }
     implicit class RichOperationListCallback(val self: OperationListCallback) {
     }
+    implicit class RichAddress(val self: Address) {
+    }
     implicit class RichAccount(val self: Account) {
         def getBalance(): Future[Amount] = {
             val promise = Promise[Amount]()
@@ -182,10 +184,24 @@ package object implicits {
             })
             promise.future
         }
-        def getFreshPublicAddresses(): Future[ArrayList[String]] = {
-            val promise = Promise[ArrayList[String]]()
-            self.getFreshPublicAddresses(new StringListCallback() {
-                override def onCallback(result: ArrayList[String], error: co.ledger.core.Error): Unit =  {
+        def getBalanceHistory(start: String, end: String, period: TimePeriod): Future[ArrayList[Amount]] = {
+            val promise = Promise[ArrayList[Amount]]()
+            self.getBalanceHistory(start, end, period, new AmountListCallback() {
+                override def onCallback(result: ArrayList[Amount], error: co.ledger.core.Error): Unit =  {
+                    if (error != null) {
+                        promise.failure(wrapLedgerCoreError(error))
+                    }
+                    else {
+                        promise.success(result)
+                    }
+                }
+            })
+            promise.future
+        }
+        def getFreshPublicAddresses(): Future[ArrayList[Address]] = {
+            val promise = Promise[ArrayList[Address]]()
+            self.getFreshPublicAddresses(new AddressListCallback() {
+                override def onCallback(result: ArrayList[Address], error: co.ledger.core.Error): Unit =  {
                     if (error != null) {
                         promise.failure(wrapLedgerCoreError(error))
                     }
@@ -213,7 +229,9 @@ package object implicits {
     }
     implicit class RichAmountCallback(val self: AmountCallback) {
     }
-    implicit class RichStringListCallback(val self: StringListCallback) {
+    implicit class RichAmountListCallback(val self: AmountListCallback) {
+    }
+    implicit class RichAddressListCallback(val self: AddressListCallback) {
     }
     implicit class RichBlockCallback(val self: BlockCallback) {
     }

@@ -5,8 +5,6 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEEXTENDEDPUBLICKEY_HPP
 
 
-#include "../../../core/src/api/../utils/optional.hpp"
-#include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include "NJSBitcoinLikeAddressCpp.hpp"
 #include <cstdint>
 #include <memory>
@@ -43,8 +41,6 @@ private:
     static NAN_METHOD(toBase58);
 
     static NAN_METHOD(getRootPath);
-
-    static NAN_METHOD(fromBase58);
 
     static NAN_METHOD(New);
 

@@ -11,8 +11,6 @@ add_subdirectory(fmt-3.0.0)
 add_subdirectory(sqlite3)
 add_subdirectory(openssl)
 add_subdirectory(snappy)
-
-include(ProjectLeveldb)
 add_subdirectory(leveldb)
 
 add_subdirectory(spdlog)
