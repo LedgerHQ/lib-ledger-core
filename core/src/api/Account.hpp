@@ -44,6 +44,8 @@ public:
     /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
     static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE;
 
+    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE_INT;
+
     /**Key of the synchronization error message. The message is stored as a string. */
     static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_MESSAGE;
 
