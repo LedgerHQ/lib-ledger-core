@@ -134,7 +134,6 @@ namespace ledger {
                        << networks::BIP115_PARAMETERS.blockHeight
                        << btccore::OP_CHECKBLOCKATHEIGHT;
             }
-
             return script;
         }
 
