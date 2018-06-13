@@ -16,7 +16,7 @@ auto BitcoinLikeOperator::toCpp(ObjcType obj) -> CppType
 
 auto BitcoinLikeOperator::fromCpp(const CppType& cpp) -> ObjcType
 {
-    return [[LGBitcoinLikeOperator alloc] initWithName:(::djinni::String::fromCpp(cpp.name))
+    return [[LGBitcoinLikeOperator alloc] initWithOperatorName:(::djinni::String::fromCpp(cpp.name))
                                                  value:(::djinni::I8::fromCpp(cpp.value))];
 }
 

@@ -17,7 +17,7 @@
                                height:(int64_t)height;
 
 /**String, block's hash */
-@property (nonatomic, readonly, nonnull) NSString * hash;
+@property (nonatomic, readonly, nonnull) NSString * blockHash;
 
 /**String, id of block (usually height of block) */
 @property (nonatomic, readonly, nonnull) NSString * uid;
