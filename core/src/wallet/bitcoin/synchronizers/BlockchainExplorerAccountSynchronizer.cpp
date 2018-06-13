@@ -37,7 +37,7 @@
 #include <debug/Benchmarker.h>
 #include <utils/DurationUtils.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-
+#include <wallet/common/database/AccountDatabaseHelper.h>
 namespace ledger {
     namespace core {
 
@@ -169,11 +169,10 @@ namespace ledger {
                     index ++;
                 }
 
-                //TODO: Be sure that in case of deepestFailedBlockHeight > firstReorgBlock no account's txs appear in [firstReorgBlock, deepestFailedBlockHeight[
                 //Case of reorg, update savedState's batches
                 if (deepestFailedBlockHeight > 0) {
-                    //Get from DB the block right before (in height) deepestFailedBlockHeight (which is not part of reorg)
-                    auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, currencyName, deepestFailedBlockHeight);
+                    //Get last block (in DB) which contains current account's operations
+                    auto previousBlock = AccountDatabaseHelper::getLastBlockWithOperations(sql, buddy->account->getAccountUid());
                     for (auto& batch : buddy->savedState.getValue().batches) {
                         if (batch.blockHeight >= deepestFailedBlockHeight) {
                             batch.blockHeight = previousBlock.nonEmpty() ? (uint32_t)previousBlock.getValue().height : 0;

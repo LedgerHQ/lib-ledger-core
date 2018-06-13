@@ -33,6 +33,7 @@
 #include <fmt/format.h>
 #include <list>
 #include <database/soci-date.h>
+#include <database/soci-number.h>
 #include <utils/DateUtils.hpp>
 
 using namespace soci;
@@ -95,6 +96,25 @@ namespace ledger {
                 out.push_back(idx);
             }
             return out;
+        }
+
+        Option<api::Block> AccountDatabaseHelper::getLastBlockWithOperations(soci::session &sql, const std::string &accountUid) {
+            //Get block_uid of most recent operation from DB
+            rowset<row> rows = (sql.prepare << "SELECT op.block_uid, b.hash, b.height, b.time, b.currency_name"
+                                                    "FROM operations AS op "
+                                                    "JOIN blocks AS b ON op.block_uid = b.uid"
+                                                    "WHERE op.account_uid = :uid ORDER BY op.created_at DESC LIMIT 1",
+                                                    use(accountUid));
+            for (auto& row : rows) {
+                auto block_uid = row.get<std::string>(0);
+                auto hash = row.get<std::string>(1);
+                auto height = get_number<int64_t>(row, 2);
+                auto time = row.get<std::chrono::system_clock::time_point>(3);
+                return Option<api::Block>(
+                        api::Block(hash, block_uid, time, row.get<std::string>(4), height)
+                );
+            }
+            return Option<api::Block>();
         }
 
 
