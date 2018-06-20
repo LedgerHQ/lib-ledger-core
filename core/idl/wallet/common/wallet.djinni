@@ -339,7 +339,7 @@ Account = interface +c {
     getRestoreKey(): string;
     #Erase data (in user's DB) relative to wallet since given date
     #@param date, start date of data deletion
-    eraseDataSince(date: date);
+    eraseDataSince(date: date, callback: Callback<ErrorCode>);
 }
 
 #Class representing a wallet
@@ -424,5 +424,5 @@ Wallet = interface +c {
     newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: Callback<Account>);
     #Erase data (in user's DB) relative to wallet since given date
     #@param date, start date of data deletion
-    eraseDataSince(date: date);
+    eraseDataSince(date: date, callback: Callback<ErrorCode>);
 }

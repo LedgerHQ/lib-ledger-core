@@ -86,7 +86,7 @@ public abstract class WalletPool {
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    public abstract void eraseDataSince(Date date);
+    public abstract void eraseDataSince(Date date, ErrorCodeCallback callback);
 
     /**
      *Create a new instance of WalletPool object
@@ -216,11 +216,11 @@ public abstract class WalletPool {
         private native EventBus native_getEventBus(long _nativeRef);
 
         @Override
-        public void eraseDataSince(Date date)
+        public void eraseDataSince(Date date, ErrorCodeCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_eraseDataSince(this.nativeRef, date);
+            native_eraseDataSince(this.nativeRef, date, callback);
         }
-        private native void native_eraseDataSince(long _nativeRef, Date date);
+        private native void native_eraseDataSince(long _nativeRef, Date date, ErrorCodeCallback callback);
     }
 }

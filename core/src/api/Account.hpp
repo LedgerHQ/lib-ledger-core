@@ -23,6 +23,7 @@ class AmountCallback;
 class AmountListCallback;
 class BitcoinLikeAccount;
 class BlockCallback;
+class ErrorCodeCallback;
 class EventBus;
 class Logger;
 class OperationQuery;
@@ -182,7 +183,7 @@ public:
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
+    virtual void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

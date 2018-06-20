@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 
 @interface LGBitcoinLikeOperator : NSObject
-- (nonnull instancetype)initWithOperatorName:(nonnull NSString *)name
+- (nonnull instancetype)initWithName:(nonnull NSString *)name
                                value:(int8_t)value;
 + (nonnull instancetype)BitcoinLikeOperatorWithName:(nonnull NSString *)name
                                               value:(int8_t)value;

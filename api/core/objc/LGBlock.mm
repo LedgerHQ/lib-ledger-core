@@ -13,7 +13,7 @@
                               height:(int64_t)height
 {
     if (self = [super init]) {
-        _blockHash = [hash copy];
+        _hash = [hash copy];
         _uid = [uid copy];
         _time = time;
         _currencyName = [currencyName copy];
@@ -37,7 +37,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.blockHash, self.uid, self.time, self.currencyName, @(self.height)];
+    return [NSString stringWithFormat:@"<%@ %p hash:%@ uid:%@ time:%@ currencyName:%@ height:%@>", self.class, (void *)self, self.hash, self.uid, self.time, self.currencyName, @(self.height)];
 }
 
 @end

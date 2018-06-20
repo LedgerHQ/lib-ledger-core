@@ -156,7 +156,7 @@ public abstract class Wallet {
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    public abstract void eraseDataSince(Date date);
+    public abstract void eraseDataSince(Date date, ErrorCodeCallback callback);
 
     private static final class CppProxy extends Wallet
     {
@@ -374,11 +374,11 @@ public abstract class Wallet {
         private native void native_newAccountWithExtendedKeyInfo(long _nativeRef, ExtendedKeyAccountCreationInfo extendedKeyAccountCreationInfo, AccountCallback callback);
 
         @Override
-        public void eraseDataSince(Date date)
+        public void eraseDataSince(Date date, ErrorCodeCallback callback)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_eraseDataSince(this.nativeRef, date);
+            native_eraseDataSince(this.nativeRef, date, callback);
         }
-        private native void native_eraseDataSince(long _nativeRef, Date date);
+        private native void native_eraseDataSince(long _nativeRef, Date date, ErrorCodeCallback callback);
     }
 }

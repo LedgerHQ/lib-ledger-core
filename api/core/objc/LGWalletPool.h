@@ -12,6 +12,7 @@
 @protocol LGBlockCallback;
 @protocol LGCurrencyCallback;
 @protocol LGCurrencyListCallback;
+@protocol LGErrorCodeCallback;
 @protocol LGHttpClient;
 @protocol LGI32Callback;
 @protocol LGLogPrinter;
@@ -137,6 +138,7 @@
  *Erase data (in user's DB) relative to wallet since given date
  *@param date, start date of data deletion
  */
-- (void)eraseDataSince:(nonnull NSDate *)date;
+- (void)eraseDataSince:(nonnull NSDate *)date
+              callback:(nullable id<LGErrorCodeCallback>)callback;
 
 @end

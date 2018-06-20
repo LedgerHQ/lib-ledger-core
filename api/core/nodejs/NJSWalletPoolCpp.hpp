@@ -14,6 +14,7 @@
 #include "NJSCurrencyListCallback.hpp"
 #include "NJSDatabaseBackendCpp.hpp"
 #include "NJSDynamicObjectCpp.hpp"
+#include "NJSErrorCodeCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSHttpClient.hpp"
 #include "NJSI32Callback.hpp"

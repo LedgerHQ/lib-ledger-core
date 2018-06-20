@@ -16,6 +16,7 @@
 #include "NJSAccountListCallback.hpp"
 #include "NJSBitcoinLikeWalletCpp.hpp"
 #include "NJSBlockCallback.hpp"
+#include "NJSErrorCodeCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSExtendedKeyAccountCreationInfoCallback.hpp"
 #include "NJSI32Callback.hpp"

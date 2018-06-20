@@ -7,6 +7,7 @@
 #include "AmountListCallback.hpp"
 #include "BitcoinLikeAccount.hpp"
 #include "BlockCallback.hpp"
+#include "ErrorCodeCallback.hpp"
 #include "EventBus.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
@@ -237,12 +238,13 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date));
+        ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date),
+                            ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

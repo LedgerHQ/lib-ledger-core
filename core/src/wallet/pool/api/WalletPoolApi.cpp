@@ -163,21 +163,9 @@ namespace ledger {
             _pool->getLastBlock(currencyName).callback(_mainContext, callback);
         }
 
-        void WalletPoolApi::eraseDataSince(const std::chrono::system_clock::time_point & date) {
-            auto pool = _pool;
-            soci::session sql(_pool->getDatabaseSessionPool()->getPool());
-            sql << "DELETE FROM wallets WHERE pool_name = :pool_name AND created_at >= :date ", soci::use(getName()), soci::use(date);
-            _pool->getWalletCount().onComplete(_pool->getContext(), [pool, date] (const Try<int64_t> &count) {
-                if (count.isSuccess()) {
-                    pool->getWallets(0, count.getValue()).onComplete(pool->getContext(), [date] (const Try<std::vector<std::shared_ptr<AbstractWallet>>> &wallets) {
-                        if (wallets.isSuccess()) {
-                            for (auto& wallet : wallets.getValue()) {
-                                wallet->eraseDataSince(date);
-                            }
-                        }
-                    });
-                }
-            });
+        void WalletPoolApi::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            _pool->eraseDataSince(date).callback(_mainContext, callback);
         }
+
     }
 }

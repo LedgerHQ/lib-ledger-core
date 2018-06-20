@@ -8,6 +8,7 @@
 #import "LGBitcoinLikeWallet.h"
 #import "LGBlockCallback.h"
 #import "LGCurrency.h"
+#import "LGErrorCodeCallback.h"
 #import "LGEventBus.h"
 #import "LGExtendedKeyAccountCreationInfo.h"
 #import "LGExtendedKeyAccountCreationInfoCallback.h"

@@ -495,7 +495,7 @@ declare class NJSAccount
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    declare function eraseDataSince(date: Date);
+    declare function eraseDataSince(date: Date, callback: NJSErrorCodeCallback);
 }
 /**
  *Callback triggered by main completed task,
@@ -548,6 +548,19 @@ declare class NJSBlockCallback
      * @params error optional of type Error, non null if main task succeeded
      */
     declare function onCallback(result: ?Block, error: ?Error);
+}
+/**
+ *Callback triggered by main completed task,
+ *returns optional result of template type T
+ */
+declare class NJSErrorCodeCallback
+{
+    /**
+     * Method triggered when main task complete
+     * @params result optional of type T, non null if main task failed
+     * @params error optional of type Error, non null if main task succeeded
+     */
+    declare function onCallback(result: ?ErrorCode, error: ?Error);
 }
 /**Class representing a wallet */
 declare class NJSWallet
@@ -676,7 +689,7 @@ declare class NJSWallet
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    declare function eraseDataSince(date: Date);
+    declare function eraseDataSince(date: Date, callback: NJSErrorCodeCallback);
 }
 /**
  *Callback triggered by main completed task,
@@ -1840,7 +1853,7 @@ declare class NJSWalletPool
      *Erase data (in user's DB) relative to wallet since given date
      *@param date, start date of data deletion
      */
-    declare function eraseDataSince(date: Date);
+    declare function eraseDataSince(date: Date, callback: NJSErrorCodeCallback);
 }
 /**
  *Callback triggered by main completed task,

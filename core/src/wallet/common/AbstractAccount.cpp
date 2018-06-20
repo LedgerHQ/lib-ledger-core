@@ -197,6 +197,9 @@ namespace ledger {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
+        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            eraseDataSince(date).callback(getMainExecutionContext(), callback);
+        }
 
     }
 }

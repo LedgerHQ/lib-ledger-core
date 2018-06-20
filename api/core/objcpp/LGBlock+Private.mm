@@ -10,7 +10,7 @@ namespace djinni_generated {
 auto Block::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
-    return {::djinni::String::toCpp(obj.blockHash),
+    return {::djinni::String::toCpp(obj.hash),
             ::djinni::String::toCpp(obj.uid),
             ::djinni::Date::toCpp(obj.time),
             ::djinni::String::toCpp(obj.currencyName),

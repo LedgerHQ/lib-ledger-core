@@ -206,8 +206,9 @@ RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)res
  *Erase data (in user's DB) relative to wallet since given date
  *@param date, start date of data deletion
  */
-RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(nonnull NSDate *)date) {
+RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(nonnull NSDate *)date
+                                      callback:(nullable id<LGErrorCodeCallback>)callback) {
 
-    [self.objcImpl eraseDataSince:date];
+    [self.objcImpl eraseDataSince:date callback:callback];
 }
 @end
