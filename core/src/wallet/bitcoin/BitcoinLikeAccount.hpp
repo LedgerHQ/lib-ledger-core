@@ -132,6 +132,8 @@ namespace ledger {
 
             const std::shared_ptr<BitcoinLikeBlockchainExplorer>& getExplorer() const;
 
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
+
         protected:
             bool checkIfWalletIsEmpty();
 

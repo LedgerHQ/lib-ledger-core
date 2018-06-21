@@ -13,6 +13,7 @@
 @protocol LGAmountCallback;
 @protocol LGAmountListCallback;
 @protocol LGBlockCallback;
+@protocol LGErrorCodeCallback;
 
 /**
  *Key of the synchronization duration time in the synchronize event payload.
@@ -158,6 +159,7 @@ extern NSString * __nonnull const LGAccountEVNEWOPUID;
  *Erase data (in user's DB) relative to wallet since given date
  *@param date, start date of data deletion
  */
-- (void)eraseDataSince:(nonnull NSDate *)date;
+- (void)eraseDataSince:(nonnull NSDate *)date
+              callback:(nullable id<LGErrorCodeCallback>)callback;
 
 @end

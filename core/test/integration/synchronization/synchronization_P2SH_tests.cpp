@@ -33,6 +33,8 @@
 #include "../BaseFixture.h"
 #include <set>
 #include <api/KeychainEngines.hpp>
+#include <utils/DateUtils.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 
 class BitcoinLikeWalletP2SHSynchronization : public BaseFixture {
 
@@ -160,6 +162,62 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
     }
 }
 
+TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization) {
+    auto pool = newDefaultPool();
+    {
+        //Set configuration
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+                                 "49'/<coin_type>'/<account>'/<node>/<address>");
+        //Create wallet
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a63", "bitcoin_testnet", configuration));
+        //Create account
+        auto account = createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
+        //Sync account
+        auto bus = account->synchronize();
+        auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            fmt::print("Received event {}\n", api::to_string(event->getCode()));
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                return;
+
+            EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+            dispatcher->stop();
+        });
+        bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
+        dispatcher->waitUntilStopped();
+
+        auto accountCount = wait(wallet->getAccountCount());
+        EXPECT_EQ(accountCount, 1);
+        auto accountFromWallet = wait(wallet->getAccount(0));
+        EXPECT_EQ(account, accountFromWallet);
+
+        auto date = "2000-03-27T09:10:22Z";
+        auto formatedDate = DateUtils::fromJSON(date);
+
+        //Delete account
+        auto code = wait(wallet->eraseDataSince(formatedDate));
+        EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+
+        //Check if account was successfully deleted
+        auto newAccountCount = wait(wallet->getAccountCount());
+        EXPECT_EQ(newAccountCount, 0);
+        {
+            soci::session sql(pool->getDatabaseSessionPool()->getPool());
+            BitcoinLikeAccountDatabaseEntry entry;
+            auto result = BitcoinLikeAccountDatabaseHelper::queryAccount(sql, account->getAccountUid(), entry);
+            EXPECT_EQ(result, false);
+        }
+
+        //Delete wallet
+        auto walletCode = wait(pool->eraseDataSince(formatedDate));
+        EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+
+        //Check if wallet was successfully deleted
+        auto walletCount = wait(pool->getWalletCount());
+        EXPECT_EQ(walletCount, 0);
+    }
+}
 TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
     auto pool = newDefaultPool();
     {

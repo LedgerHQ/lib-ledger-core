@@ -40,7 +40,7 @@ public:
         BaseFixture::SetUp();
         auto worker = dispatcher->getSerialExecutionContext("worker");
         auto client = std::make_shared<HttpClient>("http://api.ledgerwallet.com", http, worker);
-        explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, client, networks::BITCOIN, api::DynamicObject::newInstance());
+        explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, client, networks::getNetworkParameters("bitcoin"), api::DynamicObject::newInstance());
         logger = ledger::core::logger::create("test_logs",
                                               std::experimental::optional<std::string>(),
                                               dispatcher->getSerialExecutionContext("logger"),

@@ -7,6 +7,7 @@
 #import "LGCurrencyListCallback.h"
 #import "LGDatabaseBackend.h"
 #import "LGDynamicObject.h"
+#import "LGErrorCodeCallback.h"
 #import "LGEventBus.h"
 #import "LGHttpClient.h"
 #import "LGI32Callback.h"

@@ -7,6 +7,7 @@
 #import "LGAmountListCallback.h"
 #import "LGBitcoinLikeAccount.h"
 #import "LGBlockCallback.h"
+#import "LGErrorCodeCallback.h"
 #import "LGEventBus.h"
 #import "LGLogger.h"
 #import "LGOperationQuery.h"

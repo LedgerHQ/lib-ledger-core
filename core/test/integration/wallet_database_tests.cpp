@@ -82,13 +82,16 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
     }
     EXPECT_EQ(db.getAccountsCount(), 100);
 
-    auto database = pool->getDatabaseSessionPool();
-    soci::session sql(database->getPool());
+    {
+        auto database = pool->getDatabaseSessionPool();
+        soci::session sql(database->getPool());
 
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
-    EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
-    AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
-    EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
+        auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
+        EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
+        AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
+        EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
+    }
+
     EXPECT_EQ(db.getAccountsCount(), 99);
     EXPECT_EQ(db.getNextAccountIndex(), 0);
 }
@@ -193,12 +196,16 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
             *JSONUtils::parse<TransactionParser>(TX_3),
             *JSONUtils::parse<TransactionParser>(TX_4)
     };
-    soci::session sql(pool->getDatabaseSessionPool()->getPool());
-    sql.begin();
-    for (auto& tx : transactions) {
-        account->putTransaction(sql, tx);
+
+
+    {
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.begin();
+        for (auto& tx : transactions) {
+            account->putTransaction(sql, tx);
+        }
+        sql.commit();
     }
-    sql.commit();
 
     auto query = account->queryOperations()->complete();
     auto queryWithOrders = query->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);

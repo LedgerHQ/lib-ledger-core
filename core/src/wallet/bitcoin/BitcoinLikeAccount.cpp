@@ -48,9 +48,13 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <spdlog/logger.h>
 #include <utils/DateUtils.hpp>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 namespace ledger {
     namespace core {
 
@@ -553,6 +557,32 @@ namespace ledger {
 
         std::string BitcoinLikeAccount::getRestoreKey() {
             return _keychain->getRestoreKey();
+        }
+
+        Future<api::ErrorCode> BitcoinLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+            auto log = logger();
+
+            log->debug(" Start erasing data of account : {}", getAccountUid());
+            soci::session sql(getWallet()->getDatabase()->getPool());
+            //Update account's internal preferences (for synchronization)
+            auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+            if (savedState.nonEmpty()) {
+                //Reset batches to blocks mined before given date
+                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                for (auto& batch : savedState.getValue().batches) {
+                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
+                        batch.blockHash = previousBlock.getValue().hash;
+                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
+                        batch.blockHeight = 0;
+                        batch.blockHash = "";
+                    }
+                }
+                getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+            }
+            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(getAccountUid()), soci::use(date);
+            log->debug(" Finish erasing data of account : {}", getAccountUid());
+            return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 
     }

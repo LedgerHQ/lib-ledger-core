@@ -24,6 +24,7 @@
 #include "NJSAmountListCallback.hpp"
 #include "NJSAddressListCallback.hpp"
 #include "NJSBlockCallback.hpp"
+#include "NJSErrorCodeCallback.hpp"
 #include "NJSWalletCpp.hpp"
 #include "NJSAccountCallback.hpp"
 #include "NJSI32Callback.hpp"
@@ -113,6 +114,7 @@ static void initAll(Local<Object> target)
     NJSAmountListCallback::Initialize(target);
     NJSAddressListCallback::Initialize(target);
     NJSBlockCallback::Initialize(target);
+    NJSErrorCodeCallback::Initialize(target);
     NJSWallet::Initialize(target);
     NJSAccountCallback::Initialize(target);
     NJSI32Callback::Initialize(target);

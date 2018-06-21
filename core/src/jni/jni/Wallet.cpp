@@ -9,6 +9,7 @@
 #include "BitcoinLikeWallet.hpp"
 #include "BlockCallback.hpp"
 #include "Currency.hpp"
+#include "ErrorCodeCallback.hpp"
 #include "EventBus.hpp"
 #include "ExtendedKeyAccountCreationInfo.hpp"
 #include "ExtendedKeyAccountCreationInfoCallback.hpp"
@@ -269,12 +270,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
-        ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date));
+        ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date),
+                            ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

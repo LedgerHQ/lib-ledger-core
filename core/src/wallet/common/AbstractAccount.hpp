@@ -43,6 +43,7 @@
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/AmountListCallback.hpp>
+#include <api/ErrorCodeCallback.hpp>
 #include <api/TimePeriod.hpp>
 namespace ledger {
     namespace core {
@@ -92,7 +93,8 @@ namespace ledger {
 
             void emitEventsNow();
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date) override;
+            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
+            virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
             void emitNewOperationEvent(const Operation& operation);

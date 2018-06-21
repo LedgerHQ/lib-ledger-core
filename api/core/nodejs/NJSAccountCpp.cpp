@@ -572,6 +572,12 @@ NAN_METHOD(NJSAccount::eraseDataSince) {
     auto time_arg_0 = Nan::To<int32_t>(info[0]).FromJust();
     auto arg_0 = chrono::system_clock::time_point(chrono::milliseconds(time_arg_0));
 
+    //Create promise and set it into Callcack
+    auto arg_1_resolver = v8::Promise::Resolver::New(Nan::GetCurrentContext()).ToLocalChecked();
+    NJSErrorCodeCallback *njs_ptr_arg_1 = new NJSErrorCodeCallback(arg_1_resolver);
+    std::shared_ptr<NJSErrorCodeCallback> arg_1(njs_ptr_arg_1);
+
+
     //Unwrap current object and retrieve its Cpp Implementation
     NJSAccount* obj = Nan::ObjectWrap::Unwrap<NJSAccount>(info.This());
     auto cpp_impl = obj->getCppImpl();
@@ -579,7 +585,8 @@ NAN_METHOD(NJSAccount::eraseDataSince) {
     {
         return Nan::ThrowError("NJSAccount::eraseDataSince : implementation of Account is not valid");
     }
-    cpp_impl->eraseDataSince(arg_0);
+    cpp_impl->eraseDataSince(arg_0,arg_1);
+    info.GetReturnValue().Set(arg_1_resolver->GetPromise());
 }
 
 NAN_METHOD(NJSAccount::New) {

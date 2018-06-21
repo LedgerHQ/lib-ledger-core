@@ -29,7 +29,6 @@
  *
  */
 
-#include <src/wallet/bitcoin/networks.hpp>
 #include <src/wallet/currencies.hpp>
 
 #ifndef LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

@@ -12,6 +12,7 @@
 #include "NJSAmountListCallback.hpp"
 #include "NJSBitcoinLikeAccountCpp.hpp"
 #include "NJSBlockCallback.hpp"
+#include "NJSErrorCodeCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSLoggerCpp.hpp"
 #include "NJSOperationQueryCpp.hpp"
