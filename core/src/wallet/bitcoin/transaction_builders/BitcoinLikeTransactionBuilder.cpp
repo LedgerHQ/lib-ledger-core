@@ -174,6 +174,9 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeScript>
         BitcoinLikeTransactionBuilder::createSendScript(const std::string &address) {
             auto a = std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, _currency));
+            if (a == nullptr) {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Invalid address {}", address)
+            }
             BitcoinLikeScript script;
             if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
