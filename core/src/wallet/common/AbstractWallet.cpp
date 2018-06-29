@@ -241,13 +241,9 @@ namespace ledger {
         }
 
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
-            soci::session sql(getDatabase()->getPool());
-            return getAccount(sql, index);
-        }
-
-        FuturePtr<api::Account> AbstractWallet::getAccount(soci::session &sql, int32_t index) {
             auto self = shared_from_this();
-            return async<std::shared_ptr<api::Account>>([self, index, &sql] () -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
+                soci::session sql(self->getDatabase()->getPool());
                 auto it = self->_accounts.find(index);
                 if (it != self->_accounts.end()) {
                     auto ptr = it->second;
@@ -279,7 +275,7 @@ namespace ledger {
                 soci::session sql(getDatabase()->getPool());
                 AccountDatabaseHelper::getAccountsIndexes(sql, getWalletUid(), offset, count, indexes);
                 for (auto& index : indexes) {
-                    accounts.push_back(getAccount(sql, index));
+                    accounts.push_back(getAccount(index));
                 }
                 return core::async::sequence(getMainExecutionContext(), accounts);
             });
