@@ -177,7 +177,7 @@ namespace ledger {
             // Check the amount of fees needed when we don't need to add a change output to the transaction
             auto minimumNeededAmount = computeAmountWithFees(0);
             buddy->logger->debug("Minimum required with fees {} got {}", minimumNeededAmount.toString(), aggregatedAmount.toString());
-            if (buddy->outputAmount > minimumNeededAmount) return false;
+            if (buddy->outputAmount > minimumNeededAmount || aggregatedAmount < minimumNeededAmount) return false;
 
             //No need for change if we're wiping
             if(!buddy->request.wipe) {
