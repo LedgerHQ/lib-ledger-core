@@ -33,13 +33,8 @@
 #include "../../fixtures/testnet_xpub_fixtures.h"
 #include "../../fixtures/btg_xpub_fixtures.h"
 
-//#include <src/wallet/pool/WalletPool.hpp>
 #include <api/KeychainEngines.hpp>
 #include "transaction_test_helper.h"
-
-
-#include <iostream>
-using namespace std;
 
 #include <utils/hex.h>
 
