@@ -131,7 +131,8 @@ namespace ledger {
 
             // Bitcoin transaction table
             sql << "CREATE TABLE bitcoin_transactions("
-                "hash VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "hash VARCHAR(255) NOT NULL,"
                 "version INTEGER,"
                 "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                 "time VARCHAR(255),"
@@ -140,7 +141,7 @@ namespace ledger {
 
             // Bitcoin input table
             sql << "CREATE TABLE bitcoin_inputs("
-                "uid VARCHAR(255) PRIMARY KEY NOT NULL," // idx_previoustxhash_coinbase
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL," // accountId_idx_previoustxhash_coinbase
                 "previous_output_idx INTEGER,"
                 "previous_tx_hash VARCHAR(255),"
                 "amount  BIGINT,"
@@ -151,22 +152,24 @@ namespace ledger {
 
             // Bitcoin output table
             sql << "CREATE TABLE bitcoin_outputs("
-                "idx INTEGER NOT NULL,"
-                "transaction_hash VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(hash) ON DELETE CASCADE,"
-                "amount BIGINT NOT NULL,"
-                "script TEXT NOT NULL,"
-                "address VARCHAR(255),"
-                "account_uid VARCHAR(255),"
-                "PRIMARY KEY (idx, transaction_hash, account_uid)"
-            ")";
+                    "idx INTEGER NOT NULL,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                    "transaction_hash VARCHAR(255) NOT NULL,"
+                    "amount BIGINT NOT NULL,"
+                    "script TEXT NOT NULL,"
+                    "address VARCHAR(255),"
+                    "account_uid VARCHAR(255),"
+                    "PRIMARY KEY (idx, transaction_uid, account_uid)"
+                    ")";
 
             // Bitcoin transaction <-> input table
             sql << "CREATE TABLE bitcoin_transaction_inputs("
-                "transaction_hash VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(hash) ON DELETE CASCADE,"
-                "input_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_inputs(uid) ON DELETE CASCADE,"
-                "input_idx INTEGER NOT NULL,"
-                "PRIMARY KEY (transaction_hash, input_uid)"
-            ")";
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                    "transaction_hash VARCHAR(255) NOT NULL,"
+                    "input_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_inputs(uid) ON DELETE CASCADE,"
+                    "input_idx INTEGER NOT NULL,"
+                    "PRIMARY KEY (transaction_uid, input_uid)"
+                    ")";
 
             // Bitcoin account
             sql << "CREATE TABLE bitcoin_accounts("
@@ -180,7 +183,8 @@ namespace ledger {
 
             sql << "CREATE TABLE bitcoin_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                    "transaction_hash VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions ON DELETE CASCADE"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
         }
 

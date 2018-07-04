@@ -104,6 +104,12 @@ std::shared_ptr<BitcoinLikeAddress> ledger::core::BitcoinLikeAddress::fromBase58
     }
     auto& params = currency.bitcoinLikeNetworkParameters.value();
     auto value = decoded.getValue();
+
+    //Check decoded address size
+    if (value.size() <= 20) {
+        throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
+    }
+
     std::vector<uint8_t> hash160(value.end() - 20, value.end());
     std::vector<uint8_t> version(value.begin(), value.end() - 20);
     if (version != params.P2PKHVersion && version != params.P2SHVersion) {
