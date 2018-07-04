@@ -246,7 +246,7 @@ NJSLogPrinterImpl.printCriticalError = message => logger('Critical Error', messa
 /**
  * @return: main NJSExecutionContext
  */
-NJSLogPrinterImpl.getContext = () => NJSThreadDispatcher.getMainExecutionContext()
+NJSLogPrinterImpl.getContext = () => new binding.NJSExecutionContext(NJSExecutionContextImpl)
 
 const NJSLogPrinter = new binding.NJSLogPrinter(NJSLogPrinterImpl)
 
