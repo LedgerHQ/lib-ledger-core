@@ -119,8 +119,14 @@ namespace ledger {
             auto amount = input.value.map<uint64_t>([] (const BigInt& v) {
                 return v.toUint64();
             });
-            sql << "INSERT INTO bitcoin_inputs VALUES(:uid, :idx, :hash, :amount, :address, :coinbase, :sequence)",
-                    use(uid), use(input.previousTxOutputIndex), use(input.previousTxHash), use(amount),
+
+            std::string prevBtcTxUid;
+            if (input.previousTxHash.nonEmpty()) {
+                prevBtcTxUid = createBitcoinTransactionUid(accountUid, input.previousTxHash.getValue());
+            }
+
+            sql << "INSERT INTO bitcoin_inputs VALUES(:uid, :idx, :hash, :prev_tx_uid, :amount, :address, :coinbase, :sequence)",
+                    use(uid), use(input.previousTxOutputIndex), use(input.previousTxHash), use(prevBtcTxUid), use(amount),
                     use(input.address), use(input.coinbase), use(input.sequence);
             sql << "INSERT INTO bitcoin_transaction_inputs VALUES(:tx_uid, :tx_hash, :input_uid, :input_idx)",
                     use(btcTxUid), use(transactionHash), use(uid), use(input.index);

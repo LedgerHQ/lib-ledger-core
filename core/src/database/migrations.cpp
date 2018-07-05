@@ -144,6 +144,7 @@ namespace ledger {
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL," // accountId_idx_previoustxhash_coinbase
                 "previous_output_idx INTEGER,"
                 "previous_tx_hash VARCHAR(255),"
+                "previous_tx_uid VARCHAR(255),"
                 "amount  BIGINT,"
                 "address VARCHAR(255),"
                 "coinbase VARCHAR(255),"
