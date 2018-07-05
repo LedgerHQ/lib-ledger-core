@@ -152,24 +152,24 @@ namespace ledger {
 
             // Bitcoin output table
             sql << "CREATE TABLE bitcoin_outputs("
-                    "idx INTEGER NOT NULL,"
-                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
-                    "transaction_hash VARCHAR(255) NOT NULL,"
-                    "amount BIGINT NOT NULL,"
-                    "script TEXT NOT NULL,"
-                    "address VARCHAR(255),"
-                    "account_uid VARCHAR(255),"
-                    "PRIMARY KEY (idx, transaction_uid, account_uid)"
-                    ")";
+                "idx INTEGER NOT NULL,"
+                "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                "transaction_hash VARCHAR(255) NOT NULL,"
+                "amount BIGINT NOT NULL,"
+                "script TEXT NOT NULL,"
+                "address VARCHAR(255),"
+                "account_uid VARCHAR(255),"
+                "PRIMARY KEY (idx, transaction_uid)"
+                ")";
 
             // Bitcoin transaction <-> input table
             sql << "CREATE TABLE bitcoin_transaction_inputs("
-                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
-                    "transaction_hash VARCHAR(255) NOT NULL,"
-                    "input_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_inputs(uid) ON DELETE CASCADE,"
-                    "input_idx INTEGER NOT NULL,"
-                    "PRIMARY KEY (transaction_uid, input_uid)"
-                    ")";
+                "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                "transaction_hash VARCHAR(255) NOT NULL,"
+                "input_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_inputs(uid) ON DELETE CASCADE,"
+                "input_idx INTEGER NOT NULL,"
+                "PRIMARY KEY (transaction_uid, input_uid)"
+                ")";
 
             // Bitcoin account
             sql << "CREATE TABLE bitcoin_accounts("
@@ -182,10 +182,10 @@ namespace ledger {
             // Bitcoin operation table
 
             sql << "CREATE TABLE bitcoin_operations("
-                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid),"
-                    "transaction_hash VARCHAR(255) NOT NULL"
-                    ")";
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid),"
+                "transaction_hash VARCHAR(255) NOT NULL"
+                ")";
         }
 
         template <> void migrate<2>(soci::session& sql) {
