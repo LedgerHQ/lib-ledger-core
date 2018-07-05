@@ -18,6 +18,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+
+if(UNIX AND NOT APPLE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
+endif()
+
 set(CMAKE_MACOSX_RPATH 1)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
