@@ -162,7 +162,6 @@ deploy:
     bucket: ledger-lib-ledger-core
     region: eu-west-1
     set_public: true
-    folder: .\%LIB_VERSION%
     artifact: core_library
 
 #on_finish:
