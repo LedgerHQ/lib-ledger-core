@@ -4,6 +4,7 @@
   "description": "Package C++ test library",
   "main": "index.js",
   "scripts": {
+    "install": "node-gyp rebuild || exit 0",
     "gypinstall": "prebuild-install || node-gyp rebuild",
     "prebuild": "prebuild --all --verbose",
     "prebuild-upload": "prebuild --all --strip --verbose --upload",
