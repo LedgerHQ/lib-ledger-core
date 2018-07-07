@@ -43,6 +43,10 @@ add_library(
         ${HEADERS_FILES}
 )
 
+if(UNIX AND NOT APPLE)
+    target_link_libraries(ledger-core -static-libstdc++)
+endif()
+
 if(MSVC)
     include(GenerateExportHeader)
     generate_export_header(ledger-core EXPORT_MACRO_NAME LIBCORE_EXPORT
