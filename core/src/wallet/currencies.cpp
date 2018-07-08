@@ -220,6 +220,15 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("clubcoin", 8, "CLUB");
 
+            const api::Currency LBRY_CREDITS =
+                    Currency("lbry_credits")
+                            .forkOfBitcoin(networks::getNetworkParameters("lbry_credits"))
+                            .bip44(140)
+                            .paymentUri("lbry")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("mLBC", 5, "mLBC")
+                            .unit("lbry_credits", 8, "LBC");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -241,7 +250,8 @@ namespace ledger {
                 KOMODO,
                 POSWALLET,
                 PIVX,
-                CLUBCOIN
+                CLUBCOIN,
+                LBRY_CREDITS
             });
         }
     }

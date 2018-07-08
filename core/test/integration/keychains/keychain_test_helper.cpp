@@ -156,3 +156,8 @@ KeychainTestData CLUBCOIN_DATA(ledger::core::networks::getNetworkParameters("clu
                            ledger::core::currencies::CLUBCOIN,
                            "xpub6DP5DgaoV75F7oGi3UjSo5EDTGKH3aBVLX18AJFdBEZG6fHwcqQ324n4oRf1MaPpK8UjXok4hcxvtxCRVWEeaKkyvuY8y9E4Xn3uGDs6Z3X",
                            "44'/79'/0'");
+
+KeychainTestData LBRY_CREDITS_DATA(ledger::core::networks::getNetworkParameters("lbry_credits"),
+                        ledger::core::currencies::LBRY_CREDITS,
+                        "xpub6Drc2Hs7a7dxfeuPpekrxJnGLpur11fNvsUdBhkbvqxBvHpztzdEWETCA9r9jSBBZa7U8aah77s54y5cRFDpKNPYJ8xRMKvy2DbhtvZKANQ"
+                        "44'/140'/0'");
