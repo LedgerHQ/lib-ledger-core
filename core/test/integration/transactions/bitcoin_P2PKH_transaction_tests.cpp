@@ -174,6 +174,7 @@ TEST_F(ZCASHMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
     auto f = builder->build();
     auto tx = ::wait(f);
+    cout<<hex::toString(tx->serialize())<<endl;
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
     //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());

@@ -47,13 +47,23 @@ namespace ledger {
         namespace networks {
             extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
-            
+
+            //BIP115 (ex: Zencash)
             extern LIBCORE_EXPORT const std::string BIP115;
             struct BIP115Parameters {
                 std::string blockHash;
                 std::vector<uint8_t> blockHeight;
             };
             extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
+
+            //ZIP143 (ex: Zcash overwinter)
+            extern LIBCORE_EXPORT const std::string ZIP143;
+            struct ZIP143Parameters {
+                uint32_t version;
+                std::vector<uint8_t> overwinterFlag;
+                std::vector<uint8_t> versionGroupId;
+            };
+            extern LIBCORE_EXPORT const ZIP143Parameters ZIP143_PARAMETERS;
 
             template<class Archive>
             void serialize(Archive & archive,

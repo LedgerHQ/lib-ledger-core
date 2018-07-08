@@ -5,7 +5,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT = {"https://api.ledgerwallet.com"};
+std::string const ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT = {"https://explorers.api.live.ledger.com"};
 
 std::string const ConfigurationDefaults::BLOCKCHAIN_OBSERVER_WS_ENDPOINT = {"wss://ws.ledgerwallet.com/blockchain/v2/{}/ws"};
 

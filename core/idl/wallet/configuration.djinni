@@ -28,7 +28,7 @@ SynchronizationEngines = interface +c {
 
 #TODO
 ConfigurationDefaults = interface +c {
-    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://api.ledgerwallet.com";
+    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
     const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
     const BIP44_DERIVATION_SCHEME: string = "44'/<coin_type>'/<account>'/<node>/<address>";
     const DEFAULT_KEYCHAIN: string = "BIP32_P2PKH";

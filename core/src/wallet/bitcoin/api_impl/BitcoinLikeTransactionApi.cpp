@@ -34,7 +34,7 @@
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
-
+#include <wallet/bitcoin/networks.hpp>
 namespace ledger {
     namespace core {
 
@@ -223,7 +223,27 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
-            writer.writeLeValue<int32_t>(_version);
+
+            auto &additionalBIPs = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), networks::ZIP143);
+
+            if (it != additionalBIPs.end()) {
+                setVersion(networks::ZIP143_PARAMETERS.version);
+
+                //New version and overwinter flag
+                auto header = networks::ZIP143_PARAMETERS.overwinterFlag;
+                header.push_back(0x00);
+                header.push_back(0x00);
+                header.push_back(networks::ZIP143_PARAMETERS.version);
+                //Push header (0x80000003 in LE)
+                writer.writeLeByteArray(header);
+
+                //Version group Id (0x03C48270 in LE)
+                writer.writeLeByteArray(networks::ZIP143_PARAMETERS.versionGroupId);
+
+            } else {
+                writer.writeLeValue<int32_t>(_version);
+            }
 
             if (_currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
                 auto ts = getTimestamp();
@@ -292,6 +312,19 @@ namespace ledger {
             BytesReader reader(rawTransaction);
             // Parse version
             auto version = reader.readNextLeUint();
+
+            auto &additionalBIPs = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), networks::ZIP143);
+
+            if (it != additionalBIPs.end()) {
+                //Substract overwinterFlag
+                auto overwinterFlag = networks::ZIP143_PARAMETERS.overwinterFlag[0];
+                version -= (~ (overwinterFlag << 24) + 1);
+
+                //Read version group Id
+                reader.read(networks::ZIP143_PARAMETERS.versionGroupId.size());
+            }
+
             // Parse timestamp
             auto usesTimeStamp = currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction;
             uint32_t timeStamp = 0;

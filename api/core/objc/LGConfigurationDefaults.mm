@@ -4,7 +4,7 @@
 #import "LGConfigurationDefaults.h"
 
 
-NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT = @"https://api.ledgerwallet.com";
+NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINDEFAULTAPIENDPOINT = @"https://explorers.api.live.ledger.com";
 
 NSString * __nonnull const LGConfigurationDefaultsBLOCKCHAINOBSERVERWSENDPOINT = @"wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
 
