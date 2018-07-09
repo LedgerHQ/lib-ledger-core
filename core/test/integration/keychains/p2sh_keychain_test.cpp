@@ -31,11 +31,8 @@
 
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2SHBitcoinLikeKeychain.hpp>
-//#include <src/wallet/bitcoin/networks.hpp>
-//#include <src/wallet/currencies.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
-
 #include <iostream>
 using namespace std;
 

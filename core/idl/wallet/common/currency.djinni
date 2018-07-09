@@ -1,4 +1,5 @@
 @import "../../bitcoin/addresses.djinni"
+@import "../../ethereum/addresses.djinni"
 
 #Enum listing supported cryptocurrencies' families
 WalletType = enum {
@@ -31,6 +32,9 @@ Currency = record {
     paymentUriScheme: string;
     #List of CurrencyUnit objects (e.g. BTC, mBTC ...)
     units: list<CurrencyUnit>;
+    #TODO: find a better solution to have only a networkParameters
     #Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
     bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
+    #Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
+    ethereumLikeNetworkParameters: optional<EthereumLikeNetworkParameters>;
 }

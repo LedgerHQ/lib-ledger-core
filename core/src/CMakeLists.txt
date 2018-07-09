@@ -124,6 +124,8 @@ target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${
 link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
 add_dependencies(ledger-core secp256k1)
 
+target_link_libraries(ledger-core ethash)
+
 #Sqlite
 target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
 link_directories($<TARGET_FILE_DIR:sqlite3>)
@@ -165,6 +167,7 @@ target_include_directories(ledger-core PUBLIC ../test/lib/boost)
 target_include_directories(ledger-core PUBLIC ../lib/cereal/)
 target_include_directories(ledger-core PUBLIC ../lib/date/)
 target_include_directories(ledger-core PUBLIC ../lib/secp256k1)
+target_include_directories(ledger-core PUBLIC ../lib/ethash/src)
 
 target_compile_definitions(ledger-core PUBLIC LIB_VERSION_MAJOR=${VERSION_MAJOR} LIB_VERSION_MINOR=${VERSION_MINOR}
         LIB_VERSION_PATCH=${VERSION_PATCH})

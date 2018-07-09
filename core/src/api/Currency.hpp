@@ -7,6 +7,7 @@
 #include "../utils/optional.hpp"
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "CurrencyUnit.hpp"
+#include "EthereumLikeNetworkParameters.hpp"
 #include "WalletType.hpp"
 #include <cstdint>
 #include <iostream>
@@ -31,21 +32,28 @@ struct Currency final {
     std::string paymentUriScheme;
     /**List of CurrencyUnit objects (e.g. BTC, mBTC ...) */
     std::vector<CurrencyUnit> units;
-    /**Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc */
+    /**
+     *TODO: find a better solution to have only a networkParameters
+     *Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
+     */
     std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
+    /**Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
+    std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters;
 
     Currency(WalletType walletType_,
              std::string name_,
              int32_t bip44CoinType_,
              std::string paymentUriScheme_,
              std::vector<CurrencyUnit> units_,
-             std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters_)
+             std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters_,
+             std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters_)
     : walletType(std::move(walletType_))
     , name(std::move(name_))
     , bip44CoinType(std::move(bip44CoinType_))
     , paymentUriScheme(std::move(paymentUriScheme_))
     , units(std::move(units_))
     , bitcoinLikeNetworkParameters(std::move(bitcoinLikeNetworkParameters_))
+    , ethereumLikeNetworkParameters(std::move(ethereumLikeNetworkParameters_))
     {}
 
     Currency(const Currency& cpy) {
@@ -55,6 +63,7 @@ struct Currency final {
        this->paymentUriScheme = cpy.paymentUriScheme;
        this->units = cpy.units;
        this->bitcoinLikeNetworkParameters = cpy.bitcoinLikeNetworkParameters;
+       this->ethereumLikeNetworkParameters = cpy.ethereumLikeNetworkParameters;
     }
 
     Currency() = default;
@@ -67,17 +76,18 @@ struct Currency final {
        this->paymentUriScheme = cpy.paymentUriScheme;
        this->units = cpy.units;
        this->bitcoinLikeNetworkParameters = cpy.bitcoinLikeNetworkParameters;
+       this->ethereumLikeNetworkParameters = cpy.ethereumLikeNetworkParameters;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, ethereumLikeNetworkParameters);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, ethereumLikeNetworkParameters);
     }
 };
 

@@ -68,6 +68,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency CLUBCOIN;
             extern LIBCORE_EXPORT const api::Currency DECRED;
             extern LIBCORE_EXPORT const api::Currency STAKENET;
+            extern LIBCORE_EXPORT const api::Currency ETHEREUM;
         };
     }
 }

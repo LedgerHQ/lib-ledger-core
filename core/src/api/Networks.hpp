@@ -7,12 +7,15 @@
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeNetworkParameters;
+struct EthereumLikeNetworkParameters;
 
 class Networks {
 public:
     virtual ~Networks() {}
 
     static BitcoinLikeNetworkParameters bitcoin();
+
+    static EthereumLikeNetworkParameters ethereum();
 };
 
 } } }  // namespace ledger::core::api
