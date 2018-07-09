@@ -8,6 +8,10 @@ Secp256k1 = interface +c {
     # @param compress get compressed (35 bytes) or uncompressed (65 bytes)
     # @return public key can be compressed (35 bytes starting with 02 or 03) or un compressed (65 bytes starting with 04)
     computePubKey(privKey: binary, compress: bool): binary;
+    # Generates uncompressed public key from compressed public key.
+    # @param pubKey 33 byte private key (starting with 02 or 03)
+    # @return uncompressed public key (65 bytes starting with 04)
+    computeUncompressedPubKey(pubKey: binary): binary;
     # Signs message using a given private key
     # @param privKey 32 bytes private key
     # @param data 32 bytes message to sign

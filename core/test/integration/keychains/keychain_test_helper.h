@@ -30,13 +30,16 @@
  */
 
 #include <src/wallet/currencies.hpp>
+#include <api/EthereumLikeNetworkParameters.hpp>
+#include <api/Currency.hpp>
 
 #ifndef LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
 #define LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
 
 struct KeychainTestData {
 
-    ledger::core::api::BitcoinLikeNetworkParameters parameters;
+    ledger::core::api::BitcoinLikeNetworkParameters btc_parameters;
+    ledger::core::api::EthereumLikeNetworkParameters eth_parameters;
     ledger::core::api::Currency currency;
     std::string xpub;
     std::string derivationPath;
@@ -44,26 +47,40 @@ struct KeychainTestData {
     KeychainTestData() = default;
 
     KeychainTestData(ledger::core::api::BitcoinLikeNetworkParameters parameters_,
-             ledger::core::api::Currency currency_,
-             std::string xpub_,
-             std::string derivationPath_):
-            parameters(std::move(parameters_)),
+                      ledger::core::api::Currency currency_,
+                      std::string xpub_,
+                      std::string derivationPath_):
+            btc_parameters(std::move(parameters_)),
             currency(std::move(currency_)),
             xpub(std::move(xpub_)),
             derivationPath(std::move(derivationPath_))
     {
-        currency.bitcoinLikeNetworkParameters = parameters;
+        currency.bitcoinLikeNetworkParameters = btc_parameters;
+    }
+
+    KeychainTestData(ledger::core::api::EthereumLikeNetworkParameters parameters_,
+                     ledger::core::api::Currency currency_,
+                     std::string xpub_,
+                     std::string derivationPath_):
+            eth_parameters(std::move(parameters_)),
+            currency(std::move(currency_)),
+            xpub(std::move(xpub_)),
+            derivationPath(std::move(derivationPath_))
+    {
+        currency.ethereumLikeNetworkParameters = eth_parameters;
     }
 
     KeychainTestData(const KeychainTestData &data) {
-        this->parameters = data.parameters;
+        this->btc_parameters = data.btc_parameters;
+        this->eth_parameters = data.eth_parameters;
         this->currency = data.currency;
         this->xpub = data.xpub;
         this->derivationPath = data.derivationPath;
     }
 
     KeychainTestData& operator=(const KeychainTestData &data) {
-        this->parameters = data.parameters;
+        this->btc_parameters = data.btc_parameters;
+        this->eth_parameters = data.eth_parameters;
         this->currency = data.currency;
         this->xpub = data.xpub;
         this->derivationPath = data.derivationPath;
@@ -96,4 +113,5 @@ extern KeychainTestData POSWALLET_DATA;
 extern KeychainTestData PIVX_DATA;
 extern KeychainTestData CLUBCOIN_DATA;
 extern KeychainTestData DECRED_DATA;
+extern KeychainTestData ETHEREUM_DATA;
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

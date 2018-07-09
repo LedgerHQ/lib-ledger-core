@@ -31,6 +31,7 @@
 
 #include "keychain_test_helper.h"
 #include <src/wallet/bitcoin/networks.hpp>
+#include <src/wallet/ethereum/ethereumNetworks.hpp>
 //abandon
 //bip44
 //const std::string XPUB = "tpubDC5FSnBiZDMmhiuCmWAYsLwgLYrrT9rAqvTySfuCCrgsWz8wxMXUS9Tb9iVMvcRbvFcAHGkMD5Kx8koh4GquNGNTfohfk7pgjhaPCdXpoba";
@@ -161,3 +162,12 @@ KeychainTestData DECRED_DATA(ledger::core::networks::getNetworkParameters("decre
                                ledger::core::currencies::DECRED,
                                "dpubZFUiMExUREbqJQVJkfXSs4wjUb1jwVkoofnPK8Mt95j3PanCyq9Mc4aFnWtRZkhci9ZYPVLZybVLMMkS6g1nKBTN4899KJwGeVBvyumvcjW",
                                "44'/42'/0'");
+//seed: split chuckle nerve
+//BIP32 xpub6DrvMc6me5H6sV3Wrva6thZyhxMZ7WMyB8nMWLe3T5xr79bBsDJn2zgSQiVWEbU5XfoLMEz7oZT9G49AoCcxYNrz2dVBrySzUw4k9GTNyoW
+//0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA
+//0xEC9eD3b9489735992B3c48DE9F3b6bD076eC3bfA
+
+KeychainTestData ETHEREUM_DATA(ledger::core::networks::getEthLikeNetworkParameters("ethereum"),
+                               ledger::core::currencies::ETHEREUM,
+                               "xpub6DrvMc6me5H6sV3Wrva6thZyhxMZ7WMyB8nMWLe3T5xr79bBsDJn2zgSQiVWEbU5XfoLMEz7oZT9G49AoCcxYNrz2dVBrySzUw4k9GTNyoW",
+                               "44'/60'/0'");

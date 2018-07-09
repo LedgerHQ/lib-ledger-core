@@ -4,7 +4,9 @@ GetEthreumLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: EthereumLikeWallet, isCreated: bool);
     onError(error: Error);
 }
-
+                                                                                                                             
 EthereumLikeWallet = interface +c {
 
 }
+
+
