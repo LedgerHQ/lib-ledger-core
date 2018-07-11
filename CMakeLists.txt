@@ -19,6 +19,9 @@ list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+if(UNIX AND APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.9")
+endif()
 
 set(CMAKE_MACOSX_RPATH 1)
 
