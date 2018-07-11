@@ -30,11 +30,12 @@
  */
 #include "LedgerCoreImpl.hpp"
 #include "../api/LedgerCore.hpp"
+#include "../ledger-core.h"
 
 std::string ledger::core::api::LedgerCore::getStringVersion() {
-    return "1.0.0";
+    return ledger::core::LIB_STRING_VERSION;
 }
 
 int32_t ledger::core::api::LedgerCore::getIntVersion() {
-    return (1 << 16) + (0 << 8) + 0;
+    return ledger::core::LIB_VERSION;
 }

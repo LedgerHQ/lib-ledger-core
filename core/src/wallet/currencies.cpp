@@ -62,7 +62,7 @@ namespace ledger {
                             .bip44(145)
                             .paymentUri("bitcoin_cash")
                             .unit("satoshi", 0, "satoshi")
-                            .unit("bitcoin cash", 8, "BTH")
+                            .unit("bitcoin cash", 8, "BCH")
                             .unit("mBCH", 5, "mBCH")
                             .unit("bit", 2, "bit");
 
@@ -73,7 +73,7 @@ namespace ledger {
                             .paymentUri("bitcoin_gold")
                             .unit("satoshi", 0, "satoshi")
                             .unit("bitcoin gold", 8, "BTG")
-                            .unit("mBCG", 5, "mBCG")
+                            .unit("mBTG", 5, "mBTG")
                             .unit("bit", 2, "bit");
 
             const api::Currency ZCASH =

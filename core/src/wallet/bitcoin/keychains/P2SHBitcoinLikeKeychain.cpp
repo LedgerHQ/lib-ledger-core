@@ -96,5 +96,17 @@ namespace ledger {
             return getAddressDerivationPath(address.toBase58());
         }
 
+        int32_t P2SHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
+            int32_t result = 0;
+            //witness
+            //1 byte for number of stack elements
+            result += 1;
+            //72 byte for signature (length + signature)
+            result += 72;
+            //40 byte of hash script (length + script)
+            result += 40;
+            return result;
+        }
+
     }
 }

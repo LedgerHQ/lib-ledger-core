@@ -35,38 +35,50 @@
 #include <database/soci-date.h>
 #include <database/soci-number.h>
 
+#include <iostream>
+using namespace std;
+
 using namespace soci;
 
 namespace ledger {
     namespace core {
 
-        bool BitcoinLikeTransactionDatabaseHelper::transactionExists(soci::session &sql, const std::string &transactionHash) {
+        bool BitcoinLikeTransactionDatabaseHelper::transactionExists(soci::session &sql, const std::string &btcTxUid) {
             int32_t count = 0;
-            sql << "SELECT COUNT(*) FROM bitcoin_transactions WHERE hash = :hash", use(transactionHash), into(count);
+            sql << "SELECT COUNT(*) FROM bitcoin_transactions WHERE transaction_uid = :btcTxUid", use(btcTxUid), into(count);
             return count == 1;
         }
 
-        bool BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
+        std::string BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(const std::string& accountUid, const std::string& txHash) {
+            auto result = SHA256::stringToHexHash(fmt::format("uid:{}+{}", accountUid, txHash));
+            return result;
+        }
+
+        std::string BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                   const std::string& accountUid,
                                                                   const BitcoinLikeBlockchainExplorer::Transaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
                                });
-            if (transactionExists(sql, tx.hash)) {
+
+            auto btcTxUid = createBitcoinTransactionUid(accountUid, tx.hash);
+
+            if (transactionExists(sql, btcTxUid)) {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
                     sql << "UPDATE bitcoin_transactions SET block_uid = :uid WHERE hash = :tx_hash",
                             use(blockUid), use(tx.hash);
                 }
-                return false;
+                return btcTxUid;
             } else {
                 // Insert
                 if (tx.block.nonEmpty()) {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
                 sql << "INSERT INTO bitcoin_transactions VALUES("
-                        ":hash, :version, :block_uid, :time, :locktime"
+                        ":tx_uid, :hash, :version, :block_uid, :time, :locktime"
                         ")",
+                        use(btcTxUid),
                         use(tx.hash),
                         use(tx.version),
                         use(blockUid),
@@ -74,46 +86,57 @@ namespace ledger {
                         use(tx.lockTime);
                 // Insert outputs
                 for (const auto& output : tx.outputs) {
-                    insertOutput(sql, accountUid, tx.hash, output);
+                    insertOutput(sql, btcTxUid, tx.hash, output);
                 }
                 // Insert inputs
                 for (const auto& input : tx.inputs) {
-                    insertInput(sql, tx.hash, input);
+                    insertInput(sql, btcTxUid, accountUid, tx.hash, input);
                 }
-                return true;
+                return btcTxUid;
             }
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
-                                                                const std::string& accountUid,
+                                                                const std::string& btcTxUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorer::Output &output) {
-            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :hash, :amount, :script, :address, NULL)",
-                    use(output.index), use(transactionHash), use(output.value.toUint64()), use(output.script),
-                    use(output.address);
+            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL)",
+                    use(output.index), use(btcTxUid),
+                    use(transactionHash), use(output.value.toUint64()),
+                    use(output.script), use(output.address);
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertInput(soci::session &sql,
+                                                               const std::string& btcTxUid,
+                                                               const std::string& accountUid,
                                                                const std::string& transactionHash,
                                                                const BitcoinLikeBlockchainExplorer::Input &input) {
-            auto uid = createInputUid(input.previousTxOutputIndex.getValueOr(0),
+            auto uid = createInputUid(accountUid,
+                                      input.previousTxOutputIndex.getValueOr(0),
                                       input.previousTxHash.getValueOr(""),
                                       input.coinbase.getValueOr("")
             );
             auto amount = input.value.map<uint64_t>([] (const BigInt& v) {
                 return v.toUint64();
             });
-            sql << "INSERT INTO bitcoin_inputs VALUES(:uid, :idx, :hash, :amount, :address, :coinbase, :sequence)",
-                    use(uid), use(input.previousTxOutputIndex), use(input.previousTxHash), use(amount),
+
+            std::string prevBtcTxUid;
+            if (input.previousTxHash.nonEmpty()) {
+                prevBtcTxUid = createBitcoinTransactionUid(accountUid, input.previousTxHash.getValue());
+            }
+
+            sql << "INSERT INTO bitcoin_inputs VALUES(:uid, :idx, :hash, :prev_tx_uid, :amount, :address, :coinbase, :sequence)",
+                    use(uid), use(input.previousTxOutputIndex), use(input.previousTxHash), use(prevBtcTxUid), use(amount),
                     use(input.address), use(input.coinbase), use(input.sequence);
-            sql << "INSERT INTO bitcoin_transaction_inputs VALUES(:tx, :input, :idx)",
-                    use(transactionHash), use(uid), use(input.index);
+            sql << "INSERT INTO bitcoin_transaction_inputs VALUES(:tx_uid, :tx_hash, :input_uid, :input_idx)",
+                    use(btcTxUid), use(transactionHash), use(uid), use(input.index);
         }
 
-        std::string BitcoinLikeTransactionDatabaseHelper::createInputUid(int32_t previousOutputIndex,
+        std::string BitcoinLikeTransactionDatabaseHelper::createInputUid(const std::string& accountUid,
+                                                                         int32_t previousOutputIndex,
                                                                          const std::string &previousTxHash,
                                                                          const std::string &coinbase) {
-            return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", previousOutputIndex, previousTxHash, coinbase));
+            return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}+{}", accountUid, previousOutputIndex, previousTxHash, coinbase));
         }
 
         bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql, const std::string &hash,

@@ -26,6 +26,10 @@ jobs:
           name: Build_Library
           command: |
             . .circleci/build_lib.sh Release
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
       - deploy:
           requires:
             - hold
@@ -81,6 +85,10 @@ jobs:
           name: Build_Library
           command: |
             . .circleci/build_lib.sh Release
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
       - deploy:
           name: Deploy
           command: |

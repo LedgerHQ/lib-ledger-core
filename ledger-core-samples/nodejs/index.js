@@ -9,6 +9,12 @@ const MAX_RANDOM = 2684869021
 const signTransaction = require('./signTransaction')
 const { stringToBytesArray, bytesToHex, hexToBytes, bytesArrayToString, segwitMode } = require('./helpers')
 
+const NJSLedgerCore = new binding.NJSLedgerCore();
+function getLibCoreVersion() {
+    return NJSLedgerCore.getStringVersion();
+}
+exports.getLibCoreVersion = getLibCoreVersion;
+
 /**
  * NJSExecutionContext
  * -------------------
@@ -246,7 +252,7 @@ NJSLogPrinterImpl.printCriticalError = message => logger('Critical Error', messa
 /**
  * @return: main NJSExecutionContext
  */
-NJSLogPrinterImpl.getContext = () => NJSThreadDispatcher.getMainExecutionContext()
+NJSLogPrinterImpl.getContext = () => new binding.NJSExecutionContext(NJSExecutionContextImpl)
 
 const NJSLogPrinter = new binding.NJSLogPrinter(NJSLogPrinterImpl)
 

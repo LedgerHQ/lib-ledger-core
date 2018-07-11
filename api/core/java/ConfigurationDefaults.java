@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**TODO */
 public abstract class ConfigurationDefaults {
-    public static final String BLOCKCHAIN_DEFAULT_API_ENDPOINT = "https://api.ledgerwallet.com";
+    public static final String BLOCKCHAIN_DEFAULT_API_ENDPOINT = "https://explorers.api.live.ledger.com";
 
     public static final String BLOCKCHAIN_OBSERVER_WS_ENDPOINT = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
 

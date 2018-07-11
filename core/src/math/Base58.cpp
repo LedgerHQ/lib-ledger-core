@@ -89,6 +89,10 @@ std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uin
 ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str) {
     return Try<std::vector<uint8_t>>::from([&] () {
         auto decoded = decode(str);
+        //Check decoded address size
+        if (decoded.size() <= 4) {
+            throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
+        }
         std::vector<uint8_t> data(decoded.begin(), decoded.end() - 4);
         std::vector<uint8_t> checksum(decoded.end() - 4, decoded.end());
         auto chks = computeChecksum(data);

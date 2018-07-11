@@ -155,6 +155,7 @@ namespace ledger {
 
             // Logger
             std::shared_ptr<spdlog::logger> _logger;
+            std::shared_ptr<api::LogPrinter> _logPrinter;
 
             // Threading management
             std::shared_ptr<api::ThreadDispatcher> _threadDispatcher;

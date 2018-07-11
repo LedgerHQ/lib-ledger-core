@@ -74,6 +74,7 @@ namespace ledger {
                 _pathResolver
             );
 
+            _logPrinter = logPrinter;
             // Logger management
             _logger = logger::create(
                     name + "-l",

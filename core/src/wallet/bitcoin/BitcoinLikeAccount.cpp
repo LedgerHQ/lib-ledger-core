@@ -226,11 +226,19 @@ namespace ledger {
                 //Update account_uid column of bitcoin_outputs table
                 for (auto& o : accountOutputs) {
                     if (o.first->address.nonEmpty()) {
-                        int count = 0;
-                        sql << "SELECT COUNT(*) FROM bitcoin_outputs WHERE address = :address", soci::use(o.first->address.getValue()), soci::into(count);
-                        if (count > 0) {
-                            sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address",
-                                    soci::use(getAccountUid()), soci::use(o.first->address.getValue());
+
+                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address",
+                                                        soci::use(o.first->address.getValue()));
+                        auto accountUid = getAccountUid();
+                        for (auto &row : rows) {
+                            auto txUid = row.get<std::string>(0);
+
+                            //This check is made to avoid setting account_uid of bitcoin_outputs which was set during another's account scan/sync
+                            //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
+                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, row.get<std::string>(1))) {
+                                sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
+                                        soci::use(accountUid), soci::use(o.first->address.getValue()), soci::use(txUid);
+                            }
                         }
                     }
                 }

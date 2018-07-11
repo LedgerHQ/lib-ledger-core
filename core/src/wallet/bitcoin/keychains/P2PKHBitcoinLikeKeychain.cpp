@@ -78,5 +78,28 @@ namespace ledger {
             BitcoinLikeAddress address(getCurrency(), hash160, params.P2PKHVersion);
             return getAddressDerivationPath(address.toBase58());
         }
+
+        int32_t P2PKHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
+            int32_t result = 0;
+            //32 bytes of previous transaction hash
+            result += 32;
+            //4 bytes for output index (e.g. 0x000000)
+            result += 4;
+            //1 byte for scriptSig size (e.g. 0x8c)
+            result += 1;
+            //1 byte for length of (DER-encoded signature + hash code type) (e.g. 0x49)
+            result += 1;
+            //72 bytes of DER-signature
+            result += 72;
+            //1 byte for hash core type
+            result += 1;
+            //1 byte length of public key
+            result += 1;
+            //65 bytes for public key
+            result += 65;
+            //4 bytes for the sequence
+            result +=4;
+            return result;
+        }
     }
 }

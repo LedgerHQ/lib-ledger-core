@@ -38,15 +38,20 @@ namespace ledger {
     namespace core {
         class BitcoinLikeTransactionDatabaseHelper {
         public:
-            static bool transactionExists(soci::session& sql, const std::string& transactionHash);
-            static bool putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorer::Transaction& tx);
-            static inline void insertOutput(soci::session& sql, const std::string& accountUid, const std::string& transactionHash,
+            static bool transactionExists(soci::session& sql, const std::string& btcTxUid);
+            static std::string putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorer::Transaction& tx);
+            static inline void insertOutput(soci::session& sql,
+                                            const std::string& btcTxUid,
+                                            const std::string& transactionHash,
                                             const BitcoinLikeBlockchainExplorer::Output& output);
             static inline void insertInput(soci::session& sql,
+                                           const std::string& btcTxUid,
+                                           const std::string& accountUid,
                                            const std::string& transactionHash,
                                            const BitcoinLikeBlockchainExplorer::Input& input);
 
-            static inline std::string createInputUid(int32_t previousOutputIndex, const std::string& previousTxHash, const std::string& coinbase);
+            static std::string createInputUid(const std::string& accountUid, int32_t previousOutputIndex, const std::string& previousTxHash, const std::string& coinbase);
+            static std::string createBitcoinTransactionUid(const std::string& accountUid, const std::string& txHash);
             static bool getTransactionByHash(soci::session &sql, const std::string &hash,
                                              BitcoinLikeBlockchainExplorer::Transaction &out);
 
