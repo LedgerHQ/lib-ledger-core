@@ -38,8 +38,7 @@
 #include <ledger/core/crypto/BLAKE.h>
 #include <ledger/core/crypto/HashAlgorithm.h>
 #include <ledger/core/crypto/Keccak.h>
-#include <iostream>
-using namespace std;
+
 using namespace ledger::core;
 
 
@@ -118,5 +117,7 @@ TEST(Digest, Keccak256) {
     auto pk = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
     auto keccak = Keccak::keccak256(pk);
     EXPECT_EQ(hex::toString(keccak), "2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086ba0f9");
+
+    EXPECT_EQ(hex::toString(Keccak::keccak256("Vires in numeris")), "d3f77a567fdf21bd226ddcebd5eb8df5f470c1bb77e307b6ffc1c80a24cf6495");
 
 }

@@ -34,6 +34,7 @@
 #include <math/Base58.hpp>
 #include <collections/vector.hpp>
 #include <utils/hex.h>
+#include <crypto/Keccak.h>
 
 namespace ledger {
     namespace core {
@@ -62,10 +63,27 @@ namespace ledger {
         }
 
         std::string EthereumLikeAddress::toBase58() {
-            //TODO: EIP55
-            auto result = hex::toString(_keccak256);
-            result = "0x" + result;
-            return result;
+
+            auto byteToDigitEIP55 = [](uint8_t byte, uint8_t against) -> char {
+                bool uppercase = against > 0x8;
+                byte = (uint8_t) (0xF < byte ? 0xF : byte);
+                if (byte < 0xA) {
+                    return '0' + byte;
+                } else if (uppercase) {
+                    return (char)('A' + (byte - 0xA));
+                } else {
+                    return (char)('a' + (byte - 0xA));
+                }
+            };
+
+            auto keccakHash = Keccak::keccak256(hex::toString(_keccak256));
+
+            std::string addressEIP55(_keccak256.size() * 2, '0');
+            for (int i = 0; i < _keccak256.size(); i++) {
+                addressEIP55[i * 2] = byteToDigitEIP55(_keccak256[i] >> 4, keccakHash[i] >> 4);
+                addressEIP55[i * 2 + 1] = byteToDigitEIP55((uint8_t) (_keccak256[i] & 0xF), (uint8_t) (keccakHash[i] & 0xF));
+            }
+            return "0x" + addressEIP55;
         }
 
         std::experimental::optional<std::string> EthereumLikeAddress::getDerivationPath() {

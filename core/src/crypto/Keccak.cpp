@@ -38,9 +38,13 @@ namespace ledger {
         std::vector<uint8_t> Keccak::keccak256(const std::vector<uint8_t> &input) {
             ethash_h256_t result;
             SHA3_256(&result, input.data(), input.size());
-            auto size = sizeof(result.b)/sizeof(*result.b);
-            std::vector<uint8_t> final(result.b, result.b + size);
+            std::vector<uint8_t> final(result.b, result.b + 32);
             return final;
+        }
+
+        std::vector<uint8_t> Keccak::keccak256(const std::string &input) {
+            std::vector<uint8_t> vInput(input.begin(), input.end());
+            return keccak256(vInput);
         }
 
     }
