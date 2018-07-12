@@ -32,12 +32,14 @@
 #define LEDGER_CORE_KECCAK_H
 
 #include <vector>
+#include <string>
 
 namespace ledger {
     namespace core {
         class Keccak {
         public:
             static std::vector<uint8_t> keccak256(const std::vector<uint8_t> &data);
+            static std::vector<uint8_t> keccak256(const std::string &input);
         };
     }
 }

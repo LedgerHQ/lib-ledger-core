@@ -64,11 +64,11 @@ public:
 TEST_F(EthereumKeychains, KeychainDerivation) {
     testEthKeychain(ETHEREUM_DATA, [] (EthereumLikeKeychain& keychain) {
         auto ethAddress = keychain.getFreshAddress();
-        EXPECT_EQ(keychain.getFreshAddress()->toBase58(), "0xe8f7dc1a12f180d49c80d1c3dbeff48ee38bd1da");
+        EXPECT_EQ(keychain.getFreshAddress()->toBase58(), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
         auto addresses = keychain.getAllObservableAddresses(0, 5);
         EXPECT_EQ(addresses.size(), 6);
-        EXPECT_EQ(addresses[0]->toBase58(), "0xe8f7dc1a12f180d49c80d1c3dbeff48ee38bd1da");
-        EXPECT_EQ(addresses[1]->toBase58(), "0xec9ed3b9489735992b3c48de9f3b6bd076ec3bfa");
-        EXPECT_EQ(addresses[2]->toBase58(), "0x67c236376fbb0fbc3662afdf78d3a3d46f756306");
+        EXPECT_EQ(addresses[0]->toBase58(), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
+        EXPECT_EQ(addresses[1]->toBase58(), "0xEC9eD3b9489735992B3c48DE9F3b6bD076eC3bfA");
+        EXPECT_EQ(addresses[2]->toBase58(), "0x67C236376fbB0FBC3662aFdf78d3A3D46F756306");
     });
 }
