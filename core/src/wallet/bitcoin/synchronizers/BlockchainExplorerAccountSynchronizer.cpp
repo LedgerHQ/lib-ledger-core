@@ -255,7 +255,11 @@ namespace ledger {
             return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) -> Future<Unit> {
                 benchmark->stop();
                 buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                if (!done || (done && hadTransactions)) {
+                //Sync stops if there are no more batches in savedState and last batch has no transactions
+                //But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
+                auto discoveredAddresses = currentBatchIndex * buddy->halfBatchSize;
+                auto lastDiscoverableAddress = buddy->configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(buddy->halfBatchSize);
+                if (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses) {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
                 }
                 return Future<Unit>::successful(unit);
