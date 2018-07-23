@@ -21,9 +21,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 if(UNIX AND APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.9")
-elseif(WIN32)
-    #Wide char support for windows
-    add_definitions(-DSPDLOG_WCHAR_FILENAMES)
 endif()
 
 set(CMAKE_MACOSX_RPATH 1)

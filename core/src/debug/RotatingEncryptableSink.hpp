@@ -66,8 +66,8 @@ namespace ledger {
                     const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
             void _rotate();
 #if defined(_WIN32) || defined(_WIN64)
-            std::wstring ToWide(const std::string &input, std::wstring &output);
-            std::wstring ToNarrow(const std::string &input, std::wstring &output);
+            static void ToWide(const std::string &input, std::wstring &output);
+            static void ToNarrow(const std::wstring &input, std::string &output);
 #endif
         private:
             std::shared_ptr<api::ExecutionContext> _context;

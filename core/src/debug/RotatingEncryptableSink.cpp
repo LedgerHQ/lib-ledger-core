@@ -113,16 +113,16 @@ namespace ledger {
         }
 
 #if defined(_WIN32) || defined(_WIN64)
-        std::wstring RotatingEncryptableSink::ToWide(const std::string &input, std::wstring &output) {
+        void RotatingEncryptableSink::ToWide(const std::string &input, std::wstring &output) {
             wchar_t buffer[MAX_PATH];
-	        MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, buffer, MAX_PATH);
-	        target = buffer;
+	        MultiByteToWideChar(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH);
+	        output = buffer;
         }
 
-        std::wstring RotatingEncryptableSink::ToNarrow(const std::string &input, std::wstring &output) {
+        void RotatingEncryptableSink::ToNarrow(const std::wstring &input, std::string &output) {
             char buffer[MAX_PATH];
-	        WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, buffer, MAX_PATH, NULL, NULL);
-	        target = buffer;
+	        WideCharToMultiByte(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH, NULL, NULL);
+	        output = buffer;
         }
 #endif
 
