@@ -65,7 +65,10 @@ namespace ledger {
                     std::shared_ptr<api::PathResolver> resolver,
                     const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
             void _rotate();
-
+#if defined(_WIN32) || defined(_WIN64)
+            std::wstring ToWide(const std::string &input, std::wstring &output);
+            std::wstring ToNarrow(const std::string &input, std::wstring &output);
+#endif
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::weak_ptr<api::PathResolver> _resolver;
