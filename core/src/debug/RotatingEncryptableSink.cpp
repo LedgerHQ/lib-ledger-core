@@ -45,7 +45,7 @@ namespace ledger {
             _name = name;
 #if defined(_WIN32) || defined(_WIN64)
             ToWide(name, _base_filename);
-            ToNarrow("log", _extension);
+            ToWide("log", _extension);
 #else
             _base_filename = name;
             _extension = "log";
