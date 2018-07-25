@@ -206,5 +206,38 @@ namespace ledger {
             }
         }
 
+        template <> void migrate<5>(soci::session& sql) {
+
+            sql << "CREATE TABLE ethereum_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "xpub_version VARACHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_EIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE ethereum_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "xpub VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ethereum_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "nonce VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255),"
+                    "gas_price BIGINT NOT NULL,"
+                    "gas_limit BIGINT NOT NULL,"
+                    "gas_used BIGINT NOT NULL,"
+                    "confirmations BIGINT NOT NULL"
+                    ")";
+        }
+
     }
 }

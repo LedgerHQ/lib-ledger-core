@@ -49,7 +49,7 @@ struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_testnet";
-        testData.inflate = ledger::testing::testnet_xpub::inflate;
+        testData.inflate_btc = ledger::testing::testnet_xpub::inflate;
     }
 };
 
@@ -101,7 +101,7 @@ struct BTGMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_gold";
-        testData.inflate = ledger::testing::btg_xpub::inflate;
+        testData.inflate_btc = ledger::testing::btg_xpub::inflate;
     }
 };
 

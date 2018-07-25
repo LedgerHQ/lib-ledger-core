@@ -211,7 +211,7 @@ namespace ledger {
                         .setNode(0)
                         .setAddressIndex((int) index).getPath().toString();
                 auto xpub = _xpub;
-                address = xpub->derive(p)->toBase58();
+                address = xpub->derive(p)->toEIP55();
                 // Feed path -> address cache
                 // Feed address -> path cache
                 getPreferences()

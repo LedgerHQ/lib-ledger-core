@@ -8,6 +8,7 @@
 #include "BitcoinLikeAccount.hpp"
 #include "BlockCallback.hpp"
 #include "ErrorCodeCallback.hpp"
+#include "EthereumLikeAccount.hpp"
 #include "EventBus.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
@@ -129,6 +130,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asB
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->asBitcoinLikeAccount();
         return ::djinni::release(::djinni_generated::BitcoinLikeAccount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asEthereumLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asEthereumLikeAccount();
+        return ::djinni::release(::djinni_generated::EthereumLikeAccount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

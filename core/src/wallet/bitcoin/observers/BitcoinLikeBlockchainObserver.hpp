@@ -43,12 +43,12 @@ namespace ledger {
         class BitcoinLikeAccount;
         class BitcoinLikeBlockchainObserver : public DedicatedContext, public ConfigurationMatchable {
         public:
-            BitcoinLikeBlockchainObserver(  const std::shared_ptr<api::ExecutionContext>& context,
-                                            const std::shared_ptr<api::DynamicObject>& configuration,
-                                            const std::shared_ptr<spdlog::logger>& logger,
-                                            const api::Currency& currency,
-                                            const std::vector<std::string>& matchableKeys
-            );
+            BitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext>& context,
+                                          const std::shared_ptr<api::DynamicObject>& configuration,
+                                          const std::shared_ptr<spdlog::logger>& logger,
+                                          const api::Currency& currency,
+                                          const std::vector<std::string>& matchableKeys);
+
             virtual bool registerAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
             virtual bool unregisterAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
             virtual bool isRegistered(const std::shared_ptr<BitcoinLikeAccount>& account);

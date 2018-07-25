@@ -54,36 +54,16 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAddress::getVersion is not implemented yet");
         }
 
-        std::vector<uint8_t> EthereumLikeAddress::getHash160() {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAddress::getHash160 is not implemented yet");
+        std::vector<uint8_t> EthereumLikeAddress::getKeccakHash() {
+            return _keccak256;
         }
 
         api::EthereumLikeNetworkParameters EthereumLikeAddress::getNetworkParameters() {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAddress::getNetworkParameters is not implemented yet");
+            return _params;
         }
 
-        std::string EthereumLikeAddress::toBase58() {
-
-            auto byteToDigitEIP55 = [](uint8_t byte, uint8_t against) -> char {
-                bool uppercase = against > 0x8;
-                byte = (uint8_t) (0xF < byte ? 0xF : byte);
-                if (byte < 0xA) {
-                    return '0' + byte;
-                } else if (uppercase) {
-                    return (char)('A' + (byte - 0xA));
-                } else {
-                    return (char)('a' + (byte - 0xA));
-                }
-            };
-
-            auto keccakHash = Keccak::keccak256(hex::toString(_keccak256));
-
-            std::string addressEIP55(_keccak256.size() * 2, '0');
-            for (int i = 0; i < _keccak256.size(); i++) {
-                addressEIP55[i * 2] = byteToDigitEIP55(_keccak256[i] >> 4, keccakHash[i] >> 4);
-                addressEIP55[i * 2 + 1] = byteToDigitEIP55((uint8_t) (_keccak256[i] & 0xF), (uint8_t) (keccakHash[i] & 0xF));
-            }
-            return "0x" + addressEIP55;
+        std::string EthereumLikeAddress::toEIP55() {
+            return Base58::encodeWithEIP55(_keccak256);
         }
 
         std::experimental::optional<std::string> EthereumLikeAddress::getDerivationPath() {
@@ -91,23 +71,22 @@ namespace ledger {
         }
 
         std::string EthereumLikeAddress::toString() {
-            return toBase58();
+            return toEIP55();
         }
 
         std::shared_ptr<AbstractAddress> EthereumLikeAddress::parse(const std::string& address, const api::Currency& currency,
                                                       const Option<std::string>& derivationPath) {
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
-                return fromBase58(address, currency, derivationPath);
+                return fromEIP55(address, currency, derivationPath);
             });
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
 
-        std::shared_ptr<EthereumLikeAddress> EthereumLikeAddress::fromBase58(const std::string& address,
+        std::shared_ptr<EthereumLikeAddress> EthereumLikeAddress::fromEIP55(const std::string& address,
                                                                const api::Currency& currency,
                                                                const Option<std::string>& derivationPath) {
             //Remove 0x
             auto tmpAddress = address.substr(2, address.length() - 2);
-            //TODO: EIP55
             return std::make_shared<ledger::core::EthereumLikeAddress>(currency, hex::toByteArray(tmpAddress), derivationPath);
         }
     }

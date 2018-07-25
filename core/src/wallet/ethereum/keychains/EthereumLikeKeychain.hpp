@@ -69,11 +69,10 @@ namespace ledger {
         public:
             using Address = std::shared_ptr<EthereumLikeAddress>;
 
-            EthereumLikeKeychain(
-                    const std::shared_ptr<api::DynamicObject>& configuration,
-                    const api::Currency& params,
-                    int account,
-                    const std::shared_ptr<Preferences>& preferences);
+            EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
+                                 const api::Currency& params,
+                                 int account,
+                                 const std::shared_ptr<Preferences>& preferences);
 
 
             EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,

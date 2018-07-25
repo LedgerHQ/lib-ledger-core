@@ -15,6 +15,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeOperation;
+class EthereumLikeOperation;
 class Preferences;
 class TrustIndicator;
 enum class OperationType;
@@ -97,6 +98,12 @@ public:
      *@return BitcoinLikeOperation object
      */
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
+
+    /**
+     *Convert operation as Ethereum operation
+     *@return EthereumLikeOperation object
+     */
+    virtual std::shared_ptr<EthereumLikeOperation> asEthereumLikeOperation() = 0;
 
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
 
