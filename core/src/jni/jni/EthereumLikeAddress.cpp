@@ -30,12 +30,12 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppProxy_native_1getKeccakHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAddress>(nativeRef);
-        auto r = ref->getHash160();
+        auto r = ref->getKeccakHash();
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
@@ -50,12 +50,12 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_EthereumLikeAddress_00024CppProxy_native_1toEIP55(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAddress>(nativeRef);
-        auto r = ref->toBase58();
+        auto r = ref->toEIP55();
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

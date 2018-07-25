@@ -30,6 +30,7 @@
  */
 #include "CurrenciesDatabaseHelper.hpp"
 #include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/EthereumLikeNetworkParameters.hpp>
 #include <utils/hex.h>
 #include <api/enum_from_string.hpp>
 #include <api/Currency.hpp>
@@ -79,7 +80,22 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(BIPs);
                 break;
             }
-            case api::WalletType::ETHEREUM:break; // TODO INSERT ETHEREUM NETWORK PARAMS
+            case api::WalletType::ETHEREUM: {
+                auto &params = currency.ethereumLikeNetworkParameters.value();
+
+                std::stringstream additionalEIPs;
+                std::string separator(";");
+                strings::join(params.AdditionalEIPs, additionalEIPs, separator);
+                auto EIPs = additionalEIPs.str();
+
+                sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalBIPs)",
+                        use(currency.name),
+                        use(params.Identifier),
+                        use(hex::toString(params.XPUBVersion)),
+                        use(params.MessagePrefix),
+                        use(EIPs);
+                break;
+            }
             case api::WalletType::RIPPLE:break; // TODO INSERT ETHEREUM NETWORK PARAMS
             case api::WalletType::MONERO:break; // TODO INSERT MONERO NETWORK PARAMS
         }
@@ -91,43 +107,61 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
 
 void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql,
                                                               std::vector<ledger::core::api::Currency> &currencies) {
-    rowset<row> rows = (sql.prepare <<
-        "SELECT currencies.name, currencies.type, currencies.bip44_coin_type, currencies.payment_uri_scheme, "
-        "       bitcoin_currencies.p2pkh_version, bitcoin_currencies.p2sh_version, bitcoin_currencies.xpub_version,"
-        "       bitcoin_currencies.dust_amount, bitcoin_currencies.fee_policy, bitcoin_currencies.has_timestamped_transaction,"
-        "       bitcoin_currencies.message_prefix, bitcoin_currencies.identifier, bitcoin_currencies.timestamp_delay,"
-        "       bitcoin_currencies.sighash_type, bitcoin_currencies.additional_BIPs "
-        "FROM currencies "
-        "LEFT OUTER JOIN bitcoin_currencies ON bitcoin_currencies.name = currencies.name");
-    for (auto& row : rows) {
+    rowset<row> rows = (sql.prepare << "SELECT currencies.name, currencies.type, currencies.bip44_coin_type, currencies.payment_uri_scheme FROM currencies ");
+    for (auto& currency_row : rows) {
         auto offset = 0;
         api::Currency currency;
-        currency.name = row.get<std::string>(0);
-        currency.walletType = api::from_string<api::WalletType>(row.get<std::string>(1));
-        currency.bip44CoinType = row.get<int32_t>(2);
-        currency.paymentUriScheme = row.get_indicator(3) == i_null ? "" : row.get<std::string>(3);
+        currency.name = currency_row.get<std::string>(0);
+        currency.walletType = api::from_string<api::WalletType>(currency_row.get<std::string>(1));
+        currency.bip44CoinType = currency_row.get<int32_t>(2);
+        currency.paymentUriScheme = currency_row.get_indicator(3) == i_null ? "" : currency_row.get<std::string>(3);
         switch (currency.walletType) {
             case api::WalletType::BITCOIN: {
-                api::BitcoinLikeNetworkParameters params;
-                params.P2PKHVersion = hex::toByteArray(row.get<std::string>(4));
-                params.P2SHVersion = hex::toByteArray(row.get<std::string>(5));
-                params.XPUBVersion = hex::toByteArray(row.get<std::string>(6));
-                /*
-                 * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
-                 * so we replace by a long long (which is supported by soci (soci::dt_long_long))
-                 */
-                params.DustAmount = row.get<long long>(7);
-                params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(row.get<std::string>(8));
-                params.UsesTimestampedTransaction = row.get<int>(9) == 1;
-                params.MessagePrefix = row.get<std::string>(10);
-                params.Identifier = row.get<std::string>(11);
-                params.TimestampDelay = row.get<long long>(12);
-                params.SigHash = hex::toByteArray(row.get<std::string>(13));
-                params.AdditionalBIPs = strings::split(row.get<std::string>(14), ",");
-                currency.bitcoinLikeNetworkParameters = params;
+                rowset<row> btc_rows = (sql.prepare << "SELECT bitcoin_currencies.p2pkh_version, bitcoin_currencies.p2sh_version, bitcoin_currencies.xpub_version,"
+                                                    " bitcoin_currencies.dust_amount, bitcoin_currencies.fee_policy, bitcoin_currencies.has_timestamped_transaction,"
+                                                    " bitcoin_currencies.message_prefix, bitcoin_currencies.identifier, bitcoin_currencies.timestamp_delay,"
+                                                    " bitcoin_currencies.sighash_type, bitcoin_currencies.additional_BIPs "
+                                                    " FROM bitcoin_currencies "
+                                                    " WHERE bitcoin_currencies.name = :currency_name", use(currency.name));
+                for (auto& btc_row : btc_rows) {
+                    api::BitcoinLikeNetworkParameters params;
+                    params.P2PKHVersion = hex::toByteArray(btc_row.get<std::string>(0));
+                    params.P2SHVersion = hex::toByteArray(btc_row.get<std::string>(1));
+                    params.XPUBVersion = hex::toByteArray(btc_row.get<std::string>(2));
+                    /*
+                     * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
+                     * so we replace by a long long (which is supported by soci (soci::dt_long_long))
+                     */
+                    params.DustAmount = btc_row.get<long long>(3);
+                    params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(btc_row.get<std::string>(4));
+                    params.UsesTimestampedTransaction = btc_row.get<int>(5) == 1;
+                    params.MessagePrefix = btc_row.get<std::string>(6);
+                    params.Identifier = btc_row.get<std::string>(7);
+                    params.TimestampDelay = btc_row.get<long long>(8);
+                    params.SigHash = hex::toByteArray(btc_row.get<std::string>(9));
+                    params.AdditionalBIPs = strings::split(btc_row.get<std::string>(10), ",");
+                    currency.bitcoinLikeNetworkParameters = params;
+                }
                 break;
             }
-            case api::WalletType::ETHEREUM:break;
+            case api::WalletType::ETHEREUM: {
+
+                rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.xpub_version,"
+                        " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"
+                        " ethereum_currencies.additional_EIPs "
+                        " FROM ethereum_currencies "
+                        " WHERE ethereum_currencies.name = :currency_name", use(currency.name));
+                for (auto& eth_row : eth_rows) {
+                    api::EthereumLikeNetworkParameters params;
+                    params.XPUBVersion = hex::toByteArray(eth_row.get<std::string>(0));
+                    params.MessagePrefix = eth_row.get<std::string>(1);
+                    params.Identifier = eth_row.get<std::string>(2);
+                    params.AdditionalEIPs = strings::split(eth_row.get<std::string>(3), ",");
+                    currency.ethereumLikeNetworkParameters = params;
+                }
+
+                break;
+            };
             case api::WalletType::RIPPLE:break;
             case api::WalletType::MONERO:break;
         }

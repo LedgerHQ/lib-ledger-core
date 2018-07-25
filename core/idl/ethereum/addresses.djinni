@@ -11,15 +11,15 @@ EthereumLikeAddress = interface +c {
 	# Gets the version of the address
 	# @return The version of the address
 	getVersion(): binary;
-	# Gets the raw hash160 of the public key
-	# @return The 20 bytes of the public key hash160
-	getHash160(): binary;
+	# Gets the raw keccak hash of the public key (truncated to 20 bytes)
+	# @return The 20 bytes of the public key keccak hash
+	getKeccakHash(): binary;
 	# Gets the network parameters used for serializing the address
 	# @return The network parameters of the address
 	getNetworkParameters(): EthereumLikeNetworkParameters;
-	# Serializes the hash160 into a Base58 encoded address (with checksum)
-	# @return The Base58 serialization
-	toBase58(): string;
+	# Encodes keccak with respect to EIP55
+	# @return The EIP55 encoding
+	toEIP55(): string;
 }
 
 EthereumLikeExtendedPublicKey = interface +c {

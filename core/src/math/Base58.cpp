@@ -35,6 +35,8 @@
 #include <crypto/HashAlgorithm.h>
 #include <utils/hex.h>
 #include <functional>
+#include <utils/hex.h>
+#include <crypto/Keccak.h>
 
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 static const ledger::core::BigInt V_58(58);
@@ -61,6 +63,30 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes) {
 
 std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes, const std::string &networkIdentifier) {
     return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes, networkIdentifier)));
+}
+
+std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &bytes) {
+
+    auto byteToDigitEIP55 = [](uint8_t byte, uint8_t against) -> char {
+        bool uppercase = against > 0x8;
+        byte = (uint8_t) (0xF < byte ? 0xF : byte);
+        if (byte < 0xA) {
+            return '0' + byte;
+        } else if (uppercase) {
+            return (char)('A' + (byte - 0xA));
+        } else {
+            return (char)('a' + (byte - 0xA));
+        }
+    };
+
+    auto keccakHash = Keccak::keccak256(hex::toString(bytes));
+
+    std::string addressEIP55(bytes.size() * 2, '0');
+    for (int i = 0; i < bytes.size(); i++) {
+        addressEIP55[i * 2] = byteToDigitEIP55(bytes[i] >> 4, keccakHash[i] >> 4);
+        addressEIP55[i * 2 + 1] = byteToDigitEIP55((uint8_t) (bytes[i] & 0xF), (uint8_t) (keccakHash[i] & 0xF));
+    }
+    return "0x" + addressEIP55;
 }
 
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(ledger::core::Exception) {

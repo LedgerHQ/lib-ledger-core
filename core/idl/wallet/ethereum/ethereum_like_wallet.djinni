@@ -1,4 +1,6 @@
 @import "../../errors.djinni"
+@import "../amount.djinni"
+@import "../../ethereum/addresses.djinni"
 
 GetEthreumLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: EthereumLikeWallet, isCreated: bool);
@@ -7,6 +9,93 @@ GetEthreumLikeWalletCallback = interface +j +o +s +n {
                                                                                                                              
 EthereumLikeWallet = interface +c {
 
+}
+
+#Class representing a Ethereum transaction
+EthereumLikeTransaction = interface +c {
+    # Get the hash of the transaction.
+    getHash(): string;
+    # Get the nonce of the transaction : sequence number issued by originating EOA
+    getNonce(): i32;
+    # Get Gas price (in wei)
+    getGasPrice(): Amount;
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay
+    getGasLimit(): Amount;
+    # Get destination ETH address
+    getReceiver(): EthereumLikeAddress;
+    # Get amount of ether to send
+    getValue(): Amount;
+    # Get binary data payload
+    getData(): optional<binary>;
+    # Serialize the transaction to its raw format.
+    serialize(): binary;
+    # Get the time when the transaction was issued or the time of the block including
+    # this transaction
+    getTime(): date;
+}
+
+#Class representing a Ethereum Operation
+EthereumLikeOperation = interface +c {
+    #Get operation's transaction
+    #@return EthereumLikeTransaction object
+    getTransaction(): EthereumLikeTransaction;
+}
+
+#Class representing Bitcoin block
+EthereumLikeBlock = interface +c {
+    #Hash of block
+    #@return string representing hash of this block
+    getHash(): string;
+    #Height of block in blockchain
+    #@return 64 bits integer, height of block
+    getHeight(): i64;
+    #Timestamp when block was mined
+    #@return Date object, date when block was appended to blockchain
+    getTime(): date;
+}
+
+EthereumLikeTransactionBuilder = interface +c {
+
+    # Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+    # @param amount The value to send
+    # @param address Address of the recipient
+    # @return A reference on the same builder in order to chain calls.
+    sendToAddress(amount: Amount, address: string): EthereumLikeTransactionBuilder;
+
+    # Send all available funds to the given address.
+    # @param address Address of the recipient
+    # @return A reference on the same builder in order to chain calls.
+    wipeToAddress(address: string): EthereumLikeTransactionBuilder;
+
+    # Set gas price (in wei) the originator is willing to pay
+    # @return A reference on the same builder in order to chain calls.
+    setGasPrice(gasPrice: Amount): EthereumLikeTransactionBuilder;
+
+    # Set gas limit (in wei) the originator is not willing to exceed
+    # @return A reference on the same builder in order to chain calls.
+    setGasLimit(gasLimit: Amount): EthereumLikeTransactionBuilder;
+
+    # Set input data the originator wants to embed in transaction
+    setInputData(data: binary): EthereumLikeTransactionBuilder;
+
+    # Build a transaction from the given builder parameters.
+    build(callback: Callback<EthereumLikeTransaction>);
+
+    # Creates a clone of this builder.
+    # @return A copy of the current builder instance.
+    clone(): EthereumLikeTransactionBuilder;
+
+    # Reset the current instance to its initial state
+    reset();
+
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
+}
+
+#Class representing a Ethereum account
+EthereumLikeAccount = interface +c {
+    broadcastRawTransaction(transaction: binary, callback: Callback<string>);
+    broadcastTransaction(transaction: EthereumLikeTransaction, callback: Callback<string>);
+    buildTransaction(): EthereumLikeTransactionBuilder;
 }
 
 

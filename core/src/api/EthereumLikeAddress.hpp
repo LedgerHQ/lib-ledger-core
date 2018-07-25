@@ -24,10 +24,10 @@ public:
     virtual std::vector<uint8_t> getVersion() = 0;
 
     /**
-     * Gets the raw hash160 of the public key
-     * @return The 20 bytes of the public key hash160
+     * Gets the raw keccak hash of the public key (truncated to 20 bytes)
+     * @return The 20 bytes of the public key keccak hash
      */
-    virtual std::vector<uint8_t> getHash160() = 0;
+    virtual std::vector<uint8_t> getKeccakHash() = 0;
 
     /**
      * Gets the network parameters used for serializing the address
@@ -36,10 +36,10 @@ public:
     virtual EthereumLikeNetworkParameters getNetworkParameters() = 0;
 
     /**
-     * Serializes the hash160 into a Base58 encoded address (with checksum)
-     * @return The Base58 serialization
+     * Encodes keccak with respect to EIP55
+     * @return The EIP55 encoding
      */
-    virtual std::string toBase58() = 0;
+    virtual std::string toEIP55() = 0;
 };
 
 } } }  // namespace ledger::core::api

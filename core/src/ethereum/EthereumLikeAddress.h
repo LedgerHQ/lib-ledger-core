@@ -44,16 +44,16 @@ namespace ledger {
                                const std::vector<uint8_t>& keccak256,
                                const Option<std::string>& derivationPath = Option<std::string>());
             std::vector<uint8_t> getVersion() override ;
-            std::vector<uint8_t> getHash160() override ;
+            std::vector<uint8_t> getKeccakHash() override ;
             api::EthereumLikeNetworkParameters getNetworkParameters() override ;
-            std::string toBase58() override ;
+            std::string toEIP55() override ;
 
             virtual optional<std::string> getDerivationPath() override;
             std::string toString() override;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
                                                           const Option<std::string>& derivationPath = Option<std::string>());
-            static std::shared_ptr<EthereumLikeAddress> fromBase58(const std::string& address,
+            static std::shared_ptr<EthereumLikeAddress> fromEIP55(const std::string& address,
                                                                   const api::Currency& currency,
                                                                   const Option<std::string>& derivationPath = Option<std::string>());
 

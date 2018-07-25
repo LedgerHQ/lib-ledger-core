@@ -30,12 +30,19 @@
  */
 
 #include "EthereumLikeExtendedPublicKey.h"
+#include "EthereumLikeAddress.h"
+
 #include <math/Base58.hpp>
+
 #include <bytes/BytesReader.h>
 #include <bytes/BytesWriter.h>
+
 #include <utils/Exception.hpp>
-#include "EthereumLikeAddress.h"
+
 #include <crypto/Keccak.h>
+#include <crypto/SECP256k1Point.hpp>
+#include <crypto/RIPEMD160.hpp>
+#include <crypto/SHA256.hpp>
 
 namespace ledger {
     namespace core {
@@ -75,11 +82,37 @@ namespace ledger {
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeExtendedPublicKey::toBase58 is not implemented yet");
+            return Base58::encodeWithEIP55(_key.getPublicKeyKeccak256());
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeExtendedPublicKey::getRootPath is not implemented yet");
+        }
+
+        std::shared_ptr<EthereumLikeExtendedPublicKey>
+        EthereumLikeExtendedPublicKey::fromRaw(const api::Currency& currency,
+                const optional<std::vector<uint8_t>>& parentPublicKey,
+                const std::vector<uint8_t>& publicKey,
+                const std::vector<uint8_t> &chainCode,
+                const std::string& path) {
+            uint32_t parentFingerprint = 0;
+
+            SECP256k1Point pk(publicKey);
+            if (parentPublicKey) {
+                SECP256k1Point ppp(parentPublicKey.value());
+                auto hash = SHA256::bytesToBytesHash(ppp.toByteArray(true));
+                hash = RIPEMD160::hash(hash);
+                parentFingerprint = ((hash[0] & 0xFFU) << 24) |
+                                    ((hash[1] & 0xFFU) << 16) |
+                                    ((hash[2] & 0xFFU) << 8) |
+                                    (hash[3] & 0xFFU);
+            }
+            DerivationPath p(path);
+
+            DeterministicPublicKey k(
+                    pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
+            );
+            return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
