@@ -111,11 +111,22 @@ namespace ledger {
                                                                const std::string& accountUid,
                                                                const std::string& transactionHash,
                                                                const BitcoinLikeBlockchainExplorer::Input &input) {
+            /*
+             * In case transactions are issued with respect to zero knowledge protocol,
+             * previousTxHash is empty which causes conflict in bitcoin_inputs table
+             * Right now we generate a random 'hash' to compute inputUid, should be improved
+             * (e.g. use scriptSig of each input and sha256 it ...)
+            */
+            std::string hash;
+            if (input.previousTxHash.isEmpty() && input.signatureScript.nonEmpty()) {
+                cout<<" !!! Creating hash from scriptSig"<<endl;
+                hash =  SHA256::stringToHexHash(input.signatureScript.getValue());
+            }
+
             auto uid = createInputUid(accountUid,
                                       input.previousTxOutputIndex.getValueOr(0),
-                                      input.previousTxHash.getValueOr(""),
-                                      input.coinbase.getValueOr("")
-            );
+                                      input.previousTxHash.getValueOr(hash),
+                                      input.coinbase.getValueOr(""));
             auto amount = input.value.map<uint64_t>([] (const BigInt& v) {
                 return v.toUint64();
             });

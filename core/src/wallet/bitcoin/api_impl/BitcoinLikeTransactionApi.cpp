@@ -222,6 +222,10 @@ namespace ledger {
             return writer.toByteArray();
         }
 
+        int32_t BitcoinLikeTransactionApi::getVersion() {
+            return _version;
+        }
+
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
 
             auto &additionalBIPs = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;

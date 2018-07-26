@@ -39,6 +39,7 @@
 #include <collections/functional.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
 #include <events/EventPublisher.hpp>
@@ -55,6 +56,10 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+
+#include <iostream>
+using namespace std;
+
 namespace ledger {
     namespace core {
 
@@ -517,8 +522,66 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
-                return seq.str();
+            auto self = getSelf();
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+                //Store newly broadcasted tx in db
+                //First parse it
+                auto txHash = seq.str();
+                auto tx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(self->getWallet()->getCurrency(), transaction);
+
+                //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
+                BitcoinLikeBlockchainExplorer::Transaction txExplorer;
+                txExplorer.hash = txHash;
+                txExplorer.lockTime = tx->getLockTime();
+                txExplorer.receivedAt = std::chrono::system_clock::now();
+                //TODO: check version
+                txExplorer.version = tx->getVersion();
+                cout<<" >>> Version: "<<txExplorer.version<<endl;
+                txExplorer.confirmations = 0;
+
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+
+                //Inputs
+                auto inputCount = tx->getInputs().size();
+                for (auto index = 0; index < inputCount; index++) {
+                    auto input = tx->getInputs()[index];
+                    BitcoinLikeBlockchainExplorer::Input in;
+                    in.index = index;
+                    auto prevTxHash = input->getPreviousTxHash().value_or("");
+                    auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
+                    BitcoinLikeBlockchainExplorer::Transaction prevTx;
+                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
+                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
+                    }
+                    in.value = prevTx.outputs[prevTxOutputIndex].value;
+                    in.signatureScript = hex::toString(input->getScriptSig());
+                    in.previousTxHash = prevTxHash;
+                    in.previousTxOutputIndex = prevTxOutputIndex;
+                    in.sequence = input->getSequence();
+                    in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
+                    txExplorer.inputs.push_back(in);
+                }
+
+                //Outputs
+                auto keychain = self->getKeychain();
+                auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+                auto outputCount = tx->getOutputs().size();
+                for (auto index = 0; index < outputCount; index++) {
+                    auto output = tx->getOutputs()[index];
+                    BitcoinLikeBlockchainExplorer::Output out;
+                    out.value = BigInt(output->getValue()->toString());
+                    out.time = DateUtils::toJSON(std::chrono::system_clock::now());
+                    out.transactionHash = output->getTransactionHash();
+                    out.index = output->getOutputIndex();
+                    out.script = hex::toString(output->getScript());
+                    out.address = output->getAddress().value_or("");
+                    txExplorer.outputs.push_back(out);
+                }
+
+                //Store in DB
+                self->putTransaction(sql, txExplorer);
+
+                return txHash;
             }).callback(getContext(), callback);
         }
 

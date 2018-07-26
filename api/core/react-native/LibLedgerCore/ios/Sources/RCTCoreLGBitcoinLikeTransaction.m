@@ -133,6 +133,19 @@ RCT_REMAP_METHOD(getTimestamp,getTimestampWithResolver:(RCTPromiseResolveBlock)r
     }
 }
 
+/** Get Transaction version */
+RCT_REMAP_METHOD(getVersion,getVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    id result = @{@"result" :@([self.objcImpl getVersion])};if(result)
+    {
+        resolve(result);
+    }
+    else
+    {
+        reject(@"impl_call_error", @"Error while calling LGBitcoinLikeTransaction::getVersion", nil);
+    }
+}
+
 /** Serialize the transaction to its raw format. */
 RCT_REMAP_METHOD(serialize,serializeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

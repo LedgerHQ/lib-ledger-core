@@ -51,6 +51,9 @@ public:
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     virtual std::experimental::optional<int32_t> getTimestamp() = 0;
 
+    /** Get Transaction version */
+    virtual int32_t getVersion() = 0;
+
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 

@@ -36,6 +36,9 @@ public abstract class BitcoinLikeTransaction {
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     public abstract Integer getTimestamp();
 
+    /** Get Transaction version */
+    public abstract int getVersion();
+
     /** Serialize the transaction to its raw format. */
     public abstract byte[] serialize();
 
@@ -137,6 +140,14 @@ public abstract class BitcoinLikeTransaction {
             return native_getTimestamp(this.nativeRef);
         }
         private native Integer native_getTimestamp(long _nativeRef);
+
+        @Override
+        public int getVersion()
+        {
+            assert !this.destroyed.get() : "trying to use a destroyed object";
+            return native_getVersion(this.nativeRef);
+        }
+        private native int native_getVersion(long _nativeRef);
 
         @Override
         public byte[] serialize()

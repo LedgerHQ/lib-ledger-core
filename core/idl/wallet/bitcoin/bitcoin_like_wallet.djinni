@@ -133,6 +133,8 @@ BitcoinLikeTransaction = interface +c {
     getTime(): date;
     # Get the timestamps serialized in the raw transaction if the underlying currency handles it.
     getTimestamp(): optional<i32>;
+    # Get Transaction version
+    getVersion(): i32;
     # Serialize the transaction to its raw format.
     serialize(): binary;
     # Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format.
