@@ -38,6 +38,8 @@ namespace ledger {
         void Operation::refreshUid() {
             if (bitcoinTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
+            } else if (ethereumTransaction.nonEmpty()) {
+                uid = OperationDatabaseHelper::createUid(accountUid, ethereumTransaction.getValue().hash, type);
             } else {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }

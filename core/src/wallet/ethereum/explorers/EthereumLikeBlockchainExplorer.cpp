@@ -1,6 +1,6 @@
 /*
  *
- * EthereumBlockchainExplorer
+ * EthereumLikeBlockchainExplorer
  *
  * Created by El Khalil Bellakrid on 14/07/2018.
  *

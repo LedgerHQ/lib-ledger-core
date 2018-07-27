@@ -37,7 +37,10 @@
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
+#include <math/Base58.hpp>
+#include <utils/Option.hpp>
 namespace ledger {
     namespace core {
 
@@ -67,38 +70,77 @@ namespace ledger {
                 });
         }
 
+        void EthereumLikeAccount::inflateOperation(Operation &out,
+                                                   const std::shared_ptr<const AbstractWallet>& wallet,
+                                                   const EthereumLikeBlockchainExplorer::Transaction &tx) {
+                out.accountUid = getAccountUid();
+                out.block = tx.block;
+                out.ethereumTransaction = Option<EthereumLikeBlockchainExplorer::Transaction>(tx);
+                out.currencyName = getWallet()->getCurrency().name;
+                out.walletType = getWalletType();
+                out.walletUid = wallet->getWalletUid();
+                out.date = tx.receivedAt;
+                if (out.block.nonEmpty())
+                        out.block.getValue().currencyName = wallet->getCurrency().name;
+                out.ethereumTransaction.getValue().block = out.block;
+        }
+
         int EthereumLikeAccount::putTransaction(soci::session &sql,
                                                const EthereumLikeBlockchainExplorer::Transaction &transaction) {
                 auto wallet = getWallet();
                 if (wallet == nullptr) {
                         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
                 }
+
                 if (transaction.block.nonEmpty())
                         putBlock(sql, transaction.block.getValue());
-                auto nodeIndex = std::const_pointer_cast<const EthereumLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
 
-                uint64_t sentAmount = 0L;
-                uint64_t receivedAmount = 0L;
                 int result = 0x00;
 
-
-                //std::stringstream snds;
-                //strings::join(senders, snds, ",");
-
                 Operation operation;
-                //inflateOperation(operation, wallet, transaction);
-                //operation.senders = std::move(senders);
-                //operation.recipients = std::move(recipients);
+                inflateOperation(operation, wallet, transaction);
+                std::vector<std::string> senders{transaction.sender};
+                operation.senders = std::move(senders);
+                std::vector<std::string> receivers{transaction.receiver};
+                operation.recipients = std::move(receivers);
+                operation.fees = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
                 operation.trust = std::make_shared<TrustIndicator>();
                 operation.date = transaction.receivedAt;
 
-                OperationDatabaseHelper::putOperation(sql, operation);
+                auto isAccountAddress = [] (const std::shared_ptr<EthereumLikeKeychain> &keychain, const std::string &address) -> bool {
+                    auto path = keychain->getAddressDerivationPath(address);
+                    return path.nonEmpty();
+                };
+
+                if (isAccountAddress(_keychain, transaction.sender)) {
+                        operation.amount = transaction.value + operation.fees.getValueOr(BigInt::ZERO);
+                        operation.type = api::OperationType::SEND;
+                        operation.refreshUid();
+                        OperationDatabaseHelper::putOperation(sql, operation);
+                }
+
+                if (isAccountAddress(_keychain, transaction.receiver)) {
+                        operation.amount = transaction.value;
+                        operation.type = api::OperationType::SEND;
+                        operation.refreshUid();
+                        OperationDatabaseHelper::putOperation(sql, operation);
+                }
+
                 return result;
         }
 
         bool EthereumLikeAccount::putBlock(soci::session& sql,
                                            const EthereumLikeBlockchainExplorer::Block& block) {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAccount::putBlock is not implemented yet");
+                Block abstractBlock;
+                abstractBlock.hash = block.hash;
+                abstractBlock.currencyName = getWallet()->getCurrency().name;
+                abstractBlock.height = block.height;
+                abstractBlock.time = block.time;
+                if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
+                        emitNewBlockEvent(abstractBlock);
+                        return true;
+                }
+                return false;
         }
         FuturePtr<Amount> EthereumLikeAccount::getBalance() {
 

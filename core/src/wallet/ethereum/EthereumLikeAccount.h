@@ -63,6 +63,9 @@ namespace ledger {
                                const std::shared_ptr<EthereumLikeKeychain>& keychain);
 
             FuturePtr<EthereumLikeBlockchainExplorer::Transaction> getTransaction(const std::string& hash);
+            void inflateOperation(Operation &out,
+                                  const std::shared_ptr<const AbstractWallet>& wallet,
+                                  const EthereumLikeBlockchainExplorer::Transaction &tx);
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorer::Transaction& transaction);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
             

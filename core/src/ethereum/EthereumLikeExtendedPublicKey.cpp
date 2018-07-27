@@ -86,7 +86,7 @@ namespace ledger {
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeExtendedPublicKey::getRootPath is not implemented yet");
+            return _path.toString();
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>

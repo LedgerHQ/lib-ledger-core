@@ -52,7 +52,7 @@ namespace ledger {
                                                std::vector<Operation>& out,
                                                std::function<bool (const std::string& address)> filter);
         private:
-            static void updateBitcoinOperation(soci::session& sql, const Operation& operation, bool insert);
+            static void updateCurrencyOperation(soci::session& sql, const Operation& operation, bool insert);
         };
     }
 }

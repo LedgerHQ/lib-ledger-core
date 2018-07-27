@@ -49,7 +49,6 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
 };
 
 TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
-
     auto builder = tx_builder();
     builder->setGasPrice(api::Amount::fromLong(currency, 200000));
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
@@ -59,8 +58,6 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
     auto parsedTx = EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     auto serializedParsedTx = parsedTx->serialize();
-    EXPECT_EQ(hex::toString(serializedTx), hex::toString(serializedParsedTx));
-    //EXPECT_EQ(serializedTx, serializedParsedTx);
+    EXPECT_EQ(serializedTx, serializedParsedTx);
 }

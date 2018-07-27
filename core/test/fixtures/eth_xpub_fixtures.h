@@ -12,13 +12,13 @@
 #include <CoutLogPrinter.hpp>
 #include <src/api/DynamicObject.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/ethereum/explorers/api/EthereumLikeTransactionParser.hpp>
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/ethereum/database/EthereumLikeWalletDatabase.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
-//#include <wallet/ethereum/explorers/api/TransactionParser.hpp>
 #include <async/async_wait.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <api/EthereumLikeOperation.hpp>
@@ -34,6 +34,12 @@ namespace ledger {
 	namespace testing {
 		namespace eth_xpub {
 			extern core::api::ExtendedKeyAccountCreationInfo XPUB_INFO;
+			extern const std::string TX_1;
+			extern const std::string TX_2;
+			extern const std::string TX_3;
+			extern const std::string TX_4;
+			extern const std::string TX_5;
+			extern const std::string TX_6;
 
 			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
 		}
