@@ -47,6 +47,16 @@ namespace ledger {
             static bool inflateTransaction(soci::session &sql,
                                            const soci::row &row,
                                            EthereumLikeBlockchainExplorer::Transaction &tx);
+
+            static bool transactionExists(soci::session &sql,
+                                   const std::string &ethTxUid);
+
+            static std::string createEthereumTransactionUid(const std::string& accountUid,
+                                                     const std::string& txHash);
+
+            static std::string putTransaction(soci::session& sql,
+                                              const std::string& accountUid,
+                                              const EthereumLikeBlockchainExplorer::Transaction& tx);
         };
     }
 }

@@ -35,6 +35,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
@@ -67,7 +68,7 @@ namespace ledger {
                         , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
-                updateBitcoinOperation(sql, operation, newOperation);
+                updateCurrencyOperation(sql, operation, newOperation);
                 return false;
             } else {
                 auto type = api::to_string(operation.type);
@@ -87,20 +88,21 @@ namespace ledger {
                         , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
                         , use(operation.fees), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
-                updateBitcoinOperation(sql, operation, newOperation);
+
+                updateCurrencyOperation(sql, operation, newOperation);
                 return true;
             }
 
         }
 
         void
-        OperationDatabaseHelper::updateBitcoinOperation(soci::session &sql, const Operation &operation, bool insert) {
+        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
-
-                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction
-                                                                                   .getValue());
+                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction.getValue());
                 if (insert)
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operation.bitcoinTransaction.getValue().hash);
+            } else if (operation.ethereumTransaction.nonEmpty()) {
+                auto btcTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
             }
         }
 
