@@ -37,7 +37,7 @@
 #include "api/TransactionsBulkParser.hpp"
 #include "api/TransactionParser.hpp"
 #include "api/BlockParser.hpp"
-#include "api/LedgerApiParser.hpp"
+#include <wallet/common/explorers/LedgerApiParser.hpp>
 #include <utils/JSONUtils.h>
 #include <sstream>
 

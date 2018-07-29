@@ -68,7 +68,7 @@ std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> 
 std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &bytes) {
 
     auto byteToDigitEIP55 = [](uint8_t byte, uint8_t against) -> char {
-        bool uppercase = against > 0x8;
+        bool uppercase = against >= 0x8;
         byte = (uint8_t) (0xF < byte ? 0xF : byte);
         if (byte < 0xA) {
             return '0' + byte;

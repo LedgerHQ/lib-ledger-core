@@ -30,14 +30,10 @@
 
 #include "../BaseFixture.h"
 #include "../../fixtures/eth_xpub_fixtures.h"
-
 #include <api/KeychainEngines.hpp>
 #include "transaction_test_helper.h"
-
 #include <utils/hex.h>
 
-#include <iostream>
-using namespace std;
 
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     void SetUpConfig() override {

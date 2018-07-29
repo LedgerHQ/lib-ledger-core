@@ -1,8 +1,8 @@
 /*
  *
- * EthereumLikeTransactionParser
+ * EthereumLikeEthereumLikeTransactionsParser
  *
- * Created by El Khalil Bellakrid on 14/07/2018.
+ * Created by El Khalil Bellakrid on 29/07/2018.
  *
  * The MIT License (MIT)
  *
@@ -27,28 +27,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
-#define LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
 
-#include "EthereumLikeBlockParser.hpp"
-//#include "../EthereumLikeBlockchainExplorer.h"
-#include <collections/collections.hpp>
-#include <cstdio>
-#include <cstdint>
-#include <net/HttpClient.hpp>
-#include <rapidjson/reader.h>
-#include <stack>
 
+#ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H
+#define LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H
+
+#include "../EthereumLikeBlockchainExplorer.h"
+#include "EthereumLikeTransactionParser.hpp"
 
 namespace ledger {
     namespace core {
-        class EthereumLikeBlockchainExplorer;
-        class EthereumLikeTransactionParser {
+        class EthereumLikeTransactionsParser {
         public:
-            typedef EthereumLikeBlockchainExplorer::Transaction Result;
-
-            EthereumLikeTransactionParser(std::string& lastKey);
-            void init(EthereumLikeBlockchainExplorer::Transaction* transaction);
+            typedef std::vector<EthereumLikeBlockchainExplorer::Transaction> Result;
+            EthereumLikeTransactionsParser(std::string& lastKey);
+            void init(std::vector<EthereumLikeBlockchainExplorer::Transaction>* transactions);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -56,23 +49,23 @@ namespace ledger {
             bool Int64(int64_t i);
             bool Uint64(uint64_t i);
             bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
 
         private:
             std::string& _lastKey;
-            EthereumLikeBlockchainExplorer::Transaction* _transaction;
-            std::stack<std::string> _hierarchy;
+            std::vector<EthereumLikeBlockchainExplorer::Transaction>* _transactions;
             uint32_t _arrayDepth;
-            EthereumLikeBlockParser _blockParser;
+            uint32_t _objectDepth;
+            EthereumLikeTransactionParser _transactionParser;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
+#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H

@@ -27,11 +27,8 @@
  * SOFTWARE.
  *
  */
-
-
 #include "EthereumLikeAccountSynchronizer.h"
-#include <wallet/pool/WalletPool.hpp>
-#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
 
 namespace ledger {
     namespace core {
@@ -39,6 +36,48 @@ namespace ledger {
                                                                          const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) :
                                                                          DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
             _explorer = explorer;
+        }
+
+        bool EthereumLikeAccountSynchronizer::isSynchronizing() const {
+            return _notifier != nullptr;
+        }
+
+        void EthereumLikeAccountSynchronizer::reset(const std::shared_ptr<EthereumLikeAccount> &account,
+                                                          const std::chrono::system_clock::time_point &toDate) {
+
+        }
+
+        void EthereumLikeAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractAccountSynchronizer::SynchronizationBuddy> &buddy,
+                                                                       const std::shared_ptr<api::ExecutionContext> &context) {
+            _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) {
+                if (block.isSuccess()) {
+                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                    buddy->account->putBlock(sql, *block.getValue());
+                }
+            });
+        }
+
+        void EthereumLikeAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
+                                                                       std::shared_ptr<SynchronizationBuddy> &buddy,
+                                                                       const std::string &accountUid) {
+            //Get all transactions in DB that may be dropped (txs without block_uid)
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, eth_op.transaction_hash FROM operations AS op "
+                                                            "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
+                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
+
+            for (auto &row : rows) {
+                if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
+                    buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
+                }
+            }
+        }
+
+        std::shared_ptr<EthereumBlockchainAccountSynchrinizer> EthereumLikeAccountSynchronizer::getSharedFromThis() {
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::ExecutionContext> EthereumLikeAccountSynchronizer::getSynchronizerContext() {
+            return getContext();
         }
     }
 }

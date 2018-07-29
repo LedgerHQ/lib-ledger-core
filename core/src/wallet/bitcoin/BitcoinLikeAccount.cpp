@@ -29,31 +29,37 @@
  *
  */
 #include "BitcoinLikeAccount.hpp"
-#include <wallet/common/Operation.h>
-#include <wallet/common/database/OperationDatabaseHelper.h>
+
 #include <database/query/QueryBuilder.h>
-#include <api/EventCode.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
-#include <api/I32Callback.hpp>
+
 #include <collections/functional.hpp>
+
+#include <utils/DateUtils.hpp>
+
+#include <wallet/common/Operation.h>
+#include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
-#include <events/EventPublisher.hpp>
-#include <events/Event.hpp>
-#include <api/StringCallback.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+
+#include <api/I32Callback.hpp>
+#include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/StringCallback.hpp>
+#include <api/EventCode.hpp>
+
+#include <events/EventPublisher.hpp>
+#include <events/Event.hpp>
+
 #include <spdlog/logger.h>
-#include <utils/DateUtils.hpp>
+
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>

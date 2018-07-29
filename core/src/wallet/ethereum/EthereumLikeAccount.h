@@ -68,7 +68,9 @@ namespace ledger {
                                   const EthereumLikeBlockchainExplorer::Transaction &tx);
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorer::Transaction& transaction);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
-            
+
+            std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
+
             FuturePtr<Amount> getBalance() override ;
             Future<AbstractAccount::AddressList> getFreshPublicAddresses() override ;
             Future<std::vector<std::shared_ptr<api::Amount>>>

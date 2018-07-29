@@ -237,6 +237,13 @@ namespace ledger {
                     "gas_used BIGINT NOT NULL,"
                     "confirmations BIGINT NOT NULL"
                     ")";
+
+            sql << "CREATE TABLE ethereum_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ethereum_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+
         }
 
     }
