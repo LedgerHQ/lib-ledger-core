@@ -4,6 +4,7 @@ EthereumLikeNetworkParameters = record {
 	MessagePrefix: string;
 	XPUBVersion: binary;
 	AdditionalEIPs: list<string>;
+	TimestampDelay: i64;
 }
 
 # Helper class for manipulating Ethereum like addresses

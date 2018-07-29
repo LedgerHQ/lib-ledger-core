@@ -41,7 +41,8 @@ namespace ledger {
                             "eth",
                             "Ethereum signed message:\n",
                             {0x04, 0x88, 0xb2, 0x1e},
-                            {}
+                            {},
+                            0
                     );
                     return ETHEREUM;
                 }

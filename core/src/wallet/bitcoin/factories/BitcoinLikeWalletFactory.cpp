@@ -43,9 +43,7 @@
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2SHKeychainFactory.h>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
-
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
-//#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
+#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -82,7 +80,7 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
-                        return std::make_shared<BitcoinLikeAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<BlockchainExplorerAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

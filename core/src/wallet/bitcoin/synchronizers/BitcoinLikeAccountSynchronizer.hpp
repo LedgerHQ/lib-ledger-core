@@ -31,17 +31,13 @@
 #ifndef LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
 #define LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
 
-#include "BlockchainExplorerAccountSynchronizer.h"
-#include <wallet/pool/WalletPool.hpp>
+#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeBlockchainExplorer;
-        class BitcoinLikeAccountSynchronizer : public BlockchainExplorerAccountSynchronizer {
-        public:
-            BitcoinLikeAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
-                                           const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer) : BlockchainExplorerAccountSynchronizer(pool, explorer)
-            {}
+        class BitcoinLikeAccount;
+        class BitcoinLikeAccountSynchronizer : public AbstractAccountSynchronizer<BitcoinLikeAccount> {
+
         };
     }
 }

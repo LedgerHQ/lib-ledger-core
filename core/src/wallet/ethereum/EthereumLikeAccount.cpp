@@ -60,10 +60,10 @@ namespace ledger {
         }
 
 
-        FuturePtr<EthereumLikeBlockchainExplorer::Transaction> EthereumLikeAccount::getTransaction(const std::string& hash) {
+        FuturePtr<EthereumLikeBlockchainExplorerTransaction> EthereumLikeAccount::getTransaction(const std::string& hash) {
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
-                return async<std::shared_ptr<EthereumLikeBlockchainExplorer::Transaction>>([=] () -> std::shared_ptr<EthereumLikeBlockchainExplorer::Transaction> {
-                    auto tx = std::make_shared<EthereumLikeBlockchainExplorer::Transaction>();
+                return async<std::shared_ptr<EthereumLikeBlockchainExplorerTransaction>>([=] () -> std::shared_ptr<EthereumLikeBlockchainExplorerTransaction> {
+                    auto tx = std::make_shared<EthereumLikeBlockchainExplorerTransaction>();
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
                     if (!EthereumLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
                             throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);
@@ -74,10 +74,10 @@ namespace ledger {
 
         void EthereumLikeAccount::inflateOperation(Operation &out,
                                                    const std::shared_ptr<const AbstractWallet>& wallet,
-                                                   const EthereumLikeBlockchainExplorer::Transaction &tx) {
+                                                   const EthereumLikeBlockchainExplorerTransaction &tx) {
                 out.accountUid = getAccountUid();
                 out.block = tx.block;
-                out.ethereumTransaction = Option<EthereumLikeBlockchainExplorer::Transaction>(tx);
+                out.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(tx);
                 out.currencyName = getWallet()->getCurrency().name;
                 out.walletType = getWalletType();
                 out.walletUid = wallet->getWalletUid();
@@ -88,7 +88,7 @@ namespace ledger {
         }
 
         int EthereumLikeAccount::putTransaction(soci::session &sql,
-                                               const EthereumLikeBlockchainExplorer::Transaction &transaction) {
+                                               const EthereumLikeBlockchainExplorerTransaction &transaction) {
                 auto wallet = getWallet();
                 if (wallet == nullptr) {
                         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -246,7 +246,7 @@ namespace ledger {
 
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
 
-                auto getTransaction = [self] (const std::string& hash) -> FuturePtr<EthereumLikeBlockchainExplorer::Transaction> {
+                auto getTransaction = [self] (const std::string& hash) -> FuturePtr<EthereumLikeBlockchainExplorerTransaction> {
                     return self->getTransaction(hash);
                 };
 

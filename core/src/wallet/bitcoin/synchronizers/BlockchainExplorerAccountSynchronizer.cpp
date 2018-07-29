@@ -42,17 +42,7 @@ namespace ledger {
             _explorer = explorer;
         }
 
-
-        bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {
-            return _notifier != nullptr;
-        }
-
-        void BlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<BitcoinLikeAccount> &account,
-                                                          const std::chrono::system_clock::time_point &toDate) {
-
-        }
-
-        void BlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractAccountSynchronizer::SynchronizationBuddy> &buddy,
+        void BlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
                                                                        const std::shared_ptr<api::ExecutionContext> &context) {
             _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
                 if (block.isSuccess()) {
@@ -79,7 +69,20 @@ namespace ledger {
         }
 
 
-        std::shared_ptr<BlockchaninAccountSynchronizer> BlockchainExplorerAccountSynchronizer::getSharedFromThis() {
+        void BlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<BitcoinLikeAccount>& account,
+                                                          const std::chrono::system_clock::time_point& toDate) {
+
+        }
+
+        std::shared_ptr<ProgressNotifier<Unit>> BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) {
+            return synchronizeAccount(account);
+        }
+
+        bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {
+            return _notifier != nullptr;
+        }
+
+        std::shared_ptr<BlockchainAccountSynchronizer> BlockchainExplorerAccountSynchronizer::getSharedFromThis() {
             return shared_from_this();
         }
 

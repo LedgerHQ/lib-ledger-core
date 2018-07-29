@@ -56,7 +56,7 @@ namespace ledger {
 
         std::string BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                   const std::string& accountUid,
-                                                                  const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+                                                                  const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
                                });
@@ -99,7 +99,7 @@ namespace ledger {
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
                                                                 const std::string& btcTxUid,
                                                                 const std::string& transactionHash,
-                                                                const BitcoinLikeBlockchainExplorer::Output &output) {
+                                                                const BitcoinLikeBlockchainExplorerOutput &output) {
             sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL)",
                     use(output.index), use(btcTxUid),
                     use(transactionHash), use(output.value.toUint64()),
@@ -155,7 +155,7 @@ namespace ledger {
         }
 
         bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql, const std::string &hash,
-                                                                        BitcoinLikeBlockchainExplorer::Transaction &out) {
+                                                                        BitcoinLikeBlockchainExplorerTransaction &out) {
             rowset<row> rows = (sql.prepare <<
                     "SELECT  tx.hash, tx.version, tx.time, tx.locktime, "
                             "block.hash, block.height, block.time, block.currency_name "
@@ -171,7 +171,7 @@ namespace ledger {
         }
 
         bool BitcoinLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql, const soci::row &row,
-                                                                      BitcoinLikeBlockchainExplorer::Transaction &out) {
+                                                                      BitcoinLikeBlockchainExplorerTransaction &out) {
             out.hash = row.get<std::string>(0);
             out.version = (uint32_t) row.get<int32_t>(1);
             out.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
@@ -193,7 +193,7 @@ namespace ledger {
                 "WHERE ti.transaction_hash = :hash ORDER BY ti.input_idx", use(out.hash)
             );
             for (auto& inputRow : inputRows) {
-                BitcoinLikeBlockchainExplorer::Input input;
+                BitcoinLikeBlockchainExplorerInput input;
                 input.index = get_number<uint64_t>(inputRow, 0);
                 input.previousTxOutputIndex = inputRow.get<Option<int>>(1).map<uint32_t>([] (const int& v) {
                     return (uint32_t) v;
@@ -214,7 +214,7 @@ namespace ledger {
                     "ORDER BY idx", use(out.hash)
             );
             for (auto& outputRow : outputRows) {
-                BitcoinLikeBlockchainExplorer::Output output;
+                BitcoinLikeBlockchainExplorerOutput output;
                 output.index = (uint64_t) outputRow.get<int>(0);
                 output.value.assignScalar(outputRow.get<long long>(1));
                 output.script = outputRow.get<std::string>(2);

@@ -45,7 +45,7 @@ namespace ledger {
 
         bool EthereumLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
                                                                          const std::string &hash,
-                                                                         EthereumLikeBlockchainExplorer::Transaction &tx) {
+                                                                         EthereumLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.nonce, tx.time, tx.input_data, tx.gas_price, "
                                                 "tx.gas_limit, tx.gas_used, tx.sender, tx.receiver, tx.confirmations, "
@@ -64,7 +64,7 @@ namespace ledger {
 
         bool EthereumLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
                                                                        const soci::row &row,
-                                                                       EthereumLikeBlockchainExplorer::Transaction &tx) {
+                                                                       EthereumLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
 
             auto nonceBytes = hex::toByteArray(row.get<std::string>(1));
@@ -113,7 +113,7 @@ namespace ledger {
 
         std::string EthereumLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                          const std::string& accountUid,
-                                                                         const EthereumLikeBlockchainExplorer::Transaction &tx) {
+                                                                         const EthereumLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const EthereumLikeBlockchainExplorer::Block& block) {
                 return block.getUid();
             });

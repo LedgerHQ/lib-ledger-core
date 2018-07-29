@@ -79,7 +79,7 @@ namespace ledger {
              * @param transaction
              * @return A flag indicating if the transaction was ignored, inserted
              */
-            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorer::Transaction& transaction);
+            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorerTransaction& transaction);
             /**
              *
              * @param block
@@ -105,7 +105,7 @@ namespace ledger {
                                                                            const std::string & end,
                                                                            api::TimePeriod precision) override;
 
-            FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> getTransaction(const std::string& hash);
+            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransaction(const std::string& hash);
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
@@ -143,10 +143,10 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeAccount> getSelf();
             inline void inflateOperation(Operation& out,
                                          const std::shared_ptr<const AbstractWallet>& wallet,
-                                         const BitcoinLikeBlockchainExplorer::Transaction& tx);
+                                         const BitcoinLikeBlockchainExplorerTransaction& tx);
             inline void computeOperationTrust(Operation& operation,
                                               const std::shared_ptr<const AbstractWallet>& wallet,
-                                              const BitcoinLikeBlockchainExplorer::Transaction& tx);
+                                              const BitcoinLikeBlockchainExplorerTransaction& tx);
 
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;

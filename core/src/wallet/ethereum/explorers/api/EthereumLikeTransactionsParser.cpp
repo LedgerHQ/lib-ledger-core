@@ -81,7 +81,7 @@ bool ledger::core::EthereumLikeTransactionsParser::StartObject() {
     _objectDepth += 1;
 
     if (_arrayDepth == 1 && _objectDepth == 1) {
-        EthereumLikeBlockchainExplorer::Transaction transaction;
+        EthereumLikeBlockchainExplorerTransaction transaction;
         _transactions->push_back(transaction);
         _transactionParser.init(&_transactions->back());
     }
@@ -125,6 +125,6 @@ ledger::core::EthereumLikeTransactionsParser::EthereumLikeTransactionsParser(std
 }
 
 void ledger::core::EthereumLikeTransactionsParser::init(
-        std::vector<ledger::core::EthereumLikeBlockchainExplorer::Transaction> *transactions) {
+        std::vector<ledger::core::EthereumLikeBlockchainExplorerTransaction> *transactions) {
     _transactions = transactions;
 }

@@ -61,7 +61,7 @@ namespace ledger {
             virtual void onStart() = 0;
             virtual void onStop() = 0;
 
-            void putTransaction(const BitcoinLikeBlockchainExplorer::Transaction& tx);
+            void putTransaction(const BitcoinLikeBlockchainExplorerTransaction& tx);
             void putBlock(const BitcoinLikeBlockchainExplorer::Block& block);
 
         private:

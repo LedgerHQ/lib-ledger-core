@@ -17,15 +17,18 @@ struct EthereumLikeNetworkParameters final {
     std::string MessagePrefix;
     std::vector<uint8_t> XPUBVersion;
     std::vector<std::string> AdditionalEIPs;
+    int64_t TimestampDelay;
 
     EthereumLikeNetworkParameters(std::string Identifier_,
                                   std::string MessagePrefix_,
                                   std::vector<uint8_t> XPUBVersion_,
-                                  std::vector<std::string> AdditionalEIPs_)
+                                  std::vector<std::string> AdditionalEIPs_,
+                                  int64_t TimestampDelay_)
     : Identifier(std::move(Identifier_))
     , MessagePrefix(std::move(MessagePrefix_))
     , XPUBVersion(std::move(XPUBVersion_))
     , AdditionalEIPs(std::move(AdditionalEIPs_))
+    , TimestampDelay(TimestampDelay_)
     {}
 
     EthereumLikeNetworkParameters(const EthereumLikeNetworkParameters& cpy) {
@@ -33,6 +36,7 @@ struct EthereumLikeNetworkParameters final {
        this->MessagePrefix = cpy.MessagePrefix;
        this->XPUBVersion = cpy.XPUBVersion;
        this->AdditionalEIPs = cpy.AdditionalEIPs;
+        this->TimestampDelay = cpy.TimestampDelay;
     }
 
     EthereumLikeNetworkParameters() = default;
@@ -43,17 +47,18 @@ struct EthereumLikeNetworkParameters final {
        this->MessagePrefix = cpy.MessagePrefix;
        this->XPUBVersion = cpy.XPUBVersion;
        this->AdditionalEIPs = cpy.AdditionalEIPs;
+        this->TimestampDelay = cpy.TimestampDelay;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs);
+        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs, TimestampDelay);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs);
+        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs, TimestampDelay);
     }
 };
 

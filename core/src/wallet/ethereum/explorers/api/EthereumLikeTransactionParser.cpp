@@ -196,7 +196,7 @@ namespace ledger {
             _arrayDepth = 0;
         }
 
-        void EthereumLikeTransactionParser::init(EthereumLikeBlockchainExplorer::Transaction *transaction) {
+        void EthereumLikeTransactionParser::init(EthereumLikeBlockchainExplorerTransaction *transaction) {
             _transaction = transaction;
         }
 

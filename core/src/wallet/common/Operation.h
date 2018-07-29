@@ -62,8 +62,8 @@ namespace ledger {
             std::string currencyName;
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
-            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
-            Option<EthereumLikeBlockchainExplorer::Transaction> ethereumTransaction;
+            Option<BitcoinLikeBlockchainExplorerTransaction> bitcoinTransaction;
+            Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Operation() {};
             void refreshUid();
         private:

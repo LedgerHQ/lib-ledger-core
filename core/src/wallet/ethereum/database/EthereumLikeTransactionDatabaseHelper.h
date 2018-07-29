@@ -42,11 +42,11 @@ namespace ledger {
         public:
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
-                                             EthereumLikeBlockchainExplorer::Transaction &tx);
+                                             EthereumLikeBlockchainExplorerTransaction &tx);
 
             static bool inflateTransaction(soci::session &sql,
                                            const soci::row &row,
-                                           EthereumLikeBlockchainExplorer::Transaction &tx);
+                                           EthereumLikeBlockchainExplorerTransaction &tx);
 
             static bool transactionExists(soci::session &sql,
                                    const std::string &ethTxUid);
@@ -56,7 +56,7 @@ namespace ledger {
 
             static std::string putTransaction(soci::session& sql,
                                               const std::string& accountUid,
-                                              const EthereumLikeBlockchainExplorer::Transaction& tx);
+                                              const EthereumLikeBlockchainExplorerTransaction &tx);
         };
     }
 }

@@ -104,7 +104,7 @@ namespace ledger {
                 }
                 auto hash = utxo[index]->getTransactionHash();
                 buddy->logger->info("GET TX 2");
-                return buddy->getTransaction(hash).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) mutable -> Future<Unit> {
+                return buddy->getTransaction(hash).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) mutable -> Future<Unit> {
                     buddy->logger->info("GOT TX 2");
                     uint64_t block_height = (tx->block.nonEmpty()) ? tx->block.getValue().height :
                                             std::numeric_limits<uint64_t>::max();
