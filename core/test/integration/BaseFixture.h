@@ -50,6 +50,7 @@
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
 #include <async/async_wait.h>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <wallet/ethereum/EthereumLikeAccount.h>
 #include <api/BitcoinLikeOperation.hpp>
 #include <api/BitcoinLikeTransaction.hpp>
 #include <api/BitcoinLikeInput.hpp>
@@ -69,6 +70,7 @@ extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
+extern api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO;
 
 extern const std::string TX_1;
 extern const std::string TX_2;
@@ -94,12 +96,17 @@ public:
                                                 const std::string& xpub);
     std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                 int32_t index,
-                                                                const api::AccountCreationInfo &info
-    );
+                                                                const api::AccountCreationInfo &info);
     std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                  int32_t index,
-                                                                 const api::ExtendedKeyAccountCreationInfo& info
-    );
+                                                                 const api::ExtendedKeyAccountCreationInfo& info);
+
+    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                                 int32_t index,
+                                                                 const api::AccountCreationInfo &info);
+    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                                 int32_t index,
+                                                                 const api::ExtendedKeyAccountCreationInfo& info);
 
     std::shared_ptr<QtThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;

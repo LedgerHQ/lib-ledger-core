@@ -34,25 +34,24 @@
 
 #include <string>
 
-#include <net/HttpClient.hpp>
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
-
-#include <utils/ConfigurationMatchable.h>
-#include <utils/Option.hpp>
-#include <wallet/common/Block.h>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
+#include <net/HttpClient.hpp>
+#include <utils/ConfigurationMatchable.h>
+#include <utils/Option.hpp>
+#include <wallet/common/Block.h>
 
 namespace ledger {
     namespace core {
-        class EthereumLikeBlockchainExplorer : public DedicatedContext, public ConfigurationMatchable, public std::enable_shared_from_this<EthereumLikeBlockchainExplorer>{
+        class EthereumLikeBlockchainExplorer final : public DedicatedContext,
+                                                     public ConfigurationMatchable,
+                                                     public std::enable_shared_from_this<EthereumLikeBlockchainExplorer> {
         public:
-
             typedef ledger::core::Block Block;
-
             struct Transaction {
                 std::string hash;
                 std::chrono::system_clock::time_point receivedAt;
@@ -72,13 +71,23 @@ namespace ledger {
                 }
             };
 
-            //EthereumLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject>& configuration, const std::vector<std::string> &matchableKeys);
+            struct TransactionsBulk {
+                std::vector<Transaction> transactions;
+                bool hasNext;
+            };
 
             EthereumLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                            const std::shared_ptr<HttpClient>& http,
                                            const api::EthereumLikeNetworkParameters& parameters,
                                            const std::shared_ptr<api::DynamicObject>& configuration);
             Future<std::shared_ptr<BigInt>> getNonce(const std::string &address);
+            FuturePtr<Block> getCurrentBlock();
+
+            Future<void *> startSession();
+            Future<Unit> killSession(void *session);
+            FuturePtr<EthereumLikeBlockchainExplorer::TransactionsBulk>
+            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
+                            Option<void *> session = Option<void *>());
 
         private:
             std::shared_ptr<HttpClient> _http;

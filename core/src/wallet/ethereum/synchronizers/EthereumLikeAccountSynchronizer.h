@@ -32,19 +32,41 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H
 
+#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
+#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/pool/WalletPool.hpp>
 #include <async/DedicatedContext.hpp>
+#include <events/ProgressNotifier.h>
+
 
 namespace ledger {
     namespace core {
-        class EthereumLikeAccountSynchronizer : public DedicatedContext, public std::enable_shared_from_this<EthereumLikeAccountSynchronizer>{
+        
+        class EthereumLikeAccount;
+        using EthereumBlockchainAccountSynchrinizer = AbstractAccountSynchronizer<EthereumLikeAccount, EthereumLikeAddress, EthereumLikeKeychain, EthereumLikeBlockchainExplorer>;
+        class EthereumLikeAccountSynchronizer : public EthereumBlockchainAccountSynchrinizer,
+                                                public DedicatedContext,
+                                                public std::enable_shared_from_this<EthereumLikeAccountSynchronizer> {
         public:
-            EthereumLikeAccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
-                                            const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer);
+
+            EthereumLikeAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
+                                            const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer);
+
+            void reset(const std::shared_ptr<EthereumLikeAccount> &account,
+                       const std::chrono::system_clock::time_point &toDate) override;
+
+            bool isSynchronizing() const override;
+            void updateCurrentBlock(std::shared_ptr<AbstractAccountSynchronizer::SynchronizationBuddy> &buddy,
+                                    const std::shared_ptr<api::ExecutionContext> &context) override;
+
+            void updateTransactionsToDrop(soci::session &sql,
+                                          std::shared_ptr<SynchronizationBuddy> &buddy,
+                                          const std::string &accountUid) override;
 
         private:
-            std::shared_ptr<EthereumLikeBlockchainExplorer> _explorer;
+            std::shared_ptr<EthereumBlockchainAccountSynchrinizer> getSharedFromThis() override ;
+            std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;
         };
     }
 }

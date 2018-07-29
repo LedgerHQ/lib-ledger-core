@@ -48,6 +48,8 @@
 #include <wallet/bitcoin/types.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
+#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
+
 namespace ledger {
     namespace core {
         class Operation;

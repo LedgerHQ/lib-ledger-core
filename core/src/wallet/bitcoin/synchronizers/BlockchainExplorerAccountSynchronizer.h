@@ -31,88 +31,44 @@
 #ifndef LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
 
-#include "BitcoinLikeAccountSynchronizer.hpp"
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+//#include "BitcoinLikeAccountSynchronizer.hpp"
+
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
+#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
+#include <wallet/pool/WalletPool.hpp>
 #include <preferences/Preferences.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <async/DedicatedContext.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+//#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 
 namespace ledger {
     namespace core {
+        class BitcoinLikeAccount;
+        //class BitcoinLikeBlockchainExplorer;
 
-        struct BlockchainExplorerAccountSynchronizationBatchSavedState {
-            std::string blockHash;
-            uint32_t blockHeight;
-
-            BlockchainExplorerAccountSynchronizationBatchSavedState() {
-                blockHeight = 0;
-            }
-
-            template<class Archive>
-            void serialize(Archive & archive) {
-                archive(blockHash, blockHeight);
-            };
-        };
-
-        struct BlockchainExplorerAccountSynchronizationSavedState {
-            uint32_t halfBatchSize;
-            std::vector<BlockchainExplorerAccountSynchronizationBatchSavedState> batches;
-            std::map<std::string, std::string> pendingTxsHash;
-            BlockchainExplorerAccountSynchronizationSavedState() {
-                halfBatchSize = 0;
-            }
-
-            template<class Archive>
-            void serialize(Archive & archive)
-            {
-                archive(halfBatchSize, batches, pendingTxsHash); // serialize things by passing them to the archive
-            }
-        };
-
-        class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer,
+        using BlockchaninAccountSynchronizer = AbstractAccountSynchronizer<BitcoinLikeAccount, BitcoinLikeAddress, BitcoinLikeKeychain, BitcoinLikeBlockchainExplorer>;
+        class BlockchainExplorerAccountSynchronizer : public BlockchaninAccountSynchronizer,
                                                       public DedicatedContext,
-                                                        public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
+                                                      public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
         public:
-            BlockchainExplorerAccountSynchronizer(
-                    const std::shared_ptr<WalletPool>& pool,
-                    const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer
-            );
+
+            BlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
+                                                  const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer);
+
+
             void reset(const std::shared_ptr<BitcoinLikeAccount> &account,
                        const std::chrono::system_clock::time_point &toDate) override;
-            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) override;
 
             bool isSynchronizing() const override;
+            void updateCurrentBlock(std::shared_ptr<AbstractAccountSynchronizer::SynchronizationBuddy> &buddy,
+                                    const std::shared_ptr<api::ExecutionContext> &context) override;
+            void updateTransactionsToDrop(soci::session &sql,
+                                          std::shared_ptr<SynchronizationBuddy> &buddy,
+                                          const std::string &accountUid) override;
 
         private:
-
-            struct SynchronizationBuddy {
-                std::shared_ptr<Preferences> preferences;
-                std::shared_ptr<spdlog::logger> logger;
-                std::chrono::system_clock::time_point startDate;
-                std::shared_ptr<AbstractWallet> wallet;
-                std::shared_ptr<DynamicObject> configuration;
-                uint32_t halfBatchSize;
-                std::shared_ptr<BitcoinLikeKeychain> keychain;
-                Option<BlockchainExplorerAccountSynchronizationSavedState> savedState;
-                Option<void *> token;
-                std::shared_ptr<BitcoinLikeAccount> account;
-                std::map<std::string, std::string> transactionsToDrop;
-            };
-
-
-            Future<Unit> performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account);
-            Future<Unit> synchronizeBatches(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
-            Future<bool> synchronizeBatch(uint32_t currentBatchIndex,
-                                          std::shared_ptr<SynchronizationBuddy> buddy,
-                                          bool hadTransactions = false
-            );
-        private:
-            std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<ProgressNotifier<Unit>> _notifier;
-            std::shared_ptr<Preferences> _internalPreferences;
-            std::shared_ptr<BitcoinLikeAccount> _currentAccount;
-            std::mutex _lock;
+            std::shared_ptr<BlockchaninAccountSynchronizer> getSharedFromThis() override ;
+            std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;
         };
     }
 }

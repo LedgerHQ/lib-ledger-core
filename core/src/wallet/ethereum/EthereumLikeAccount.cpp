@@ -38,9 +38,11 @@
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-
+#include <events/Event.hpp>
 #include <math/Base58.hpp>
 #include <utils/Option.hpp>
+#include <utils/DateUtils.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -142,6 +144,11 @@ namespace ledger {
                 }
                 return false;
         }
+
+        std::shared_ptr<EthereumLikeKeychain> EthereumLikeAccount::getKeychain() const {
+                return _keychain;
+        }
+
         FuturePtr<Amount> EthereumLikeAccount::getBalance() {
 
         }
@@ -166,7 +173,43 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EventBus> EthereumLikeAccount::synchronize() {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAccount::synchronize is not implemented yet");
+                std::lock_guard<std::mutex> lock(_synchronizationLock);
+                if (_currentSyncEventBus)
+                        return _currentSyncEventBus;
+                auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+
+                _currentSyncEventBus = eventPublisher->getEventBus();
+                auto future = _synchronizer->synchronize(std::static_pointer_cast<EthereumLikeAccount>(shared_from_this()))->getFuture();
+                auto self = std::static_pointer_cast<EthereumLikeAccount>(shared_from_this());
+
+                //Update current block height (needed to compute trust level)
+                _explorer->getCurrentBlock().onComplete(getContext(), [self] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) mutable {
+                    if (block.isSuccess()) {
+                            self->_currentBlockHeight = block.getValue()->height;
+                    }
+                });
+
+                auto startTime = DateUtils::now();
+                eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
+                future.onComplete(getContext(), [eventPublisher, self, startTime] (const Try<Unit>& result) {
+                    api::EventCode code;
+                    auto payload = std::make_shared<DynamicObject>();
+                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
+                    payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                    if (result.isSuccess()) {
+                            code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    } else {
+                            code = api::EventCode::SYNCHRONIZATION_FAILED;
+                            payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
+                            payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t)result.getFailure().getErrorCode());
+                            payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                    }
+                    eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                    std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                    self->_currentSyncEventBus = nullptr;
+
+                });
+                return eventPublisher->getEventBus();
         }
 
         void EthereumLikeAccount::startBlockchainObservation() {
@@ -200,25 +243,21 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
-                //throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAccount::buildTransaction is not implemented yet");
+
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
 
                 auto getTransaction = [self] (const std::string& hash) -> FuturePtr<EthereumLikeBlockchainExplorer::Transaction> {
                     return self->getTransaction(hash);
                 };
 
-                //std::function<Future<std::shared_ptr<api::EthereumLikeTransaction>> (const EthereumLikeTransactionBuildRequest&)>;
-
                 auto buildFunction = [self] (const EthereumLikeTransactionBuildRequest& request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
                     std::shared_ptr<api::EthereumLikeTransaction> mock;
-                    //EthereumLikeTransactionApi(const std::shared_ptr<OperationApi>& operation);
                     auto tx = std::make_shared<EthereumLikeTransactionApi>(self->getWallet()->getCurrency());
                     tx->setValue(request.value);
                     tx->setData(request.inputData);
                     tx->setGasLimit(request.gasLimit);
                     tx->setGasPrice(request.gasPrice);
                     tx->setReceiver(request.toAddress);
-                    //return Future<std::shared_ptr<api::EthereumLikeTransaction>>::successful(mock);
                     return explorer->getNonce(request.toAddress).map<std::shared_ptr<api::EthereumLikeTransaction>>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) -> std::shared_ptr<api::EthereumLikeTransaction> {
                         tx->setNonce(nonce);
                         return tx;
