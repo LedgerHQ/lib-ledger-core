@@ -1,13 +1,12 @@
 /*
  *
- * BlockchainExplorerAccountSynchronizer
- * ledger-core
+ * EthereumLikeBlockchainExplorerAccountSynchronizer
  *
- * Created by Pierre Pollastri on 26/05/2017.
+ * Created by El Khalil Bellakrid on 29/07/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2018 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,49 +27,54 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
 
 
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#ifndef LEDGER_CORE_ETHEREUMLIKEBLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
+#define LEDGER_CORE_ETHEREUMLIKEBLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
+
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
+#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/pool/WalletPool.hpp>
-#include <preferences/Preferences.hpp>
 #include <async/DedicatedContext.hpp>
+#include <events/ProgressNotifier.h>
+
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAccount;
 
-        using BlockchainAccountSynchronizer = AbstractBlockchainExplorerAccountSynchronizer<BitcoinLikeAccount, BitcoinLikeAddress, BitcoinLikeKeychain, BitcoinLikeBlockchainExplorer>;
-        class BlockchainExplorerAccountSynchronizer final : public BitcoinLikeAccountSynchronizer,
-                                                            public BlockchainAccountSynchronizer,
-                                                            public DedicatedContext,
-                                                            public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
+        class EthereumLikeAccount;
+        using EthereumBlockchainAccountSynchronizer = AbstractBlockchainExplorerAccountSynchronizer<EthereumLikeAccount, EthereumLikeAddress, EthereumLikeKeychain, EthereumLikeBlockchainExplorer>;
+        class EthereumLikeBlockchainExplorerAccountSynchronizer : public EthereumBlockchainAccountSynchronizer,
+                                                                  public EthereumLikeAccountSynchronizer,
+                                                                  public DedicatedContext,
+                                                                  public std::enable_shared_from_this<EthereumLikeBlockchainExplorerAccountSynchronizer> {
         public:
 
-            BlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
-                                                  const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer);
-
+            EthereumLikeBlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
+                                                              const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer);
 
             void updateCurrentBlock(std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
                                     const std::shared_ptr<api::ExecutionContext> &context) override;
+
             void updateTransactionsToDrop(soci::session &sql,
                                           std::shared_ptr<SynchronizationBuddy> &buddy,
                                           const std::string &accountUid) override;
 
-            void reset(const std::shared_ptr<BitcoinLikeAccount>& account, const std::chrono::system_clock::time_point& toDate) override;
-            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) override;
+            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<EthereumLikeAccount>& account) override ;
+            void reset(const std::shared_ptr<EthereumLikeAccount> &account,
+                       const std::chrono::system_clock::time_point &toDate) override;
+
             bool isSynchronizing() const override;
 
+
         private:
-            std::shared_ptr<BlockchainAccountSynchronizer> getSharedFromThis() override ;
+            std::shared_ptr<EthereumBlockchainAccountSynchronizer> getSharedFromThis() override ;
             std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
+#endif //LEDGER_CORE_ETHEREUMLIKEBLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H

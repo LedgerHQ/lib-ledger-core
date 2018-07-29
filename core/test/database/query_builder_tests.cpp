@@ -63,7 +63,7 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
         auto nextIndex = wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-        std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
+        std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
                 *JSONUtils::parse<TransactionParser>(TX_1),
                 *JSONUtils::parse<TransactionParser>(TX_2),
                 *JSONUtils::parse<TransactionParser>(TX_3),

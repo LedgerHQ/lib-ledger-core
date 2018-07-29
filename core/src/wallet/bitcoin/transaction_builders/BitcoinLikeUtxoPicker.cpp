@@ -95,7 +95,7 @@ namespace ledger {
                 auto address = script.parseAddress(getCurrency()).map<std::string>([] (const BitcoinLikeAddress& addr) {
                     return addr.toBase58();
                 });
-                BitcoinLikeBlockchainExplorer::Output out;
+                BitcoinLikeBlockchainExplorerOutput out;
                 out.index = static_cast<uint64_t>(outputIndex);
                 out.value = *amount;
                 out.address = address;
@@ -124,7 +124,7 @@ namespace ledger {
 
                 auto amount = buddy->changeAmount;
                 auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
-                BitcoinLikeBlockchainExplorer::Output out;
+                BitcoinLikeBlockchainExplorerOutput out;
                 out.index = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
                 out.value = amount;
                 out.address = Option<std::string>(changeAddress).toOptional();

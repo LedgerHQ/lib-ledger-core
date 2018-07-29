@@ -47,7 +47,7 @@ namespace ledger {
         class WebSocketNotificationParser {
         public:
             struct Result {
-                BitcoinLikeBlockchainExplorer::Transaction transaction;
+                BitcoinLikeBlockchainExplorerTransaction transaction;
                 BitcoinLikeBlockchainExplorer::Block block;
                 std::string type;
                 std::string blockchain;

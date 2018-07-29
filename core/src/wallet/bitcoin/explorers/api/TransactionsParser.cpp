@@ -79,7 +79,7 @@ bool ledger::core::TransactionsParser::StartObject() {
     _objectDepth += 1;
 
     if (_arrayDepth == 1 && _objectDepth == 1) {
-        BitcoinLikeBlockchainExplorer::Transaction transaction;
+        BitcoinLikeBlockchainExplorerTransaction transaction;
         _transactions->push_back(transaction);
         _transactionParser.init(&_transactions->back());
     }
@@ -123,6 +123,6 @@ ledger::core::TransactionsParser::TransactionsParser(std::string& lastKey) : _la
 }
 
 void ledger::core::TransactionsParser::init(
-std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction> *transactions) {
+std::vector<ledger::core::BitcoinLikeBlockchainExplorerTransaction> *transactions) {
     _transactions = transactions;
 }

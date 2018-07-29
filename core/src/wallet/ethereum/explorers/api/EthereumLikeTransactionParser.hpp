@@ -45,10 +45,10 @@ namespace ledger {
         class EthereumLikeBlockchainExplorer;
         class EthereumLikeTransactionParser {
         public:
-            typedef EthereumLikeBlockchainExplorer::Transaction Result;
-
+            //typedef std::vector<EthereumLikeBlockchainExplorerTransaction> Result;
+            typedef EthereumLikeBlockchainExplorerTransaction Result;
             EthereumLikeTransactionParser(std::string& lastKey);
-            void init(EthereumLikeBlockchainExplorer::Transaction* transaction);
+            void init(EthereumLikeBlockchainExplorerTransaction* transaction);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -66,7 +66,7 @@ namespace ledger {
 
         private:
             std::string& _lastKey;
-            EthereumLikeBlockchainExplorer::Transaction* _transaction;
+            EthereumLikeBlockchainExplorerTransaction* _transaction;
             std::stack<std::string> _hierarchy;
             uint32_t _arrayDepth;
             EthereumLikeBlockParser _blockParser;

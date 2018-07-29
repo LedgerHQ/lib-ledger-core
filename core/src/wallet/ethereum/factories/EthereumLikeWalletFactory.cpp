@@ -36,10 +36,11 @@
 #include <api/BlockchainObserverEngines.hpp>
 #include <api/ConfigurationDefaults.hpp>
 
-#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <wallet/ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/ethereum/synchronizers/EthereumLikeBlockchainExplorerAccountSynchronizer.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -81,7 +82,7 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<EthereumLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
-                        return std::make_shared<EthereumLikeAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<EthereumLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
                     });
                 }
             }
@@ -133,7 +134,7 @@ namespace ledger {
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto& networkParams = getCurrency().ethereumLikeNetworkParameters.value();
 
-                explorer = std::make_shared<EthereumLikeBlockchainExplorer>(context, http, networkParams, configuration);
+                explorer = std::make_shared<LedgerApiEthereumLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
             if (explorer)
                 _runningExplorers.push_back(explorer);

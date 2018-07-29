@@ -85,7 +85,7 @@ namespace ledger {
             void onStart();
             void onStop();
 
-            void putTransaction(const EthereumLikeBlockchainExplorer::Transaction &tx);
+            void putTransaction(const EthereumLikeBlockchainExplorerTransaction &tx);
             void putBlock(const EthereumLikeBlockchainExplorer::Block &block);
         private:
 

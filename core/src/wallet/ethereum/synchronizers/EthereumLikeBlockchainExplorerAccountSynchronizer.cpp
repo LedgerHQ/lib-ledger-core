@@ -1,8 +1,8 @@
 /*
  *
- * EthereumLikeAccountSynchronizer
+ * EthereumLikeBlockchainExplorerAccountSynchronizer
  *
- * Created by El Khalil Bellakrid on 14/07/2018.
+ * Created by El Khalil Bellakrid on 29/07/2018.
  *
  * The MIT License (MIT)
  *
@@ -27,28 +27,22 @@
  * SOFTWARE.
  *
  */
-#include "EthereumLikeAccountSynchronizer.h"
+
+
+#include "EthereumLikeBlockchainExplorerAccountSynchronizer.h"
+
 #include <wallet/ethereum/EthereumLikeAccount.h>
 
 namespace ledger {
     namespace core {
-        EthereumLikeAccountSynchronizer::EthereumLikeAccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
-                                                                         const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) :
-                                                                         DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
+        EthereumLikeBlockchainExplorerAccountSynchronizer::EthereumLikeBlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
+                                                                                                             const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) :
+                DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
             _explorer = explorer;
         }
 
-        bool EthereumLikeAccountSynchronizer::isSynchronizing() const {
-            return _notifier != nullptr;
-        }
-
-        void EthereumLikeAccountSynchronizer::reset(const std::shared_ptr<EthereumLikeAccount> &account,
-                                                          const std::chrono::system_clock::time_point &toDate) {
-
-        }
-
-        void EthereumLikeAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractAccountSynchronizer::SynchronizationBuddy> &buddy,
-                                                                       const std::shared_ptr<api::ExecutionContext> &context) {
+        void EthereumLikeBlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
+                                                                                   const std::shared_ptr<api::ExecutionContext> &context) {
             _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) {
                 if (block.isSuccess()) {
                     soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
@@ -57,13 +51,13 @@ namespace ledger {
             });
         }
 
-        void EthereumLikeAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
+        void EthereumLikeBlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                        std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                        const std::string &accountUid) {
             //Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, eth_op.transaction_hash FROM operations AS op "
-                                                            "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
-                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
+                    "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
+                    "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
@@ -72,11 +66,25 @@ namespace ledger {
             }
         }
 
-        std::shared_ptr<EthereumBlockchainAccountSynchrinizer> EthereumLikeAccountSynchronizer::getSharedFromThis() {
+        std::shared_ptr<ProgressNotifier<Unit>>
+        EthereumLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<EthereumLikeAccount>& account) {
+            return synchronizeAccount(account);
+        }
+
+        bool EthereumLikeBlockchainExplorerAccountSynchronizer::isSynchronizing() const {
+            return _notifier != nullptr;
+        }
+
+        void EthereumLikeBlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<EthereumLikeAccount> &account,
+                                                                      const std::chrono::system_clock::time_point &toDate) {
+
+        }
+
+        std::shared_ptr<EthereumBlockchainAccountSynchronizer> EthereumLikeBlockchainExplorerAccountSynchronizer::getSharedFromThis() {
             return shared_from_this();
         }
 
-        std::shared_ptr<api::ExecutionContext> EthereumLikeAccountSynchronizer::getSynchronizerContext() {
+        std::shared_ptr<api::ExecutionContext> EthereumLikeBlockchainExplorerAccountSynchronizer::getSynchronizerContext() {
             return getContext();
         }
     }

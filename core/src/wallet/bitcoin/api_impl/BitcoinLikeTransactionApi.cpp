@@ -528,7 +528,7 @@ namespace ledger {
             // Parse outputs
             auto outputsCount = reader.readNextVarInt();
             for (auto index = 0; index < outputsCount; index++) {
-                ledger::core::BitcoinLikeBlockchainExplorer::Output output;
+                ledger::core::BitcoinLikeBlockchainExplorerOutput output;
                 output.index = static_cast<uint64_t>(index);
                 output.value = reader.readNextLeBigInt(8);
                 //Decred has an additional version script (2 byte)

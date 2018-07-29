@@ -115,7 +115,7 @@ namespace ledger {
             return _logger;
         }
 
-        void EthereumLikeBlockchainObserver::putTransaction(const EthereumLikeBlockchainExplorer::Transaction &tx) {
+        void EthereumLikeBlockchainObserver::putTransaction(const EthereumLikeBlockchainExplorerTransaction &tx) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, tx] () {
