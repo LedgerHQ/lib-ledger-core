@@ -15,7 +15,7 @@ namespace ledger { namespace core { namespace api {
 /**Structure of a block in the blockchain */
 struct Block final {
     /**String, block's hash */
-    std::string hash;
+    std::string blockHash;
     /**String, id of block (usually height of block) */
     std::string uid;
     /**Date on which block was mined */
@@ -25,12 +25,12 @@ struct Block final {
     /**64 bits integer, height of block in the blockchain */
     int64_t height;
 
-    Block(std::string hash_,
+    Block(std::string blockHash_,
           std::string uid_,
           std::chrono::system_clock::time_point time_,
           std::string currencyName_,
           int64_t height_)
-    : hash(std::move(hash_))
+    : blockHash(std::move(blockHash_))
     , uid(std::move(uid_))
     , time(std::move(time_))
     , currencyName(std::move(currencyName_))
@@ -38,7 +38,7 @@ struct Block final {
     {}
 
     Block(const Block& cpy) {
-       this->hash = cpy.hash;
+       this->blockHash = cpy.blockHash;
        this->uid = cpy.uid;
        this->time = cpy.time;
        this->currencyName = cpy.currencyName;
@@ -49,7 +49,7 @@ struct Block final {
 
 
     Block& operator=(const Block& cpy) {
-       this->hash = cpy.hash;
+       this->blockHash = cpy.blockHash;
        this->uid = cpy.uid;
        this->time = cpy.time;
        this->currencyName = cpy.currencyName;
@@ -59,12 +59,12 @@ struct Block final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(hash, uid, time, currencyName, height);
+        archive(blockHash, uid, time, currencyName, height);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(hash, uid, time, currencyName, height);
+        archive(blockHash, uid, time, currencyName, height);
     }
 };
 

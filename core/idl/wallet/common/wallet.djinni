@@ -59,7 +59,7 @@ TrustIndicator = interface +c {
 #Structure of a block in the blockchain
 Block = record {
     #String, block's hash
-    hash: string;
+    blockHash: string;
     #String, id of block (usually height of block)
     uid: string;
     #Date on which block was mined

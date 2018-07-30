@@ -9,7 +9,7 @@ import java.util.Date;
 public final class Block {
 
 
-    /*package*/ final String hash;
+    /*package*/ final String blockHash;
 
     /*package*/ final String uid;
 
@@ -20,12 +20,12 @@ public final class Block {
     /*package*/ final long height;
 
     public Block(
-            String hash,
+            String blockHash,
             String uid,
             Date time,
             String currencyName,
             long height) {
-        this.hash = hash;
+        this.blockHash = blockHash;
         this.uid = uid;
         this.time = time;
         this.currencyName = currencyName;
@@ -33,8 +33,8 @@ public final class Block {
     }
 
     /**String, block's hash */
-    public String getHash() {
-        return hash;
+    public String getBlockHash() {
+        return blockHash;
     }
 
     /**String, id of block (usually height of block) */
@@ -60,7 +60,7 @@ public final class Block {
     @Override
     public String toString() {
         return "Block{" +
-                "hash=" + hash +
+                "blockHash=" + blockHash +
                 "," + "uid=" + uid +
                 "," + "time=" + time +
                 "," + "currencyName=" + currencyName +

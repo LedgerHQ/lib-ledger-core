@@ -13,7 +13,7 @@ Block::~Block() = default;
 auto Block::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<Block>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.hash)),
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.blockHash)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.uid)),
                                                            ::djinni::get(::djinni::Date::fromCpp(jniEnv, c.time)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.currencyName)),
@@ -26,7 +26,7 @@ auto Block::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 6);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<Block>::get();
-    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_hash)),
+    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_blockHash)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_uid)),
             ::djinni::Date::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_time)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_currencyName)),
