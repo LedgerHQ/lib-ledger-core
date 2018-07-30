@@ -33,7 +33,11 @@
 #include <api/KeychainEngines.hpp>
 #include "transaction_test_helper.h"
 #include <utils/hex.h>
+#include <utils/DateUtils.hpp>
+#include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 
+#include <iostream>
+using namespace std;
 
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     void SetUpConfig() override {
@@ -46,6 +50,13 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
 
 TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto builder = tx_builder();
+    auto balance = wait(account->getBalance());
+    auto fromDate = "2018-01-01T13:38:23Z";
+    auto toDate = DateUtils::toJSON(DateUtils::now());
+    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
+
+    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
+
     builder->setGasPrice(api::Amount::fromLong(currency, 200000));
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
@@ -56,4 +67,30 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto parsedTx = EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
     EXPECT_EQ(serializedTx, serializedParsedTx);
+
+    auto date = "2000-03-27T09:10:22Z";
+    auto formatedDate = DateUtils::fromJSON(date);
+
+    //Delete account
+    auto code = wait(wallet->eraseDataSince(formatedDate));
+    EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+
+    //Check if account was successfully deleted
+    auto newAccountCount = wait(wallet->getAccountCount());
+    EXPECT_EQ(newAccountCount, 0);
+    {
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        EthereumLikeAccountDatabaseEntry entry;
+        auto result = EthereumLikeAccountDatabaseHelper::queryAccount(sql, account->getAccountUid(), entry);
+        EXPECT_EQ(result, false);
+    }
+
+    //Delete wallet
+    auto walletCode = wait(pool->eraseDataSince(formatedDate));
+    EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+
+    //Check if wallet was successfully deleted
+    auto walletCount = wait(pool->getWalletCount());
+    EXPECT_EQ(walletCount, 0);
+
 }

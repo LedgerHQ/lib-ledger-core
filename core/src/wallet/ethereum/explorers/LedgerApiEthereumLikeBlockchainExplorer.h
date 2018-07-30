@@ -52,7 +52,7 @@ namespace ledger {
                                            const api::EthereumLikeNetworkParameters& parameters,
                                            const std::shared_ptr<api::DynamicObject>& configuration);
             Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) override;
-
+            Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
 
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
@@ -70,8 +70,8 @@ namespace ledger {
 
             std::shared_ptr<api::ExecutionContext> getExplorerContext() override;
             api::EthereumLikeNetworkParameters getNetworkParameters() override;
-//            std::shared_ptr<LedgerApiBlockchainExplorer> getSharedFromThis() override;
-//            void inflateBlockchainExplorerTransaction(std::shared_ptr<EthereumLikeBlockchainExplorerTransaction> &transaction) override;
+
+
         private:
             api::EthereumLikeNetworkParameters _parameters;
         };

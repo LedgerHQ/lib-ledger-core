@@ -82,7 +82,7 @@ namespace ledger {
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithEIP55(_key.getPublicKeyKeccak256());
+            return Base58::encodeWithChecksum((_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion)));
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
@@ -109,9 +109,7 @@ namespace ledger {
             }
             DerivationPath p(path);
 
-            DeterministicPublicKey k(
-                    pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
-            );
+            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
         }
 
@@ -147,5 +145,6 @@ namespace ledger {
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
 
         }
+
     }
 }

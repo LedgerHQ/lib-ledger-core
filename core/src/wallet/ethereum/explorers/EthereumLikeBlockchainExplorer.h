@@ -45,6 +45,7 @@
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 namespace ledger {
     namespace core {
 
@@ -91,6 +92,7 @@ namespace ledger {
                                            const std::vector<std::string> &matchableKeys);
 
             virtual Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) = 0;
         };
     }
 }

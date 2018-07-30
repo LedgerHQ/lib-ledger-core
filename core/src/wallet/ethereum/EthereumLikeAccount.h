@@ -95,6 +95,7 @@ namespace ledger {
 
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override ;
         private:
+            std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;

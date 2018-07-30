@@ -71,6 +71,7 @@ namespace ledger {
         EthereumLikeTransactionBuilder::wipeToAddress(const std::string & address) {
             //TODO
             _request.toAddress = address;
+            _request.wipe = true;
             return shared_from_this();
         }
 
@@ -101,11 +102,11 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeTransactionBuilder::clone() {
-
+            return std::make_shared<EthereumLikeTransactionBuilder>(*this);
         }
 
         void EthereumLikeTransactionBuilder::reset() {
-
+            _request = EthereumLikeTransactionBuildRequest();
         }
 
         std::shared_ptr<api::EthereumLikeTransaction>
