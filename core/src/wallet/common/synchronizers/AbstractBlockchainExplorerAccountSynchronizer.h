@@ -186,11 +186,8 @@ namespace ledger {
                 buddy->logger
                         ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
                                account->getIndex(),
-                               account->getKeychain()
-                                       ->getRestoreKey(),
-                               account->getWallet()
-                                       ->getName(), DateUtils::toJSON(buddy->startDate)
-                        );
+                               account->getKeychain()->getRestoreKey(),
+                               account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
 
                 //Check if reorganization happened
                 soci::session sql(buddy->wallet->getDatabase()->getPool());

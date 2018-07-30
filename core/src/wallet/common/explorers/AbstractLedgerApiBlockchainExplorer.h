@@ -112,19 +112,6 @@ namespace ledger {
                             } else {
                                 auto tx = (*result.getRight())[0];
                                 auto transaction = std::make_shared<BlockchainExplorerTransaction>(tx);
-                                //self->inflateBlockchainExplorerTransaction(transaction);
-
-                                //TODO: have a copy constructor for BlockchainExplorerTransaction,
-                                //then we can delete inflateBlockchainExplorerTransaction and getSharedFromThis on AbstractLedgerApiBlockchainExplorer
-
-//                                transaction->block = tx.block;
-//                                transaction->fees = tx.fees;
-//                                transaction->hash = tx.hash;
-//                                transaction->lockTime = tx.lockTime;
-//                                transaction->inputs = tx.inputs;
-//                                transaction->outputs = tx.outputs;
-//                                transaction->receivedAt = tx.receivedAt;
-//                                transaction->confirmations = tx.confirmations;
                                 return transaction;
                             }
                         });
@@ -183,8 +170,6 @@ namespace ledger {
         protected:
             virtual std::shared_ptr<api::ExecutionContext> getExplorerContext() = 0;
             virtual NetworkParameters getNetworkParameters() = 0;
-//            virtual std::shared_ptr<AbstractLedgerApiBlockchainExplorer> getSharedFromThis() = 0;
-//            virtual void inflateBlockchainExplorerTransaction(std::shared_ptr<BlockchainExplorerTransaction> &transaction) = 0;
             std::shared_ptr<HttpClient> _http;
         };
     }

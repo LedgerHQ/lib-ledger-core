@@ -32,6 +32,7 @@
 #include "EthereumLikeAccount.h"
 
 #include <wallet/common/database/OperationDatabaseHelper.h>
+#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
@@ -42,6 +43,10 @@
 #include <math/Base58.hpp>
 #include <utils/Option.hpp>
 #include <utils/DateUtils.hpp>
+
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 
 namespace ledger {
     namespace core {
@@ -123,7 +128,7 @@ namespace ledger {
 
                 if (isAccountAddress(_keychain, transaction.receiver)) {
                         operation.amount = transaction.value;
-                        operation.type = api::OperationType::SEND;
+                        operation.type = api::OperationType::RECEIVE;
                         operation.refreshUid();
                         OperationDatabaseHelper::putOperation(sql, operation);
                 }
@@ -150,26 +155,127 @@ namespace ledger {
         }
 
         FuturePtr<Amount> EthereumLikeAccount::getBalance() {
-
+                auto range = getWallet()->getConfiguration()->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
+                auto listAddresses = _keychain->getAllObservableAddresses(0, range);
+                auto currency = getWallet()->getCurrency();
+                return _explorer->getBalance(listAddresses).flatMap<std::shared_ptr<Amount>>(getContext(), [currency] (const std::shared_ptr<BigInt> &balance) {
+                    auto balanceAmount = std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
+                    return FuturePtr<Amount>::successful(balanceAmount);
+                });
         }
 
         Future<AbstractAccount::AddressList> EthereumLikeAccount::getFreshPublicAddresses() {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAccount::getFreshPublicAddresses is not implemented yet");
+                auto keychain = getKeychain();
+                return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
+                    auto addrs = keychain->getFreshAddresses(keychain->getObservableRangeSize());
+                    AbstractAccount::AddressList result(addrs.size());
+                    auto i = 0;
+                    for (auto& addr : addrs) {
+                            result[i] = std::dynamic_pointer_cast<api::Address>(addr);
+                            i += 1;
+                    }
+                    return result;
+                });
         }
 
         Future<std::vector<std::shared_ptr<api::Amount>>>
         EthereumLikeAccount::getBalanceHistory(const std::string & start,
                                                const std::string & end,
                                                api::TimePeriod precision) {
+                auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+                return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
 
+                    const int32_t BATCH_SIZE = 100;
+                    const auto& uid = self->getAccountUid();
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    std::vector<Operation> operations;
+                    auto offset = 0;
+                    std::size_t count = 0;
+
+                    auto keychain = self->getKeychain();
+                    std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                        return keychain->contains(addr);
+                    };
+
+                    //Query all utxos in date range
+                    for (; (count = OperationDatabaseHelper::queryOperations(sql, uid, operations, filter)) == BATCH_SIZE; offset += count) {}
+
+                    auto startDate = DateUtils::fromJSON(start);
+                    auto endDate = DateUtils::fromJSON(end);
+                    auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+                    std::vector<std::shared_ptr<api::Amount>> amounts;
+                    std::size_t operationsCount = 0;
+                    bool increment = true;
+                    BigInt sum(0);
+                    bool forceNextStep = false;
+                    while (upperDate <= endDate || forceNextStep) {
+                            if(operationsCount < operations.size()) {
+                                    auto operation = operations[operationsCount];
+                                    if (operation.date <= upperDate) {
+                                            increment = false;
+                                            switch (operation.type) {
+                                                    case api::OperationType::RECEIVE:
+                                                    {
+                                                            sum = sum + operation.amount;
+                                                            break;
+                                                    }
+                                                    case api::OperationType::SEND:
+                                                    {
+                                                            sum = sum - operation.amount;
+                                                            break;
+                                                    }
+                                            }
+                                            operationsCount += 1;
+                                    }
+                            }
+
+                            if(increment) {
+                                    //Save amount
+                                    amounts.emplace_back(std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                                    //Increment Date
+                                    auto nextUpperDate = DateUtils::incrementDate(upperDate, precision);
+                                    forceNextStep = upperDate < endDate && endDate < nextUpperDate;
+                                    upperDate = nextUpperDate;
+                            }
+
+                            increment = true;
+                    }
+
+                    return amounts;
+                });
         }
 
         Future<api::ErrorCode> EthereumLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+                auto log = logger();
+
+                log->debug(" Start erasing data of account : {}", getAccountUid());
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                //Update account's internal preferences (for synchronization)
+                auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+                if (savedState.nonEmpty()) {
+                        //Reset batches to blocks mined before given date
+                        auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                        for (auto& batch : savedState.getValue().batches) {
+                                if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
+                                        batch.blockHash = previousBlock.getValue().hash;
+                                } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
+                                        batch.blockHeight = 0;
+                                        batch.blockHash = "";
+                                }
+                        }
+                        getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+                }
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(getAccountUid()), soci::use(date);
+                log->debug(" Finish erasing data of account : {}", getAccountUid());
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
         }
 
         bool EthereumLikeAccount::isSynchronizing() {
-
+                std::lock_guard<std::mutex> lock(_synchronizationLock);
+                return _currentSyncEventBus != nullptr;
         }
 
         std::shared_ptr<api::EventBus> EthereumLikeAccount::synchronize() {
@@ -212,30 +318,36 @@ namespace ledger {
                 return eventPublisher->getEventBus();
         }
 
-        void EthereumLikeAccount::startBlockchainObservation() {
+        std::shared_ptr<EthereumLikeAccount> EthereumLikeAccount::getSelf() {
+                return std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+        }
 
+        void EthereumLikeAccount::startBlockchainObservation() {
+                _observer->registerAccount(getSelf());
         }
 
         void EthereumLikeAccount::stopBlockchainObservation() {
-
+                _observer->unregisterAccount(getSelf());
         }
 
         bool EthereumLikeAccount::isObservingBlockchain() {
-
+                return _observer->isRegistered(getSelf());
         }
 
         std::string EthereumLikeAccount::getRestoreKey() {
-
+                return _keychain->getRestoreKey();
         }
 
         void EthereumLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> & transaction,
                                                           const std::shared_ptr<api::StringCallback> & callback) {
-
+                _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
+                    return seq.str();
+                }).callback(getContext(), callback);
         }
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
                                                        const std::shared_ptr<api::StringCallback> & callback) {
-
+                broadcastRawTransaction(transaction->serialize(), callback);
         }
 
         std::shared_ptr<api::EthereumLikeAccount> EthereumLikeAccount::asEthereumLikeAccount() {
@@ -251,7 +363,6 @@ namespace ledger {
                 };
 
                 auto buildFunction = [self] (const EthereumLikeTransactionBuildRequest& request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
-                    std::shared_ptr<api::EthereumLikeTransaction> mock;
                     auto tx = std::make_shared<EthereumLikeTransactionApi>(self->getWallet()->getCurrency());
                     tx->setValue(request.value);
                     tx->setData(request.inputData);

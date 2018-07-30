@@ -55,6 +55,35 @@ namespace ledger {
                     });
         }
 
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) {
+
+            std::string addressesStr;
+            auto size = addresses.size();
+            for (auto i = 0; i < size; i++) {
+                auto address = addresses[i];
+                addressesStr += address->toEIP55();
+                if (i < addresses.size() - 1) {
+                    addressesStr += ",";
+                }
+            }
+            return _http->GET(fmt::format("/blockchain/v2/{}/addresses/{}/balance?noToken=true",_parameters.Identifier, addressesStr))
+                    .json().map<std::shared_ptr<BigInt>>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsUint64()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
+                        }
+
+                        auto balance = json[0]["balance"].GetUint64();
+                        for (auto i = 1; i < size; i++) {
+                            if (json[i].HasMember("balance") || json[i]["balance"].IsUint64()) {
+                                balance += json[i]["balance"].GetUint64();
+                            }
+                        }
+
+                        return std::make_shared<BigInt>(balance);
+                    });
+        }
+
         Future<void *> LedgerApiEthereumLikeBlockchainExplorer::startSession() {
             return startLedgerApiSession();
         }
