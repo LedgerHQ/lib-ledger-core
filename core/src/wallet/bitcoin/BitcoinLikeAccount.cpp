@@ -57,8 +57,6 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 
-#include <iostream>
-using namespace std;
 
 namespace ledger {
     namespace core {
@@ -228,19 +226,20 @@ namespace ledger {
                         emitNewOperationEvent(operation);
                 }
 
+                auto accountUid = getAccountUid();
                 //Update account_uid column of bitcoin_outputs table
                 for (auto& o : accountOutputs) {
                     if (o.first->address.nonEmpty()) {
 
-                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address",
-                                                        soci::use(o.first->address.getValue()));
-                        auto accountUid = getAccountUid();
+                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address AND account_uid IS NULL ",
+                                soci::use(o.first->address.getValue()));
+
                         for (auto &row : rows) {
                             auto txUid = row.get<std::string>(0);
-
+                            auto txHash = row.get<std::string>(1);
                             //This check is made to avoid setting account_uid of bitcoin_outputs which was set during another's account scan/sync
                             //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
-                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, row.get<std::string>(1))) {
+                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, txHash)) {
                                 sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
                                         soci::use(accountUid), soci::use(o.first->address.getValue()), soci::use(txUid);
                             }
@@ -534,9 +533,7 @@ namespace ledger {
                 txExplorer.hash = txHash;
                 txExplorer.lockTime = tx->getLockTime();
                 txExplorer.receivedAt = std::chrono::system_clock::now();
-                //TODO: check version
                 txExplorer.version = tx->getVersion();
-                cout<<" >>> Version: "<<txExplorer.version<<endl;
                 txExplorer.confirmations = 0;
 
                 soci::session sql(self->getWallet()->getDatabase()->getPool());

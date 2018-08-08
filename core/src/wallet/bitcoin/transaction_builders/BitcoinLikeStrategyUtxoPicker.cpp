@@ -78,6 +78,7 @@ namespace ledger {
                     return Future<BigInt>::successful(v);
                 const auto& i = *it;
                 const auto outputIndex = std::get<1>(i);
+                //TODO: Replace with db call
                 buddy->logger->info("GET TX 1");
                 return buddy->explorer->getTransactionByHash(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) -> Future<BigInt> {
                     buddy->logger->info("GOT TX 1");

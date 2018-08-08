@@ -44,6 +44,7 @@ set( CONF "
 ${CONF}" )
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h.cmake "${CONF}" )
 
+
 #~2DO: set BUILDINF_DATE to `date LC_ALL=C LC_TIME=C`
 configure_file ( buildinf.h.cmake buildinf.h )
 
@@ -164,7 +165,7 @@ add_submodule ( evp encode.c digest.c evp_enc.c evp_key.c evp_acnf.c e_des.c e_b
 add_submodule ( hmac hmac.c hm_ameth.c hm_pmeth.c EXHEADERS hmac.h )
 add_submodule ( idea i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c EXHEADERS idea.h )
 # add_submodule(jpake jpake.c jpake_err.c EXHEADERS jpake.h)
-add_submodule ( krb5 krb5_asn.c EXHEADERS krb5_asn.h )
+#add_submodule ( krb5 krb5_asn.c EXHEADERS krb5_asn.h )
 add_submodule ( lhash lhash.c lh_stats.c EXHEADERS lhash.h )
 # add_submodule(md2 md2_dgst.c md2_one.c EXHEADERS md2.h )
 add_submodule ( md4 md4_dgst.c md4_one.c EXHEADERS md4.h )
@@ -233,6 +234,9 @@ target_include_directories(crypto PUBLIC ../include)
 if( WIN32 AND NOT CYGWIN )
   target_link_libraries( crypto ws2_32 crypt32 )
 endif()
+
+
+
 
 install( DIRECTORY ${PROJECT_SOURCE_DIR}/include
     DESTINATION ./ )
