@@ -4,7 +4,7 @@ BUILD_CONFIG=$1
 
 echo "========> Install basic config"
 apt-get update
-apt-get install -y apt-transport-https wget git python build-essential libx11-xcb-dev
+apt-get install -y apt-transport-https wget python build-essential libx11-xcb-dev
 apt-get install -y libssl-dev curl
 
 if [ "$BUILD_CONFIG" == "Release" ]; then

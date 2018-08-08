@@ -118,21 +118,25 @@ namespace ledger {
              * (e.g. use scriptSig of each input and sha256 it ...)
             */
             std::string hash;
-            if (input.previousTxHash.isEmpty() && input.signatureScript.nonEmpty()) {
-                cout<<" !!! Creating hash from scriptSig"<<endl;
-                hash =  SHA256::stringToHexHash(input.signatureScript.getValue());
+
+            //Returned by explorers when tx from zk protocol
+            std::string emptyPreviousTxHash = "0000000000000000000000000000000000000000000000000000000000000000";
+            auto previousTxHash = input.previousTxHash.getValueOr(emptyPreviousTxHash);
+            if (previousTxHash == emptyPreviousTxHash && input.signatureScript.nonEmpty()) {
+                previousTxHash =  SHA256::stringToHexHash(input.signatureScript.getValue());
             }
 
             auto uid = createInputUid(accountUid,
                                       input.previousTxOutputIndex.getValueOr(0),
-                                      input.previousTxHash.getValueOr(hash),
+                                      previousTxHash,
                                       input.coinbase.getValueOr(""));
+
             auto amount = input.value.map<uint64_t>([] (const BigInt& v) {
                 return v.toUint64();
             });
 
             std::string prevBtcTxUid;
-            if (input.previousTxHash.nonEmpty()) {
+            if (input.previousTxHash.nonEmpty() && input.previousTxHash.getValue() != emptyPreviousTxHash) {
                 prevBtcTxUid = createBitcoinTransactionUid(accountUid, input.previousTxHash.getValue());
             }
 

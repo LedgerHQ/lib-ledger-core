@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-unamestr=`uname`
+unamestr=$(uname)
 BUILD_CONFIG=$1
 
-branchstr=`git rev-parse --abbrev-ref HEAD`
+#branchstr=`git rev-parse --abbrev-ref HEAD`
+branchstr=$(git branch | grep '*' | sed 's/^..//')
 
 echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"
 
