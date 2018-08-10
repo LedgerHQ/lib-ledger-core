@@ -3,9 +3,10 @@
 
 #import "LGConfiguration.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGConfiguration : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGConfiguration *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

@@ -3,10 +3,11 @@
 
 #import "LGConfigurationDefaults.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**TODO */
 @interface RCTCoreLGConfigurationDefaults : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGConfigurationDefaults *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

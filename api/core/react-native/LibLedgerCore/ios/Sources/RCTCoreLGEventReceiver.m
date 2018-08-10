@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGEventReceiver)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGEventReceiverImpl alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,8 +25,21 @@ RCT_EXPORT_MODULE(RCTCoreLGEventReceiver)
  *Method triggered when an event occurs
  *@param event, Event object that triggers this method
  */
-RCT_REMAP_METHOD(onEvent,onEvent:(nullable LGEvent *)event) {
+RCT_REMAP_METHOD(onEvent,onEvent:(NSDictionary *)currentInstance withParams:(NSDictionary *)event withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventReceiver::onEvent, first argument should be an instance of LGEventReceiverImpl", nil);
+    }
+    LGEventReceiverImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventReceiverImpl::onEvent, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGEvent *rctParam_0 = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    LGEvent *objcParam_0 = (LGEvent *)[rctParam_0.objcImplementations objectForKey:event[@"uid"]];
 
-    [self.objcImpl onEvent:event];
+    [currentInstanceObj onEvent:objcParam_0];
+
 }
 @end

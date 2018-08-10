@@ -8,20 +8,33 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeScriptChunk)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGBitcoinLikeScriptChunk alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-RCT_REMAP_METHOD(isOperator,isOperatorWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isOperator])};if(result)
+RCT_REMAP_METHOD(isOperator,isOperator:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::isOperator, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::isOperator, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isOperator];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -29,11 +42,23 @@ RCT_REMAP_METHOD(isOperator,isOperatorWithResolver:(RCTPromiseResolveBlock)resol
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::isOperator", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(isPushedData,isPushedDataWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isPushedData])};if(result)
+RCT_REMAP_METHOD(isPushedData,isPushedData:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::isPushedData, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::isPushedData, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isPushedData];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -41,11 +66,22 @@ RCT_REMAP_METHOD(isPushedData,isPushedDataWithResolver:(RCTPromiseResolveBlock)r
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::isPushedData", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(getOperator,getOperatorWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getOperator]};
+RCT_REMAP_METHOD(getOperator,getOperator:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::getOperator, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::getOperator, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBitcoinLikeOperator * objcResult = [currentInstanceObj getOperator];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -54,11 +90,22 @@ RCT_REMAP_METHOD(getOperator,getOperatorWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::getOperator", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(getPushedData,getPushedDataWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getPushedData]};
+RCT_REMAP_METHOD(getPushedData,getPushedData:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::getPushedData, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::getPushedData, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSData * objcResult = [currentInstanceObj getPushedData];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -67,11 +114,28 @@ RCT_REMAP_METHOD(getPushedData,getPushedDataWithResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::getPushedData", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(next,nextWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(next,next:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::next, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::next, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBitcoinLikeScriptChunk * objcResult = [currentInstanceObj next];
 
-    id result = @{@"result" :[self.objcImpl next]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBitcoinLikeScriptChunk *rctImpl = (RCTCoreLGBitcoinLikeScriptChunk *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScriptChunk"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScriptChunk", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -80,11 +144,23 @@ RCT_REMAP_METHOD(next,nextWithResolver:(RCTPromiseResolveBlock)resolve rejecter:
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::next", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(hasNext,hasNextWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl hasNext])};if(result)
+RCT_REMAP_METHOD(hasNext,hasNext:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeScriptChunk::hasNext, first argument should be an instance of LGBitcoinLikeScriptChunk", nil);
+    }
+    LGBitcoinLikeScriptChunk *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeScriptChunk::hasNext, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj hasNext];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -92,5 +168,6 @@ RCT_REMAP_METHOD(hasNext,hasNextWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeScriptChunk::hasNext", nil);
     }
+
 }
 @end

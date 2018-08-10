@@ -14,11 +14,22 @@
 #import "LGPreferences.h"
 #import "LGTimePeriod.h"
 #import "LGWalletType.h"
+#import "RCTCoreLGAddressListCallback.h"
+#import "RCTCoreLGAmountCallback.h"
+#import "RCTCoreLGAmountListCallback.h"
+#import "RCTCoreLGBitcoinLikeAccount.h"
+#import "RCTCoreLGBlockCallback.h"
+#import "RCTCoreLGErrorCodeCallback.h"
+#import "RCTCoreLGEventBus.h"
+#import "RCTCoreLGLogger.h"
+#import "RCTCoreLGOperationQuery.h"
+#import "RCTCoreLGPreferences.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing an account */
 @interface RCTCoreLGAccount : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGAccount *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

@@ -4,7 +4,10 @@
 #import "LGCurrency.h"
 #import "LGCurrencyCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGCurrency.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,8 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGCurrencyCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGCurrencyCallbackImpl *objcImpl;
+@interface RCTCoreLGCurrencyCallback : NSObject <LGCurrencyCallback, RCTBridgeModule>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
 @end

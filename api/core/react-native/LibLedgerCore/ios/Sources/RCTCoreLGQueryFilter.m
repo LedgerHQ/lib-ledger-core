@@ -8,20 +8,28 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGQueryFilter)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGQueryFilter alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-RCT_REMAP_METHOD(accountEq,accountEq:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(accountEq,accountEqwithParams:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter accountEq:accountUid];
 
-    id result = @{@"result" :[LGQueryFilter accountEq:accountUid]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -30,11 +38,18 @@ RCT_REMAP_METHOD(accountEq,accountEq:(nonnull NSString *)accountUid withResolver
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::accountEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(accountNeq,accountNeq:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(accountNeq,accountNeqwithParams:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter accountNeq:accountUid];
 
-    id result = @{@"result" :[LGQueryFilter accountNeq:accountUid]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -43,11 +58,18 @@ RCT_REMAP_METHOD(accountNeq,accountNeq:(nonnull NSString *)accountUid withResolv
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::accountNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateLte,dateLte:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateLte,dateLtewithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateLte:time];
 
-    id result = @{@"result" :[LGQueryFilter dateLte:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -56,11 +78,18 @@ RCT_REMAP_METHOD(dateLte,dateLte:(nonnull NSDate *)time withResolver:(RCTPromise
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateLte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateLt,dateLt:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateLt,dateLtwithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateLt:time];
 
-    id result = @{@"result" :[LGQueryFilter dateLt:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -69,11 +98,18 @@ RCT_REMAP_METHOD(dateLt,dateLt:(nonnull NSDate *)time withResolver:(RCTPromiseRe
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateLt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateGt,dateGt:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateGt,dateGtwithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateGt:time];
 
-    id result = @{@"result" :[LGQueryFilter dateGt:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -82,11 +118,18 @@ RCT_REMAP_METHOD(dateGt,dateGt:(nonnull NSDate *)time withResolver:(RCTPromiseRe
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateGt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateGte,dateGte:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateGte,dateGtewithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateGte:time];
 
-    id result = @{@"result" :[LGQueryFilter dateGte:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -95,11 +138,18 @@ RCT_REMAP_METHOD(dateGte,dateGte:(nonnull NSDate *)time withResolver:(RCTPromise
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateGte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateEq,dateEq:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateEq,dateEqwithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateEq:time];
 
-    id result = @{@"result" :[LGQueryFilter dateEq:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -108,11 +158,18 @@ RCT_REMAP_METHOD(dateEq,dateEq:(nonnull NSDate *)time withResolver:(RCTPromiseRe
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(dateNeq,dateNeq:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(dateNeq,dateNeqwithParams:(nonnull NSDate *)time withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter dateNeq:time];
 
-    id result = @{@"result" :[LGQueryFilter dateNeq:time]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -121,11 +178,18 @@ RCT_REMAP_METHOD(dateNeq,dateNeq:(nonnull NSDate *)time withResolver:(RCTPromise
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::dateNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(containsRecipient,containsRecipient:(nonnull NSString *)recipientAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(containsRecipient,containsRecipientwithParams:(nonnull NSString *)recipientAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter containsRecipient:recipientAddress];
 
-    id result = @{@"result" :[LGQueryFilter containsRecipient:recipientAddress]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -134,11 +198,18 @@ RCT_REMAP_METHOD(containsRecipient,containsRecipient:(nonnull NSString *)recipie
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::containsRecipient", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(containsSender,containsSender:(nonnull NSString *)senderAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(containsSender,containsSenderwithParams:(nonnull NSString *)senderAddress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter containsSender:senderAddress];
 
-    id result = @{@"result" :[LGQueryFilter containsSender:senderAddress]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -147,11 +218,18 @@ RCT_REMAP_METHOD(containsSender,containsSender:(nonnull NSString *)senderAddress
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::containsSender", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(currencyEq,currencyEq:(nonnull NSString *)currencyName withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(currencyEq,currencyEqwithParams:(nonnull NSString *)currencyName withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter currencyEq:currencyName];
 
-    id result = @{@"result" :[LGQueryFilter currencyEq:currencyName]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -160,11 +238,18 @@ RCT_REMAP_METHOD(currencyEq,currencyEq:(nonnull NSString *)currencyName withReso
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::currencyEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(operationUidEq,operationUidEq:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(operationUidEq,operationUidEqwithParams:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter operationUidEq:operationUid];
 
-    id result = @{@"result" :[LGQueryFilter operationUidEq:operationUid]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -173,11 +258,18 @@ RCT_REMAP_METHOD(operationUidEq,operationUidEq:(nonnull NSString *)operationUid 
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::operationUidEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(operationUidNeq,operationUidNeq:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(operationUidNeq,operationUidNeqwithParams:(nonnull NSString *)operationUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter operationUidNeq:operationUid];
 
-    id result = @{@"result" :[LGQueryFilter operationUidNeq:operationUid]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -186,11 +278,18 @@ RCT_REMAP_METHOD(operationUidNeq,operationUidNeq:(nonnull NSString *)operationUi
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::operationUidNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(trustEq,trustEq:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(trustEq,trustEqwithParams:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter trustEq:trust];
 
-    id result = @{@"result" :[LGQueryFilter trustEq:trust]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -199,11 +298,18 @@ RCT_REMAP_METHOD(trustEq,trustEq:(LGTrustLevel)trust withResolver:(RCTPromiseRes
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::trustEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(trustNeq,trustNeq:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(trustNeq,trustNeqwithParams:(LGTrustLevel)trust withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter trustNeq:trust];
 
-    id result = @{@"result" :[LGQueryFilter trustNeq:trust]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -212,11 +318,21 @@ RCT_REMAP_METHOD(trustNeq,trustNeq:(LGTrustLevel)trust withResolver:(RCTPromiseR
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::trustNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesEq,feesEq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesEq,feesEqwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesEq:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesEq:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -225,11 +341,21 @@ RCT_REMAP_METHOD(feesEq,feesEq:(nullable LGAmount *)amount withResolver:(RCTProm
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesNeq,feesNeq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesNeq,feesNeqwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesNeq:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesNeq:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -238,11 +364,21 @@ RCT_REMAP_METHOD(feesNeq,feesNeq:(nullable LGAmount *)amount withResolver:(RCTPr
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesGte,feesGte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesGte,feesGtewithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesGte:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesGte:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -251,11 +387,21 @@ RCT_REMAP_METHOD(feesGte,feesGte:(nullable LGAmount *)amount withResolver:(RCTPr
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesGte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesGt,feesGt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesGt,feesGtwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesGt:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesGt:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -264,11 +410,21 @@ RCT_REMAP_METHOD(feesGt,feesGt:(nullable LGAmount *)amount withResolver:(RCTProm
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesGt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesLte,feesLte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesLte,feesLtewithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesLte:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesLte:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -277,11 +433,21 @@ RCT_REMAP_METHOD(feesLte,feesLte:(nullable LGAmount *)amount withResolver:(RCTPr
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesLte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(feesLt,feesLt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(feesLt,feesLtwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter feesLt:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter feesLt:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -290,11 +456,21 @@ RCT_REMAP_METHOD(feesLt,feesLt:(nullable LGAmount *)amount withResolver:(RCTProm
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::feesLt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountEq,amountEq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountEq,amountEqwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountEq:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountEq:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -303,11 +479,21 @@ RCT_REMAP_METHOD(amountEq,amountEq:(nullable LGAmount *)amount withResolver:(RCT
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountNeq,amountNeq:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountNeq,amountNeqwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountNeq:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountNeq:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -316,11 +502,21 @@ RCT_REMAP_METHOD(amountNeq,amountNeq:(nullable LGAmount *)amount withResolver:(R
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountGte,amountGte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountGte,amountGtewithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountGte:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountGte:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -329,11 +525,21 @@ RCT_REMAP_METHOD(amountGte,amountGte:(nullable LGAmount *)amount withResolver:(R
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountGte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountGt,amountGt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountGt,amountGtwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountGt:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountGt:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -342,11 +548,21 @@ RCT_REMAP_METHOD(amountGt,amountGt:(nullable LGAmount *)amount withResolver:(RCT
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountGt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountLte,amountLte:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountLte,amountLtewithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountLte:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountLte:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -355,11 +571,21 @@ RCT_REMAP_METHOD(amountLte,amountLte:(nullable LGAmount *)amount withResolver:(R
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountLte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(amountLt,amountLt:(nullable LGAmount *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(amountLt,amountLtwithParams:(NSDictionary *)amount withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGAmount *rctParam_0 = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *objcParam_0 = (LGAmount *)[rctParam_0.objcImplementations objectForKey:amount[@"uid"]];
 
-    id result = @{@"result" :[LGQueryFilter amountLt:amount]};
+    LGQueryFilter * objcResult = [LGQueryFilter amountLt:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -368,11 +594,18 @@ RCT_REMAP_METHOD(amountLt,amountLt:(nullable LGAmount *)amount withResolver:(RCT
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::amountLt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightEq,blockHeightEq:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightEq,blockHeightEqwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightEq:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightEq:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -381,11 +614,18 @@ RCT_REMAP_METHOD(blockHeightEq,blockHeightEq:(int64_t)blockHeight withResolver:(
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeq:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeqwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightNeq:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightNeq:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -394,11 +634,18 @@ RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeq:(int64_t)blockHeight withResolver
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightGte,blockHeightGte:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightGte,blockHeightGtewithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightGte:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightGte:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -407,11 +654,18 @@ RCT_REMAP_METHOD(blockHeightGte,blockHeightGte:(int64_t)blockHeight withResolver
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightGte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightGt,blockHeightGt:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightGt,blockHeightGtwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightGt:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightGt:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -420,11 +674,18 @@ RCT_REMAP_METHOD(blockHeightGt,blockHeightGt:(int64_t)blockHeight withResolver:(
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightGt", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightLte,blockHeightLte:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightLte,blockHeightLtewithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightLte:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightLte:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -433,11 +694,18 @@ RCT_REMAP_METHOD(blockHeightLte,blockHeightLte:(int64_t)blockHeight withResolver
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightLte", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(blockHeightLt,blockHeightLt:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightLt,blockHeightLtwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightLt:blockHeight];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightLt:blockHeight]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -446,11 +714,18 @@ RCT_REMAP_METHOD(blockHeightLt,blockHeightLt:(int64_t)blockHeight withResolver:(
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightLt", nil);
     }
+
 }
 
 RCT_REMAP_METHOD(blockHeightIsNull,blockHeightIsNullWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter blockHeightIsNull];
 
-    id result = @{@"result" :[LGQueryFilter blockHeightIsNull]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -459,11 +734,18 @@ RCT_REMAP_METHOD(blockHeightIsNull,blockHeightIsNullWithResolver:(RCTPromiseReso
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::blockHeightIsNull", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(operationTypeEq,operationTypeEq:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(operationTypeEq,operationTypeEqwithParams:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter operationTypeEq:operationType];
 
-    id result = @{@"result" :[LGQueryFilter operationTypeEq:operationType]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -472,11 +754,18 @@ RCT_REMAP_METHOD(operationTypeEq,operationTypeEq:(LGOperationType)operationType 
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::operationTypeEq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(operationTypeNeq,operationTypeNeq:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(operationTypeNeq,operationTypeNeqwithParams:(LGOperationType)operationType withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGQueryFilter * objcResult = [LGQueryFilter operationTypeNeq:operationType];
 
-    id result = @{@"result" :[LGQueryFilter operationTypeNeq:operationType]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -485,11 +774,31 @@ RCT_REMAP_METHOD(operationTypeNeq,operationTypeNeq:(LGOperationType)operationTyp
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::operationTypeNeq", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(opAnd,opAnd:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(opAnd,opAnd:(NSDictionary *)currentInstance withParams:(NSDictionary *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGQueryFilter::opAnd, first argument should be an instance of LGQueryFilter", nil);
+    }
+    LGQueryFilter *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGQueryFilter::opAnd, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGQueryFilter *rctParam_0 = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    LGQueryFilter *objcParam_0 = (LGQueryFilter *)[rctParam_0.objcImplementations objectForKey:filter[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl opAnd:filter]};
+    LGQueryFilter * objcResult = [currentInstanceObj opAnd:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -498,11 +807,31 @@ RCT_REMAP_METHOD(opAnd,opAnd:(nullable LGQueryFilter *)filter withResolver:(RCTP
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::opAnd", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(opOr,opOr:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(opOr,opOr:(NSDictionary *)currentInstance withParams:(NSDictionary *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGQueryFilter::opOr, first argument should be an instance of LGQueryFilter", nil);
+    }
+    LGQueryFilter *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGQueryFilter::opOr, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGQueryFilter *rctParam_0 = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    LGQueryFilter *objcParam_0 = (LGQueryFilter *)[rctParam_0.objcImplementations objectForKey:filter[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl opOr:filter]};
+    LGQueryFilter * objcResult = [currentInstanceObj opOr:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -511,11 +840,31 @@ RCT_REMAP_METHOD(opOr,opOr:(nullable LGQueryFilter *)filter withResolver:(RCTPro
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::opOr", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(opAndNot,opAndNot:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(opAndNot,opAndNot:(NSDictionary *)currentInstance withParams:(NSDictionary *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGQueryFilter::opAndNot, first argument should be an instance of LGQueryFilter", nil);
+    }
+    LGQueryFilter *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGQueryFilter::opAndNot, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGQueryFilter *rctParam_0 = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    LGQueryFilter *objcParam_0 = (LGQueryFilter *)[rctParam_0.objcImplementations objectForKey:filter[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl opAndNot:filter]};
+    LGQueryFilter * objcResult = [currentInstanceObj opAndNot:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -524,11 +873,31 @@ RCT_REMAP_METHOD(opAndNot,opAndNot:(nullable LGQueryFilter *)filter withResolver
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::opAndNot", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(opOrNot,opOrNot:(nullable LGQueryFilter *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(opOrNot,opOrNot:(NSDictionary *)currentInstance withParams:(NSDictionary *)filter withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGQueryFilter::opOrNot, first argument should be an instance of LGQueryFilter", nil);
+    }
+    LGQueryFilter *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGQueryFilter::opOrNot, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGQueryFilter *rctParam_0 = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    LGQueryFilter *objcParam_0 = (LGQueryFilter *)[rctParam_0.objcImplementations objectForKey:filter[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl opOrNot:filter]};
+    LGQueryFilter * objcResult = [currentInstanceObj opOrNot:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGQueryFilter *rctImpl = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -537,5 +906,6 @@ RCT_REMAP_METHOD(opOrNot,opOrNot:(nullable LGQueryFilter *)filter withResolver:(
     {
         reject(@"impl_call_error", @"Error while calling LGQueryFilter::opOrNot", nil);
     }
+
 }
 @end

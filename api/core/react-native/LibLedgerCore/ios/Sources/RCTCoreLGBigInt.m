@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGBigInt)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGBigInt alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -24,9 +26,28 @@ RCT_EXPORT_MODULE(RCTCoreLGBigInt)
  * @params i Value to be added to this BigInt
  * @return The result of this + i
  */
-RCT_REMAP_METHOD(add,add:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(add,add:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::add, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::add, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl add:i]};
+    LGBigInt * objcResult = [currentInstanceObj add:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -35,6 +56,7 @@ RCT_REMAP_METHOD(add,add:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveB
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::add", nil);
     }
+
 }
 
 /**
@@ -42,9 +64,28 @@ RCT_REMAP_METHOD(add,add:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveB
  * @params i Value to be subtracted to this BigInt
  * @return The result of this - i
  */
-RCT_REMAP_METHOD(subtract,subtract:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(subtract,subtract:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::subtract, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::subtract, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl subtract:i]};
+    LGBigInt * objcResult = [currentInstanceObj subtract:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -53,6 +94,7 @@ RCT_REMAP_METHOD(subtract,subtract:(nullable LGBigInt *)i withResolver:(RCTPromi
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::subtract", nil);
     }
+
 }
 
 /**
@@ -60,9 +102,28 @@ RCT_REMAP_METHOD(subtract,subtract:(nullable LGBigInt *)i withResolver:(RCTPromi
  * @params i Value to be multiplied by this BigInt
  * @return The result of this * i
  */
-RCT_REMAP_METHOD(multiply,multiply:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(multiply,multiply:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::multiply, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::multiply, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl multiply:i]};
+    LGBigInt * objcResult = [currentInstanceObj multiply:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -71,6 +132,7 @@ RCT_REMAP_METHOD(multiply,multiply:(nullable LGBigInt *)i withResolver:(RCTPromi
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::multiply", nil);
     }
+
 }
 
 /**
@@ -78,9 +140,28 @@ RCT_REMAP_METHOD(multiply,multiply:(nullable LGBigInt *)i withResolver:(RCTPromi
  * @params i Value by which this BigInt will be divided
  * @return The result of this / i
  */
-RCT_REMAP_METHOD(divide,divide:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(divide,divide:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::divide, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::divide, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl divide:i]};
+    LGBigInt * objcResult = [currentInstanceObj divide:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -89,6 +170,7 @@ RCT_REMAP_METHOD(divide,divide:(nullable LGBigInt *)i withResolver:(RCTPromiseRe
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::divide", nil);
     }
+
 }
 
 /**
@@ -96,9 +178,22 @@ RCT_REMAP_METHOD(divide,divide:(nullable LGBigInt *)i withResolver:(RCTPromiseRe
  * @params i Value by which this BigInteger is to be divided, and the remainder computed
  * @return A tuple of [this / i, this % i]
  */
-RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::divideAndRemainder, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::divideAndRemainder, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :[self.objcImpl divideAndRemainder:i]};
+    NSArray<LGBigInt *> * objcResult = [currentInstanceObj divideAndRemainder:objcParam_0];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -107,6 +202,7 @@ RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(nullable LGBigInt *)i wi
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::divideAndRemainder", nil);
     }
+
 }
 
 /**
@@ -114,9 +210,25 @@ RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(nullable LGBigInt *)i wi
  * @params i The exponent to which thi BigInt is raised
  * @return The result of this ^ exponent
  */
-RCT_REMAP_METHOD(pow,pow:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(pow,pow:(NSDictionary *)currentInstance withParams:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::pow, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::pow, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBigInt * objcResult = [currentInstanceObj pow:exponent];
 
-    id result = @{@"result" :[self.objcImpl pow:exponent]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -125,6 +237,7 @@ RCT_REMAP_METHOD(pow,pow:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::pow", nil);
     }
+
 }
 
 /**
@@ -134,11 +247,21 @@ RCT_REMAP_METHOD(pow,pow:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)
  * @params thousandSeparator The separator to use between each group of thousand units
  * @return The BigInt formatted as a decimal string
  */
-RCT_REMAP_METHOD(toDecimalString,toDecimalString:(int32_t)precision
-                                decimalSeparator:(nonnull NSString *)decimalSeparator
-                               thousandSeparator:(nonnull NSString *)thousandSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl toDecimalString:precision decimalSeparator:decimalSeparator thousandSeparator:thousandSeparator]};
+RCT_REMAP_METHOD(toDecimalString,toDecimalString:(NSDictionary *)currentInstance withParams:(int32_t)precision
+                                                                           decimalSeparator:(nonnull NSString *)decimalSeparator
+                                                                          thousandSeparator:(nonnull NSString *)thousandSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::toDecimalString, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::toDecimalString, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj toDecimalString:precision decimalSeparator:decimalSeparator thousandSeparator:thousandSeparator];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -147,15 +270,26 @@ RCT_REMAP_METHOD(toDecimalString,toDecimalString:(int32_t)precision
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::toDecimalString", nil);
     }
+
 }
 
 /**
  * Formats this BigInt to the interger representation of its internal value.
  * @params radix The radix of the number representation in which to format (right now 10 or 16)
  */
-RCT_REMAP_METHOD(toString,toString:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl toString:radix]};
+RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance withParams:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::toString, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::toString, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj toString:radix];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -164,6 +298,7 @@ RCT_REMAP_METHOD(toString,toString:(int32_t)radix withResolver:(RCTPromiseResolv
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::toString", nil);
     }
+
 }
 
 /**
@@ -171,9 +306,20 @@ RCT_REMAP_METHOD(toString,toString:(int32_t)radix withResolver:(RCTPromiseResolv
  * will be meaningless.
  * @return The int representation of this BigInt
  */
-RCT_REMAP_METHOD(intValue,intValueWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl intValue])};if(result)
+RCT_REMAP_METHOD(intValue,intValue:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::intValue, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::intValue, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    int32_t objcResult = [currentInstanceObj intValue];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -181,6 +327,7 @@ RCT_REMAP_METHOD(intValue,intValueWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::intValue", nil);
     }
+
 }
 
 /**
@@ -188,9 +335,23 @@ RCT_REMAP_METHOD(intValue,intValueWithResolver:(RCTPromiseResolveBlock)resolve r
  * @param i The value to compare with this BigInt
  * @return a positive value if this > i. A negative value if this < i. 0 if the two BigInts are equal
  */
-RCT_REMAP_METHOD(compare,compare:(nullable LGBigInt *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(compare,compare:(NSDictionary *)currentInstance withParams:(NSDictionary *)i withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::compare, first argument should be an instance of LGBigInt", nil);
+    }
+    LGBigInt *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBigInt::compare, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGBigInt *rctParam_0 = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    LGBigInt *objcParam_0 = (LGBigInt *)[rctParam_0.objcImplementations objectForKey:i[@"uid"]];
 
-    id result = @{@"result" :@([self.objcImpl compare:i])};if(result)
+    int32_t objcResult = [currentInstanceObj compare:objcParam_0];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -198,6 +359,7 @@ RCT_REMAP_METHOD(compare,compare:(nullable LGBigInt *)i withResolver:(RCTPromise
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::compare", nil);
     }
+
 }
 
 /**
@@ -208,11 +370,17 @@ RCT_REMAP_METHOD(compare,compare:(nullable LGBigInt *)i withResolver:(RCTPromise
  * @params decimalSeparator The decimal separator used by this string representation
  * @return The created BigInt
  */
-RCT_REMAP_METHOD(fromDecimalString,fromDecimalString:(nonnull NSString *)s
-                                           precision:(int32_t)precision
-                                    decimalSeparator:(nonnull NSString *)decimalSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromDecimalString,fromDecimalStringwithParams:(nonnull NSString *)s
+                                                     precision:(int32_t)precision
+                                              decimalSeparator:(nonnull NSString *)decimalSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGBigInt * objcResult = [LGBigInt fromDecimalString:s precision:precision decimalSeparator:decimalSeparator];
 
-    id result = @{@"result" :[LGBigInt fromDecimalString:s precision:precision decimalSeparator:decimalSeparator]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -221,6 +389,7 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalString:(nonnull NSString *)s
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::fromDecimalString", nil);
     }
+
 }
 
 /**
@@ -229,10 +398,16 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalString:(nonnull NSString *)s
  * @param radix The radix of the number representation (right now 10 or 16)
  * @return The created BigInt
  */
-RCT_REMAP_METHOD(fromIntegerString,fromIntegerString:(nonnull NSString *)s
-                                               radix:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromIntegerString,fromIntegerStringwithParams:(nonnull NSString *)s
+                                                         radix:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGBigInt * objcResult = [LGBigInt fromIntegerString:s radix:radix];
 
-    id result = @{@"result" :[LGBigInt fromIntegerString:s radix:radix]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -241,6 +416,7 @@ RCT_REMAP_METHOD(fromIntegerString,fromIntegerString:(nonnull NSString *)s
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::fromIntegerString", nil);
     }
+
 }
 
 /**
@@ -248,9 +424,15 @@ RCT_REMAP_METHOD(fromIntegerString,fromIntegerString:(nonnull NSString *)s
  * @param l The value to convert
  * @return The created BigInt
  */
-RCT_REMAP_METHOD(fromLong,fromLong:(int64_t)l withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromLong,fromLongwithParams:(int64_t)l withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGBigInt * objcResult = [LGBigInt fromLong:l];
 
-    id result = @{@"result" :[LGBigInt fromLong:l]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -259,5 +441,6 @@ RCT_REMAP_METHOD(fromLong,fromLong:(int64_t)l withResolver:(RCTPromiseResolveBlo
     {
         reject(@"impl_call_error", @"Error while calling LGBigInt::fromLong", nil);
     }
+
 }
 @end

@@ -8,13 +8,14 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGI32Callback)
 
--(instancetype)init
+@synthesize bridge = _bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGI32CallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
     }
     return self;
 }
@@ -24,9 +25,15 @@ RCT_EXPORT_MODULE(RCTCoreLGI32Callback)
  * @params result optional of type T, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable NSNumber *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable NSNumber *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGI32Callback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+
+    self.resolve(result);
+
 }
 @end

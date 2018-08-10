@@ -8,20 +8,22 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGNetworks)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGNetworks alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 RCT_REMAP_METHOD(bitcoin,bitcoinWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[LGNetworks bitcoin]};
+    LGBitcoinLikeNetworkParameters * objcResult = [LGNetworks bitcoin];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -30,5 +32,6 @@ RCT_REMAP_METHOD(bitcoin,bitcoinWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGNetworks::bitcoin", nil);
     }
+
 }
 @end

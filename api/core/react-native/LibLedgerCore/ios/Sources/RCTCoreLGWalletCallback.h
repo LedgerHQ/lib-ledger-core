@@ -4,7 +4,10 @@
 #import "LGError.h"
 #import "LGWallet.h"
 #import "LGWalletCallbackImpl.h"
+#import "RCTCoreLGError.h"
+#import "RCTCoreLGWallet.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,8 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGWalletCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWalletCallbackImpl *objcImpl;
+@interface RCTCoreLGWalletCallback : NSObject <LGWalletCallback, RCTBridgeModule>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
 @end

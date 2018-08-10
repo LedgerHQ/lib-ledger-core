@@ -3,10 +3,11 @@
 
 #import "LGSynchronizationStatus.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class of synchronization status constants */
 @interface RCTCoreLGSynchronizationStatus : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGSynchronizationStatus *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

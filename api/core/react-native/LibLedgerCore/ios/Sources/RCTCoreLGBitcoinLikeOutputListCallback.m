@@ -8,13 +8,14 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOutputListCallback)
 
--(instancetype)init
+@synthesize bridge = _bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGBitcoinLikeOutputListCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
     }
     return self;
 }
@@ -24,9 +25,24 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOutputListCallback)
  * @params result optional of type list<T>, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable NSArray<LGBitcoinLikeOutput *> *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable NSArray<LGBitcoinLikeOutput *> *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGBitcoinLikeOutputListCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+    NSMutableArray *converted_result = [[NSMutableArray alloc] init];
+    for (id result_elem in result)
+    {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        RCTCoreLGBitcoinLikeOutput *rctImpl_result_elem = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
+        [rctImpl_result_elem.objcImplementations setObject:result_elem forKey:uuid];
+        NSDictionary *converted_result_elem = @{@"type" : @"CoreLGBitcoinLikeOutput", @"uid" : uuid };
+        [converted_result addObject:converted_result_elem];
+    }
+
+    self.resolve(converted_result);
+
 }
 @end

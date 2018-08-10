@@ -8,13 +8,14 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGAmountCallback)
 
--(instancetype)init
+@synthesize bridge = _bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGAmountCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
     }
     return self;
 }
@@ -24,9 +25,19 @@ RCT_EXPORT_MODULE(RCTCoreLGAmountCallback)
  * @params result optional of type T, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable LGAmount *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable LGAmount *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGAmountCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAmount *rctImpl_result = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
+    NSDictionary *converted_result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
+    self.resolve(converted_result);
+
 }
 @end

@@ -3,10 +3,12 @@
 
 #import "LGWebSocketClientImpl.h"
 #import "LGWebSocketConnection.h"
+#import "RCTCoreLGWebSocketConnection.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGWebSocketClient : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWebSocketClientImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

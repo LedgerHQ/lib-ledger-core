@@ -13,7 +13,7 @@ BitcoinLikeOperator::~BitcoinLikeOperator() = default;
 auto BitcoinLikeOperator::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<BitcoinLikeOperator>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.name)),
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.operatorName)),
                                                            ::djinni::get(::djinni::I8::fromCpp(jniEnv, c.value)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
@@ -23,7 +23,7 @@ auto BitcoinLikeOperator::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 3);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<BitcoinLikeOperator>::get();
-    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_name)),
+    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_operatorName)),
             ::djinni::I8::toCpp(jniEnv, jniEnv->GetByteField(j, data.field_value))};
 }
 

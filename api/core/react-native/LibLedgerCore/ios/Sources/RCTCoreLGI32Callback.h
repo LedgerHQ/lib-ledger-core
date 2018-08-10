@@ -3,7 +3,9 @@
 
 #import "LGError.h"
 #import "LGI32CallbackImpl.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -11,6 +13,8 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGI32Callback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGI32CallbackImpl *objcImpl;
+@interface RCTCoreLGI32Callback : NSObject <LGI32Callback, RCTBridgeModule>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
 @end

@@ -11,11 +11,22 @@
 #import "LGWalletPoolBuilder.h"
 #import "LGWalletPoolCallback.h"
 #import "LGWebSocketClient.h"
+#import "RCTCoreLGDatabaseBackend.h"
+#import "RCTCoreLGDynamicObject.h"
+#import "RCTCoreLGHttpClient.h"
+#import "RCTCoreLGLogPrinter.h"
+#import "RCTCoreLGPathResolver.h"
+#import "RCTCoreLGRandomNumberGenerator.h"
+#import "RCTCoreLGThreadDispatcher.h"
+#import "RCTCoreLGWalletPoolBuilder.h"
+#import "RCTCoreLGWalletPoolCallback.h"
+#import "RCTCoreLGWebSocketClient.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing a wallet pool builder (to instanciate a wallet pool) */
 @interface RCTCoreLGWalletPoolBuilder : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWalletPoolBuilder *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

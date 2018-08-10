@@ -6,19 +6,19 @@ package co.ledger.core;
 public final class BitcoinLikeOperator {
 
 
-    /*package*/ final String name;
+    /*package*/ final String operatorName;
 
     /*package*/ final byte value;
 
     public BitcoinLikeOperator(
-            String name,
+            String operatorName,
             byte value) {
-        this.name = name;
+        this.operatorName = operatorName;
         this.value = value;
     }
 
-    public String getName() {
-        return name;
+    public String getOperatorName() {
+        return operatorName;
     }
 
     public byte getValue() {
@@ -28,7 +28,7 @@ public final class BitcoinLikeOperator {
     @Override
     public String toString() {
         return "BitcoinLikeOperator{" +
-                "name=" + name +
+                "operatorName=" + operatorName +
                 "," + "value=" + value +
         "}";
     }

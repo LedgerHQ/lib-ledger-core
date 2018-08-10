@@ -3,6 +3,7 @@
 
 #import "LGPathResolverImpl.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -11,5 +12,5 @@
  * be adapted for the runtime platform. All path given to the PathResolver are absolute.
  */
 @interface RCTCoreLGPathResolver : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGPathResolverImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

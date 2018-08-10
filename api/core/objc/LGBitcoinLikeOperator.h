@@ -4,12 +4,12 @@
 #import <Foundation/Foundation.h>
 
 @interface LGBitcoinLikeOperator : NSObject
-- (nonnull instancetype)initBitcoinLikeOperatorWithName:(nonnull NSString *)name
-                               value:(int8_t)value;
-+ (nonnull instancetype)BitcoinLikeOperatorWithName:(nonnull NSString *)name
-                                              value:(int8_t)value;
+- (nonnull instancetype)initWithOperatorName:(nonnull NSString *)operatorName
+                                       value:(int8_t)value;
++ (nonnull instancetype)BitcoinLikeOperatorWithOperatorName:(nonnull NSString *)operatorName
+                                                      value:(int8_t)value;
 
-@property (nonatomic, readonly, nonnull) NSString * name;
+@property (nonatomic, readonly, nonnull) NSString * operatorName;
 
 @property (nonatomic, readonly) int8_t value;
 

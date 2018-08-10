@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGHttpClient)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGHttpClientImpl alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,8 +25,21 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpClient)
  *Execute a giver Http request\
  *@param request, HttpRequest object, requestr to execute
  */
-RCT_REMAP_METHOD(execute,execute:(nullable LGHttpRequest *)request) {
+RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance withParams:(NSDictionary *)request withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGHttpClient::execute, first argument should be an instance of LGHttpClientImpl", nil);
+    }
+    LGHttpClientImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGHttpClientImpl::execute, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGHttpRequest *rctParam_0 = (RCTCoreLGHttpRequest *)[self.bridge moduleForName:@"CoreLGHttpRequest"];
+    LGHttpRequest *objcParam_0 = (LGHttpRequest *)[rctParam_0.objcImplementations objectForKey:request[@"uid"]];
 
-    [self.objcImpl execute:request];
+    [currentInstanceObj execute:objcParam_0];
+
 }
 @end

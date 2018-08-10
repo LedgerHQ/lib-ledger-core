@@ -4,7 +4,10 @@
 #import "LGAccountCreationInfo.h"
 #import "LGAccountCreationInfoCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGAccountCreationInfo.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,8 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGAccountCreationInfoCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGAccountCreationInfoCallbackImpl *objcImpl;
+@interface RCTCoreLGAccountCreationInfoCallback : NSObject <LGAccountCreationInfoCallback, RCTBridgeModule>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
 @end

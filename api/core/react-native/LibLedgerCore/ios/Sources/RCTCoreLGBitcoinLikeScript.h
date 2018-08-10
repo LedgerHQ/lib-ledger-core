@@ -3,10 +3,13 @@
 
 #import "LGBitcoinLikeScript.h"
 #import "LGBitcoinLikeScriptChunk.h"
+#import "RCTCoreLGBitcoinLikeScript.h"
+#import "RCTCoreLGBitcoinLikeScriptChunk.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGBitcoinLikeScript : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeScript *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

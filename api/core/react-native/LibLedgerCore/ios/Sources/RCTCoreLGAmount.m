@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGAmount)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGAmount alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,9 +25,25 @@ RCT_EXPORT_MODULE(RCTCoreLGAmount)
  *Get amount as a BitInt
  *@return BitInt
  */
-RCT_REMAP_METHOD(toBigInt,toBigIntWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(toBigInt,toBigInt:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toBigInt, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toBigInt, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBigInt * objcResult = [currentInstanceObj toBigInt];
 
-    id result = @{@"result" :[self.objcImpl toBigInt]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -34,15 +52,26 @@ RCT_REMAP_METHOD(toBigInt,toBigIntWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toBigInt", nil);
     }
+
 }
 
 /**
  *Get currency in which amount was computed
  *@return Currency object
  */
-RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getCurrency]};
+RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::getCurrency, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::getCurrency, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGCurrency * objcResult = [currentInstanceObj getCurrency];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -51,15 +80,26 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::getCurrency", nil);
     }
+
 }
 
 /**
  *Get currency unit in which amount was computed
  *@return CurrencyUnit object
  */
-RCT_REMAP_METHOD(getUnit,getUnitWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getUnit]};
+RCT_REMAP_METHOD(getUnit,getUnit:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::getUnit, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::getUnit, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGCurrencyUnit * objcResult = [currentInstanceObj getUnit];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -68,6 +108,7 @@ RCT_REMAP_METHOD(getUnit,getUnitWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::getUnit", nil);
     }
+
 }
 
 /**
@@ -75,9 +116,25 @@ RCT_REMAP_METHOD(getUnit,getUnitWithResolver:(RCTPromiseResolveBlock)resolve rej
  *@param CurrencyUnit object, target currency unit
  *@return Amount object, amount in target currency unit
  */
-RCT_REMAP_METHOD(toUnit,toUnit:(nonnull LGCurrencyUnit *)unit withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(toUnit,toUnit:(NSDictionary *)currentInstance withParams:(nonnull LGCurrencyUnit *)unit withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toUnit, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toUnit, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGAmount * objcResult = [currentInstanceObj toUnit:unit];
 
-    id result = @{@"result" :[self.objcImpl toUnit:unit]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -86,12 +143,29 @@ RCT_REMAP_METHOD(toUnit,toUnit:(nonnull LGCurrencyUnit *)unit withResolver:(RCTP
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toUnit", nil);
     }
+
 }
 
 /**TODO */
-RCT_REMAP_METHOD(toMagnitude,toMagnitude:(int32_t)magnitude withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(toMagnitude,toMagnitude:(NSDictionary *)currentInstance withParams:(int32_t)magnitude withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toMagnitude, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toMagnitude, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGAmount * objcResult = [currentInstanceObj toMagnitude:magnitude];
 
-    id result = @{@"result" :[self.objcImpl toMagnitude:magnitude]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -100,15 +174,26 @@ RCT_REMAP_METHOD(toMagnitude,toMagnitude:(int32_t)magnitude withResolver:(RCTPro
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toMagnitude", nil);
     }
+
 }
 
 /**
  *Get amount as string
  *@return string
  */
-RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl toString]};
+RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toString, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toString, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj toString];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -117,15 +202,27 @@ RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toString", nil);
     }
+
 }
 
 /**
  *Get amount as long
  *@reutrn 64 bits integer
  */
-RCT_REMAP_METHOD(toLong,toLongWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl toLong])};if(result)
+RCT_REMAP_METHOD(toLong,toLong:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toLong, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toLong, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    int64_t objcResult = [currentInstanceObj toLong];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -133,15 +230,27 @@ RCT_REMAP_METHOD(toLong,toLongWithResolver:(RCTPromiseResolveBlock)resolve rejec
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toLong", nil);
     }
+
 }
 
 /**
  *Get amount as double
  *@return double
  */
-RCT_REMAP_METHOD(toDouble,toDoubleWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl toDouble])};if(result)
+RCT_REMAP_METHOD(toDouble,toDouble:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toDouble, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toDouble, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    double objcResult = [currentInstanceObj toDouble];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -149,13 +258,24 @@ RCT_REMAP_METHOD(toDouble,toDoubleWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::toDouble", nil);
     }
+
 }
 
 /**TODO */
-RCT_REMAP_METHOD(format,format:(nonnull LGLocale *)locale
-                         rules:(nullable LGFormatRules *)rules withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl format:locale rules:rules]};
+RCT_REMAP_METHOD(format,format:(NSDictionary *)currentInstance withParams:(nonnull LGLocale *)locale
+                                                                    rules:(nullable LGFormatRules *)rules withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::format, first argument should be an instance of LGAmount", nil);
+    }
+    LGAmount *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::format, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj format:locale rules:rules];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -164,12 +284,19 @@ RCT_REMAP_METHOD(format,format:(nonnull LGLocale *)locale
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::format", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(fromHex,fromHex:(nonnull LGCurrency *)currency
-                             hex:(nonnull NSString *)hex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromHex,fromHexwithParams:(nonnull LGCurrency *)currency
+                                       hex:(nonnull NSString *)hex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGAmount * objcResult = [LGAmount fromHex:currency hex:hex];
 
-    id result = @{@"result" :[LGAmount fromHex:currency hex:hex]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -178,12 +305,19 @@ RCT_REMAP_METHOD(fromHex,fromHex:(nonnull LGCurrency *)currency
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::fromHex", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(fromLong,fromLong:(nonnull LGCurrency *)currency
-                             value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromLong,fromLongwithParams:(nonnull LGCurrency *)currency
+                                       value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGAmount * objcResult = [LGAmount fromLong:currency value:value];
 
-    id result = @{@"result" :[LGAmount fromLong:currency value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -192,5 +326,6 @@ RCT_REMAP_METHOD(fromLong,fromLong:(nonnull LGCurrency *)currency
     {
         reject(@"impl_call_error", @"Error while calling LGAmount::fromLong", nil);
     }
+
 }
 @end

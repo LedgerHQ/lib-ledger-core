@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGLock)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGLockImpl alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -24,9 +26,19 @@ RCT_EXPORT_MODULE(RCTCoreLGLock)
  *If Lock already acquired by another thread, execution of calling thread should be blocked
  *until the other thread call the unlock method
  */
-RCT_EXPORT_METHOD(lock) {
+RCT_REMAP_METHOD(lock,lock:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLock::lock, first argument should be an instance of LGLockImpl", nil);
+    }
+    LGLockImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLockImpl::lock, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj lock];
 
-    [self.objcImpl lock];
 }
 
 /**
@@ -35,9 +47,20 @@ RCT_EXPORT_METHOD(lock) {
  *without blocking its execution
  *@return bool, return true if Lock acquire by calling thread, false otherwise
  */
-RCT_REMAP_METHOD(tryLock,tryLockWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl tryLock])};if(result)
+RCT_REMAP_METHOD(tryLock,tryLock:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLock::tryLock, first argument should be an instance of LGLockImpl", nil);
+    }
+    LGLockImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLockImpl::tryLock, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj tryLock];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -45,11 +68,22 @@ RCT_REMAP_METHOD(tryLock,tryLockWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGLockImpl::tryLock", nil);
     }
+
 }
 
 /**Release Lock ownership by calling thread */
-RCT_EXPORT_METHOD(unlock) {
+RCT_REMAP_METHOD(unlock,unlock:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLock::unlock, first argument should be an instance of LGLockImpl", nil);
+    }
+    LGLockImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLockImpl::unlock, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj unlock];
 
-    [self.objcImpl unlock];
 }
 @end

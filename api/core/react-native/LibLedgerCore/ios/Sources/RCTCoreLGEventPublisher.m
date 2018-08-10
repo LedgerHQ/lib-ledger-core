@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGEventPublisher)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGEventPublisher alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,9 +25,25 @@ RCT_EXPORT_MODULE(RCTCoreLGEventPublisher)
  *Get event bus through which publisher broadcast its events
  *@return EventBus object
  */
-RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getEventBus,getEventBus:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventPublisher::getEventBus, first argument should be an instance of LGEventPublisher", nil);
+    }
+    LGEventPublisher *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::getEventBus, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGEventBus * objcResult = [currentInstanceObj getEventBus];
 
-    id result = @{@"result" :[self.objcImpl getEventBus]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -34,15 +52,29 @@ RCT_REMAP_METHOD(getEventBus,getEventBusWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGEventPublisher::getEventBus", nil);
     }
+
 }
 
 /**
  *Broadcast an event through eventbus (to all subscribed receivers to this EventBus)
  *@param event, Event object
  */
-RCT_REMAP_METHOD(post,post:(nullable LGEvent *)event) {
+RCT_REMAP_METHOD(post,post:(NSDictionary *)currentInstance withParams:(NSDictionary *)event withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventPublisher::post, first argument should be an instance of LGEventPublisher", nil);
+    }
+    LGEventPublisher *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::post, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGEvent *rctParam_0 = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    LGEvent *objcParam_0 = (LGEvent *)[rctParam_0.objcImplementations objectForKey:event[@"uid"]];
 
-    [self.objcImpl post:event];
+    [currentInstanceObj post:objcParam_0];
+
 }
 
 /**
@@ -50,28 +82,63 @@ RCT_REMAP_METHOD(post,post:(nullable LGEvent *)event) {
  *@param event, Event object
  *@param tag, 32 bits integer, tag of sticky event
  */
-RCT_REMAP_METHOD(postSticky,postSticky:(nullable LGEvent *)event
-                                   tag:(int32_t)tag) {
+RCT_REMAP_METHOD(postSticky,postSticky:(NSDictionary *)currentInstance withParams:(NSDictionary *)event
+                                                                              tag:(int32_t)tag withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventPublisher::postSticky, first argument should be an instance of LGEventPublisher", nil);
+    }
+    LGEventPublisher *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::postSticky, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGEvent *rctParam_0 = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    LGEvent *objcParam_0 = (LGEvent *)[rctParam_0.objcImplementations objectForKey:event[@"uid"]];
 
-    [self.objcImpl postSticky:event tag:tag];
+    [currentInstanceObj postSticky:objcParam_0 tag:tag];
+
 }
 
 /**
  *Relay an event to another EventBus (other than EventPublisher's event bus)
  *@param bus, EventBus object, through which we want to broadcast EventPublisher's event to EventPublisher's receiver
  */
-RCT_REMAP_METHOD(relay,relay:(nullable LGEventBus *)bus) {
+RCT_REMAP_METHOD(relay,relay:(NSDictionary *)currentInstance withParams:(NSDictionary *)bus withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventPublisher::relay, first argument should be an instance of LGEventPublisher", nil);
+    }
+    LGEventPublisher *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::relay, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGEventBus *rctParam_0 = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    LGEventBus *objcParam_0 = (LGEventBus *)[rctParam_0.objcImplementations objectForKey:bus[@"uid"]];
 
-    [self.objcImpl relay:bus];
+    [currentInstanceObj relay:objcParam_0];
+
 }
 
 /**
  *Create a new instance of EventPublisher class
  *@param context, executionContext object, context in which event publisher broadcast its events
  */
-RCT_REMAP_METHOD(newInstance,newInstance:(nullable id<LGExecutionContext>)context withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(newInstance,newInstancewithParams:(NSDictionary *)context withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGExecutionContext *rctParam_0 = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
+    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_0.objcImplementations objectForKey:context[@"uid"]];
 
-    id result = @{@"result" :[LGEventPublisher newInstance:context]};
+    LGEventPublisher * objcResult = [LGEventPublisher newInstance:objcParam_0];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGEventPublisher *rctImpl = (RCTCoreLGEventPublisher *)[self.bridge moduleForName:@"CoreLGEventPublisher"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGEventPublisher", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -80,5 +147,6 @@ RCT_REMAP_METHOD(newInstance,newInstance:(nullable id<LGExecutionContext>)contex
     {
         reject(@"impl_call_error", @"Error while calling LGEventPublisher::newInstance", nil);
     }
+
 }
 @end

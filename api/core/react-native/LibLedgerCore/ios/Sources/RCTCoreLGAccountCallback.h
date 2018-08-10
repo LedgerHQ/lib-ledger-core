@@ -4,7 +4,10 @@
 #import "LGAccount.h"
 #import "LGAccountCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGAccount.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,8 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGAccountCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGAccountCallbackImpl *objcImpl;
+@interface RCTCoreLGAccountCallback : NSObject <LGAccountCallback, RCTBridgeModule>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
 @end

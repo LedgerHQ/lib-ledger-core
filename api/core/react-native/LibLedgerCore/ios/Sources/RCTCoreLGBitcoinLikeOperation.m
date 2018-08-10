@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperation)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGBitcoinLikeOperation alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,9 +25,25 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperation)
  *Get operation's transaction
  *@return BitcoinLikeTransaction object
  */
-RCT_REMAP_METHOD(getTransaction,getTransactionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getTransaction,getTransaction:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeOperation::getTransaction, first argument should be an instance of LGBitcoinLikeOperation", nil);
+    }
+    LGBitcoinLikeOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeOperation::getTransaction, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBitcoinLikeTransaction * objcResult = [currentInstanceObj getTransaction];
 
-    id result = @{@"result" :[self.objcImpl getTransaction]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+     RCTCoreLGBitcoinLikeTransaction *rctImpl = (RCTCoreLGBitcoinLikeTransaction *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransaction"];
+    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeTransaction", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -34,5 +52,6 @@ RCT_REMAP_METHOD(getTransaction,getTransactionWithResolver:(RCTPromiseResolveBlo
     {
         reject(@"impl_call_error", @"Error while calling LGBitcoinLikeOperation::getTransaction", nil);
     }
+
 }
 @end

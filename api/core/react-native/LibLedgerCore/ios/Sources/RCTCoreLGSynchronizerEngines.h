@@ -3,10 +3,11 @@
 
 #import "LGSynchronizerEngines.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class of constants representing the engines to rely on for synchronization */
 @interface RCTCoreLGSynchronizerEngines : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGSynchronizerEngines *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end
