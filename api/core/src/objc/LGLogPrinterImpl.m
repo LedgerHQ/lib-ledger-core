@@ -9,6 +9,7 @@
         BOOL isSerialized = YES;
         self.context = [[LGExecutionContextImpl alloc] initContext:isSerialized];
     }
+    return self;
 }
 -(void)printError:(nonnull NSString *)message
 {

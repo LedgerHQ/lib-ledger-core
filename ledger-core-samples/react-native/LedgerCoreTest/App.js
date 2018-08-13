@@ -24,11 +24,11 @@ const { CoreLGSecp256k1,
         CoreLGDynamicObject,
         CoreLGWalletPool
       } = NativeModules;
-      
+
 console.log("=====NativeModules")
 console.log(NativeModules)
 
-async function createWalletPoolInstance () {
+async function createWalletInstance () {
   const httpClient = await CoreLGHttpClient.new();
   const webSocket = await CoreLGWebSocketClient.new();
   const pathResolver = await CoreLGPathResolver.new();
@@ -49,10 +49,14 @@ async function createWalletPoolInstance () {
                                                                 dynamicObject);
     console.log(" >>> walletPoolInstance");
     console.log(walletPoolInstance);
-    return walletPoolInstance;
 
+    const currency = await CoreLGWalletPool.getCurrency(walletPoolInstance, "bitcoin");
+    const config = await CoreLGDynamicObject.newInstance();
+    const wallet = await CoreLGWalletPool.createWallet(walletPoolInstance,"WALLET_IDENTIFIER", currency, config)
+    console.log(wallet);
+    return wallet;
 }
-const walletPool = createWalletPoolInstance();
+const wallet = createWalletInstance();
 async function getPublicKeyFromPrivKey (privKey, compressed) {
     try {
         const secp256k1 = await CoreLGSecp256k1.createInstance();

@@ -7,7 +7,9 @@
     self = [super init];
     if (self) {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-        if ([paths count] == 0) {
+        if ([paths count] > 0) {
+            NSLog(@"======init resolvePreferencesPath: %@", paths[0]);
+    
             self.rootPath = paths[0];
         }
     }
@@ -50,6 +52,7 @@
 */
 - (nonnull NSString *)resolvePreferencesPath:(nonnull NSString *)path
 {
+    NSLog(@"======Start resolvePreferencesPath");
     NSString *tmpPath = @"preferences_";
     tmpPath = [tmpPath stringByAppendingString:[path stringByReplacingOccurrencesOfString:@"/" withString:@"__"]];
     NSString *result = [self.rootPath stringByAppendingPathComponent:tmpPath];
