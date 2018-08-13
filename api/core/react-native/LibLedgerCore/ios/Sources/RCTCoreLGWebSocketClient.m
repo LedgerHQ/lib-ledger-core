@@ -76,4 +76,15 @@ RCT_REMAP_METHOD(disconnect,disconnect:(NSDictionary *)currentInstance withParam
     [currentInstanceObj disconnect:objcParam_0];
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGWebSocketClientImpl *objcResult = [[LGWebSocketClientImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGWebSocketClientImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketClientImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

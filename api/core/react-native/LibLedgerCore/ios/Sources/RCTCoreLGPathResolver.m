@@ -107,4 +107,15 @@ RCT_REMAP_METHOD(resolvePreferencesPath,resolvePreferencesPath:(NSDictionary *)c
     }
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGPathResolverImpl *objcResult = [[LGPathResolverImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPathResolverImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPathResolverImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

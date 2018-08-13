@@ -64,7 +64,7 @@ RCT_REMAP_METHOD(computePubKey,computePubKey:(NSDictionary *)currentInstance wit
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj computePubKey:privKey compress:compress];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -95,7 +95,7 @@ RCT_REMAP_METHOD(sign,sign:(NSDictionary *)currentInstance withParams:(nonnull N
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj sign:privKey data:data];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

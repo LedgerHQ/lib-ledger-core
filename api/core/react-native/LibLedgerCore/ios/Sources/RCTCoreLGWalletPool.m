@@ -68,24 +68,25 @@ RCT_REMAP_METHOD(newInstance,newInstancewithParams:(nonnull NSString *)name
 
     RCTCoreLGDynamicObject *rctParam_9 = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
     LGDynamicObject *objcParam_9 = (LGDynamicObject *)[rctParam_9.objcImplementations objectForKey:configuration[@"uid"]];
-
-    LGWalletPool * objcResult = [LGWalletPool newInstance:name password:password httpClient:objcParam_2 webSocketClient:objcParam_3 pathResolver:objcParam_4 logPrinter:objcParam_5 dispatcher:objcParam_6 rng:objcParam_7 backend:objcParam_8 configuration:objcParam_9];
-
-    NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGWalletPool *rctImpl = (RCTCoreLGWalletPool *)[self.bridge moduleForName:@"CoreLGWalletPool"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPool", @"uid" : uuid };
-
-    if(result)
+    @synchronized(self)
     {
-        resolve(result);
+        LGWalletPool * objcResult = [LGWalletPool newInstance:name password:password httpClient:objcParam_2 webSocketClient:objcParam_3 pathResolver:objcParam_4 logPrinter:objcParam_5 dispatcher:objcParam_6 rng:objcParam_7 backend:objcParam_8 configuration:objcParam_9];
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        RCTCoreLGWalletPool *rctImpl = (RCTCoreLGWalletPool *)[self.bridge moduleForName:@"CoreLGWalletPool"];
+        [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
+        
+        NSDictionary *result = @{@"type" : @"CoreLGWalletPool", @"uid" : uuid };
+        
+        if(result)
+        {
+            resolve(result);
+        }
+        else
+        {
+            reject(@"impl_call_error", @"Error while calling LGWalletPool::newInstance", nil);
+        }
     }
-    else
-    {
-        reject(@"impl_call_error", @"Error while calling LGWalletPool::newInstance", nil);
-    }
-
+    
 }
 
 /**

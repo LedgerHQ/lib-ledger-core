@@ -21,18 +21,18 @@ RCT_EXPORT_MODULE(RCTCoreLGError)
     return self;
 }
 RCT_REMAP_METHOD(init, initWithCode:(LGErrorCode)code
-                            message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                            message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGError * finalResult = [[LGError alloc] initWithCode:code message:message];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGError *rctImpl = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGError", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGError * finalResult = [[LGError alloc] initWithCode:code message:message];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGError *rctImpl = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGError", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

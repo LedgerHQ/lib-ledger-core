@@ -168,4 +168,15 @@ RCT_REMAP_METHOD(getContext,getContext:(NSDictionary *)currentInstance WithResol
     }
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGLogPrinterImpl *objcResult = [[LGLogPrinterImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGLogPrinterImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogPrinterImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

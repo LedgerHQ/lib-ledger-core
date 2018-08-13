@@ -9,7 +9,12 @@
 */
 - (nonnull NSData *)getRandomBytes:(int32_t)size
 {
-  return nil;
+    NSMutableData* data = [NSMutableData dataWithLength:size];
+    int result = SecRandomCopyBytes(kSecRandomDefault, size, data.mutableBytes);
+    if (result != 0) {
+        NSLog(@"SecRandomCopyBytes failed for some reason");
+    }
+    return data;
 }
 
 /**
@@ -18,7 +23,8 @@
 */
 - (int32_t)getRandomInt
 {
-  return 0;
+    NSData *data = [self getRandomBytes:sizeof(int32_t)];
+    return *(int32_t *)([data bytes]);
 }
 
 /**
@@ -27,7 +33,8 @@
 */
 - (int64_t)getRandomLong
 {
-  return 0;
+    NSData *data = [self getRandomBytes:sizeof(int64_t)];
+    return *(int64_t *)([data bytes]);
 }
 
 /**
@@ -36,7 +43,8 @@
 */
 - (int8_t)getRandomByte
 {
-  return 0;
+    NSData *data = [self getRandomBytes:sizeof(int8_t)];
+    return *(int8_t *)([data bytes]);
 }
 
 @end

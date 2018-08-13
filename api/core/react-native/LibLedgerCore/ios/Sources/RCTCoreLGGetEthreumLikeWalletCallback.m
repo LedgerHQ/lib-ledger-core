@@ -54,4 +54,15 @@ RCT_REMAP_METHOD(onError,onError:(NSDictionary *)currentInstance withParams:(non
     [currentInstanceObj onError:error];
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGGetEthreumLikeWalletCallbackImpl *objcResult = [[LGGetEthreumLikeWalletCallbackImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGGetEthreumLikeWalletCallbackImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGGetEthreumLikeWalletCallbackImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

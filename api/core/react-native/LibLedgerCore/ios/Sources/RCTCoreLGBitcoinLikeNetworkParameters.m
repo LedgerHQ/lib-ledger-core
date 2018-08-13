@@ -30,18 +30,18 @@ RCT_REMAP_METHOD(init, initWithIdentifier:(nonnull NSString *)Identifier
                UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                            TimestampDelay:(int64_t)TimestampDelay
                                   SigHash:(nonnull NSData *)SigHash
-                           AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                           AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGBitcoinLikeNetworkParameters * finalResult = [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:Identifier P2PKHVersion:P2PKHVersion P2SHVersion:P2SHVersion XPUBVersion:XPUBVersion FeePolicy:FeePolicy DustAmount:DustAmount MessagePrefix:MessagePrefix UsesTimestampedTransaction:UsesTimestampedTransaction TimestampDelay:TimestampDelay SigHash:SigHash AdditionalBIPs:AdditionalBIPs];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGBitcoinLikeNetworkParameters *rctImpl = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeNetworkParameters", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGBitcoinLikeNetworkParameters * finalResult = [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:Identifier P2PKHVersion:P2PKHVersion P2SHVersion:P2SHVersion XPUBVersion:XPUBVersion FeePolicy:FeePolicy DustAmount:DustAmount MessagePrefix:MessagePrefix UsesTimestampedTransaction:UsesTimestampedTransaction TimestampDelay:TimestampDelay SigHash:SigHash AdditionalBIPs:AdditionalBIPs];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeNetworkParameters *rctImpl = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeNetworkParameters", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

@@ -290,7 +290,7 @@ RCT_REMAP_METHOD(getScriptSig,getScriptSig:(NSDictionary *)currentInstance WithR
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getScriptSig];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

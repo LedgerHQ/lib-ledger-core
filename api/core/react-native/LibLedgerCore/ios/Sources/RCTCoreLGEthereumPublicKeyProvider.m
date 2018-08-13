@@ -20,4 +20,15 @@ RCT_EXPORT_MODULE(RCTCoreLGEthereumPublicKeyProvider)
     }
     return self;
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGEthereumPublicKeyProviderImpl *objcResult = [[LGEthereumPublicKeyProviderImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGEthereumPublicKeyProviderImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEthereumPublicKeyProviderImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

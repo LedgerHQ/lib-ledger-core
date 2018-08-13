@@ -127,7 +127,7 @@ RCT_REMAP_METHOD(getScript,getScript:(NSDictionary *)currentInstance WithResolve
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getScript];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

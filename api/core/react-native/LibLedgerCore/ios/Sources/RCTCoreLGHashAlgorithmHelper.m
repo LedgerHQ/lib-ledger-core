@@ -38,7 +38,7 @@ RCT_REMAP_METHOD(ripemd160,ripemd160:(NSDictionary *)currentInstance withParams:
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj ripemd160:data];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -67,7 +67,7 @@ RCT_REMAP_METHOD(sha256,sha256:(NSDictionary *)currentInstance withParams:(nonnu
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj sha256:data];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -96,7 +96,7 @@ RCT_REMAP_METHOD(keccak256,keccak256:(NSDictionary *)currentInstance withParams:
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj keccak256:data];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -106,5 +106,16 @@ RCT_REMAP_METHOD(keccak256,keccak256:(NSDictionary *)currentInstance withParams:
         reject(@"impl_call_error", @"Error while calling LGHashAlgorithmHelperImpl::keccak256", nil);
     }
 
+}
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGHashAlgorithmHelperImpl *objcResult = [[LGHashAlgorithmHelperImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGHashAlgorithmHelperImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelperImpl::init", nil);
+    }
+    resolve(result);
 }
 @end

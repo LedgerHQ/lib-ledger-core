@@ -24,18 +24,18 @@ RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
                               owners:(nonnull NSArray<NSString *> *)owners
                          derivations:(nonnull NSArray<NSString *> *)derivations
                           publicKeys:(nonnull NSArray<NSData *> *)publicKeys
-                          chainCodes:(nonnull NSArray<NSData *> *)chainCodes withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                          chainCodes:(nonnull NSArray<NSData *> *)chainCodes withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGAccountCreationInfo * finalResult = [[LGAccountCreationInfo alloc] initWithIndex:index owners:owners derivations:derivations publicKeys:publicKeys chainCodes:chainCodes];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGAccountCreationInfo *rctImpl = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGAccountCreationInfo * finalResult = [[LGAccountCreationInfo alloc] initWithIndex:index owners:owners derivations:derivations publicKeys:publicKeys chainCodes:chainCodes];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAccountCreationInfo *rctImpl = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

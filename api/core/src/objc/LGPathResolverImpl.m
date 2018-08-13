@@ -2,6 +2,18 @@
 
 @implementation LGPathResolverImpl
 
+-(instancetype)init
+{
+    self = [super init];
+    if (self) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        if ([paths count] == 0) {
+            self.rootPath = paths[0];
+        }
+    }
+    return self;
+}
+
 /**
 * Resolves the path for a SQLite database file.
 * @param path The path to resolve.
@@ -9,7 +21,11 @@
 */
 - (nonnull NSString *)resolveDatabasePath:(nonnull NSString *)path
 {
-  return nil;
+    NSString *tmpPath = @"database_";
+    tmpPath = [tmpPath stringByAppendingString:[path stringByReplacingOccurrencesOfString:@"/" withString:@"__"]];
+    NSString *result = [self.rootPath stringByAppendingPathComponent:tmpPath];
+    NSLog(@"************resolveDatabasePath: %@",result);
+    return result;
 }
 
 /**
@@ -19,7 +35,12 @@
 */
 - (nonnull NSString *)resolveLogFilePath:(nonnull NSString *)path
 {
-  return nil;
+    NSString *tmpPath = @"log_file_";
+    tmpPath = [tmpPath stringByAppendingString:[path stringByReplacingOccurrencesOfString:@"/" withString:@"__"]];
+    
+    NSString *result = [self.rootPath stringByAppendingPathComponent:tmpPath];
+    NSLog(@"************resolveLogFilePath: %@",result);
+    return result;
 }
 
 /**
@@ -29,7 +50,11 @@
 */
 - (nonnull NSString *)resolvePreferencesPath:(nonnull NSString *)path
 {
-  return nil;
+    NSString *tmpPath = @"preferences_";
+    tmpPath = [tmpPath stringByAppendingString:[path stringByReplacingOccurrencesOfString:@"/" withString:@"__"]];
+    NSString *result = [self.rootPath stringByAppendingPathComponent:tmpPath];
+    NSLog(@"************resolvePreferencesPath: %@",result);
+    return result;
 }
 
 @end

@@ -21,18 +21,18 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpReadBodyResult)
     return self;
 }
 RCT_REMAP_METHOD(init, initWithError:(nullable LGError *)error
-                                data:(nullable NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                                data:(nullable NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:error data:data];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGHttpReadBodyResult *rctImpl = (RCTCoreLGHttpReadBodyResult *)[self.bridge moduleForName:@"CoreLGHttpReadBodyResult"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGHttpReadBodyResult", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:error data:data];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGHttpReadBodyResult *rctImpl = (RCTCoreLGHttpReadBodyResult *)[self.bridge moduleForName:@"CoreLGHttpReadBodyResult"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGHttpReadBodyResult", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

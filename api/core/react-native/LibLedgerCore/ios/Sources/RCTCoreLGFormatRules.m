@@ -21,18 +21,18 @@ RCT_EXPORT_MODULE(RCTCoreLGFormatRules)
     return self;
 }
 RCT_REMAP_METHOD(init, initWithRoundingMode:(LGRoundingMode)roundingMode
-                        maxNumberOfDecimals:(int32_t)maxNumberOfDecimals withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                        maxNumberOfDecimals:(int32_t)maxNumberOfDecimals withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGFormatRules * finalResult = [[LGFormatRules alloc] initWithRoundingMode:roundingMode maxNumberOfDecimals:maxNumberOfDecimals];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGFormatRules *rctImpl = (RCTCoreLGFormatRules *)[self.bridge moduleForName:@"CoreLGFormatRules"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGFormatRules", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGFormatRules * finalResult = [[LGFormatRules alloc] initWithRoundingMode:roundingMode maxNumberOfDecimals:maxNumberOfDecimals];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGFormatRules *rctImpl = (RCTCoreLGFormatRules *)[self.bridge moduleForName:@"CoreLGFormatRules"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGFormatRules", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

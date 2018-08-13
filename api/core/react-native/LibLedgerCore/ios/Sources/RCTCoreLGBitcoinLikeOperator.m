@@ -21,18 +21,18 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperator)
     return self;
 }
 RCT_REMAP_METHOD(init, initWithOperatorName:(nonnull NSString *)operatorName
-                                      value:(int8_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                                      value:(int8_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGBitcoinLikeOperator * finalResult = [[LGBitcoinLikeOperator alloc] initWithOperatorName:operatorName value:value];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGBitcoinLikeOperator *rctImpl = (RCTCoreLGBitcoinLikeOperator *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperator"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOperator", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGBitcoinLikeOperator * finalResult = [[LGBitcoinLikeOperator alloc] initWithOperatorName:operatorName value:value];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeOperator *rctImpl = (RCTCoreLGBitcoinLikeOperator *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperator"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOperator", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

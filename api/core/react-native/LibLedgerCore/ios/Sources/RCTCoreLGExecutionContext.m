@@ -66,4 +66,15 @@ RCT_REMAP_METHOD(delay,delay:(NSDictionary *)currentInstance withParams:(NSDicti
     [currentInstanceObj delay:objcParam_0 millis:millis];
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGExecutionContextImpl *objcResult = [[LGExecutionContextImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGExecutionContextImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGExecutionContextImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

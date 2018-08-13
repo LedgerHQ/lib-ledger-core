@@ -712,7 +712,7 @@ RCT_REMAP_METHOD(serialize,serialize:(NSDictionary *)currentInstance WithResolve
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj serialize];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

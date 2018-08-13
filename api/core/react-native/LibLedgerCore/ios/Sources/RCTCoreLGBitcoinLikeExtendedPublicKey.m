@@ -63,7 +63,7 @@ RCT_REMAP_METHOD(derivePublicKey,derivePublicKey:(NSDictionary *)currentInstance
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj derivePublicKey:path];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -87,7 +87,7 @@ RCT_REMAP_METHOD(deriveHash160,deriveHash160:(NSDictionary *)currentInstance wit
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj deriveHash160:path];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

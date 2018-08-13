@@ -24,36 +24,36 @@ RCT_REMAP_METHOD(init, initWithUtxo:(NSArray <NSDictionary *> *)utxo
                             outputs:(NSArray <NSDictionary *> *)outputs
                            baseFees:(nullable NSDictionary *)baseFees
                           totalFees:(nullable NSDictionary *)totalFees
-                           lockTime:(nullable NSNumber *)lockTime withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
-NSMutableArray *convertedField_0 = [[NSMutableArray alloc] init];
-for (id utxo_elem in utxo)
-{
-    RCTCoreLGBitcoinLikeOutput *rctParam_utxo_elem = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
-    LGBitcoinLikeOutput *convertedField_0_elem = (LGBitcoinLikeOutput *)[rctParam_utxo_elem.objcImplementations objectForKey:utxo_elem[@"uid"]];
-    [convertedField_0 addObject:convertedField_0_elem];
-}
-NSMutableArray *convertedField_1 = [[NSMutableArray alloc] init];
-for (id outputs_elem in outputs)
-{
-    RCTCoreLGBitcoinLikeOutput *rctParam_outputs_elem = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
-    LGBitcoinLikeOutput *convertedField_1_elem = (LGBitcoinLikeOutput *)[rctParam_outputs_elem.objcImplementations objectForKey:outputs_elem[@"uid"]];
-    [convertedField_1 addObject:convertedField_1_elem];
-}
-RCTCoreLGAmount *rctParam_baseFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-LGAmount *convertedField_2 = (LGAmount *)[rctParam_baseFees.objcImplementations objectForKey:baseFees[@"uid"]];
-RCTCoreLGAmount *rctParam_totalFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-LGAmount *convertedField_3 = (LGAmount *)[rctParam_totalFees.objcImplementations objectForKey:totalFees[@"uid"]];
+                           lockTime:(nullable NSNumber *)lockTime withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSMutableArray *convertedField_0 = [[NSMutableArray alloc] init];
+    for (id utxo_elem in utxo)
+    {
+        RCTCoreLGBitcoinLikeOutput *rctParam_utxo_elem = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
+        LGBitcoinLikeOutput *convertedField_0_elem = (LGBitcoinLikeOutput *)[rctParam_utxo_elem.objcImplementations objectForKey:utxo_elem[@"uid"]];
+        [convertedField_0 addObject:convertedField_0_elem];
+    }
+    NSMutableArray *convertedField_1 = [[NSMutableArray alloc] init];
+    for (id outputs_elem in outputs)
+    {
+        RCTCoreLGBitcoinLikeOutput *rctParam_outputs_elem = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
+        LGBitcoinLikeOutput *convertedField_1_elem = (LGBitcoinLikeOutput *)[rctParam_outputs_elem.objcImplementations objectForKey:outputs_elem[@"uid"]];
+        [convertedField_1 addObject:convertedField_1_elem];
+    }
+    RCTCoreLGAmount *rctParam_baseFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *convertedField_2 = (LGAmount *)[rctParam_baseFees.objcImplementations objectForKey:baseFees[@"uid"]];
+    RCTCoreLGAmount *rctParam_totalFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    LGAmount *convertedField_3 = (LGAmount *)[rctParam_totalFees.objcImplementations objectForKey:totalFees[@"uid"]];
 
 
-LGBitcoinLikeTransactionRequest * finalResult = [[LGBitcoinLikeTransactionRequest alloc] initWithUtxo:convertedField_0 outputs:convertedField_1 baseFees:convertedField_2 totalFees:convertedField_3 lockTime:lockTime];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGBitcoinLikeTransactionRequest *rctImpl = (RCTCoreLGBitcoinLikeTransactionRequest *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransactionRequest"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeTransactionRequest", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGBitcoinLikeTransactionRequest * finalResult = [[LGBitcoinLikeTransactionRequest alloc] initWithUtxo:convertedField_0 outputs:convertedField_1 baseFees:convertedField_2 totalFees:convertedField_3 lockTime:lockTime];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeTransactionRequest *rctImpl = (RCTCoreLGBitcoinLikeTransactionRequest *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransactionRequest"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeTransactionRequest", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

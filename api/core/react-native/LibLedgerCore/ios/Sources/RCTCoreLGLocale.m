@@ -22,18 +22,18 @@ RCT_EXPORT_MODULE(RCTCoreLGLocale)
 }
 RCT_REMAP_METHOD(init, initWithDecimalSeparator:(nonnull NSString *)DecimalSeparator
                              ThousandsSeparator:(nonnull NSString *)ThousandsSeparator
-                     IsPrefixedByCurrencySymbol:(BOOL)IsPrefixedByCurrencySymbol withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                     IsPrefixedByCurrencySymbol:(BOOL)IsPrefixedByCurrencySymbol withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGLocale * finalResult = [[LGLocale alloc] initWithDecimalSeparator:DecimalSeparator ThousandsSeparator:ThousandsSeparator IsPrefixedByCurrencySymbol:IsPrefixedByCurrencySymbol];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGLocale *rctImpl = (RCTCoreLGLocale *)[self.bridge moduleForName:@"CoreLGLocale"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGLocale", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGLocale * finalResult = [[LGLocale alloc] initWithDecimalSeparator:DecimalSeparator ThousandsSeparator:ThousandsSeparator IsPrefixedByCurrencySymbol:IsPrefixedByCurrencySymbol];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGLocale *rctImpl = (RCTCoreLGLocale *)[self.bridge moduleForName:@"CoreLGLocale"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGLocale", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

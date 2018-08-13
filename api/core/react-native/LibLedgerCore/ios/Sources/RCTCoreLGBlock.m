@@ -24,18 +24,18 @@ RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
                                      uid:(nonnull NSString *)uid
                                     time:(nonnull NSDate *)time
                             currencyName:(nonnull NSString *)currencyName
-                                  height:(int64_t)height withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                                  height:(int64_t)height withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGBlock * finalResult = [[LGBlock alloc] initWithBlockHash:blockHash uid:uid time:time currencyName:currencyName height:height];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGBlock *rctImpl = (RCTCoreLGBlock *)[self.bridge moduleForName:@"CoreLGBlock"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGBlock", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGBlock * finalResult = [[LGBlock alloc] initWithBlockHash:blockHash uid:uid time:time currencyName:currencyName height:height];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBlock *rctImpl = (RCTCoreLGBlock *)[self.bridge moduleForName:@"CoreLGBlock"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBlock", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

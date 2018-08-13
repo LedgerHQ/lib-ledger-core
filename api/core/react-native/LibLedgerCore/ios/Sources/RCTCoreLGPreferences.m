@@ -183,7 +183,7 @@ RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(non
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getData:key fallbackValue:fallbackValue];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

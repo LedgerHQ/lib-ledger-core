@@ -37,7 +37,7 @@ RCT_REMAP_METHOD(getVersion,getVersion:(NSDictionary *)currentInstance WithResol
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getVersion];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -65,7 +65,7 @@ RCT_REMAP_METHOD(getHash160,getHash160:(NSDictionary *)currentInstance WithResol
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getHash160];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

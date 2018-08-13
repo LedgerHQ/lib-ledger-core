@@ -38,7 +38,7 @@ RCT_REMAP_METHOD(getRandomBytes,getRandomBytes:(NSDictionary *)currentInstance w
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getRandomBytes:size];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -132,5 +132,16 @@ RCT_REMAP_METHOD(getRandomByte,getRandomByte:(NSDictionary *)currentInstance Wit
         reject(@"impl_call_error", @"Error while calling LGRandomNumberGeneratorImpl::getRandomByte", nil);
     }
 
+}
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGRandomNumberGeneratorImpl *objcResult = [[LGRandomNumberGeneratorImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGRandomNumberGeneratorImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGRandomNumberGeneratorImpl::init", nil);
+    }
+    resolve(result);
 }
 @end

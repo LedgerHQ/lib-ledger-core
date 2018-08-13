@@ -42,4 +42,15 @@ RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance withParams:(NSD
     [currentInstanceObj execute:objcParam_0];
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGHttpClientImpl *objcResult = [[LGHttpClientImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGHttpClientImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGHttpClientImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

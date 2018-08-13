@@ -159,4 +159,15 @@ RCT_REMAP_METHOD(newLock,newLock:(NSDictionary *)currentInstance WithResolver:(R
     }
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGThreadDispatcherImpl *objcResult = [[LGThreadDispatcherImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGThreadDispatcherImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcherImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

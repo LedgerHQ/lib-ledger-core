@@ -21,18 +21,18 @@ RCT_EXPORT_MODULE(RCTCoreLGEstimatedSize)
     return self;
 }
 RCT_REMAP_METHOD(init, initWithMin:(int32_t)Min
-                               Max:(int32_t)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                               Max:(int32_t)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGEstimatedSize * finalResult = [[LGEstimatedSize alloc] initWithMin:Min Max:Max];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGEstimatedSize *rctImpl = (RCTCoreLGEstimatedSize *)[self.bridge moduleForName:@"CoreLGEstimatedSize"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGEstimatedSize", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGEstimatedSize * finalResult = [[LGEstimatedSize alloc] initWithMin:Min Max:Max];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGEstimatedSize *rctImpl = (RCTCoreLGEstimatedSize *)[self.bridge moduleForName:@"CoreLGEstimatedSize"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGEstimatedSize", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

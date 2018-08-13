@@ -93,7 +93,7 @@ RCT_REMAP_METHOD(getBody,getBody:(NSDictionary *)currentInstance WithResolver:(R
         reject(@"impl_call_error", error, nil);
     }
     NSData * objcResult = [currentInstanceObj getBody];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);

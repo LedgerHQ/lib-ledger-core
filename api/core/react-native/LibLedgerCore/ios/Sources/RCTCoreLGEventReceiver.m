@@ -42,4 +42,15 @@ RCT_REMAP_METHOD(onEvent,onEvent:(NSDictionary *)currentInstance withParams:(NSD
     [currentInstanceObj onEvent:objcParam_0];
 
 }
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGEventReceiverImpl *objcResult = [[LGEventReceiverImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGEventReceiverImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventReceiverImpl::init", nil);
+    }
+    resolve(result);
+}
 @end

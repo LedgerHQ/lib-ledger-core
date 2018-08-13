@@ -23,18 +23,18 @@ RCT_EXPORT_MODULE(RCTCoreLGExtendedKeyAccountCreationInfo)
 RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
                               owners:(nonnull NSArray<NSString *> *)owners
                          derivations:(nonnull NSArray<NSString *> *)derivations
-                        extendedKeys:(nonnull NSArray<NSString *> *)extendedKeys withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+                        extendedKeys:(nonnull NSArray<NSString *> *)extendedKeys withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
-LGExtendedKeyAccountCreationInfo * finalResult = [[LGExtendedKeyAccountCreationInfo alloc] initWithIndex:index owners:owners derivations:derivations extendedKeys:extendedKeys];
-NSString *uuid = [[NSUUID UUID] UUIDString];
-RCTCoreLGExtendedKeyAccountCreationInfo *rctImpl = (RCTCoreLGExtendedKeyAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGExtendedKeyAccountCreationInfo"];
-[rctImpl.objcImplementations setObject:finalResult forKey:uuid];
-NSDictionary *result = @{@"type" : @"CoreLGExtendedKeyAccountCreationInfo", @"uid" : uuid };
-if(result)
-{
-    resolve(result);
-}
+    LGExtendedKeyAccountCreationInfo * finalResult = [[LGExtendedKeyAccountCreationInfo alloc] initWithIndex:index owners:owners derivations:derivations extendedKeys:extendedKeys];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGExtendedKeyAccountCreationInfo *rctImpl = (RCTCoreLGExtendedKeyAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGExtendedKeyAccountCreationInfo"];
+    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGExtendedKeyAccountCreationInfo", @"uid" : uuid };
+    if(result)
+    {
+        resolve(result);
+    }
 }
 
 @end

@@ -13,21 +13,55 @@ import {
   NativeModules
 } from 'react-native';
 
-const { CoreLGSecp256k1 } = NativeModules;
+const { CoreLGSecp256k1,
+        CoreLGHttpClient,
+        CoreLGWebSocketClient,
+        CoreLGPathResolver,
+        CoreLGLogPrinter,
+        CoreLGThreadDispatcher,
+        CoreLGRandomNumberGenerator,
+        CoreLGDatabaseBackend,
+        CoreLGDynamicObject,
+        CoreLGWalletPool
+      } = NativeModules;
+      
 console.log("=====NativeModules")
 console.log(NativeModules)
-console.log("=====CoreLGSecp256k1")
-console.log(CoreLGSecp256k1)
 
-// const RCTCoreLGSecp256k1 = NativeModules.CoreLGSecp256k1()
-// console.log("=====RCTCoreLGSecp256k1")
-// console.log(RCTCoreLGSecp256k1)
+async function createWalletPoolInstance () {
+  const httpClient = await CoreLGHttpClient.new();
+  const webSocket = await CoreLGWebSocketClient.new();
+  const pathResolver = await CoreLGPathResolver.new();
+  const logPrinter = await CoreLGLogPrinter.new();
+  const threadDispatcher = await CoreLGThreadDispatcher.new();
+  const rng = await CoreLGRandomNumberGenerator.new();
+  const backend = await CoreLGDatabaseBackend.getSqlite3Backend();
+  const dynamicObject = await CoreLGDynamicObject.newInstance();
+  const walletPoolInstance = await CoreLGWalletPool.newInstance('ledger_live_desktop',
+                                                                '',
+                                                                httpClient,
+                                                                webSocket,
+                                                                pathResolver,
+                                                                logPrinter,
+                                                                threadDispatcher,
+                                                                rng,
+                                                                backend,
+                                                                dynamicObject);
+    console.log(" >>> walletPoolInstance");
+    console.log(walletPoolInstance);
+    return walletPoolInstance;
 
+}
+const walletPool = createWalletPoolInstance();
 async function getPublicKeyFromPrivKey (privKey, compressed) {
     try {
-        const publicKey = await CoreLGSecp256k1.computePubKey(privKey,compressed)
+        const secp256k1 = await CoreLGSecp256k1.createInstance();
+        console.log("============Secp256k1 instance")
+        console.log(secp256k1)
+        const publicKey = await CoreLGSecp256k1.computePubKey(secp256k1,privKey,compressed)
         console.log("============Public Key")
         console.log(publicKey)
+        //console.log(Buffer.from(publicKey, 'hex'))
 
     } catch (e) {
         console.log("============Error")
@@ -35,7 +69,7 @@ async function getPublicKeyFromPrivKey (privKey, compressed) {
     }
 }
 
-getPublicKeyFromPrivKey("12345", true)
+//getPublicKeyFromPrivKey("12345", true)
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
