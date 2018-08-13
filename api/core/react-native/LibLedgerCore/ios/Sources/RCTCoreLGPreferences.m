@@ -241,10 +241,10 @@ RCT_REMAP_METHOD(edit,edit:(NSDictionary *)currentInstance WithResolver:(RCTProm
     LGPreferencesEditor * objcResult = [currentInstanceObj edit];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferencesEditor *rctImpl = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
 
     if(result)
     {

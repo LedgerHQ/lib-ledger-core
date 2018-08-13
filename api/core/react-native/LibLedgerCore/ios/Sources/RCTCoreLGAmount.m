@@ -39,10 +39,10 @@ RCT_REMAP_METHOD(toBigInt,toBigInt:(NSDictionary *)currentInstance WithResolver:
     LGBigInt * objcResult = [currentInstanceObj toBigInt];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBigInt *rctImpl = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBigInt *rctImpl_objcResult = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
+
 
     if(result)
     {
@@ -71,7 +71,13 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
         reject(@"impl_call_error", error, nil);
     }
     LGCurrency * objcResult = [currentInstanceObj getCurrency];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -99,7 +105,13 @@ RCT_REMAP_METHOD(getUnit,getUnit:(NSDictionary *)currentInstance WithResolver:(R
         reject(@"impl_call_error", error, nil);
     }
     LGCurrencyUnit * objcResult = [currentInstanceObj getUnit];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrencyUnit *rctImpl_objcResult = (RCTCoreLGCurrencyUnit *)[self.bridge moduleForName:@"CoreLGCurrencyUnit"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrencyUnit", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -116,7 +128,7 @@ RCT_REMAP_METHOD(getUnit,getUnit:(NSDictionary *)currentInstance WithResolver:(R
  *@param CurrencyUnit object, target currency unit
  *@return Amount object, amount in target currency unit
  */
-RCT_REMAP_METHOD(toUnit,toUnit:(NSDictionary *)currentInstance withParams:(nonnull LGCurrencyUnit *)unit withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(toUnit,toUnit:(NSDictionary *)currentInstance withParams:(NSDictionary *)unit withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::toUnit, first argument should be an instance of LGAmount", nil);
@@ -127,13 +139,15 @@ RCT_REMAP_METHOD(toUnit,toUnit:(NSDictionary *)currentInstance withParams:(nonnu
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::toUnit, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    LGAmount * objcResult = [currentInstanceObj toUnit:unit];
+    RCTCoreLGCurrencyUnit *rctParam_unit = (RCTCoreLGCurrencyUnit *)[self.bridge moduleForName:@"CoreLGCurrencyUnit"];
+    LGCurrencyUnit *objcParam_0 = (LGCurrencyUnit *)[rctParam_unit.objcImplementations objectForKey:unit[@"uid"]];
+    LGAmount * objcResult = [currentInstanceObj toUnit:objcParam_0];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
 
     if(result)
     {
@@ -161,10 +175,10 @@ RCT_REMAP_METHOD(toMagnitude,toMagnitude:(NSDictionary *)currentInstance withPar
     LGAmount * objcResult = [currentInstanceObj toMagnitude:magnitude];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
 
     if(result)
     {
@@ -262,8 +276,8 @@ RCT_REMAP_METHOD(toDouble,toDouble:(NSDictionary *)currentInstance WithResolver:
 }
 
 /**TODO */
-RCT_REMAP_METHOD(format,format:(NSDictionary *)currentInstance withParams:(nonnull LGLocale *)locale
-                                                                    rules:(nullable LGFormatRules *)rules withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(format,format:(NSDictionary *)currentInstance withParams:(NSDictionary *)locale
+                                                                    rules:(nullable NSDictionary *)rules withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAmount::format, first argument should be an instance of LGAmount", nil);
@@ -274,7 +288,11 @@ RCT_REMAP_METHOD(format,format:(NSDictionary *)currentInstance withParams:(nonnu
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAmount::format, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    NSString * objcResult = [currentInstanceObj format:locale rules:rules];
+    RCTCoreLGLocale *rctParam_locale = (RCTCoreLGLocale *)[self.bridge moduleForName:@"CoreLGLocale"];
+    LGLocale *objcParam_0 = (LGLocale *)[rctParam_locale.objcImplementations objectForKey:locale[@"uid"]];
+    RCTCoreLGFormatRules *rctParam_rules = (RCTCoreLGFormatRules *)[self.bridge moduleForName:@"CoreLGFormatRules"];
+    LGFormatRules *objcParam_1 = (LGFormatRules *)[rctParam_rules.objcImplementations objectForKey:rules[@"uid"]];
+    NSString * objcResult = [currentInstanceObj format:objcParam_0 rules:objcParam_1];
     NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
@@ -287,15 +305,17 @@ RCT_REMAP_METHOD(format,format:(NSDictionary *)currentInstance withParams:(nonnu
 
 }
 
-RCT_REMAP_METHOD(fromHex,fromHexwithParams:(nonnull LGCurrency *)currency
+RCT_REMAP_METHOD(fromHex,fromHexwithParams:(NSDictionary *)currency
                                        hex:(nonnull NSString *)hex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    LGAmount * objcResult = [LGAmount fromHex:currency hex:hex];
+    RCTCoreLGCurrency *rctParam_currency = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    LGCurrency *objcParam_0 = (LGCurrency *)[rctParam_currency.objcImplementations objectForKey:currency[@"uid"]];
+    LGAmount * objcResult = [LGAmount fromHex:objcParam_0 hex:hex];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
 
     if(result)
     {
@@ -308,15 +328,17 @@ RCT_REMAP_METHOD(fromHex,fromHexwithParams:(nonnull LGCurrency *)currency
 
 }
 
-RCT_REMAP_METHOD(fromLong,fromLongwithParams:(nonnull LGCurrency *)currency
+RCT_REMAP_METHOD(fromLong,fromLongwithParams:(NSDictionary *)currency
                                        value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    LGAmount * objcResult = [LGAmount fromLong:currency value:value];
+    RCTCoreLGCurrency *rctParam_currency = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    LGCurrency *objcParam_0 = (LGCurrency *)[rctParam_currency.objcImplementations objectForKey:currency[@"uid"]];
+    LGAmount * objcResult = [LGAmount fromLong:objcParam_0 value:value];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
 
     if(result)
     {

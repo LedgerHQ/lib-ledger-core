@@ -39,7 +39,7 @@ RCT_REMAP_METHOD(getUTXO,getUTXO:(NSDictionary *)currentInstance withParams:(int
         NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeAccount::getUTXO, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGBitcoinLikeOutputListCallback *objcParam_2 = [[RCTCoreLGBitcoinLikeOutputListCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGBitcoinLikeOutputListCallback *objcParam_2 = [[RCTCoreLGBitcoinLikeOutputListCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getUTXO:from to:to callback:objcParam_2];
 
 }
@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(getUTXOCount,getUTXOCount:(NSDictionary *)currentInstance WithR
         NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeAccount::getUTXOCount, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getUTXOCount:objcParam_0];
 
 }
@@ -75,7 +75,7 @@ RCT_REMAP_METHOD(broadcastRawTransaction,broadcastRawTransaction:(NSDictionary *
         NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeAccount::broadcastRawTransaction, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGStringCallback *objcParam_1 = [[RCTCoreLGStringCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGStringCallback *objcParam_1 = [[RCTCoreLGStringCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj broadcastRawTransaction:transaction callback:objcParam_1];
 
 }
@@ -91,10 +91,9 @@ RCT_REMAP_METHOD(broadcastTransaction,broadcastTransaction:(NSDictionary *)curre
         NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeAccount::broadcastTransaction, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGBitcoinLikeTransaction *rctParam_0 = (RCTCoreLGBitcoinLikeTransaction *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransaction"];
-    LGBitcoinLikeTransaction *objcParam_0 = (LGBitcoinLikeTransaction *)[rctParam_0.objcImplementations objectForKey:transaction[@"uid"]];
-
-    RCTCoreLGStringCallback *objcParam_1 = [[RCTCoreLGStringCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGBitcoinLikeTransaction *rctParam_transaction = (RCTCoreLGBitcoinLikeTransaction *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransaction"];
+    LGBitcoinLikeTransaction *objcParam_0 = (LGBitcoinLikeTransaction *)[rctParam_transaction.objcImplementations objectForKey:transaction[@"uid"]];
+    RCTCoreLGStringCallback *objcParam_1 = [[RCTCoreLGStringCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj broadcastTransaction:objcParam_0 callback:objcParam_1];
 
 }
@@ -113,10 +112,10 @@ RCT_REMAP_METHOD(buildTransaction,buildTransaction:(NSDictionary *)currentInstan
     LGBitcoinLikeTransactionBuilder * objcResult = [currentInstanceObj buildTransaction];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeTransactionBuilder *rctImpl = (RCTCoreLGBitcoinLikeTransactionBuilder *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransactionBuilder"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeTransactionBuilder *rctImpl_objcResult = (RCTCoreLGBitcoinLikeTransactionBuilder *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransactionBuilder"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeTransactionBuilder", @"uid" : uuid };
+
 
     if(result)
     {

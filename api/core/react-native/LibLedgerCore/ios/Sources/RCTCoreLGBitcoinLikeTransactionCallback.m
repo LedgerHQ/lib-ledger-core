@@ -5,17 +5,14 @@
 
 
 @implementation RCTCoreLGBitcoinLikeTransactionCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransactionCallback)
-
-@synthesize bridge = _bridge;
--(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
     if(self)
     {
         self.resolve = resolve;
         self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }

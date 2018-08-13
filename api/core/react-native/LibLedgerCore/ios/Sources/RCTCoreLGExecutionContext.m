@@ -36,9 +36,8 @@ RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance withParams:(NSD
         NSString *error = [NSString stringWithFormat:@"Error while calling LGExecutionContextImpl::execute, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGRunnable *rctParam_0 = (RCTCoreLGRunnable *)[self.bridge moduleForName:@"CoreLGRunnable"];
-    LGRunnable *objcParam_0 = (LGRunnable *)[rctParam_0.objcImplementations objectForKey:runnable[@"uid"]];
-
+    RCTCoreLGRunnable *rctParam_runnable = (RCTCoreLGRunnable *)[self.bridge moduleForName:@"CoreLGRunnable"];
+    LGRunnable *objcParam_0 = (LGRunnable *)[rctParam_runnable.objcImplementations objectForKey:runnable[@"uid"]];
     [currentInstanceObj execute:objcParam_0];
 
 }
@@ -60,9 +59,8 @@ RCT_REMAP_METHOD(delay,delay:(NSDictionary *)currentInstance withParams:(NSDicti
         NSString *error = [NSString stringWithFormat:@"Error while calling LGExecutionContextImpl::delay, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGRunnable *rctParam_0 = (RCTCoreLGRunnable *)[self.bridge moduleForName:@"CoreLGRunnable"];
-    LGRunnable *objcParam_0 = (LGRunnable *)[rctParam_0.objcImplementations objectForKey:runnable[@"uid"]];
-
+    RCTCoreLGRunnable *rctParam_runnable = (RCTCoreLGRunnable *)[self.bridge moduleForName:@"CoreLGRunnable"];
+    LGRunnable *objcParam_0 = (LGRunnable *)[rctParam_runnable.objcImplementations objectForKey:runnable[@"uid"]];
     [currentInstanceObj delay:objcParam_0 millis:millis];
 
 }

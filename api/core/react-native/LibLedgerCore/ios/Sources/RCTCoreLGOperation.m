@@ -207,10 +207,10 @@ RCT_REMAP_METHOD(getAmount,getAmount:(NSDictionary *)currentInstance WithResolve
     LGAmount * objcResult = [currentInstanceObj getAmount];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGAmount *rctImpl = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
 
     if(result)
     {
@@ -239,7 +239,13 @@ RCT_REMAP_METHOD(getFees,getFees:(NSDictionary *)currentInstance WithResolver:(R
         reject(@"impl_call_error", error, nil);
     }
     LGAmount * objcResult = [currentInstanceObj getFees];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -269,10 +275,10 @@ RCT_REMAP_METHOD(getPreferences,getPreferences:(NSDictionary *)currentInstance W
     LGPreferences * objcResult = [currentInstanceObj getPreferences];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferences *rctImpl = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
 
     if(result)
     {
@@ -303,10 +309,10 @@ RCT_REMAP_METHOD(getTrust,getTrust:(NSDictionary *)currentInstance WithResolver:
     LGTrustIndicator * objcResult = [currentInstanceObj getTrust];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGTrustIndicator *rctImpl = (RCTCoreLGTrustIndicator *)[self.bridge moduleForName:@"CoreLGTrustIndicator"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGTrustIndicator *rctImpl_objcResult = (RCTCoreLGTrustIndicator *)[self.bridge moduleForName:@"CoreLGTrustIndicator"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGTrustIndicator", @"uid" : uuid };
+
 
     if(result)
     {
@@ -365,10 +371,10 @@ RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperation:(NSDictionary *)c
     LGBitcoinLikeOperation * objcResult = [currentInstanceObj asBitcoinLikeOperation];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeOperation *rctImpl = (RCTCoreLGBitcoinLikeOperation *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperation"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeOperation *rctImpl_objcResult = (RCTCoreLGBitcoinLikeOperation *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperation"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOperation", @"uid" : uuid };
+
 
     if(result)
     {
@@ -531,7 +537,13 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
         reject(@"impl_call_error", error, nil);
     }
     LGCurrency * objcResult = [currentInstanceObj getCurrency];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);

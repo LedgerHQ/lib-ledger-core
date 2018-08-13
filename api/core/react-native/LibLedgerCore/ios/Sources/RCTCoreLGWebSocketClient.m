@@ -33,9 +33,8 @@ RCT_REMAP_METHOD(connect,connect:(NSDictionary *)currentInstance withParams:(non
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketClientImpl::connect, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGWebSocketConnection *rctParam_1 = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
-    LGWebSocketConnection *objcParam_1 = (LGWebSocketConnection *)[rctParam_1.objcImplementations objectForKey:connection[@"uid"]];
-
+    RCTCoreLGWebSocketConnection *rctParam_connection = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
+    LGWebSocketConnection *objcParam_1 = (LGWebSocketConnection *)[rctParam_connection.objcImplementations objectForKey:connection[@"uid"]];
     [currentInstanceObj connect:url connection:objcParam_1];
 
 }
@@ -52,9 +51,8 @@ RCT_REMAP_METHOD(send,send:(NSDictionary *)currentInstance withParams:(NSDiction
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketClientImpl::send, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGWebSocketConnection *rctParam_0 = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
-    LGWebSocketConnection *objcParam_0 = (LGWebSocketConnection *)[rctParam_0.objcImplementations objectForKey:connection[@"uid"]];
-
+    RCTCoreLGWebSocketConnection *rctParam_connection = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
+    LGWebSocketConnection *objcParam_0 = (LGWebSocketConnection *)[rctParam_connection.objcImplementations objectForKey:connection[@"uid"]];
     [currentInstanceObj send:objcParam_0 data:data];
 
 }
@@ -70,9 +68,8 @@ RCT_REMAP_METHOD(disconnect,disconnect:(NSDictionary *)currentInstance withParam
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketClientImpl::disconnect, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGWebSocketConnection *rctParam_0 = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
-    LGWebSocketConnection *objcParam_0 = (LGWebSocketConnection *)[rctParam_0.objcImplementations objectForKey:connection[@"uid"]];
-
+    RCTCoreLGWebSocketConnection *rctParam_connection = (RCTCoreLGWebSocketConnection *)[self.bridge moduleForName:@"CoreLGWebSocketConnection"];
+    LGWebSocketConnection *objcParam_0 = (LGWebSocketConnection *)[rctParam_connection.objcImplementations objectForKey:connection[@"uid"]];
     [currentInstanceObj disconnect:objcParam_0];
 
 }

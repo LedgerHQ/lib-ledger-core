@@ -36,9 +36,8 @@ RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance withParams:(NSD
         NSString *error = [NSString stringWithFormat:@"Error while calling LGHttpClientImpl::execute, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGHttpRequest *rctParam_0 = (RCTCoreLGHttpRequest *)[self.bridge moduleForName:@"CoreLGHttpRequest"];
-    LGHttpRequest *objcParam_0 = (LGHttpRequest *)[rctParam_0.objcImplementations objectForKey:request[@"uid"]];
-
+    RCTCoreLGHttpRequest *rctParam_request = (RCTCoreLGHttpRequest *)[self.bridge moduleForName:@"CoreLGHttpRequest"];
+    LGHttpRequest *objcParam_0 = (LGHttpRequest *)[rctParam_request.objcImplementations objectForKey:request[@"uid"]];
     [currentInstanceObj execute:objcParam_0];
 
 }

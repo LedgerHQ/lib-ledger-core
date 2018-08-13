@@ -65,7 +65,7 @@ RCT_REMAP_METHOD(getAccount,getAccount:(NSDictionary *)currentInstance withParam
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getAccount, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getAccount:index callback:objcParam_1];
 
 }
@@ -85,7 +85,7 @@ RCT_REMAP_METHOD(getAccountCount,getAccountCount:(NSDictionary *)currentInstance
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getAccountCount, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getAccountCount:objcParam_0];
 
 }
@@ -108,7 +108,7 @@ RCT_REMAP_METHOD(getAccounts,getAccounts:(NSDictionary *)currentInstance withPar
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getAccounts, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountListCallback *objcParam_2 = [[RCTCoreLGAccountListCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAccountListCallback *objcParam_2 = [[RCTCoreLGAccountListCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getAccounts:offset count:count callback:objcParam_2];
 
 }
@@ -128,7 +128,7 @@ RCT_REMAP_METHOD(getNextAccountIndex,getNextAccountIndex:(NSDictionary *)current
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getNextAccountIndex, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGI32Callback *objcParam_0 = [[RCTCoreLGI32Callback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getNextAccountIndex:objcParam_0];
 
 }
@@ -151,10 +151,10 @@ RCT_REMAP_METHOD(getEventBus,getEventBus:(NSDictionary *)currentInstance WithRes
     LGEventBus * objcResult = [currentInstanceObj getEventBus];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventBus *rctImpl_objcResult = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
 
     if(result)
     {
@@ -213,10 +213,10 @@ RCT_REMAP_METHOD(synchronize,synchronize:(NSDictionary *)currentInstance WithRes
     LGEventBus * objcResult = [currentInstanceObj synchronize];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventBus *rctImpl_objcResult = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
 
     if(result)
     {
@@ -247,10 +247,10 @@ RCT_REMAP_METHOD(getPreferences,getPreferences:(NSDictionary *)currentInstance W
     LGPreferences * objcResult = [currentInstanceObj getPreferences];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferences *rctImpl = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
 
     if(result)
     {
@@ -281,10 +281,10 @@ RCT_REMAP_METHOD(getLogger,getLogger:(NSDictionary *)currentInstance WithResolve
     LGLogger * objcResult = [currentInstanceObj getLogger];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGLogger *rctImpl = (RCTCoreLGLogger *)[self.bridge moduleForName:@"CoreLGLogger"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGLogger *rctImpl_objcResult = (RCTCoreLGLogger *)[self.bridge moduleForName:@"CoreLGLogger"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGLogger", @"uid" : uuid };
+
 
     if(result)
     {
@@ -316,10 +316,10 @@ RCT_REMAP_METHOD(getAccountPreferences,getAccountPreferences:(NSDictionary *)cur
     LGPreferences * objcResult = [currentInstanceObj getAccountPreferences:index];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferences *rctImpl = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
 
     if(result)
     {
@@ -353,10 +353,10 @@ RCT_REMAP_METHOD(asBitcoinLikeWallet,asBitcoinLikeWallet:(NSDictionary *)current
     LGBitcoinLikeWallet * objcResult = [currentInstanceObj asBitcoinLikeWallet];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeWallet *rctImpl = (RCTCoreLGBitcoinLikeWallet *)[self.bridge moduleForName:@"CoreLGBitcoinLikeWallet"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeWallet *rctImpl_objcResult = (RCTCoreLGBitcoinLikeWallet *)[self.bridge moduleForName:@"CoreLGBitcoinLikeWallet"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeWallet", @"uid" : uuid };
+
 
     if(result)
     {
@@ -385,7 +385,13 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
         reject(@"impl_call_error", error, nil);
     }
     LGCurrency * objcResult = [currentInstanceObj getCurrency];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -524,7 +530,7 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(NSDictionary *)currentInstance WithR
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getLastBlock, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGBlockCallback *objcParam_0 = [[RCTCoreLGBlockCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGBlockCallback *objcParam_0 = [[RCTCoreLGBlockCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getLastBlock:objcParam_0];
 
 }
@@ -545,7 +551,7 @@ RCT_REMAP_METHOD(getAccountCreationInfo,getAccountCreationInfo:(NSDictionary *)c
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getAccountCreationInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountCreationInfoCallback *objcParam_1 = [[RCTCoreLGAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAccountCreationInfoCallback *objcParam_1 = [[RCTCoreLGAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getAccountCreationInfo:accountIndex callback:objcParam_1];
 
 }
@@ -562,7 +568,7 @@ RCT_REMAP_METHOD(getExtendedKeyAccountCreationInfo,getExtendedKeyAccountCreation
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getExtendedKeyAccountCreationInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGExtendedKeyAccountCreationInfoCallback *objcParam_1 = [[RCTCoreLGExtendedKeyAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGExtendedKeyAccountCreationInfoCallback *objcParam_1 = [[RCTCoreLGExtendedKeyAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getExtendedKeyAccountCreationInfo:accountIndex callback:objcParam_1];
 
 }
@@ -582,7 +588,7 @@ RCT_REMAP_METHOD(getNextAccountCreationInfo,getNextAccountCreationInfo:(NSDictio
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getNextAccountCreationInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountCreationInfoCallback *objcParam_0 = [[RCTCoreLGAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAccountCreationInfoCallback *objcParam_0 = [[RCTCoreLGAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getNextAccountCreationInfo:objcParam_0];
 
 }
@@ -599,7 +605,7 @@ RCT_REMAP_METHOD(getNextExtendedKeyAccountCreationInfo,getNextExtendedKeyAccount
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::getNextExtendedKeyAccountCreationInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGExtendedKeyAccountCreationInfoCallback *objcParam_0 = [[RCTCoreLGExtendedKeyAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGExtendedKeyAccountCreationInfoCallback *objcParam_0 = [[RCTCoreLGExtendedKeyAccountCreationInfoCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getNextExtendedKeyAccountCreationInfo:objcParam_0];
 
 }
@@ -609,7 +615,7 @@ RCT_REMAP_METHOD(getNextExtendedKeyAccountCreationInfo,getNextExtendedKeyAccount
  *@param accountCreationInfo, AccountCreationInfo object
  *@param callback, Callback returning an Account object with given creation infos
  */
-RCT_REMAP_METHOD(newAccountWithInfo,newAccountWithInfo:(NSDictionary *)currentInstance withParams:(nonnull LGAccountCreationInfo *)accountCreationInfo withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(newAccountWithInfo,newAccountWithInfo:(NSDictionary *)currentInstance withParams:(NSDictionary *)accountCreationInfo withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::newAccountWithInfo, first argument should be an instance of LGWallet", nil);
@@ -620,13 +626,15 @@ RCT_REMAP_METHOD(newAccountWithInfo,newAccountWithInfo:(NSDictionary *)currentIn
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::newAccountWithInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject];
-    [currentInstanceObj newAccountWithInfo:accountCreationInfo callback:objcParam_1];
+    RCTCoreLGAccountCreationInfo *rctParam_accountCreationInfo = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
+    LGAccountCreationInfo *objcParam_0 = (LGAccountCreationInfo *)[rctParam_accountCreationInfo.objcImplementations objectForKey:accountCreationInfo[@"uid"]];
+    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
+    [currentInstanceObj newAccountWithInfo:objcParam_0 callback:objcParam_1];
 
 }
 
 /**TODO */
-RCT_REMAP_METHOD(newAccountWithExtendedKeyInfo,newAccountWithExtendedKeyInfo:(NSDictionary *)currentInstance withParams:(nonnull LGExtendedKeyAccountCreationInfo *)extendedKeyAccountCreationInfo withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(newAccountWithExtendedKeyInfo,newAccountWithExtendedKeyInfo:(NSDictionary *)currentInstance withParams:(NSDictionary *)extendedKeyAccountCreationInfo withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::newAccountWithExtendedKeyInfo, first argument should be an instance of LGWallet", nil);
@@ -637,8 +645,10 @@ RCT_REMAP_METHOD(newAccountWithExtendedKeyInfo,newAccountWithExtendedKeyInfo:(NS
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::newAccountWithExtendedKeyInfo, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject];
-    [currentInstanceObj newAccountWithExtendedKeyInfo:extendedKeyAccountCreationInfo callback:objcParam_1];
+    RCTCoreLGExtendedKeyAccountCreationInfo *rctParam_extendedKeyAccountCreationInfo = (RCTCoreLGExtendedKeyAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGExtendedKeyAccountCreationInfo"];
+    LGExtendedKeyAccountCreationInfo *objcParam_0 = (LGExtendedKeyAccountCreationInfo *)[rctParam_extendedKeyAccountCreationInfo.objcImplementations objectForKey:extendedKeyAccountCreationInfo[@"uid"]];
+    RCTCoreLGAccountCallback *objcParam_1 = [[RCTCoreLGAccountCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
+    [currentInstanceObj newAccountWithExtendedKeyInfo:objcParam_0 callback:objcParam_1];
 
 }
 
@@ -657,7 +667,7 @@ RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(NSDictionary *)currentInstance w
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWallet::eraseDataSince, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGErrorCodeCallback *objcParam_1 = [[RCTCoreLGErrorCodeCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGErrorCodeCallback *objcParam_1 = [[RCTCoreLGErrorCodeCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj eraseDataSince:date callback:objcParam_1];
 
 }

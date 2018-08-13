@@ -20,11 +20,13 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpReadBodyResult)
     }
     return self;
 }
-RCT_REMAP_METHOD(init, initWithError:(nullable LGError *)error
+RCT_REMAP_METHOD(init, initWithError:(nullable NSDictionary *)error
                                 data:(nullable NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGError *rctParam_error = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
+    LGError *convertedField_0 = (LGError *)[rctParam_error.objcImplementations objectForKey:error[@"uid"]];
 
 
-    LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:error data:data];
+    LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:convertedField_0 data:data];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGHttpReadBodyResult *rctImpl = (RCTCoreLGHttpReadBodyResult *)[self.bridge moduleForName:@"CoreLGHttpReadBodyResult"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];

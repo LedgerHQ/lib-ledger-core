@@ -15,8 +15,9 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGExtendedKeyAccountCreationInfoCallback : NSObject <LGExtendedKeyAccountCreationInfoCallback, RCTBridgeModule>
+@interface RCTCoreLGExtendedKeyAccountCreationInfoCallback : NSObject <LGExtendedKeyAccountCreationInfoCallback>
 @property (nonatomic, strong) RCTPromiseResolveBlock resolve;
 @property (nonatomic, strong) RCTPromiseRejectBlock reject;
--(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject;
+@property (nonatomic, weak) RCTBridge *bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge;
 @end

@@ -81,7 +81,13 @@ RCT_REMAP_METHOD(getOperator,getOperator:(NSDictionary *)currentInstance WithRes
         reject(@"impl_call_error", error, nil);
     }
     LGBitcoinLikeOperator * objcResult = [currentInstanceObj getOperator];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeOperator *rctImpl_objcResult = (RCTCoreLGBitcoinLikeOperator *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperator"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOperator", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -131,10 +137,10 @@ RCT_REMAP_METHOD(next,next:(NSDictionary *)currentInstance WithResolver:(RCTProm
     LGBitcoinLikeScriptChunk * objcResult = [currentInstanceObj next];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeScriptChunk *rctImpl = (RCTCoreLGBitcoinLikeScriptChunk *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScriptChunk"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeScriptChunk *rctImpl_objcResult = (RCTCoreLGBitcoinLikeScriptChunk *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScriptChunk"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScriptChunk", @"uid" : uuid };
+
 
     if(result)
     {

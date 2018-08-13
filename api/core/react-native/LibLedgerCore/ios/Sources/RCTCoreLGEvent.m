@@ -67,10 +67,10 @@ RCT_REMAP_METHOD(getPayload,getPayload:(NSDictionary *)currentInstance WithResol
     LGDynamicObject * objcResult = [currentInstanceObj getPayload];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDynamicObject *rctImpl = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDynamicObject *rctImpl_objcResult = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : uuid };
+
 
     if(result)
     {
@@ -147,16 +147,15 @@ RCT_REMAP_METHOD(getStickyTag,getStickyTag:(NSDictionary *)currentInstance WithR
  */
 RCT_REMAP_METHOD(newInstance,newInstancewithParams:(LGEventCode)code
                                            payload:(NSDictionary *)payload withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    RCTCoreLGDynamicObject *rctParam_1 = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
-    LGDynamicObject *objcParam_1 = (LGDynamicObject *)[rctParam_1.objcImplementations objectForKey:payload[@"uid"]];
-
+    RCTCoreLGDynamicObject *rctParam_payload = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
+    LGDynamicObject *objcParam_1 = (LGDynamicObject *)[rctParam_payload.objcImplementations objectForKey:payload[@"uid"]];
     LGEvent * objcResult = [LGEvent newInstance:code payload:objcParam_1];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEvent *rctImpl = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEvent *rctImpl_objcResult = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEvent", @"uid" : uuid };
+
 
     if(result)
     {

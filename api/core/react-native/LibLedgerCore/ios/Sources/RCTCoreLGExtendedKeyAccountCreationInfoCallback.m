@@ -5,17 +5,14 @@
 
 
 @implementation RCTCoreLGExtendedKeyAccountCreationInfoCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGExtendedKeyAccountCreationInfoCallback)
-
-@synthesize bridge = _bridge;
--(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
     if(self)
     {
         self.resolve = resolve;
         self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -32,8 +29,12 @@ RCT_EXPORT_MODULE(RCTCoreLGExtendedKeyAccountCreationInfoCallback)
         self.reject(@"RCTCoreLGExtendedKeyAccountCreationInfoCallback Error", error.message, nil);
     }
 
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGExtendedKeyAccountCreationInfo *rctImpl_result = (RCTCoreLGExtendedKeyAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGExtendedKeyAccountCreationInfo"];
+    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
+    NSDictionary *converted_result = @{@"type" : @"CoreLGExtendedKeyAccountCreationInfo", @"uid" : uuid };
 
-    self.resolve(result);
+    self.resolve(converted_result);
 
 }
 @end

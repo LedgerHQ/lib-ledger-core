@@ -38,12 +38,10 @@ RCT_REMAP_METHOD(subscribe,subscribe:(NSDictionary *)currentInstance withParams:
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEventBus::subscribe, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGExecutionContext *rctParam_0 = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_0.objcImplementations objectForKey:context[@"uid"]];
-
-    RCTCoreLGEventReceiver *rctParam_1 = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
-    id<LGEventReceiver>objcParam_1 = (id<LGEventReceiver>)[rctParam_1.objcImplementations objectForKey:receiver[@"uid"]];
-
+    RCTCoreLGExecutionContext *rctParam_context = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
+    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_context.objcImplementations objectForKey:context[@"uid"]];
+    RCTCoreLGEventReceiver *rctParam_receiver = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
+    id<LGEventReceiver>objcParam_1 = (id<LGEventReceiver>)[rctParam_receiver.objcImplementations objectForKey:receiver[@"uid"]];
     [currentInstanceObj subscribe:objcParam_0 receiver:objcParam_1];
 
 }
@@ -63,9 +61,8 @@ RCT_REMAP_METHOD(unsubscribe,unsubscribe:(NSDictionary *)currentInstance withPar
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEventBus::unsubscribe, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGEventReceiver *rctParam_0 = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
-    id<LGEventReceiver>objcParam_0 = (id<LGEventReceiver>)[rctParam_0.objcImplementations objectForKey:receiver[@"uid"]];
-
+    RCTCoreLGEventReceiver *rctParam_receiver = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
+    id<LGEventReceiver>objcParam_0 = (id<LGEventReceiver>)[rctParam_receiver.objcImplementations objectForKey:receiver[@"uid"]];
     [currentInstanceObj unsubscribe:objcParam_0];
 
 }

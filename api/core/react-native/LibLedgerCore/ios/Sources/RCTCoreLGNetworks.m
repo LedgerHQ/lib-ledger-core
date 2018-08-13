@@ -23,7 +23,13 @@ RCT_EXPORT_MODULE(RCTCoreLGNetworks)
 
 RCT_REMAP_METHOD(bitcoin,bitcoinWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGBitcoinLikeNetworkParameters * objcResult = [LGNetworks bitcoin];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeNetworkParameters *rctImpl_objcResult = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeNetworkParameters", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);

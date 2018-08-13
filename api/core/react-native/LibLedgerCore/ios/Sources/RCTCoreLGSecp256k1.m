@@ -29,10 +29,10 @@ RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlo
     LGSecp256k1 * objcResult = [LGSecp256k1 createInstance];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGSecp256k1 *rctImpl = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGSecp256k1 *rctImpl_objcResult = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
+
 
     if(result)
     {
@@ -144,10 +144,10 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
     LGSecp256k1 * objcResult = [LGSecp256k1 newInstance];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGSecp256k1 *rctImpl = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGSecp256k1 *rctImpl_objcResult = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
+
 
     if(result)
     {

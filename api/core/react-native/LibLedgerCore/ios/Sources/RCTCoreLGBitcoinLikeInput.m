@@ -87,7 +87,18 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPath:(NSDictionary *)currentInst
         reject(@"impl_call_error", error, nil);
     }
     NSArray<LGDerivationPath *> * objcResult = [currentInstanceObj getDerivationPath];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    for (id objcResult_elem in objcResult)
+    {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        RCTCoreLGDerivationPath *rctImpl_objcResult_elem = (RCTCoreLGDerivationPath *)[self.bridge moduleForName:@"CoreLGDerivationPath"];
+        [rctImpl_objcResult_elem.objcImplementations setObject:objcResult_elem forKey:uuid];
+        NSDictionary *result_elem = @{@"type" : @"CoreLGDerivationPath", @"uid" : uuid };
+        [result addObject:result_elem];
+    }
+
+
     if(result)
     {
         resolve(result);
@@ -115,7 +126,13 @@ RCT_REMAP_METHOD(getValue,getValue:(NSDictionary *)currentInstance WithResolver:
         reject(@"impl_call_error", error, nil);
     }
     LGAmount * objcResult = [currentInstanceObj getValue];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -261,10 +278,10 @@ RCT_REMAP_METHOD(getPreviousOuput,getPreviousOuput:(NSDictionary *)currentInstan
     LGBitcoinLikeOutput * objcResult = [currentInstanceObj getPreviousOuput];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeOutput *rctImpl = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeOutput *rctImpl_objcResult = (RCTCoreLGBitcoinLikeOutput *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOutput"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOutput", @"uid" : uuid };
+
 
     if(result)
     {
@@ -317,10 +334,10 @@ RCT_REMAP_METHOD(parseScriptSig,parseScriptSig:(NSDictionary *)currentInstance W
     LGBitcoinLikeScript * objcResult = [currentInstanceObj parseScriptSig];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeScript *rctImpl = (RCTCoreLGBitcoinLikeScript *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScript"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeScript *rctImpl_objcResult = (RCTCoreLGBitcoinLikeScript *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScript"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScript", @"uid" : uuid };
+
 
     if(result)
     {
@@ -420,7 +437,7 @@ RCT_REMAP_METHOD(getPreviousTransaction,getPreviousTransaction:(NSDictionary *)c
         NSString *error = [NSString stringWithFormat:@"Error while calling LGBitcoinLikeInput::getPreviousTransaction, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGBinaryCallback *objcParam_0 = [[RCTCoreLGBinaryCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGBinaryCallback *objcParam_0 = [[RCTCoreLGBinaryCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getPreviousTransaction:objcParam_0];
 
 }

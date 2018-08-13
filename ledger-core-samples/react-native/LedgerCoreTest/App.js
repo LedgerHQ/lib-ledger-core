@@ -47,12 +47,22 @@ async function createWalletInstance () {
                                                                 rng,
                                                                 backend,
                                                                 dynamicObject);
-    console.log(" >>> walletPoolInstance");
+    console.log(" >>> Wallet Pool Instance");
     console.log(walletPoolInstance);
 
     const currency = await CoreLGWalletPool.getCurrency(walletPoolInstance, "bitcoin");
     const config = await CoreLGDynamicObject.newInstance();
-    const wallet = await CoreLGWalletPool.createWallet(walletPoolInstance,"WALLET_IDENTIFIER", currency, config)
+    console.log(" >>> createWallet params");
+    console.log(walletPoolInstance);
+    console.log(currency);
+    console.log(config);
+    console.log(" >>> getWallet");
+    let wallet = await CoreLGWalletPool.getWallet(walletPoolInstance,"WALLET_IDENTIFIER")
+    if (wallet == undefined) {
+      console.log(" >>> createWallet");
+      wallet = await CoreLGWalletPool.createWallet(walletPoolInstance,"WALLET_IDENTIFIER", currency, config)
+    }
+    console.log(" >>> Wallet Instance ");
     console.log(wallet);
     return wallet;
 }

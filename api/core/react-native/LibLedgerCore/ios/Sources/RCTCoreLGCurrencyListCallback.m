@@ -5,17 +5,14 @@
 
 
 @implementation RCTCoreLGCurrencyListCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGCurrencyListCallback)
-
-@synthesize bridge = _bridge;
--(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
     if(self)
     {
         self.resolve = resolve;
         self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -32,8 +29,17 @@ RCT_EXPORT_MODULE(RCTCoreLGCurrencyListCallback)
         self.reject(@"RCTCoreLGCurrencyListCallback Error", error.message, nil);
     }
 
+    NSMutableArray *converted_result = [[NSMutableArray alloc] init];
+    for (id result_elem in result)
+    {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        RCTCoreLGCurrency *rctImpl_result_elem = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+        [rctImpl_result_elem.objcImplementations setObject:result_elem forKey:uuid];
+        NSDictionary *converted_result_elem = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+        [converted_result addObject:converted_result_elem];
+    }
 
-    self.resolve(result);
+    self.resolve(converted_result);
 
 }
 @end

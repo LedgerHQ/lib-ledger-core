@@ -33,14 +33,13 @@ RCT_REMAP_METHOD(onSuccess,onSuccess:(NSDictionary *)currentInstance withParams:
         NSString *error = [NSString stringWithFormat:@"Error while calling LGGetEthreumLikeWalletCallbackImpl::onSuccess, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGEthereumLikeWallet *rctParam_0 = (RCTCoreLGEthereumLikeWallet *)[self.bridge moduleForName:@"CoreLGEthereumLikeWallet"];
-    LGEthereumLikeWallet *objcParam_0 = (LGEthereumLikeWallet *)[rctParam_0.objcImplementations objectForKey:wallet[@"uid"]];
-
+    RCTCoreLGEthereumLikeWallet *rctParam_wallet = (RCTCoreLGEthereumLikeWallet *)[self.bridge moduleForName:@"CoreLGEthereumLikeWallet"];
+    LGEthereumLikeWallet *objcParam_0 = (LGEthereumLikeWallet *)[rctParam_wallet.objcImplementations objectForKey:wallet[@"uid"]];
     [currentInstanceObj onSuccess:objcParam_0 isCreated:isCreated];
 
 }
 
-RCT_REMAP_METHOD(onError,onError:(NSDictionary *)currentInstance withParams:(nonnull LGError *)error withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(onError,onError:(NSDictionary *)currentInstance withParams:(NSDictionary *)error withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGGetEthreumLikeWalletCallback::onError, first argument should be an instance of LGGetEthreumLikeWalletCallbackImpl", nil);
@@ -51,7 +50,9 @@ RCT_REMAP_METHOD(onError,onError:(NSDictionary *)currentInstance withParams:(non
         NSString *error = [NSString stringWithFormat:@"Error while calling LGGetEthreumLikeWalletCallbackImpl::onError, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    [currentInstanceObj onError:error];
+    RCTCoreLGError *rctParam_error = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
+    LGError *objcParam_0 = (LGError *)[rctParam_error.objcImplementations objectForKey:error[@"uid"]];
+    [currentInstanceObj onError:objcParam_0];
 
 }
 RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

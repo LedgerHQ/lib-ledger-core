@@ -40,10 +40,10 @@ RCT_REMAP_METHOD(setUsername,setUsername:(NSDictionary *)currentInstance withPar
     LGDatabaseBackend * objcResult = [currentInstanceObj setUsername:username];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -75,10 +75,10 @@ RCT_REMAP_METHOD(setPassword,setPassword:(NSDictionary *)currentInstance withPar
     LGDatabaseBackend * objcResult = [currentInstanceObj setPassword:pwd];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -110,10 +110,10 @@ RCT_REMAP_METHOD(setHost,setHost:(NSDictionary *)currentInstance withParams:(non
     LGDatabaseBackend * objcResult = [currentInstanceObj setHost:host];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -145,10 +145,10 @@ RCT_REMAP_METHOD(setHostAddr,setHostAddr:(NSDictionary *)currentInstance withPar
     LGDatabaseBackend * objcResult = [currentInstanceObj setHostAddr:hostAddr];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -180,10 +180,10 @@ RCT_REMAP_METHOD(setPort,setPort:(NSDictionary *)currentInstance withParams:(non
     LGDatabaseBackend * objcResult = [currentInstanceObj setPort:port];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -215,10 +215,10 @@ RCT_REMAP_METHOD(setOptions,setOptions:(NSDictionary *)currentInstance withParam
     LGDatabaseBackend * objcResult = [currentInstanceObj setOptions:opts];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -250,10 +250,10 @@ RCT_REMAP_METHOD(setSslMode,setSslMode:(NSDictionary *)currentInstance withParam
     LGDatabaseBackend * objcResult = [currentInstanceObj setSslMode:mode];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -285,10 +285,10 @@ RCT_REMAP_METHOD(setKerberosName,setKerberosName:(NSDictionary *)currentInstance
     LGDatabaseBackend * objcResult = [currentInstanceObj setKerberosName:name];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -316,10 +316,10 @@ RCT_REMAP_METHOD(setService,setService:(NSDictionary *)currentInstance withParam
     LGDatabaseBackend * objcResult = [currentInstanceObj setService:service];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -346,10 +346,10 @@ RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(NSDictionary *)cur
     LGDatabaseBackend * objcResult = [currentInstanceObj setConnectionPoolSize:size];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -376,10 +376,10 @@ RCT_REMAP_METHOD(enableQueryLogging,enableQueryLogging:(NSDictionary *)currentIn
     LGDatabaseBackend * objcResult = [currentInstanceObj enableQueryLogging:enable];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -697,10 +697,10 @@ RCT_REMAP_METHOD(getSqlite3Backend,getSqlite3BackendWithResolver:(RCTPromiseReso
     LGDatabaseBackend * objcResult = [LGDatabaseBackend getSqlite3Backend];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {
@@ -721,10 +721,10 @@ RCT_REMAP_METHOD(getPostgreSQLBackend,getPostgreSQLBackendWithResolver:(RCTPromi
     LGDatabaseBackend * objcResult = [LGDatabaseBackend getPostgreSQLBackend];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGDatabaseBackend *rctImpl = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
+
 
     if(result)
     {

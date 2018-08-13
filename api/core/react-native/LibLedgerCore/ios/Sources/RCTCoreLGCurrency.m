@@ -24,11 +24,20 @@ RCT_REMAP_METHOD(init, initWithWalletType:(LGWalletType)walletType
                                      name:(nonnull NSString *)name
                             bip44CoinType:(int32_t)bip44CoinType
                          paymentUriScheme:(nonnull NSString *)paymentUriScheme
-                                    units:(nonnull NSArray<LGCurrencyUnit *> *)units
-             bitcoinLikeNetworkParameters:(nullable LGBitcoinLikeNetworkParameters *)bitcoinLikeNetworkParameters withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                    units:(NSArray <NSDictionary *> *)units
+             bitcoinLikeNetworkParameters:(nullable NSDictionary *)bitcoinLikeNetworkParameters withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSMutableArray *convertedField_4 = [[NSMutableArray alloc] init];
+    for (id units_elem in units)
+    {
+        RCTCoreLGCurrencyUnit *rctParam_units_elem = (RCTCoreLGCurrencyUnit *)[self.bridge moduleForName:@"CoreLGCurrencyUnit"];
+        LGCurrencyUnit *convertedField_4_elem = (LGCurrencyUnit *)[rctParam_units_elem.objcImplementations objectForKey:units_elem[@"uid"]];
+        [convertedField_4 addObject:convertedField_4_elem];
+    }
+    RCTCoreLGBitcoinLikeNetworkParameters *rctParam_bitcoinLikeNetworkParameters = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
+    LGBitcoinLikeNetworkParameters *convertedField_5 = (LGBitcoinLikeNetworkParameters *)[rctParam_bitcoinLikeNetworkParameters.objcImplementations objectForKey:bitcoinLikeNetworkParameters[@"uid"]];
 
 
-    LGCurrency * finalResult = [[LGCurrency alloc] initWithWalletType:walletType name:name bip44CoinType:bip44CoinType paymentUriScheme:paymentUriScheme units:units bitcoinLikeNetworkParameters:bitcoinLikeNetworkParameters];
+    LGCurrency * finalResult = [[LGCurrency alloc] initWithWalletType:walletType name:name bip44CoinType:bip44CoinType paymentUriScheme:paymentUriScheme units:convertedField_4 bitcoinLikeNetworkParameters:convertedField_5];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGCurrency *rctImpl = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];

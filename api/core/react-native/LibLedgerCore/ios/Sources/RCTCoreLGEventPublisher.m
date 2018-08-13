@@ -39,10 +39,10 @@ RCT_REMAP_METHOD(getEventBus,getEventBus:(NSDictionary *)currentInstance WithRes
     LGEventBus * objcResult = [currentInstanceObj getEventBus];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventBus *rctImpl_objcResult = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
 
     if(result)
     {
@@ -70,9 +70,8 @@ RCT_REMAP_METHOD(post,post:(NSDictionary *)currentInstance withParams:(NSDiction
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::post, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGEvent *rctParam_0 = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
-    LGEvent *objcParam_0 = (LGEvent *)[rctParam_0.objcImplementations objectForKey:event[@"uid"]];
-
+    RCTCoreLGEvent *rctParam_event = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    LGEvent *objcParam_0 = (LGEvent *)[rctParam_event.objcImplementations objectForKey:event[@"uid"]];
     [currentInstanceObj post:objcParam_0];
 
 }
@@ -94,9 +93,8 @@ RCT_REMAP_METHOD(postSticky,postSticky:(NSDictionary *)currentInstance withParam
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::postSticky, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGEvent *rctParam_0 = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
-    LGEvent *objcParam_0 = (LGEvent *)[rctParam_0.objcImplementations objectForKey:event[@"uid"]];
-
+    RCTCoreLGEvent *rctParam_event = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
+    LGEvent *objcParam_0 = (LGEvent *)[rctParam_event.objcImplementations objectForKey:event[@"uid"]];
     [currentInstanceObj postSticky:objcParam_0 tag:tag];
 
 }
@@ -116,9 +114,8 @@ RCT_REMAP_METHOD(relay,relay:(NSDictionary *)currentInstance withParams:(NSDicti
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEventPublisher::relay, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGEventBus *rctParam_0 = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    LGEventBus *objcParam_0 = (LGEventBus *)[rctParam_0.objcImplementations objectForKey:bus[@"uid"]];
-
+    RCTCoreLGEventBus *rctParam_bus = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    LGEventBus *objcParam_0 = (LGEventBus *)[rctParam_bus.objcImplementations objectForKey:bus[@"uid"]];
     [currentInstanceObj relay:objcParam_0];
 
 }
@@ -128,16 +125,15 @@ RCT_REMAP_METHOD(relay,relay:(NSDictionary *)currentInstance withParams:(NSDicti
  *@param context, executionContext object, context in which event publisher broadcast its events
  */
 RCT_REMAP_METHOD(newInstance,newInstancewithParams:(NSDictionary *)context withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    RCTCoreLGExecutionContext *rctParam_0 = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_0.objcImplementations objectForKey:context[@"uid"]];
-
+    RCTCoreLGExecutionContext *rctParam_context = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
+    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_context.objcImplementations objectForKey:context[@"uid"]];
     LGEventPublisher * objcResult = [LGEventPublisher newInstance:objcParam_0];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventPublisher *rctImpl = (RCTCoreLGEventPublisher *)[self.bridge moduleForName:@"CoreLGEventPublisher"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventPublisher *rctImpl_objcResult = (RCTCoreLGEventPublisher *)[self.bridge moduleForName:@"CoreLGEventPublisher"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventPublisher", @"uid" : uuid };
+
 
     if(result)
     {

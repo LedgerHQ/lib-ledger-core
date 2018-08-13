@@ -35,10 +35,10 @@ RCT_REMAP_METHOD(derive,derive:(NSDictionary *)currentInstance withParams:(nonnu
     LGBitcoinLikeAddress * objcResult = [currentInstanceObj derive:path];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeAddress *rctImpl = (RCTCoreLGBitcoinLikeAddress *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAddress"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeAddress *rctImpl_objcResult = (RCTCoreLGBitcoinLikeAddress *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAddress"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAddress", @"uid" : uuid };
+
 
     if(result)
     {

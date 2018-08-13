@@ -35,10 +35,10 @@ RCT_REMAP_METHOD(head,head:(NSDictionary *)currentInstance WithResolver:(RCTProm
     LGBitcoinLikeScriptChunk * objcResult = [currentInstanceObj head];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeScriptChunk *rctImpl = (RCTCoreLGBitcoinLikeScriptChunk *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScriptChunk"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeScriptChunk *rctImpl_objcResult = (RCTCoreLGBitcoinLikeScriptChunk *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScriptChunk"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScriptChunk", @"uid" : uuid };
+
 
     if(result)
     {
@@ -79,10 +79,10 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSData *)data withResolver:(RCTP
     LGBitcoinLikeScript * objcResult = [LGBitcoinLikeScript parse:data];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeScript *rctImpl = (RCTCoreLGBitcoinLikeScript *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScript"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeScript *rctImpl_objcResult = (RCTCoreLGBitcoinLikeScript *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScript"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScript", @"uid" : uuid };
+
 
     if(result)
     {

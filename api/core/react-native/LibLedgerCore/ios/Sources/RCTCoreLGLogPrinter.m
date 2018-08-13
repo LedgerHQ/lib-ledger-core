@@ -153,10 +153,10 @@ RCT_REMAP_METHOD(getContext,getContext:(NSDictionary *)currentInstance WithResol
     id<LGExecutionContext> objcResult = [currentInstanceObj getContext];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGExecutionContext *rctImpl = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGExecutionContext *rctImpl_objcResult = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : uuid };
+
 
     if(result)
     {

@@ -93,7 +93,13 @@ RCT_REMAP_METHOD(getNetworkParameters,getNetworkParameters:(NSDictionary *)curre
         reject(@"impl_call_error", error, nil);
     }
     LGBitcoinLikeNetworkParameters * objcResult = [currentInstanceObj getNetworkParameters];
-    NSDictionary *result = @{@"value" : objcResult};
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeNetworkParameters *rctImpl_objcResult = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeNetworkParameters", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);

@@ -64,10 +64,10 @@ RCT_REMAP_METHOD(queryOperations,queryOperations:(NSDictionary *)currentInstance
     LGOperationQuery * objcResult = [currentInstanceObj queryOperations];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGOperationQuery *rctImpl = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
 
     if(result)
     {
@@ -95,7 +95,7 @@ RCT_REMAP_METHOD(getBalance,getBalance:(NSDictionary *)currentInstance WithResol
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAccount::getBalance, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAmountCallback *objcParam_0 = [[RCTCoreLGAmountCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAmountCallback *objcParam_0 = [[RCTCoreLGAmountCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getBalance:objcParam_0];
 
 }
@@ -120,7 +120,7 @@ RCT_REMAP_METHOD(getBalanceHistory,getBalanceHistory:(NSDictionary *)currentInst
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAccount::getBalanceHistory, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAmountListCallback *objcParam_3 = [[RCTCoreLGAmountListCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAmountListCallback *objcParam_3 = [[RCTCoreLGAmountListCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getBalanceHistory:start end:end period:period callback:objcParam_3];
 
 }
@@ -171,10 +171,10 @@ RCT_REMAP_METHOD(synchronize,synchronize:(NSDictionary *)currentInstance WithRes
     LGEventBus * objcResult = [currentInstanceObj synchronize];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventBus *rctImpl_objcResult = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
 
     if(result)
     {
@@ -205,10 +205,10 @@ RCT_REMAP_METHOD(getPreferences,getPreferences:(NSDictionary *)currentInstance W
     LGPreferences * objcResult = [currentInstanceObj getPreferences];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferences *rctImpl = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
 
     if(result)
     {
@@ -239,10 +239,10 @@ RCT_REMAP_METHOD(getLogger,getLogger:(NSDictionary *)currentInstance WithResolve
     LGLogger * objcResult = [currentInstanceObj getLogger];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGLogger *rctImpl = (RCTCoreLGLogger *)[self.bridge moduleForName:@"CoreLGLogger"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGLogger *rctImpl_objcResult = (RCTCoreLGLogger *)[self.bridge moduleForName:@"CoreLGLogger"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGLogger", @"uid" : uuid };
+
 
     if(result)
     {
@@ -276,10 +276,10 @@ RCT_REMAP_METHOD(getOperationPreferences,getOperationPreferences:(NSDictionary *
     LGPreferences * objcResult = [currentInstanceObj getOperationPreferences:uid];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGPreferences *rctImpl = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
 
     if(result)
     {
@@ -306,10 +306,10 @@ RCT_REMAP_METHOD(asBitcoinLikeAccount,asBitcoinLikeAccount:(NSDictionary *)curre
     LGBitcoinLikeAccount * objcResult = [currentInstanceObj asBitcoinLikeAccount];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGBitcoinLikeAccount *rctImpl = (RCTCoreLGBitcoinLikeAccount *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAccount"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGBitcoinLikeAccount *rctImpl_objcResult = (RCTCoreLGBitcoinLikeAccount *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAccount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAccount", @"uid" : uuid };
+
 
     if(result)
     {
@@ -420,7 +420,7 @@ RCT_REMAP_METHOD(getFreshPublicAddresses,getFreshPublicAddresses:(NSDictionary *
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAccount::getFreshPublicAddresses, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGAddressListCallback *objcParam_0 = [[RCTCoreLGAddressListCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGAddressListCallback *objcParam_0 = [[RCTCoreLGAddressListCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getFreshPublicAddresses:objcParam_0];
 
 }
@@ -471,10 +471,10 @@ RCT_REMAP_METHOD(getEventBus,getEventBus:(NSDictionary *)currentInstance WithRes
     LGEventBus * objcResult = [currentInstanceObj getEventBus];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
-     RCTCoreLGEventBus *rctImpl = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
-    [rctImpl.objcImplementations setObject:objcResult forKey:uuid];
-
+    RCTCoreLGEventBus *rctImpl_objcResult = (RCTCoreLGEventBus *)[self.bridge moduleForName:@"CoreLGEventBus"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
+
 
     if(result)
     {
@@ -562,7 +562,7 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(NSDictionary *)currentInstance WithR
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAccount::getLastBlock, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGBlockCallback *objcParam_0 = [[RCTCoreLGBlockCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGBlockCallback *objcParam_0 = [[RCTCoreLGBlockCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj getLastBlock:objcParam_0];
 
 }
@@ -607,7 +607,7 @@ RCT_REMAP_METHOD(eraseDataSince,eraseDataSince:(NSDictionary *)currentInstance w
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAccount::eraseDataSince, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
     }
-    RCTCoreLGErrorCodeCallback *objcParam_1 = [[RCTCoreLGErrorCodeCallback alloc] initWithResolver:resolve rejecter:reject];
+    RCTCoreLGErrorCodeCallback *objcParam_1 = [[RCTCoreLGErrorCodeCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj eraseDataSince:date callback:objcParam_1];
 
 }
