@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGAccountCreationInfo)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
                               owners:(nonnull NSArray<NSString *> *)owners
                          derivations:(nonnull NSArray<NSString *> *)derivations

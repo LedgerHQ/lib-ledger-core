@@ -20,4 +20,9 @@ RCT_EXPORT_MODULE(RCTCoreLGKeychainEngines)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 @end

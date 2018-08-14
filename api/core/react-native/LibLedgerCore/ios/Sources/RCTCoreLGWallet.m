@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGWallet)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get name of wallet
  *@return string

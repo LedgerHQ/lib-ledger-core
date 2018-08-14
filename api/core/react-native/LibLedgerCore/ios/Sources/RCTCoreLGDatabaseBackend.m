@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGDatabaseBackend)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Set database's user name
  *@param username, string

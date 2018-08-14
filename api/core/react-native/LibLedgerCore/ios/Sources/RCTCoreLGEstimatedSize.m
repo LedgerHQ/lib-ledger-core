@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEstimatedSize)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithMin:(int32_t)Min
                                Max:(int32_t)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

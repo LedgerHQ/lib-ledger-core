@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGOperation)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get id's operation
  *@return string

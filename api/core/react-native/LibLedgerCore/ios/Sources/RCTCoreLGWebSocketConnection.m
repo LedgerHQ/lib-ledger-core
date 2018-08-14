@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGWebSocketConnection)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_REMAP_METHOD(onConnect,onConnect:(NSDictionary *)currentInstance withParams:(int32_t)connectionId withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {

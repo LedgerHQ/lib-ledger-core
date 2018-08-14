@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGDynamicArray)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get count of stored references
  *@return 64 bits integer

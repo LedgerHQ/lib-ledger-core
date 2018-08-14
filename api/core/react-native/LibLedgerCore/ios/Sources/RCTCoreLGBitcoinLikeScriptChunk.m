@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeScriptChunk)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_REMAP_METHOD(isOperator,isOperator:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {

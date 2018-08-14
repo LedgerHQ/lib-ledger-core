@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGLogger)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Print debug message to console
  *@param tag, string

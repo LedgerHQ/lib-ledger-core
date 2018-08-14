@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGLocale)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithDecimalSeparator:(nonnull NSString *)DecimalSeparator
                              ThousandsSeparator:(nonnull NSString *)ThousandsSeparator
                      IsPrefixedByCurrencySymbol:(BOOL)IsPrefixedByCurrencySymbol withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

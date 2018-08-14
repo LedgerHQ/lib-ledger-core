@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGRandomNumberGenerator)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Generates random bytes.
  * @params size number of bytes to generate

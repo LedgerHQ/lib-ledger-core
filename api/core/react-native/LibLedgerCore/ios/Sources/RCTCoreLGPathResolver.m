@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGPathResolver)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Resolves the path for a SQLite database file.
  * @param path The path to resolve.

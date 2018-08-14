@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGSecp256k1)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Create an instance of Secp256k1
  * @return Secp256k1 instance

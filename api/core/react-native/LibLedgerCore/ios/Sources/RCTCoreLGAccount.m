@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGAccount)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get index of account in user's wallet
  *32 bits integer

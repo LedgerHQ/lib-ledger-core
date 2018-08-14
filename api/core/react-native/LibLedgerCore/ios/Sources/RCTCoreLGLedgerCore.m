@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGLedgerCore)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Gets the version of the library as a human readable string.
  * @return The version of the library (e.g. '1.0.1')

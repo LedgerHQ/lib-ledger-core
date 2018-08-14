@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGOperationQuery)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Apply given order to query's operation
  *@param key, OperationOrderKey object which defines order

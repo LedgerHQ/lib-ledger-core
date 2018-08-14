@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEventBus)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Subscribe an event receiver to the event bus
  *@param context, ExecutionContext object, execution context in which receiver will be notified

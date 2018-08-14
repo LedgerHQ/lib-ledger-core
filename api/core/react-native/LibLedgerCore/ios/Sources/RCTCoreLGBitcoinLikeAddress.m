@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeAddress)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Gets the version of the address (P2SH or P2PKH)
  * @return The version of the address

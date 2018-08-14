@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGRunnable)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**Trigger runnable execution */
 RCT_REMAP_METHOD(run,run:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])

@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGLock)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Acquire lock by thread calling this method,
  *If Lock already acquired by another thread, execution of calling thread should be blocked

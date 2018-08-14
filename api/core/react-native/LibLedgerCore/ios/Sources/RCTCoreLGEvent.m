@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEvent)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get event code (for more details, please refer to EventCode enum)
  *@return EventCode enum entry

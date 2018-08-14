@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGLogPrinter)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Print different encountered errors
  *@param message, string

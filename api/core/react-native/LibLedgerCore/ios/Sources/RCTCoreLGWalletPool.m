@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGWalletPool)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Create a new instance of WalletPool object
  *@param name, string, name of the wallet pool

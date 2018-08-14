@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEventPublisher)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get event bus through which publisher broadcast its events
  *@return EventBus object

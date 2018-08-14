@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpClient)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Execute a giver Http request\
  *@param request, HttpRequest object, requestr to execute

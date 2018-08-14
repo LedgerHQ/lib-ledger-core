@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGNetworks)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_REMAP_METHOD(bitcoin,bitcoinWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGBitcoinLikeNetworkParameters * objcResult = [LGNetworks bitcoin];
 

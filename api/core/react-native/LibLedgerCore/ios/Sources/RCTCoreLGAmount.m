@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGAmount)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get amount as a BitInt
  *@return BitInt

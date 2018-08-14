@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGExecutionContext)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Execute a given runnable
  *@param runnalbe, Runnable object

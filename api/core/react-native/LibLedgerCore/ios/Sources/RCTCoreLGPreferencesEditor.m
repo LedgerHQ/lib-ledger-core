@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferencesEditor)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Sets the value to the given key in the Preferences.
  * @param key The data key.

@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEventReceiver)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Method triggered when an event occurs
  *@param event, Event object that triggers this method

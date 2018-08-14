@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperation)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get operation's transaction
  *@return BitcoinLikeTransaction object

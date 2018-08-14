@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikePreparedTransaction)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithVersion:(int32_t)version
                                 inputs:(NSArray <NSDictionary *> *)inputs
                                  paths:(nonnull NSArray<NSString *> *)paths

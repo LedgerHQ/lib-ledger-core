@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpRequest)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get method of request
  *@return HttpMethod enum entry

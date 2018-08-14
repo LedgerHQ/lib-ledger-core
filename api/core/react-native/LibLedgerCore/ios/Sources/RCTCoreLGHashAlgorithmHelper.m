@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGHashAlgorithmHelper)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *RACE Integrity Primitives Evaluation Message Digest (used in Bitcoin)
  *@param data in bytes, message to hash

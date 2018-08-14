@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGAddress)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Gets an optional derivation path (if the address is owned by an account)
  * @return The derivation path of the address

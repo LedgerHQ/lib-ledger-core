@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransactionRequest)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithUtxo:(NSArray <NSDictionary *> *)utxo
                             outputs:(NSArray <NSDictionary *> *)outputs
                            baseFees:(nullable NSDictionary *)baseFees

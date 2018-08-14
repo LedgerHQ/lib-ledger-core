@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGQueryFilter)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_REMAP_METHOD(accountEq,accountEqwithParams:(nonnull NSString *)accountUid withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter accountEq:accountUid];
 

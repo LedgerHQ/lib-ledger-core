@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGError)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithCode:(LGErrorCode)code
                             message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

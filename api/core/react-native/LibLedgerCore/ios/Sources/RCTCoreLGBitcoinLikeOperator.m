@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeOperator)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithOperatorName:(nonnull NSString *)operatorName
                                       value:(int8_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

@@ -7,41 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2F9B207E67A200EC285F /* libledger-core-objc.a */; };
-		B91D8855211B29C9003387A4 /* RCTCoreLGAddress.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8825211B29C2003387A4 /* RCTCoreLGAddress.h */; };
-		B91D8858211B29C9003387A4 /* RCTCoreLGEstimatedSize.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8828211B29C3003387A4 /* RCTCoreLGEstimatedSize.h */; };
-		B91D8859211B29C9003387A4 /* RCTCoreLGFormatRules.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8829211B29C3003387A4 /* RCTCoreLGFormatRules.h */; };
 		B91D885B211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882B211B29C3003387A4 /* RCTCoreLGErrorCodeCallback.m */; };
-		B91D885C211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D882C211B29C3003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h */; };
 		B91D885D211B29C9003387A4 /* RCTCoreLGBinaryCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882D211B29C3003387A4 /* RCTCoreLGBinaryCallback.m */; };
-		B91D885E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D882E211B29C4003387A4 /* RCTCoreLGBitcoinLikeScript.h */; };
 		B91D885F211B29C9003387A4 /* RCTCoreLGAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882F211B29C4003387A4 /* RCTCoreLGAddress.m */; };
-		B91D8860211B29C9003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8830211B29C4003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h */; };
 		B91D8861211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8831211B29C4003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m */; };
-		B91D8862211B29C9003387A4 /* RCTCoreLGCurrency.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8832211B29C4003387A4 /* RCTCoreLGCurrency.h */; };
-		B91D8863211B29C9003387A4 /* RCTCoreLGHttpReadBodyResult.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8833211B29C4003387A4 /* RCTCoreLGHttpReadBodyResult.h */; };
-		B91D8864211B29C9003387A4 /* RCTCoreLGAccountCreationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8834211B29C5003387A4 /* RCTCoreLGAccountCreationInfo.h */; };
 		B91D8866211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8836211B29C5003387A4 /* RCTCoreLGBitcoinLikeScript.m */; };
-		B91D8867211B29C9003387A4 /* RCTCoreLGBitcoinLikeOperator.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8837211B29C5003387A4 /* RCTCoreLGBitcoinLikeOperator.h */; };
 		B91D8868211B29C9003387A4 /* RCTCoreLGAddressListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8838211B29C5003387A4 /* RCTCoreLGAddressListCallback.m */; };
 		B91D886A211B29C9003387A4 /* RCTCoreLGDerivationPath.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D883A211B29C5003387A4 /* RCTCoreLGDerivationPath.m */; };
-		B91D886C211B29C9003387A4 /* RCTCoreLGAmountListCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883C211B29C6003387A4 /* RCTCoreLGAmountListCallback.h */; };
-		B91D886D211B29C9003387A4 /* RCTCoreLGBinaryCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883D211B29C6003387A4 /* RCTCoreLGBinaryCallback.h */; };
-		B91D886E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883E211B29C6003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h */; };
-		B91D886F211B29C9003387A4 /* RCTCoreLGCurrencyUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883F211B29C6003387A4 /* RCTCoreLGCurrencyUnit.h */; };
-		B91D8870211B29C9003387A4 /* RCTCoreLGError.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8840211B29C6003387A4 /* RCTCoreLGError.h */; };
-		B91D8872211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8842211B29C7003387A4 /* RCTCoreLGErrorCodeCallback.h */; };
-		B91D8874211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8844211B29C7003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h */; };
-		B91D8875211B29C9003387A4 /* RCTCoreLGAddressListCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8845211B29C7003387A4 /* RCTCoreLGAddressListCallback.h */; };
-		B91D8876211B29C9003387A4 /* RCTCoreLGLocale.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8846211B29C7003387A4 /* RCTCoreLGLocale.h */; };
 		B91D8879211B29C9003387A4 /* RCTCoreLGAmountListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8849211B29C8003387A4 /* RCTCoreLGAmountListCallback.m */; };
-		B91D887A211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884A211B29C8003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h */; };
 		B91D887D211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D884D211B29C8003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m */; };
-		B91D887E211B29C9003387A4 /* RCTCoreLGDerivationPath.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884E211B29C8003387A4 /* RCTCoreLGDerivationPath.h */; };
-		B91D887F211B29C9003387A4 /* RCTCoreLGBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884F211B29C9003387A4 /* RCTCoreLGBlock.h */; };
-		B91D8880211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8850211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h */; };
 		B91D8881211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8851211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m */; };
-		B91D8882211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8852211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h */; };
 		B91D8891211B7B1E003387A4 /* RCTCoreLGAccountCreationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8883211B7B18003387A4 /* RCTCoreLGAccountCreationInfo.m */; };
 		B91D8892211B7B1E003387A4 /* RCTCoreLGError.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8884211B7B18003387A4 /* RCTCoreLGError.m */; };
 		B91D8893211B7B1E003387A4 /* RCTCoreLGHttpReadBodyResult.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8885211B7B19003387A4 /* RCTCoreLGHttpReadBodyResult.m */; };
@@ -56,7 +31,7 @@
 		B91D889C211B7B1E003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */; };
 		B91D889D211B7B1E003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888F211B7B1C003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m */; };
 		B91D889E211B7B1E003387A4 /* RCTCoreLGLocale.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8890211B7B1C003387A4 /* RCTCoreLGLocale.m */; };
-		B96575A0210FBD6C00493CDB /* ledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B965759F210FBD6C00493CDB /* ledger-core-objc.a */; };
+		B9312E6121229BC700BAFA25 /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2F9B207E67A200EC285F /* libledger-core-objc.a */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
 		B97DA0D12064133100418351 /* RCTCoreLGEventBus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA03B2064132200418351 /* RCTCoreLGEventBus.m */; };
@@ -130,7 +105,6 @@
 		B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C82064133000418351 /* RCTCoreLGLedgerCore.m */; };
 		B97DA11A2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */; };
 		B97DA11B2064133100418351 /* RCTCoreLGWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */; };
-		B9A5635B208429EC00BA1BC1 /* libledger-core.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +115,125 @@
 			remoteGlobalIDString = 806874EA0767DF98F3C38899;
 			remoteInfo = "libledger-core-objc";
 		};
+		B9312E1F212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
+			remoteInfo = React;
+		};
+		B9312E21212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28131D9B038B00D4039D;
+			remoteInfo = "React-tvOS";
+		};
+		B9312E23212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3C059A1DE3340900C268FA;
+			remoteInfo = yoga;
+		};
+		B9312E25212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3C06751DE3340C00C268FA;
+			remoteInfo = "yoga-tvOS";
+		};
+		B9312E27212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3CD9251DE5FBEC00167DC4;
+			remoteInfo = cxxreact;
+		};
+		B9312E29212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3CD9321DE5FBEE00167DC4;
+			remoteInfo = "cxxreact-tvOS";
+		};
+		B9312E2B212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3CD90B1DE5FBD600167DC4;
+			remoteInfo = jschelpers;
+		};
+		B9312E2D212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
+			remoteInfo = "jschelpers-tvOS";
+		};
+		B9312E2F212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EBF21BDC1FC498900052F4D5;
+			remoteInfo = jsinspector;
+		};
+		B9312E31212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EBF21BFA1FC4989A0052F4D5;
+			remoteInfo = "jsinspector-tvOS";
+		};
+		B9312E33212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7ECE1E25DB7D00323FB7;
+			remoteInfo = "third-party";
+		};
+		B9312E35212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D3C1EBD27B6005632C8;
+			remoteInfo = "third-party-tvOS";
+		};
+		B9312E37212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7E881E25C6D100323FB7;
+			remoteInfo = "double-conversion";
+		};
+		B9312E39212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
+			remoteInfo = "double-conversion-tvOS";
+		};
+		B9312E3B212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9936F3131F5F2E4B0010BF04;
+			remoteInfo = privatedata;
+		};
+		B9312E3D212297AA00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
+			remoteInfo = "privatedata-tvOS";
+		};
+		B9312E3F212297CD00BAFA25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
 		B9A5630F2083E24900BA1BC1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */;
@@ -149,19 +242,6 @@
 			remoteInfo = "libledger-core-objc";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		B9A562D42083DD5100BA1BC1 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-				B9A5635B208429EC00BA1BC1 /* libledger-core.dylib in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRCTCoreLibLedgerCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTCoreLibLedgerCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,7 +295,7 @@
 		B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeNetworkParameters.m; sourceTree = "<group>"; };
 		B91D888F211B7B1C003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGExtendedKeyAccountCreationInfo.m; sourceTree = "<group>"; };
 		B91D8890211B7B1C003387A4 /* RCTCoreLGLocale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGLocale.m; sourceTree = "<group>"; };
-		B965759F210FBD6C00493CDB /* ledger-core-objc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "ledger-core-objc.a"; path = "../build/Release/ledger-core-objc.a"; sourceTree = "<group>"; };
+		B9312E0C212297AA00BAFA25 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../../../../../ledger-core-samples/react-native/LedgerCoreTest/node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeBlock.m; sourceTree = "<group>"; };
 		B97DA0332064132100418351 /* RCTCoreLGPathResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPathResolver.h; sourceTree = "<group>"; };
 		B97DA0342064132100418351 /* RCTCoreLGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEvent.h; sourceTree = "<group>"; };
@@ -362,16 +442,14 @@
 		B97DA0CA2064133100418351 /* RCTCoreLGRandomNumberGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGRandomNumberGenerator.h; sourceTree = "<group>"; };
 		B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGGetEthreumLikeWalletCallback.m; sourceTree = "<group>"; };
 		B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletCallback.m; sourceTree = "<group>"; };
-		B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		58B511D81A9E6C8500147676 /* Frameworks */ = {
+		B9312E5121229BAB00BAFA25 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B96575A0210FBD6C00493CDB /* ledger-core-objc.a in Frameworks */,
-				B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */,
+				B9312E6121229BC700BAFA25 /* libledger-core-objc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,7 +467,6 @@
 		289A75F81F7D1C4500E34F27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B965759F210FBD6C00493CDB /* ledger-core-objc.a */,
 				B91D2E39207E090800EC285F /* libReact.a */,
 			);
 			name = Frameworks;
@@ -398,7 +475,6 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */,
 				B91D2DD4207DEF6D00EC285F /* Libraries */,
 				B97DA0312064124E00418351 /* Sources */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -409,6 +485,7 @@
 		B91D2DD4207DEF6D00EC285F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B9312E0C212297AA00BAFA25 /* React.xcodeproj */,
 				B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */,
 			);
 			name = Libraries;
@@ -418,6 +495,29 @@
 			isa = PBXGroup;
 			children = (
 				B91D2F9B207E67A200EC285F /* libledger-core-objc.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B9312E0D212297AA00BAFA25 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9312E20212297AA00BAFA25 /* libReact.a */,
+				B9312E22212297AA00BAFA25 /* libReact.a */,
+				B9312E24212297AA00BAFA25 /* libyoga.a */,
+				B9312E26212297AA00BAFA25 /* libyoga.a */,
+				B9312E28212297AA00BAFA25 /* libcxxreact.a */,
+				B9312E2A212297AA00BAFA25 /* libcxxreact.a */,
+				B9312E2C212297AA00BAFA25 /* libjschelpers.a */,
+				B9312E2E212297AA00BAFA25 /* libjschelpers.a */,
+				B9312E30212297AA00BAFA25 /* libjsinspector.a */,
+				B9312E32212297AA00BAFA25 /* libjsinspector-tvOS.a */,
+				B9312E34212297AA00BAFA25 /* libthird-party.a */,
+				B9312E36212297AA00BAFA25 /* libthird-party.a */,
+				B9312E38212297AA00BAFA25 /* libdouble-conversion.a */,
+				B9312E3A212297AA00BAFA25 /* libdouble-conversion.a */,
+				B9312E3C212297AA00BAFA25 /* libprivatedata.a */,
+				B9312E3E212297AA00BAFA25 /* libprivatedata-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -625,53 +725,18 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		B9A563E52084D06300BA1BC1 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B91D886E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h in Headers */,
-				B91D887E211B29C9003387A4 /* RCTCoreLGDerivationPath.h in Headers */,
-				B91D8874211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h in Headers */,
-				B91D885E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.h in Headers */,
-				B91D8864211B29C9003387A4 /* RCTCoreLGAccountCreationInfo.h in Headers */,
-				B91D887A211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h in Headers */,
-				B91D8863211B29C9003387A4 /* RCTCoreLGHttpReadBodyResult.h in Headers */,
-				B91D8858211B29C9003387A4 /* RCTCoreLGEstimatedSize.h in Headers */,
-				B91D8876211B29C9003387A4 /* RCTCoreLGLocale.h in Headers */,
-				B91D886C211B29C9003387A4 /* RCTCoreLGAmountListCallback.h in Headers */,
-				B91D8867211B29C9003387A4 /* RCTCoreLGBitcoinLikeOperator.h in Headers */,
-				B91D8875211B29C9003387A4 /* RCTCoreLGAddressListCallback.h in Headers */,
-				B91D887F211B29C9003387A4 /* RCTCoreLGBlock.h in Headers */,
-				B91D8880211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h in Headers */,
-				B91D885C211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h in Headers */,
-				B91D8870211B29C9003387A4 /* RCTCoreLGError.h in Headers */,
-				B91D8872211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.h in Headers */,
-				B91D8860211B29C9003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h in Headers */,
-				B91D8882211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h in Headers */,
-				B91D8862211B29C9003387A4 /* RCTCoreLGCurrency.h in Headers */,
-				B91D8859211B29C9003387A4 /* RCTCoreLGFormatRules.h in Headers */,
-				B91D886D211B29C9003387A4 /* RCTCoreLGBinaryCallback.h in Headers */,
-				B91D8855211B29C9003387A4 /* RCTCoreLGAddress.h in Headers */,
-				B91D886F211B29C9003387A4 /* RCTCoreLGCurrencyUnit.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		58B511DA1A9E6C8500147676 /* RCTCoreLibLedgerCore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RCTCoreLibLedgerCore" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
-				58B511D81A9E6C8500147676 /* Frameworks */,
-				B9A562D42083DD5100BA1BC1 /* CopyFiles */,
-				B9A563E52084D06300BA1BC1 /* Headers */,
+				B9312E5121229BAB00BAFA25 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B9312E40212297CD00BAFA25 /* PBXTargetDependency */,
 				B9A563102083E24900BA1BC1 /* PBXTargetDependency */,
 			);
 			name = RCTCoreLibLedgerCore;
@@ -708,6 +773,10 @@
 					ProductGroup = B91D2F96207E67A200EC285F /* Products */;
 					ProjectRef = B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */;
 				},
+				{
+					ProductGroup = B9312E0D212297AA00BAFA25 /* Products */;
+					ProjectRef = B9312E0C212297AA00BAFA25 /* React.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -722,6 +791,118 @@
 			fileType = archive.ar;
 			path = "libledger-core-objc.a";
 			remoteRef = B91D2F9A207E67A200EC285F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E20212297AA00BAFA25 /* libReact.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReact.a;
+			remoteRef = B9312E1F212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E22212297AA00BAFA25 /* libReact.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReact.a;
+			remoteRef = B9312E21212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E24212297AA00BAFA25 /* libyoga.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libyoga.a;
+			remoteRef = B9312E23212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E26212297AA00BAFA25 /* libyoga.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libyoga.a;
+			remoteRef = B9312E25212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E28212297AA00BAFA25 /* libcxxreact.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcxxreact.a;
+			remoteRef = B9312E27212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E2A212297AA00BAFA25 /* libcxxreact.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcxxreact.a;
+			remoteRef = B9312E29212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E2C212297AA00BAFA25 /* libjschelpers.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libjschelpers.a;
+			remoteRef = B9312E2B212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E2E212297AA00BAFA25 /* libjschelpers.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libjschelpers.a;
+			remoteRef = B9312E2D212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E30212297AA00BAFA25 /* libjsinspector.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libjsinspector.a;
+			remoteRef = B9312E2F212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E32212297AA00BAFA25 /* libjsinspector-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libjsinspector-tvOS.a";
+			remoteRef = B9312E31212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E34212297AA00BAFA25 /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = B9312E33212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E36212297AA00BAFA25 /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = B9312E35212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E38212297AA00BAFA25 /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = B9312E37212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E3A212297AA00BAFA25 /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = B9312E39212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E3C212297AA00BAFA25 /* libprivatedata.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libprivatedata.a;
+			remoteRef = B9312E3B212297AA00BAFA25 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9312E3E212297AA00BAFA25 /* libprivatedata-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libprivatedata-tvOS.a";
+			remoteRef = B9312E3D212297AA00BAFA25 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -834,6 +1015,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B9312E40212297CD00BAFA25 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = B9312E3F212297CD00BAFA25 /* PBXContainerItemProxy */;
+		};
 		B9A563102083E24900BA1BC1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "libledger-core-objc";
@@ -946,10 +1132,7 @@
 					../../../objc,
 					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../../lib-ledger-core-build/core/src/Release-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;
@@ -967,10 +1150,7 @@
 					../../../objc,
 					../../../src/objc,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../../lib-ledger-core-build/core/src/Release-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTCoreLibLedgerCore;
 				SKIP_INSTALL = YES;

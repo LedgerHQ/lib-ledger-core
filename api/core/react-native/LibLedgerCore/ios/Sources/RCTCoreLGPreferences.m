@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferences)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Retrieves the value associated with the given key or fallback to the default value.
  * @return The data associated with the key or fallbackValue.

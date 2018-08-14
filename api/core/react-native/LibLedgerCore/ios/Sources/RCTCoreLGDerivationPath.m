@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGDerivationPath)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /** Get the number of element in this path. */
 RCT_REMAP_METHOD(getDepth,getDepth:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])

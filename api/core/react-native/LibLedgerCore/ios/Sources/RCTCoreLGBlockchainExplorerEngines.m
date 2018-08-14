@@ -20,4 +20,9 @@ RCT_EXPORT_MODULE(RCTCoreLGBlockchainExplorerEngines)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 @end

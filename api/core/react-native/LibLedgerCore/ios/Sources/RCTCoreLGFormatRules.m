@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGFormatRules)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithRoundingMode:(LGRoundingMode)roundingMode
                         maxNumberOfDecimals:(int32_t)maxNumberOfDecimals withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 

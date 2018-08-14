@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGGetEthreumLikeWalletCallback)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_REMAP_METHOD(onSuccess,onSuccess:(NSDictionary *)currentInstance withParams:(NSDictionary *)wallet
                                                                       isCreated:(BOOL)isCreated withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])

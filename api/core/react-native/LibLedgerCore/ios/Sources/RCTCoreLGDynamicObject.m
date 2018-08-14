@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGDynamicObject)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Store a string with a given key
  *@param key, string, key to access stored value

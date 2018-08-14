@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeNetworkParameters)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithIdentifier:(nonnull NSString *)Identifier
                              P2PKHVersion:(nonnull NSData *)P2PKHVersion
                               P2SHVersion:(nonnull NSData *)P2SHVersion

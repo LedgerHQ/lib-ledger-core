@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBigInt)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Adds two BigInt and returns a new BigInt with the result.
  * @params i Value to be added to this BigInt

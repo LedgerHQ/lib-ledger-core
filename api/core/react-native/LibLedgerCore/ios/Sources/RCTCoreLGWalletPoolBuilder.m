@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGWalletPoolBuilder)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Set http client to be used for wallet pool build
  *@param client, HttpClient

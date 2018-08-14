@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGCurrency)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithWalletType:(LGWalletType)walletType
                                      name:(nonnull NSString *)name
                             bip44CoinType:(int32_t)bip44CoinType

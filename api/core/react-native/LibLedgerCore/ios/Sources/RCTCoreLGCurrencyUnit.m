@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGCurrencyUnit)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithName:(nonnull NSString *)name
                              symbol:(nonnull NSString *)symbol
                                code:(nonnull NSString *)code

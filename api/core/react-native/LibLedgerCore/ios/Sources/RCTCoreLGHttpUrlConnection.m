@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpUrlConnection)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Gets the HTTP response status code
  * @return The HTTP response status code

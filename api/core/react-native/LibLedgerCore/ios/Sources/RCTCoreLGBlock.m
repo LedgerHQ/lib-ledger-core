@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBlock)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
                                      uid:(nonnull NSString *)uid
                                     time:(nonnull NSDate *)time

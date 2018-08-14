@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGThreadDispatcher)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  *Get an execution context where tasks are executed sequentially
  *@param name, string, name of execution context to retrieve

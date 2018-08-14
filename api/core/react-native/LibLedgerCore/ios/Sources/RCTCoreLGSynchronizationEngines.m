@@ -20,4 +20,9 @@ RCT_EXPORT_MODULE(RCTCoreLGSynchronizationEngines)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 @end

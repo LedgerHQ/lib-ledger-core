@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(RCTCoreLGEthereumPublicKeyProvider)
     }
     return self;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
 RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGEthereumPublicKeyProviderImpl *objcResult = [[LGEthereumPublicKeyProviderImpl alloc] init];
     NSString *uuid = [[NSUUID UUID] UUIDString];

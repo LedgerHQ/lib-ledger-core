@@ -21,6 +21,11 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransactionBuilder)
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 /**
  * Add the given input to the final transaction.
  * @param transactionhash The hash of the transaction in where the UTXO can be located.
