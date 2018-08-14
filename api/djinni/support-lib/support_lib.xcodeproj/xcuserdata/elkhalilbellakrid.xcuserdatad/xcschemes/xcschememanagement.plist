@@ -7,22 +7,22 @@
 		<key>All.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>38</integer>
 		</dict>
 		<key>djinni_jni.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>40</integer>
 		</dict>
 		<key>djinni_jni_main.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>41</integer>
 		</dict>
 		<key>djinni_objc.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>42</integer>
 		</dict>
 	</dict>
 </dict>

@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGEthereumLikeWallet)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGEthereumLikeWallet alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }

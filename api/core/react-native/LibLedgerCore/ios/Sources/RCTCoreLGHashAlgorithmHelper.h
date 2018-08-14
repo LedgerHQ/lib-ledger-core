@@ -3,10 +3,11 @@
 
 #import "LGHashAlgorithmHelperImpl.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /** Helper class for commonly used crypto algorithms */
 @interface RCTCoreLGHashAlgorithmHelper : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGHashAlgorithmHelperImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

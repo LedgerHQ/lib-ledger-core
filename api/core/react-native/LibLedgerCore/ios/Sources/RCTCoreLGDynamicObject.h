@@ -4,7 +4,10 @@
 #import "LGDynamicArray.h"
 #import "LGDynamicObject.h"
 #import "LGDynamicType.h"
+#import "RCTCoreLGDynamicArray.h"
+#import "RCTCoreLGDynamicObject.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -13,5 +16,5 @@
  *those values are appended dynamically in a map like structure with a given key through which they can be retreived
  */
 @interface RCTCoreLGDynamicObject : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGDynamicObject *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

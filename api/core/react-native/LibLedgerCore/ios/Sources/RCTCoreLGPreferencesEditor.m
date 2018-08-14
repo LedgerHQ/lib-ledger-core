@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGPreferencesEditor)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGPreferencesEditor alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -25,10 +27,26 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferencesEditor)
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putString,putString:(nonnull NSString *)key
-                               value:(nonnull NSString *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putString,putString:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                          value:(nonnull NSString *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putString, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putString, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putString:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putString:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -37,6 +55,7 @@ RCT_REMAP_METHOD(putString,putString:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putString", nil);
     }
+
 }
 
 /**
@@ -45,10 +64,26 @@ RCT_REMAP_METHOD(putString,putString:(nonnull NSString *)key
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putInt,putInt:(nonnull NSString *)key
-                         value:(int32_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putInt,putInt:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                    value:(int32_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putInt, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putInt, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putInt:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putInt:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -57,6 +92,7 @@ RCT_REMAP_METHOD(putInt,putInt:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putInt", nil);
     }
+
 }
 
 /**
@@ -65,10 +101,26 @@ RCT_REMAP_METHOD(putInt,putInt:(nonnull NSString *)key
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putLong,putLong:(nonnull NSString *)key
-                           value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putLong,putLong:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                      value:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putLong, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putLong, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putLong:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putLong:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -77,6 +129,7 @@ RCT_REMAP_METHOD(putLong,putLong:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putLong", nil);
     }
+
 }
 
 /**
@@ -85,10 +138,26 @@ RCT_REMAP_METHOD(putLong,putLong:(nonnull NSString *)key
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putBoolean,putBoolean:(nonnull NSString *)key
-                                 value:(BOOL)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putBoolean,putBoolean:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                            value:(BOOL)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putBoolean, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putBoolean, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putBoolean:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putBoolean:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -97,6 +166,7 @@ RCT_REMAP_METHOD(putBoolean,putBoolean:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putBoolean", nil);
     }
+
 }
 
 /**
@@ -105,10 +175,26 @@ RCT_REMAP_METHOD(putBoolean,putBoolean:(nonnull NSString *)key
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putStringArray,putStringArray:(nonnull NSString *)key
-                                         value:(nonnull NSArray<NSString *> *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putStringArray,putStringArray:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                                    value:(nonnull NSArray<NSString *> *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putStringArray, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putStringArray, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putStringArray:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putStringArray:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -117,6 +203,7 @@ RCT_REMAP_METHOD(putStringArray,putStringArray:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putStringArray", nil);
     }
+
 }
 
 /**
@@ -125,10 +212,26 @@ RCT_REMAP_METHOD(putStringArray,putStringArray:(nonnull NSString *)key
  * @param value The value to store
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(putData,putData:(nonnull NSString *)key
-                           value:(nonnull NSData *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(putData,putData:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
+                                                                      value:(nonnull NSData *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::putData, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::putData, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj putData:key value:value];
 
-    id result = @{@"result" :[self.objcImpl putData:key value:value]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -137,6 +240,7 @@ RCT_REMAP_METHOD(putData,putData:(nonnull NSString *)key
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::putData", nil);
     }
+
 }
 
 /**
@@ -144,9 +248,25 @@ RCT_REMAP_METHOD(putData,putData:(nonnull NSString *)key
  * @param key The key to remove from the Preferences
  * @return The reference of self in order to chain the call to the editor.
  */
-RCT_REMAP_METHOD(remove,remove:(nonnull NSString *)key withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::remove, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::remove, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferencesEditor * objcResult = [currentInstanceObj remove:key];
 
-    id result = @{@"result" :[self.objcImpl remove:key]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -155,11 +275,22 @@ RCT_REMAP_METHOD(remove,remove:(nonnull NSString *)key withResolver:(RCTPromiseR
     {
         reject(@"impl_call_error", @"Error while calling LGPreferencesEditor::remove", nil);
     }
+
 }
 
 /** Persists the changes to the Preferences. */
-RCT_EXPORT_METHOD(commit) {
+RCT_REMAP_METHOD(commit,commit:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferencesEditor::commit, first argument should be an instance of LGPreferencesEditor", nil);
+    }
+    LGPreferencesEditor *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferencesEditor::commit, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj commit];
 
-    [self.objcImpl commit];
 }
 @end

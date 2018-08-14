@@ -176,7 +176,7 @@ namespace ledger {
                     for (auto& batch : buddy->savedState.getValue().batches) {
                         if (batch.blockHeight >= deepestFailedBlockHeight) {
                             batch.blockHeight = previousBlock.nonEmpty() ? (uint32_t)previousBlock.getValue().height : 0;
-                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().hash : "";
+                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
                         }
                     }
                 }
@@ -287,7 +287,7 @@ namespace ledger {
                         std::string lastBlockHash;
                         if (lastBlock.nonEmpty()) {
                             lastBlockHeight = lastBlock.getValue().height;
-                            lastBlockHash = lastBlock.getValue().hash;
+                            lastBlockHash = lastBlock.getValue().blockHash;
                         }
 
                         //Update savedState's batches

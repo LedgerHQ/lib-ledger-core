@@ -1,14 +1,25 @@
 #import "LGHttpUrlConnectionImpl.h"
+#import "../../objc/LGHttpReadBodyResult.h"
 
 @implementation LGHttpUrlConnectionImpl
 
+-(instancetype) initWithData:(NSData *)data url:(NSURLResponse *)response andError:(NSError *)error
+{
+    self = [super init];
+    if (self) {
+        self.data = data;
+        self.response = response;
+        self.error = error;
+    }
+    return self;
+}
 /**
 * Gets the HTTP response status code
 * @return The HTTP response status code
 */
 - (int32_t)getStatusCode
 {
-  return 0;
+    return(int32_t)[(NSHTTPURLResponse*) self.response statusCode];
 }
 
 /**
@@ -17,7 +28,7 @@
 */
 - (nonnull NSString *)getStatusText
 {
-  return nil;
+    return [(NSHTTPURLResponse*) self.response description];
 }
 
 /**
@@ -26,7 +37,7 @@
 */
 - (nonnull NSDictionary<NSString *, NSString *> *)getHeaders
 {
-  return nil;
+    return [(NSHTTPURLResponse*) self.response allHeaderFields];
 }
 
 /**
@@ -35,6 +46,8 @@
 */
 - (nonnull LGHttpReadBodyResult *)readBody
 {
-  return nil;
+    LGError *objcError = [[LGError alloc] initWithCode:[self.error code] message:[self.error description]];
+    LGHttpReadBodyResult *body = [[LGHttpReadBodyResult alloc] initWithError:objcError data:self.data];
+    return body;
 }
 @end

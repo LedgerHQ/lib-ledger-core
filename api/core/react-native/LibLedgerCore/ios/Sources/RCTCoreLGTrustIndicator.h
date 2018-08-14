@@ -4,10 +4,11 @@
 #import "LGTrustIndicator.h"
 #import "LGTrustLevel.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**TODO */
 @interface RCTCoreLGTrustIndicator : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGTrustIndicator *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGAddress)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGAddress alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,9 +25,19 @@ RCT_EXPORT_MODULE(RCTCoreLGAddress)
  * Gets an optional derivation path (if the address is owned by an account)
  * @return The derivation path of the address
  */
-RCT_REMAP_METHOD(getDerivationPath,getDerivationPathWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getDerivationPath]};
+RCT_REMAP_METHOD(getDerivationPath,getDerivationPath:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::getDerivationPath, first argument should be an instance of LGAddress", nil);
+    }
+    LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::getDerivationPath, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj getDerivationPath];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -34,15 +46,26 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPathWithResolver:(RCTPromiseReso
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::getDerivationPath", nil);
     }
+
 }
 
 /**
  * Serialize the address to a string. The serialization method depends of the underlying currency and
  * format (Base58, Bech32, Ethereum...)
  */
-RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl toString]};
+RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::toString, first argument should be an instance of LGAddress", nil);
+    }
+    LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::toString, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj toString];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -51,11 +74,28 @@ RCT_REMAP_METHOD(toString,toStringWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::toString", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddressWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddress:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::asBitcoinLikeAddress, first argument should be an instance of LGAddress", nil);
+    }
+    LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::asBitcoinLikeAddress, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBitcoinLikeAddress * objcResult = [currentInstanceObj asBitcoinLikeAddress];
 
-    id result = @{@"result" :[self.objcImpl asBitcoinLikeAddress]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeAddress *rctImpl_objcResult = (RCTCoreLGBitcoinLikeAddress *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAddress"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAddress", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -64,11 +104,23 @@ RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddressWithResolver:(RCTPromi
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::asBitcoinLikeAddress", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(isInstanceOfBitcoinLikeAddress,isInstanceOfBitcoinLikeAddressWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isInstanceOfBitcoinLikeAddress])};if(result)
+RCT_REMAP_METHOD(isInstanceOfBitcoinLikeAddress,isInstanceOfBitcoinLikeAddress:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::isInstanceOfBitcoinLikeAddress, first argument should be an instance of LGAddress", nil);
+    }
+    LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::isInstanceOfBitcoinLikeAddress, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isInstanceOfBitcoinLikeAddress];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -76,11 +128,28 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeAddress,isInstanceOfBitcoinLikeAddressWi
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::isInstanceOfBitcoinLikeAddress", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::getCurrency, first argument should be an instance of LGAddress", nil);
+    }
+    LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::getCurrency, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGCurrency * objcResult = [currentInstanceObj getCurrency];
 
-    id result = @{@"result" :[self.objcImpl getCurrency]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -89,6 +158,7 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::getCurrency", nil);
     }
+
 }
 
 /**
@@ -98,10 +168,18 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
  * @param currency The currency used to parse the address
  * @return If successful returns the address object otherwise null.
  */
-RCT_REMAP_METHOD(parse,parse:(nonnull NSString *)address
-                    currency:(nonnull LGCurrency *)currency withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)address
+                              currency:(NSDictionary *)currency withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGCurrency *rctParam_currency = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    LGCurrency *objcParam_1 = (LGCurrency *)[rctParam_currency.objcImplementations objectForKey:currency[@"uid"]];
+    LGAddress * objcResult = [LGAddress parse:address currency:objcParam_1];
 
-    id result = @{@"result" :[LGAddress parse:address currency:currency]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAddress *rctImpl_objcResult = (RCTCoreLGAddress *)[self.bridge moduleForName:@"CoreLGAddress"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAddress", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -110,6 +188,7 @@ RCT_REMAP_METHOD(parse,parse:(nonnull NSString *)address
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::parse", nil);
     }
+
 }
 
 /**
@@ -118,10 +197,13 @@ RCT_REMAP_METHOD(parse,parse:(nonnull NSString *)address
  * @param currency The currency used to parse the address
  * @return If successful returns true, false otherwise.
  */
-RCT_REMAP_METHOD(isValid,isValid:(nonnull NSString *)address
-                        currency:(nonnull LGCurrency *)currency withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([LGAddress isValid:address currency:currency])};if(result)
+RCT_REMAP_METHOD(isValid,isValidwithParams:(nonnull NSString *)address
+                                  currency:(NSDictionary *)currency withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    RCTCoreLGCurrency *rctParam_currency = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    LGCurrency *objcParam_1 = (LGCurrency *)[rctParam_currency.objcImplementations objectForKey:currency[@"uid"]];
+    BOOL objcResult = [LGAddress isValid:address currency:objcParam_1];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -129,5 +211,6 @@ RCT_REMAP_METHOD(isValid,isValid:(nonnull NSString *)address
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::isValid", nil);
     }
+
 }
 @end

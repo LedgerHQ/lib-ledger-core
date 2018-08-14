@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGPathResolver)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGPathResolverImpl alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -24,9 +26,19 @@ RCT_EXPORT_MODULE(RCTCoreLGPathResolver)
  * @param path The path to resolve.
  * @return The resolved path.
  */
-RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl resolveDatabasePath:path]};
+RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(NSDictionary *)currentInstance withParams:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPathResolver::resolveDatabasePath, first argument should be an instance of LGPathResolverImpl", nil);
+    }
+    LGPathResolverImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPathResolverImpl::resolveDatabasePath, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj resolveDatabasePath:path];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -35,6 +47,7 @@ RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(nonnull NSString *)pat
     {
         reject(@"impl_call_error", @"Error while calling LGPathResolverImpl::resolveDatabasePath", nil);
     }
+
 }
 
 /**
@@ -42,9 +55,19 @@ RCT_REMAP_METHOD(resolveDatabasePath,resolveDatabasePath:(nonnull NSString *)pat
  * @param path The path to resolve.
  * @return The resolved path.
  */
-RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl resolveLogFilePath:path]};
+RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(NSDictionary *)currentInstance withParams:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPathResolver::resolveLogFilePath, first argument should be an instance of LGPathResolverImpl", nil);
+    }
+    LGPathResolverImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPathResolverImpl::resolveLogFilePath, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj resolveLogFilePath:path];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -53,6 +76,7 @@ RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(nonnull NSString *)path 
     {
         reject(@"impl_call_error", @"Error while calling LGPathResolverImpl::resolveLogFilePath", nil);
     }
+
 }
 
 /**
@@ -60,9 +84,19 @@ RCT_REMAP_METHOD(resolveLogFilePath,resolveLogFilePath:(nonnull NSString *)path 
  * @param path The path to resolve.
  * @return The resolved path.
  */
-RCT_REMAP_METHOD(resolvePreferencesPath,resolvePreferencesPath:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl resolvePreferencesPath:path]};
+RCT_REMAP_METHOD(resolvePreferencesPath,resolvePreferencesPath:(NSDictionary *)currentInstance withParams:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPathResolver::resolvePreferencesPath, first argument should be an instance of LGPathResolverImpl", nil);
+    }
+    LGPathResolverImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGPathResolverImpl::resolvePreferencesPath, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj resolvePreferencesPath:path];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -71,5 +105,17 @@ RCT_REMAP_METHOD(resolvePreferencesPath,resolvePreferencesPath:(nonnull NSString
     {
         reject(@"impl_call_error", @"Error while calling LGPathResolverImpl::resolvePreferencesPath", nil);
     }
+
+}
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGPathResolverImpl *objcResult = [[LGPathResolverImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPathResolverImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGPathResolverImpl::init", nil);
+    }
+    resolve(result);
 }
 @end

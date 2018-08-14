@@ -3,10 +3,11 @@
 
 #import "LGPoolConfiguration.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**TODO */
 @interface RCTCoreLGPoolConfiguration : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGPoolConfiguration *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

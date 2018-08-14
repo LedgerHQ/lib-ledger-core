@@ -5,16 +5,14 @@
 
 
 @implementation RCTCoreLGErrorCodeCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGErrorCodeCallback)
-
--(instancetype)init
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGErrorCodeCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -24,9 +22,15 @@ RCT_EXPORT_MODULE(RCTCoreLGErrorCodeCallback)
  * @params result optional of type T, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable NSNumber *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable NSNumber *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGErrorCodeCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+
+    self.resolve(result);
+
 }
 @end

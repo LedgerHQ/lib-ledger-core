@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGSecp256k1)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGSecp256k1 alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -24,8 +26,14 @@ RCT_EXPORT_MODULE(RCTCoreLGSecp256k1)
  * @return Secp256k1 instance
  */
 RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGSecp256k1 * objcResult = [LGSecp256k1 createInstance];
 
-    id result = @{@"result" :[LGSecp256k1 createInstance]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGSecp256k1 *rctImpl_objcResult = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -34,6 +42,7 @@ RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlo
     {
         reject(@"impl_call_error", @"Error while calling LGSecp256k1::createInstance", nil);
     }
+
 }
 
 /**
@@ -42,10 +51,20 @@ RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlo
  * @param compress get compressed (35 bytes) or uncompressed (65 bytes)
  * @return public key can be compressed (35 bytes starting with 02 or 03) or un compressed (65 bytes starting with 04)
  */
-RCT_REMAP_METHOD(computePubKey,computePubKey:(nonnull NSData *)privKey
-                                    compress:(BOOL)compress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl computePubKey:privKey compress:compress]};
+RCT_REMAP_METHOD(computePubKey,computePubKey:(NSDictionary *)currentInstance withParams:(nonnull NSData *)privKey
+                                                                               compress:(BOOL)compress withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGSecp256k1::computePubKey, first argument should be an instance of LGSecp256k1", nil);
+    }
+    LGSecp256k1 *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGSecp256k1::computePubKey, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSData * objcResult = [currentInstanceObj computePubKey:privKey compress:compress];
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -54,6 +73,7 @@ RCT_REMAP_METHOD(computePubKey,computePubKey:(nonnull NSData *)privKey
     {
         reject(@"impl_call_error", @"Error while calling LGSecp256k1::computePubKey", nil);
     }
+
 }
 
 /**
@@ -62,10 +82,20 @@ RCT_REMAP_METHOD(computePubKey,computePubKey:(nonnull NSData *)privKey
  * @param data 32 bytes message to sign
  * @return 32 bytes signed message
  */
-RCT_REMAP_METHOD(sign,sign:(nonnull NSData *)privKey
-                      data:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl sign:privKey data:data]};
+RCT_REMAP_METHOD(sign,sign:(NSDictionary *)currentInstance withParams:(nonnull NSData *)privKey
+                                                                 data:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGSecp256k1::sign, first argument should be an instance of LGSecp256k1", nil);
+    }
+    LGSecp256k1 *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGSecp256k1::sign, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSData * objcResult = [currentInstanceObj sign:privKey data:data];
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -74,6 +104,7 @@ RCT_REMAP_METHOD(sign,sign:(nonnull NSData *)privKey
     {
         reject(@"impl_call_error", @"Error while calling LGSecp256k1::sign", nil);
     }
+
 }
 
 /**
@@ -83,11 +114,22 @@ RCT_REMAP_METHOD(sign,sign:(nonnull NSData *)privKey
  * @param oubkey 32 bytes public key
  * @return true if message was signed with signature and public key (both issued from same private key)
  */
-RCT_REMAP_METHOD(verify,verify:(nonnull NSData *)data
-                     signature:(nonnull NSData *)signature
-                        pubKey:(nonnull NSData *)pubKey withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl verify:data signature:signature pubKey:pubKey])};if(result)
+RCT_REMAP_METHOD(verify,verify:(NSDictionary *)currentInstance withParams:(nonnull NSData *)data
+                                                                signature:(nonnull NSData *)signature
+                                                                   pubKey:(nonnull NSData *)pubKey withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGSecp256k1::verify, first argument should be an instance of LGSecp256k1", nil);
+    }
+    LGSecp256k1 *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGSecp256k1::verify, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj verify:data signature:signature pubKey:pubKey];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -95,11 +137,18 @@ RCT_REMAP_METHOD(verify,verify:(nonnull NSData *)data
     {
         reject(@"impl_call_error", @"Error while calling LGSecp256k1::verify", nil);
     }
+
 }
 
 RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGSecp256k1 * objcResult = [LGSecp256k1 newInstance];
 
-    id result = @{@"result" :[LGSecp256k1 newInstance]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGSecp256k1 *rctImpl_objcResult = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -108,5 +157,6 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGSecp256k1::newInstance", nil);
     }
+
 }
 @end

@@ -3,10 +3,11 @@
 
 #import "LGLockImpl.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing a lock, for thread safety purposes */
 @interface RCTCoreLGLock : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGLockImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

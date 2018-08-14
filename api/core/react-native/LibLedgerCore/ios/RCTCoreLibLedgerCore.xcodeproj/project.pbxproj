@@ -8,16 +8,63 @@
 
 /* Begin PBXBuildFile section */
 		B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D2F9B207E67A200EC285F /* libledger-core-objc.a */; };
+		B91D8855211B29C9003387A4 /* RCTCoreLGAddress.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8825211B29C2003387A4 /* RCTCoreLGAddress.h */; };
+		B91D8858211B29C9003387A4 /* RCTCoreLGEstimatedSize.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8828211B29C3003387A4 /* RCTCoreLGEstimatedSize.h */; };
+		B91D8859211B29C9003387A4 /* RCTCoreLGFormatRules.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8829211B29C3003387A4 /* RCTCoreLGFormatRules.h */; };
+		B91D885B211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882B211B29C3003387A4 /* RCTCoreLGErrorCodeCallback.m */; };
+		B91D885C211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D882C211B29C3003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h */; };
+		B91D885D211B29C9003387A4 /* RCTCoreLGBinaryCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882D211B29C3003387A4 /* RCTCoreLGBinaryCallback.m */; };
+		B91D885E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D882E211B29C4003387A4 /* RCTCoreLGBitcoinLikeScript.h */; };
+		B91D885F211B29C9003387A4 /* RCTCoreLGAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D882F211B29C4003387A4 /* RCTCoreLGAddress.m */; };
+		B91D8860211B29C9003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8830211B29C4003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h */; };
+		B91D8861211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8831211B29C4003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m */; };
+		B91D8862211B29C9003387A4 /* RCTCoreLGCurrency.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8832211B29C4003387A4 /* RCTCoreLGCurrency.h */; };
+		B91D8863211B29C9003387A4 /* RCTCoreLGHttpReadBodyResult.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8833211B29C4003387A4 /* RCTCoreLGHttpReadBodyResult.h */; };
+		B91D8864211B29C9003387A4 /* RCTCoreLGAccountCreationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8834211B29C5003387A4 /* RCTCoreLGAccountCreationInfo.h */; };
+		B91D8866211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8836211B29C5003387A4 /* RCTCoreLGBitcoinLikeScript.m */; };
+		B91D8867211B29C9003387A4 /* RCTCoreLGBitcoinLikeOperator.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8837211B29C5003387A4 /* RCTCoreLGBitcoinLikeOperator.h */; };
+		B91D8868211B29C9003387A4 /* RCTCoreLGAddressListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8838211B29C5003387A4 /* RCTCoreLGAddressListCallback.m */; };
+		B91D886A211B29C9003387A4 /* RCTCoreLGDerivationPath.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D883A211B29C5003387A4 /* RCTCoreLGDerivationPath.m */; };
+		B91D886C211B29C9003387A4 /* RCTCoreLGAmountListCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883C211B29C6003387A4 /* RCTCoreLGAmountListCallback.h */; };
+		B91D886D211B29C9003387A4 /* RCTCoreLGBinaryCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883D211B29C6003387A4 /* RCTCoreLGBinaryCallback.h */; };
+		B91D886E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883E211B29C6003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h */; };
+		B91D886F211B29C9003387A4 /* RCTCoreLGCurrencyUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D883F211B29C6003387A4 /* RCTCoreLGCurrencyUnit.h */; };
+		B91D8870211B29C9003387A4 /* RCTCoreLGError.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8840211B29C6003387A4 /* RCTCoreLGError.h */; };
+		B91D8872211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8842211B29C7003387A4 /* RCTCoreLGErrorCodeCallback.h */; };
+		B91D8874211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8844211B29C7003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h */; };
+		B91D8875211B29C9003387A4 /* RCTCoreLGAddressListCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8845211B29C7003387A4 /* RCTCoreLGAddressListCallback.h */; };
+		B91D8876211B29C9003387A4 /* RCTCoreLGLocale.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8846211B29C7003387A4 /* RCTCoreLGLocale.h */; };
+		B91D8879211B29C9003387A4 /* RCTCoreLGAmountListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8849211B29C8003387A4 /* RCTCoreLGAmountListCallback.m */; };
+		B91D887A211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884A211B29C8003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h */; };
+		B91D887D211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D884D211B29C8003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m */; };
+		B91D887E211B29C9003387A4 /* RCTCoreLGDerivationPath.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884E211B29C8003387A4 /* RCTCoreLGDerivationPath.h */; };
+		B91D887F211B29C9003387A4 /* RCTCoreLGBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D884F211B29C9003387A4 /* RCTCoreLGBlock.h */; };
+		B91D8880211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8850211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h */; };
+		B91D8881211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8851211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m */; };
+		B91D8882211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = B91D8852211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h */; };
+		B91D8891211B7B1E003387A4 /* RCTCoreLGAccountCreationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8883211B7B18003387A4 /* RCTCoreLGAccountCreationInfo.m */; };
+		B91D8892211B7B1E003387A4 /* RCTCoreLGError.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8884211B7B18003387A4 /* RCTCoreLGError.m */; };
+		B91D8893211B7B1E003387A4 /* RCTCoreLGHttpReadBodyResult.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8885211B7B19003387A4 /* RCTCoreLGHttpReadBodyResult.m */; };
+		B91D8894211B7B1E003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8886211B7B19003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m */; };
+		B91D8895211B7B1E003387A4 /* RCTCoreLGEstimatedSize.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8887211B7B19003387A4 /* RCTCoreLGEstimatedSize.m */; };
+		B91D8896211B7B1E003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8888211B7B1A003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.m */; };
+		B91D8897211B7B1E003387A4 /* RCTCoreLGBitcoinLikeOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8889211B7B1A003387A4 /* RCTCoreLGBitcoinLikeOperator.m */; };
+		B91D8898211B7B1E003387A4 /* RCTCoreLGCurrency.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888A211B7B1A003387A4 /* RCTCoreLGCurrency.m */; };
+		B91D8899211B7B1E003387A4 /* RCTCoreLGBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888B211B7B1A003387A4 /* RCTCoreLGBlock.m */; };
+		B91D889A211B7B1E003387A4 /* RCTCoreLGFormatRules.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888C211B7B1B003387A4 /* RCTCoreLGFormatRules.m */; };
+		B91D889B211B7B1E003387A4 /* RCTCoreLGCurrencyUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888D211B7B1B003387A4 /* RCTCoreLGCurrencyUnit.m */; };
+		B91D889C211B7B1E003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */; };
+		B91D889D211B7B1E003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D888F211B7B1C003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m */; };
+		B91D889E211B7B1E003387A4 /* RCTCoreLGLocale.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D8890211B7B1C003387A4 /* RCTCoreLGLocale.m */; };
+		B96575A0210FBD6C00493CDB /* ledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B965759F210FBD6C00493CDB /* ledger-core-objc.a */; };
 		B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */; };
 		B97DA0CF2064133100418351 /* RCTCoreLGSynchronizationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */; };
-		B97DA0D02064133100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */; };
 		B97DA0D12064133100418351 /* RCTCoreLGEventBus.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA03B2064132200418351 /* RCTCoreLGEventBus.m */; };
 		B97DA0D22064133100418351 /* RCTCoreLGDynamicArray.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA03D2064132200418351 /* RCTCoreLGDynamicArray.m */; };
 		B97DA0D32064133100418351 /* RCTCoreLGExtendedKeyAccountCreationInfoCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA03E2064132200418351 /* RCTCoreLGExtendedKeyAccountCreationInfoCallback.m */; };
 		B97DA0D42064133100418351 /* RCTCoreLGOperationQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0412064132200418351 /* RCTCoreLGOperationQuery.m */; };
 		B97DA0D52064133100418351 /* RCTCoreLGWalletPool.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0422064132200418351 /* RCTCoreLGWalletPool.m */; };
 		B97DA0D62064133100418351 /* RCTCoreLGPoolConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0452064132200418351 /* RCTCoreLGPoolConfiguration.m */; };
-		B97DA0D72064133100418351 /* RCTCoreLibLedgerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0462064132300418351 /* RCTCoreLibLedgerCore.m */; };
 		B97DA0D82064133100418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0492064132300418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m */; };
 		B97DA0D92064133100418351 /* RCTCoreLGOperationListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA04B2064132300418351 /* RCTCoreLGOperationListCallback.m */; };
 		B97DA0DA2064133100418351 /* RCTCoreLGWebSocketClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA04C2064132300418351 /* RCTCoreLGWebSocketClient.m */; };
@@ -39,7 +86,6 @@
 		B97DA0EA2064133100418351 /* RCTCoreLGEventReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0712064132700418351 /* RCTCoreLGEventReceiver.m */; };
 		B97DA0EB2064133100418351 /* RCTCoreLGHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0762064132700418351 /* RCTCoreLGHttpClient.m */; };
 		B97DA0EC2064133100418351 /* RCTCoreLGBigInt.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0772064132700418351 /* RCTCoreLGBigInt.m */; };
-		B97DA0ED2064133100418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA07C2064132800418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.m */; };
 		B97DA0EE2064133100418351 /* RCTCoreLGQueryFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA07D2064132800418351 /* RCTCoreLGQueryFilter.m */; };
 		B97DA0EF2064133100418351 /* RCTCoreLGAmountCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0802064132800418351 /* RCTCoreLGAmountCallback.m */; };
 		B97DA0F02064133100418351 /* RCTCoreLGAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0812064132900418351 /* RCTCoreLGAccount.m */; };
@@ -47,7 +93,6 @@
 		B97DA0F22064133100418351 /* RCTCoreLGBitcoinLikeWallet.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0842064132900418351 /* RCTCoreLGBitcoinLikeWallet.m */; };
 		B97DA0F32064133100418351 /* RCTCoreLGBitcoinLikeInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0882064132900418351 /* RCTCoreLGBitcoinLikeInput.m */; };
 		B97DA0F42064133100418351 /* RCTCoreLGEventPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0892064132900418351 /* RCTCoreLGEventPublisher.m */; };
-		B97DA0F52064133100418351 /* RCTCoreLGBitcoinLikeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA08B2064132A00418351 /* RCTCoreLGBitcoinLikeHelper.m */; };
 		B97DA0F62064133100418351 /* RCTCoreLGSecp256k1.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA08C2064132A00418351 /* RCTCoreLGSecp256k1.m */; };
 		B97DA0F72064133100418351 /* RCTCoreLGAccountCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0902064132A00418351 /* RCTCoreLGAccountCallback.m */; };
 		B97DA0F82064133100418351 /* RCTCoreLGBlockCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0912064132A00418351 /* RCTCoreLGBlockCallback.m */; };
@@ -80,7 +125,6 @@
 		B97DA1132064133100418351 /* RCTCoreLGNetworks.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0BE2064132F00418351 /* RCTCoreLGNetworks.m */; };
 		B97DA1142064133100418351 /* RCTCoreLGAccountCreationInfoCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0BF2064132F00418351 /* RCTCoreLGAccountCreationInfoCallback.m */; };
 		B97DA1152064133100418351 /* RCTCoreLGWalletPoolBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C02064133000418351 /* RCTCoreLGWalletPoolBuilder.m */; };
-		B97DA1162064133100418351 /* RCTCoreLGStringListCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C32064133000418351 /* RCTCoreLGStringListCallback.m */; };
 		B97DA1172064133100418351 /* RCTCoreLGBitcoinLikeOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C42064133000418351 /* RCTCoreLGBitcoinLikeOutput.m */; };
 		B97DA1182064133100418351 /* RCTCoreLGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C72064133000418351 /* RCTCoreLGEvent.m */; };
 		B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C82064133000418351 /* RCTCoreLGLedgerCore.m */; };
@@ -123,17 +167,63 @@
 		134814201AA4EA6300B7C361 /* libRCTCoreLibLedgerCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTCoreLibLedgerCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B91D2E39207E090800EC285F /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B91D2F95207E67A200EC285F /* ledger-core-objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ledger-core-objc.xcodeproj"; path = "../build_ios/ledger-core-objc.xcodeproj"; sourceTree = "<group>"; };
+		B91D8825211B29C2003387A4 /* RCTCoreLGAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAddress.h; sourceTree = "<group>"; };
+		B91D8828211B29C3003387A4 /* RCTCoreLGEstimatedSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEstimatedSize.h; sourceTree = "<group>"; };
+		B91D8829211B29C3003387A4 /* RCTCoreLGFormatRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGFormatRules.h; sourceTree = "<group>"; };
+		B91D882B211B29C3003387A4 /* RCTCoreLGErrorCodeCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGErrorCodeCallback.m; sourceTree = "<group>"; };
+		B91D882C211B29C3003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeTransactionBuilder.h; sourceTree = "<group>"; };
+		B91D882D211B29C3003387A4 /* RCTCoreLGBinaryCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBinaryCallback.m; sourceTree = "<group>"; };
+		B91D882E211B29C4003387A4 /* RCTCoreLGBitcoinLikeScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeScript.h; sourceTree = "<group>"; };
+		B91D882F211B29C4003387A4 /* RCTCoreLGAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGAddress.m; sourceTree = "<group>"; };
+		B91D8830211B29C4003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeNetworkParameters.h; sourceTree = "<group>"; };
+		B91D8831211B29C4003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeTransactionCallback.m; sourceTree = "<group>"; };
+		B91D8832211B29C4003387A4 /* RCTCoreLGCurrency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGCurrency.h; sourceTree = "<group>"; };
+		B91D8833211B29C4003387A4 /* RCTCoreLGHttpReadBodyResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGHttpReadBodyResult.h; sourceTree = "<group>"; };
+		B91D8834211B29C5003387A4 /* RCTCoreLGAccountCreationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAccountCreationInfo.h; sourceTree = "<group>"; };
+		B91D8836211B29C5003387A4 /* RCTCoreLGBitcoinLikeScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeScript.m; sourceTree = "<group>"; };
+		B91D8837211B29C5003387A4 /* RCTCoreLGBitcoinLikeOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeOperator.h; sourceTree = "<group>"; };
+		B91D8838211B29C5003387A4 /* RCTCoreLGAddressListCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGAddressListCallback.m; sourceTree = "<group>"; };
+		B91D883A211B29C5003387A4 /* RCTCoreLGDerivationPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGDerivationPath.m; sourceTree = "<group>"; };
+		B91D883C211B29C6003387A4 /* RCTCoreLGAmountListCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAmountListCallback.h; sourceTree = "<group>"; };
+		B91D883D211B29C6003387A4 /* RCTCoreLGBinaryCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBinaryCallback.h; sourceTree = "<group>"; };
+		B91D883E211B29C6003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeScriptChunk.h; sourceTree = "<group>"; };
+		B91D883F211B29C6003387A4 /* RCTCoreLGCurrencyUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGCurrencyUnit.h; sourceTree = "<group>"; };
+		B91D8840211B29C6003387A4 /* RCTCoreLGError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGError.h; sourceTree = "<group>"; };
+		B91D8842211B29C7003387A4 /* RCTCoreLGErrorCodeCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGErrorCodeCallback.h; sourceTree = "<group>"; };
+		B91D8844211B29C7003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeTransactionRequest.h; sourceTree = "<group>"; };
+		B91D8845211B29C7003387A4 /* RCTCoreLGAddressListCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAddressListCallback.h; sourceTree = "<group>"; };
+		B91D8846211B29C7003387A4 /* RCTCoreLGLocale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGLocale.h; sourceTree = "<group>"; };
+		B91D8849211B29C8003387A4 /* RCTCoreLGAmountListCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGAmountListCallback.m; sourceTree = "<group>"; };
+		B91D884A211B29C8003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeTransactionCallback.h; sourceTree = "<group>"; };
+		B91D884D211B29C8003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeScriptChunk.m; sourceTree = "<group>"; };
+		B91D884E211B29C8003387A4 /* RCTCoreLGDerivationPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGDerivationPath.h; sourceTree = "<group>"; };
+		B91D884F211B29C9003387A4 /* RCTCoreLGBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBlock.h; sourceTree = "<group>"; };
+		B91D8850211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGExtendedKeyAccountCreationInfo.h; sourceTree = "<group>"; };
+		B91D8851211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeTransactionBuilder.m; sourceTree = "<group>"; };
+		B91D8852211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikePreparedTransaction.h; sourceTree = "<group>"; };
+		B91D8883211B7B18003387A4 /* RCTCoreLGAccountCreationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGAccountCreationInfo.m; sourceTree = "<group>"; };
+		B91D8884211B7B18003387A4 /* RCTCoreLGError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGError.m; sourceTree = "<group>"; };
+		B91D8885211B7B19003387A4 /* RCTCoreLGHttpReadBodyResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGHttpReadBodyResult.m; sourceTree = "<group>"; };
+		B91D8886211B7B19003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikePreparedTransaction.m; sourceTree = "<group>"; };
+		B91D8887211B7B19003387A4 /* RCTCoreLGEstimatedSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGEstimatedSize.m; sourceTree = "<group>"; };
+		B91D8888211B7B1A003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeTransactionRequest.m; sourceTree = "<group>"; };
+		B91D8889211B7B1A003387A4 /* RCTCoreLGBitcoinLikeOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeOperator.m; sourceTree = "<group>"; };
+		B91D888A211B7B1A003387A4 /* RCTCoreLGCurrency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGCurrency.m; sourceTree = "<group>"; };
+		B91D888B211B7B1A003387A4 /* RCTCoreLGBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBlock.m; sourceTree = "<group>"; };
+		B91D888C211B7B1B003387A4 /* RCTCoreLGFormatRules.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGFormatRules.m; sourceTree = "<group>"; };
+		B91D888D211B7B1B003387A4 /* RCTCoreLGCurrencyUnit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGCurrencyUnit.m; sourceTree = "<group>"; };
+		B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeNetworkParameters.m; sourceTree = "<group>"; };
+		B91D888F211B7B1C003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGExtendedKeyAccountCreationInfo.m; sourceTree = "<group>"; };
+		B91D8890211B7B1C003387A4 /* RCTCoreLGLocale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGLocale.m; sourceTree = "<group>"; };
+		B965759F210FBD6C00493CDB /* ledger-core-objc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "ledger-core-objc.a"; path = "../build/Release/ledger-core-objc.a"; sourceTree = "<group>"; };
 		B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeBlock.m; sourceTree = "<group>"; };
 		B97DA0332064132100418351 /* RCTCoreLGPathResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPathResolver.h; sourceTree = "<group>"; };
 		B97DA0342064132100418351 /* RCTCoreLGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEvent.h; sourceTree = "<group>"; };
 		B97DA0352064132100418351 /* RCTCoreLGNetworks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGNetworks.h; sourceTree = "<group>"; };
 		B97DA0362064132100418351 /* RCTCoreLGSynchronizationStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGSynchronizationStatus.m; sourceTree = "<group>"; };
-		B97DA0372064132100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeTransactionRequestCallback.h; sourceTree = "<group>"; };
 		B97DA0382064132200418351 /* RCTCoreLGBitcoinLikeInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeInput.h; sourceTree = "<group>"; };
-		B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeTransactionRequestCallback.m; sourceTree = "<group>"; };
 		B97DA03A2064132200418351 /* RCTCoreLGPreferencesEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGPreferencesEditor.h; sourceTree = "<group>"; };
 		B97DA03B2064132200418351 /* RCTCoreLGEventBus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGEventBus.m; sourceTree = "<group>"; };
-		B97DA03C2064132200418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikePreparedTransactionCallback.h; sourceTree = "<group>"; };
 		B97DA03D2064132200418351 /* RCTCoreLGDynamicArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGDynamicArray.m; sourceTree = "<group>"; };
 		B97DA03E2064132200418351 /* RCTCoreLGExtendedKeyAccountCreationInfoCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGExtendedKeyAccountCreationInfoCallback.m; sourceTree = "<group>"; };
 		B97DA03F2064132200418351 /* RCTCoreLGBitcoinLikeTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeTransaction.h; sourceTree = "<group>"; };
@@ -143,7 +233,6 @@
 		B97DA0432064132200418351 /* RCTCoreLGBitcoinLikeOutputListCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeOutputListCallback.h; sourceTree = "<group>"; };
 		B97DA0442064132200418351 /* RCTCoreLGWalletPoolBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGWalletPoolBuilder.h; sourceTree = "<group>"; };
 		B97DA0452064132200418351 /* RCTCoreLGPoolConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGPoolConfiguration.m; sourceTree = "<group>"; };
-		B97DA0462064132300418351 /* RCTCoreLibLedgerCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLibLedgerCore.m; sourceTree = "<group>"; };
 		B97DA0472064132300418351 /* RCTCoreLGGetEthreumLikeWalletCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGGetEthreumLikeWalletCallback.h; sourceTree = "<group>"; };
 		B97DA0482064132300418351 /* RCTCoreLGConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGConfiguration.h; sourceTree = "<group>"; };
 		B97DA0492064132300418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeExtendedPublicKey.m; sourceTree = "<group>"; };
@@ -158,7 +247,6 @@
 		B97DA0522064132400418351 /* RCTCoreLGThreadDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGThreadDispatcher.m; sourceTree = "<group>"; };
 		B97DA0532064132400418351 /* RCTCoreLGAccountCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAccountCallback.h; sourceTree = "<group>"; };
 		B97DA0542064132400418351 /* RCTCoreLGBitcoinLikeWalletConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeWalletConfiguration.m; sourceTree = "<group>"; };
-		B97DA0552064132400418351 /* RCTCoreLibLedgerCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLibLedgerCore.h; sourceTree = "<group>"; };
 		B97DA0562064132400418351 /* RCTCoreLGDatabaseBackend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGDatabaseBackend.m; sourceTree = "<group>"; };
 		B97DA0572064132400418351 /* RCTCoreLGAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAmount.h; sourceTree = "<group>"; };
 		B97DA0582064132400418351 /* RCTCoreLGEventBus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGEventBus.h; sourceTree = "<group>"; };
@@ -197,7 +285,6 @@
 		B97DA0792064132800418351 /* RCTCoreLGOperationQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGOperationQuery.h; sourceTree = "<group>"; };
 		B97DA07A2064132800418351 /* RCTCoreLGWalletPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGWalletPool.h; sourceTree = "<group>"; };
 		B97DA07B2064132800418351 /* RCTCoreLGAmountCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAmountCallback.h; sourceTree = "<group>"; };
-		B97DA07C2064132800418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikePreparedTransactionCallback.m; sourceTree = "<group>"; };
 		B97DA07D2064132800418351 /* RCTCoreLGQueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGQueryFilter.m; sourceTree = "<group>"; };
 		B97DA07E2064132800418351 /* RCTCoreLGSecp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGSecp256k1.h; sourceTree = "<group>"; };
 		B97DA07F2064132800418351 /* RCTCoreLGBitcoinLikeAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeAccount.h; sourceTree = "<group>"; };
@@ -212,7 +299,6 @@
 		B97DA0882064132900418351 /* RCTCoreLGBitcoinLikeInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeInput.m; sourceTree = "<group>"; };
 		B97DA0892064132900418351 /* RCTCoreLGEventPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGEventPublisher.m; sourceTree = "<group>"; };
 		B97DA08A2064132A00418351 /* RCTCoreLGHashAlgorithmHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGHashAlgorithmHelper.h; sourceTree = "<group>"; };
-		B97DA08B2064132A00418351 /* RCTCoreLGBitcoinLikeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeHelper.m; sourceTree = "<group>"; };
 		B97DA08C2064132A00418351 /* RCTCoreLGSecp256k1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGSecp256k1.m; sourceTree = "<group>"; };
 		B97DA08D2064132A00418351 /* RCTCoreLGBitcoinLikeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeOperation.h; sourceTree = "<group>"; };
 		B97DA08E2064132A00418351 /* RCTCoreLGExtendedKeyAccountCreationInfoCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGExtendedKeyAccountCreationInfoCallback.h; sourceTree = "<group>"; };
@@ -234,7 +320,6 @@
 		B97DA09E2064132C00418351 /* RCTCoreLGOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGOperation.h; sourceTree = "<group>"; };
 		B97DA09F2064132C00418351 /* RCTCoreLGConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGConfiguration.m; sourceTree = "<group>"; };
 		B97DA0A02064132C00418351 /* RCTCoreLGOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGOperation.m; sourceTree = "<group>"; };
-		B97DA0A12064132C00418351 /* RCTCoreLGStringListCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGStringListCallback.h; sourceTree = "<group>"; };
 		B97DA0A22064132C00418351 /* RCTCoreLGWalletPoolCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletPoolCallback.m; sourceTree = "<group>"; };
 		B97DA0A32064132C00418351 /* RCTCoreLGBitcoinLikeAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeAddress.m; sourceTree = "<group>"; };
 		B97DA0A42064132C00418351 /* RCTCoreLGWebSocketConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWebSocketConnection.m; sourceTree = "<group>"; };
@@ -268,7 +353,6 @@
 		B97DA0C02064133000418351 /* RCTCoreLGWalletPoolBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletPoolBuilder.m; sourceTree = "<group>"; };
 		B97DA0C12064133000418351 /* RCTCoreLGWebSocketConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGWebSocketConnection.h; sourceTree = "<group>"; };
 		B97DA0C22064133000418351 /* RCTCoreLGDatabaseBackend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGDatabaseBackend.h; sourceTree = "<group>"; };
-		B97DA0C32064133000418351 /* RCTCoreLGStringListCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGStringListCallback.m; sourceTree = "<group>"; };
 		B97DA0C42064133000418351 /* RCTCoreLGBitcoinLikeOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGBitcoinLikeOutput.m; sourceTree = "<group>"; };
 		B97DA0C52064133000418351 /* RCTCoreLGQueryFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGQueryFilter.h; sourceTree = "<group>"; };
 		B97DA0C62064133000418351 /* RCTCoreLGAccountCreationInfoCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGAccountCreationInfoCallback.h; sourceTree = "<group>"; };
@@ -276,7 +360,6 @@
 		B97DA0C82064133000418351 /* RCTCoreLGLedgerCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGLedgerCore.m; sourceTree = "<group>"; };
 		B97DA0C92064133100418351 /* RCTCoreLGSynchronizationStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGSynchronizationStatus.h; sourceTree = "<group>"; };
 		B97DA0CA2064133100418351 /* RCTCoreLGRandomNumberGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGRandomNumberGenerator.h; sourceTree = "<group>"; };
-		B97DA0CB2064133100418351 /* RCTCoreLGBitcoinLikeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGBitcoinLikeHelper.h; sourceTree = "<group>"; };
 		B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGGetEthreumLikeWalletCallback.m; sourceTree = "<group>"; };
 		B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletCallback.m; sourceTree = "<group>"; };
 		B9A5635A208429EC00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
@@ -287,6 +370,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B96575A0210FBD6C00493CDB /* ledger-core-objc.a in Frameworks */,
 				B91D2F9C207E67C000EC285F /* libledger-core-objc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +389,7 @@
 		289A75F81F7D1C4500E34F27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B965759F210FBD6C00493CDB /* ledger-core-objc.a */,
 				B91D2E39207E090800EC285F /* libReact.a */,
 			);
 			name = Frameworks;
@@ -340,6 +425,54 @@
 		B97DA0312064124E00418351 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B91D8883211B7B18003387A4 /* RCTCoreLGAccountCreationInfo.m */,
+				B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */,
+				B91D8889211B7B1A003387A4 /* RCTCoreLGBitcoinLikeOperator.m */,
+				B91D8886211B7B19003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m */,
+				B91D8888211B7B1A003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.m */,
+				B91D888B211B7B1A003387A4 /* RCTCoreLGBlock.m */,
+				B91D888A211B7B1A003387A4 /* RCTCoreLGCurrency.m */,
+				B91D888D211B7B1B003387A4 /* RCTCoreLGCurrencyUnit.m */,
+				B91D8884211B7B18003387A4 /* RCTCoreLGError.m */,
+				B91D8887211B7B19003387A4 /* RCTCoreLGEstimatedSize.m */,
+				B91D888F211B7B1C003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m */,
+				B91D888C211B7B1B003387A4 /* RCTCoreLGFormatRules.m */,
+				B91D8885211B7B19003387A4 /* RCTCoreLGHttpReadBodyResult.m */,
+				B91D8890211B7B1C003387A4 /* RCTCoreLGLocale.m */,
+				B91D8834211B29C5003387A4 /* RCTCoreLGAccountCreationInfo.h */,
+				B91D8825211B29C2003387A4 /* RCTCoreLGAddress.h */,
+				B91D882F211B29C4003387A4 /* RCTCoreLGAddress.m */,
+				B91D8845211B29C7003387A4 /* RCTCoreLGAddressListCallback.h */,
+				B91D8838211B29C5003387A4 /* RCTCoreLGAddressListCallback.m */,
+				B91D883C211B29C6003387A4 /* RCTCoreLGAmountListCallback.h */,
+				B91D8849211B29C8003387A4 /* RCTCoreLGAmountListCallback.m */,
+				B91D883D211B29C6003387A4 /* RCTCoreLGBinaryCallback.h */,
+				B91D882D211B29C3003387A4 /* RCTCoreLGBinaryCallback.m */,
+				B91D8830211B29C4003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h */,
+				B91D8837211B29C5003387A4 /* RCTCoreLGBitcoinLikeOperator.h */,
+				B91D8852211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h */,
+				B91D882E211B29C4003387A4 /* RCTCoreLGBitcoinLikeScript.h */,
+				B91D8836211B29C5003387A4 /* RCTCoreLGBitcoinLikeScript.m */,
+				B91D883E211B29C6003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h */,
+				B91D884D211B29C8003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m */,
+				B91D882C211B29C3003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h */,
+				B91D8851211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m */,
+				B91D884A211B29C8003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h */,
+				B91D8831211B29C4003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m */,
+				B91D8844211B29C7003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h */,
+				B91D884F211B29C9003387A4 /* RCTCoreLGBlock.h */,
+				B91D8832211B29C4003387A4 /* RCTCoreLGCurrency.h */,
+				B91D883F211B29C6003387A4 /* RCTCoreLGCurrencyUnit.h */,
+				B91D884E211B29C8003387A4 /* RCTCoreLGDerivationPath.h */,
+				B91D883A211B29C5003387A4 /* RCTCoreLGDerivationPath.m */,
+				B91D8840211B29C6003387A4 /* RCTCoreLGError.h */,
+				B91D8842211B29C7003387A4 /* RCTCoreLGErrorCodeCallback.h */,
+				B91D882B211B29C3003387A4 /* RCTCoreLGErrorCodeCallback.m */,
+				B91D8828211B29C3003387A4 /* RCTCoreLGEstimatedSize.h */,
+				B91D8850211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h */,
+				B91D8829211B29C3003387A4 /* RCTCoreLGFormatRules.h */,
+				B91D8833211B29C4003387A4 /* RCTCoreLGHttpReadBodyResult.h */,
+				B91D8846211B29C7003387A4 /* RCTCoreLGLocale.h */,
 				B97DA0AD2064132D00418351 /* RCTCoreLGAccount.h */,
 				B97DA0812064132900418351 /* RCTCoreLGAccount.m */,
 				B97DA0532064132400418351 /* RCTCoreLGAccountCallback.h */,
@@ -362,8 +495,6 @@
 				B97DA0322064132100418351 /* RCTCoreLGBitcoinLikeBlock.m */,
 				B97DA05E2064132500418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.h */,
 				B97DA0492064132300418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m */,
-				B97DA0CB2064133100418351 /* RCTCoreLGBitcoinLikeHelper.h */,
-				B97DA08B2064132A00418351 /* RCTCoreLGBitcoinLikeHelper.m */,
 				B97DA0382064132200418351 /* RCTCoreLGBitcoinLikeInput.h */,
 				B97DA0882064132900418351 /* RCTCoreLGBitcoinLikeInput.m */,
 				B97DA08D2064132A00418351 /* RCTCoreLGBitcoinLikeOperation.h */,
@@ -372,12 +503,8 @@
 				B97DA0C42064133000418351 /* RCTCoreLGBitcoinLikeOutput.m */,
 				B97DA0432064132200418351 /* RCTCoreLGBitcoinLikeOutputListCallback.h */,
 				B97DA0952064132B00418351 /* RCTCoreLGBitcoinLikeOutputListCallback.m */,
-				B97DA03C2064132200418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.h */,
-				B97DA07C2064132800418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.m */,
 				B97DA03F2064132200418351 /* RCTCoreLGBitcoinLikeTransaction.h */,
 				B97DA0B72064132F00418351 /* RCTCoreLGBitcoinLikeTransaction.m */,
-				B97DA0372064132100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.h */,
-				B97DA0392064132200418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m */,
 				B97DA0A52064132D00418351 /* RCTCoreLGBitcoinLikeWallet.h */,
 				B97DA0842064132900418351 /* RCTCoreLGBitcoinLikeWallet.m */,
 				B97DA04E2064132300418351 /* RCTCoreLGBitcoinLikeWalletConfiguration.h */,
@@ -466,8 +593,6 @@
 				B97DA08C2064132A00418351 /* RCTCoreLGSecp256k1.m */,
 				B97DA0852064132900418351 /* RCTCoreLGStringCallback.h */,
 				B97DA0AA2064132D00418351 /* RCTCoreLGStringCallback.m */,
-				B97DA0A12064132C00418351 /* RCTCoreLGStringListCallback.h */,
-				B97DA0C32064133000418351 /* RCTCoreLGStringListCallback.m */,
 				B97DA06F2064132700418351 /* RCTCoreLGSynchronizationEngines.h */,
 				B97DA0692064132600418351 /* RCTCoreLGSynchronizationEngines.m */,
 				B97DA0C92064133100418351 /* RCTCoreLGSynchronizationStatus.h */,
@@ -494,8 +619,6 @@
 				B97DA04C2064132300418351 /* RCTCoreLGWebSocketClient.m */,
 				B97DA0C12064133000418351 /* RCTCoreLGWebSocketConnection.h */,
 				B97DA0A42064132C00418351 /* RCTCoreLGWebSocketConnection.m */,
-				B97DA0552064132400418351 /* RCTCoreLibLedgerCore.h */,
-				B97DA0462064132300418351 /* RCTCoreLibLedgerCore.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -507,6 +630,30 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B91D886E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.h in Headers */,
+				B91D887E211B29C9003387A4 /* RCTCoreLGDerivationPath.h in Headers */,
+				B91D8874211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.h in Headers */,
+				B91D885E211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.h in Headers */,
+				B91D8864211B29C9003387A4 /* RCTCoreLGAccountCreationInfo.h in Headers */,
+				B91D887A211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.h in Headers */,
+				B91D8863211B29C9003387A4 /* RCTCoreLGHttpReadBodyResult.h in Headers */,
+				B91D8858211B29C9003387A4 /* RCTCoreLGEstimatedSize.h in Headers */,
+				B91D8876211B29C9003387A4 /* RCTCoreLGLocale.h in Headers */,
+				B91D886C211B29C9003387A4 /* RCTCoreLGAmountListCallback.h in Headers */,
+				B91D8867211B29C9003387A4 /* RCTCoreLGBitcoinLikeOperator.h in Headers */,
+				B91D8875211B29C9003387A4 /* RCTCoreLGAddressListCallback.h in Headers */,
+				B91D887F211B29C9003387A4 /* RCTCoreLGBlock.h in Headers */,
+				B91D8880211B29C9003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.h in Headers */,
+				B91D885C211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.h in Headers */,
+				B91D8870211B29C9003387A4 /* RCTCoreLGError.h in Headers */,
+				B91D8872211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.h in Headers */,
+				B91D8860211B29C9003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.h in Headers */,
+				B91D8882211B29C9003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.h in Headers */,
+				B91D8862211B29C9003387A4 /* RCTCoreLGCurrency.h in Headers */,
+				B91D8859211B29C9003387A4 /* RCTCoreLGFormatRules.h in Headers */,
+				B91D886D211B29C9003387A4 /* RCTCoreLGBinaryCallback.h in Headers */,
+				B91D8855211B29C9003387A4 /* RCTCoreLGAddress.h in Headers */,
+				B91D886F211B29C9003387A4 /* RCTCoreLGCurrencyUnit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,20 +732,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				B97DA1052064133100418351 /* RCTCoreLGBitcoinLikeAddress.m in Sources */,
+				B91D889C211B7B1E003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m in Sources */,
 				B97DA0F42064133100418351 /* RCTCoreLGEventPublisher.m in Sources */,
 				B97DA0D52064133100418351 /* RCTCoreLGWalletPool.m in Sources */,
 				B97DA1182064133100418351 /* RCTCoreLGEvent.m in Sources */,
+				B91D889E211B7B1E003387A4 /* RCTCoreLGLocale.m in Sources */,
 				B97DA1102064133100418351 /* RCTCoreLGSynchronizerEngines.m in Sources */,
 				B97DA0E92064133100418351 /* RCTCoreLGHashAlgorithmHelper.m in Sources */,
 				B97DA11A2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m in Sources */,
 				B97DA0D82064133100418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m in Sources */,
 				B97DA0D42064133100418351 /* RCTCoreLGOperationQuery.m in Sources */,
-				B97DA0ED2064133100418351 /* RCTCoreLGBitcoinLikePreparedTransactionCallback.m in Sources */,
+				B91D8897211B7B1E003387A4 /* RCTCoreLGBitcoinLikeOperator.m in Sources */,
 				B97DA0E52064133100418351 /* RCTCoreLGLogPrinter.m in Sources */,
 				B97DA0E82064133100418351 /* RCTCoreLGSynchronizationEngines.m in Sources */,
 				B97DA0FA2064133100418351 /* RCTCoreLGCurrencyListCallback.m in Sources */,
+				B91D885F211B29C9003387A4 /* RCTCoreLGAddress.m in Sources */,
 				B97DA1042064133100418351 /* RCTCoreLGWalletPoolCallback.m in Sources */,
 				B97DA1032064133100418351 /* RCTCoreLGOperation.m in Sources */,
+				B91D889D211B7B1E003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m in Sources */,
 				B97DA0F82064133100418351 /* RCTCoreLGBlockCallback.m in Sources */,
 				B97DA10C2064133100418351 /* RCTCoreLGExecutionContext.m in Sources */,
 				B97DA1082064133100418351 /* RCTCoreLGBitcoinLikeOperation.m in Sources */,
@@ -607,25 +758,32 @@
 				B97DA10A2064133100418351 /* RCTCoreLGLock.m in Sources */,
 				B97DA0D92064133100418351 /* RCTCoreLGOperationListCallback.m in Sources */,
 				B97DA0FD2064133100418351 /* RCTCoreLGBlockchainExplorerEngines.m in Sources */,
+				B91D8881211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m in Sources */,
 				B97DA0FF2064133100418351 /* RCTCoreLGLogger.m in Sources */,
+				B91D8898211B7B1E003387A4 /* RCTCoreLGCurrency.m in Sources */,
 				B97DA0F62064133100418351 /* RCTCoreLGSecp256k1.m in Sources */,
+				B91D885D211B29C9003387A4 /* RCTCoreLGBinaryCallback.m in Sources */,
 				B97DA11B2064133100418351 /* RCTCoreLGWalletCallback.m in Sources */,
+				B91D8892211B7B1E003387A4 /* RCTCoreLGError.m in Sources */,
 				B97DA0F02064133100418351 /* RCTCoreLGAccount.m in Sources */,
 				B97DA0DE2064133100418351 /* RCTCoreLGBitcoinLikeWalletConfiguration.m in Sources */,
 				B97DA1092064133100418351 /* RCTCoreLGPreferencesEditor.m in Sources */,
+				B91D886A211B29C9003387A4 /* RCTCoreLGDerivationPath.m in Sources */,
 				B97DA1132064133100418351 /* RCTCoreLGNetworks.m in Sources */,
 				B97DA0E32064133100418351 /* RCTCoreLGWallet.m in Sources */,
+				B91D8895211B7B1E003387A4 /* RCTCoreLGEstimatedSize.m in Sources */,
 				B97DA0FB2064133100418351 /* RCTCoreLGPathResolver.m in Sources */,
+				B91D8894211B7B1E003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m in Sources */,
 				B97DA10F2064133100418351 /* RCTCoreLGPreferences.m in Sources */,
 				B97DA0EE2064133100418351 /* RCTCoreLGQueryFilter.m in Sources */,
 				B97DA0CE2064133100418351 /* RCTCoreLGBitcoinLikeBlock.m in Sources */,
-				B97DA0D02064133100418351 /* RCTCoreLGBitcoinLikeTransactionRequestCallback.m in Sources */,
 				B97DA0FC2064133100418351 /* RCTCoreLGBitcoinLikeOutputListCallback.m in Sources */,
 				B97DA0D12064133100418351 /* RCTCoreLGEventBus.m in Sources */,
 				B97DA0EA2064133100418351 /* RCTCoreLGEventReceiver.m in Sources */,
-				B97DA0D72064133100418351 /* RCTCoreLibLedgerCore.m in Sources */,
 				B97DA0F32064133100418351 /* RCTCoreLGBitcoinLikeInput.m in Sources */,
+				B91D8866211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.m in Sources */,
 				B97DA1152064133100418351 /* RCTCoreLGWalletPoolBuilder.m in Sources */,
+				B91D887D211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m in Sources */,
 				B97DA1062064133100418351 /* RCTCoreLGWebSocketConnection.m in Sources */,
 				B97DA10B2064133100418351 /* RCTCoreLGEthereumLikeWallet.m in Sources */,
 				B97DA1022064133100418351 /* RCTCoreLGConfiguration.m in Sources */,
@@ -635,20 +793,22 @@
 				B97DA1142064133100418351 /* RCTCoreLGAccountCreationInfoCallback.m in Sources */,
 				B97DA0E22064133100418351 /* RCTCoreLGBlockchainObserverEngines.m in Sources */,
 				B97DA0DD2064133100418351 /* RCTCoreLGThreadDispatcher.m in Sources */,
+				B91D889A211B7B1E003387A4 /* RCTCoreLGFormatRules.m in Sources */,
+				B91D8861211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m in Sources */,
 				B97DA0DC2064133100418351 /* RCTCoreLGCurrencyCallback.m in Sources */,
 				B97DA10E2064133100418351 /* RCTCoreLGBitcoinLikeTransaction.m in Sources */,
+				B91D8868211B29C9003387A4 /* RCTCoreLGAddressListCallback.m in Sources */,
 				B97DA0E02064133100418351 /* RCTCoreLGHttpRequest.m in Sources */,
-				B97DA0F52064133100418351 /* RCTCoreLGBitcoinLikeHelper.m in Sources */,
 				B97DA0E12064133100418351 /* RCTCoreLGRunnable.m in Sources */,
 				B97DA0E42064133100418351 /* RCTCoreLGKeychainEngines.m in Sources */,
 				B97DA0DF2064133100418351 /* RCTCoreLGDatabaseBackend.m in Sources */,
-				B97DA1162064133100418351 /* RCTCoreLGStringListCallback.m in Sources */,
 				B97DA0F92064133100418351 /* RCTCoreLGWalletListCallback.m in Sources */,
 				B97DA0EC2064133100418351 /* RCTCoreLGBigInt.m in Sources */,
 				B97DA10D2064133100418351 /* RCTCoreLGI32Callback.m in Sources */,
 				B97DA0EF2064133100418351 /* RCTCoreLGAmountCallback.m in Sources */,
 				B97DA0E72064133100418351 /* RCTCoreLGAccountListCallback.m in Sources */,
 				B97DA0F22064133100418351 /* RCTCoreLGBitcoinLikeWallet.m in Sources */,
+				B91D885B211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.m in Sources */,
 				B97DA1112064133100418351 /* RCTCoreLGTrustIndicator.m in Sources */,
 				B97DA0DA2064133100418351 /* RCTCoreLGWebSocketClient.m in Sources */,
 				B97DA0D62064133100418351 /* RCTCoreLGPoolConfiguration.m in Sources */,
@@ -657,8 +817,14 @@
 				B97DA0DB2064133100418351 /* RCTCoreLGBitcoinLikeAccount.m in Sources */,
 				B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */,
 				B97DA1012064133100418351 /* RCTCoreLGHttpUrlConnection.m in Sources */,
+				B91D8879211B29C9003387A4 /* RCTCoreLGAmountListCallback.m in Sources */,
 				B97DA1072064133100418351 /* RCTCoreLGStringCallback.m in Sources */,
 				B97DA0EB2064133100418351 /* RCTCoreLGHttpClient.m in Sources */,
+				B91D8896211B7B1E003387A4 /* RCTCoreLGBitcoinLikeTransactionRequest.m in Sources */,
+				B91D8891211B7B1E003387A4 /* RCTCoreLGAccountCreationInfo.m in Sources */,
+				B91D889B211B7B1E003387A4 /* RCTCoreLGCurrencyUnit.m in Sources */,
+				B91D8899211B7B1E003387A4 /* RCTCoreLGBlock.m in Sources */,
+				B91D8893211B7B1E003387A4 /* RCTCoreLGHttpReadBodyResult.m in Sources */,
 				B97DA0F12064133100418351 /* RCTCoreLGEthereumPublicKeyProvider.m in Sources */,
 				B97DA0F72064133100418351 /* RCTCoreLGAccountCallback.m in Sources */,
 				B97DA0E62064133100418351 /* RCTCoreLGRandomNumberGenerator.m in Sources */,

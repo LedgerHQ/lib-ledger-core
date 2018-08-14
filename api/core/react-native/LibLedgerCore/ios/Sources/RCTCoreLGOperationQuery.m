@@ -8,13 +8,15 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGOperationQuery)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGOperationQuery alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -25,10 +27,26 @@ RCT_EXPORT_MODULE(RCTCoreLGOperationQuery)
  *@param descending, bool
  *@return OperationQuery object, new ordered operation
  */
-RCT_REMAP_METHOD(addOrder,addOrder:(LGOperationOrderKey)key
-                        descending:(BOOL)descending withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(addOrder,addOrder:(NSDictionary *)currentInstance withParams:(LGOperationOrderKey)key
+                                                                   descending:(BOOL)descending withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::addOrder, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::addOrder, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationQuery * objcResult = [currentInstanceObj addOrder:key descending:descending];
 
-    id result = @{@"result" :[self.objcImpl addOrder:key descending:descending]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -37,15 +55,32 @@ RCT_REMAP_METHOD(addOrder,addOrder:(LGOperationOrderKey)key
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::addOrder", nil);
     }
+
 }
 
 /**
  *Get applied filter on operation query
  *@return QueryFilter object
  */
-RCT_REMAP_METHOD(filter,filterWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(filter,filter:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::filter, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::filter, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGQueryFilter * objcResult = [currentInstanceObj filter];
 
-    id result = @{@"result" :[self.objcImpl filter]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGQueryFilter *rctImpl_objcResult = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -54,15 +89,32 @@ RCT_REMAP_METHOD(filter,filterWithResolver:(RCTPromiseResolveBlock)resolve rejec
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::filter", nil);
     }
+
 }
 
 /**
  *Add offset to the operation query
  *@param from, 64 bits integer
  */
-RCT_REMAP_METHOD(offset,offset:(int64_t)from withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(offset,offset:(NSDictionary *)currentInstance withParams:(int64_t)from withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::offset, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::offset, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationQuery * objcResult = [currentInstanceObj offset:from];
 
-    id result = @{@"result" :[self.objcImpl offset:from]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -71,15 +123,32 @@ RCT_REMAP_METHOD(offset,offset:(int64_t)from withResolver:(RCTPromiseResolveBloc
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::offset", nil);
     }
+
 }
 
 /**
  *Add limit to the operation query results
  *@param count, 64 bits integer
  */
-RCT_REMAP_METHOD(limit,limit:(int64_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(limit,limit:(NSDictionary *)currentInstance withParams:(int64_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::limit, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::limit, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationQuery * objcResult = [currentInstanceObj limit:count];
 
-    id result = @{@"result" :[self.objcImpl limit:count]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -88,15 +157,32 @@ RCT_REMAP_METHOD(limit,limit:(int64_t)count withResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::limit", nil);
     }
+
 }
 
 /**
  *TODO
  *Complete the operation query
  */
-RCT_REMAP_METHOD(complete,completeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(complete,complete:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::complete, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::complete, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationQuery * objcResult = [currentInstanceObj complete];
 
-    id result = @{@"result" :[self.objcImpl complete]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -105,12 +191,29 @@ RCT_REMAP_METHOD(complete,completeWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::complete", nil);
     }
+
 }
 
 /**TODO */
-RCT_REMAP_METHOD(partial,partialWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(partial,partial:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::partial, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::partial, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationQuery * objcResult = [currentInstanceObj partial];
 
-    id result = @{@"result" :[self.objcImpl partial]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
+
+
     if(result)
     {
         resolve(result);
@@ -119,14 +222,26 @@ RCT_REMAP_METHOD(partial,partialWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGOperationQuery::partial", nil);
     }
+
 }
 
 /**
  *Execute query to retrieve operations
  *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
  */
-RCT_REMAP_METHOD(execute,execute:(nullable id<LGOperationListCallback>)callback) {
+RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::execute, first argument should be an instance of LGOperationQuery", nil);
+    }
+    LGOperationQuery *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperationQuery::execute, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGOperationListCallback *objcParam_0 = [[RCTCoreLGOperationListCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
+    [currentInstanceObj execute:objcParam_0];
 
-    [self.objcImpl execute:callback];
 }
 @end

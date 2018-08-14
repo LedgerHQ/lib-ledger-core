@@ -3,9 +3,10 @@
 
 #import "LGBlockchainObserverEngines.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGBlockchainObserverEngines : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBlockchainObserverEngines *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

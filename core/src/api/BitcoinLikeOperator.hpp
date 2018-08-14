@@ -12,17 +12,17 @@
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeOperator final {
-    std::string name;
+    std::string operatorName;
     int8_t value;
 
-    BitcoinLikeOperator(std::string name_,
+    BitcoinLikeOperator(std::string operatorName_,
                         int8_t value_)
-    : name(std::move(name_))
+    : operatorName(std::move(operatorName_))
     , value(std::move(value_))
     {}
 
     BitcoinLikeOperator(const BitcoinLikeOperator& cpy) {
-       this->name = cpy.name;
+       this->operatorName = cpy.operatorName;
        this->value = cpy.value;
     }
 
@@ -30,19 +30,19 @@ struct BitcoinLikeOperator final {
 
 
     BitcoinLikeOperator& operator=(const BitcoinLikeOperator& cpy) {
-       this->name = cpy.name;
+       this->operatorName = cpy.operatorName;
        this->value = cpy.value;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(name, value);
+        archive(operatorName, value);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(name, value);
+        archive(operatorName, value);
     }
 };
 

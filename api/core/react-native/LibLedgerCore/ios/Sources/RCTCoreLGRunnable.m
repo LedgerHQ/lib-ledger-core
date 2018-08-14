@@ -8,20 +8,32 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGRunnable)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGRunnable alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 /**Trigger runnable execution */
-RCT_EXPORT_METHOD(run) {
+RCT_REMAP_METHOD(run,run:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGRunnable::run, first argument should be an instance of LGRunnable", nil);
+    }
+    LGRunnable *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGRunnable::run, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj run];
 
-    [self.objcImpl run];
 }
 @end

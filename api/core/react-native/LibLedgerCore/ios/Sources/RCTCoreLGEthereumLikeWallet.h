@@ -3,9 +3,10 @@
 
 #import "LGEthereumLikeWallet.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGEthereumLikeWallet : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGEthereumLikeWallet *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

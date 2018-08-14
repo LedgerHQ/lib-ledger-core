@@ -8,41 +8,94 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGWebSocketConnection)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGWebSocketConnection alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-RCT_REMAP_METHOD(onConnect,onConnect:(int32_t)connectionId) {
+RCT_REMAP_METHOD(onConnect,onConnect:(NSDictionary *)currentInstance withParams:(int32_t)connectionId withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::onConnect, first argument should be an instance of LGWebSocketConnection", nil);
+    }
+    LGWebSocketConnection *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketConnection::onConnect, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj onConnect:connectionId];
 
-    [self.objcImpl onConnect:connectionId];
 }
 
-RCT_EXPORT_METHOD(onClose) {
+RCT_REMAP_METHOD(onClose,onClose:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::onClose, first argument should be an instance of LGWebSocketConnection", nil);
+    }
+    LGWebSocketConnection *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketConnection::onClose, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj onClose];
 
-    [self.objcImpl onClose];
 }
 
-RCT_REMAP_METHOD(onMessage,onMessage:(nonnull NSString *)data) {
+RCT_REMAP_METHOD(onMessage,onMessage:(NSDictionary *)currentInstance withParams:(nonnull NSString *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::onMessage, first argument should be an instance of LGWebSocketConnection", nil);
+    }
+    LGWebSocketConnection *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketConnection::onMessage, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj onMessage:data];
 
-    [self.objcImpl onMessage:data];
 }
 
-RCT_REMAP_METHOD(onError,onError:(LGErrorCode)code
-                         message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(onError,onError:(NSDictionary *)currentInstance withParams:(LGErrorCode)code
+                                                                    message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::onError, first argument should be an instance of LGWebSocketConnection", nil);
+    }
+    LGWebSocketConnection *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketConnection::onError, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj onError:code message:message];
 
-    [self.objcImpl onError:code message:message];
 }
 
-RCT_REMAP_METHOD(getConnectionId,getConnectionIdWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl getConnectionId])};if(result)
+RCT_REMAP_METHOD(getConnectionId,getConnectionId:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::getConnectionId, first argument should be an instance of LGWebSocketConnection", nil);
+    }
+    LGWebSocketConnection *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGWebSocketConnection::getConnectionId, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    int32_t objcResult = [currentInstanceObj getConnectionId];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -50,5 +103,6 @@ RCT_REMAP_METHOD(getConnectionId,getConnectionIdWithResolver:(RCTPromiseResolveB
     {
         reject(@"impl_call_error", @"Error while calling LGWebSocketConnection::getConnectionId", nil);
     }
+
 }
 @end

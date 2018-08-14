@@ -3,9 +3,10 @@
 
 #import "LGBitcoinLikeWallet.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGBitcoinLikeWallet : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeWallet *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end
