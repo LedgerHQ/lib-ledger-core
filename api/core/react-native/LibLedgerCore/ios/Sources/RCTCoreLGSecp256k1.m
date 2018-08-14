@@ -33,7 +33,6 @@ RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlo
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -147,7 +146,6 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
     RCTCoreLGSecp256k1 *rctImpl_objcResult = (RCTCoreLGSecp256k1 *)[self.bridge moduleForName:@"CoreLGSecp256k1"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGSecp256k1", @"uid" : uuid };
-
 
     if(result)
     {

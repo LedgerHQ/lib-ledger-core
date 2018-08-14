@@ -44,7 +44,6 @@ RCT_REMAP_METHOD(setUsername,setUsername:(NSDictionary *)currentInstance withPar
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -78,7 +77,6 @@ RCT_REMAP_METHOD(setPassword,setPassword:(NSDictionary *)currentInstance withPar
     RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
-
 
     if(result)
     {
@@ -114,7 +112,6 @@ RCT_REMAP_METHOD(setHost,setHost:(NSDictionary *)currentInstance withParams:(non
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -148,7 +145,6 @@ RCT_REMAP_METHOD(setHostAddr,setHostAddr:(NSDictionary *)currentInstance withPar
     RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
-
 
     if(result)
     {
@@ -184,7 +180,6 @@ RCT_REMAP_METHOD(setPort,setPort:(NSDictionary *)currentInstance withParams:(non
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -218,7 +213,6 @@ RCT_REMAP_METHOD(setOptions,setOptions:(NSDictionary *)currentInstance withParam
     RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
-
 
     if(result)
     {
@@ -254,7 +248,6 @@ RCT_REMAP_METHOD(setSslMode,setSslMode:(NSDictionary *)currentInstance withParam
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -289,7 +282,6 @@ RCT_REMAP_METHOD(setKerberosName,setKerberosName:(NSDictionary *)currentInstance
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -320,7 +312,6 @@ RCT_REMAP_METHOD(setService,setService:(NSDictionary *)currentInstance withParam
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -350,7 +341,6 @@ RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(NSDictionary *)cur
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -379,7 +369,6 @@ RCT_REMAP_METHOD(enableQueryLogging,enableQueryLogging:(NSDictionary *)currentIn
     RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
-
 
     if(result)
     {
@@ -701,7 +690,6 @@ RCT_REMAP_METHOD(getSqlite3Backend,getSqlite3BackendWithResolver:(RCTPromiseReso
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -724,7 +712,6 @@ RCT_REMAP_METHOD(getPostgreSQLBackend,getPostgreSQLBackendWithResolver:(RCTPromi
     RCTCoreLGDatabaseBackend *rctImpl_objcResult = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDatabaseBackend", @"uid" : uuid };
-
 
     if(result)
     {

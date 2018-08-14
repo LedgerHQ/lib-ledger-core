@@ -245,7 +245,6 @@ RCT_REMAP_METHOD(edit,edit:(NSDictionary *)currentInstance WithResolver:(RCTProm
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);

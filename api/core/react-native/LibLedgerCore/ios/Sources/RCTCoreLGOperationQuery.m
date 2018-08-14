@@ -46,7 +46,6 @@ RCT_REMAP_METHOD(addOrder,addOrder:(NSDictionary *)currentInstance withParams:(L
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -79,7 +78,6 @@ RCT_REMAP_METHOD(filter,filter:(NSDictionary *)currentInstance WithResolver:(RCT
     RCTCoreLGQueryFilter *rctImpl_objcResult = (RCTCoreLGQueryFilter *)[self.bridge moduleForName:@"CoreLGQueryFilter"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGQueryFilter", @"uid" : uuid };
-
 
     if(result)
     {
@@ -114,7 +112,6 @@ RCT_REMAP_METHOD(offset,offset:(NSDictionary *)currentInstance withParams:(int64
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -147,7 +144,6 @@ RCT_REMAP_METHOD(limit,limit:(NSDictionary *)currentInstance withParams:(int64_t
     RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
-
 
     if(result)
     {
@@ -182,7 +178,6 @@ RCT_REMAP_METHOD(complete,complete:(NSDictionary *)currentInstance WithResolver:
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -212,7 +207,6 @@ RCT_REMAP_METHOD(partial,partial:(NSDictionary *)currentInstance WithResolver:(R
     RCTCoreLGOperationQuery *rctImpl_objcResult = (RCTCoreLGOperationQuery *)[self.bridge moduleForName:@"CoreLGOperationQuery"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGOperationQuery", @"uid" : uuid };
-
 
     if(result)
     {

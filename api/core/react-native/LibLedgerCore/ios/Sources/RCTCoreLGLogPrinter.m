@@ -157,7 +157,6 @@ RCT_REMAP_METHOD(getContext,getContext:(NSDictionary *)currentInstance WithResol
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);

@@ -71,7 +71,6 @@ RCT_REMAP_METHOD(getPayload,getPayload:(NSDictionary *)currentInstance WithResol
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -155,7 +154,6 @@ RCT_REMAP_METHOD(newInstance,newInstancewithParams:(LGEventCode)code
     RCTCoreLGEvent *rctImpl_objcResult = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEvent", @"uid" : uuid };
-
 
     if(result)
     {

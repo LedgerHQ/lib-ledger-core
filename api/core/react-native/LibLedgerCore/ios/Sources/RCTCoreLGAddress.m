@@ -95,7 +95,6 @@ RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddress:(NSDictionary *)curre
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAddress", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -149,7 +148,6 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -178,7 +176,6 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)address
     RCTCoreLGAddress *rctImpl_objcResult = (RCTCoreLGAddress *)[self.bridge moduleForName:@"CoreLGAddress"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAddress", @"uid" : uuid };
-
 
     if(result)
     {

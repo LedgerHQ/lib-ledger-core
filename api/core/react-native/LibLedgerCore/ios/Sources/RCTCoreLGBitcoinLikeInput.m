@@ -98,7 +98,6 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPath:(NSDictionary *)currentInst
         [result addObject:result_elem];
     }
 
-
     if(result)
     {
         resolve(result);
@@ -131,7 +130,6 @@ RCT_REMAP_METHOD(getValue,getValue:(NSDictionary *)currentInstance WithResolver:
     RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
-
 
     if(result)
     {
@@ -282,7 +280,6 @@ RCT_REMAP_METHOD(getPreviousOuput,getPreviousOuput:(NSDictionary *)currentInstan
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOutput", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -337,7 +334,6 @@ RCT_REMAP_METHOD(parseScriptSig,parseScriptSig:(NSDictionary *)currentInstance W
     RCTCoreLGBitcoinLikeScript *rctImpl_objcResult = (RCTCoreLGBitcoinLikeScript *)[self.bridge moduleForName:@"CoreLGBitcoinLikeScript"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeScript", @"uid" : uuid };
-
 
     if(result)
     {

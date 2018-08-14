@@ -43,7 +43,6 @@ RCT_REMAP_METHOD(getEventBus,getEventBus:(NSDictionary *)currentInstance WithRes
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventBus", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -133,7 +132,6 @@ RCT_REMAP_METHOD(newInstance,newInstancewithParams:(NSDictionary *)context withR
     RCTCoreLGEventPublisher *rctImpl_objcResult = (RCTCoreLGEventPublisher *)[self.bridge moduleForName:@"CoreLGEventPublisher"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEventPublisher", @"uid" : uuid };
-
 
     if(result)
     {

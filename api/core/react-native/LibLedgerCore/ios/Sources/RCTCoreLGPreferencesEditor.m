@@ -46,7 +46,6 @@ RCT_REMAP_METHOD(putString,putString:(NSDictionary *)currentInstance withParams:
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -82,7 +81,6 @@ RCT_REMAP_METHOD(putInt,putInt:(NSDictionary *)currentInstance withParams:(nonnu
     RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
-
 
     if(result)
     {
@@ -120,7 +118,6 @@ RCT_REMAP_METHOD(putLong,putLong:(NSDictionary *)currentInstance withParams:(non
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -156,7 +153,6 @@ RCT_REMAP_METHOD(putBoolean,putBoolean:(NSDictionary *)currentInstance withParam
     RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
-
 
     if(result)
     {
@@ -194,7 +190,6 @@ RCT_REMAP_METHOD(putStringArray,putStringArray:(NSDictionary *)currentInstance w
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -231,7 +226,6 @@ RCT_REMAP_METHOD(putData,putData:(NSDictionary *)currentInstance withParams:(non
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -265,7 +259,6 @@ RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(nonnu
     RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
-
 
     if(result)
     {

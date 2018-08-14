@@ -46,7 +46,6 @@ RCT_REMAP_METHOD(add,add:(NSDictionary *)currentInstance withParams:(NSDictionar
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -82,7 +81,6 @@ RCT_REMAP_METHOD(subtract,subtract:(NSDictionary *)currentInstance withParams:(N
     RCTCoreLGBigInt *rctImpl_objcResult = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
-
 
     if(result)
     {
@@ -120,7 +118,6 @@ RCT_REMAP_METHOD(multiply,multiply:(NSDictionary *)currentInstance withParams:(N
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -156,7 +153,6 @@ RCT_REMAP_METHOD(divide,divide:(NSDictionary *)currentInstance withParams:(NSDic
     RCTCoreLGBigInt *rctImpl_objcResult = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
-
 
     if(result)
     {
@@ -199,7 +195,6 @@ RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(NSDictionary *)currentIn
         [result addObject:result_elem];
     }
 
-
     if(result)
     {
         resolve(result);
@@ -233,7 +228,6 @@ RCT_REMAP_METHOD(pow,pow:(NSDictionary *)currentInstance withParams:(int32_t)exp
     RCTCoreLGBigInt *rctImpl_objcResult = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
-
 
     if(result)
     {
@@ -385,7 +379,6 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalStringwithParams:(nonnull NSString
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -412,7 +405,6 @@ RCT_REMAP_METHOD(fromIntegerString,fromIntegerStringwithParams:(nonnull NSString
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -436,7 +428,6 @@ RCT_REMAP_METHOD(fromLong,fromLongwithParams:(int64_t)l withResolver:(RCTPromise
     RCTCoreLGBigInt *rctImpl_objcResult = (RCTCoreLGBigInt *)[self.bridge moduleForName:@"CoreLGBigInt"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBigInt", @"uid" : uuid };
-
 
     if(result)
     {

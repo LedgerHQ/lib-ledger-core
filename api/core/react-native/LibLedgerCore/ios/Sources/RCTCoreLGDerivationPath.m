@@ -171,7 +171,6 @@ RCT_REMAP_METHOD(getParent,getParent:(NSDictionary *)currentInstance WithResolve
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : uuid };
 
-
     if(result)
     {
         resolve(result);
@@ -215,7 +214,6 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)path withResolver:(RC
     RCTCoreLGDerivationPath *rctImpl_objcResult = (RCTCoreLGDerivationPath *)[self.bridge moduleForName:@"CoreLGDerivationPath"];
     [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : uuid };
-
 
     if(result)
     {
