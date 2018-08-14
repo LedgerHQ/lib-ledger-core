@@ -20,7 +20,11 @@ if (MSVC OR MINGW OR CMAKE_OSX_SYSROOT STREQUAL iphoneos)
     set(COMPILE_FLAGS USE_FIELD_10X26 USE_SCALAR_8X32)
     set(COMPILE_OPTIONS -fPIC)
 else()
-    set(COMPILE_FLAGS USE_FIELD_5X52 USE_SCALAR_4X64 HAVE_BUILTIN_EXPECT HAVE___INT128)
+    if (IS_ANDROID)
+        set(COMPILE_FLAGS USE_FIELD_5X52 USE_SCALAR_8X32 HAVE_BUILTIN_EXPECT USE_ASM_X86_64)
+    else()
+        set(COMPILE_FLAGS USE_FIELD_5X52 USE_SCALAR_4X64 HAVE_BUILTIN_EXPECT HAVE___INT128)
+    endif()
     set(COMPILE_OPTIONS -fPIC -O3 -W -std=c89 -pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function -Wno-long-long -Wno-overlength-strings -fvisibility=hidden)
 endif()
 
@@ -31,14 +35,15 @@ target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 
-if(IS_IOS GREATER_EQUAL 0)
+if(IS_IOS GREATER_EQUAL 0 OR IS_ANDROID)
+#    file( READ src/secp256k1/src/util.h in UTIL )
+#    string( REPLACE "#undef OPENSSL_EXPORT_VAR_AS_FUNCTION" CONF "${UTIL}" )
     add_custom_command(
             TARGET secp256k1
             PRE_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
             ${CMAKE_INSTALL_PREFIX}/gen_context/ecmult_static_context.h
-            ${CMAKE_SOURCE_DIR}/src/ecmult_static_context.h
-            )
+            ${CMAKE_SOURCE_DIR}/src/ecmult_static_context.h)
 else()
     add_executable(gen_context src/gen_context.c)
     target_include_directories(gen_context PRIVATE ${CMAKE_SOURCE_DIR})

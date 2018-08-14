@@ -2,7 +2,7 @@ add_subdirectory(lib)
 add_subdirectory(src)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
-if(IS_IOS LESS 0 AND BUILD_TESTS)
+if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
     message(STATUS "Test are enabled")
     enable_testing()
     add_subdirectory(test)
