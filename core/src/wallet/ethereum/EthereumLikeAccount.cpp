@@ -259,7 +259,7 @@ namespace ledger {
                         for (auto& batch : savedState.getValue().batches) {
                                 if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
                                         batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                                        batch.blockHash = previousBlock.getValue().hash;
+                                        batch.blockHash = previousBlock.getValue().blockHash;
                                 } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
                                         batch.blockHeight = 0;
                                         batch.blockHash = "";

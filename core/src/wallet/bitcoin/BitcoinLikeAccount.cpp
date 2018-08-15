@@ -540,8 +540,8 @@ namespace ledger {
                 auto txHash = seq.str();
                 auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
 
-                //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
-                BitcoinLikeBlockchainExplorer::Transaction txExplorer;
+                //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
+                BitcoinLikeBlockchainExplorerTransaction txExplorer;
                 txExplorer.hash = txHash;
                 txExplorer.lockTime = tx->getLockTime();
                 txExplorer.receivedAt = std::chrono::system_clock::now();
@@ -554,11 +554,11 @@ namespace ledger {
                 auto inputCount = tx->getInputs().size();
                 for (auto index = 0; index < inputCount; index++) {
                     auto input = tx->getInputs()[index];
-                    BitcoinLikeBlockchainExplorer::Input in;
+                    BitcoinLikeBlockchainExplorerInput in;
                     in.index = index;
                     auto prevTxHash = input->getPreviousTxHash().value_or("");
                     auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
-                    BitcoinLikeBlockchainExplorer::Transaction prevTx;
+                    BitcoinLikeBlockchainExplorerTransaction prevTx;
                     if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
                         throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
                     }
@@ -577,7 +577,7 @@ namespace ledger {
                 auto outputCount = tx->getOutputs().size();
                 for (auto index = 0; index < outputCount; index++) {
                     auto output = tx->getOutputs()[index];
-                    BitcoinLikeBlockchainExplorer::Output out;
+                    BitcoinLikeBlockchainExplorerOutput out;
                     out.value = BigInt(output->getValue()->toString());
                     out.time = DateUtils::toJSON(std::chrono::system_clock::now());
                     out.transactionHash = output->getTransactionHash();
