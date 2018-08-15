@@ -110,7 +110,7 @@ namespace ledger {
                                                                const std::string& btcTxUid,
                                                                const std::string& accountUid,
                                                                const std::string& transactionHash,
-                                                               const BitcoinLikeBlockchainExplorer::Input &input) {
+                                                               const BitcoinLikeBlockchainExplorerInput &input) {
             /*
              * In case transactions are issued with respect to zero knowledge protocol,
              * previousTxHash is empty which causes conflict in bitcoin_inputs table
