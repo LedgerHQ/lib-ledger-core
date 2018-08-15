@@ -109,7 +109,8 @@ namespace ledger {
             auto txList = std::make_shared<RLPListEncoder>(_nonce->toString());
             txList->append(std::make_shared<RLPStringEncoder>(_gasPrice->toString()));
             txList->append(std::make_shared<RLPStringEncoder>(_gasLimit->toString()));
-            txList->append(std::make_shared<RLPStringEncoder>(_receiver->toEIP55()));
+            auto receiver = _receiver->toEIP55();
+            txList->append(std::make_shared<RLPStringEncoder>(receiver.substr(2,receiver.size() - 2)));
             txList->append(std::make_shared<RLPStringEncoder>(_value->toString()));
             txList->append(std::make_shared<RLPStringEncoder>(_data));
 
