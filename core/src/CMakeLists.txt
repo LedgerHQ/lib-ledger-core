@@ -23,6 +23,12 @@ file(GLOB ledger-core-jni-sources
 
 if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
+#if(ANDROID)
+#    set( JAVA_AWT_INCLUDE_PATH $ENV{JAVA_HOME}/include CACHE PATH "" FORCE)
+#    set( JAVA_AWT_LIBRARY $ENV{JAVA_HOME}/jre/lib/libjawt.dylib CACHE FILEPATH "" FORCE)
+#    set( JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include CACHE PATH "" FORCE)
+#    set( JAVA_JVM_LIBRARY $ENV{JAVA_HOME}/jre/lib/server/libjvm.dylib CACHE FILEPATH "" FORCE)
+#endif()
     find_package(JNI REQUIRED)
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
 endif ()
@@ -36,12 +42,14 @@ file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
-add_library(
-        ledger-core ${LIB_BUILD_TYPE}
-        ${ledger-core-sources}
-        ${SRC_FILES}
-        ${HEADERS_FILES}
-)
+add_library(ledger-core ${LIB_BUILD_TYPE}
+            ${ledger-core-sources}
+            ${SRC_FILES}
+            ${HEADERS_FILES})
+
+#if (TARGET_JNI AND ANDROID)
+#    target_include_directories(ledger-core PUBLIC $ENV{JAVA_HOME}/include/darwin)
+#endif ()
 
 if(UNIX AND NOT APPLE)
     target_link_libraries(ledger-core -static-libstdc++)

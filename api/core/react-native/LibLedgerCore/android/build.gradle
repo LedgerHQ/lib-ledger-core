@@ -23,6 +23,9 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        ndk {
+            moduleName "libledger-core-android"
+        }
     }
     lintOptions {
         abortOnError false
@@ -50,14 +53,14 @@ def configureReactNativePom(def pom) {
         name packageJson.title
         artifactId packageJson.name
         version = packageJson.version
-        group = "com.ledgercore"
+        group = "com.reactlibrary"
         description packageJson.description
-        url packageJson.repository.baseUrl
+        //url packageJson.repository.baseUrl
 
         licenses {
             license {
                 name packageJson.license
-                url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
+                //url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
                 distribution 'repo'
             }
         }
