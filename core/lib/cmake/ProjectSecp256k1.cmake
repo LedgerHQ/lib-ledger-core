@@ -17,9 +17,10 @@ if (CMAKE_OSX_SYSROOT)
     set(_osx_sysroot_ -DCMAKE_OSX_SYSROOT:STRING=${CMAKE_OSX_SYSROOT})
 endif()
 
-if (IS_ANDROID)
-    set(_is_android_ -DIS_ANDROID:BOOL=ON)
+if (CMAKE_BUILD_TYPE)
+    set(_build_type_ -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE})
 endif()
+
 
 set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/secp256k1")
 
@@ -41,7 +42,7 @@ ExternalProject_Add(
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
         ${_toolchain_file_}
         ${_only_release_configuration}
-        CMAKE_CACHE_ARGS ${_osx_arch_} ${_osx_sysroot_} ${_is_android_}
+        CMAKE_CACHE_ARGS ${_osx_arch_} ${_osx_sysroot_} ${_build_type_}
         LOG_CONFIGURE 1
         LOG_INSTALL 1
         LOG_BUILD 1

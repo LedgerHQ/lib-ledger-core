@@ -26,7 +26,7 @@ endif()
 
 set(CMAKE_MACOSX_RPATH 1)
 
-if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI)
+if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTING OFF CACHE BOOL "iOS build fail otherwise" FORCE)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
