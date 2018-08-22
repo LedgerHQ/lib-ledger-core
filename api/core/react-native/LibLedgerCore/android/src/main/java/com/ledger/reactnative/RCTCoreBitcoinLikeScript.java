@@ -17,7 +17,7 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeScript> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeScript(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

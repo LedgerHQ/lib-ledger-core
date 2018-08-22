@@ -17,7 +17,7 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, PathResolverImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCorePathResolver(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

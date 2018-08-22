@@ -14,7 +14,7 @@ public class RCTCoreBlockchainExplorerEngines extends ReactContextBaseJavaModule
     private final ReactApplicationContext reactContext;
     private Map<String, BlockchainExplorerEngines> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBlockchainExplorerEngines(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

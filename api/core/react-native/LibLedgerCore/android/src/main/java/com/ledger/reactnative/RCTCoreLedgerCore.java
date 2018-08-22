@@ -13,7 +13,7 @@ public class RCTCoreLedgerCore extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, LedgerCore> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreLedgerCore(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

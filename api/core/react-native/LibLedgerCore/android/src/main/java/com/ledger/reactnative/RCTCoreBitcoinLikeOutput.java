@@ -20,7 +20,7 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeOutput> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeOutput(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

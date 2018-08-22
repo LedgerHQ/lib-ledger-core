@@ -22,7 +22,7 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, EventPublisher> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEventPublisher(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

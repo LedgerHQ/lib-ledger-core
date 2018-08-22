@@ -17,7 +17,7 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeScriptChunk> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeScriptChunk(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

@@ -26,7 +26,7 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Amount> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreAmount(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

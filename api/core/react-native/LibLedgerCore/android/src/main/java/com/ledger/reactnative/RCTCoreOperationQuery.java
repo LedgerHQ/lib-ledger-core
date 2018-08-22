@@ -21,7 +21,7 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, OperationQuery> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreOperationQuery(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

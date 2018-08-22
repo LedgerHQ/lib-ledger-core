@@ -14,7 +14,7 @@ public class RCTCorePoolConfiguration extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, PoolConfiguration> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCorePoolConfiguration(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

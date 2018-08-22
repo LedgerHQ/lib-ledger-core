@@ -15,7 +15,7 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeExtendedPublicKey> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeExtendedPublicKey(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

@@ -13,7 +13,7 @@ public class RCTCoreEthereumPublicKeyProvider extends ReactContextBaseJavaModule
     private final ReactApplicationContext reactContext;
     private Map<String, EthereumPublicKeyProviderImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEthereumPublicKeyProvider(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

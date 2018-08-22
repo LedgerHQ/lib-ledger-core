@@ -13,7 +13,7 @@ public class RCTCoreKeychainEngines extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, KeychainEngines> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreKeychainEngines(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

@@ -17,7 +17,7 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BigInt> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBigInt(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

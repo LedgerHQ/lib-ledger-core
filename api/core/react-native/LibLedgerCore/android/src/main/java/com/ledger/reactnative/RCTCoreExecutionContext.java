@@ -16,7 +16,7 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, ExecutionContextImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreExecutionContext(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

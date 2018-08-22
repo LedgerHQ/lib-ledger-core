@@ -14,7 +14,7 @@ public class RCTCoreSynchronizationStatus extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, SynchronizationStatus> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreSynchronizationStatus(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

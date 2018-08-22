@@ -16,7 +16,7 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, DatabaseBackend> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreDatabaseBackend(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

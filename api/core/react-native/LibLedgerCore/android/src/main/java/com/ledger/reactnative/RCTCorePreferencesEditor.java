@@ -17,7 +17,7 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, PreferencesEditor> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCorePreferencesEditor(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

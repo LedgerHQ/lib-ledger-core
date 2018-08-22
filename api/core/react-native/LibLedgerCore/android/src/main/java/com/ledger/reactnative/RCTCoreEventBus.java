@@ -18,7 +18,7 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, EventBus> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEventBus(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

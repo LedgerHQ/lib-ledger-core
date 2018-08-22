@@ -22,7 +22,7 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, DynamicArray> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreDynamicArray(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

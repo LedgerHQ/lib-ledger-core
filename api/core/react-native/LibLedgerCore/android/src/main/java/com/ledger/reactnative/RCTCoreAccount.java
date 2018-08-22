@@ -37,7 +37,7 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Account> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreAccount(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

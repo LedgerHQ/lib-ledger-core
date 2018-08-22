@@ -17,7 +17,7 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, HttpUrlConnectionImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreHttpUrlConnection(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

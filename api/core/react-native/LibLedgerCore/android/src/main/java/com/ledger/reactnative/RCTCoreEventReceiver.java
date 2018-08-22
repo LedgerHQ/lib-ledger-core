@@ -16,7 +16,7 @@ public class RCTCoreEventReceiver extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, EventReceiverImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEventReceiver(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

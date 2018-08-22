@@ -24,7 +24,7 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeAccount> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeAccount(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

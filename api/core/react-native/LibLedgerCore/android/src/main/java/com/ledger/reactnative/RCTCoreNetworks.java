@@ -15,7 +15,7 @@ public class RCTCoreNetworks extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Networks> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreNetworks(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

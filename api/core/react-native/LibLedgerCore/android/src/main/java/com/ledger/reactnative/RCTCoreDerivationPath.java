@@ -16,7 +16,7 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, DerivationPath> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreDerivationPath(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

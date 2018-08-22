@@ -23,7 +23,7 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, DynamicObject> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreDynamicObject(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

@@ -14,7 +14,7 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, WebSocketConnection> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreWebSocketConnection(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

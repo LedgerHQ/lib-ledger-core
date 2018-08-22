@@ -14,7 +14,7 @@ public class RCTCoreConfigurationDefaults extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, ConfigurationDefaults> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreConfigurationDefaults(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

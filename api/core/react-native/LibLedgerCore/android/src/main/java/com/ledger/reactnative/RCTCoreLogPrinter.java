@@ -19,7 +19,7 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, LogPrinterImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreLogPrinter(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

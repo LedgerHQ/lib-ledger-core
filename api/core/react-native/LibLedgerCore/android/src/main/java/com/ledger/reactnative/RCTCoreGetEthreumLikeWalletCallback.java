@@ -17,7 +17,7 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
     private final ReactApplicationContext reactContext;
     private Map<String, GetEthreumLikeWalletCallbackImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreGetEthreumLikeWalletCallback(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

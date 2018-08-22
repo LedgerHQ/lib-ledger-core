@@ -21,7 +21,7 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, QueryFilter> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreQueryFilter(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

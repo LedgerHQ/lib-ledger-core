@@ -14,7 +14,7 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, RandomNumberGeneratorImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreRandomNumberGenerator(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

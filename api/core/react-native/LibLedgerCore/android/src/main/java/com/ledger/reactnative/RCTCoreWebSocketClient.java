@@ -15,7 +15,7 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, WebSocketClientImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreWebSocketClient(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

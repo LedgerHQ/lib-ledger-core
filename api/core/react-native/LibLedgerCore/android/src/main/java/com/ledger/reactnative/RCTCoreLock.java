@@ -14,7 +14,7 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, LockImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreLock(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

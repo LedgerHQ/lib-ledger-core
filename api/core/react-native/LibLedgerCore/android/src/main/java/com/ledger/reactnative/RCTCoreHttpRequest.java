@@ -20,7 +20,7 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, HttpRequest> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreHttpRequest(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

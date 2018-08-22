@@ -19,7 +19,7 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Address> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreAddress(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

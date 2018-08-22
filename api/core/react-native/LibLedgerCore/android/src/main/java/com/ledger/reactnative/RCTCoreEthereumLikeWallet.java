@@ -13,7 +13,7 @@ public class RCTCoreEthereumLikeWallet extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, EthereumLikeWallet> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEthereumLikeWallet(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

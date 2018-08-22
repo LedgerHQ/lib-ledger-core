@@ -14,7 +14,7 @@ public class RCTCoreSynchronizerEngines extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, SynchronizerEngines> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreSynchronizerEngines(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

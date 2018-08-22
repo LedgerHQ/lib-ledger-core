@@ -17,7 +17,7 @@ public class RCTCoreRunnable extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Runnable> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreRunnable(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

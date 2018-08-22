@@ -28,7 +28,7 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Operation> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreOperation(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

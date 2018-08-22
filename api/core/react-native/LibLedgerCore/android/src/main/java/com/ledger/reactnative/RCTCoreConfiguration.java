@@ -13,7 +13,7 @@ public class RCTCoreConfiguration extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Configuration> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreConfiguration(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

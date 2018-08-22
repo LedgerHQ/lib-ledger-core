@@ -14,7 +14,7 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Logger> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreLogger(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

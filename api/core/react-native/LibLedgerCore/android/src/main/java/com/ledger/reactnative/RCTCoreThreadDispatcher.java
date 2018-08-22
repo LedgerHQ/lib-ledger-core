@@ -18,7 +18,7 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, ThreadDispatcherImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreThreadDispatcher(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

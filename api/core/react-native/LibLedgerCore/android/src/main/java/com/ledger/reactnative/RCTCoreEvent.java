@@ -19,7 +19,7 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Event> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreEvent(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

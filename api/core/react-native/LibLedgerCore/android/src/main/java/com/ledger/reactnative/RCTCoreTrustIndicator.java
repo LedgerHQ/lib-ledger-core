@@ -16,7 +16,7 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, TrustIndicator> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreTrustIndicator(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

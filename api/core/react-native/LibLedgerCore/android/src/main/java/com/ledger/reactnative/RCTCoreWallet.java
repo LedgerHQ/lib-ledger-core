@@ -44,7 +44,7 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Wallet> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreWallet(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

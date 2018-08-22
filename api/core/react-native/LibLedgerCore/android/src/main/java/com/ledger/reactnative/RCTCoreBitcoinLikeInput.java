@@ -25,7 +25,7 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeInput> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreBitcoinLikeInput(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

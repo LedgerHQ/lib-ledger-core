@@ -14,7 +14,7 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, HashAlgorithmHelperImpl> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreHashAlgorithmHelper(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;

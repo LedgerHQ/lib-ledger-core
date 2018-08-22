@@ -16,7 +16,7 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Secp256k1> javaObjects;
 
-    public RNLedgerCoreModule(ReactApplicationContext reactContext)
+    public RCTCoreSecp256k1(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;
