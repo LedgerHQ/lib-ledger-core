@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeAddress;
-import RCTCoreBitcoinLikeNetworkParameters;
+import co.ledger.core.BitcoinLikeAddress;
 import co.ledger.core.BitcoinLikeNetworkParameters;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /** Helper class for manipulating Bitcoin like addresses */
 public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeAddress> javaObjects;
+    public Map<String, BitcoinLikeAddress> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeAddress(ReactApplicationContext reactContext)
     {
@@ -40,8 +51,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getVersion method");
             }
@@ -75,8 +86,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getHash160 method");
             }
@@ -110,8 +121,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getNetworkParameters method");
             }
@@ -119,8 +130,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeNetworkParameters javaResult = currentInstanceObj.getNetworkParameters();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeNetworkParameters rctImpl_objcResult = (RCTCoreBitcoinLikeNetworkParameters)self.bridge moduleForName("RCTCoreBitcoinLikeNetworkParameters");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeNetworkParameters");
             result.put("uid",uuid);
@@ -150,8 +161,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to toBase58 method");
             }
@@ -188,8 +199,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to isP2SH method");
             }
@@ -223,8 +234,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to isP2PKH method");
             }

@@ -3,10 +3,18 @@
 
 package com.ledger.reactnative;
 
-import Runnable;
+import co.ledger.core.Runnable;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Class representing a runnable object
@@ -16,6 +24,10 @@ public class RCTCoreRunnable extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Runnable> javaObjects;
+    public Map<String, Runnable> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreRunnable(ReactApplicationContext reactContext)
     {
@@ -38,8 +50,8 @@ public class RCTCoreRunnable extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Runnable currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Runnable currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreRunnable instance passed to run method");
             }

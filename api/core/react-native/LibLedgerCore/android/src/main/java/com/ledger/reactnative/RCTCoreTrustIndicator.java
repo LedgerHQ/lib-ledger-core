@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import TrustIndicator;
+import co.ledger.core.TrustIndicator;
 import co.ledger.core.TrustLevel;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**TODO */
 public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, TrustIndicator> javaObjects;
+    public Map<String, TrustIndicator> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreTrustIndicator(ReactApplicationContext reactContext)
     {
@@ -36,8 +47,8 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getTrustWeight method");
             }
@@ -67,8 +78,8 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getTrustLevel method");
             }
@@ -98,8 +109,8 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getConflictingOperationUids method");
             }
@@ -129,8 +140,8 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getOrigin method");
             }

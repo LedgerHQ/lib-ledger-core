@@ -3,16 +3,26 @@
 
 package com.ledger.reactnative;
 
-import ExtendedKeyAccountCreationInfo;
+import co.ledger.core.ExtendedKeyAccountCreationInfo;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**TODO */
 public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, ExtendedKeyAccountCreationInfo> javaObjects;
+    public Map<String, ExtendedKeyAccountCreationInfo> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreExtendedKeyAccountCreationInfo(ReactApplicationContext reactContext)
     {
@@ -26,11 +36,11 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     {
         return "RCTCoreExtendedKeyAccountCreationInfo";
     }
-    public static void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys, Promise promise) {
-        ExtendedKeyAccountCreationInfo javaResult = ExtendedKeyAccountCreationInfo.init(index, owners, derivations, extendedKeys);
+    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys ,Promise promise) {
+        ExtendedKeyAccountCreationInfo javaResult = new ExtendedKeyAccountCreationInfo(index, owners, derivations, extendedKeys);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreExtendedKeyAccountCreationInfo");
         finalResult.put("uid",uuid);

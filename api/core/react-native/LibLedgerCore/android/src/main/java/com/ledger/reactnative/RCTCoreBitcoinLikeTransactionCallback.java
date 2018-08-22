@@ -3,14 +3,20 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeTransactionCallbackImpl;
-import RCTCoreBitcoinLikeTransaction;
-import RCTCoreError;
 import co.ledger.core.BitcoinLikeTransaction;
+import co.ledger.core.BitcoinLikeTransactionCallback;
 import co.ledger.core.Error;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -18,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreBitcoinLikeTransactionCallback extends BitcoinLikeTransactionCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreBitcoinLikeTransactionCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreBitcoinLikeTransactionCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreBitcoinLikeTransactionCallback callback = new RCTCoreBitcoinLikeTransactionCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -34,21 +40,21 @@ public class RCTCoreBitcoinLikeTransactionCallback extends BitcoinLikeTransactio
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(BitcoinLikeTransaction result, Error error, ) {
+    public void onCallback(BitcoinLikeTransaction result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeTransaction rctImpl_result = (RCTCoreBitcoinLikeTransaction)self.bridge moduleForName("RCTCoreBitcoinLikeTransaction");
-            rctImpl_result.javaObjects.put(uuid, result);
+            RCTCoreBitcoinLikeTransaction rctImpl_result = this.reactContext.getNativeModule(RCTCoreBitcoinLikeTransaction.class);
+            rctImpl_result.getJavaObjects.put(uuid, result);
             Map<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreBitcoinLikeTransaction");
             converted_result.put("uid",uuid);
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import LockImpl;
+import co.ledger.core.LockImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a lock, for thread safety purposes */
 public class RCTCoreLock extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, LockImpl> javaObjects;
+    public Map<String, LockImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreLock(ReactApplicationContext reactContext)
     {
@@ -39,8 +51,8 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LockImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLock instance passed to lock method");
             }
@@ -65,8 +77,8 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LockImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLock instance passed to tryLock method");
             }
@@ -97,8 +109,8 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LockImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLock instance passed to unlock method");
             }

@@ -3,16 +3,26 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeNetworkParameters;
 import co.ledger.core.BitcoinLikeFeePolicy;
+import co.ledger.core.BitcoinLikeNetworkParameters;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeNetworkParameters> javaObjects;
+    public Map<String, BitcoinLikeNetworkParameters> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeNetworkParameters(ReactApplicationContext reactContext)
     {
@@ -26,11 +36,11 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     {
         return "RCTCoreBitcoinLikeNetworkParameters";
     }
-    public static void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs, Promise promise) {
-        BitcoinLikeNetworkParameters javaResult = BitcoinLikeNetworkParameters.init(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
+    public void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs ,Promise promise) {
+        BitcoinLikeNetworkParameters javaResult = new BitcoinLikeNetworkParameters(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikeNetworkParameters");
         finalResult.put("uid",uuid);

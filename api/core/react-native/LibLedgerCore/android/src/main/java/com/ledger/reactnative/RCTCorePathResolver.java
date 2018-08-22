@@ -3,10 +3,18 @@
 
 package com.ledger.reactnative;
 
-import PathResolverImpl;
+import co.ledger.core.PathResolverImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Module used to resolve file paths. libledger-core has its own iternal representation of the file system that may not
@@ -16,6 +24,10 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, PathResolverImpl> javaObjects;
+    public Map<String, PathResolverImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCorePathResolver(ReactApplicationContext reactContext)
     {
@@ -42,8 +54,8 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePathResolver instance passed to resolveDatabasePath method");
             }
@@ -78,8 +90,8 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePathResolver instance passed to resolveLogFilePath method");
             }
@@ -114,8 +126,8 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePathResolver instance passed to resolvePreferencesPath method");
             }

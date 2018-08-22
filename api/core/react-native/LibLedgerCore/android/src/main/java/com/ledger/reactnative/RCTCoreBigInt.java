@@ -3,19 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BigInt;
-import RCTCoreBigInt;
 import co.ledger.core.BigInt;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /** Immutable class representing a potentially very long number */
 public class RCTCoreBigInt extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BigInt> javaObjects;
+    public Map<String, BigInt> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBigInt(ReactApplicationContext reactContext)
     {
@@ -42,19 +51,19 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to add method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.add(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -85,19 +94,19 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to subtract method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.subtract(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -128,19 +137,19 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to multiply method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.multiply(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -171,19 +180,19 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to divide method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.divide(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -214,22 +223,22 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to divideAndRemainder method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             ArrayList<BigInt> javaResult = currentInstanceObj.divideAndRemainder(javaParam_0);
 
             ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> objcResult_elem : objcResult)
+            for (HashMap <String, String> javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
-                RCTCoreBigInt rctImpl_objcResult_elem = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-                rctImpl_objcResult_elem.javaObjects.put(uuid, objcResult_elem);
+                RCTCoreBigInt rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+                rctImpl_javaResult_elem.getJavaObjects.put(uuid, javaResult_elem);
                 Map<String, String> result_elem = new HashMap<String, String>();
                 result_elem.put("type","RCTCoreBigInt");
                 result_elem.put("uid",uuid);
@@ -262,8 +271,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to pow method");
             }
@@ -271,8 +280,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt javaResult = currentInstanceObj.pow(exponent);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -305,8 +314,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to toDecimalString method");
             }
@@ -340,8 +349,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to toString method");
             }
@@ -376,8 +385,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to intValue method");
             }
@@ -412,14 +421,14 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BigInt currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBigInt instance passed to compare method");
             }
 
-            RCTCoreBigInt rctParam_i = (RCTCoreBigInt)self.bridge.moduleForName("RCTCoreBigInt");
-            BigInt javaParam_0 = (BigInt)rctParam_i.javaObjects.get(i.get("uid"));
+            RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
             int javaResult = currentInstanceObj.compare(javaParam_0);
             Map<String, int> result = new HashMap<String, int>();
             result.put("value", javaResult);
@@ -453,8 +462,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt javaResult = BigInt.fromDecimalString(s, precision, decimalSeparator);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -486,8 +495,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt javaResult = BigInt.fromIntegerString(s, radix);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -518,8 +527,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt javaResult = BigInt.fromLong(l);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);

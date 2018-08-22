@@ -3,16 +3,27 @@
 
 package com.ledger.reactnative;
 
-import FormatRules;
+import co.ledger.core.FormatRules;
 import co.ledger.core.RoundingMode;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**TODO */
 public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, FormatRules> javaObjects;
+    public Map<String, FormatRules> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreFormatRules(ReactApplicationContext reactContext)
     {
@@ -26,11 +37,11 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
     {
         return "RCTCoreFormatRules";
     }
-    public static void init(RoundingMode roundingMode, int maxNumberOfDecimals, Promise promise) {
-        FormatRules javaResult = FormatRules.init(roundingMode, maxNumberOfDecimals);
+    public void init(RoundingMode roundingMode, int maxNumberOfDecimals ,Promise promise) {
+        FormatRules javaResult = new FormatRules(roundingMode, maxNumberOfDecimals);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreFormatRules");
         finalResult.put("uid",uuid);

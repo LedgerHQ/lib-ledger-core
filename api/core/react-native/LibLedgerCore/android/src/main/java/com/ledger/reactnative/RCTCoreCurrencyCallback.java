@@ -3,14 +3,20 @@
 
 package com.ledger.reactnative;
 
-import CurrencyCallbackImpl;
-import RCTCoreCurrency;
-import RCTCoreError;
 import co.ledger.core.Currency;
+import co.ledger.core.CurrencyCallback;
 import co.ledger.core.Error;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -18,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreCurrencyCallback extends CurrencyCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreCurrencyCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreCurrencyCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreCurrencyCallback callback = new RCTCoreCurrencyCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -34,21 +40,21 @@ public class RCTCoreCurrencyCallback extends CurrencyCallback {
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(Currency result, Error error, ) {
+    public void onCallback(Currency result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             String uuid = UUID.randomUUID().toString();
-            RCTCoreCurrency rctImpl_result = (RCTCoreCurrency)self.bridge moduleForName("RCTCoreCurrency");
-            rctImpl_result.javaObjects.put(uuid, result);
+            RCTCoreCurrency rctImpl_result = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            rctImpl_result.getJavaObjects.put(uuid, result);
             Map<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreCurrency");
             converted_result.put("uid",uuid);
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

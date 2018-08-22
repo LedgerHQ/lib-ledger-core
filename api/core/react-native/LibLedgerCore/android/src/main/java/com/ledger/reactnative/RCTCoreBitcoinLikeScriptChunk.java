@@ -3,19 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeScriptChunk;
-import RCTCoreBitcoinLikeOperator;
-import RCTCoreBitcoinLikeScriptChunk;
 import co.ledger.core.BitcoinLikeOperator;
 import co.ledger.core.BitcoinLikeScriptChunk;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeScriptChunk> javaObjects;
+    public Map<String, BitcoinLikeScriptChunk> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeScriptChunk(ReactApplicationContext reactContext)
     {
@@ -37,8 +46,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to isOperator method");
             }
@@ -68,8 +77,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to isPushedData method");
             }
@@ -99,8 +108,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to getOperator method");
             }
@@ -108,8 +117,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             BitcoinLikeOperator javaResult = currentInstanceObj.getOperator();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeOperator rctImpl_objcResult = (RCTCoreBitcoinLikeOperator)self.bridge moduleForName("RCTCoreBitcoinLikeOperator");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeOperator rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOperator.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeOperator");
             result.put("uid",uuid);
@@ -135,8 +144,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to getPushedData method");
             }
@@ -166,8 +175,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to next method");
             }
@@ -175,8 +184,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             BitcoinLikeScriptChunk javaResult = currentInstanceObj.next();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeScriptChunk rctImpl_objcResult = (RCTCoreBitcoinLikeScriptChunk)self.bridge moduleForName("RCTCoreBitcoinLikeScriptChunk");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeScriptChunk rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScriptChunk.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScriptChunk");
             result.put("uid",uuid);
@@ -202,8 +211,8 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScriptChunk currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScriptChunk instance passed to hasNext method");
             }

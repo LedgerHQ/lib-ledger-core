@@ -3,28 +3,33 @@
 
 package com.ledger.reactnative;
 
-import Amount;
-import RCTCoreAmount;
-import RCTCoreBigInt;
-import RCTCoreCurrency;
-import RCTCoreCurrencyUnit;
-import RCTCoreFormatRules;
-import RCTCoreLocale;
 import co.ledger.core.Amount;
 import co.ledger.core.BigInt;
 import co.ledger.core.Currency;
 import co.ledger.core.CurrencyUnit;
 import co.ledger.core.FormatRules;
 import co.ledger.core.Locale;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing amount of transaction, output, inputs ... */
 public class RCTCoreAmount extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Amount> javaObjects;
+    public Map<String, Amount> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreAmount(ReactApplicationContext reactContext)
     {
@@ -50,8 +55,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toBigInt method");
             }
@@ -59,8 +64,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             BigInt javaResult = currentInstanceObj.toBigInt();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBigInt rctImpl_objcResult = (RCTCoreBigInt)self.bridge moduleForName("RCTCoreBigInt");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
@@ -90,8 +95,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to getCurrency method");
             }
@@ -99,8 +104,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreCurrency rctImpl_objcResult = (RCTCoreCurrency)self.bridge moduleForName("RCTCoreCurrency");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
@@ -130,8 +135,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to getUnit method");
             }
@@ -139,8 +144,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             CurrencyUnit javaResult = currentInstanceObj.getUnit();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreCurrencyUnit rctImpl_objcResult = (RCTCoreCurrencyUnit)self.bridge moduleForName("RCTCoreCurrencyUnit");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreCurrencyUnit rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrencyUnit");
             result.put("uid",uuid);
@@ -171,19 +176,19 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toUnit method");
             }
 
-            RCTCoreCurrencyUnit rctParam_unit = (RCTCoreCurrencyUnit)self.bridge.moduleForName("RCTCoreCurrencyUnit");
-            CurrencyUnit javaParam_0 = (CurrencyUnit)rctParam_unit.javaObjects.get(unit.get("uid"));
+            RCTCoreCurrencyUnit rctParam_unit = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
+            CurrencyUnit javaParam_0 = (CurrencyUnit)rctParam_unit.getJavaObjects.get(unit.get("uid"));
             Amount javaResult = currentInstanceObj.toUnit(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAmount rctImpl_objcResult = (RCTCoreAmount)self.bridge moduleForName("RCTCoreAmount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
@@ -210,8 +215,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toMagnitude method");
             }
@@ -219,8 +224,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             Amount javaResult = currentInstanceObj.toMagnitude(magnitude);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAmount rctImpl_objcResult = (RCTCoreAmount)self.bridge moduleForName("RCTCoreAmount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
@@ -250,8 +255,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toString method");
             }
@@ -285,8 +290,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toLong method");
             }
@@ -320,8 +325,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to toDouble method");
             }
@@ -346,22 +351,22 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void format(Map<String, String> currentInstance, HashMap <String, String> locale, Option<HashMap <String, String>> rules, Promise promise) {
+    public void format(Map<String, String> currentInstance, HashMap <String, String> locale, Optional<HashMap <String, String>> rules, Promise promise) {
         try
         {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Amount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAmount instance passed to format method");
             }
 
-            RCTCoreLocale rctParam_locale = (RCTCoreLocale)self.bridge.moduleForName("RCTCoreLocale");
-            Locale javaParam_0 = (Locale)rctParam_locale.javaObjects.get(locale.get("uid"));
-            RCTCoreFormatRules rctParam_rules = (RCTCoreFormatRules)self.bridge.moduleForName("RCTCoreFormatRules");
-            FormatRules javaParam_1 = (FormatRules)rctParam_rules.javaObjects.get(rules.get("uid"));
+            RCTCoreLocale rctParam_locale = this.reactContext.getNativeModule(RCTCoreLocale.class);
+            Locale javaParam_0 = (Locale)rctParam_locale.getJavaObjects.get(locale.get("uid"));
+            RCTCoreFormatRules rctParam_rules = this.reactContext.getNativeModule(RCTCoreFormatRules.class);
+            FormatRules javaParam_1 = (FormatRules)rctParam_rules.getJavaObjects.get(rules.get("uid"));
             String javaResult = currentInstanceObj.format(javaParam_0, javaParam_1);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
@@ -387,8 +392,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             Amount javaResult = Amount.fromHex(javaParam_0, hex);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAmount rctImpl_objcResult = (RCTCoreAmount)self.bridge moduleForName("RCTCoreAmount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
@@ -414,8 +419,8 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
             Amount javaResult = Amount.fromLong(javaParam_0, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAmount rctImpl_objcResult = (RCTCoreAmount)self.bridge moduleForName("RCTCoreAmount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);

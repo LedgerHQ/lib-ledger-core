@@ -3,18 +3,28 @@
 
 package com.ledger.reactnative;
 
-import RCTCoreSecp256k1;
-import Secp256k1;
 import co.ledger.core.Secp256k1;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class implementing secp256k1 used in Bitcoin */
 public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Secp256k1> javaObjects;
+    public Map<String, Secp256k1> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreSecp256k1(ReactApplicationContext reactContext)
     {
@@ -40,8 +50,8 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
             Secp256k1 javaResult = Secp256k1.createInstance();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreSecp256k1 rctImpl_objcResult = (RCTCoreSecp256k1)self.bridge moduleForName("RCTCoreSecp256k1");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreSecp256k1 rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreSecp256k1.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreSecp256k1");
             result.put("uid",uuid);
@@ -73,8 +83,8 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreSecp256k1 instance passed to computePubKey method");
             }
@@ -110,8 +120,8 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreSecp256k1 instance passed to sign method");
             }
@@ -148,8 +158,8 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreSecp256k1 instance passed to verify method");
             }
@@ -179,8 +189,8 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
             Secp256k1 javaResult = Secp256k1.newInstance();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreSecp256k1 rctImpl_objcResult = (RCTCoreSecp256k1)self.bridge moduleForName("RCTCoreSecp256k1");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreSecp256k1 rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreSecp256k1.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreSecp256k1");
             result.put("uid",uuid);

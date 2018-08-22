@@ -3,14 +3,25 @@
 
 package com.ledger.reactnative;
 
-import EstimatedSize;
+import co.ledger.core.EstimatedSize;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, EstimatedSize> javaObjects;
+    public Map<String, EstimatedSize> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreEstimatedSize(ReactApplicationContext reactContext)
     {
@@ -24,11 +35,11 @@ public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
     {
         return "RCTCoreEstimatedSize";
     }
-    public static void init(int Min, int Max, Promise promise) {
-        EstimatedSize javaResult = EstimatedSize.init(Min, Max);
+    public void init(int Min, int Max ,Promise promise) {
+        EstimatedSize javaResult = new EstimatedSize(Min, Max);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreEstimatedSize");
         finalResult.put("uid",uuid);

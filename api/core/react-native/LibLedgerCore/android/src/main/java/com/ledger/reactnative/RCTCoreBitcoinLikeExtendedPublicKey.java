@@ -3,17 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeExtendedPublicKey;
-import RCTCoreBitcoinLikeAddress;
 import co.ledger.core.BitcoinLikeAddress;
+import co.ledger.core.BitcoinLikeExtendedPublicKey;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeExtendedPublicKey> javaObjects;
+    public Map<String, BitcoinLikeExtendedPublicKey> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeExtendedPublicKey(ReactApplicationContext reactContext)
     {
@@ -35,8 +46,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to derive method");
             }
@@ -44,8 +55,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             BitcoinLikeAddress javaResult = currentInstanceObj.derive(path);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeAddress rctImpl_objcResult = (RCTCoreBitcoinLikeAddress)self.bridge moduleForName("RCTCoreBitcoinLikeAddress");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeAddress");
             result.put("uid",uuid);
@@ -71,8 +82,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to derivePublicKey method");
             }
@@ -102,8 +113,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to deriveHash160 method");
             }
@@ -133,8 +144,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to toBase58 method");
             }
@@ -164,8 +175,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to getRootPath method");
             }

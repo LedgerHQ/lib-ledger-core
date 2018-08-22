@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeWalletConfiguration;
+import co.ledger.core.BitcoinLikeWalletConfiguration;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class of constants to set Bitcoin like wallet configurations */
 public class RCTCoreBitcoinLikeWalletConfiguration extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeWalletConfiguration> javaObjects;
+    public Map<String, BitcoinLikeWalletConfiguration> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeWalletConfiguration(ReactApplicationContext reactContext)
     {

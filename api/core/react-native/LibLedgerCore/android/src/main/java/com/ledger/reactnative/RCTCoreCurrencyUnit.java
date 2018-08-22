@@ -3,15 +3,26 @@
 
 package com.ledger.reactnative;
 
-import CurrencyUnit;
+import co.ledger.core.CurrencyUnit;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure of cryptocurrency unit */
 public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, CurrencyUnit> javaObjects;
+    public Map<String, CurrencyUnit> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreCurrencyUnit(ReactApplicationContext reactContext)
     {
@@ -25,11 +36,11 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     {
         return "RCTCoreCurrencyUnit";
     }
-    public static void init(String name, String symbol, String code, int numberOfDecimal, Promise promise) {
-        CurrencyUnit javaResult = CurrencyUnit.init(name, symbol, code, numberOfDecimal);
+    public void init(String name, String symbol, String code, int numberOfDecimal ,Promise promise) {
+        CurrencyUnit javaResult = new CurrencyUnit(name, symbol, code, numberOfDecimal);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreCurrencyUnit");
         finalResult.put("uid",uuid);

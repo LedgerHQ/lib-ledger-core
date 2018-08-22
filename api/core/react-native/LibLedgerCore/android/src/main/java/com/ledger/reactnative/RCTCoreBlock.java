@@ -3,16 +3,27 @@
 
 package com.ledger.reactnative;
 
-import Block;
+import co.ledger.core.Block;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure of a block in the blockchain */
 public class RCTCoreBlock extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Block> javaObjects;
+    public Map<String, Block> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBlock(ReactApplicationContext reactContext)
     {
@@ -26,11 +37,11 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBlock";
     }
-    public static void init(String blockHash, String uid, Date time, String currencyName, long height, Promise promise) {
-        Block javaResult = Block.init(blockHash, uid, time, currencyName, height);
+    public void init(String blockHash, String uid, Date time, String currencyName, long height ,Promise promise) {
+        Block javaResult = new Block(blockHash, uid, time, currencyName, height);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBlock");
         finalResult.put("uid",uuid);

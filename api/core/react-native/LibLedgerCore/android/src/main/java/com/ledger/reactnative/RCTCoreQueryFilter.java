@@ -3,23 +3,32 @@
 
 package com.ledger.reactnative;
 
-import QueryFilter;
-import RCTCoreAmount;
-import RCTCoreQueryFilter;
 import co.ledger.core.Amount;
 import co.ledger.core.OperationType;
 import co.ledger.core.QueryFilter;
 import co.ledger.core.TrustLevel;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**TODO */
 public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, QueryFilter> javaObjects;
+    public Map<String, QueryFilter> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreQueryFilter(ReactApplicationContext reactContext)
     {
@@ -41,8 +50,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.accountEq(accountUid);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -68,8 +77,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.accountNeq(accountUid);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -95,8 +104,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateLte(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -122,8 +131,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateLt(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -149,8 +158,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateGt(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -176,8 +185,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateGte(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -203,8 +212,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateEq(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -230,8 +239,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.dateNeq(time);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -257,8 +266,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.containsRecipient(recipientAddress);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -284,8 +293,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.containsSender(senderAddress);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -311,8 +320,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.currencyEq(currencyName);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -338,8 +347,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.operationUidEq(operationUid);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -365,8 +374,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.operationUidNeq(operationUid);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -392,8 +401,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.trustEq(trust);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -419,8 +428,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.trustNeq(trust);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -446,8 +455,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesEq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -473,8 +482,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesNeq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -500,8 +509,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesGte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -527,8 +536,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesGt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -554,8 +563,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesLte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -581,8 +590,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.feesLt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -608,8 +617,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountEq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -635,8 +644,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountNeq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -662,8 +671,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountGte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -689,8 +698,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountGt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -716,8 +725,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountLte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -743,8 +752,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.amountLt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -770,8 +779,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightEq(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -797,8 +806,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightNeq(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -824,8 +833,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightGte(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -851,8 +860,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightGt(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -878,8 +887,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightLte(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -905,8 +914,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightLt(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -932,8 +941,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.blockHeightIsNull();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -959,8 +968,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.operationTypeEq(operationType);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -986,8 +995,8 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             QueryFilter javaResult = QueryFilter.operationTypeNeq(operationType);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -1013,19 +1022,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreQueryFilter instance passed to opAnd method");
             }
 
-            RCTCoreQueryFilter rctParam_filter = (RCTCoreQueryFilter)self.bridge.moduleForName("RCTCoreQueryFilter");
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.javaObjects.get(filter.get("uid"));
+            RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opAnd(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -1051,19 +1060,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreQueryFilter instance passed to opOr method");
             }
 
-            RCTCoreQueryFilter rctParam_filter = (RCTCoreQueryFilter)self.bridge.moduleForName("RCTCoreQueryFilter");
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.javaObjects.get(filter.get("uid"));
+            RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opOr(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -1089,19 +1098,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreQueryFilter instance passed to opAndNot method");
             }
 
-            RCTCoreQueryFilter rctParam_filter = (RCTCoreQueryFilter)self.bridge.moduleForName("RCTCoreQueryFilter");
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.javaObjects.get(filter.get("uid"));
+            RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opAndNot(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -1127,19 +1136,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreQueryFilter instance passed to opOrNot method");
             }
 
-            RCTCoreQueryFilter rctParam_filter = (RCTCoreQueryFilter)self.bridge.moduleForName("RCTCoreQueryFilter");
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.javaObjects.get(filter.get("uid"));
+            RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opOrNot(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);

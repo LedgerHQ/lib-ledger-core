@@ -3,14 +3,25 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeOperator;
+import co.ledger.core.BitcoinLikeOperator;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeOperator> javaObjects;
+    public Map<String, BitcoinLikeOperator> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeOperator(ReactApplicationContext reactContext)
     {
@@ -24,11 +35,11 @@ public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeOperator";
     }
-    public static void init(String operatorName, byte value, Promise promise) {
-        BitcoinLikeOperator javaResult = BitcoinLikeOperator.init(operatorName, value);
+    public void init(String operatorName, byte value ,Promise promise) {
+        BitcoinLikeOperator javaResult = new BitcoinLikeOperator(operatorName, value);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikeOperator");
         finalResult.put("uid",uuid);

@@ -3,17 +3,27 @@
 
 package com.ledger.reactnative;
 
-import HttpReadBodyResult;
-import RCTCoreError;
 import co.ledger.core.Error;
+import co.ledger.core.HttpReadBodyResult;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure representing Http response body */
 public class RCTCoreHttpReadBodyResult extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, HttpReadBodyResult> javaObjects;
+    public Map<String, HttpReadBodyResult> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreHttpReadBodyResult(ReactApplicationContext reactContext)
     {
@@ -27,13 +37,13 @@ public class RCTCoreHttpReadBodyResult extends ReactContextBaseJavaModule {
     {
         return "RCTCoreHttpReadBodyResult";
     }
-    public static void init(Option<HashMap <String, String>> error, byte[] data, Promise promise) {
-        RCTCoreError rctParam_error = (RCTCoreError)self.bridge.moduleForName("RCTCoreError");
-        Error javaParam_0 = (Error)rctParam_error.javaObjects.get(error.get("uid"));
-        HttpReadBodyResult javaResult = HttpReadBodyResult.init(javaParam_0, data);
+    public void init(Optional<HashMap <String, String>> error, byte[] data ,Promise promise) {
+        RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
+        Error javaParam_0 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
+        HttpReadBodyResult javaResult = new HttpReadBodyResult(javaParam_0, data);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreHttpReadBodyResult");
         finalResult.put("uid",uuid);

@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import HashAlgorithmHelperImpl;
+import co.ledger.core.HashAlgorithmHelperImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /** Helper class for commonly used crypto algorithms */
 public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, HashAlgorithmHelperImpl> javaObjects;
+    public Map<String, HashAlgorithmHelperImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreHashAlgorithmHelper(ReactApplicationContext reactContext)
     {
@@ -39,8 +51,8 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to ripemd160 method");
             }
@@ -75,8 +87,8 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to sha256 method");
             }
@@ -111,8 +123,8 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to keccak256 method");
             }

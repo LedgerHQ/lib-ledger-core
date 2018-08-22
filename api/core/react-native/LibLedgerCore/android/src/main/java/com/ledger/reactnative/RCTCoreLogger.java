@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import Logger;
+import co.ledger.core.Logger;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class to print logs to console */
 public class RCTCoreLogger extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Logger> javaObjects;
+    public Map<String, Logger> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreLogger(ReactApplicationContext reactContext)
     {
@@ -39,8 +51,8 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Logger currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogger instance passed to d method");
             }
@@ -64,8 +76,8 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Logger currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogger instance passed to i method");
             }
@@ -89,8 +101,8 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Logger currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogger instance passed to e method");
             }
@@ -114,8 +126,8 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Logger currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogger instance passed to w method");
             }
@@ -139,8 +151,8 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Logger currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogger instance passed to c method");
             }

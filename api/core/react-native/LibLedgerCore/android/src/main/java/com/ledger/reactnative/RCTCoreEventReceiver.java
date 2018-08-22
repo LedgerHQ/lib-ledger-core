@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import EventReceiverImpl;
-import RCTCoreEvent;
 import co.ledger.core.Event;
+import co.ledger.core.EventReceiverImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class respresenting an event receiver */
 public class RCTCoreEventReceiver extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, EventReceiverImpl> javaObjects;
+    public Map<String, EventReceiverImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreEventReceiver(ReactApplicationContext reactContext)
     {
@@ -40,14 +51,14 @@ public class RCTCoreEventReceiver extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            EventReceiverImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            EventReceiverImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEventReceiver instance passed to onEvent method");
             }
 
-            RCTCoreEvent rctParam_event = (RCTCoreEvent)self.bridge.moduleForName("RCTCoreEvent");
-            Event javaParam_0 = (Event)rctParam_event.javaObjects.get(event.get("uid"));
+            RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
+            Event javaParam_0 = (Event)rctParam_event.getJavaObjects.get(event.get("uid"));
             currentInstanceObj.onEvent(javaParam_0);
         }
         catch(Exception e)

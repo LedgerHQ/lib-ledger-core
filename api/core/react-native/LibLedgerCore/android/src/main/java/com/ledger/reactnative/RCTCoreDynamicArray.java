@@ -3,15 +3,20 @@
 
 package com.ledger.reactnative;
 
-import DynamicArray;
-import RCTCoreDynamicArray;
-import RCTCoreDynamicObject;
 import co.ledger.core.DynamicArray;
 import co.ledger.core.DynamicObject;
 import co.ledger.core.DynamicType;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Class representing an object that holds references to different types of objects,
@@ -21,6 +26,10 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, DynamicArray> javaObjects;
+    public Map<String, DynamicArray> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreDynamicArray(ReactApplicationContext reactContext)
     {
@@ -46,8 +55,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to size method");
             }
@@ -82,8 +91,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushInt method");
             }
@@ -91,8 +100,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushInt(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -123,8 +132,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushLong method");
             }
@@ -132,8 +141,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushLong(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -164,8 +173,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushString method");
             }
@@ -173,8 +182,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushString(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -205,8 +214,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushDouble method");
             }
@@ -214,8 +223,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushDouble(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -246,8 +255,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushData method");
             }
@@ -255,8 +264,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushData(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -287,8 +296,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushBoolean method");
             }
@@ -296,8 +305,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.pushBoolean(value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -328,19 +337,19 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushObject method");
             }
 
-            RCTCoreDynamicObject rctParam_value = (RCTCoreDynamicObject)self.bridge.moduleForName("RCTCoreDynamicObject");
-            DynamicObject javaParam_0 = (DynamicObject)rctParam_value.javaObjects.get(value.get("uid"));
+            RCTCoreDynamicObject rctParam_value = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
+            DynamicObject javaParam_0 = (DynamicObject)rctParam_value.getJavaObjects.get(value.get("uid"));
             DynamicArray javaResult = currentInstanceObj.pushObject(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -371,19 +380,19 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to pushArray method");
             }
 
-            RCTCoreDynamicArray rctParam_value = (RCTCoreDynamicArray)self.bridge.moduleForName("RCTCoreDynamicArray");
-            DynamicArray javaParam_0 = (DynamicArray)rctParam_value.javaObjects.get(value.get("uid"));
+            RCTCoreDynamicArray rctParam_value = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            DynamicArray javaParam_0 = (DynamicArray)rctParam_value.getJavaObjects.get(value.get("uid"));
             DynamicArray javaResult = currentInstanceObj.pushArray(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -414,8 +423,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getString method");
             }
@@ -450,8 +459,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getInt method");
             }
@@ -486,8 +495,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getLong method");
             }
@@ -522,8 +531,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getDouble method");
             }
@@ -558,8 +567,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getData method");
             }
@@ -594,8 +603,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getBoolean method");
             }
@@ -630,8 +639,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getObject method");
             }
@@ -639,8 +648,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicObject javaResult = currentInstanceObj.getObject(index);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicObject rctImpl_objcResult = (RCTCoreDynamicObject)self.bridge moduleForName("RCTCoreDynamicObject");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicObject");
             result.put("uid",uuid);
@@ -671,8 +680,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getArray method");
             }
@@ -680,8 +689,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = currentInstanceObj.getArray(index);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -712,19 +721,19 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to concat method");
             }
 
-            RCTCoreDynamicArray rctParam_array = (RCTCoreDynamicArray)self.bridge.moduleForName("RCTCoreDynamicArray");
-            DynamicArray javaParam_0 = (DynamicArray)rctParam_array.javaObjects.get(array.get("uid"));
+            RCTCoreDynamicArray rctParam_array = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            DynamicArray javaParam_0 = (DynamicArray)rctParam_array.getJavaObjects.get(array.get("uid"));
             DynamicArray javaResult = currentInstanceObj.concat(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -755,8 +764,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to getType method");
             }
@@ -791,8 +800,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to remove method");
             }
@@ -826,8 +835,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to dump method");
             }
@@ -861,8 +870,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to serialize method");
             }
@@ -896,8 +905,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DynamicArray currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DynamicArray currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDynamicArray instance passed to isReadOnly method");
             }
@@ -931,8 +940,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = DynamicArray.newInstance();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);
@@ -963,8 +972,8 @@ public class RCTCoreDynamicArray extends ReactContextBaseJavaModule {
             DynamicArray javaResult = DynamicArray.load(serialized);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicArray rctImpl_objcResult = (RCTCoreDynamicArray)self.bridge moduleForName("RCTCoreDynamicArray");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicArray");
             result.put("uid",uuid);

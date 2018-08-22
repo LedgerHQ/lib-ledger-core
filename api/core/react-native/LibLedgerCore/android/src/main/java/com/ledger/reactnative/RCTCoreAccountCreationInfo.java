@@ -3,16 +3,26 @@
 
 package com.ledger.reactnative;
 
-import AccountCreationInfo;
+import co.ledger.core.AccountCreationInfo;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure of informations needed for account creation */
 public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, AccountCreationInfo> javaObjects;
+    public Map<String, AccountCreationInfo> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreAccountCreationInfo(ReactApplicationContext reactContext)
     {
@@ -26,11 +36,11 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     {
         return "RCTCoreAccountCreationInfo";
     }
-    public static void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes, Promise promise) {
-        AccountCreationInfo javaResult = AccountCreationInfo.init(index, owners, derivations, publicKeys, chainCodes);
+    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes ,Promise promise) {
+        AccountCreationInfo javaResult = new AccountCreationInfo(index, owners, derivations, publicKeys, chainCodes);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreAccountCreationInfo");
         finalResult.put("uid",uuid);

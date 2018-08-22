@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import RandomNumberGeneratorImpl;
+import co.ledger.core.RandomNumberGeneratorImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /** Class to generate random numbers */
 public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, RandomNumberGeneratorImpl> javaObjects;
+    public Map<String, RandomNumberGeneratorImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreRandomNumberGenerator(ReactApplicationContext reactContext)
     {
@@ -39,8 +51,8 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomBytes method");
             }
@@ -74,8 +86,8 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomInt method");
             }
@@ -109,8 +121,8 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomLong method");
             }
@@ -144,8 +156,8 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomByte method");
             }

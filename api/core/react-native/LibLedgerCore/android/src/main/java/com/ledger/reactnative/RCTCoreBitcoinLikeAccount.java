@@ -3,26 +3,33 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeAccount;
-import RCTCoreBitcoinLikeOutputListCallback;
-import RCTCoreBitcoinLikeTransaction;
-import RCTCoreBitcoinLikeTransactionBuilder;
-import RCTCoreI32Callback;
-import RCTCoreStringCallback;
+import co.ledger.core.BitcoinLikeAccount;
 import co.ledger.core.BitcoinLikeOutputListCallback;
 import co.ledger.core.BitcoinLikeTransaction;
 import co.ledger.core.BitcoinLikeTransactionBuilder;
 import co.ledger.core.I32Callback;
 import co.ledger.core.StringCallback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a Bitcoin account */
 public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeAccount> javaObjects;
+    public Map<String, BitcoinLikeAccount> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeAccount(ReactApplicationContext reactContext)
     {
@@ -50,13 +57,13 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAccount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAccount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAccount instance passed to getUTXO method");
             }
 
-            RCTCoreBitcoinLikeOutputListCallback javaParam_2 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreBitcoinLikeOutputListCallback javaParam_2 = RCTCoreBitcoinLikeOutputListCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getUTXO(from, to, javaParam_2);
         }
         catch(Exception e)
@@ -75,13 +82,13 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAccount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAccount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAccount instance passed to getUTXOCount method");
             }
 
-            RCTCoreI32Callback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreI32Callback javaParam_0 = RCTCoreI32Callback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getUTXOCount(javaParam_0);
         }
         catch(Exception e)
@@ -96,13 +103,13 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAccount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAccount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAccount instance passed to broadcastRawTransaction method");
             }
 
-            RCTCoreStringCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreStringCallback javaParam_1 = RCTCoreStringCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.broadcastRawTransaction(transaction, javaParam_1);
         }
         catch(Exception e)
@@ -117,15 +124,15 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAccount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAccount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAccount instance passed to broadcastTransaction method");
             }
 
-            RCTCoreBitcoinLikeTransaction rctParam_transaction = (RCTCoreBitcoinLikeTransaction)self.bridge.moduleForName("RCTCoreBitcoinLikeTransaction");
-            BitcoinLikeTransaction javaParam_0 = (BitcoinLikeTransaction)rctParam_transaction.javaObjects.get(transaction.get("uid"));
-            RCTCoreStringCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreBitcoinLikeTransaction rctParam_transaction = this.reactContext.getNativeModule(RCTCoreBitcoinLikeTransaction.class);
+            BitcoinLikeTransaction javaParam_0 = (BitcoinLikeTransaction)rctParam_transaction.getJavaObjects.get(transaction.get("uid"));
+            RCTCoreStringCallback javaParam_1 = RCTCoreStringCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.broadcastTransaction(javaParam_0, javaParam_1);
         }
         catch(Exception e)
@@ -140,8 +147,8 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeAccount currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeAccount currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeAccount instance passed to buildTransaction method");
             }
@@ -149,8 +156,8 @@ public class RCTCoreBitcoinLikeAccount extends ReactContextBaseJavaModule {
             BitcoinLikeTransactionBuilder javaResult = currentInstanceObj.buildTransaction();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeTransactionBuilder rctImpl_objcResult = (RCTCoreBitcoinLikeTransactionBuilder)self.bridge moduleForName("RCTCoreBitcoinLikeTransactionBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeTransactionBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeTransactionBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeTransactionBuilder");
             result.put("uid",uuid);

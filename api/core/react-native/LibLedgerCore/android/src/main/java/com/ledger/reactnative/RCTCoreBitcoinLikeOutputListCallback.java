@@ -3,15 +3,20 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeOutputListCallbackImpl;
-import RCTCoreBitcoinLikeOutput;
-import RCTCoreError;
 import co.ledger.core.BitcoinLikeOutput;
+import co.ledger.core.BitcoinLikeOutputListCallback;
 import co.ledger.core.Error;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -19,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreBitcoinLikeOutputListCallback extends BitcoinLikeOutputListCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreBitcoinLikeOutputListCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreBitcoinLikeOutputListCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreBitcoinLikeOutputListCallback callback = new RCTCoreBitcoinLikeOutputListCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -35,26 +40,26 @@ public class RCTCoreBitcoinLikeOutputListCallback extends BitcoinLikeOutputListC
      * @params result optional of type list<T>, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(ArrayList<BitcoinLikeOutput> result, Error error, ) {
+    public void onCallback(ArrayList<BitcoinLikeOutput> result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             ArrayList<HashMap <String, String>> converted_result = new ArrayList<HashMap <String, String>>();
             for (HashMap <String, String> result_elem : result)
             {
                 String uuid = UUID.randomUUID().toString();
-                RCTCoreBitcoinLikeOutput rctImpl_result_elem = (RCTCoreBitcoinLikeOutput)self.bridge moduleForName("RCTCoreBitcoinLikeOutput");
-                rctImpl_result_elem.javaObjects.put(uuid, result_elem);
+                RCTCoreBitcoinLikeOutput rctImpl_result_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
+                rctImpl_result_elem.getJavaObjects.put(uuid, result_elem);
                 Map<String, String> converted_result_elem = new HashMap<String, String>();
                 converted_result_elem.put("type","RCTCoreBitcoinLikeOutput");
                 converted_result_elem.put("uid",uuid);
                 converted_result.add(converted_result_elem);
             }
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

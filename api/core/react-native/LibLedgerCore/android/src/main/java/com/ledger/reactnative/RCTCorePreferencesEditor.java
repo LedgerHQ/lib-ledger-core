@@ -3,19 +3,28 @@
 
 package com.ledger.reactnative;
 
-import PreferencesEditor;
-import RCTCorePreferencesEditor;
 import co.ledger.core.PreferencesEditor;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /** Interface for editting Preferences. All changes to the editor are persisted to the disk only when comitted. */
 public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, PreferencesEditor> javaObjects;
+    public Map<String, PreferencesEditor> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCorePreferencesEditor(ReactApplicationContext reactContext)
     {
@@ -43,8 +52,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putString method");
             }
@@ -52,8 +61,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putString(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -85,8 +94,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putInt method");
             }
@@ -94,8 +103,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putInt(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -127,8 +136,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putLong method");
             }
@@ -136,8 +145,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putLong(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -169,8 +178,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putBoolean method");
             }
@@ -178,8 +187,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putBoolean(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -211,8 +220,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putStringArray method");
             }
@@ -220,8 +229,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putStringArray(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -253,8 +262,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putData method");
             }
@@ -262,8 +271,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.putData(key, value);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -294,8 +303,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to remove method");
             }
@@ -303,8 +312,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.remove(key);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
@@ -331,8 +340,8 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferencesEditor instance passed to commit method");
             }

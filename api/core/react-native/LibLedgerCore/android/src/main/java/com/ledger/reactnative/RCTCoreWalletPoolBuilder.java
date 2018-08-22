@@ -3,17 +3,6 @@
 
 package com.ledger.reactnative;
 
-import RCTCoreDatabaseBackend;
-import RCTCoreDynamicObject;
-import RCTCoreHttpClient;
-import RCTCoreLogPrinter;
-import RCTCorePathResolver;
-import RCTCoreRandomNumberGenerator;
-import RCTCoreThreadDispatcher;
-import RCTCoreWalletPoolBuilder;
-import RCTCoreWalletPoolCallback;
-import RCTCoreWebSocketClient;
-import WalletPoolBuilder;
 import co.ledger.core.DatabaseBackend;
 import co.ledger.core.DynamicObject;
 import co.ledger.core.HttpClient;
@@ -24,15 +13,27 @@ import co.ledger.core.ThreadDispatcher;
 import co.ledger.core.WalletPoolBuilder;
 import co.ledger.core.WalletPoolCallback;
 import co.ledger.core.WebSocketClient;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a wallet pool builder (to instanciate a wallet pool) */
 public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, WalletPoolBuilder> javaObjects;
+    public Map<String, WalletPoolBuilder> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreWalletPoolBuilder(ReactApplicationContext reactContext)
     {
@@ -59,19 +60,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setHttpClient method");
             }
 
-            RCTCoreHttpClient rctParam_client = (RCTCoreHttpClient)self.bridge.moduleForName("RCTCoreHttpClient");
-            HttpClient javaParam_0 = (HttpClient)rctParam_client.javaObjects.get(client.get("uid"));
+            RCTCoreHttpClient rctParam_client = this.reactContext.getNativeModule(RCTCoreHttpClient.class);
+            HttpClient javaParam_0 = (HttpClient)rctParam_client.getJavaObjects.get(client.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setHttpClient(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -102,19 +103,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setWebsocketClient method");
             }
 
-            RCTCoreWebSocketClient rctParam_client = (RCTCoreWebSocketClient)self.bridge.moduleForName("RCTCoreWebSocketClient");
-            WebSocketClient javaParam_0 = (WebSocketClient)rctParam_client.javaObjects.get(client.get("uid"));
+            RCTCoreWebSocketClient rctParam_client = this.reactContext.getNativeModule(RCTCoreWebSocketClient.class);
+            WebSocketClient javaParam_0 = (WebSocketClient)rctParam_client.getJavaObjects.get(client.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setWebsocketClient(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -145,19 +146,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setPathResolver method");
             }
 
-            RCTCorePathResolver rctParam_pathResolver = (RCTCorePathResolver)self.bridge.moduleForName("RCTCorePathResolver");
-            PathResolver javaParam_0 = (PathResolver)rctParam_pathResolver.javaObjects.get(pathResolver.get("uid"));
+            RCTCorePathResolver rctParam_pathResolver = this.reactContext.getNativeModule(RCTCorePathResolver.class);
+            PathResolver javaParam_0 = (PathResolver)rctParam_pathResolver.getJavaObjects.get(pathResolver.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setPathResolver(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -188,19 +189,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setLogPrinter method");
             }
 
-            RCTCoreLogPrinter rctParam_printer = (RCTCoreLogPrinter)self.bridge.moduleForName("RCTCoreLogPrinter");
-            LogPrinter javaParam_0 = (LogPrinter)rctParam_printer.javaObjects.get(printer.get("uid"));
+            RCTCoreLogPrinter rctParam_printer = this.reactContext.getNativeModule(RCTCoreLogPrinter.class);
+            LogPrinter javaParam_0 = (LogPrinter)rctParam_printer.getJavaObjects.get(printer.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setLogPrinter(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -231,19 +232,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setThreadDispatcher method");
             }
 
-            RCTCoreThreadDispatcher rctParam_dispatcher = (RCTCoreThreadDispatcher)self.bridge.moduleForName("RCTCoreThreadDispatcher");
-            ThreadDispatcher javaParam_0 = (ThreadDispatcher)rctParam_dispatcher.javaObjects.get(dispatcher.get("uid"));
+            RCTCoreThreadDispatcher rctParam_dispatcher = this.reactContext.getNativeModule(RCTCoreThreadDispatcher.class);
+            ThreadDispatcher javaParam_0 = (ThreadDispatcher)rctParam_dispatcher.getJavaObjects.get(dispatcher.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setThreadDispatcher(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -274,8 +275,8 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setName method");
             }
@@ -283,8 +284,8 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             WalletPoolBuilder javaResult = currentInstanceObj.setName(name);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -315,8 +316,8 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setPassword method");
             }
@@ -324,8 +325,8 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             WalletPoolBuilder javaResult = currentInstanceObj.setPassword(password);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -356,19 +357,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setRandomNumberGenerator method");
             }
 
-            RCTCoreRandomNumberGenerator rctParam_rng = (RCTCoreRandomNumberGenerator)self.bridge.moduleForName("RCTCoreRandomNumberGenerator");
-            RandomNumberGenerator javaParam_0 = (RandomNumberGenerator)rctParam_rng.javaObjects.get(rng.get("uid"));
+            RCTCoreRandomNumberGenerator rctParam_rng = this.reactContext.getNativeModule(RCTCoreRandomNumberGenerator.class);
+            RandomNumberGenerator javaParam_0 = (RandomNumberGenerator)rctParam_rng.getJavaObjects.get(rng.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setRandomNumberGenerator(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -399,19 +400,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setDatabaseBackend method");
             }
 
-            RCTCoreDatabaseBackend rctParam_backend = (RCTCoreDatabaseBackend)self.bridge.moduleForName("RCTCoreDatabaseBackend");
-            DatabaseBackend javaParam_0 = (DatabaseBackend)rctParam_backend.javaObjects.get(backend.get("uid"));
+            RCTCoreDatabaseBackend rctParam_backend = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            DatabaseBackend javaParam_0 = (DatabaseBackend)rctParam_backend.getJavaObjects.get(backend.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setDatabaseBackend(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -442,19 +443,19 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to setConfiguration method");
             }
 
-            RCTCoreDynamicObject rctParam_configuration = (RCTCoreDynamicObject)self.bridge.moduleForName("RCTCoreDynamicObject");
-            DynamicObject javaParam_0 = (DynamicObject)rctParam_configuration.javaObjects.get(configuration.get("uid"));
+            RCTCoreDynamicObject rctParam_configuration = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
+            DynamicObject javaParam_0 = (DynamicObject)rctParam_configuration.getJavaObjects.get(configuration.get("uid"));
             WalletPoolBuilder javaResult = currentInstanceObj.setConfiguration(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);
@@ -484,13 +485,13 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            WalletPoolBuilder currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            WalletPoolBuilder currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWalletPoolBuilder instance passed to build method");
             }
 
-            RCTCoreWalletPoolCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreWalletPoolCallback javaParam_0 = RCTCoreWalletPoolCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.build(javaParam_0);
         }
         catch(Exception e)
@@ -509,8 +510,8 @@ public class RCTCoreWalletPoolBuilder extends ReactContextBaseJavaModule {
             WalletPoolBuilder javaResult = WalletPoolBuilder.createInstance();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPoolBuilder rctImpl_objcResult = (RCTCoreWalletPoolBuilder)self.bridge moduleForName("RCTCoreWalletPoolBuilder");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreWalletPoolBuilder rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreWalletPoolBuilder.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreWalletPoolBuilder");
             result.put("uid",uuid);

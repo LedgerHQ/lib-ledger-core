@@ -3,15 +3,27 @@
 
 package com.ledger.reactnative;
 
-import Configuration;
+import co.ledger.core.Configuration;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreConfiguration extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Configuration> javaObjects;
+    public Map<String, Configuration> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreConfiguration(ReactApplicationContext reactContext)
     {

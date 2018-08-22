@@ -3,18 +3,28 @@
 
 package com.ledger.reactnative;
 
-import DatabaseBackend;
-import RCTCoreDatabaseBackend;
 import co.ledger.core.DatabaseBackend;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a database */
 public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, DatabaseBackend> javaObjects;
+    public Map<String, DatabaseBackend> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreDatabaseBackend(ReactApplicationContext reactContext)
     {
@@ -41,8 +51,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setUsername method");
             }
@@ -50,8 +60,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setUsername(username);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -82,8 +92,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setPassword method");
             }
@@ -91,8 +101,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setPassword(pwd);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -123,8 +133,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setHost method");
             }
@@ -132,8 +142,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setHost(host);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -164,8 +174,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setHostAddr method");
             }
@@ -173,8 +183,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setHostAddr(hostAddr);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -205,8 +215,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setPort method");
             }
@@ -214,8 +224,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setPort(port);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -246,8 +256,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setOptions method");
             }
@@ -255,8 +265,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setOptions(opts);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -287,8 +297,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setSslMode method");
             }
@@ -296,8 +306,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setSslMode(mode);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -328,8 +338,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setKerberosName method");
             }
@@ -337,8 +347,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setKerberosName(name);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -365,8 +375,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setService method");
             }
@@ -374,8 +384,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setService(service);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -401,8 +411,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setConnectionPoolSize method");
             }
@@ -410,8 +420,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.setConnectionPoolSize(size);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -437,8 +447,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to enableQueryLogging method");
             }
@@ -446,8 +456,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = currentInstanceObj.enableQueryLogging(enable);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -477,8 +487,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getUsername method");
             }
@@ -512,8 +522,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getPassword method");
             }
@@ -547,8 +557,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getHost method");
             }
@@ -582,8 +592,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getHostAddr method");
             }
@@ -617,8 +627,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getPort method");
             }
@@ -652,8 +662,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getOptions method");
             }
@@ -687,8 +697,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getSslMode method");
             }
@@ -722,8 +732,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getKerberosName method");
             }
@@ -754,8 +764,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getService method");
             }
@@ -785,8 +795,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getConnectionPoolSize method");
             }
@@ -816,8 +826,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to isLoggingEnabled method");
             }
@@ -851,8 +861,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = DatabaseBackend.getSqlite3Backend();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
@@ -882,8 +892,8 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
             DatabaseBackend javaResult = DatabaseBackend.getPostgreSQLBackend();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDatabaseBackend rctImpl_objcResult = (RCTCoreDatabaseBackend)self.bridge moduleForName("RCTCoreDatabaseBackend");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);

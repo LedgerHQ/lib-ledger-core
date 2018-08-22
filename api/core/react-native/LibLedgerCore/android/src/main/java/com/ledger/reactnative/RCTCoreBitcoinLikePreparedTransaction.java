@@ -3,18 +3,27 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikePreparedTransaction;
-import RCTCoreBitcoinLikeOutput;
 import co.ledger.core.BitcoinLikeOutput;
+import co.ledger.core.BitcoinLikePreparedTransaction;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure representing a prepared bitcoin transaction (ready to be used with device) */
 public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikePreparedTransaction> javaObjects;
+    public Map<String, BitcoinLikePreparedTransaction> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikePreparedTransaction(ReactApplicationContext reactContext)
     {
@@ -28,25 +37,25 @@ public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaM
     {
         return "RCTCoreBitcoinLikePreparedTransaction";
     }
-    public static void init(int version, ArrayList <HashMap <String, String>> * inputs, ArrayList<String> paths, ArrayList <HashMap <String, String>> * outputs, int lockTime, Promise promise) {
+    public void init(int version, ArrayList <HashMap <String, String>> inputs, ArrayList<String> paths, ArrayList <HashMap <String, String>> outputs, int lockTime ,Promise promise) {
         ArrayList<HashMap <String, String>> javaParam_1 = new ArrayList<HashMap <String, String>>();
         for (HashMap <String, String> inputs_elem : inputs)
         {
-            RCTCoreBitcoinLikeOutput rctParam_inputs_elem = (RCTCoreBitcoinLikeOutput)self.bridge.moduleForName("RCTCoreBitcoinLikeOutput");
-            BitcoinLikeOutput javaParam_1_elem = (BitcoinLikeOutput)rctParam_inputs_elem.javaObjects.get(inputs_elem.get("uid"));
+            RCTCoreBitcoinLikeOutput rctParam_inputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
+            BitcoinLikeOutput javaParam_1_elem = (BitcoinLikeOutput)rctParam_inputs_elem.getJavaObjects.get(inputs_elem.get("uid"));
             javaParam_1.add(javaParam_1_elem);
         }
         ArrayList<HashMap <String, String>> javaParam_3 = new ArrayList<HashMap <String, String>>();
         for (HashMap <String, String> outputs_elem : outputs)
         {
-            RCTCoreBitcoinLikeOutput rctParam_outputs_elem = (RCTCoreBitcoinLikeOutput)self.bridge.moduleForName("RCTCoreBitcoinLikeOutput");
-            BitcoinLikeOutput javaParam_3_elem = (BitcoinLikeOutput)rctParam_outputs_elem.javaObjects.get(outputs_elem.get("uid"));
+            RCTCoreBitcoinLikeOutput rctParam_outputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
+            BitcoinLikeOutput javaParam_3_elem = (BitcoinLikeOutput)rctParam_outputs_elem.getJavaObjects.get(outputs_elem.get("uid"));
             javaParam_3.add(javaParam_3_elem);
         }
-        BitcoinLikePreparedTransaction javaResult = BitcoinLikePreparedTransaction.init(version, javaParam_1, paths, javaParam_3, lockTime);
+        BitcoinLikePreparedTransaction javaResult = new BitcoinLikePreparedTransaction(version, javaParam_1, paths, javaParam_3, lockTime);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikePreparedTransaction");
         finalResult.put("uid",uuid);

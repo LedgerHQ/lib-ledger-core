@@ -3,15 +3,26 @@
 
 package com.ledger.reactnative;
 
-import Error;
+import co.ledger.core.Error;
 import co.ledger.core.ErrorCode;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class RCTCoreError extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Error> javaObjects;
+    public Map<String, Error> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreError(ReactApplicationContext reactContext)
     {
@@ -25,11 +36,11 @@ public class RCTCoreError extends ReactContextBaseJavaModule {
     {
         return "RCTCoreError";
     }
-    public static void init(ErrorCode code, String message, Promise promise) {
-        Error javaResult = Error.init(code, message);
+    public void init(ErrorCode code, String message ,Promise promise) {
+        Error javaResult = new Error(code, message);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreError");
         finalResult.put("uid",uuid);

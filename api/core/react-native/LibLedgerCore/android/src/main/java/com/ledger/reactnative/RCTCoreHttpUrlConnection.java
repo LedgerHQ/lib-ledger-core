@@ -3,19 +3,29 @@
 
 package com.ledger.reactnative;
 
-import HttpUrlConnectionImpl;
-import RCTCoreHttpReadBodyResult;
 import co.ledger.core.HttpReadBodyResult;
+import co.ledger.core.HttpUrlConnectionImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing an Http connection */
 public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, HttpUrlConnectionImpl> javaObjects;
+    public Map<String, HttpUrlConnectionImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreHttpUrlConnection(ReactApplicationContext reactContext)
     {
@@ -41,8 +51,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getStatusCode method");
             }
@@ -76,8 +86,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getStatusText method");
             }
@@ -111,8 +121,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getHeaders method");
             }
@@ -146,8 +156,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to readBody method");
             }
@@ -155,8 +165,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             HttpReadBodyResult javaResult = currentInstanceObj.readBody();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreHttpReadBodyResult rctImpl_objcResult = (RCTCoreHttpReadBodyResult)self.bridge moduleForName("RCTCoreHttpReadBodyResult");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreHttpReadBodyResult rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreHttpReadBodyResult.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreHttpReadBodyResult");
             result.put("uid",uuid);

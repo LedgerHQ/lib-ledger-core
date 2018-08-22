@@ -3,16 +3,28 @@
 
 package com.ledger.reactnative;
 
-import PoolConfiguration;
+import co.ledger.core.PoolConfiguration;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**TODO */
 public class RCTCorePoolConfiguration extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, PoolConfiguration> javaObjects;
+    public Map<String, PoolConfiguration> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCorePoolConfiguration(ReactApplicationContext reactContext)
     {

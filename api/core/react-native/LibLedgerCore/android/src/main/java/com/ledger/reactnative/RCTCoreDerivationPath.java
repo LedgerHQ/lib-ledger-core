@@ -3,18 +3,27 @@
 
 package com.ledger.reactnative;
 
-import DerivationPath;
-import RCTCoreDerivationPath;
 import co.ledger.core.DerivationPath;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, DerivationPath> javaObjects;
+    public Map<String, DerivationPath> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreDerivationPath(ReactApplicationContext reactContext)
     {
@@ -37,8 +46,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to getDepth method");
             }
@@ -69,8 +78,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to getChildNum method");
             }
@@ -104,8 +113,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to getUnhardenedChildNum method");
             }
@@ -136,8 +145,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to isHardened method");
             }
@@ -168,8 +177,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to toString method");
             }
@@ -203,8 +212,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to getParent method");
             }
@@ -212,8 +221,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             DerivationPath javaResult = currentInstanceObj.getParent();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDerivationPath rctImpl_objcResult = (RCTCoreDerivationPath)self.bridge moduleForName("RCTCoreDerivationPath");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDerivationPath");
             result.put("uid",uuid);
@@ -240,8 +249,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreDerivationPath instance passed to toArray method");
             }
@@ -271,8 +280,8 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
             DerivationPath javaResult = DerivationPath.parse(path);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDerivationPath rctImpl_objcResult = (RCTCoreDerivationPath)self.bridge moduleForName("RCTCoreDerivationPath");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDerivationPath");
             result.put("uid",uuid);

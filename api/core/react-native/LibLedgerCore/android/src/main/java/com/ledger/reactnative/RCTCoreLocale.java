@@ -3,14 +3,25 @@
 
 package com.ledger.reactnative;
 
-import Locale;
+import co.ledger.core.Locale;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class RCTCoreLocale extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Locale> javaObjects;
+    public Map<String, Locale> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreLocale(ReactApplicationContext reactContext)
     {
@@ -24,11 +35,11 @@ public class RCTCoreLocale extends ReactContextBaseJavaModule {
     {
         return "RCTCoreLocale";
     }
-    public static void init(String DecimalSeparator, String ThousandsSeparator, boolean IsPrefixedByCurrencySymbol, Promise promise) {
-        Locale javaResult = Locale.init(DecimalSeparator, ThousandsSeparator, IsPrefixedByCurrencySymbol);
+    public void init(String DecimalSeparator, String ThousandsSeparator, boolean IsPrefixedByCurrencySymbol ,Promise promise) {
+        Locale javaResult = new Locale(DecimalSeparator, ThousandsSeparator, IsPrefixedByCurrencySymbol);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreLocale");
         finalResult.put("uid",uuid);

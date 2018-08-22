@@ -3,15 +3,20 @@
 
 package com.ledger.reactnative;
 
-import OperationListCallbackImpl;
-import RCTCoreError;
-import RCTCoreOperation;
 import co.ledger.core.Error;
 import co.ledger.core.Operation;
+import co.ledger.core.OperationListCallback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -19,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreOperationListCallback extends OperationListCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreOperationListCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreOperationListCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreOperationListCallback callback = new RCTCoreOperationListCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -35,26 +40,26 @@ public class RCTCoreOperationListCallback extends OperationListCallback {
      * @params result optional of type list<T>, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(ArrayList<Operation> result, Error error, ) {
+    public void onCallback(ArrayList<Operation> result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             ArrayList<HashMap <String, String>> converted_result = new ArrayList<HashMap <String, String>>();
             for (HashMap <String, String> result_elem : result)
             {
                 String uuid = UUID.randomUUID().toString();
-                RCTCoreOperation rctImpl_result_elem = (RCTCoreOperation)self.bridge moduleForName("RCTCoreOperation");
-                rctImpl_result_elem.javaObjects.put(uuid, result_elem);
+                RCTCoreOperation rctImpl_result_elem = this.reactContext.getNativeModule(RCTCoreOperation.class);
+                rctImpl_result_elem.getJavaObjects.put(uuid, result_elem);
                 Map<String, String> converted_result_elem = new HashMap<String, String>();
                 converted_result_elem.put("type","RCTCoreOperation");
                 converted_result_elem.put("uid",uuid);
                 converted_result.add(converted_result_elem);
             }
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

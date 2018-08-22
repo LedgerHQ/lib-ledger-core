@@ -3,13 +3,19 @@
 
 package com.ledger.reactnative;
 
-import Preferences;
-import RCTCorePreferencesEditor;
+import co.ledger.core.Preferences;
 import co.ledger.core.PreferencesEditor;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
@@ -21,6 +27,10 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Preferences> javaObjects;
+    public Map<String, Preferences> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCorePreferences(ReactApplicationContext reactContext)
     {
@@ -46,8 +56,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getString method");
             }
@@ -81,8 +91,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getInt method");
             }
@@ -116,8 +126,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getLong method");
             }
@@ -151,8 +161,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getBoolean method");
             }
@@ -186,8 +196,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getStringArray method");
             }
@@ -221,8 +231,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to getData method");
             }
@@ -256,8 +266,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to contains method");
             }
@@ -291,8 +301,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Preferences currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCorePreferences instance passed to edit method");
             }
@@ -300,8 +310,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             PreferencesEditor javaResult = currentInstanceObj.edit();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferencesEditor rctImpl_objcResult = (RCTCorePreferencesEditor)self.bridge moduleForName("RCTCorePreferencesEditor");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);

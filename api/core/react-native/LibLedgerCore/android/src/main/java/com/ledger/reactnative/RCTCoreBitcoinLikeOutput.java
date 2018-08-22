@@ -3,22 +3,31 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeOutput;
-import RCTCoreAmount;
-import RCTCoreBitcoinLikeScript;
-import RCTCoreDerivationPath;
 import co.ledger.core.Amount;
+import co.ledger.core.BitcoinLikeOutput;
 import co.ledger.core.BitcoinLikeScript;
 import co.ledger.core.DerivationPath;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing Bitcoin outputs */
 public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeOutput> javaObjects;
+    public Map<String, BitcoinLikeOutput> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeOutput(ReactApplicationContext reactContext)
     {
@@ -44,8 +53,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getTransactionHash method");
             }
@@ -79,8 +88,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getOutputIndex method");
             }
@@ -114,8 +123,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getValue method");
             }
@@ -123,8 +132,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             Amount javaResult = currentInstanceObj.getValue();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAmount rctImpl_objcResult = (RCTCoreAmount)self.bridge moduleForName("RCTCoreAmount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
@@ -154,8 +163,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getScript method");
             }
@@ -185,8 +194,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to parseScript method");
             }
@@ -194,8 +203,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             BitcoinLikeScript javaResult = currentInstanceObj.parseScript();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeScript rctImpl_objcResult = (RCTCoreBitcoinLikeScript)self.bridge moduleForName("RCTCoreBitcoinLikeScript");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeScript rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScript.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScript");
             result.put("uid",uuid);
@@ -225,8 +234,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getAddress method");
             }
@@ -256,8 +265,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOutput currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOutput currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOutput instance passed to getDerivationPath method");
             }
@@ -265,8 +274,8 @@ public class RCTCoreBitcoinLikeOutput extends ReactContextBaseJavaModule {
             DerivationPath javaResult = currentInstanceObj.getDerivationPath();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDerivationPath rctImpl_objcResult = (RCTCoreDerivationPath)self.bridge moduleForName("RCTCoreDerivationPath");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDerivationPath");
             result.put("uid",uuid);

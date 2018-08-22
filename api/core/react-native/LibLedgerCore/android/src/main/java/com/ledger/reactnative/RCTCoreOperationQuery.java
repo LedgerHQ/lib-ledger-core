@@ -3,23 +3,31 @@
 
 package com.ledger.reactnative;
 
-import OperationQuery;
-import RCTCoreOperationListCallback;
-import RCTCoreOperationQuery;
-import RCTCoreQueryFilter;
 import co.ledger.core.OperationListCallback;
 import co.ledger.core.OperationOrderKey;
 import co.ledger.core.OperationQuery;
 import co.ledger.core.QueryFilter;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class respresenting a query for a set of operations */
 public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, OperationQuery> javaObjects;
+    public Map<String, OperationQuery> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreOperationQuery(ReactApplicationContext reactContext)
     {
@@ -47,8 +55,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to addOrder method");
             }
@@ -56,8 +64,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.addOrder(key, descending);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -87,8 +95,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to filter method");
             }
@@ -96,8 +104,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             QueryFilter javaResult = currentInstanceObj.filter();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreQueryFilter rctImpl_objcResult = (RCTCoreQueryFilter)self.bridge moduleForName("RCTCoreQueryFilter");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
@@ -127,8 +135,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to offset method");
             }
@@ -136,8 +144,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.offset(from);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -167,8 +175,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to limit method");
             }
@@ -176,8 +184,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.limit(count);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -207,8 +215,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to complete method");
             }
@@ -216,8 +224,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.complete();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -244,8 +252,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to partial method");
             }
@@ -253,8 +261,8 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.partial();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -284,13 +292,13 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            OperationQuery currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            OperationQuery currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreOperationQuery instance passed to execute method");
             }
 
-            RCTCoreOperationListCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreOperationListCallback javaParam_0 = RCTCoreOperationListCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)

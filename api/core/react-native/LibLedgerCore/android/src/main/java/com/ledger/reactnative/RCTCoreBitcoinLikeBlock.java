@@ -3,17 +3,29 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeBlock;
+import co.ledger.core.BitcoinLikeBlock;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing Bitcoin block */
 public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeBlock> javaObjects;
+    public Map<String, BitcoinLikeBlock> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeBlock(ReactApplicationContext reactContext)
     {
@@ -39,8 +51,8 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getHash method");
             }
@@ -74,8 +86,8 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getHeight method");
             }
@@ -109,8 +121,8 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getTime method");
             }

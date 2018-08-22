@@ -3,22 +3,31 @@
 
 package com.ledger.reactnative;
 
-import HttpRequest;
-import RCTCoreError;
-import RCTCoreHttpUrlConnection;
 import co.ledger.core.Error;
 import co.ledger.core.HttpMethod;
+import co.ledger.core.HttpRequest;
 import co.ledger.core.HttpUrlConnection;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing an Http request */
 public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, HttpRequest> javaObjects;
+    public Map<String, HttpRequest> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreHttpRequest(ReactApplicationContext reactContext)
     {
@@ -44,8 +53,8 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpRequest instance passed to getMethod method");
             }
@@ -79,8 +88,8 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpRequest instance passed to getHeaders method");
             }
@@ -114,8 +123,8 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpRequest instance passed to getBody method");
             }
@@ -149,8 +158,8 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpRequest instance passed to getUrl method");
             }
@@ -179,22 +188,22 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
      *@param error, optional Error structure, error returned in case of request failure
      */
     @ReactMethod
-    public void complete(Map<String, String> currentInstance, Option<HashMap <String, String>> response, Option<HashMap <String, String>> error, Promise promise) {
+    public void complete(Map<String, String> currentInstance, Optional<HashMap <String, String>> response, Optional<HashMap <String, String>> error, Promise promise) {
         try
         {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpRequest instance passed to complete method");
             }
 
-            RCTCoreHttpUrlConnection rctParam_response = (RCTCoreHttpUrlConnection)self.bridge.moduleForName("RCTCoreHttpUrlConnection");
-            HttpUrlConnection javaParam_0 = (HttpUrlConnection)rctParam_response.javaObjects.get(response.get("uid"));
-            RCTCoreError rctParam_error = (RCTCoreError)self.bridge.moduleForName("RCTCoreError");
-            Error javaParam_1 = (Error)rctParam_error.javaObjects.get(error.get("uid"));
+            RCTCoreHttpUrlConnection rctParam_response = this.reactContext.getNativeModule(RCTCoreHttpUrlConnection.class);
+            HttpUrlConnection javaParam_0 = (HttpUrlConnection)rctParam_response.getJavaObjects.get(response.get("uid"));
+            RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
+            Error javaParam_1 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
             currentInstanceObj.complete(javaParam_0, javaParam_1);
         }
         catch(Exception e)

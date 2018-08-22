@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import ExecutionContextImpl;
-import RCTCoreRunnable;
+import co.ledger.core.ExecutionContextImpl;
 import co.ledger.core.Runnable;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing context in which tasks get executed */
 public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, ExecutionContextImpl> javaObjects;
+    public Map<String, ExecutionContextImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreExecutionContext(ReactApplicationContext reactContext)
     {
@@ -40,14 +51,14 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            ExecutionContextImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            ExecutionContextImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreExecutionContext instance passed to execute method");
             }
 
-            RCTCoreRunnable rctParam_runnable = (RCTCoreRunnable)self.bridge.moduleForName("RCTCoreRunnable");
-            Runnable javaParam_0 = (Runnable)rctParam_runnable.javaObjects.get(runnable.get("uid"));
+            RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
+            Runnable javaParam_0 = (Runnable)rctParam_runnable.getJavaObjects.get(runnable.get("uid"));
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)
@@ -67,14 +78,14 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            ExecutionContextImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            ExecutionContextImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreExecutionContext instance passed to delay method");
             }
 
-            RCTCoreRunnable rctParam_runnable = (RCTCoreRunnable)self.bridge.moduleForName("RCTCoreRunnable");
-            Runnable javaParam_0 = (Runnable)rctParam_runnable.javaObjects.get(runnable.get("uid"));
+            RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
+            Runnable javaParam_0 = (Runnable)rctParam_runnable.getJavaObjects.get(runnable.get("uid"));
             currentInstanceObj.delay(javaParam_0, millis);
         }
         catch(Exception e)

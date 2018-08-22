@@ -3,17 +3,28 @@
 
 package com.ledger.reactnative;
 
-import Networks;
-import RCTCoreBitcoinLikeNetworkParameters;
 import co.ledger.core.BitcoinLikeNetworkParameters;
+import co.ledger.core.Networks;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreNetworks extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Networks> javaObjects;
+    public Map<String, Networks> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreNetworks(ReactApplicationContext reactContext)
     {
@@ -35,8 +46,8 @@ public class RCTCoreNetworks extends ReactContextBaseJavaModule {
             BitcoinLikeNetworkParameters javaResult = Networks.bitcoin();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeNetworkParameters rctImpl_objcResult = (RCTCoreBitcoinLikeNetworkParameters)self.bridge moduleForName("RCTCoreBitcoinLikeNetworkParameters");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeNetworkParameters");
             result.put("uid",uuid);

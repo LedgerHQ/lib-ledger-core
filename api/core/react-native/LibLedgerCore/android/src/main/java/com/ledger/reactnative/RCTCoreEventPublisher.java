@@ -3,24 +3,31 @@
 
 package com.ledger.reactnative;
 
-import EventPublisher;
-import RCTCoreEvent;
-import RCTCoreEventBus;
-import RCTCoreEventPublisher;
-import RCTCoreExecutionContext;
 import co.ledger.core.Event;
 import co.ledger.core.EventBus;
 import co.ledger.core.EventPublisher;
 import co.ledger.core.ExecutionContext;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing an event publisher */
 public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, EventPublisher> javaObjects;
+    public Map<String, EventPublisher> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreEventPublisher(ReactApplicationContext reactContext)
     {
@@ -46,8 +53,8 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            EventPublisher currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            EventPublisher currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEventPublisher instance passed to getEventBus method");
             }
@@ -55,8 +62,8 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             EventBus javaResult = currentInstanceObj.getEventBus();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventBus rctImpl_objcResult = (RCTCoreEventBus)self.bridge moduleForName("RCTCoreEventBus");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventBus");
             result.put("uid",uuid);
@@ -86,14 +93,14 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            EventPublisher currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            EventPublisher currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEventPublisher instance passed to post method");
             }
 
-            RCTCoreEvent rctParam_event = (RCTCoreEvent)self.bridge.moduleForName("RCTCoreEvent");
-            Event javaParam_0 = (Event)rctParam_event.javaObjects.get(event.get("uid"));
+            RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
+            Event javaParam_0 = (Event)rctParam_event.getJavaObjects.get(event.get("uid"));
             currentInstanceObj.post(javaParam_0);
         }
         catch(Exception e)
@@ -113,14 +120,14 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            EventPublisher currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            EventPublisher currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEventPublisher instance passed to postSticky method");
             }
 
-            RCTCoreEvent rctParam_event = (RCTCoreEvent)self.bridge.moduleForName("RCTCoreEvent");
-            Event javaParam_0 = (Event)rctParam_event.javaObjects.get(event.get("uid"));
+            RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
+            Event javaParam_0 = (Event)rctParam_event.getJavaObjects.get(event.get("uid"));
             currentInstanceObj.postSticky(javaParam_0, tag);
         }
         catch(Exception e)
@@ -139,14 +146,14 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            EventPublisher currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            EventPublisher currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEventPublisher instance passed to relay method");
             }
 
-            RCTCoreEventBus rctParam_bus = (RCTCoreEventBus)self.bridge.moduleForName("RCTCoreEventBus");
-            EventBus javaParam_0 = (EventBus)rctParam_bus.javaObjects.get(bus.get("uid"));
+            RCTCoreEventBus rctParam_bus = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            EventBus javaParam_0 = (EventBus)rctParam_bus.getJavaObjects.get(bus.get("uid"));
             currentInstanceObj.relay(javaParam_0);
         }
         catch(Exception e)
@@ -165,8 +172,8 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             EventPublisher javaResult = EventPublisher.newInstance(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventPublisher rctImpl_objcResult = (RCTCoreEventPublisher)self.bridge moduleForName("RCTCoreEventPublisher");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventPublisher rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventPublisher.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventPublisher");
             result.put("uid",uuid);

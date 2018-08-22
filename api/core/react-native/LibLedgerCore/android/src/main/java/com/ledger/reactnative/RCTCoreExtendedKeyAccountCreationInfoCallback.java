@@ -3,14 +3,20 @@
 
 package com.ledger.reactnative;
 
-import ExtendedKeyAccountCreationInfoCallbackImpl;
-import RCTCoreError;
-import RCTCoreExtendedKeyAccountCreationInfo;
 import co.ledger.core.Error;
 import co.ledger.core.ExtendedKeyAccountCreationInfo;
+import co.ledger.core.ExtendedKeyAccountCreationInfoCallback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -18,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreExtendedKeyAccountCreationInfoCallback extends ExtendedKeyAccountCreationInfoCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreExtendedKeyAccountCreationInfoCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreExtendedKeyAccountCreationInfoCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreExtendedKeyAccountCreationInfoCallback callback = new RCTCoreExtendedKeyAccountCreationInfoCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -34,21 +40,21 @@ public class RCTCoreExtendedKeyAccountCreationInfoCallback extends ExtendedKeyAc
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(ExtendedKeyAccountCreationInfo result, Error error, ) {
+    public void onCallback(ExtendedKeyAccountCreationInfo result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             String uuid = UUID.randomUUID().toString();
-            RCTCoreExtendedKeyAccountCreationInfo rctImpl_result = (RCTCoreExtendedKeyAccountCreationInfo)self.bridge moduleForName("RCTCoreExtendedKeyAccountCreationInfo");
-            rctImpl_result.javaObjects.put(uuid, result);
+            RCTCoreExtendedKeyAccountCreationInfo rctImpl_result = this.reactContext.getNativeModule(RCTCoreExtendedKeyAccountCreationInfo.class);
+            rctImpl_result.getJavaObjects.put(uuid, result);
             Map<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreExtendedKeyAccountCreationInfo");
             converted_result.put("uid",uuid);
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

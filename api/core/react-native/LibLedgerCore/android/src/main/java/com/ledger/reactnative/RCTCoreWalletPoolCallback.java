@@ -3,14 +3,20 @@
 
 package com.ledger.reactnative;
 
-import RCTCoreError;
-import RCTCoreWalletPool;
-import WalletPoolCallbackImpl;
 import co.ledger.core.Error;
 import co.ledger.core.WalletPool;
+import co.ledger.core.WalletPoolCallback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -18,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreWalletPoolCallback extends WalletPoolCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreWalletPoolCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreWalletPoolCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreWalletPoolCallback callback = new RCTCoreWalletPoolCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -34,21 +40,21 @@ public class RCTCoreWalletPoolCallback extends WalletPoolCallback {
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(WalletPool result, Error error, ) {
+    public void onCallback(WalletPool result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
             String uuid = UUID.randomUUID().toString();
-            RCTCoreWalletPool rctImpl_result = (RCTCoreWalletPool)self.bridge moduleForName("RCTCoreWalletPool");
-            rctImpl_result.javaObjects.put(uuid, result);
+            RCTCoreWalletPool rctImpl_result = this.reactContext.getNativeModule(RCTCoreWalletPool.class);
+            rctImpl_result.getJavaObjects.put(uuid, result);
             Map<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreWalletPool");
             converted_result.put("uid",uuid);
 
-            self.promise.resolve(converted_result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

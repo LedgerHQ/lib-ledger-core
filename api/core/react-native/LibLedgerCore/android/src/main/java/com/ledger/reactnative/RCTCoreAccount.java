@@ -3,17 +3,7 @@
 
 package com.ledger.reactnative;
 
-import Account;
-import RCTCoreAddressListCallback;
-import RCTCoreAmountCallback;
-import RCTCoreAmountListCallback;
-import RCTCoreBitcoinLikeAccount;
-import RCTCoreBlockCallback;
-import RCTCoreErrorCodeCallback;
-import RCTCoreEventBus;
-import RCTCoreLogger;
-import RCTCoreOperationQuery;
-import RCTCorePreferences;
+import co.ledger.core.Account;
 import co.ledger.core.AddressListCallback;
 import co.ledger.core.AmountCallback;
 import co.ledger.core.AmountListCallback;
@@ -26,16 +16,28 @@ import co.ledger.core.OperationQuery;
 import co.ledger.core.Preferences;
 import co.ledger.core.TimePeriod;
 import co.ledger.core.WalletType;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing an account */
 public class RCTCoreAccount extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Account> javaObjects;
+    public Map<String, Account> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreAccount(ReactApplicationContext reactContext)
     {
@@ -61,8 +63,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getIndex method");
             }
@@ -93,8 +95,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to queryOperations method");
             }
@@ -102,8 +104,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             OperationQuery javaResult = currentInstanceObj.queryOperations();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreOperationQuery rctImpl_objcResult = (RCTCoreOperationQuery)self.bridge moduleForName("RCTCoreOperationQuery");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreOperationQuery");
             result.put("uid",uuid);
@@ -133,13 +135,13 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getBalance method");
             }
 
-            RCTCoreAmountCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAmountCallback javaParam_0 = RCTCoreAmountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getBalance(javaParam_0);
         }
         catch(Exception e)
@@ -161,13 +163,13 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getBalanceHistory method");
             }
 
-            RCTCoreAmountListCallback javaParam_3 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAmountListCallback javaParam_3 = RCTCoreAmountListCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getBalanceHistory(start, end, period, javaParam_3);
         }
         catch(Exception e)
@@ -186,8 +188,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to isSynchronizing method");
             }
@@ -221,8 +223,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to synchronize method");
             }
@@ -230,8 +232,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             EventBus javaResult = currentInstanceObj.synchronize();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventBus rctImpl_objcResult = (RCTCoreEventBus)self.bridge moduleForName("RCTCoreEventBus");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventBus");
             result.put("uid",uuid);
@@ -261,8 +263,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getPreferences method");
             }
@@ -270,8 +272,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Preferences javaResult = currentInstanceObj.getPreferences();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferences rctImpl_objcResult = (RCTCorePreferences)self.bridge moduleForName("RCTCorePreferences");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferences");
             result.put("uid",uuid);
@@ -301,8 +303,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getLogger method");
             }
@@ -310,8 +312,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Logger javaResult = currentInstanceObj.getLogger();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreLogger rctImpl_objcResult = (RCTCoreLogger)self.bridge moduleForName("RCTCoreLogger");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreLogger rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLogger.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreLogger");
             result.put("uid",uuid);
@@ -344,8 +346,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getOperationPreferences method");
             }
@@ -353,8 +355,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Preferences javaResult = currentInstanceObj.getOperationPreferences(uid);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferences rctImpl_objcResult = (RCTCorePreferences)self.bridge moduleForName("RCTCorePreferences");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferences");
             result.put("uid",uuid);
@@ -380,8 +382,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to asBitcoinLikeAccount method");
             }
@@ -389,8 +391,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             BitcoinLikeAccount javaResult = currentInstanceObj.asBitcoinLikeAccount();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeAccount rctImpl_objcResult = (RCTCoreBitcoinLikeAccount)self.bridge moduleForName("RCTCoreBitcoinLikeAccount");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeAccount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAccount.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeAccount");
             result.put("uid",uuid);
@@ -422,8 +424,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to isInstanceOfBitcoinLikeAccount method");
             }
@@ -457,8 +459,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to isInstanceOfEthereumLikeAccount method");
             }
@@ -492,8 +494,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to isInstanceOfRippleLikeAccount method");
             }
@@ -524,13 +526,13 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getFreshPublicAddresses method");
             }
 
-            RCTCoreAddressListCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAddressListCallback javaParam_0 = RCTCoreAddressListCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getFreshPublicAddresses(javaParam_0);
         }
         catch(Exception e)
@@ -549,8 +551,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getWalletType method");
             }
@@ -584,8 +586,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getEventBus method");
             }
@@ -593,8 +595,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             EventBus javaResult = currentInstanceObj.getEventBus();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventBus rctImpl_objcResult = (RCTCoreEventBus)self.bridge moduleForName("RCTCoreEventBus");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventBus");
             result.put("uid",uuid);
@@ -621,8 +623,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to startBlockchainObservation method");
             }
@@ -642,8 +644,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to stopBlockchainObservation method");
             }
@@ -666,8 +668,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to isObservingBlockchain method");
             }
@@ -701,13 +703,13 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getLastBlock method");
             }
 
-            RCTCoreBlockCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreBlockCallback javaParam_0 = RCTCoreBlockCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getLastBlock(javaParam_0);
         }
         catch(Exception e)
@@ -723,8 +725,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to getRestoreKey method");
             }
@@ -758,13 +760,13 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Account currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Account currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAccount instance passed to eraseDataSince method");
             }
 
-            RCTCoreErrorCodeCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreErrorCodeCallback javaParam_1 = RCTCoreErrorCodeCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.eraseDataSince(date, javaParam_1);
         }
         catch(Exception e)

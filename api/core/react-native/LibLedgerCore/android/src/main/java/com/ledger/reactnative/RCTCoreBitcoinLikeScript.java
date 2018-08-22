@@ -3,19 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeScript;
-import RCTCoreBitcoinLikeScript;
-import RCTCoreBitcoinLikeScriptChunk;
 import co.ledger.core.BitcoinLikeScript;
 import co.ledger.core.BitcoinLikeScriptChunk;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeScript> javaObjects;
+    public Map<String, BitcoinLikeScript> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeScript(ReactApplicationContext reactContext)
     {
@@ -37,8 +46,8 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScript currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScript currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScript instance passed to head method");
             }
@@ -46,8 +55,8 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
             BitcoinLikeScriptChunk javaResult = currentInstanceObj.head();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeScriptChunk rctImpl_objcResult = (RCTCoreBitcoinLikeScriptChunk)self.bridge moduleForName("RCTCoreBitcoinLikeScriptChunk");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeScriptChunk rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScriptChunk.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScriptChunk");
             result.put("uid",uuid);
@@ -73,8 +82,8 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeScript currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeScript currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeScript instance passed to toString method");
             }
@@ -104,8 +113,8 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
             BitcoinLikeScript javaResult = BitcoinLikeScript.parse(data);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeScript rctImpl_objcResult = (RCTCoreBitcoinLikeScript)self.bridge moduleForName("RCTCoreBitcoinLikeScript");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeScript rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScript.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScript");
             result.put("uid",uuid);

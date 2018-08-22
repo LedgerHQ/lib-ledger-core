@@ -3,19 +3,29 @@
 
 package com.ledger.reactnative;
 
-import GetEthreumLikeWalletCallbackImpl;
-import RCTCoreError;
-import RCTCoreEthereumLikeWallet;
 import co.ledger.core.Error;
 import co.ledger.core.EthereumLikeWallet;
+import co.ledger.core.GetEthreumLikeWalletCallbackImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, GetEthreumLikeWalletCallbackImpl> javaObjects;
+    public Map<String, GetEthreumLikeWalletCallbackImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreGetEthreumLikeWalletCallback(ReactApplicationContext reactContext)
     {
@@ -37,14 +47,14 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            GetEthreumLikeWalletCallbackImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreGetEthreumLikeWalletCallback instance passed to onSuccess method");
             }
 
-            RCTCoreEthereumLikeWallet rctParam_wallet = (RCTCoreEthereumLikeWallet)self.bridge.moduleForName("RCTCoreEthereumLikeWallet");
-            EthereumLikeWallet javaParam_0 = (EthereumLikeWallet)rctParam_wallet.javaObjects.get(wallet.get("uid"));
+            RCTCoreEthereumLikeWallet rctParam_wallet = this.reactContext.getNativeModule(RCTCoreEthereumLikeWallet.class);
+            EthereumLikeWallet javaParam_0 = (EthereumLikeWallet)rctParam_wallet.getJavaObjects.get(wallet.get("uid"));
             currentInstanceObj.onSuccess(javaParam_0, isCreated);
         }
         catch(Exception e)
@@ -59,14 +69,14 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            GetEthreumLikeWalletCallbackImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreGetEthreumLikeWalletCallback instance passed to onError method");
             }
 
-            RCTCoreError rctParam_error = (RCTCoreError)self.bridge.moduleForName("RCTCoreError");
-            Error javaParam_0 = (Error)rctParam_error.javaObjects.get(error.get("uid"));
+            RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
+            Error javaParam_0 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
             currentInstanceObj.onError(javaParam_0);
         }
         catch(Exception e)

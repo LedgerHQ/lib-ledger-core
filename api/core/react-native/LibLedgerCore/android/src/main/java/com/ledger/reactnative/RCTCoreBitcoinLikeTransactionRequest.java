@@ -3,20 +3,28 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeTransactionRequest;
-import RCTCoreAmount;
-import RCTCoreBitcoinLikeOutput;
 import co.ledger.core.Amount;
 import co.ledger.core.BitcoinLikeOutput;
+import co.ledger.core.BitcoinLikeTransactionRequest;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure representing a bitcoin transaction request */
 public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeTransactionRequest> javaObjects;
+    public Map<String, BitcoinLikeTransactionRequest> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeTransactionRequest(ReactApplicationContext reactContext)
     {
@@ -30,29 +38,29 @@ public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaMo
     {
         return "RCTCoreBitcoinLikeTransactionRequest";
     }
-    public static void init(ArrayList <HashMap <String, String>> * utxo, ArrayList <HashMap <String, String>> * outputs, Option<HashMap <String, String>> baseFees, Option<HashMap <String, String>> totalFees, Integer lockTime, Promise promise) {
+    public void init(ArrayList <HashMap <String, String>> utxo, ArrayList <HashMap <String, String>> outputs, Optional<HashMap <String, String>> baseFees, Optional<HashMap <String, String>> totalFees, Integer lockTime ,Promise promise) {
         ArrayList<HashMap <String, String>> javaParam_0 = new ArrayList<HashMap <String, String>>();
         for (HashMap <String, String> utxo_elem : utxo)
         {
-            RCTCoreBitcoinLikeOutput rctParam_utxo_elem = (RCTCoreBitcoinLikeOutput)self.bridge.moduleForName("RCTCoreBitcoinLikeOutput");
-            BitcoinLikeOutput javaParam_0_elem = (BitcoinLikeOutput)rctParam_utxo_elem.javaObjects.get(utxo_elem.get("uid"));
+            RCTCoreBitcoinLikeOutput rctParam_utxo_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
+            BitcoinLikeOutput javaParam_0_elem = (BitcoinLikeOutput)rctParam_utxo_elem.getJavaObjects.get(utxo_elem.get("uid"));
             javaParam_0.add(javaParam_0_elem);
         }
         ArrayList<HashMap <String, String>> javaParam_1 = new ArrayList<HashMap <String, String>>();
         for (HashMap <String, String> outputs_elem : outputs)
         {
-            RCTCoreBitcoinLikeOutput rctParam_outputs_elem = (RCTCoreBitcoinLikeOutput)self.bridge.moduleForName("RCTCoreBitcoinLikeOutput");
-            BitcoinLikeOutput javaParam_1_elem = (BitcoinLikeOutput)rctParam_outputs_elem.javaObjects.get(outputs_elem.get("uid"));
+            RCTCoreBitcoinLikeOutput rctParam_outputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
+            BitcoinLikeOutput javaParam_1_elem = (BitcoinLikeOutput)rctParam_outputs_elem.getJavaObjects.get(outputs_elem.get("uid"));
             javaParam_1.add(javaParam_1_elem);
         }
-        RCTCoreAmount rctParam_baseFees = (RCTCoreAmount)self.bridge.moduleForName("RCTCoreAmount");
-        Amount javaParam_2 = (Amount)rctParam_baseFees.javaObjects.get(baseFees.get("uid"));
-        RCTCoreAmount rctParam_totalFees = (RCTCoreAmount)self.bridge.moduleForName("RCTCoreAmount");
-        Amount javaParam_3 = (Amount)rctParam_totalFees.javaObjects.get(totalFees.get("uid"));
-        BitcoinLikeTransactionRequest javaResult = BitcoinLikeTransactionRequest.init(javaParam_0, javaParam_1, javaParam_2, javaParam_3, lockTime);
+        RCTCoreAmount rctParam_baseFees = this.reactContext.getNativeModule(RCTCoreAmount.class);
+        Amount javaParam_2 = (Amount)rctParam_baseFees.getJavaObjects.get(baseFees.get("uid"));
+        RCTCoreAmount rctParam_totalFees = this.reactContext.getNativeModule(RCTCoreAmount.class);
+        Amount javaParam_3 = (Amount)rctParam_totalFees.getJavaObjects.get(totalFees.get("uid"));
+        BitcoinLikeTransactionRequest javaResult = new BitcoinLikeTransactionRequest(javaParam_0, javaParam_1, javaParam_2, javaParam_3, lockTime);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikeTransactionRequest");
         finalResult.put("uid",uuid);

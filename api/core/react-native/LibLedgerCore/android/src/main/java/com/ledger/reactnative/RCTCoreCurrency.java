@@ -3,21 +3,29 @@
 
 package com.ledger.reactnative;
 
-import Currency;
-import RCTCoreBitcoinLikeNetworkParameters;
-import RCTCoreCurrencyUnit;
 import co.ledger.core.BitcoinLikeNetworkParameters;
+import co.ledger.core.Currency;
 import co.ledger.core.CurrencyUnit;
 import co.ledger.core.WalletType;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**Structure of cryptocurrency */
 public class RCTCoreCurrency extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, Currency> javaObjects;
+    public Map<String, Currency> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreCurrency(ReactApplicationContext reactContext)
     {
@@ -31,20 +39,20 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
     {
         return "RCTCoreCurrency";
     }
-    public static void init(WalletType walletType, String name, int bip44CoinType, String paymentUriScheme, ArrayList <HashMap <String, String>> * units, Option<HashMap <String, String>> bitcoinLikeNetworkParameters, Promise promise) {
+    public void init(WalletType walletType, String name, int bip44CoinType, String paymentUriScheme, ArrayList <HashMap <String, String>> units, Optional<HashMap <String, String>> bitcoinLikeNetworkParameters ,Promise promise) {
         ArrayList<HashMap <String, String>> javaParam_4 = new ArrayList<HashMap <String, String>>();
         for (HashMap <String, String> units_elem : units)
         {
-            RCTCoreCurrencyUnit rctParam_units_elem = (RCTCoreCurrencyUnit)self.bridge.moduleForName("RCTCoreCurrencyUnit");
-            CurrencyUnit javaParam_4_elem = (CurrencyUnit)rctParam_units_elem.javaObjects.get(units_elem.get("uid"));
+            RCTCoreCurrencyUnit rctParam_units_elem = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
+            CurrencyUnit javaParam_4_elem = (CurrencyUnit)rctParam_units_elem.getJavaObjects.get(units_elem.get("uid"));
             javaParam_4.add(javaParam_4_elem);
         }
-        RCTCoreBitcoinLikeNetworkParameters rctParam_bitcoinLikeNetworkParameters = (RCTCoreBitcoinLikeNetworkParameters)self.bridge.moduleForName("RCTCoreBitcoinLikeNetworkParameters");
-        BitcoinLikeNetworkParameters javaParam_5 = (BitcoinLikeNetworkParameters)rctParam_bitcoinLikeNetworkParameters.javaObjects.get(bitcoinLikeNetworkParameters.get("uid"));
-        Currency javaResult = Currency.init(walletType, name, bip44CoinType, paymentUriScheme, javaParam_4, javaParam_5);
+        RCTCoreBitcoinLikeNetworkParameters rctParam_bitcoinLikeNetworkParameters = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
+        BitcoinLikeNetworkParameters javaParam_5 = (BitcoinLikeNetworkParameters)rctParam_bitcoinLikeNetworkParameters.getJavaObjects.get(bitcoinLikeNetworkParameters.get("uid"));
+        Currency javaResult = new Currency(walletType, name, bip44CoinType, paymentUriScheme, javaParam_4, javaParam_5);
 
         String uuid = UUID.randomUUID().toString();
-        self.bridge.javaObjects.put(uuid, javaResult);
+        this.javaObjects.put(uuid, javaResult);
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreCurrency");
         finalResult.put("uid",uuid);

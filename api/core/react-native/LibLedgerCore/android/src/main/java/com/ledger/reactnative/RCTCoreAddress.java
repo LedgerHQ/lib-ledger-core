@@ -3,21 +3,29 @@
 
 package com.ledger.reactnative;
 
-import Address;
-import RCTCoreAddress;
-import RCTCoreBitcoinLikeAddress;
-import RCTCoreCurrency;
 import co.ledger.core.Address;
 import co.ledger.core.BitcoinLikeAddress;
 import co.ledger.core.Currency;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreAddress extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Address> javaObjects;
+    public Map<String, Address> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreAddress(ReactApplicationContext reactContext)
     {
@@ -43,8 +51,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Address currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAddress instance passed to getDerivationPath method");
             }
@@ -78,8 +86,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Address currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAddress instance passed to toString method");
             }
@@ -109,8 +117,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Address currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAddress instance passed to asBitcoinLikeAddress method");
             }
@@ -118,8 +126,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress javaResult = currentInstanceObj.asBitcoinLikeAddress();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeAddress rctImpl_objcResult = (RCTCoreBitcoinLikeAddress)self.bridge moduleForName("RCTCoreBitcoinLikeAddress");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeAddress");
             result.put("uid",uuid);
@@ -145,8 +153,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Address currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAddress instance passed to isInstanceOfBitcoinLikeAddress method");
             }
@@ -176,8 +184,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Address currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreAddress instance passed to getCurrency method");
             }
@@ -185,8 +193,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreCurrency rctImpl_objcResult = (RCTCoreCurrency)self.bridge moduleForName("RCTCoreCurrency");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
@@ -219,8 +227,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             Address javaResult = Address.parse(address, javaParam_1);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreAddress rctImpl_objcResult = (RCTCoreAddress)self.bridge moduleForName("RCTCoreAddress");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAddress.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAddress");
             result.put("uid",uuid);

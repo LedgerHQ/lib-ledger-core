@@ -3,12 +3,19 @@
 
 package com.ledger.reactnative;
 
-import LogPrinterImpl;
-import RCTCoreExecutionContext;
 import co.ledger.core.ExecutionContext;
+import co.ledger.core.LogPrinterImpl;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Class representing a printer of errors, warnings, infos ... (at runtime)
@@ -18,6 +25,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, LogPrinterImpl> javaObjects;
+    public Map<String, LogPrinterImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreLogPrinter(ReactApplicationContext reactContext)
     {
@@ -43,8 +54,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printError method");
             }
@@ -67,8 +78,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printInfo method");
             }
@@ -91,8 +102,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printDebug method");
             }
@@ -115,8 +126,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printWarning method");
             }
@@ -139,8 +150,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printApdu method");
             }
@@ -163,8 +174,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to printCriticalError method");
             }
@@ -187,8 +198,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreLogPrinter instance passed to getContext method");
             }
@@ -196,8 +207,8 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
             ExecutionContext javaResult = currentInstanceObj.getContext();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreExecutionContext rctImpl_objcResult = (RCTCoreExecutionContext)self.bridge moduleForName("RCTCoreExecutionContext");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreExecutionContext");
             result.put("uid",uuid);

@@ -3,21 +3,30 @@
 
 package com.ledger.reactnative;
 
-import Event;
-import RCTCoreDynamicObject;
-import RCTCoreEvent;
 import co.ledger.core.DynamicObject;
 import co.ledger.core.Event;
 import co.ledger.core.EventCode;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing an event */
 public class RCTCoreEvent extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Event> javaObjects;
+    public Map<String, Event> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreEvent(ReactApplicationContext reactContext)
     {
@@ -43,8 +52,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Event currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEvent instance passed to getCode method");
             }
@@ -78,8 +87,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Event currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEvent instance passed to getPayload method");
             }
@@ -87,8 +96,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             DynamicObject javaResult = currentInstanceObj.getPayload();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreDynamicObject rctImpl_objcResult = (RCTCoreDynamicObject)self.bridge moduleForName("RCTCoreDynamicObject");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicObject");
             result.put("uid",uuid);
@@ -118,8 +127,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Event currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEvent instance passed to isSticky method");
             }
@@ -153,8 +162,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Event currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreEvent instance passed to getStickyTag method");
             }
@@ -190,8 +199,8 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
             Event javaResult = Event.newInstance(code, javaParam_1);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEvent rctImpl_objcResult = (RCTCoreEvent)self.bridge moduleForName("RCTCoreEvent");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEvent rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEvent.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEvent");
             result.put("uid",uuid);

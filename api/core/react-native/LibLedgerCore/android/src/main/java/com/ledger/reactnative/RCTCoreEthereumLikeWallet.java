@@ -3,15 +3,27 @@
 
 package com.ledger.reactnative;
 
-import EthereumLikeWallet;
+import co.ledger.core.EthereumLikeWallet;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreEthereumLikeWallet extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, EthereumLikeWallet> javaObjects;
+    public Map<String, EthereumLikeWallet> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreEthereumLikeWallet(ReactApplicationContext reactContext)
     {

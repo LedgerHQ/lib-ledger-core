@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import BitcoinLikeOperation;
-import RCTCoreBitcoinLikeTransaction;
+import co.ledger.core.BitcoinLikeOperation;
 import co.ledger.core.BitcoinLikeTransaction;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a Bitcoin Operation */
 public class RCTCoreBitcoinLikeOperation extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeOperation> javaObjects;
+    public Map<String, BitcoinLikeOperation> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreBitcoinLikeOperation(ReactApplicationContext reactContext)
     {
@@ -40,8 +51,8 @@ public class RCTCoreBitcoinLikeOperation extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            BitcoinLikeOperation currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            BitcoinLikeOperation currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreBitcoinLikeOperation instance passed to getTransaction method");
             }
@@ -49,8 +60,8 @@ public class RCTCoreBitcoinLikeOperation extends ReactContextBaseJavaModule {
             BitcoinLikeTransaction javaResult = currentInstanceObj.getTransaction();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeTransaction rctImpl_objcResult = (RCTCoreBitcoinLikeTransaction)self.bridge moduleForName("RCTCoreBitcoinLikeTransaction");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeTransaction rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeTransaction.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeTransaction");
             result.put("uid",uuid);

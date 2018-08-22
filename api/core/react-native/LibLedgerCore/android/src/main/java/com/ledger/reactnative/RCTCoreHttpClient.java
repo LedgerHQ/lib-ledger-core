@@ -3,18 +3,29 @@
 
 package com.ledger.reactnative;
 
-import HttpClientImpl;
-import RCTCoreHttpRequest;
+import co.ledger.core.HttpClientImpl;
 import co.ledger.core.HttpRequest;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing the http client performing the http requests */
 public class RCTCoreHttpClient extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, HttpClientImpl> javaObjects;
+    public Map<String, HttpClientImpl> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreHttpClient(ReactApplicationContext reactContext)
     {
@@ -40,14 +51,14 @@ public class RCTCoreHttpClient extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            HttpClientImpl currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            HttpClientImpl currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreHttpClient instance passed to execute method");
             }
 
-            RCTCoreHttpRequest rctParam_request = (RCTCoreHttpRequest)self.bridge.moduleForName("RCTCoreHttpRequest");
-            HttpRequest javaParam_0 = (HttpRequest)rctParam_request.javaObjects.get(request.get("uid"));
+            RCTCoreHttpRequest rctParam_request = this.reactContext.getNativeModule(RCTCoreHttpRequest.class);
+            HttpRequest javaParam_0 = (HttpRequest)rctParam_request.getJavaObjects.get(request.get("uid"));
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)

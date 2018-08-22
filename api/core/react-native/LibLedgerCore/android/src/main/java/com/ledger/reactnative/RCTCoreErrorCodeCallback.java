@@ -3,13 +3,20 @@
 
 package com.ledger.reactnative;
 
-import ErrorCodeCallbackImpl;
-import RCTCoreError;
 import co.ledger.core.Error;
 import co.ledger.core.ErrorCode;
+import co.ledger.core.ErrorCodeCallback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import java.util.UUID;;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *Callback triggered by main completed task,
@@ -17,14 +24,14 @@ import java.util.UUID;;
  */
 public class RCTCoreErrorCodeCallback extends ErrorCodeCallback {
     public Promise promise;
-    public Bridge bridge;
-    public static RCTCoreErrorCodeCallback initWithPromise(Promise promise, (RCTBridge *) bridge)
+    public ReactContext reactContext;
+    public static RCTCoreErrorCodeCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreErrorCodeCallback callback = new RCTCoreErrorCodeCallback();
         if(callback)
         {
             callback.promise = promise;
-            callback.bridge = bridge;
+            callback.reactContext = reactContext;
         }
         return callback;
     }
@@ -33,15 +40,15 @@ public class RCTCoreErrorCodeCallback extends ErrorCodeCallback {
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    public void onCallback(ErrorCode result, Error error, ) {
+    public void onCallback(ErrorCode result, Error error) {
         try
         {
             if (error)
             {
-                self.promise.reject(ERROR, error.message);
+                this.promise.reject(ERROR, error.message);
             }
 
-            self.promise.resolve(result);
+            this.promise.resolve(result);
         }
         catch(Exception e)
         {

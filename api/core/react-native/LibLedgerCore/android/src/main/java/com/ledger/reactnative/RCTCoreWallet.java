@@ -3,21 +3,6 @@
 
 package com.ledger.reactnative;
 
-import RCTCoreAccountCallback;
-import RCTCoreAccountCreationInfo;
-import RCTCoreAccountCreationInfoCallback;
-import RCTCoreAccountListCallback;
-import RCTCoreBitcoinLikeWallet;
-import RCTCoreBlockCallback;
-import RCTCoreCurrency;
-import RCTCoreErrorCodeCallback;
-import RCTCoreEventBus;
-import RCTCoreExtendedKeyAccountCreationInfo;
-import RCTCoreExtendedKeyAccountCreationInfoCallback;
-import RCTCoreI32Callback;
-import RCTCoreLogger;
-import RCTCorePreferences;
-import Wallet;
 import co.ledger.core.AccountCallback;
 import co.ledger.core.AccountCreationInfo;
 import co.ledger.core.AccountCreationInfoCallback;
@@ -32,17 +17,30 @@ import co.ledger.core.ExtendedKeyAccountCreationInfoCallback;
 import co.ledger.core.I32Callback;
 import co.ledger.core.Logger;
 import co.ledger.core.Preferences;
+import co.ledger.core.Wallet;
 import co.ledger.core.WalletType;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**Class representing a wallet */
 public class RCTCoreWallet extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private Map<String, Wallet> javaObjects;
+    public Map<String, Wallet> getJavaObjects()
+    {
+        return javaObjects;
+    }
 
     public RCTCoreWallet(ReactApplicationContext reactContext)
     {
@@ -68,8 +66,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getName method");
             }
@@ -104,13 +102,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getAccount method");
             }
 
-            RCTCoreAccountCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAccountCallback javaParam_1 = RCTCoreAccountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getAccount(index, javaParam_1);
         }
         catch(Exception e)
@@ -129,13 +127,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getAccountCount method");
             }
 
-            RCTCoreI32Callback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreI32Callback javaParam_0 = RCTCoreI32Callback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getAccountCount(javaParam_0);
         }
         catch(Exception e)
@@ -156,13 +154,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getAccounts method");
             }
 
-            RCTCoreAccountListCallback javaParam_2 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAccountListCallback javaParam_2 = RCTCoreAccountListCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getAccounts(offset, count, javaParam_2);
         }
         catch(Exception e)
@@ -181,13 +179,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getNextAccountIndex method");
             }
 
-            RCTCoreI32Callback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreI32Callback javaParam_0 = RCTCoreI32Callback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getNextAccountIndex(javaParam_0);
         }
         catch(Exception e)
@@ -206,8 +204,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getEventBus method");
             }
@@ -215,8 +213,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             EventBus javaResult = currentInstanceObj.getEventBus();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventBus rctImpl_objcResult = (RCTCoreEventBus)self.bridge moduleForName("RCTCoreEventBus");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventBus");
             result.put("uid",uuid);
@@ -246,8 +244,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to isSynchronizing method");
             }
@@ -281,8 +279,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to synchronize method");
             }
@@ -290,8 +288,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             EventBus javaResult = currentInstanceObj.synchronize();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreEventBus rctImpl_objcResult = (RCTCoreEventBus)self.bridge moduleForName("RCTCoreEventBus");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEventBus");
             result.put("uid",uuid);
@@ -321,8 +319,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getPreferences method");
             }
@@ -330,8 +328,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             Preferences javaResult = currentInstanceObj.getPreferences();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferences rctImpl_objcResult = (RCTCorePreferences)self.bridge moduleForName("RCTCorePreferences");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferences");
             result.put("uid",uuid);
@@ -361,8 +359,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getLogger method");
             }
@@ -370,8 +368,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             Logger javaResult = currentInstanceObj.getLogger();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreLogger rctImpl_objcResult = (RCTCoreLogger)self.bridge moduleForName("RCTCoreLogger");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreLogger rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLogger.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreLogger");
             result.put("uid",uuid);
@@ -402,8 +400,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getAccountPreferences method");
             }
@@ -411,8 +409,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             Preferences javaResult = currentInstanceObj.getAccountPreferences(index);
 
             String uuid = UUID.randomUUID().toString();
-            RCTCorePreferences rctImpl_objcResult = (RCTCorePreferences)self.bridge moduleForName("RCTCorePreferences");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferences");
             result.put("uid",uuid);
@@ -445,8 +443,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to asBitcoinLikeWallet method");
             }
@@ -454,8 +452,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             BitcoinLikeWallet javaResult = currentInstanceObj.asBitcoinLikeWallet();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreBitcoinLikeWallet rctImpl_objcResult = (RCTCoreBitcoinLikeWallet)self.bridge moduleForName("RCTCoreBitcoinLikeWallet");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreBitcoinLikeWallet rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeWallet.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeWallet");
             result.put("uid",uuid);
@@ -485,8 +483,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getCurrency method");
             }
@@ -494,8 +492,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
-            RCTCoreCurrency rctImpl_objcResult = (RCTCoreCurrency)self.bridge moduleForName("RCTCoreCurrency");
-            rctImpl_objcResult.javaObjects.put(uuid, objcResult);
+            RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
             Map<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
@@ -525,8 +523,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to isInstanceOfBitcoinLikeWallet method");
             }
@@ -560,8 +558,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to isInstanceOfEthereumLikeWallet method");
             }
@@ -595,8 +593,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to isInstanceOfRippleLikeWallet method");
             }
@@ -630,8 +628,8 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getWalletType method");
             }
@@ -665,13 +663,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getLastBlock method");
             }
 
-            RCTCoreBlockCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreBlockCallback javaParam_0 = RCTCoreBlockCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getLastBlock(javaParam_0);
         }
         catch(Exception e)
@@ -691,13 +689,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getAccountCreationInfo method");
             }
 
-            RCTCoreAccountCreationInfoCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAccountCreationInfoCallback javaParam_1 = RCTCoreAccountCreationInfoCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getAccountCreationInfo(accountIndex, javaParam_1);
         }
         catch(Exception e)
@@ -713,13 +711,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getExtendedKeyAccountCreationInfo method");
             }
 
-            RCTCoreExtendedKeyAccountCreationInfoCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreExtendedKeyAccountCreationInfoCallback javaParam_1 = RCTCoreExtendedKeyAccountCreationInfoCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getExtendedKeyAccountCreationInfo(accountIndex, javaParam_1);
         }
         catch(Exception e)
@@ -738,13 +736,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getNextAccountCreationInfo method");
             }
 
-            RCTCoreAccountCreationInfoCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAccountCreationInfoCallback javaParam_0 = RCTCoreAccountCreationInfoCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getNextAccountCreationInfo(javaParam_0);
         }
         catch(Exception e)
@@ -760,13 +758,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to getNextExtendedKeyAccountCreationInfo method");
             }
 
-            RCTCoreExtendedKeyAccountCreationInfoCallback javaParam_0 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreExtendedKeyAccountCreationInfoCallback javaParam_0 = RCTCoreExtendedKeyAccountCreationInfoCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getNextExtendedKeyAccountCreationInfo(javaParam_0);
         }
         catch(Exception e)
@@ -786,15 +784,15 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to newAccountWithInfo method");
             }
 
-            RCTCoreAccountCreationInfo rctParam_accountCreationInfo = (RCTCoreAccountCreationInfo)self.bridge.moduleForName("RCTCoreAccountCreationInfo");
-            AccountCreationInfo javaParam_0 = (AccountCreationInfo)rctParam_accountCreationInfo.javaObjects.get(accountCreationInfo.get("uid"));
-            RCTCoreAccountCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreAccountCreationInfo rctParam_accountCreationInfo = this.reactContext.getNativeModule(RCTCoreAccountCreationInfo.class);
+            AccountCreationInfo javaParam_0 = (AccountCreationInfo)rctParam_accountCreationInfo.getJavaObjects.get(accountCreationInfo.get("uid"));
+            RCTCoreAccountCallback javaParam_1 = RCTCoreAccountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.newAccountWithInfo(javaParam_0, javaParam_1);
         }
         catch(Exception e)
@@ -810,15 +808,15 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to newAccountWithExtendedKeyInfo method");
             }
 
-            RCTCoreExtendedKeyAccountCreationInfo rctParam_extendedKeyAccountCreationInfo = (RCTCoreExtendedKeyAccountCreationInfo)self.bridge.moduleForName("RCTCoreExtendedKeyAccountCreationInfo");
-            ExtendedKeyAccountCreationInfo javaParam_0 = (ExtendedKeyAccountCreationInfo)rctParam_extendedKeyAccountCreationInfo.javaObjects.get(extendedKeyAccountCreationInfo.get("uid"));
-            RCTCoreAccountCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreExtendedKeyAccountCreationInfo rctParam_extendedKeyAccountCreationInfo = this.reactContext.getNativeModule(RCTCoreExtendedKeyAccountCreationInfo.class);
+            ExtendedKeyAccountCreationInfo javaParam_0 = (ExtendedKeyAccountCreationInfo)rctParam_extendedKeyAccountCreationInfo.getJavaObjects.get(extendedKeyAccountCreationInfo.get("uid"));
+            RCTCoreAccountCallback javaParam_1 = RCTCoreAccountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.newAccountWithExtendedKeyInfo(javaParam_0, javaParam_1);
         }
         catch(Exception e)
@@ -837,13 +835,13 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
             String sUid = currentInstance.get("uid");
             String sType = currentInstance.get("type");
 
-            Wallet currentInstanceObj = self.javaObjects.get("uid");
-            if (!javaObj)
+            Wallet currentInstanceObj = this.javaObjects.get("uid");
+            if (!currentInstanceObj)
             {
                 throw new Exception("Wrong RCTCoreWallet instance passed to eraseDataSince method");
             }
 
-            RCTCoreErrorCodeCallback javaParam_1 = rctParamType.initWithPromise(promise, self.bridge);
+            RCTCoreErrorCodeCallback javaParam_1 = RCTCoreErrorCodeCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.eraseDataSince(date, javaParam_1);
         }
         catch(Exception e)
