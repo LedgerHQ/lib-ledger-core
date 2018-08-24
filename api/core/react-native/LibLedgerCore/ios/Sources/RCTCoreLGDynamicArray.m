@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(size,size:(NSDictionary *)currentInstance WithResolver:(RCTProm
  *@param value, 32 bits integer
  *@return DynamicArray with value stored in it
  */
-RCT_REMAP_METHOD(pushInt,pushInt:(NSDictionary *)currentInstance withParams:(int32_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(pushInt,pushInt:(NSDictionary *)currentInstance withParams:(int)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushInt, first argument should be an instance of LGDynamicArray", nil);
@@ -93,7 +93,7 @@ RCT_REMAP_METHOD(pushInt,pushInt:(NSDictionary *)currentInstance withParams:(int
  *@param value, 64 bits integer
  *@return DynamicArray with value stored in it
  */
-RCT_REMAP_METHOD(pushLong,pushLong:(NSDictionary *)currentInstance withParams:(int64_t)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(pushLong,pushLong:(NSDictionary *)currentInstance withParams:(int)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushLong, first argument should be an instance of LGDynamicArray", nil);
@@ -335,7 +335,7 @@ RCT_REMAP_METHOD(pushArray,pushArray:(NSDictionary *)currentInstance withParams:
  *@param index, 64 bits integer
  *@return Optional string
  */
-RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getString, first argument should be an instance of LGDynamicArray", nil);
@@ -364,7 +364,7 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
  *@param index, 64 bits integer
  *@return Optional 32 bits integer
  */
-RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getInt, first argument should be an instance of LGDynamicArray", nil);
@@ -393,7 +393,7 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(int64
  *@param index, 64 bits integer
  *@return Optional 64 bits integer
  */
-RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getLong, first argument should be an instance of LGDynamicArray", nil);
@@ -422,7 +422,7 @@ RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(int
  *@param index, 64 bits integer
  *@return Optional double
  */
-RCT_REMAP_METHOD(getDouble,getDouble:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getDouble,getDouble:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getDouble, first argument should be an instance of LGDynamicArray", nil);
@@ -451,7 +451,7 @@ RCT_REMAP_METHOD(getDouble,getDouble:(NSDictionary *)currentInstance withParams:
  *@param index, 64 bits integer
  *@return Optional binary
  */
-RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getData, first argument should be an instance of LGDynamicArray", nil);
@@ -480,7 +480,7 @@ RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(int
  *@param index, 64 bits integer
  *@return Optional bool
  */
-RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getBoolean, first argument should be an instance of LGDynamicArray", nil);
@@ -509,7 +509,7 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParam
  *@param index, 64 bits integer
  *@return Optional DynamicObject
  */
-RCT_REMAP_METHOD(getObject,getObject:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getObject,getObject:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getObject, first argument should be an instance of LGDynamicArray", nil);
@@ -543,7 +543,7 @@ RCT_REMAP_METHOD(getObject,getObject:(NSDictionary *)currentInstance withParams:
  *@param index, 64 bits integer
  *@return Optional DynamicArray
  */
-RCT_REMAP_METHOD(getArray,getArray:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getArray,getArray:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getArray, first argument should be an instance of LGDynamicArray", nil);
@@ -613,7 +613,7 @@ RCT_REMAP_METHOD(concat,concat:(NSDictionary *)currentInstance withParams:(NSDic
  *@param index, 64 bits integer
  *@return Optional DynamicType enum entry
  */
-RCT_REMAP_METHOD(getType,getType:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getType,getType:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getType, first argument should be an instance of LGDynamicArray", nil);
@@ -642,7 +642,7 @@ RCT_REMAP_METHOD(getType,getType:(NSDictionary *)currentInstance withParams:(int
  *@param index, 64 bits integer
  *@return bool, true if deletion succeeded
  */
-RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(int64_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::remove, first argument should be an instance of LGDynamicArray", nil);

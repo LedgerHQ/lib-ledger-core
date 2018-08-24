@@ -60,7 +60,7 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
  * @return The data associated with the key or fallbackValue.
  */
 RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
-                                                            fallbackValue:(int32_t)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                            fallbackValue:(int)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getInt, first argument should be an instance of LGPreferences", nil);
@@ -89,7 +89,7 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(nonnu
  * @return The data associated with the key or fallbackValue.
  */
 RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
-                                                              fallbackValue:(int64_t)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                              fallbackValue:(int)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getLong, first argument should be an instance of LGPreferences", nil);

@@ -32,8 +32,8 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeAccount)
  *@param to, integer, upper bound for account's UTXO's index
  *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
  */
-RCT_REMAP_METHOD(getUTXO,getUTXO:(NSDictionary *)currentInstance withParams:(int32_t)from
-                                                                         to:(int32_t)to withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getUTXO,getUTXO:(NSDictionary *)currentInstance withParams:(int)from
+                                                                         to:(int)to withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeAccount::getUTXO, first argument should be an instance of LGBitcoinLikeAccount", nil);

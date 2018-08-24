@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGAccountCreationInfo)
 {
     return NO;
 }
-RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
+RCT_REMAP_METHOD(init, initWithIndex:(int)index
                               owners:(nonnull NSArray<NSString *> *)owners
                          derivations:(nonnull NSArray<NSString *> *)derivations
                           publicKeys:(nonnull NSArray<NSData *> *)publicKeys
@@ -37,10 +37,45 @@ RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
     RCTCoreLGAccountCreationInfo *rctImpl = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.index)};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.owners};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.derivations};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getPublicKeys, getPublicKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.publicKeys};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getChainCodes, getChainCodes:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.chainCodes};
+    resolve(result);
 }
 
 @end

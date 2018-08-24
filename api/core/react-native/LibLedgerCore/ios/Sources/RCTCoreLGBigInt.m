@@ -216,7 +216,7 @@ RCT_REMAP_METHOD(divideAndRemainder,divideAndRemainder:(NSDictionary *)currentIn
  * @params i The exponent to which thi BigInt is raised
  * @return The result of this ^ exponent
  */
-RCT_REMAP_METHOD(pow,pow:(NSDictionary *)currentInstance withParams:(int32_t)exponent withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(pow,pow:(NSDictionary *)currentInstance withParams:(int)exponent withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::pow, first argument should be an instance of LGBigInt", nil);
@@ -252,7 +252,7 @@ RCT_REMAP_METHOD(pow,pow:(NSDictionary *)currentInstance withParams:(int32_t)exp
  * @params thousandSeparator The separator to use between each group of thousand units
  * @return The BigInt formatted as a decimal string
  */
-RCT_REMAP_METHOD(toDecimalString,toDecimalString:(NSDictionary *)currentInstance withParams:(int32_t)precision
+RCT_REMAP_METHOD(toDecimalString,toDecimalString:(NSDictionary *)currentInstance withParams:(int)precision
                                                                            decimalSeparator:(nonnull NSString *)decimalSeparator
                                                                           thousandSeparator:(nonnull NSString *)thousandSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
@@ -282,7 +282,7 @@ RCT_REMAP_METHOD(toDecimalString,toDecimalString:(NSDictionary *)currentInstance
  * Formats this BigInt to the interger representation of its internal value.
  * @params radix The radix of the number representation in which to format (right now 10 or 16)
  */
-RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance withParams:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance withParams:(int)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBigInt::toString, first argument should be an instance of LGBigInt", nil);
@@ -375,7 +375,7 @@ RCT_REMAP_METHOD(compare,compare:(NSDictionary *)currentInstance withParams:(NSD
  * @return The created BigInt
  */
 RCT_REMAP_METHOD(fromDecimalString,fromDecimalStringwithParams:(nonnull NSString *)s
-                                                     precision:(int32_t)precision
+                                                     precision:(int)precision
                                               decimalSeparator:(nonnull NSString *)decimalSeparator withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGBigInt * objcResult = [LGBigInt fromDecimalString:s precision:precision decimalSeparator:decimalSeparator];
 
@@ -402,7 +402,7 @@ RCT_REMAP_METHOD(fromDecimalString,fromDecimalStringwithParams:(nonnull NSString
  * @return The created BigInt
  */
 RCT_REMAP_METHOD(fromIntegerString,fromIntegerStringwithParams:(nonnull NSString *)s
-                                                         radix:(int32_t)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                         radix:(int)radix withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGBigInt * objcResult = [LGBigInt fromIntegerString:s radix:radix];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -426,7 +426,7 @@ RCT_REMAP_METHOD(fromIntegerString,fromIntegerStringwithParams:(nonnull NSString
  * @param l The value to convert
  * @return The created BigInt
  */
-RCT_REMAP_METHOD(fromLong,fromLongwithParams:(int64_t)l withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(fromLong,fromLongwithParams:(int)l withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGBigInt * objcResult = [LGBigInt fromLong:l];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];

@@ -53,7 +53,7 @@ RCT_REMAP_METHOD(execute,execute:(NSDictionary *)currentInstance withParams:(NSD
  *@param millis, 64 bits integer, delay in milli-seconds
  */
 RCT_REMAP_METHOD(delay,delay:(NSDictionary *)currentInstance withParams:(NSDictionary *)runnable
-                                                                 millis:(int64_t)millis withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                                 millis:(int)millis withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGExecutionContext::delay, first argument should be an instance of LGExecutionContextImpl", nil);

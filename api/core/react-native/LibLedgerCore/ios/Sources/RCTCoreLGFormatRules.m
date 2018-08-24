@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGFormatRules)
     return NO;
 }
 RCT_REMAP_METHOD(init, initWithRoundingMode:(LGRoundingMode)roundingMode
-                        maxNumberOfDecimals:(int32_t)maxNumberOfDecimals withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                        maxNumberOfDecimals:(int)maxNumberOfDecimals withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
     LGFormatRules * finalResult = [[LGFormatRules alloc] initWithRoundingMode:roundingMode maxNumberOfDecimals:maxNumberOfDecimals];
@@ -34,10 +34,24 @@ RCT_REMAP_METHOD(init, initWithRoundingMode:(LGRoundingMode)roundingMode
     RCTCoreLGFormatRules *rctImpl = (RCTCoreLGFormatRules *)[self.bridge moduleForName:@"CoreLGFormatRules"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGFormatRules", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getRoundingMode, getRoundingMode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGFormatRules *objcImpl = (LGFormatRules *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.roundingMode)};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getMaxNumberOfDecimals, getMaxNumberOfDecimals:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGFormatRules *objcImpl = (LGFormatRules *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.maxNumberOfDecimals)};
+    resolve(result);
 }
 
 @end

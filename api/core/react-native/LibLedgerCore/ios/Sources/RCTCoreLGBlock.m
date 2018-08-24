@@ -29,7 +29,7 @@ RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
                                      uid:(nonnull NSString *)uid
                                     time:(nonnull NSDate *)time
                             currencyName:(nonnull NSString *)currencyName
-                                  height:(int64_t)height withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                  height:(int)height withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
     LGBlock * finalResult = [[LGBlock alloc] initWithBlockHash:blockHash uid:uid time:time currencyName:currencyName height:height];
@@ -37,10 +37,45 @@ RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
     RCTCoreLGBlock *rctImpl = (RCTCoreLGBlock *)[self.bridge moduleForName:@"CoreLGBlock"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGBlock", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getBlockHash, getBlockHash:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGBlock *objcImpl = (LGBlock *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.blockHash};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getUid, getUid:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGBlock *objcImpl = (LGBlock *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.uid};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getTime, getTime:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGBlock *objcImpl = (LGBlock *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.time};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getCurrencyName, getCurrencyName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGBlock *objcImpl = (LGBlock *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.currencyName};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getHeight, getHeight:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGBlock *objcImpl = (LGBlock *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.height)};
+    resolve(result);
 }
 
 @end

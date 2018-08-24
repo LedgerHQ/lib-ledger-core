@@ -34,10 +34,24 @@ RCT_REMAP_METHOD(init, initWithCode:(LGErrorCode)code
     RCTCoreLGError *rctImpl = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGError", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGError *objcImpl = (LGError *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.code)};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getMessage, getMessage:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGError *objcImpl = (LGError *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.message};
+    resolve(result);
 }
 
 @end

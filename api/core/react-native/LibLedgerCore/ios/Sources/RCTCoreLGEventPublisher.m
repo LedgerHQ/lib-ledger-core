@@ -86,7 +86,7 @@ RCT_REMAP_METHOD(post,post:(NSDictionary *)currentInstance withParams:(NSDiction
  *@param tag, 32 bits integer, tag of sticky event
  */
 RCT_REMAP_METHOD(postSticky,postSticky:(NSDictionary *)currentInstance withParams:(NSDictionary *)event
-                                                                              tag:(int32_t)tag withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                                              tag:(int)tag withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGEventPublisher::postSticky, first argument should be an instance of LGEventPublisher", nil);

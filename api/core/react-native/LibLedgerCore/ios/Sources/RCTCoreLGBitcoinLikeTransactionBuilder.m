@@ -34,8 +34,8 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeTransactionBuilder)
  * @return A reference on the same builder in order to chain calls.
  */
 RCT_REMAP_METHOD(addInput,addInput:(NSDictionary *)currentInstance withParams:(nonnull NSString *)transactionHash
-                                                                        index:(int32_t)index
-                                                                     sequence:(int32_t)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                                        index:(int)index
+                                                                     sequence:(int)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeTransactionBuilder::addInput, first argument should be an instance of LGBitcoinLikeTransactionBuilder", nil);
@@ -143,7 +143,7 @@ RCT_REMAP_METHOD(addChangePath,addChangePath:(NSDictionary *)currentInstance wit
  * @return A reference on the same builder in order to chain calls.
  */
 RCT_REMAP_METHOD(excludeUtxo,excludeUtxo:(NSDictionary *)currentInstance withParams:(nonnull NSString *)transactionHash
-                                                                        outputIndex:(int32_t)outputIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                                        outputIndex:(int)outputIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeTransactionBuilder::excludeUtxo, first argument should be an instance of LGBitcoinLikeTransactionBuilder", nil);
@@ -173,7 +173,7 @@ RCT_REMAP_METHOD(excludeUtxo,excludeUtxo:(NSDictionary *)currentInstance withPar
 }
 
 /** @return A reference on the same builder in order to chain calls. */
-RCT_REMAP_METHOD(setNumberOfChangeAddresses,setNumberOfChangeAddresses:(NSDictionary *)currentInstance withParams:(int32_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(setNumberOfChangeAddresses,setNumberOfChangeAddresses:(NSDictionary *)currentInstance withParams:(int)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeTransactionBuilder::setNumberOfChangeAddresses, first argument should be an instance of LGBitcoinLikeTransactionBuilder", nil);
@@ -280,7 +280,7 @@ RCT_REMAP_METHOD(setMinAmountOnChange,setMinAmountOnChange:(NSDictionary *)curre
  * @return A reference on the same builder in order to chain calls.
  */
 RCT_REMAP_METHOD(pickInputs,pickInputs:(NSDictionary *)currentInstance withParams:(LGBitcoinLikePickingStrategy)strategy
-                                                                         sequence:(int32_t)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                                         sequence:(int)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeTransactionBuilder::pickInputs, first argument should be an instance of LGBitcoinLikeTransactionBuilder", nil);

@@ -387,7 +387,7 @@ RCT_REMAP_METHOD(pushToScriptSig,pushToScriptSig:(NSDictionary *)currentInstance
 }
 
 /** Set the sequence number of this input */
-RCT_REMAP_METHOD(setSequence,setSequence:(NSDictionary *)currentInstance withParams:(int32_t)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(setSequence,setSequence:(NSDictionary *)currentInstance withParams:(int)sequence withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeInput::setSequence, first argument should be an instance of LGBitcoinLikeInput", nil);

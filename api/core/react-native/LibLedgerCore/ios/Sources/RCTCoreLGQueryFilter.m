@@ -563,7 +563,7 @@ RCT_REMAP_METHOD(amountLt,amountLtwithParams:(NSDictionary *)amount withResolver
 
 }
 
-RCT_REMAP_METHOD(blockHeightEq,blockHeightEqwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightEq,blockHeightEqwithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightEq:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -582,7 +582,7 @@ RCT_REMAP_METHOD(blockHeightEq,blockHeightEqwithParams:(int64_t)blockHeight with
 
 }
 
-RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeqwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeqwithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightNeq:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -601,7 +601,7 @@ RCT_REMAP_METHOD(blockHeightNeq,blockHeightNeqwithParams:(int64_t)blockHeight wi
 
 }
 
-RCT_REMAP_METHOD(blockHeightGte,blockHeightGtewithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightGte,blockHeightGtewithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightGte:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -620,7 +620,7 @@ RCT_REMAP_METHOD(blockHeightGte,blockHeightGtewithParams:(int64_t)blockHeight wi
 
 }
 
-RCT_REMAP_METHOD(blockHeightGt,blockHeightGtwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightGt,blockHeightGtwithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightGt:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -639,7 +639,7 @@ RCT_REMAP_METHOD(blockHeightGt,blockHeightGtwithParams:(int64_t)blockHeight with
 
 }
 
-RCT_REMAP_METHOD(blockHeightLte,blockHeightLtewithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightLte,blockHeightLtewithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightLte:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];
@@ -658,7 +658,7 @@ RCT_REMAP_METHOD(blockHeightLte,blockHeightLtewithParams:(int64_t)blockHeight wi
 
 }
 
-RCT_REMAP_METHOD(blockHeightLt,blockHeightLtwithParams:(int64_t)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(blockHeightLt,blockHeightLtwithParams:(int)blockHeight withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGQueryFilter * objcResult = [LGQueryFilter blockHeightLt:blockHeight];
 
     NSString *uuid = [[NSUUID UUID] UUIDString];

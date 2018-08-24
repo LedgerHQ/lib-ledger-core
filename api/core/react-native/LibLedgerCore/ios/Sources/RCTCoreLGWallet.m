@@ -59,7 +59,7 @@ RCT_REMAP_METHOD(getName,getName:(NSDictionary *)currentInstance WithResolver:(R
  *@param index, 32 bits integer, index of account in wallet
  *@param callback, Callback returning, if getAccount succeed, an Account object with given index
  */
-RCT_REMAP_METHOD(getAccount,getAccount:(NSDictionary *)currentInstance withParams:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getAccount,getAccount:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::getAccount, first argument should be an instance of LGWallet", nil);
@@ -101,8 +101,8 @@ RCT_REMAP_METHOD(getAccountCount,getAccountCount:(NSDictionary *)currentInstance
  *@param count, 32 bits integer, number of accounts to retrieve
  *@param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
  */
-RCT_REMAP_METHOD(getAccounts,getAccounts:(NSDictionary *)currentInstance withParams:(int32_t)offset
-                                                                              count:(int32_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getAccounts,getAccounts:(NSDictionary *)currentInstance withParams:(int)offset
+                                                                              count:(int)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::getAccounts, first argument should be an instance of LGWallet", nil);
@@ -303,7 +303,7 @@ RCT_REMAP_METHOD(getLogger,getLogger:(NSDictionary *)currentInstance WithResolve
  *@param index, 32 bits integer, account's index
  *@return Preferences object
  */
-RCT_REMAP_METHOD(getAccountPreferences,getAccountPreferences:(NSDictionary *)currentInstance withParams:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getAccountPreferences,getAccountPreferences:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::getAccountPreferences, first argument should be an instance of LGWallet", nil);
@@ -538,7 +538,7 @@ RCT_REMAP_METHOD(getLastBlock,getLastBlock:(NSDictionary *)currentInstance WithR
  *@param accountIndex, 32 bits account, index of account in wallet
  *@param callback, Callback returning an AccountCreationInfo
  */
-RCT_REMAP_METHOD(getAccountCreationInfo,getAccountCreationInfo:(NSDictionary *)currentInstance withParams:(int32_t)accountIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getAccountCreationInfo,getAccountCreationInfo:(NSDictionary *)currentInstance withParams:(int)accountIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::getAccountCreationInfo, first argument should be an instance of LGWallet", nil);
@@ -555,7 +555,7 @@ RCT_REMAP_METHOD(getAccountCreationInfo,getAccountCreationInfo:(NSDictionary *)c
 }
 
 /**TODO */
-RCT_REMAP_METHOD(getExtendedKeyAccountCreationInfo,getExtendedKeyAccountCreationInfo:(NSDictionary *)currentInstance withParams:(int32_t)accountIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getExtendedKeyAccountCreationInfo,getExtendedKeyAccountCreationInfo:(NSDictionary *)currentInstance withParams:(int)accountIndex withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWallet::getExtendedKeyAccountCreationInfo, first argument should be an instance of LGWallet", nil);

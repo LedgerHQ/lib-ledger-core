@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(RCTCoreLGExtendedKeyAccountCreationInfo)
 {
     return NO;
 }
-RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
+RCT_REMAP_METHOD(init, initWithIndex:(int)index
                               owners:(nonnull NSArray<NSString *> *)owners
                          derivations:(nonnull NSArray<NSString *> *)derivations
                         extendedKeys:(nonnull NSArray<NSString *> *)extendedKeys withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -36,10 +36,38 @@ RCT_REMAP_METHOD(init, initWithIndex:(int32_t)index
     RCTCoreLGExtendedKeyAccountCreationInfo *rctImpl = (RCTCoreLGExtendedKeyAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGExtendedKeyAccountCreationInfo"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGExtendedKeyAccountCreationInfo", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.index)};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.owners};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.derivations};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getExtendedKeys, getExtendedKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.extendedKeys};
+    resolve(result);
 }
 
 @end

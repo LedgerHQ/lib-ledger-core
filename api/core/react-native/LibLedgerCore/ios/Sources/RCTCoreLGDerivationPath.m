@@ -52,7 +52,7 @@ RCT_REMAP_METHOD(getDepth,getDepth:(NSDictionary *)currentInstance WithResolver:
 }
 
 /** Get the child num at the given index in the path. */
-RCT_REMAP_METHOD(getChildNum,getChildNum:(NSDictionary *)currentInstance withParams:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getChildNum,getChildNum:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getChildNum, first argument should be an instance of LGDerivationPath", nil);
@@ -80,7 +80,7 @@ RCT_REMAP_METHOD(getChildNum,getChildNum:(NSDictionary *)currentInstance withPar
  * Get the child num at the given index in the path. If the child num is hardened, returns it
  * without the hardened marker bit.
  */
-RCT_REMAP_METHOD(getUnhardenedChildNum,getUnhardenedChildNum:(NSDictionary *)currentInstance withParams:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getUnhardenedChildNum,getUnhardenedChildNum:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getUnhardenedChildNum, first argument should be an instance of LGDerivationPath", nil);
@@ -105,7 +105,7 @@ RCT_REMAP_METHOD(getUnhardenedChildNum,getUnhardenedChildNum:(NSDictionary *)cur
 }
 
 /** Return true if the given index in the path is an hardened child num. */
-RCT_REMAP_METHOD(isHardened,isHardened:(NSDictionary *)currentInstance withParams:(int32_t)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(isHardened,isHardened:(NSDictionary *)currentInstance withParams:(int)index withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::isHardened, first argument should be an instance of LGDerivationPath", nil);

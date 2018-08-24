@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(RCTCoreLGCurrencyUnit)
 RCT_REMAP_METHOD(init, initWithName:(nonnull NSString *)name
                              symbol:(nonnull NSString *)symbol
                                code:(nonnull NSString *)code
-                    numberOfDecimal:(int32_t)numberOfDecimal withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                    numberOfDecimal:(int)numberOfDecimal withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
     LGCurrencyUnit * finalResult = [[LGCurrencyUnit alloc] initWithName:name symbol:symbol code:code numberOfDecimal:numberOfDecimal];
@@ -36,10 +36,38 @@ RCT_REMAP_METHOD(init, initWithName:(nonnull NSString *)name
     RCTCoreLGCurrencyUnit *rctImpl = (RCTCoreLGCurrencyUnit *)[self.bridge moduleForName:@"CoreLGCurrencyUnit"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGCurrencyUnit", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getName, getName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.name};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getSymbol, getSymbol:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.symbol};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.code};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getNumberOfDecimal, getNumberOfDecimal:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.numberOfDecimal)};
+    resolve(result);
 }
 
 @end

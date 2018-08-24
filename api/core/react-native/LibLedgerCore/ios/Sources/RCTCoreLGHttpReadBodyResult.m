@@ -17,6 +17,7 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpReadBodyResult)
     if(self)
     {
         self.objcImplementations = [[NSMutableDictionary alloc] init];
+        self.implementationsData = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -27,19 +28,38 @@ RCT_EXPORT_MODULE(RCTCoreLGHttpReadBodyResult)
 }
 RCT_REMAP_METHOD(init, initWithError:(nullable NSDictionary *)error
                                 data:(nullable NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSMutableDictionary *implementationsData = [[NSMutableDictionary alloc] init];
     RCTCoreLGError *rctParam_error = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
-    LGError *convertedField_0 = (LGError *)[rctParam_error.objcImplementations objectForKey:error[@"uid"]];
+    LGError *field_0 = (LGError *)[rctParam_error.objcImplementations objectForKey:error[@"uid"]];
+    [implementationsData setObject:error[@"uid"] forKey:@"field_0"];
 
 
-    LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:convertedField_0 data:data];
+    LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:field_0 data:data];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGHttpReadBodyResult *rctImpl = (RCTCoreLGHttpReadBodyResult *)[self.bridge moduleForName:@"CoreLGHttpReadBodyResult"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGHttpReadBodyResult", @"uid" : uuid };
-    if(result)
+    if (result)
     {
+        [self.implementationsData setObject:implementationsData forKey:uuid];
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getError, getError:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGHttpReadBodyResult *objcImpl = (LGHttpReadBodyResult *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *data = (NSDictionary *)[self.implementationsData objectForKey:currentInstance[@"uid"]];
+    NSString *returnUuid = [data objectForKey:@"error"];
+    NSDictionary *result = @{@"type" : @"CoreLGError", @"uid" : returnUuid };
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getData, getData:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGHttpReadBodyResult *objcImpl = (LGHttpReadBodyResult *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.data};
+    resolve(result);
 }
 
 @end

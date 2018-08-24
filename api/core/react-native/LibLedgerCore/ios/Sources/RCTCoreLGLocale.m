@@ -35,10 +35,31 @@ RCT_REMAP_METHOD(init, initWithDecimalSeparator:(nonnull NSString *)DecimalSepar
     RCTCoreLGLocale *rctImpl = (RCTCoreLGLocale *)[self.bridge moduleForName:@"CoreLGLocale"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGLocale", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getDecimalSeparator, getDecimalSeparator:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGLocale *objcImpl = (LGLocale *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.DecimalSeparator};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getThousandsSeparator, getThousandsSeparator:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGLocale *objcImpl = (LGLocale *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : objcImpl.ThousandsSeparator};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getIsPrefixedByCurrencySymbol, getIsPrefixedByCurrencySymbol:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGLocale *objcImpl = (LGLocale *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @(objcImpl.IsPrefixedByCurrencySymbol)};
+    resolve(result);
 }
 
 @end

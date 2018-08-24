@@ -99,7 +99,7 @@ RCT_REMAP_METHOD(filter,filter:(NSDictionary *)currentInstance WithResolver:(RCT
  *Add offset to the operation query
  *@param from, 64 bits integer
  */
-RCT_REMAP_METHOD(offset,offset:(NSDictionary *)currentInstance withParams:(int64_t)from withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(offset,offset:(NSDictionary *)currentInstance withParams:(int)from withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::offset, first argument should be an instance of LGOperationQuery", nil);
@@ -132,7 +132,7 @@ RCT_REMAP_METHOD(offset,offset:(NSDictionary *)currentInstance withParams:(int64
  *Add limit to the operation query results
  *@param count, 64 bits integer
  */
-RCT_REMAP_METHOD(limit,limit:(NSDictionary *)currentInstance withParams:(int64_t)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(limit,limit:(NSDictionary *)currentInstance withParams:(int)count withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGOperationQuery::limit, first argument should be an instance of LGOperationQuery", nil);

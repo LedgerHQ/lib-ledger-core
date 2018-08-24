@@ -328,7 +328,7 @@ RCT_REMAP_METHOD(setService,setService:(NSDictionary *)currentInstance withParam
 
 }
 
-RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(NSDictionary *)currentInstance withParams:(int32_t)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(setConnectionPoolSize,setConnectionPoolSize:(NSDictionary *)currentInstance withParams:(int)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDatabaseBackend::setConnectionPoolSize, first argument should be an instance of LGDatabaseBackend", nil);

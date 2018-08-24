@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RCTCoreLGWebSocketConnection)
     return NO;
 }
 
-RCT_REMAP_METHOD(onConnect,onConnect:(NSDictionary *)currentInstance withParams:(int32_t)connectionId withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(onConnect,onConnect:(NSDictionary *)currentInstance withParams:(int)connectionId withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWebSocketConnection::onConnect, first argument should be an instance of LGWebSocketConnection", nil);

@@ -204,8 +204,8 @@ RCT_REMAP_METHOD(getWalletCount,getWalletCount:(NSDictionary *)currentInstance W
  *@param to, 32 bits integer, upper bound of indices to pick
  *@param callback, ListCallback object returns a list of Wallet objects
  */
-RCT_REMAP_METHOD(getWallets,getWallets:(NSDictionary *)currentInstance withParams:(int32_t)from
-                                                                             size:(int32_t)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getWallets,getWallets:(NSDictionary *)currentInstance withParams:(int)from
+                                                                             size:(int)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPool::getWallets, first argument should be an instance of LGWalletPool", nil);

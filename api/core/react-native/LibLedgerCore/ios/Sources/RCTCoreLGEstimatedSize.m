@@ -25,8 +25,8 @@ RCT_EXPORT_MODULE(RCTCoreLGEstimatedSize)
 {
     return NO;
 }
-RCT_REMAP_METHOD(init, initWithMin:(int32_t)Min
-                               Max:(int32_t)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(init, initWithMin:(int)Min
+                               Max:(int)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
 
     LGEstimatedSize * finalResult = [[LGEstimatedSize alloc] initWithMin:Min Max:Max];
@@ -34,10 +34,24 @@ RCT_REMAP_METHOD(init, initWithMin:(int32_t)Min
     RCTCoreLGEstimatedSize *rctImpl = (RCTCoreLGEstimatedSize *)[self.bridge moduleForName:@"CoreLGEstimatedSize"];
     [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
     NSDictionary *result = @{@"type" : @"CoreLGEstimatedSize", @"uid" : uuid };
-    if(result)
+    if (result)
     {
         resolve(result);
     }
+}
+
+RCT_REMAP_METHOD(getMin, getMin:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGEstimatedSize *objcImpl = (LGEstimatedSize *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.Min)};
+    resolve(result);
+}
+
+RCT_REMAP_METHOD(getMax, getMax:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+{
+    LGEstimatedSize *objcImpl = (LGEstimatedSize *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    NSDictionary *result = @{@"value" : @((int)objcImpl.Max)};
+    resolve(result);
 }
 
 @end

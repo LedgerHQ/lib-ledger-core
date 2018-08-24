@@ -31,7 +31,7 @@ RCT_EXPORT_MODULE(RCTCoreLGRandomNumberGenerator)
  * @params size number of bytes to generate
  * @return 'size' random bytes
  */
-RCT_REMAP_METHOD(getRandomBytes,getRandomBytes:(NSDictionary *)currentInstance withParams:(int32_t)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getRandomBytes,getRandomBytes:(NSDictionary *)currentInstance withParams:(int)size withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGRandomNumberGenerator::getRandomBytes, first argument should be an instance of LGRandomNumberGeneratorImpl", nil);
