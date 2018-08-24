@@ -50,30 +50,18 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEvent instance passed to getCode method");
-            }
+            Event currentInstanceObj = this.javaObjects.get(sUid);
 
             EventCode javaResult = currentInstanceObj.getCode();
             Map<String, EventCode> result = new HashMap<String, EventCode>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreEvent::getCode : Failed to return EventCode from getCode method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -85,35 +73,23 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEvent instance passed to getPayload method");
-            }
+            Event currentInstanceObj = this.javaObjects.get(sUid);
 
             DynamicObject javaResult = currentInstanceObj.getPayload();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDynamicObject");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreEvent::getPayload : Failed to return DynamicObject from getPayload method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -125,30 +101,18 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEvent instance passed to isSticky method");
-            }
+            Event currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isSticky();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreEvent::isSticky : Failed to return boolean from isSticky method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -160,30 +124,18 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Event currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEvent instance passed to getStickyTag method");
-            }
+            Event currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getStickyTag();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreEvent::getStickyTag : Failed to return int from getStickyTag method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -193,30 +145,25 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
      *@return Event instance
      */
     @ReactMethod
-    public void newInstance(Map<String, String> currentInstance, EventCode code, HashMap <String, String> payload, Promise promise) {
+    public void newInstance(EventCode code, HashMap <String, String> payload, Promise promise) {
         try
         {
+            RCTCoreDynamicObject rctParam_payload = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
+            DynamicObject javaParam_1 = rctParam_payload.getJavaObjects().get(payload.get("uid"));
             Event javaResult = Event.newInstance(code, javaParam_1);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreEvent rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEvent.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEvent");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreEvent::newInstance : Failed to return Event from newInstance method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

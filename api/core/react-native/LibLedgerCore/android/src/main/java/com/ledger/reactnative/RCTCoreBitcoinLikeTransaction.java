@@ -51,30 +51,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getHash method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getHash();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getHash : Failed to return String from getHash method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the input of the transaction */
@@ -83,40 +71,28 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getInputs method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<BitcoinLikeInput> javaResult = currentInstanceObj.getInputs();
 
             ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> javaResult_elem : javaResult)
+            for (BitcoinLikeInput javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreBitcoinLikeInput rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeInput.class);
-                rctImpl_javaResult_elem.getJavaObjects.put(uuid, javaResult_elem);
-                Map<String, String> result_elem = new HashMap<String, String>();
+                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                HashMap<String, String> result_elem = new HashMap<String, String>();
                 result_elem.put("type","RCTCoreBitcoinLikeInput");
                 result_elem.put("uid",uuid);
                 result.add(result_elem);
             }
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getInputs : Failed to return ArrayList<BitcoinLikeInput> from getInputs method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the output of the transaction */
@@ -125,40 +101,28 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getOutputs method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<BitcoinLikeOutput> javaResult = currentInstanceObj.getOutputs();
 
             ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> javaResult_elem : javaResult)
+            for (BitcoinLikeOutput javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreBitcoinLikeOutput rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-                rctImpl_javaResult_elem.getJavaObjects.put(uuid, javaResult_elem);
-                Map<String, String> result_elem = new HashMap<String, String>();
+                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                HashMap<String, String> result_elem = new HashMap<String, String>();
                 result_elem.put("type","RCTCoreBitcoinLikeOutput");
                 result_elem.put("uid",uuid);
                 result.add(result_elem);
             }
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getOutputs : Failed to return ArrayList<BitcoinLikeOutput> from getOutputs method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the block in which the transaction is inserted if the transaction is confirmed. */
@@ -167,35 +131,23 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getBlock method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeBlock javaResult = currentInstanceObj.getBlock();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeBlock rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeBlock.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeBlock");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getBlock : Failed to return BitcoinLikeBlock from getBlock method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the lock time of the transaction. */
@@ -204,30 +156,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getLockTime method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getLockTime();
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getLockTime : Failed to return long from getLockTime method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the amount of fees of the transaction. */
@@ -236,35 +176,23 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getFees method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getFees();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getFees : Failed to return Amount from getFees method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -276,30 +204,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getTime method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getTime();
             Map<String, Date> result = new HashMap<String, Date>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getTime : Failed to return Date from getTime method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
@@ -308,30 +224,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getTimestamp method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Integer javaResult = currentInstanceObj.getTimestamp();
             Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getTimestamp : Failed to return Integer from getTimestamp method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get Transaction version */
@@ -340,30 +244,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getVersion method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getVersion();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getVersion : Failed to return int from getVersion method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Serialize the transaction to its raw format. */
@@ -372,30 +264,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to serialize method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.serialize();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::serialize : Failed to return byte[] from serialize method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
@@ -404,30 +284,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to serializeOutputs method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.serializeOutputs();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::serializeOutputs : Failed to return byte[] from serializeOutputs method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the witness if the underlying transaction is a segwit transaction. */
@@ -436,30 +304,18 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getWitness method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getWitness();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getWitness : Failed to return byte[] from getWitness method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -471,35 +327,23 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeTransaction instance passed to getEstimatedSize method");
-            }
+            BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             EstimatedSize javaResult = currentInstanceObj.getEstimatedSize();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreEstimatedSize rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEstimatedSize.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreEstimatedSize");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeTransaction::getEstimatedSize : Failed to return EstimatedSize from getEstimatedSize method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

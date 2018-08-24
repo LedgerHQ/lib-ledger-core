@@ -53,35 +53,23 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toBigInt method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             BigInt javaResult = currentInstanceObj.toBigInt();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toBigInt : Failed to return BigInt from toBigInt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -93,35 +81,23 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to getCurrency method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::getCurrency : Failed to return Currency from getCurrency method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -133,35 +109,23 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to getUnit method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             CurrencyUnit javaResult = currentInstanceObj.getUnit();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrencyUnit rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrencyUnit");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::getUnit : Failed to return CurrencyUnit from getUnit method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -174,37 +138,25 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toUnit method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreCurrencyUnit rctParam_unit = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
-            CurrencyUnit javaParam_0 = (CurrencyUnit)rctParam_unit.getJavaObjects.get(unit.get("uid"));
+            CurrencyUnit javaParam_0 = rctParam_unit.getJavaObjects().get(unit.get("uid"));
             Amount javaResult = currentInstanceObj.toUnit(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toUnit : Failed to return Amount from toUnit method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**TODO */
@@ -213,35 +165,23 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toMagnitude method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.toMagnitude(magnitude);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toMagnitude : Failed to return Amount from toMagnitude method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -253,30 +193,18 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toString method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toString : Failed to return String from toString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -288,30 +216,18 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toLong method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.toLong();
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toLong : Failed to return long from toLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -323,30 +239,18 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to toDouble method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             double javaResult = currentInstanceObj.toDouble();
-            Map<String, double> result = new HashMap<String, double>();
+            Map<String, Double> result = new HashMap<String, Double>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::toDouble : Failed to return double from toDouble method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**TODO */
@@ -355,88 +259,66 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Amount currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAmount instance passed to format method");
-            }
+            Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreLocale rctParam_locale = this.reactContext.getNativeModule(RCTCoreLocale.class);
-            Locale javaParam_0 = (Locale)rctParam_locale.getJavaObjects.get(locale.get("uid"));
+            Locale javaParam_0 = rctParam_locale.getJavaObjects().get(locale.get("uid"));
             RCTCoreFormatRules rctParam_rules = this.reactContext.getNativeModule(RCTCoreFormatRules.class);
-            FormatRules javaParam_1 = (FormatRules)rctParam_rules.getJavaObjects.get(rules.get("uid"));
+            FormatRules javaParam_1 = rctParam_rules.getJavaObjects().get(rules.get().get("uid"));
             String javaResult = currentInstanceObj.format(javaParam_0, javaParam_1);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::format : Failed to return String from format method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void fromHex(Map<String, String> currentInstance, HashMap <String, String> currency, String hex, Promise promise) {
+    public void fromHex(HashMap <String, String> currency, String hex, Promise promise) {
         try
         {
+            RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
             Amount javaResult = Amount.fromHex(javaParam_0, hex);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::fromHex : Failed to return Amount from fromHex method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void fromLong(Map<String, String> currentInstance, HashMap <String, String> currency, long value, Promise promise) {
+    public void fromLong(HashMap <String, String> currency, long value, Promise promise) {
         try
         {
+            RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
             Amount javaResult = Amount.fromLong(javaParam_0, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAmount::fromLong : Failed to return Amount from fromLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

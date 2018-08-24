@@ -28,11 +28,8 @@ public class RCTCoreAmountCallback extends AmountCallback {
     public static RCTCoreAmountCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreAmountCallback callback = new RCTCoreAmountCallback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -43,14 +40,14 @@ public class RCTCoreAmountCallback extends AmountCallback {
     public void onCallback(Amount result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_result = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_result.getJavaObjects.put(uuid, result);
-            Map<String, String> converted_result = new HashMap<String, String>();
+            rctImpl_result.getJavaObjects().put(uuid, result);
+            HashMap<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreAmount");
             converted_result.put("uid",uuid);
 
@@ -58,7 +55,7 @@ public class RCTCoreAmountCallback extends AmountCallback {
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

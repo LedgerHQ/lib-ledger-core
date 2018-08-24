@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**TODO */
 public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
@@ -37,7 +38,7 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
     {
         return "RCTCoreFormatRules";
     }
-    public void init(RoundingMode roundingMode, int maxNumberOfDecimals ,Promise promise) {
+    public void init(RoundingMode roundingMode, int maxNumberOfDecimals, Promise promise) {
         FormatRules javaResult = new FormatRules(roundingMode, maxNumberOfDecimals);
 
         String uuid = UUID.randomUUID().toString();

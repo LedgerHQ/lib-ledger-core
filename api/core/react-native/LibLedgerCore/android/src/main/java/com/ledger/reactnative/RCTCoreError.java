@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreError extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -36,7 +37,7 @@ public class RCTCoreError extends ReactContextBaseJavaModule {
     {
         return "RCTCoreError";
     }
-    public void init(ErrorCode code, String message ,Promise promise) {
+    public void init(ErrorCode code, String message, Promise promise) {
         Error javaResult = new Error(code, message);
 
         String uuid = UUID.randomUUID().toString();

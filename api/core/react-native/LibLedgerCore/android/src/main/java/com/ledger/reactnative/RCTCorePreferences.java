@@ -54,30 +54,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getString method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getString(key, fallbackValue);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getString : Failed to return String from getString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -89,30 +77,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getInt method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getInt(key, fallbackValue);
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getInt : Failed to return int from getInt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -124,30 +100,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getLong method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getLong(key, fallbackValue);
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getLong : Failed to return long from getLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -159,30 +123,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getBoolean method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.getBoolean(key, fallbackValue);
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getBoolean : Failed to return boolean from getBoolean method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -194,30 +146,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getStringArray method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getStringArray(key, fallbackValue);
             Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getStringArray : Failed to return ArrayList<String> from getStringArray method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -229,30 +169,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to getData method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getData(key, fallbackValue);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::getData : Failed to return byte[] from getData method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -264,30 +192,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to contains method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.contains(key);
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::contains : Failed to return boolean from contains method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -299,35 +215,23 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Preferences currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferences instance passed to edit method");
-            }
+            Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.edit();
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferences::edit : Failed to return PreferencesEditor from edit method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

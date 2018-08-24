@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure of cryptocurrency unit */
 public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
@@ -36,7 +37,7 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     {
         return "RCTCoreCurrencyUnit";
     }
-    public void init(String name, String symbol, String code, int numberOfDecimal ,Promise promise) {
+    public void init(String name, String symbol, String code, int numberOfDecimal, Promise promise) {
         CurrencyUnit javaResult = new CurrencyUnit(name, symbol, code, numberOfDecimal);
 
         String uuid = UUID.randomUUID().toString();

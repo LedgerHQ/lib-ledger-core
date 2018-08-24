@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure representing Http response body */
 public class RCTCoreHttpReadBodyResult extends ReactContextBaseJavaModule {
@@ -37,9 +38,9 @@ public class RCTCoreHttpReadBodyResult extends ReactContextBaseJavaModule {
     {
         return "RCTCoreHttpReadBodyResult";
     }
-    public void init(Optional<HashMap <String, String>> error, byte[] data ,Promise promise) {
+    public void init(Optional<HashMap <String, String>> error, byte[] data, Promise promise) {
         RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
-        Error javaParam_0 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
+        Error javaParam_0 = rctParam_error.getJavaObjects().get(error.get().get("uid"));
         HttpReadBodyResult javaResult = new HttpReadBodyResult(javaParam_0, data);
 
         String uuid = UUID.randomUUID().toString();

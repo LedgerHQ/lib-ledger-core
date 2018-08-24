@@ -49,30 +49,18 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getVersion method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getVersion();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::getVersion : Failed to return byte[] from getVersion method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -84,30 +72,18 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getHash160 method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getHash160();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::getHash160 : Failed to return byte[] from getHash160 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -119,35 +95,23 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to getNetworkParameters method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeNetworkParameters javaResult = currentInstanceObj.getNetworkParameters();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeNetworkParameters");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::getNetworkParameters : Failed to return BitcoinLikeNetworkParameters from getNetworkParameters method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -159,30 +123,18 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to toBase58 method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toBase58();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::toBase58 : Failed to return String from toBase58 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -197,30 +149,18 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to isP2SH method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isP2SH();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::isP2SH : Failed to return boolean from isP2SH method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -232,30 +172,18 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeAddress instance passed to isP2PKH method");
-            }
+            BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isP2PKH();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeAddress::isP2PKH : Failed to return boolean from isP2PKH method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

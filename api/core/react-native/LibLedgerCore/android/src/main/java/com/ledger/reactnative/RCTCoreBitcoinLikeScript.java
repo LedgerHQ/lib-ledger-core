@@ -44,35 +44,23 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeScript currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeScript instance passed to head method");
-            }
+            BitcoinLikeScript currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeScriptChunk javaResult = currentInstanceObj.head();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeScriptChunk rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScriptChunk.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScriptChunk");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeScript::head : Failed to return BitcoinLikeScriptChunk from head method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -80,57 +68,38 @@ public class RCTCoreBitcoinLikeScript extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeScript currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeScript instance passed to toString method");
-            }
+            BitcoinLikeScript currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeScript::toString : Failed to return String from toString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void parse(Map<String, String> currentInstance, byte[] data, Promise promise) {
+    public void parse(byte[] data, Promise promise) {
         try
         {
             BitcoinLikeScript javaResult = BitcoinLikeScript.parse(data);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeScript rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScript.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScript");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeScript::parse : Failed to return BitcoinLikeScript from parse method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

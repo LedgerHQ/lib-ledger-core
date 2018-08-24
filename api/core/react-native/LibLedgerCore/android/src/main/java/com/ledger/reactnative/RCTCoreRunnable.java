@@ -48,19 +48,14 @@ public class RCTCoreRunnable extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Runnable currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreRunnable instance passed to run method");
-            }
+            Runnable currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.run();
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

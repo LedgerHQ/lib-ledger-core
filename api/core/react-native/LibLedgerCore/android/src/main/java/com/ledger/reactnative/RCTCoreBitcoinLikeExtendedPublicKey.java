@@ -44,35 +44,23 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to derive method");
-            }
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeAddress javaResult = currentInstanceObj.derive(path);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeAddress");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeExtendedPublicKey::derive : Failed to return BitcoinLikeAddress from derive method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -80,30 +68,18 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to derivePublicKey method");
-            }
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.derivePublicKey(path);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeExtendedPublicKey::derivePublicKey : Failed to return byte[] from derivePublicKey method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -111,30 +87,18 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to deriveHash160 method");
-            }
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.deriveHash160(path);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeExtendedPublicKey::deriveHash160 : Failed to return byte[] from deriveHash160 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -142,30 +106,18 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to toBase58 method");
-            }
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toBase58();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeExtendedPublicKey::toBase58 : Failed to return String from toBase58 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -173,30 +125,18 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeExtendedPublicKey instance passed to getRootPath method");
-            }
+            BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getRootPath();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeExtendedPublicKey::getRootPath : Failed to return String from getRootPath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

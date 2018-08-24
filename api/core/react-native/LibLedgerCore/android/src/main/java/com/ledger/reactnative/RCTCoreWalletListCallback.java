@@ -28,11 +28,8 @@ public class RCTCoreWalletListCallback extends WalletListCallback {
     public static RCTCoreWalletListCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreWalletListCallback callback = new RCTCoreWalletListCallback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -43,17 +40,17 @@ public class RCTCoreWalletListCallback extends WalletListCallback {
     public void onCallback(ArrayList<Wallet> result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
             ArrayList<HashMap <String, String>> converted_result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> result_elem : result)
+            for (Wallet result_elem : result)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreWallet rctImpl_result_elem = this.reactContext.getNativeModule(RCTCoreWallet.class);
-                rctImpl_result_elem.getJavaObjects.put(uuid, result_elem);
-                Map<String, String> converted_result_elem = new HashMap<String, String>();
+                rctImpl_result_elem.getJavaObjects().put(uuid, result_elem);
+                HashMap<String, String> converted_result_elem = new HashMap<String, String>();
                 converted_result_elem.put("type","RCTCoreWallet");
                 converted_result_elem.put("uid",uuid);
                 converted_result.add(converted_result_elem);
@@ -63,7 +60,7 @@ public class RCTCoreWalletListCallback extends WalletListCallback {
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

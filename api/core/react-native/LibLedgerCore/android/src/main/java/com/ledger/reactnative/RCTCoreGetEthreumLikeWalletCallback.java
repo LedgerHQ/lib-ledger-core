@@ -45,21 +45,16 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreGetEthreumLikeWalletCallback instance passed to onSuccess method");
-            }
+            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEthereumLikeWallet rctParam_wallet = this.reactContext.getNativeModule(RCTCoreEthereumLikeWallet.class);
-            EthereumLikeWallet javaParam_0 = (EthereumLikeWallet)rctParam_wallet.getJavaObjects.get(wallet.get("uid"));
+            EthereumLikeWallet javaParam_0 = rctParam_wallet.getJavaObjects().get(wallet.get("uid"));
             currentInstanceObj.onSuccess(javaParam_0, isCreated);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -67,21 +62,16 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreGetEthreumLikeWalletCallback instance passed to onError method");
-            }
+            GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
-            Error javaParam_0 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
+            Error javaParam_0 = rctParam_error.getJavaObjects().get(error.get("uid"));
             currentInstanceObj.onError(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

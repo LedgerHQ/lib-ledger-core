@@ -56,30 +56,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getUid method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getUid();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getUid : Failed to return String from getUid method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -91,30 +79,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getAccountIndex method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getAccountIndex();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getAccountIndex : Failed to return int from getAccountIndex method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -126,30 +102,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getOperationType method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationType javaResult = currentInstanceObj.getOperationType();
             Map<String, OperationType> result = new HashMap<String, OperationType>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getOperationType : Failed to return OperationType from getOperationType method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -161,30 +125,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getDate method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getDate();
             Map<String, Date> result = new HashMap<String, Date>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getDate : Failed to return Date from getDate method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -196,30 +148,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getSenders method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getSenders();
             Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getSenders : Failed to return ArrayList<String> from getSenders method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -231,30 +171,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getRecipients method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getRecipients();
             Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getRecipients : Failed to return ArrayList<String> from getRecipients method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -266,35 +194,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getAmount method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getAmount();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getAmount : Failed to return Amount from getAmount method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -306,35 +222,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getFees method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getFees();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getFees : Failed to return Amount from getFees method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -346,35 +250,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getPreferences method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Preferences javaResult = currentInstanceObj.getPreferences();
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferences");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getPreferences : Failed to return Preferences from getPreferences method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -386,35 +278,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getTrust method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             TrustIndicator javaResult = currentInstanceObj.getTrust();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreTrustIndicator rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreTrustIndicator.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreTrustIndicator");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getTrust : Failed to return TrustIndicator from getTrust method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -426,30 +306,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getBlockHeight method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Long javaResult = currentInstanceObj.getBlockHeight();
             Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getBlockHeight : Failed to return Long from getBlockHeight method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -461,35 +329,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to asBitcoinLikeOperation method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeOperation javaResult = currentInstanceObj.asBitcoinLikeOperation();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeOperation rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOperation.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeOperation");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::asBitcoinLikeOperation : Failed to return BitcoinLikeOperation from asBitcoinLikeOperation method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -497,30 +353,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to isInstanceOfBitcoinLikeOperation method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfBitcoinLikeOperation();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::isInstanceOfBitcoinLikeOperation : Failed to return boolean from isInstanceOfBitcoinLikeOperation method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -533,30 +377,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to isInstanceOfEthereumLikeOperation method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfEthereumLikeOperation();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::isInstanceOfEthereumLikeOperation : Failed to return boolean from isInstanceOfEthereumLikeOperation method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -569,30 +401,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to isInstanceOfRippleLikeOperation method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfRippleLikeOperation();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::isInstanceOfRippleLikeOperation : Failed to return boolean from isInstanceOfRippleLikeOperation method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -604,30 +424,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to isComplete method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isComplete();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::isComplete : Failed to return boolean from isComplete method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -639,30 +447,18 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getWalletType method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             WalletType javaResult = currentInstanceObj.getWalletType();
             Map<String, WalletType> result = new HashMap<String, WalletType>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getWalletType : Failed to return WalletType from getWalletType method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -670,35 +466,23 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Operation currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreOperation instance passed to getCurrency method");
-            }
+            Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreOperation::getCurrency : Failed to return Currency from getCurrency method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

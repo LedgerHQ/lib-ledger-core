@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure of informations needed for account creation */
 public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
@@ -36,7 +37,7 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     {
         return "RCTCoreAccountCreationInfo";
     }
-    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes ,Promise promise) {
+    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes, Promise promise) {
         AccountCreationInfo javaResult = new AccountCreationInfo(index, owners, derivations, publicKeys, chainCodes);
 
         String uuid = UUID.randomUUID().toString();

@@ -49,30 +49,18 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAddress instance passed to getDerivationPath method");
-            }
+            Address currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getDerivationPath();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::getDerivationPath : Failed to return String from getDerivationPath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -84,30 +72,18 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAddress instance passed to toString method");
-            }
+            Address currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::toString : Failed to return String from toString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -115,35 +91,23 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAddress instance passed to asBitcoinLikeAddress method");
-            }
+            Address currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeAddress javaResult = currentInstanceObj.asBitcoinLikeAddress();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeAddress");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::asBitcoinLikeAddress : Failed to return BitcoinLikeAddress from asBitcoinLikeAddress method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -151,30 +115,18 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAddress instance passed to isInstanceOfBitcoinLikeAddress method");
-            }
+            Address currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfBitcoinLikeAddress();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::isInstanceOfBitcoinLikeAddress : Failed to return boolean from isInstanceOfBitcoinLikeAddress method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -182,35 +134,23 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Address currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreAddress instance passed to getCurrency method");
-            }
+            Address currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreCurrency");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::getCurrency : Failed to return Currency from getCurrency method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -221,30 +161,25 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
      * @return If successful returns the address object otherwise null.
      */
     @ReactMethod
-    public void parse(Map<String, String> currentInstance, String address, HashMap <String, String> currency, Promise promise) {
+    public void parse(String address, HashMap <String, String> currency, Promise promise) {
         try
         {
+            RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
             Address javaResult = Address.parse(address, javaParam_1);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAddress.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAddress");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::parse : Failed to return Address from parse method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -254,25 +189,20 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
      * @return If successful returns true, false otherwise.
      */
     @ReactMethod
-    public void isValid(Map<String, String> currentInstance, String address, HashMap <String, String> currency, Promise promise) {
+    public void isValid(String address, HashMap <String, String> currency, Promise promise) {
         try
         {
+            RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
+            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
             boolean javaResult = Address.isValid(address, javaParam_1);
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreAddress::isValid : Failed to return boolean from isValid method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

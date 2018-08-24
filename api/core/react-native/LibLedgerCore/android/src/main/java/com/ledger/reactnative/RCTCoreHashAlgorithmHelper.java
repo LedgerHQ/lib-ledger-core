@@ -49,30 +49,18 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to ripemd160 method");
-            }
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.ripemd160(data);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHashAlgorithmHelper::ripemd160 : Failed to return byte[] from ripemd160 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -85,30 +73,18 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to sha256 method");
-            }
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.sha256(data);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHashAlgorithmHelper::sha256 : Failed to return byte[] from sha256 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -121,30 +97,18 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHashAlgorithmHelper instance passed to keccak256 method");
-            }
+            HashAlgorithmHelperImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.keccak256(data);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHashAlgorithmHelper::keccak256 : Failed to return byte[] from keccak256 method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

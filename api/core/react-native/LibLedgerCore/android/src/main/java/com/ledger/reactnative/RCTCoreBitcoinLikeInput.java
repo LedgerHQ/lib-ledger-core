@@ -50,30 +50,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getAddress method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getAddress();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getAddress : Failed to return String from getAddress method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -85,30 +73,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getPublicKeys method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<byte[]> javaResult = currentInstanceObj.getPublicKeys();
             Map<String, ArrayList<byte[]>> result = new HashMap<String, ArrayList<byte[]>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getPublicKeys : Failed to return ArrayList<byte[]> from getPublicKeys method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Returns the derivation path of this input if the address is owned by the wallet */
@@ -117,40 +93,28 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getDerivationPath method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<DerivationPath> javaResult = currentInstanceObj.getDerivationPath();
 
             ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> javaResult_elem : javaResult)
+            for (DerivationPath javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreDerivationPath rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-                rctImpl_javaResult_elem.getJavaObjects.put(uuid, javaResult_elem);
-                Map<String, String> result_elem = new HashMap<String, String>();
+                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                HashMap<String, String> result_elem = new HashMap<String, String>();
                 result_elem.put("type","RCTCoreDerivationPath");
                 result_elem.put("uid",uuid);
                 result.add(result_elem);
             }
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getDerivationPath : Failed to return ArrayList<DerivationPath> from getDerivationPath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -162,35 +126,23 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getValue method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getValue();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreAmount");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getValue : Failed to return Amount from getValue method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -202,30 +154,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getPreviousTxHash method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getPreviousTxHash();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getPreviousTxHash : Failed to return String from getPreviousTxHash method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -239,30 +179,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to isCoinbase method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isCoinbase();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::isCoinbase : Failed to return boolean from isCoinbase method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -274,30 +202,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getCoinbase method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getCoinbase();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getCoinbase : Failed to return String from getCoinbase method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -309,30 +225,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getPreviousOutputIndex method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             Integer javaResult = currentInstanceObj.getPreviousOutputIndex();
             Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getPreviousOutputIndex : Failed to return Integer from getPreviousOutputIndex method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -346,35 +250,23 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getPreviousOuput method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeOutput javaResult = currentInstanceObj.getPreviousOuput();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeOutput rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeOutput");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getPreviousOuput : Failed to return BitcoinLikeOutput from getPreviousOuput method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output. */
@@ -383,30 +275,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getScriptSig method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getScriptSig();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getScriptSig : Failed to return byte[] from getScriptSig method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Parse the script sig to a [[BitcoinLikeScript]] */
@@ -415,35 +295,23 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to parseScriptSig method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeScript javaResult = currentInstanceObj.parseScriptSig();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeScript rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScript.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeScript");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::parseScriptSig : Failed to return BitcoinLikeScript from parseScriptSig method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -455,19 +323,14 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to setScriptSig method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.setScriptSig(scriptSig);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Push data to the end of the current ScriptSig */
@@ -476,19 +339,14 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to pushToScriptSig method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.pushToScriptSig(data);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Set the sequence number of this input */
@@ -497,19 +355,14 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to setSequence method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.setSequence(sequence);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the sequence number of this input */
@@ -518,30 +371,18 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getSequence method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getSequence();
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeInput::getSequence : Failed to return long from getSequence method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -549,20 +390,15 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to getPreviousTransaction method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBinaryCallback javaParam_0 = RCTCoreBinaryCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.getPreviousTransaction(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
@@ -571,19 +407,14 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeInput currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeInput instance passed to setP2PKHSigScript method");
-            }
+            BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.setP2PKHSigScript(signature);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

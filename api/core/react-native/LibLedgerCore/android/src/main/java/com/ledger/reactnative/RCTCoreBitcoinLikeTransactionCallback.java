@@ -28,11 +28,8 @@ public class RCTCoreBitcoinLikeTransactionCallback extends BitcoinLikeTransactio
     public static RCTCoreBitcoinLikeTransactionCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreBitcoinLikeTransactionCallback callback = new RCTCoreBitcoinLikeTransactionCallback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -43,14 +40,14 @@ public class RCTCoreBitcoinLikeTransactionCallback extends BitcoinLikeTransactio
     public void onCallback(BitcoinLikeTransaction result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeTransaction rctImpl_result = this.reactContext.getNativeModule(RCTCoreBitcoinLikeTransaction.class);
-            rctImpl_result.getJavaObjects.put(uuid, result);
-            Map<String, String> converted_result = new HashMap<String, String>();
+            rctImpl_result.getJavaObjects().put(uuid, result);
+            HashMap<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreBitcoinLikeTransaction");
             converted_result.put("uid",uuid);
 
@@ -58,7 +55,7 @@ public class RCTCoreBitcoinLikeTransactionCallback extends BitcoinLikeTransactio
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

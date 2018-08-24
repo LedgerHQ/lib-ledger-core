@@ -27,11 +27,8 @@ public class RCTCoreI32Callback extends I32Callback {
     public static RCTCoreI32Callback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreI32Callback callback = new RCTCoreI32Callback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -42,16 +39,16 @@ public class RCTCoreI32Callback extends I32Callback {
     public void onCallback(Integer result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
 
             this.promise.resolve(result);
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

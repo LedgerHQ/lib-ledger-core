@@ -4,7 +4,9 @@
 package com.ledger.reactnative;
 
 import co.ledger.core.ExecutionContext;
+import co.ledger.core.ExecutionContextImpl;
 import co.ledger.core.Lock;
+import co.ledger.core.LockImpl;
 import co.ledger.core.ThreadDispatcherImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -51,35 +53,23 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreThreadDispatcher instance passed to getSerialExecutionContext method");
-            }
+            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             ExecutionContext javaResult = currentInstanceObj.getSerialExecutionContext(name);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, (ExecutionContextImpl)javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreExecutionContext");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreThreadDispatcher::getSerialExecutionContext : Failed to return ExecutionContext from getSerialExecutionContext method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -93,35 +83,23 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreThreadDispatcher instance passed to getThreadPoolExecutionContext method");
-            }
+            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             ExecutionContext javaResult = currentInstanceObj.getThreadPoolExecutionContext(name);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, (ExecutionContextImpl)javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreExecutionContext");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreThreadDispatcher::getThreadPoolExecutionContext : Failed to return ExecutionContext from getThreadPoolExecutionContext method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -133,35 +111,23 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreThreadDispatcher instance passed to getMainExecutionContext method");
-            }
+            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             ExecutionContext javaResult = currentInstanceObj.getMainExecutionContext();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, (ExecutionContextImpl)javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreExecutionContext");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreThreadDispatcher::getMainExecutionContext : Failed to return ExecutionContext from getMainExecutionContext method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -173,35 +139,23 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreThreadDispatcher instance passed to newLock method");
-            }
+            ThreadDispatcherImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             Lock javaResult = currentInstanceObj.newLock();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreLock rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLock.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, (LockImpl)javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreLock");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreThreadDispatcher::newLock : Failed to return Lock from newLock method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

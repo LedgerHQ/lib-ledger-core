@@ -44,975 +44,747 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void accountEq(Map<String, String> currentInstance, String accountUid, Promise promise) {
+    public void accountEq(String accountUid, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.accountEq(accountUid);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::accountEq : Failed to return QueryFilter from accountEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void accountNeq(Map<String, String> currentInstance, String accountUid, Promise promise) {
+    public void accountNeq(String accountUid, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.accountNeq(accountUid);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::accountNeq : Failed to return QueryFilter from accountNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateLte(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateLte(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateLte(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateLte : Failed to return QueryFilter from dateLte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateLt(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateLt(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateLt(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateLt : Failed to return QueryFilter from dateLt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateGt(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateGt(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateGt(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateGt : Failed to return QueryFilter from dateGt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateGte(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateGte(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateGte(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateGte : Failed to return QueryFilter from dateGte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateEq(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateEq(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateEq(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateEq : Failed to return QueryFilter from dateEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void dateNeq(Map<String, String> currentInstance, Date time, Promise promise) {
+    public void dateNeq(Date time, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.dateNeq(time);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::dateNeq : Failed to return QueryFilter from dateNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void containsRecipient(Map<String, String> currentInstance, String recipientAddress, Promise promise) {
+    public void containsRecipient(String recipientAddress, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.containsRecipient(recipientAddress);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::containsRecipient : Failed to return QueryFilter from containsRecipient method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void containsSender(Map<String, String> currentInstance, String senderAddress, Promise promise) {
+    public void containsSender(String senderAddress, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.containsSender(senderAddress);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::containsSender : Failed to return QueryFilter from containsSender method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void currencyEq(Map<String, String> currentInstance, String currencyName, Promise promise) {
+    public void currencyEq(String currencyName, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.currencyEq(currencyName);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::currencyEq : Failed to return QueryFilter from currencyEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void operationUidEq(Map<String, String> currentInstance, String operationUid, Promise promise) {
+    public void operationUidEq(String operationUid, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.operationUidEq(operationUid);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::operationUidEq : Failed to return QueryFilter from operationUidEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void operationUidNeq(Map<String, String> currentInstance, String operationUid, Promise promise) {
+    public void operationUidNeq(String operationUid, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.operationUidNeq(operationUid);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::operationUidNeq : Failed to return QueryFilter from operationUidNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void trustEq(Map<String, String> currentInstance, TrustLevel trust, Promise promise) {
+    public void trustEq(TrustLevel trust, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.trustEq(trust);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::trustEq : Failed to return QueryFilter from trustEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void trustNeq(Map<String, String> currentInstance, TrustLevel trust, Promise promise) {
+    public void trustNeq(TrustLevel trust, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.trustNeq(trust);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::trustNeq : Failed to return QueryFilter from trustNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesEq(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesEq(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesEq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesEq : Failed to return QueryFilter from feesEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesNeq(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesNeq(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesNeq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesNeq : Failed to return QueryFilter from feesNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesGte(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesGte(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesGte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesGte : Failed to return QueryFilter from feesGte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesGt(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesGt(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesGt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesGt : Failed to return QueryFilter from feesGt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesLte(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesLte(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesLte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesLte : Failed to return QueryFilter from feesLte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void feesLt(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void feesLt(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.feesLt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::feesLt : Failed to return QueryFilter from feesLt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountEq(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountEq(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountEq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountEq : Failed to return QueryFilter from amountEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountNeq(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountNeq(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountNeq(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountNeq : Failed to return QueryFilter from amountNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountGte(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountGte(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountGte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountGte : Failed to return QueryFilter from amountGte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountGt(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountGt(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountGt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountGt : Failed to return QueryFilter from amountGt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountLte(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountLte(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountLte(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountLte : Failed to return QueryFilter from amountLte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void amountLt(Map<String, String> currentInstance, HashMap <String, String> amount, Promise promise) {
+    public void amountLt(HashMap <String, String> amount, Promise promise) {
         try
         {
+            RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
             QueryFilter javaResult = QueryFilter.amountLt(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::amountLt : Failed to return QueryFilter from amountLt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightEq(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightEq(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightEq(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightEq : Failed to return QueryFilter from blockHeightEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightNeq(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightNeq(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightNeq(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightNeq : Failed to return QueryFilter from blockHeightNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightGte(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightGte(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightGte(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightGte : Failed to return QueryFilter from blockHeightGte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightGt(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightGt(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightGt(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightGt : Failed to return QueryFilter from blockHeightGt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightLte(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightLte(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightLte(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightLte : Failed to return QueryFilter from blockHeightLte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightLt(Map<String, String> currentInstance, long blockHeight, Promise promise) {
+    public void blockHeightLt(long blockHeight, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightLt(blockHeight);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightLt : Failed to return QueryFilter from blockHeightLt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void blockHeightIsNull(Map<String, String> currentInstance, Promise promise) {
+    public void blockHeightIsNull(Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.blockHeightIsNull();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::blockHeightIsNull : Failed to return QueryFilter from blockHeightIsNull method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void operationTypeEq(Map<String, String> currentInstance, OperationType operationType, Promise promise) {
+    public void operationTypeEq(OperationType operationType, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.operationTypeEq(operationType);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::operationTypeEq : Failed to return QueryFilter from operationTypeEq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void operationTypeNeq(Map<String, String> currentInstance, OperationType operationType, Promise promise) {
+    public void operationTypeNeq(OperationType operationType, Promise promise) {
         try
         {
             QueryFilter javaResult = QueryFilter.operationTypeNeq(operationType);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::operationTypeNeq : Failed to return QueryFilter from operationTypeNeq method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -1020,37 +792,25 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreQueryFilter instance passed to opAnd method");
-            }
+            QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opAnd(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::opAnd : Failed to return QueryFilter from opAnd method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -1058,37 +818,25 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreQueryFilter instance passed to opOr method");
-            }
+            QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opOr(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::opOr : Failed to return QueryFilter from opOr method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -1096,37 +844,25 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreQueryFilter instance passed to opAndNot method");
-            }
+            QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opAndNot(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::opAndNot : Failed to return QueryFilter from opAndNot method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -1134,37 +870,25 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            QueryFilter currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreQueryFilter instance passed to opOrNot method");
-            }
+            QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = (QueryFilter)rctParam_filter.getJavaObjects.get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
             QueryFilter javaResult = currentInstanceObj.opOrNot(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreQueryFilter");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreQueryFilter::opOrNot : Failed to return QueryFilter from opOrNot method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

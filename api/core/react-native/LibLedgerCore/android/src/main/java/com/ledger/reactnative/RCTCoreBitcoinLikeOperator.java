@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -35,7 +36,7 @@ public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeOperator";
     }
-    public void init(String operatorName, byte value ,Promise promise) {
+    public void init(String operatorName, byte value, Promise promise) {
         BitcoinLikeOperator javaResult = new BitcoinLikeOperator(operatorName, value);
 
         String uuid = UUID.randomUUID().toString();

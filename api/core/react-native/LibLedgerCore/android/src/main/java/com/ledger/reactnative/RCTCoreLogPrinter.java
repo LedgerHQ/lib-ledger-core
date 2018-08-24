@@ -4,6 +4,7 @@
 package com.ledger.reactnative;
 
 import co.ledger.core.ExecutionContext;
+import co.ledger.core.ExecutionContextImpl;
 import co.ledger.core.LogPrinterImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -52,19 +53,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printError method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printError(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -76,19 +72,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printInfo method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printInfo(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -100,19 +91,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printDebug method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printDebug(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -124,19 +110,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printWarning method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printWarning(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -148,19 +129,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printApdu method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printApdu(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -172,19 +148,14 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to printCriticalError method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.printCriticalError(message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -196,35 +167,23 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LogPrinterImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogPrinter instance passed to getContext method");
-            }
+            LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             ExecutionContext javaResult = currentInstanceObj.getContext();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, (ExecutionContextImpl)javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreExecutionContext");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreLogPrinter::getContext : Failed to return ExecutionContext from getContext method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

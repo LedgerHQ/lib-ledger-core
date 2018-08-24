@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure of a block in the blockchain */
 public class RCTCoreBlock extends ReactContextBaseJavaModule {
@@ -37,7 +38,7 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBlock";
     }
-    public void init(String blockHash, String uid, Date time, String currencyName, long height ,Promise promise) {
+    public void init(String blockHash, String uid, Date time, String currencyName, long height, Promise promise) {
         Block javaResult = new Block(blockHash, uid, time, currencyName, height);
 
         String uuid = UUID.randomUUID().toString();

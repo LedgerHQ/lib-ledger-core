@@ -43,25 +43,18 @@ public class RCTCoreLedgerCore extends ReactContextBaseJavaModule {
      * @return The version of the library (e.g. '1.0.1')
      */
     @ReactMethod
-    public void getStringVersion(Map<String, String> currentInstance, Promise promise) {
+    public void getStringVersion(Promise promise) {
         try
         {
             String javaResult = LedgerCore.getStringVersion();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreLedgerCore::getStringVersion : Failed to return String from getStringVersion method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -69,25 +62,18 @@ public class RCTCoreLedgerCore extends ReactContextBaseJavaModule {
      * @return The integer version of the library
      */
     @ReactMethod
-    public void getIntVersion(Map<String, String> currentInstance, Promise promise) {
+    public void getIntVersion(Promise promise) {
         try
         {
             int javaResult = LedgerCore.getIntVersion();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreLedgerCore::getIntVersion : Failed to return int from getIntVersion method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

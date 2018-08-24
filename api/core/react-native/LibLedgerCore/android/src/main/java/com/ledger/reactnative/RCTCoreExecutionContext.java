@@ -49,21 +49,16 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ExecutionContextImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreExecutionContext instance passed to execute method");
-            }
+            ExecutionContextImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
-            Runnable javaParam_0 = (Runnable)rctParam_runnable.getJavaObjects.get(runnable.get("uid"));
+            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.get("uid"));
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -76,21 +71,16 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            ExecutionContextImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreExecutionContext instance passed to delay method");
-            }
+            ExecutionContextImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
-            Runnable javaParam_0 = (Runnable)rctParam_runnable.getJavaObjects.get(runnable.get("uid"));
+            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.get("uid"));
             currentInstanceObj.delay(javaParam_0, millis);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

@@ -5,7 +5,9 @@ package com.ledger.reactnative;
 
 import co.ledger.core.EventBus;
 import co.ledger.core.EventReceiver;
+import co.ledger.core.EventReceiverImpl;
 import co.ledger.core.ExecutionContext;
+import co.ledger.core.ExecutionContextImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -51,23 +53,18 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            EventBus currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEventBus instance passed to subscribe method");
-            }
+            EventBus currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreExecutionContext rctParam_context = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            ExecutionContext javaParam_0 = (ExecutionContext)rctParam_context.getJavaObjects.get(context.get("uid"));
+            ExecutionContext javaParam_0 = rctParam_context.getJavaObjects().get(context.get("uid"));
             RCTCoreEventReceiver rctParam_receiver = this.reactContext.getNativeModule(RCTCoreEventReceiver.class);
-            EventReceiver javaParam_1 = (EventReceiver)rctParam_receiver.getJavaObjects.get(receiver.get("uid"));
+            EventReceiver javaParam_1 = rctParam_receiver.getJavaObjects().get(receiver.get("uid"));
             currentInstanceObj.subscribe(javaParam_0, javaParam_1);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -79,21 +76,16 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            EventBus currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEventBus instance passed to unsubscribe method");
-            }
+            EventBus currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEventReceiver rctParam_receiver = this.reactContext.getNativeModule(RCTCoreEventReceiver.class);
-            EventReceiver javaParam_0 = (EventReceiver)rctParam_receiver.getJavaObjects.get(receiver.get("uid"));
+            EventReceiver javaParam_0 = rctParam_receiver.getJavaObjects().get(receiver.get("uid"));
             currentInstanceObj.unsubscribe(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

@@ -44,19 +44,14 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketConnection currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketConnection instance passed to onConnect method");
-            }
+            WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.onConnect(connectionId);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -64,19 +59,14 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketConnection currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketConnection instance passed to onClose method");
-            }
+            WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.onClose();
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -84,19 +74,14 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketConnection currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketConnection instance passed to onMessage method");
-            }
+            WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.onMessage(data);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -104,19 +89,14 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketConnection currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketConnection instance passed to onError method");
-            }
+            WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.onError(code, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -124,30 +104,18 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketConnection currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketConnection instance passed to getConnectionId method");
-            }
+            WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getConnectionId();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreWebSocketConnection::getConnectionId : Failed to return int from getConnectionId method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

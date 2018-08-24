@@ -44,21 +44,16 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketClientImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketClient instance passed to connect method");
-            }
+            WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_1 = (WebSocketConnection)rctParam_connection.getJavaObjects.get(connection.get("uid"));
+            WebSocketConnection javaParam_1 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
             currentInstanceObj.connect(url, javaParam_1);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -66,21 +61,16 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketClientImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketClient instance passed to send method");
-            }
+            WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_0 = (WebSocketConnection)rctParam_connection.getJavaObjects.get(connection.get("uid"));
+            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
             currentInstanceObj.send(javaParam_0, data);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -88,21 +78,16 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            WebSocketClientImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreWebSocketClient instance passed to disconnect method");
-            }
+            WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_0 = (WebSocketConnection)rctParam_connection.getJavaObjects.get(connection.get("uid"));
+            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
             currentInstanceObj.disconnect(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

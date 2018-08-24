@@ -49,19 +49,14 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLock instance passed to lock method");
-            }
+            LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.lock();
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -75,30 +70,18 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLock instance passed to tryLock method");
-            }
+            LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.tryLock();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreLock::tryLock : Failed to return boolean from tryLock method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**Release Lock ownership by calling thread */
@@ -107,19 +90,14 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            LockImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLock instance passed to unlock method");
-            }
+            LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.unlock();
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

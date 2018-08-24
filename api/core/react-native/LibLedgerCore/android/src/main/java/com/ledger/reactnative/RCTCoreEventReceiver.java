@@ -49,21 +49,16 @@ public class RCTCoreEventReceiver extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            EventReceiverImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreEventReceiver instance passed to onEvent method");
-            }
+            EventReceiverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
-            Event javaParam_0 = (Event)rctParam_event.getJavaObjects.get(event.get("uid"));
+            Event javaParam_0 = rctParam_event.getJavaObjects().get(event.get("uid"));
             currentInstanceObj.onEvent(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

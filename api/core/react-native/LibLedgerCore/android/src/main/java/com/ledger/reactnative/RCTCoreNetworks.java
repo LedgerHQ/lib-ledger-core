@@ -40,30 +40,23 @@ public class RCTCoreNetworks extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void bitcoin(Map<String, String> currentInstance, Promise promise) {
+    public void bitcoin(Promise promise) {
         try
         {
             BitcoinLikeNetworkParameters javaResult = Networks.bitcoin();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBitcoinLikeNetworkParameters");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreNetworks::bitcoin : Failed to return BitcoinLikeNetworkParameters from bitcoin method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

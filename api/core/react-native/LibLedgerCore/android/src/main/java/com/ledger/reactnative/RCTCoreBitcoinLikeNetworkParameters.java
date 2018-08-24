@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -36,7 +37,7 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     {
         return "RCTCoreBitcoinLikeNetworkParameters";
     }
-    public void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs ,Promise promise) {
+    public void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs, Promise promise) {
         BitcoinLikeNetworkParameters javaResult = new BitcoinLikeNetworkParameters(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
 
         String uuid = UUID.randomUUID().toString();

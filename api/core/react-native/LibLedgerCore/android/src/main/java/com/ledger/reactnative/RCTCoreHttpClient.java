@@ -49,21 +49,16 @@ public class RCTCoreHttpClient extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpClientImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpClient instance passed to execute method");
-            }
+            HttpClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreHttpRequest rctParam_request = this.reactContext.getNativeModule(RCTCoreHttpRequest.class);
-            HttpRequest javaParam_0 = (HttpRequest)rctParam_request.getJavaObjects.get(request.get("uid"));
+            HttpRequest javaParam_0 = rctParam_request.getJavaObjects().get(request.get("uid"));
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

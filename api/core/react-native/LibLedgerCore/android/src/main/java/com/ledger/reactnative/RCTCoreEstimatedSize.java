@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -35,7 +36,7 @@ public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
     {
         return "RCTCoreEstimatedSize";
     }
-    public void init(int Min, int Max ,Promise promise) {
+    public void init(int Min, int Max, Promise promise) {
         EstimatedSize javaResult = new EstimatedSize(Min, Max);
 
         String uuid = UUID.randomUUID().toString();

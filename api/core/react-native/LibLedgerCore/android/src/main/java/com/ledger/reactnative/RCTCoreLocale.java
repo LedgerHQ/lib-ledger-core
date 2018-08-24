@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RCTCoreLocale extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -35,7 +36,7 @@ public class RCTCoreLocale extends ReactContextBaseJavaModule {
     {
         return "RCTCoreLocale";
     }
-    public void init(String DecimalSeparator, String ThousandsSeparator, boolean IsPrefixedByCurrencySymbol ,Promise promise) {
+    public void init(String DecimalSeparator, String ThousandsSeparator, boolean IsPrefixedByCurrencySymbol, Promise promise) {
         Locale javaResult = new Locale(DecimalSeparator, ThousandsSeparator, IsPrefixedByCurrencySymbol);
 
         String uuid = UUID.randomUUID().toString();

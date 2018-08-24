@@ -49,35 +49,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setUsername method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setUsername(username);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setUsername : Failed to return DatabaseBackend from setUsername method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -90,35 +78,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setPassword method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setPassword(pwd);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setPassword : Failed to return DatabaseBackend from setPassword method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -131,35 +107,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setHost method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setHost(host);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setHost : Failed to return DatabaseBackend from setHost method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -172,35 +136,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setHostAddr method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setHostAddr(hostAddr);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setHostAddr : Failed to return DatabaseBackend from setHostAddr method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -213,35 +165,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setPort method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setPort(port);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setPort : Failed to return DatabaseBackend from setPort method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -254,35 +194,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setOptions method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setOptions(opts);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setOptions : Failed to return DatabaseBackend from setOptions method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -295,35 +223,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setSslMode method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setSslMode(mode);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setSslMode : Failed to return DatabaseBackend from setSslMode method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -336,35 +252,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setKerberosName method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setKerberosName(name);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setKerberosName : Failed to return DatabaseBackend from setKerberosName method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**TODO */
@@ -373,35 +277,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setService method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setService(service);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setService : Failed to return DatabaseBackend from setService method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -409,35 +301,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to setConnectionPoolSize method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setConnectionPoolSize(size);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::setConnectionPoolSize : Failed to return DatabaseBackend from setConnectionPoolSize method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -445,35 +325,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to enableQueryLogging method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.enableQueryLogging(enable);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::enableQueryLogging : Failed to return DatabaseBackend from enableQueryLogging method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -485,30 +353,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getUsername method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getUsername();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getUsername : Failed to return String from getUsername method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -520,30 +376,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getPassword method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getPassword();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getPassword : Failed to return String from getPassword method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -555,30 +399,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getHost method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getHost();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getHost : Failed to return String from getHost method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -590,30 +422,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getHostAddr method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getHostAddr();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getHostAddr : Failed to return String from getHostAddr method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -625,30 +445,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getPort method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getPort();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getPort : Failed to return String from getPort method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -660,30 +468,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getOptions method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getOptions();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getOptions : Failed to return String from getOptions method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -695,30 +491,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getSslMode method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getSslMode();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getSslMode : Failed to return String from getSslMode method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -730,30 +514,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getKerberosName method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getKerberosName();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getKerberosName : Failed to return String from getKerberosName method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**TODO */
@@ -762,30 +534,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getService method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getService();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getService : Failed to return String from getService method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -793,30 +553,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to getConnectionPoolSize method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getConnectionPoolSize();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getConnectionPoolSize : Failed to return int from getConnectionPoolSize method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -824,30 +572,18 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DatabaseBackend currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDatabaseBackend instance passed to isLoggingEnabled method");
-            }
+            DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isLoggingEnabled();
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::isLoggingEnabled : Failed to return boolean from isLoggingEnabled method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -855,30 +591,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object
      */
     @ReactMethod
-    public void getSqlite3Backend(Map<String, String> currentInstance, Promise promise) {
+    public void getSqlite3Backend(Promise promise) {
         try
         {
             DatabaseBackend javaResult = DatabaseBackend.getSqlite3Backend();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getSqlite3Backend : Failed to return DatabaseBackend from getSqlite3Backend method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -886,30 +615,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object
      */
     @ReactMethod
-    public void getPostgreSQLBackend(Map<String, String> currentInstance, Promise promise) {
+    public void getPostgreSQLBackend(Promise promise) {
         try
         {
             DatabaseBackend javaResult = DatabaseBackend.getPostgreSQLBackend();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDatabaseBackend");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDatabaseBackend::getPostgreSQLBackend : Failed to return DatabaseBackend from getPostgreSQLBackend method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

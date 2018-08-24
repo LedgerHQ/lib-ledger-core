@@ -49,30 +49,18 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getStatusCode method");
-            }
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getStatusCode();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpUrlConnection::getStatusCode : Failed to return int from getStatusCode method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -84,30 +72,18 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getStatusText method");
-            }
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getStatusText();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpUrlConnection::getStatusText : Failed to return String from getStatusText method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -119,30 +95,18 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to getHeaders method");
-            }
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             HashMap<String, String> javaResult = currentInstanceObj.getHeaders();
             Map<String, HashMap<String, String>> result = new HashMap<String, HashMap<String, String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpUrlConnection::getHeaders : Failed to return HashMap<String, String> from getHeaders method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -154,35 +118,23 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpUrlConnection instance passed to readBody method");
-            }
+            HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             HttpReadBodyResult javaResult = currentInstanceObj.readBody();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreHttpReadBodyResult rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreHttpReadBodyResult.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreHttpReadBodyResult");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpUrlConnection::readBody : Failed to return HttpReadBodyResult from readBody method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

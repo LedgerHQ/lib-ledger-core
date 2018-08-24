@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure of cryptocurrency */
 public class RCTCoreCurrency extends ReactContextBaseJavaModule {
@@ -39,16 +40,16 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
     {
         return "RCTCoreCurrency";
     }
-    public void init(WalletType walletType, String name, int bip44CoinType, String paymentUriScheme, ArrayList <HashMap <String, String>> units, Optional<HashMap <String, String>> bitcoinLikeNetworkParameters ,Promise promise) {
-        ArrayList<HashMap <String, String>> javaParam_4 = new ArrayList<HashMap <String, String>>();
+    public void init(WalletType walletType, String name, int bip44CoinType, String paymentUriScheme, ArrayList <HashMap <String, String>> units, Optional<HashMap <String, String>> bitcoinLikeNetworkParameters, Promise promise) {
+        ArrayList<CurrencyUnit> javaParam_4 = new ArrayList<CurrencyUnit>();
         for (HashMap <String, String> units_elem : units)
         {
             RCTCoreCurrencyUnit rctParam_units_elem = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
-            CurrencyUnit javaParam_4_elem = (CurrencyUnit)rctParam_units_elem.getJavaObjects.get(units_elem.get("uid"));
+            CurrencyUnit javaParam_4_elem = rctParam_units_elem.getJavaObjects().get(units_elem.get("uid"));
             javaParam_4.add(javaParam_4_elem);
         }
         RCTCoreBitcoinLikeNetworkParameters rctParam_bitcoinLikeNetworkParameters = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
-        BitcoinLikeNetworkParameters javaParam_5 = (BitcoinLikeNetworkParameters)rctParam_bitcoinLikeNetworkParameters.getJavaObjects.get(bitcoinLikeNetworkParameters.get("uid"));
+        BitcoinLikeNetworkParameters javaParam_5 = rctParam_bitcoinLikeNetworkParameters.getJavaObjects().get(bitcoinLikeNetworkParameters.get().get("uid"));
         Currency javaResult = new Currency(walletType, name, bip44CoinType, paymentUriScheme, javaParam_4, javaParam_5);
 
         String uuid = UUID.randomUUID().toString();

@@ -49,30 +49,18 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getHash method");
-            }
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getHash();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeBlock::getHash : Failed to return String from getHash method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -84,30 +72,18 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getHeight method");
-            }
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getHeight();
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeBlock::getHeight : Failed to return long from getHeight method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -119,30 +95,18 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBitcoinLikeBlock instance passed to getTime method");
-            }
+            BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getTime();
             Map<String, Date> result = new HashMap<String, Date>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBitcoinLikeBlock::getTime : Failed to return Date from getTime method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

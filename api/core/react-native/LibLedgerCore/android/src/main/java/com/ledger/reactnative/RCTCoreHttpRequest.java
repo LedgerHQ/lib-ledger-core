@@ -7,6 +7,7 @@ import co.ledger.core.Error;
 import co.ledger.core.HttpMethod;
 import co.ledger.core.HttpRequest;
 import co.ledger.core.HttpUrlConnection;
+import co.ledger.core.HttpUrlConnectionImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -51,30 +52,18 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpRequest instance passed to getMethod method");
-            }
+            HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             HttpMethod javaResult = currentInstanceObj.getMethod();
             Map<String, HttpMethod> result = new HashMap<String, HttpMethod>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpRequest::getMethod : Failed to return HttpMethod from getMethod method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -86,30 +75,18 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpRequest instance passed to getHeaders method");
-            }
+            HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             HashMap<String, String> javaResult = currentInstanceObj.getHeaders();
             Map<String, HashMap<String, String>> result = new HashMap<String, HashMap<String, String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpRequest::getHeaders : Failed to return HashMap<String, String> from getHeaders method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -121,30 +98,18 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpRequest instance passed to getBody method");
-            }
+            HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getBody();
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpRequest::getBody : Failed to return byte[] from getBody method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -156,30 +121,18 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpRequest instance passed to getUrl method");
-            }
+            HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getUrl();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreHttpRequest::getUrl : Failed to return String from getUrl method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -192,23 +145,18 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            HttpRequest currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreHttpRequest instance passed to complete method");
-            }
+            HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreHttpUrlConnection rctParam_response = this.reactContext.getNativeModule(RCTCoreHttpUrlConnection.class);
-            HttpUrlConnection javaParam_0 = (HttpUrlConnection)rctParam_response.getJavaObjects.get(response.get("uid"));
+            HttpUrlConnection javaParam_0 = rctParam_response.getJavaObjects().get(response.get().get("uid"));
             RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
-            Error javaParam_1 = (Error)rctParam_error.getJavaObjects.get(error.get("uid"));
+            Error javaParam_1 = rctParam_error.getJavaObjects().get(error.get().get("uid"));
             currentInstanceObj.complete(javaParam_0, javaParam_1);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**TODO */
 public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaModule {
@@ -36,7 +37,7 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     {
         return "RCTCoreExtendedKeyAccountCreationInfo";
     }
-    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys ,Promise promise) {
+    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys, Promise promise) {
         ExtendedKeyAccountCreationInfo javaResult = new ExtendedKeyAccountCreationInfo(index, owners, derivations, extendedKeys);
 
         String uuid = UUID.randomUUID().toString();

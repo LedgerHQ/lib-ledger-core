@@ -49,19 +49,14 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogger instance passed to d method");
-            }
+            Logger currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.d(tag, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -74,19 +69,14 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogger instance passed to i method");
-            }
+            Logger currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.i(tag, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -99,19 +89,14 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogger instance passed to e method");
-            }
+            Logger currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.e(tag, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -124,19 +109,14 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogger instance passed to w method");
-            }
+            Logger currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.w(tag, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -149,19 +129,14 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Logger currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreLogger instance passed to c method");
-            }
+            Logger currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.c(tag, message);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

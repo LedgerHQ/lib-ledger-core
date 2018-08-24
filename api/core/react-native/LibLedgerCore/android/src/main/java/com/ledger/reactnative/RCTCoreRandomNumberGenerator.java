@@ -49,30 +49,18 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomBytes method");
-            }
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getRandomBytes(size);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreRandomNumberGenerator::getRandomBytes : Failed to return byte[] from getRandomBytes method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -84,30 +72,18 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomInt method");
-            }
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getRandomInt();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreRandomNumberGenerator::getRandomInt : Failed to return int from getRandomInt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -119,30 +95,18 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomLong method");
-            }
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getRandomLong();
-            Map<String, long> result = new HashMap<String, long>();
+            Map<String, Long> result = new HashMap<String, Long>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreRandomNumberGenerator::getRandomLong : Failed to return long from getRandomLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -154,30 +118,18 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreRandomNumberGenerator instance passed to getRandomByte method");
-            }
+            RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte javaResult = currentInstanceObj.getRandomByte();
-            Map<String, byte> result = new HashMap<String, byte>();
+            Map<String, Byte> result = new HashMap<String, Byte>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreRandomNumberGenerator::getRandomByte : Failed to return byte from getRandomByte method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

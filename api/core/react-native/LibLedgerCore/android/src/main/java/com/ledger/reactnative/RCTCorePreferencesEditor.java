@@ -50,35 +50,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putString method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putString(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putString : Failed to return PreferencesEditor from putString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -92,35 +80,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putInt method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putInt(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putInt : Failed to return PreferencesEditor from putInt method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -134,35 +110,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putLong method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putLong(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putLong : Failed to return PreferencesEditor from putLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -176,35 +140,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putBoolean method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putBoolean(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putBoolean : Failed to return PreferencesEditor from putBoolean method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -218,35 +170,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putStringArray method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putStringArray(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putStringArray : Failed to return PreferencesEditor from putStringArray method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -260,35 +200,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to putData method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putData(key, value);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::putData : Failed to return PreferencesEditor from putData method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -301,35 +229,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to remove method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.remove(key);
 
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCorePreferencesEditor");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePreferencesEditor::remove : Failed to return PreferencesEditor from remove method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Persists the changes to the Preferences. */
@@ -338,19 +254,14 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PreferencesEditor currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePreferencesEditor instance passed to commit method");
-            }
+            PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             currentInstanceObj.commit();
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

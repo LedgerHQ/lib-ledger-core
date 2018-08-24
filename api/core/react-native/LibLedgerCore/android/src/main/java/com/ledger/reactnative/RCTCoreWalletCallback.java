@@ -28,11 +28,8 @@ public class RCTCoreWalletCallback extends WalletCallback {
     public static RCTCoreWalletCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreWalletCallback callback = new RCTCoreWalletCallback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -43,14 +40,14 @@ public class RCTCoreWalletCallback extends WalletCallback {
     public void onCallback(Wallet result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
             String uuid = UUID.randomUUID().toString();
             RCTCoreWallet rctImpl_result = this.reactContext.getNativeModule(RCTCoreWallet.class);
-            rctImpl_result.getJavaObjects.put(uuid, result);
-            Map<String, String> converted_result = new HashMap<String, String>();
+            rctImpl_result.getJavaObjects().put(uuid, result);
+            HashMap<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreWallet");
             converted_result.put("uid",uuid);
 
@@ -58,7 +55,7 @@ public class RCTCoreWalletCallback extends WalletCallback {
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

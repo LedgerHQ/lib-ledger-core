@@ -49,37 +49,25 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to add method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.add(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::add : Failed to return BigInt from add method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -92,37 +80,25 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to subtract method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.subtract(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::subtract : Failed to return BigInt from subtract method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -135,37 +111,25 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to multiply method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.multiply(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::multiply : Failed to return BigInt from multiply method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -178,37 +142,25 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to divide method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             BigInt javaResult = currentInstanceObj.divide(javaParam_0);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::divide : Failed to return BigInt from divide method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -221,42 +173,30 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to divideAndRemainder method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             ArrayList<BigInt> javaResult = currentInstanceObj.divideAndRemainder(javaParam_0);
 
             ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
-            for (HashMap <String, String> javaResult_elem : javaResult)
+            for (BigInt javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreBigInt rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-                rctImpl_javaResult_elem.getJavaObjects.put(uuid, javaResult_elem);
-                Map<String, String> result_elem = new HashMap<String, String>();
+                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                HashMap<String, String> result_elem = new HashMap<String, String>();
                 result_elem.put("type","RCTCoreBigInt");
                 result_elem.put("uid",uuid);
                 result.add(result_elem);
             }
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::divideAndRemainder : Failed to return ArrayList<BigInt> from divideAndRemainder method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -269,35 +209,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to pow method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             BigInt javaResult = currentInstanceObj.pow(exponent);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::pow : Failed to return BigInt from pow method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -312,30 +240,18 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to toDecimalString method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toDecimalString(precision, decimalSeparator, thousandSeparator);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::toDecimalString : Failed to return String from toDecimalString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -347,30 +263,18 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to toString method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString(radix);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::toString : Failed to return String from toString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -383,30 +287,18 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to intValue method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.intValue();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::intValue : Failed to return int from intValue method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -419,32 +311,20 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            BigInt currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreBigInt instance passed to compare method");
-            }
+            BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = (BigInt)rctParam_i.getJavaObjects.get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             int javaResult = currentInstanceObj.compare(javaParam_0);
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::compare : Failed to return int from compare method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -456,30 +336,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The created BigInt
      */
     @ReactMethod
-    public void fromDecimalString(Map<String, String> currentInstance, String s, int precision, String decimalSeparator, Promise promise) {
+    public void fromDecimalString(String s, int precision, String decimalSeparator, Promise promise) {
         try
         {
             BigInt javaResult = BigInt.fromDecimalString(s, precision, decimalSeparator);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::fromDecimalString : Failed to return BigInt from fromDecimalString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -489,30 +362,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The created BigInt
      */
     @ReactMethod
-    public void fromIntegerString(Map<String, String> currentInstance, String s, int radix, Promise promise) {
+    public void fromIntegerString(String s, int radix, Promise promise) {
         try
         {
             BigInt javaResult = BigInt.fromIntegerString(s, radix);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::fromIntegerString : Failed to return BigInt from fromIntegerString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -521,30 +387,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The created BigInt
      */
     @ReactMethod
-    public void fromLong(Map<String, String> currentInstance, long l, Promise promise) {
+    public void fromLong(long l, Promise promise) {
         try
         {
             BigInt javaResult = BigInt.fromLong(l);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreBigInt");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreBigInt::fromLong : Failed to return BigInt from fromLong method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

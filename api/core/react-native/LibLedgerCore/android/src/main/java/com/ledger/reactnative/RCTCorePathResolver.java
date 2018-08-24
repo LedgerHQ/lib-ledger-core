@@ -52,30 +52,18 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePathResolver instance passed to resolveDatabasePath method");
-            }
+            PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.resolveDatabasePath(path);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePathResolver::resolveDatabasePath : Failed to return String from resolveDatabasePath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -88,30 +76,18 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePathResolver instance passed to resolveLogFilePath method");
-            }
+            PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.resolveLogFilePath(path);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePathResolver::resolveLogFilePath : Failed to return String from resolveLogFilePath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -124,30 +100,18 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            PathResolverImpl currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCorePathResolver instance passed to resolvePreferencesPath method");
-            }
+            PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.resolvePreferencesPath(path);
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCorePathResolver::resolvePreferencesPath : Failed to return String from resolvePreferencesPath method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

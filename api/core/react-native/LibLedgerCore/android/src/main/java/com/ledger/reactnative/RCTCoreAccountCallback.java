@@ -28,11 +28,8 @@ public class RCTCoreAccountCallback extends AccountCallback {
     public static RCTCoreAccountCallback initWithPromise(Promise promise, ReactContext reactContext)
     {
         RCTCoreAccountCallback callback = new RCTCoreAccountCallback();
-        if(callback)
-        {
-            callback.promise = promise;
-            callback.reactContext = reactContext;
-        }
+        callback.promise = promise;
+        callback.reactContext = reactContext;
         return callback;
     }
     /**
@@ -43,14 +40,14 @@ public class RCTCoreAccountCallback extends AccountCallback {
     public void onCallback(Account result, Error error) {
         try
         {
-            if (error)
+            if (error.getMessage().length() > 0)
             {
-                this.promise.reject(ERROR, error.message);
+                this.promise.reject(error.toString(), error.getMessage());
             }
             String uuid = UUID.randomUUID().toString();
             RCTCoreAccount rctImpl_result = this.reactContext.getNativeModule(RCTCoreAccount.class);
-            rctImpl_result.getJavaObjects.put(uuid, result);
-            Map<String, String> converted_result = new HashMap<String, String>();
+            rctImpl_result.getJavaObjects().put(uuid, result);
+            HashMap<String, String> converted_result = new HashMap<String, String>();
             converted_result.put("type","RCTCoreAccount");
             converted_result.put("uid",uuid);
 
@@ -58,7 +55,7 @@ public class RCTCoreAccountCallback extends AccountCallback {
         }
         catch(Exception e)
         {
-            self.promise.reject(ERROR, e);
+            this.promise.reject(e.toString(), e.getMessage());
         }
     }
 }

@@ -45,30 +45,18 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getTrustWeight method");
-            }
+            TrustIndicator currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getTrustWeight();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreTrustIndicator::getTrustWeight : Failed to return int from getTrustWeight method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -76,30 +64,18 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getTrustLevel method");
-            }
+            TrustIndicator currentInstanceObj = this.javaObjects.get(sUid);
 
             TrustLevel javaResult = currentInstanceObj.getTrustLevel();
             Map<String, TrustLevel> result = new HashMap<String, TrustLevel>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreTrustIndicator::getTrustLevel : Failed to return TrustLevel from getTrustLevel method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -107,30 +83,18 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getConflictingOperationUids method");
-            }
+            TrustIndicator currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getConflictingOperationUids();
             Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreTrustIndicator::getConflictingOperationUids : Failed to return ArrayList<String> from getConflictingOperationUids method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
@@ -138,30 +102,18 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            TrustIndicator currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreTrustIndicator instance passed to getOrigin method");
-            }
+            TrustIndicator currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getOrigin();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreTrustIndicator::getOrigin : Failed to return String from getOrigin method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

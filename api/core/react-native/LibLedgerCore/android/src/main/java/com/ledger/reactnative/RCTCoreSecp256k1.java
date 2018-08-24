@@ -44,30 +44,23 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
      * @return Secp256k1 instance
      */
     @ReactMethod
-    public void createInstance(Map<String, String> currentInstance, Promise promise) {
+    public void createInstance(Promise promise) {
         try
         {
             Secp256k1 javaResult = Secp256k1.createInstance();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreSecp256k1 rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreSecp256k1.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreSecp256k1");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreSecp256k1::createInstance : Failed to return Secp256k1 from createInstance method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -81,30 +74,18 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreSecp256k1 instance passed to computePubKey method");
-            }
+            Secp256k1 currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.computePubKey(privKey, compress);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreSecp256k1::computePubKey : Failed to return byte[] from computePubKey method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -118,30 +99,18 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreSecp256k1 instance passed to sign method");
-            }
+            Secp256k1 currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.sign(privKey, data);
             Map<String, byte[]> result = new HashMap<String, byte[]>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreSecp256k1::sign : Failed to return byte[] from sign method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -156,57 +125,38 @@ public class RCTCoreSecp256k1 extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            Secp256k1 currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreSecp256k1 instance passed to verify method");
-            }
+            Secp256k1 currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.verify(data, signature, pubKey);
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreSecp256k1::verify : Failed to return boolean from verify method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void newInstance(Map<String, String> currentInstance, Promise promise) {
+    public void newInstance(Promise promise) {
         try
         {
             Secp256k1 javaResult = Secp256k1.newInstance();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreSecp256k1 rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreSecp256k1.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreSecp256k1");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreSecp256k1::newInstance : Failed to return Secp256k1 from newInstance method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

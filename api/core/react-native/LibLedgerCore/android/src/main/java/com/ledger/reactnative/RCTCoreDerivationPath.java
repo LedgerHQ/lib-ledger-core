@@ -44,30 +44,18 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to getDepth method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getDepth();
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::getDepth : Failed to return int from getDepth method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Get the child num at the given index in the path. */
@@ -76,30 +64,18 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to getChildNum method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getChildNum(index);
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::getChildNum : Failed to return int from getChildNum method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -111,30 +87,18 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to getUnhardenedChildNum method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getUnhardenedChildNum(index);
-            Map<String, int> result = new HashMap<String, int>();
+            Map<String, Integer> result = new HashMap<String, Integer>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::getUnhardenedChildNum : Failed to return int from getUnhardenedChildNum method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Return true if the given index in the path is an hardened child num. */
@@ -143,30 +107,18 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to isHardened method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isHardened(index);
-            Map<String, boolean> result = new HashMap<String, boolean>();
+            Map<String, Boolean> result = new HashMap<String, Boolean>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::isHardened : Failed to return boolean from isHardened method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Serialize the given path to a human readable string like "44'/0'/0'/0/0" */
@@ -175,30 +127,18 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to toString method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString();
             Map<String, String> result = new HashMap<String, String>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::toString : Failed to return String from toString method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /**
@@ -210,35 +150,23 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to getParent method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             DerivationPath javaResult = currentInstanceObj.getParent();
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDerivationPath");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::getParent : Failed to return DerivationPath from getParent method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     /** Return an array where which item is a child num of the path. */
@@ -247,57 +175,38 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         try
         {
             String sUid = currentInstance.get("uid");
-            String sType = currentInstance.get("type");
 
-            DerivationPath currentInstanceObj = this.javaObjects.get("uid");
-            if (!currentInstanceObj)
-            {
-                throw new Exception("Wrong RCTCoreDerivationPath instance passed to toArray method");
-            }
+            DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<Integer> javaResult = currentInstanceObj.toArray();
             Map<String, ArrayList<Integer>> result = new HashMap<String, ArrayList<Integer>>();
             result.put("value", javaResult);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::toArray : Failed to return ArrayList<Integer> from toArray method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
     @ReactMethod
-    public void parse(Map<String, String> currentInstance, String path, Promise promise) {
+    public void parse(String path, Promise promise) {
         try
         {
             DerivationPath javaResult = DerivationPath.parse(path);
 
             String uuid = UUID.randomUUID().toString();
             RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-            rctImpl_javaResult.getJavaObjects.put(uuid, javaResult);
-            Map<String, String> result = new HashMap<String, String>();
+            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            HashMap<String, String> result = new HashMap<String, String>();
             result.put("type","RCTCoreDerivationPath");
             result.put("uid",uuid);
 
-            if(result)
-            {
-                promise.resolve(result);
-            }
-            else
-            {
-                throw new Exception("RCTCoreDerivationPath::parse : Failed to return DerivationPath from parse method");
-            }
+            promise.resolve(result);
         }
         catch(Exception e)
         {
-            promise.reject(ERROR, e);
+            promise.reject(e.toString(), e.getMessage());
         }
     }
 }

@@ -18,6 +18,7 @@ copy_sources:
 	cp ../../../../../../core/src/utils/optional.* sources/utils
 	cp -r  ../../../../../../core/src/api sources
 	cp ../../../../src/java/* sources
+	cp ../../../../src/java/* android/src/main/java/com/ledger/binding
 
 GypAndroid.mk: copy_sources
 	ANDROID_BUILD_TOP=$(ANDROID_NDK_HOME) PYTHONPATH=../../../../../../tools/gyp/pylib $(which ndk-build) ../../../../../../tools/gyp/gyp --depth=. -f "./android.py" -DOS=android --root-target=lib-binding -Icommon.gypi binding.gyp 

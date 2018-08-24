@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**Structure representing a prepared bitcoin transaction (ready to be used with device) */
 public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaModule {
@@ -37,19 +38,19 @@ public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaM
     {
         return "RCTCoreBitcoinLikePreparedTransaction";
     }
-    public void init(int version, ArrayList <HashMap <String, String>> inputs, ArrayList<String> paths, ArrayList <HashMap <String, String>> outputs, int lockTime ,Promise promise) {
-        ArrayList<HashMap <String, String>> javaParam_1 = new ArrayList<HashMap <String, String>>();
+    public void init(int version, ArrayList <HashMap <String, String>> inputs, ArrayList<String> paths, ArrayList <HashMap <String, String>> outputs, int lockTime, Promise promise) {
+        ArrayList<BitcoinLikeOutput> javaParam_1 = new ArrayList<BitcoinLikeOutput>();
         for (HashMap <String, String> inputs_elem : inputs)
         {
             RCTCoreBitcoinLikeOutput rctParam_inputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-            BitcoinLikeOutput javaParam_1_elem = (BitcoinLikeOutput)rctParam_inputs_elem.getJavaObjects.get(inputs_elem.get("uid"));
+            BitcoinLikeOutput javaParam_1_elem = rctParam_inputs_elem.getJavaObjects().get(inputs_elem.get("uid"));
             javaParam_1.add(javaParam_1_elem);
         }
-        ArrayList<HashMap <String, String>> javaParam_3 = new ArrayList<HashMap <String, String>>();
+        ArrayList<BitcoinLikeOutput> javaParam_3 = new ArrayList<BitcoinLikeOutput>();
         for (HashMap <String, String> outputs_elem : outputs)
         {
             RCTCoreBitcoinLikeOutput rctParam_outputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-            BitcoinLikeOutput javaParam_3_elem = (BitcoinLikeOutput)rctParam_outputs_elem.getJavaObjects.get(outputs_elem.get("uid"));
+            BitcoinLikeOutput javaParam_3_elem = rctParam_outputs_elem.getJavaObjects().get(outputs_elem.get("uid"));
             javaParam_3.add(javaParam_3_elem);
         }
         BitcoinLikePreparedTransaction javaResult = new BitcoinLikePreparedTransaction(version, javaParam_1, paths, javaParam_3, lockTime);
