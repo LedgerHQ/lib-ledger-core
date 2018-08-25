@@ -49,77 +49,77 @@ RCT_REMAP_METHOD(init, initWithIdentifier:(nonnull NSString *)Identifier
     }
 }
 
-RCT_REMAP_METHOD(getIdentifier, getIdentifier:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getIdentifier, getIdentifier:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.Identifier};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getP2PKHVersion, getP2PKHVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getP2PKHVersion, getP2PKHVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.P2PKHVersion.description};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getP2SHVersion, getP2SHVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getP2SHVersion, getP2SHVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.P2SHVersion.description};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getXPUBVersion, getXPUBVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getXPUBVersion, getXPUBVersion:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.XPUBVersion.description};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getFeePolicy, getFeePolicy:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getFeePolicy, getFeePolicy:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.FeePolicy)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getDustAmount, getDustAmount:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getDustAmount, getDustAmount:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.DustAmount)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getMessagePrefix, getMessagePrefix:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getMessagePrefix, getMessagePrefix:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.MessagePrefix};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getUsesTimestampedTransaction, getUsesTimestampedTransaction:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getUsesTimestampedTransaction, getUsesTimestampedTransaction:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @(objcImpl.UsesTimestampedTransaction)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getTimestampDelay, getTimestampDelay:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getTimestampDelay, getTimestampDelay:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.TimestampDelay)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getSigHash, getSigHash:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getSigHash, getSigHash:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.SigHash.description};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getAdditionalBIPs, getAdditionalBIPs:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getAdditionalBIPs, getAdditionalBIPs:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeNetworkParameters *objcImpl = (LGBitcoinLikeNetworkParameters *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.AdditionalBIPs};

@@ -43,35 +43,35 @@ RCT_REMAP_METHOD(init, initWithIndex:(int)index
     }
 }
 
-RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.index)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.owners};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.derivations};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getPublicKeys, getPublicKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getPublicKeys, getPublicKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.publicKeys};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getChainCodes, getChainCodes:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getChainCodes, getChainCodes:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGAccountCreationInfo *objcImpl = (LGAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.chainCodes};

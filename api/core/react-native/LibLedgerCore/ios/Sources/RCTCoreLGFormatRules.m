@@ -40,14 +40,14 @@ RCT_REMAP_METHOD(init, initWithRoundingMode:(LGRoundingMode)roundingMode
     }
 }
 
-RCT_REMAP_METHOD(getRoundingMode, getRoundingMode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getRoundingMode, getRoundingMode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGFormatRules *objcImpl = (LGFormatRules *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.roundingMode)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getMaxNumberOfDecimals, getMaxNumberOfDecimals:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getMaxNumberOfDecimals, getMaxNumberOfDecimals:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGFormatRules *objcImpl = (LGFormatRules *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.maxNumberOfDecimals)};

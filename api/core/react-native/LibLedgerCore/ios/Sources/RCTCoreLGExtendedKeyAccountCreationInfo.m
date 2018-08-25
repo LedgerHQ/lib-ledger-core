@@ -42,28 +42,28 @@ RCT_REMAP_METHOD(init, initWithIndex:(int)index
     }
 }
 
-RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getIndex, getIndex:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.index)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getOwners, getOwners:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.owners};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getDerivations, getDerivations:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.derivations};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getExtendedKeys, getExtendedKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getExtendedKeys, getExtendedKeys:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGExtendedKeyAccountCreationInfo *objcImpl = (LGExtendedKeyAccountCreationInfo *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.extendedKeys};

@@ -42,28 +42,28 @@ RCT_REMAP_METHOD(init, initWithName:(nonnull NSString *)name
     }
 }
 
-RCT_REMAP_METHOD(getName, getName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getName, getName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.name};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getSymbol, getSymbol:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getSymbol, getSymbol:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.symbol};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.code};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getNumberOfDecimal, getNumberOfDecimal:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getNumberOfDecimal, getNumberOfDecimal:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrencyUnit *objcImpl = (LGCurrencyUnit *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.numberOfDecimal)};

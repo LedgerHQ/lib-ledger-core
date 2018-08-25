@@ -40,14 +40,14 @@ RCT_REMAP_METHOD(init, initWithOperatorName:(nonnull NSString *)operatorName
     }
 }
 
-RCT_REMAP_METHOD(getOperatorName, getOperatorName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getOperatorName, getOperatorName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeOperator *objcImpl = (LGBitcoinLikeOperator *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.operatorName};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getValue, getValue:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getValue, getValue:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGBitcoinLikeOperator *objcImpl = (LGBitcoinLikeOperator *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.value)};

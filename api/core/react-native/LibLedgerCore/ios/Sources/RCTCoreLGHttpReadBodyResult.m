@@ -46,7 +46,7 @@ RCT_REMAP_METHOD(init, initWithError:(nullable NSDictionary *)error
     }
 }
 
-RCT_REMAP_METHOD(getError, getError:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getError, getError:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGHttpReadBodyResult *objcImpl = (LGHttpReadBodyResult *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *data = (NSDictionary *)[self.implementationsData objectForKey:currentInstance[@"uid"]];
@@ -55,7 +55,7 @@ RCT_REMAP_METHOD(getError, getError:(NSDictionary *)currentInstance withResolver
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getData, getData:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getData, getData:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGHttpReadBodyResult *objcImpl = (LGHttpReadBodyResult *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.data};

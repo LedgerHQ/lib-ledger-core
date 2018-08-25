@@ -40,14 +40,14 @@ RCT_REMAP_METHOD(init, initWithMin:(int)Min
     }
 }
 
-RCT_REMAP_METHOD(getMin, getMin:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getMin, getMin:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGEstimatedSize *objcImpl = (LGEstimatedSize *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.Min)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getMax, getMax:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getMax, getMax:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGEstimatedSize *objcImpl = (LGEstimatedSize *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.Max)};

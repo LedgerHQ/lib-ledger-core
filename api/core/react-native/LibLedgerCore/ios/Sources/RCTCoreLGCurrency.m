@@ -64,35 +64,35 @@ RCT_REMAP_METHOD(init, initWithWalletType:(LGWalletType)walletType
     }
 }
 
-RCT_REMAP_METHOD(getWalletType, getWalletType:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getWalletType, getWalletType:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.walletType)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getName, getName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getName, getName:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.name};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getBip44CoinType, getBip44CoinType:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getBip44CoinType, getBip44CoinType:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.bip44CoinType)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getPaymentUriScheme, getPaymentUriScheme:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getPaymentUriScheme, getPaymentUriScheme:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.paymentUriScheme};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getUnits, getUnits:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getUnits, getUnits:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *data = (NSDictionary *)[self.implementationsData objectForKey:currentInstance[@"uid"]];
@@ -101,7 +101,7 @@ RCT_REMAP_METHOD(getUnits, getUnits:(NSDictionary *)currentInstance withResolver
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getBitcoinLikeNetworkParameters, getBitcoinLikeNetworkParameters:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getBitcoinLikeNetworkParameters, getBitcoinLikeNetworkParameters:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGCurrency *objcImpl = (LGCurrency *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *data = (NSDictionary *)[self.implementationsData objectForKey:currentInstance[@"uid"]];

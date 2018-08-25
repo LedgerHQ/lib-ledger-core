@@ -40,14 +40,14 @@ RCT_REMAP_METHOD(init, initWithCode:(LGErrorCode)code
     }
 }
 
-RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getCode, getCode:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGError *objcImpl = (LGError *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : @((int)objcImpl.code)};
     resolve(result);
 }
 
-RCT_REMAP_METHOD(getMessage, getMessage:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve)
+RCT_REMAP_METHOD(getMessage, getMessage:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)rejecter)
 {
     LGError *objcImpl = (LGError *)[self.objcImplementations objectForKey:currentInstance[@"uid"]];
     NSDictionary *result = @{@"value" : objcImpl.message};
