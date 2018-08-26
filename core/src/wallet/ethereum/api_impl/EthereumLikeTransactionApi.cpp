@@ -60,10 +60,10 @@ namespace ledger {
 
             auto currency = operation->getAccount()->getWallet()->getCurrency();
 
-            _gasPrice = std::make_shared<Amount>(currency, 0, tx.value);
-            _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasPrice);
+            _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
+            _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasLimit);
             _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());
-            _value = std::make_shared<Amount>(currency, 0, tx.gasLimit);
+            _value = std::make_shared<Amount>(currency, 0, tx.value);
 
             _nonce = std::make_shared<BigInt>(tx.nonce);
             _data = tx.inputData;

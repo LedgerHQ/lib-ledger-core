@@ -67,6 +67,7 @@ namespace ledger {
         private:
             std::string& _lastKey;
             EthereumLikeBlockchainExplorerTransaction* _transaction;
+
             std::stack<std::string> _hierarchy;
             uint32_t _arrayDepth;
             EthereumLikeBlockParser _blockParser;

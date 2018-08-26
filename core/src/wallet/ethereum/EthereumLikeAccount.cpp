@@ -38,6 +38,8 @@
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/ethereum/ERC20/erc20Tokens.h>
+#include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
@@ -120,22 +122,50 @@ namespace ledger {
                 };
 
                 if (isAccountAddress(_keychain, transaction.sender)) {
-                        operation.amount = transaction.value + operation.fees.getValueOr(BigInt::ZERO);
-                        operation.type = api::OperationType::SEND;
-                        operation.refreshUid();
-                        OperationDatabaseHelper::putOperation(sql, operation);
+                    operation.amount = transaction.value + operation.fees.getValueOr(BigInt::ZERO);
+                    operation.type = api::OperationType::SEND;
+                    operation.refreshUid();
+                    OperationDatabaseHelper::putOperation(sql, operation);
+                    updateERC20Accounts(operation);
                 }
 
                 if (isAccountAddress(_keychain, transaction.receiver)) {
-                        operation.amount = transaction.value;
-                        operation.type = api::OperationType::RECEIVE;
-                        operation.refreshUid();
-                        OperationDatabaseHelper::putOperation(sql, operation);
+                    operation.amount = transaction.value;
+                    operation.type = api::OperationType::RECEIVE;
+                    operation.refreshUid();
+                    OperationDatabaseHelper::putOperation(sql, operation);
+                    updateERC20Accounts(operation);
                 }
 
                 return result;
         }
 
+        void EthereumLikeAccount::updateERC20Accounts(const Operation &operation) {
+            auto transaction = operation.ethereumTransaction.getValue();
+            if (transaction.erc20.nonEmpty()) {
+                auto accountAddress = (operation.type == api::OperationType::SEND)? transaction.sender : transaction.receiver;
+                auto erc20Token = erc20Tokens::ALL_ERC20.at(transaction.erc20.getValue().contractAddress);
+                auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, operation, getWallet()->getCurrency());
+                //Check if account already exists
+                auto needNewAccount = true;
+                for (auto& account : _erc20LikeAccounts) {
+                    auto erc20Account = std::static_pointer_cast<ERC20LikeAccount>(account);
+                    if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
+                            erc20Account->getAddress() == accountAddress) {
+                        //Update account
+                        erc20Account->putOperation(erc20Operation);
+                        needNewAccount = false;
+                    }
+                }
+
+                //Create a new account
+                if (needNewAccount) {
+                    auto newAccount = std::make_shared<ERC20LikeAccount>(erc20Token, accountAddress);
+                    newAccount->putOperation(erc20Operation);
+                    _erc20LikeAccounts.push_back(newAccount);
+                }
+            }
+        }
         bool EthereumLikeAccount::putBlock(soci::session& sql,
                                            const EthereumLikeBlockchainExplorer::Block& block) {
                 Block abstractBlock;
@@ -354,6 +384,10 @@ namespace ledger {
                 return std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
         }
 
+        std::vector<std::shared_ptr<api::ERC20LikeAccount>>
+        EthereumLikeAccount::getERC20Accounts() {
+                return _erc20LikeAccounts;
+        }
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
 
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());

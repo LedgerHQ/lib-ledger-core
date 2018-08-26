@@ -49,6 +49,11 @@
 namespace ledger {
     namespace core {
 
+        struct ERC20Transaction {
+            std::string contractAddress;
+            BigInt value;
+        };
+
         struct EthereumLikeBlockchainExplorerTransaction {
             std::string hash;
             std::chrono::system_clock::time_point receivedAt;
@@ -63,6 +68,7 @@ namespace ledger {
             uint64_t confirmations;
             std::vector<uint8_t> inputData;
             uint64_t status;
+            Option<ERC20Transaction> erc20;
             EthereumLikeBlockchainExplorerTransaction() {
                 nonce = 0;
                 confirmations = 0;
@@ -82,6 +88,7 @@ namespace ledger {
                 this->nonce = cpy.nonce;
                 this->value = cpy.value;
                 this->status = cpy.status;
+                this->erc20 = cpy.erc20;
             }
 
         };
