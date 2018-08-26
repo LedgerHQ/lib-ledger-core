@@ -65,6 +65,11 @@ namespace ledger {
                 _blockParser.init(&_transaction->block.getValue());
             }
 
+            if (currentObject == "transfer_events") {
+                ERC20Transaction erc20Transaction;
+                _transaction->erc20 = Option<ERC20Transaction>(erc20Transaction);
+            }
+
             return true;
         }
 
@@ -153,6 +158,8 @@ namespace ledger {
                     _transaction->value = value;
                 } else if (_lastKey == "status") {
                     _transaction->status = value.toUint64();
+                } else if (_lastKey == "count") {
+                    _transaction->erc20.getValue().value = value;
                 }
                 return true;
             }
@@ -199,6 +206,8 @@ namespace ledger {
                     _transaction->nonce = result;
                 } else if (_lastKey == "input") {
                     _transaction->inputData = fromStringToBytes(value);
+                } else if (_lastKey == "contract") {
+                    _transaction->erc20.getValue().contractAddress = value;
                 }
                 return true;
             }

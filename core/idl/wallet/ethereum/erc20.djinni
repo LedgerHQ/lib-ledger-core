@@ -1,0 +1,45 @@
+@import "../../math/big_int.djinni"
+@import "../../ethereum/addresses.djinni"
+@import "../amount.djinni"
+
+#Representation of ERC20Tokens
+ERC20Token = record {
+	name: string;
+	symbol: string;
+	contractAddress: string;
+	numberOfDecimal: i32;
+}
+
+#ERC20-like accounts class
+ERC20LikeAccount = interface +c {
+	getToken(): ERC20Token;
+	getAddress(): string;
+	getBalance(): BigInt;
+	getOperations(): list<ERC20LikeOperation>;
+}
+
+#Class representing a Ethereum transaction
+ERC20LikeOperation = interface +c {
+	# Get the hash of the transaction.
+	getHash(): string;
+	# Get the nonce of the transaction : sequence number issued by originating EOA
+	getNonce(): i32;
+	# Get Gas price (in wei)
+	getGasPrice(): Amount;
+	# Get start gas (in wei) : maximum amount of gas the originator is willing to pay
+	getGasLimit(): Amount;
+	# Used gas (in wei) : used gas during this transaction
+	getUsedLimit(): Amount;
+	# Get source ETH address
+	getSender(): string;
+	# Get destination ETH address
+	getReceiver(): string;
+	# Get amount of ether to send
+	getValue(): Amount;
+	# Get binary data payload
+	getData(): binary;
+	# Get the time when the transaction was issued or the time of the block including
+	# this transaction
+	getTime(): date;
+	getOperationType(): OperationType;
+}

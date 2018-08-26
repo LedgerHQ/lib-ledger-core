@@ -1,6 +1,7 @@
 @import "../../errors.djinni"
 @import "../amount.djinni"
 @import "../../ethereum/addresses.djinni"
+@import "erc20.djinni"
 
 GetEthreumLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: EthereumLikeWallet, isCreated: bool);
@@ -96,6 +97,7 @@ EthereumLikeAccount = interface +c {
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     broadcastTransaction(transaction: EthereumLikeTransaction, callback: Callback<string>);
     buildTransaction(): EthereumLikeTransactionBuilder;
+    getERC20Accounts(): list<ERC20LikeAccount>;
 }
 
 

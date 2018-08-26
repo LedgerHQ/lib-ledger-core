@@ -10,6 +10,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class ERC20LikeAccount;
 class EthereumLikeTransaction;
 class EthereumLikeTransactionBuilder;
 class StringCallback;
@@ -24,6 +25,8 @@ public:
     virtual void broadcastTransaction(const std::shared_ptr<EthereumLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> buildTransaction() = 0;
+
+    virtual std::vector<std::shared_ptr<ERC20LikeAccount>> getERC20Accounts() = 0;
 };
 
 } } }  // namespace ledger::core::api

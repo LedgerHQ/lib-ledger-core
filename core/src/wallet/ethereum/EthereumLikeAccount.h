@@ -47,6 +47,7 @@
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
+#include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 
 namespace ledger {
     namespace core {
@@ -67,6 +68,7 @@ namespace ledger {
                                   const std::shared_ptr<const AbstractWallet>& wallet,
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
+            void updateERC20Accounts(const Operation &operation);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
@@ -94,6 +96,8 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeTransactionBuilder> buildTransaction() override;
 
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override ;
+
+            std::vector<std::shared_ptr<api::ERC20LikeAccount>> getERC20Accounts() override ;
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;
@@ -105,6 +109,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
+            std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
         };
     }
 }

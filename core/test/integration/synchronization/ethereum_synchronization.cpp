@@ -35,6 +35,7 @@
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
+#include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 
 #include <iostream>
 using namespace std;
@@ -80,7 +81,18 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto balance = wait(account->getBalance());
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+//                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+//                std::cout << "Ops: " << ops.size() << std::endl;
+//                for (auto& op : ops) {
+//                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+//                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+//                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+//                }
 
+                auto erc20Accounts = account->getERC20Accounts();
+                EXPECT_EQ(erc20Accounts.size(), 1);
+                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);
+                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
                 dispatcher->stop();
             });
 
