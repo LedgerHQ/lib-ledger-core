@@ -237,7 +237,18 @@ namespace ledger {
                             .unit("wei", 0, "wei")
                             .unit("ether", 18, "ETH")
                             .unit("kwei", 3, "kwei")
-                            .unit("mwei", 6, ",mwei")
+                            .unit("mwei", 6, "mwei")
+                            .unit("gwei", 9, "gwei");
+
+            const api::Currency ETHEREUM_ROPSTEN =
+                    Currency("ethereum_ropsten")
+                            .bip44(60)
+                            .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_ropsten"))
+                            .paymentUri("ethereum")
+                            .unit("wei", 0, "wei")
+                            .unit("ether", 18, "ETH")
+                            .unit("kwei", 3, "kwei")
+                            .unit("mwei", 6, "mwei")
                             .unit("gwei", 9, "gwei");
 
             const std::vector<api::Currency> ALL({
@@ -263,7 +274,8 @@ namespace ledger {
                 PIVX,
                 CLUBCOIN,
                 DECRED,
-                ETHEREUM
+                ETHEREUM,
+                ETHEREUM_ROPSTEN
             });
         }
     }

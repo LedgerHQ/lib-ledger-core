@@ -133,6 +133,12 @@ namespace ledger {
 
         bool EthereumLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
+
+                //TODO: this is temporary solution
+                if (currentObject == "trace_actions") {
+                    return true;
+                }
+
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
                 if (_lastKey == "gas_used") {
@@ -145,6 +151,8 @@ namespace ledger {
                     _transaction->confirmations = value.toUint64();
                 } else if (_lastKey == "value") {
                     _transaction->value = value;
+                } else if (_lastKey == "status") {
+                    _transaction->status = value.toUint64();
                 }
                 return true;
             }
@@ -152,6 +160,12 @@ namespace ledger {
 
         bool EthereumLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
+
+                //TODO: this is temporary solution
+                if (currentObject == "trace_actions") {
+                    return true;
+                }
+
                 std::string value(str, length);
 
                 auto fromStringToBytes = [] (const std::string &data) -> std::vector<uint8_t> {

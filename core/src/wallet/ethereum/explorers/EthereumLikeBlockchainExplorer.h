@@ -62,6 +62,7 @@ namespace ledger {
             Option<Block> block;
             uint64_t confirmations;
             std::vector<uint8_t> inputData;
+            uint64_t status;
             EthereumLikeBlockchainExplorerTransaction() {
                 nonce = 0;
                 confirmations = 0;
@@ -80,6 +81,7 @@ namespace ledger {
                 this->sender = cpy.sender;
                 this->nonce = cpy.nonce;
                 this->value = cpy.value;
+                this->status = cpy.status;
             }
 
         };
