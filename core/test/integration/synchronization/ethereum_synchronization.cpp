@@ -34,8 +34,10 @@
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
+#include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 
-
+#include <iostream>
+using namespace std;
 
 class EthereumLikeWalletSynchronization : public BaseFixture {
 
@@ -46,15 +48,15 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
-
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth01.explorer.theory.rbx.ledger.fr:8104");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_XPUB_INFO);
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_ROPSTEN_XPUB_INFO);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -74,6 +76,11 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+                auto balance = wait(account->getBalance());
+                cout<<" ETH Balance: "<<balance->toLong()<<endl;
+                auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+
                 dispatcher->stop();
             });
 

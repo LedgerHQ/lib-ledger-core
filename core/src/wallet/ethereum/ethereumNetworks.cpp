@@ -45,6 +45,15 @@ namespace ledger {
                             0
                     );
                     return ETHEREUM;
+                } else if (networkName == "ethereum_ropsten") {
+                    static const api::EthereumLikeNetworkParameters ETHEREUM_ROPSTEN(
+                            "eth_ropsten",
+                            "Ethereum signed message:\n",
+                            {0x04, 0x88, 0xb2, 0x1e},
+                            {},
+                            0
+                    );
+                    return ETHEREUM_ROPSTEN;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -52,7 +61,8 @@ namespace ledger {
 
             const std::vector<api::EthereumLikeNetworkParameters> ALL_ETH
             ({
-                     getEthLikeNetworkParameters("ethereum")
+                     getEthLikeNetworkParameters("ethereum"),
+                     getEthLikeNetworkParameters("ethereum_ropsten")
             });
         }
     }

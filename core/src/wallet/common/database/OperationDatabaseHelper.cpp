@@ -102,7 +102,10 @@ namespace ledger {
                 if (insert)
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operation.bitcoinTransaction.getValue().hash);
             } else if (operation.ethereumTransaction.nonEmpty()) {
-                auto btcTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
+                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
+                if (insert) {
+                    sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operation.ethereumTransaction.getValue().hash);
+                }
             }
         }
 

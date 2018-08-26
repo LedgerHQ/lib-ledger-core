@@ -47,8 +47,8 @@ namespace ledger {
                                                                          const std::string &hash,
                                                                          EthereumLikeBlockchainExplorerTransaction &tx) {
 
-            rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.nonce, tx.time, tx.input_data, tx.gas_price, "
-                                                "tx.gas_limit, tx.gas_used, tx.sender, tx.receiver, tx.confirmations, "
+            rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.nonce, tx.time, tx.input_data, tx.gas_price, "
+                                                "tx.gas_limit, tx.gas_used, tx.sender, tx.receiver, tx.confirmations, tx.status, "
                                                 "block.hash, block.height, block.time, block.currency_name "
                                                 "FROM ethereum_transactions AS tx "
                                                 "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
@@ -66,32 +66,33 @@ namespace ledger {
                                                                        const soci::row &row,
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
+            tx.value = BigInt(row.get<std::string>(1));
 
-            auto nonceBytes = hex::toByteArray(row.get<std::string>(1));
+            auto nonceBytes = hex::toByteArray(row.get<std::string>(2));
             auto shift = 0;
             for (auto& byte : nonceBytes) {
                 tx.nonce += byte << shift;
                 shift += 8;
             }
 
-            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
-            tx.inputData = hex::toByteArray(row.get<std::string>(3));
+            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
+            tx.inputData = hex::toByteArray(row.get<std::string>(4));
 
-            tx.gasPrice = BigInt(row.get<std::string>(4));
-            tx.gasLimit = BigInt(row.get<std::string>(5));
-            tx.gasUsed = BigInt(row.get<std::string>(6));
+            tx.gasPrice = BigInt(row.get<std::string>(5));
+            tx.gasLimit = BigInt(row.get<std::string>(6));
+            tx.gasUsed = BigInt(row.get<std::string>(7));
 
-            tx.receiver = row.get<std::string>(7);
-            tx.sender = row.get<std::string>(8);
+            tx.receiver = row.get<std::string>(8);
+            tx.sender = row.get<std::string>(9);
 
-            tx.confirmations = get_number<uint64_t>(row, 9);
-
-            if (row.get_indicator(10) != i_null) {
+            tx.confirmations = get_number<uint64_t>(row, 10);
+            tx.status = get_number<uint64_t>(row, 11);
+            if (row.get_indicator(12) != i_null) {
                 EthereumLikeBlockchainExplorer::Block block;
-                block.hash = row.get<std::string>(10);
-                block.height = get_number<uint64_t>(row, 11);
-                block.time = row.get<std::chrono::system_clock::time_point>(12);
-                block.currencyName = row.get<std::string>(13);
+                block.hash = row.get<std::string>(12);
+                block.height = get_number<uint64_t>(row, 13);
+                block.time = row.get<std::chrono::system_clock::time_point>(14);
+                block.currencyName = row.get<std::string>(15);
                 tx.block = block;
             }
 
@@ -133,19 +134,22 @@ namespace ledger {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
 
-                sql << "INSERT INTO ethereum_transactions VALUES(:tx_uid, :hash, :nonce, :block_uid, :time, :sender, :receiver, :input_data, :gasPrice, :gasLimit, :gasUsed, :confirmations)",
+                auto txInputData = hex::toString(tx.inputData);
+                sql << "INSERT INTO ethereum_transactions VALUES(:tx_uid, :hash, :nonce, :value, :block_uid, :time, :sender, :receiver, :input_data, :gasPrice, :gasLimit, :gasUsed, :confirmations, :status)",
                         use(ethTxUid),
                         use(tx.hash),
                         use(tx.nonce),
+                        use(tx.value.toString()),
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.sender),
                         use(tx.receiver),
-                        use(hex::toString(tx.inputData)),
+                        use(txInputData),
                         use(tx.gasPrice.toString()),
                         use(tx.gasLimit.toString()),
                         use(tx.gasUsed.getValueOr(BigInt::ZERO).toString()),
-                        use(tx.confirmations);
+                        use(tx.confirmations),
+                        use(tx.status);
 
                 return ethTxUid;
             }

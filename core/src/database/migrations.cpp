@@ -227,6 +227,7 @@ namespace ledger {
                     "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "hash VARCHAR(255) NOT NULL,"
                     "nonce VARCHAR(255) NOT NULL,"
+                    "value BIGINT NOT NULL,"
                     "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                     "time VARCHAR(255) NOT NULL,"
                     "sender VARCHAR(255) NOT NULL,"
@@ -235,7 +236,8 @@ namespace ledger {
                     "gas_price BIGINT NOT NULL,"
                     "gas_limit BIGINT NOT NULL,"
                     "gas_used BIGINT NOT NULL,"
-                    "confirmations BIGINT NOT NULL"
+                    "confirmations BIGINT NOT NULL,"
+                    "status BIGINT NOT NULL"
                     ")";
 
             sql << "CREATE TABLE ethereum_operations("
