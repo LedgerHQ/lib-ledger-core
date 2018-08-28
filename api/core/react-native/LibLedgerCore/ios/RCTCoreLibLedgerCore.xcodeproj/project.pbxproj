@@ -105,6 +105,39 @@
 		B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0C82064133000418351 /* RCTCoreLGLedgerCore.m */; };
 		B97DA11A2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */; };
 		B97DA11B2064133100418351 /* RCTCoreLGWalletCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */; };
+		B98A00C92135F0CD006D12F6 /* LGWebSocketClientImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00892135F0C7006D12F6 /* LGWebSocketClientImpl.m */; };
+		B98A00CA2135F0CD006D12F6 /* LGCurrencyCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A008A2135F0C7006D12F6 /* LGCurrencyCallbackImpl.m */; };
+		B98A00CB2135F0CD006D12F6 /* LGAccountListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A008B2135F0C7006D12F6 /* LGAccountListCallbackImpl.m */; };
+		B98A00CC2135F0CD006D12F6 /* LGExecutionContextImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A008D2135F0C7006D12F6 /* LGExecutionContextImpl.m */; };
+		B98A00CD2135F0CD006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A008E2135F0C7006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.m */; };
+		B98A00CE2135F0CD006D12F6 /* LGHashAlgorithmHelperImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A008F2135F0C7006D12F6 /* LGHashAlgorithmHelperImpl.m */; };
+		B98A00CF2135F0CD006D12F6 /* LGLogPrinterImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00922135F0C8006D12F6 /* LGLogPrinterImpl.m */; };
+		B98A00D02135F0CD006D12F6 /* LGBinaryCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00942135F0C8006D12F6 /* LGBinaryCallbackImpl.m */; };
+		B98A00D12135F0CD006D12F6 /* LGCurrencyListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00952135F0C8006D12F6 /* LGCurrencyListCallbackImpl.m */; };
+		B98A00D22135F0CD006D12F6 /* LGLockImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00972135F0C8006D12F6 /* LGLockImpl.m */; };
+		B98A00D32135F0CD006D12F6 /* LGThreadDispatcherImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00982135F0C8006D12F6 /* LGThreadDispatcherImpl.m */; };
+		B98A00D42135F0CD006D12F6 /* LGAddressListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A009A2135F0C8006D12F6 /* LGAddressListCallbackImpl.m */; };
+		B98A00D52135F0CD006D12F6 /* LGAmountListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A009D2135F0C9006D12F6 /* LGAmountListCallbackImpl.m */; };
+		B98A00D62135F0CD006D12F6 /* LGWalletCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00A02135F0C9006D12F6 /* LGWalletCallbackImpl.m */; };
+		B98A00D72135F0CD006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00A12135F0C9006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.m */; };
+		B98A00D82135F0CD006D12F6 /* LGWalletListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00A32135F0C9006D12F6 /* LGWalletListCallbackImpl.m */; };
+		B98A00D92135F0CD006D12F6 /* LGEthereumPublicKeyProviderImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00A42135F0C9006D12F6 /* LGEthereumPublicKeyProviderImpl.m */; };
+		B98A00DA2135F0CD006D12F6 /* LGEventReceiverImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00AA2135F0CA006D12F6 /* LGEventReceiverImpl.m */; };
+		B98A00DB2135F0CD006D12F6 /* LGRandomNumberGeneratorImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00AE2135F0CA006D12F6 /* LGRandomNumberGeneratorImpl.m */; };
+		B98A00DC2135F0CD006D12F6 /* LGAccountCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00AF2135F0CB006D12F6 /* LGAccountCallbackImpl.m */; };
+		B98A00DD2135F0CD006D12F6 /* LGHttpClientImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00B02135F0CB006D12F6 /* LGHttpClientImpl.m */; };
+		B98A00DE2135F0CD006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00B42135F0CB006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.m */; };
+		B98A00DF2135F0CD006D12F6 /* LGPathResolverImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00B62135F0CC006D12F6 /* LGPathResolverImpl.m */; };
+		B98A00E02135F0CD006D12F6 /* LGBlockCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00B72135F0CC006D12F6 /* LGBlockCallbackImpl.m */; };
+		B98A00E12135F0CD006D12F6 /* LGWalletPoolCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00B82135F0CC006D12F6 /* LGWalletPoolCallbackImpl.m */; };
+		B98A00E22135F0CD006D12F6 /* LGOperationListCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00BA2135F0CD006D12F6 /* LGOperationListCallbackImpl.m */; };
+		B98A00E32135F0CD006D12F6 /* LGAmountCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C12135F0CD006D12F6 /* LGAmountCallbackImpl.m */; };
+		B98A00E42135F0CD006D12F6 /* LGAccountCreationInfoCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C22135F0CD006D12F6 /* LGAccountCreationInfoCallbackImpl.m */; };
+		B98A00E52135F0CD006D12F6 /* LGErrorCodeCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C32135F0CD006D12F6 /* LGErrorCodeCallbackImpl.m */; };
+		B98A00E62135F0CD006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C52135F0CD006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.m */; };
+		B98A00E72135F0CD006D12F6 /* LGHttpUrlConnectionImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C62135F0CD006D12F6 /* LGHttpUrlConnectionImpl.m */; };
+		B98A00E82135F0CD006D12F6 /* LGI32CallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C72135F0CD006D12F6 /* LGI32CallbackImpl.m */; };
+		B98A00E92135F0CD006D12F6 /* LGStringCallbackImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = B98A00C82135F0CD006D12F6 /* LGStringCallbackImpl.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -442,6 +475,72 @@
 		B97DA0CA2064133100418351 /* RCTCoreLGRandomNumberGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCoreLGRandomNumberGenerator.h; sourceTree = "<group>"; };
 		B97DA0CC2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGGetEthreumLikeWalletCallback.m; sourceTree = "<group>"; };
 		B97DA0CD2064133100418351 /* RCTCoreLGWalletCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCoreLGWalletCallback.m; sourceTree = "<group>"; };
+		B98A00872135F0C7006D12F6 /* LGEthereumPublicKeyProviderImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGEthereumPublicKeyProviderImpl.h; path = "obj-impl/LGEthereumPublicKeyProviderImpl.h"; sourceTree = "<group>"; };
+		B98A00882135F0C7006D12F6 /* LGLockImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGLockImpl.h; path = "obj-impl/LGLockImpl.h"; sourceTree = "<group>"; };
+		B98A00892135F0C7006D12F6 /* LGWebSocketClientImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGWebSocketClientImpl.m; path = "obj-impl/LGWebSocketClientImpl.m"; sourceTree = "<group>"; };
+		B98A008A2135F0C7006D12F6 /* LGCurrencyCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGCurrencyCallbackImpl.m; path = "obj-impl/LGCurrencyCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A008B2135F0C7006D12F6 /* LGAccountListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAccountListCallbackImpl.m; path = "obj-impl/LGAccountListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A008C2135F0C7006D12F6 /* LGExecutionContextImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGExecutionContextImpl.h; path = "obj-impl/LGExecutionContextImpl.h"; sourceTree = "<group>"; };
+		B98A008D2135F0C7006D12F6 /* LGExecutionContextImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGExecutionContextImpl.m; path = "obj-impl/LGExecutionContextImpl.m"; sourceTree = "<group>"; };
+		B98A008E2135F0C7006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGGetEthreumLikeWalletCallbackImpl.m; path = "obj-impl/LGGetEthreumLikeWalletCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A008F2135F0C7006D12F6 /* LGHashAlgorithmHelperImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGHashAlgorithmHelperImpl.m; path = "obj-impl/LGHashAlgorithmHelperImpl.m"; sourceTree = "<group>"; };
+		B98A00902135F0C8006D12F6 /* LGWebSocketClientImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGWebSocketClientImpl.h; path = "obj-impl/LGWebSocketClientImpl.h"; sourceTree = "<group>"; };
+		B98A00912135F0C8006D12F6 /* LGAccountListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAccountListCallbackImpl.h; path = "obj-impl/LGAccountListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00922135F0C8006D12F6 /* LGLogPrinterImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGLogPrinterImpl.m; path = "obj-impl/LGLogPrinterImpl.m"; sourceTree = "<group>"; };
+		B98A00932135F0C8006D12F6 /* LGAddressListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAddressListCallbackImpl.h; path = "obj-impl/LGAddressListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00942135F0C8006D12F6 /* LGBinaryCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGBinaryCallbackImpl.m; path = "obj-impl/LGBinaryCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00952135F0C8006D12F6 /* LGCurrencyListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGCurrencyListCallbackImpl.m; path = "obj-impl/LGCurrencyListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00962135F0C8006D12F6 /* LGAmountCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAmountCallbackImpl.h; path = "obj-impl/LGAmountCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00972135F0C8006D12F6 /* LGLockImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGLockImpl.m; path = "obj-impl/LGLockImpl.m"; sourceTree = "<group>"; };
+		B98A00982135F0C8006D12F6 /* LGThreadDispatcherImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGThreadDispatcherImpl.m; path = "obj-impl/LGThreadDispatcherImpl.m"; sourceTree = "<group>"; };
+		B98A00992135F0C8006D12F6 /* LGWalletListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGWalletListCallbackImpl.h; path = "obj-impl/LGWalletListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A009A2135F0C8006D12F6 /* LGAddressListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAddressListCallbackImpl.m; path = "obj-impl/LGAddressListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A009B2135F0C8006D12F6 /* LGErrorCodeCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGErrorCodeCallbackImpl.h; path = "obj-impl/LGErrorCodeCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A009C2135F0C8006D12F6 /* LGWalletPoolCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGWalletPoolCallbackImpl.h; path = "obj-impl/LGWalletPoolCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A009D2135F0C9006D12F6 /* LGAmountListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAmountListCallbackImpl.m; path = "obj-impl/LGAmountListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A009E2135F0C9006D12F6 /* LGThreadDispatcherImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGThreadDispatcherImpl.h; path = "obj-impl/LGThreadDispatcherImpl.h"; sourceTree = "<group>"; };
+		B98A009F2135F0C9006D12F6 /* LGOperationListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGOperationListCallbackImpl.h; path = "obj-impl/LGOperationListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00A02135F0C9006D12F6 /* LGWalletCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGWalletCallbackImpl.m; path = "obj-impl/LGWalletCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00A12135F0C9006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGBitcoinLikeTransactionCallbackImpl.m; path = "obj-impl/LGBitcoinLikeTransactionCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00A22135F0C9006D12F6 /* LGWalletCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGWalletCallbackImpl.h; path = "obj-impl/LGWalletCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00A32135F0C9006D12F6 /* LGWalletListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGWalletListCallbackImpl.m; path = "obj-impl/LGWalletListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00A42135F0C9006D12F6 /* LGEthereumPublicKeyProviderImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGEthereumPublicKeyProviderImpl.m; path = "obj-impl/LGEthereumPublicKeyProviderImpl.m"; sourceTree = "<group>"; };
+		B98A00A52135F0C9006D12F6 /* LGCurrencyListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGCurrencyListCallbackImpl.h; path = "obj-impl/LGCurrencyListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00A62135F0C9006D12F6 /* LGEventReceiverImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGEventReceiverImpl.h; path = "obj-impl/LGEventReceiverImpl.h"; sourceTree = "<group>"; };
+		B98A00A72135F0CA006D12F6 /* LGStringCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGStringCallbackImpl.h; path = "obj-impl/LGStringCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00A82135F0CA006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGExtendedKeyAccountCreationInfoCallbackImpl.h; path = "obj-impl/LGExtendedKeyAccountCreationInfoCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00A92135F0CA006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGGetEthreumLikeWalletCallbackImpl.h; path = "obj-impl/LGGetEthreumLikeWalletCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00AA2135F0CA006D12F6 /* LGEventReceiverImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGEventReceiverImpl.m; path = "obj-impl/LGEventReceiverImpl.m"; sourceTree = "<group>"; };
+		B98A00AB2135F0CA006D12F6 /* LGAccountCreationInfoCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAccountCreationInfoCallbackImpl.h; path = "obj-impl/LGAccountCreationInfoCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00AC2135F0CA006D12F6 /* LGLogPrinterImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGLogPrinterImpl.h; path = "obj-impl/LGLogPrinterImpl.h"; sourceTree = "<group>"; };
+		B98A00AD2135F0CA006D12F6 /* LGHashAlgorithmHelperImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGHashAlgorithmHelperImpl.h; path = "obj-impl/LGHashAlgorithmHelperImpl.h"; sourceTree = "<group>"; };
+		B98A00AE2135F0CA006D12F6 /* LGRandomNumberGeneratorImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGRandomNumberGeneratorImpl.m; path = "obj-impl/LGRandomNumberGeneratorImpl.m"; sourceTree = "<group>"; };
+		B98A00AF2135F0CB006D12F6 /* LGAccountCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAccountCallbackImpl.m; path = "obj-impl/LGAccountCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00B02135F0CB006D12F6 /* LGHttpClientImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGHttpClientImpl.m; path = "obj-impl/LGHttpClientImpl.m"; sourceTree = "<group>"; };
+		B98A00B12135F0CB006D12F6 /* LGPathResolverImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGPathResolverImpl.h; path = "obj-impl/LGPathResolverImpl.h"; sourceTree = "<group>"; };
+		B98A00B22135F0CB006D12F6 /* LGBlockCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGBlockCallbackImpl.h; path = "obj-impl/LGBlockCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00B32135F0CB006D12F6 /* LGAmountListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAmountListCallbackImpl.h; path = "obj-impl/LGAmountListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00B42135F0CB006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGBitcoinLikeOutputListCallbackImpl.m; path = "obj-impl/LGBitcoinLikeOutputListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00B52135F0CB006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGBitcoinLikeTransactionCallbackImpl.h; path = "obj-impl/LGBitcoinLikeTransactionCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00B62135F0CC006D12F6 /* LGPathResolverImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGPathResolverImpl.m; path = "obj-impl/LGPathResolverImpl.m"; sourceTree = "<group>"; };
+		B98A00B72135F0CC006D12F6 /* LGBlockCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGBlockCallbackImpl.m; path = "obj-impl/LGBlockCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00B82135F0CC006D12F6 /* LGWalletPoolCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGWalletPoolCallbackImpl.m; path = "obj-impl/LGWalletPoolCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00B92135F0CC006D12F6 /* LGI32CallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGI32CallbackImpl.h; path = "obj-impl/LGI32CallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00BA2135F0CD006D12F6 /* LGOperationListCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGOperationListCallbackImpl.m; path = "obj-impl/LGOperationListCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00BB2135F0CD006D12F6 /* LGRandomNumberGeneratorImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGRandomNumberGeneratorImpl.h; path = "obj-impl/LGRandomNumberGeneratorImpl.h"; sourceTree = "<group>"; };
+		B98A00BC2135F0CD006D12F6 /* LGAccountCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGAccountCallbackImpl.h; path = "obj-impl/LGAccountCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00BD2135F0CD006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGBitcoinLikeOutputListCallbackImpl.h; path = "obj-impl/LGBitcoinLikeOutputListCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00BE2135F0CD006D12F6 /* LGHttpUrlConnectionImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGHttpUrlConnectionImpl.h; path = "obj-impl/LGHttpUrlConnectionImpl.h"; sourceTree = "<group>"; };
+		B98A00BF2135F0CD006D12F6 /* LGCurrencyCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGCurrencyCallbackImpl.h; path = "obj-impl/LGCurrencyCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00C02135F0CD006D12F6 /* LGHttpClientImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGHttpClientImpl.h; path = "obj-impl/LGHttpClientImpl.h"; sourceTree = "<group>"; };
+		B98A00C12135F0CD006D12F6 /* LGAmountCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAmountCallbackImpl.m; path = "obj-impl/LGAmountCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00C22135F0CD006D12F6 /* LGAccountCreationInfoCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGAccountCreationInfoCallbackImpl.m; path = "obj-impl/LGAccountCreationInfoCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00C32135F0CD006D12F6 /* LGErrorCodeCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGErrorCodeCallbackImpl.m; path = "obj-impl/LGErrorCodeCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00C42135F0CD006D12F6 /* LGBinaryCallbackImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGBinaryCallbackImpl.h; path = "obj-impl/LGBinaryCallbackImpl.h"; sourceTree = "<group>"; };
+		B98A00C52135F0CD006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGExtendedKeyAccountCreationInfoCallbackImpl.m; path = "obj-impl/LGExtendedKeyAccountCreationInfoCallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00C62135F0CD006D12F6 /* LGHttpUrlConnectionImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGHttpUrlConnectionImpl.m; path = "obj-impl/LGHttpUrlConnectionImpl.m"; sourceTree = "<group>"; };
+		B98A00C72135F0CD006D12F6 /* LGI32CallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGI32CallbackImpl.m; path = "obj-impl/LGI32CallbackImpl.m"; sourceTree = "<group>"; };
+		B98A00C82135F0CD006D12F6 /* LGStringCallbackImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGStringCallbackImpl.m; path = "obj-impl/LGStringCallbackImpl.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -525,6 +624,7 @@
 		B97DA0312064124E00418351 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B98A00772135F0AF006D12F6 /* objc-impl */,
 				B91D8883211B7B18003387A4 /* RCTCoreLGAccountCreationInfo.m */,
 				B91D888E211B7B1B003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m */,
 				B91D8889211B7B1A003387A4 /* RCTCoreLGBitcoinLikeOperator.m */,
@@ -723,6 +823,79 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		B98A00772135F0AF006D12F6 /* objc-impl */ = {
+			isa = PBXGroup;
+			children = (
+				B98A00BC2135F0CD006D12F6 /* LGAccountCallbackImpl.h */,
+				B98A00AF2135F0CB006D12F6 /* LGAccountCallbackImpl.m */,
+				B98A00AB2135F0CA006D12F6 /* LGAccountCreationInfoCallbackImpl.h */,
+				B98A00C22135F0CD006D12F6 /* LGAccountCreationInfoCallbackImpl.m */,
+				B98A00912135F0C8006D12F6 /* LGAccountListCallbackImpl.h */,
+				B98A008B2135F0C7006D12F6 /* LGAccountListCallbackImpl.m */,
+				B98A00932135F0C8006D12F6 /* LGAddressListCallbackImpl.h */,
+				B98A009A2135F0C8006D12F6 /* LGAddressListCallbackImpl.m */,
+				B98A00962135F0C8006D12F6 /* LGAmountCallbackImpl.h */,
+				B98A00C12135F0CD006D12F6 /* LGAmountCallbackImpl.m */,
+				B98A00B32135F0CB006D12F6 /* LGAmountListCallbackImpl.h */,
+				B98A009D2135F0C9006D12F6 /* LGAmountListCallbackImpl.m */,
+				B98A00C42135F0CD006D12F6 /* LGBinaryCallbackImpl.h */,
+				B98A00942135F0C8006D12F6 /* LGBinaryCallbackImpl.m */,
+				B98A00BD2135F0CD006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.h */,
+				B98A00B42135F0CB006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.m */,
+				B98A00B52135F0CB006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.h */,
+				B98A00A12135F0C9006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.m */,
+				B98A00B22135F0CB006D12F6 /* LGBlockCallbackImpl.h */,
+				B98A00B72135F0CC006D12F6 /* LGBlockCallbackImpl.m */,
+				B98A00BF2135F0CD006D12F6 /* LGCurrencyCallbackImpl.h */,
+				B98A008A2135F0C7006D12F6 /* LGCurrencyCallbackImpl.m */,
+				B98A00A52135F0C9006D12F6 /* LGCurrencyListCallbackImpl.h */,
+				B98A00952135F0C8006D12F6 /* LGCurrencyListCallbackImpl.m */,
+				B98A009B2135F0C8006D12F6 /* LGErrorCodeCallbackImpl.h */,
+				B98A00C32135F0CD006D12F6 /* LGErrorCodeCallbackImpl.m */,
+				B98A00872135F0C7006D12F6 /* LGEthereumPublicKeyProviderImpl.h */,
+				B98A00A42135F0C9006D12F6 /* LGEthereumPublicKeyProviderImpl.m */,
+				B98A00A62135F0C9006D12F6 /* LGEventReceiverImpl.h */,
+				B98A00AA2135F0CA006D12F6 /* LGEventReceiverImpl.m */,
+				B98A008C2135F0C7006D12F6 /* LGExecutionContextImpl.h */,
+				B98A008D2135F0C7006D12F6 /* LGExecutionContextImpl.m */,
+				B98A00A82135F0CA006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.h */,
+				B98A00C52135F0CD006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.m */,
+				B98A00A92135F0CA006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.h */,
+				B98A008E2135F0C7006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.m */,
+				B98A00AD2135F0CA006D12F6 /* LGHashAlgorithmHelperImpl.h */,
+				B98A008F2135F0C7006D12F6 /* LGHashAlgorithmHelperImpl.m */,
+				B98A00C02135F0CD006D12F6 /* LGHttpClientImpl.h */,
+				B98A00B02135F0CB006D12F6 /* LGHttpClientImpl.m */,
+				B98A00BE2135F0CD006D12F6 /* LGHttpUrlConnectionImpl.h */,
+				B98A00C62135F0CD006D12F6 /* LGHttpUrlConnectionImpl.m */,
+				B98A00B92135F0CC006D12F6 /* LGI32CallbackImpl.h */,
+				B98A00C72135F0CD006D12F6 /* LGI32CallbackImpl.m */,
+				B98A00882135F0C7006D12F6 /* LGLockImpl.h */,
+				B98A00972135F0C8006D12F6 /* LGLockImpl.m */,
+				B98A00AC2135F0CA006D12F6 /* LGLogPrinterImpl.h */,
+				B98A00922135F0C8006D12F6 /* LGLogPrinterImpl.m */,
+				B98A009F2135F0C9006D12F6 /* LGOperationListCallbackImpl.h */,
+				B98A00BA2135F0CD006D12F6 /* LGOperationListCallbackImpl.m */,
+				B98A00B12135F0CB006D12F6 /* LGPathResolverImpl.h */,
+				B98A00B62135F0CC006D12F6 /* LGPathResolverImpl.m */,
+				B98A00BB2135F0CD006D12F6 /* LGRandomNumberGeneratorImpl.h */,
+				B98A00AE2135F0CA006D12F6 /* LGRandomNumberGeneratorImpl.m */,
+				B98A00A72135F0CA006D12F6 /* LGStringCallbackImpl.h */,
+				B98A00C82135F0CD006D12F6 /* LGStringCallbackImpl.m */,
+				B98A009E2135F0C9006D12F6 /* LGThreadDispatcherImpl.h */,
+				B98A00982135F0C8006D12F6 /* LGThreadDispatcherImpl.m */,
+				B98A00A22135F0C9006D12F6 /* LGWalletCallbackImpl.h */,
+				B98A00A02135F0C9006D12F6 /* LGWalletCallbackImpl.m */,
+				B98A00992135F0C8006D12F6 /* LGWalletListCallbackImpl.h */,
+				B98A00A32135F0C9006D12F6 /* LGWalletListCallbackImpl.m */,
+				B98A009C2135F0C8006D12F6 /* LGWalletPoolCallbackImpl.h */,
+				B98A00B82135F0CC006D12F6 /* LGWalletPoolCallbackImpl.m */,
+				B98A00902135F0C8006D12F6 /* LGWebSocketClientImpl.h */,
+				B98A00892135F0C7006D12F6 /* LGWebSocketClientImpl.m */,
+			);
+			name = "objc-impl";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -912,24 +1085,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B98A00CF2135F0CD006D12F6 /* LGLogPrinterImpl.m in Sources */,
 				B97DA1052064133100418351 /* RCTCoreLGBitcoinLikeAddress.m in Sources */,
 				B91D889C211B7B1E003387A4 /* RCTCoreLGBitcoinLikeNetworkParameters.m in Sources */,
 				B97DA0F42064133100418351 /* RCTCoreLGEventPublisher.m in Sources */,
 				B97DA0D52064133100418351 /* RCTCoreLGWalletPool.m in Sources */,
+				B98A00D82135F0CD006D12F6 /* LGWalletListCallbackImpl.m in Sources */,
 				B97DA1182064133100418351 /* RCTCoreLGEvent.m in Sources */,
 				B91D889E211B7B1E003387A4 /* RCTCoreLGLocale.m in Sources */,
+				B98A00E42135F0CD006D12F6 /* LGAccountCreationInfoCallbackImpl.m in Sources */,
 				B97DA1102064133100418351 /* RCTCoreLGSynchronizerEngines.m in Sources */,
 				B97DA0E92064133100418351 /* RCTCoreLGHashAlgorithmHelper.m in Sources */,
 				B97DA11A2064133100418351 /* RCTCoreLGGetEthreumLikeWalletCallback.m in Sources */,
+				B98A00CE2135F0CD006D12F6 /* LGHashAlgorithmHelperImpl.m in Sources */,
 				B97DA0D82064133100418351 /* RCTCoreLGBitcoinLikeExtendedPublicKey.m in Sources */,
+				B98A00D12135F0CD006D12F6 /* LGCurrencyListCallbackImpl.m in Sources */,
 				B97DA0D42064133100418351 /* RCTCoreLGOperationQuery.m in Sources */,
 				B91D8897211B7B1E003387A4 /* RCTCoreLGBitcoinLikeOperator.m in Sources */,
 				B97DA0E52064133100418351 /* RCTCoreLGLogPrinter.m in Sources */,
 				B97DA0E82064133100418351 /* RCTCoreLGSynchronizationEngines.m in Sources */,
 				B97DA0FA2064133100418351 /* RCTCoreLGCurrencyListCallback.m in Sources */,
 				B91D885F211B29C9003387A4 /* RCTCoreLGAddress.m in Sources */,
+				B98A00DE2135F0CD006D12F6 /* LGBitcoinLikeOutputListCallbackImpl.m in Sources */,
 				B97DA1042064133100418351 /* RCTCoreLGWalletPoolCallback.m in Sources */,
 				B97DA1032064133100418351 /* RCTCoreLGOperation.m in Sources */,
+				B98A00E32135F0CD006D12F6 /* LGAmountCallbackImpl.m in Sources */,
 				B91D889D211B7B1E003387A4 /* RCTCoreLGExtendedKeyAccountCreationInfo.m in Sources */,
 				B97DA0F82064133100418351 /* RCTCoreLGBlockCallback.m in Sources */,
 				B97DA10C2064133100418351 /* RCTCoreLGExecutionContext.m in Sources */,
@@ -942,16 +1122,20 @@
 				B91D8881211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionBuilder.m in Sources */,
 				B97DA0FF2064133100418351 /* RCTCoreLGLogger.m in Sources */,
 				B91D8898211B7B1E003387A4 /* RCTCoreLGCurrency.m in Sources */,
+				B98A00D42135F0CD006D12F6 /* LGAddressListCallbackImpl.m in Sources */,
 				B97DA0F62064133100418351 /* RCTCoreLGSecp256k1.m in Sources */,
 				B91D885D211B29C9003387A4 /* RCTCoreLGBinaryCallback.m in Sources */,
 				B97DA11B2064133100418351 /* RCTCoreLGWalletCallback.m in Sources */,
 				B91D8892211B7B1E003387A4 /* RCTCoreLGError.m in Sources */,
+				B98A00D72135F0CD006D12F6 /* LGBitcoinLikeTransactionCallbackImpl.m in Sources */,
 				B97DA0F02064133100418351 /* RCTCoreLGAccount.m in Sources */,
 				B97DA0DE2064133100418351 /* RCTCoreLGBitcoinLikeWalletConfiguration.m in Sources */,
 				B97DA1092064133100418351 /* RCTCoreLGPreferencesEditor.m in Sources */,
 				B91D886A211B29C9003387A4 /* RCTCoreLGDerivationPath.m in Sources */,
 				B97DA1132064133100418351 /* RCTCoreLGNetworks.m in Sources */,
+				B98A00E12135F0CD006D12F6 /* LGWalletPoolCallbackImpl.m in Sources */,
 				B97DA0E32064133100418351 /* RCTCoreLGWallet.m in Sources */,
+				B98A00DB2135F0CD006D12F6 /* LGRandomNumberGeneratorImpl.m in Sources */,
 				B91D8895211B7B1E003387A4 /* RCTCoreLGEstimatedSize.m in Sources */,
 				B97DA0FB2064133100418351 /* RCTCoreLGPathResolver.m in Sources */,
 				B91D8894211B7B1E003387A4 /* RCTCoreLGBitcoinLikePreparedTransaction.m in Sources */,
@@ -961,12 +1145,15 @@
 				B97DA0FC2064133100418351 /* RCTCoreLGBitcoinLikeOutputListCallback.m in Sources */,
 				B97DA0D12064133100418351 /* RCTCoreLGEventBus.m in Sources */,
 				B97DA0EA2064133100418351 /* RCTCoreLGEventReceiver.m in Sources */,
+				B98A00E72135F0CD006D12F6 /* LGHttpUrlConnectionImpl.m in Sources */,
 				B97DA0F32064133100418351 /* RCTCoreLGBitcoinLikeInput.m in Sources */,
 				B91D8866211B29C9003387A4 /* RCTCoreLGBitcoinLikeScript.m in Sources */,
 				B97DA1152064133100418351 /* RCTCoreLGWalletPoolBuilder.m in Sources */,
 				B91D887D211B29C9003387A4 /* RCTCoreLGBitcoinLikeScriptChunk.m in Sources */,
 				B97DA1062064133100418351 /* RCTCoreLGWebSocketConnection.m in Sources */,
 				B97DA10B2064133100418351 /* RCTCoreLGEthereumLikeWallet.m in Sources */,
+				B98A00D52135F0CD006D12F6 /* LGAmountListCallbackImpl.m in Sources */,
+				B98A00E52135F0CD006D12F6 /* LGErrorCodeCallbackImpl.m in Sources */,
 				B97DA1022064133100418351 /* RCTCoreLGConfiguration.m in Sources */,
 				B97DA0D32064133100418351 /* RCTCoreLGExtendedKeyAccountCreationInfoCallback.m in Sources */,
 				B97DA0FE2064133100418351 /* RCTCoreLGDynamicObject.m in Sources */,
@@ -974,30 +1161,47 @@
 				B97DA1142064133100418351 /* RCTCoreLGAccountCreationInfoCallback.m in Sources */,
 				B97DA0E22064133100418351 /* RCTCoreLGBlockchainObserverEngines.m in Sources */,
 				B97DA0DD2064133100418351 /* RCTCoreLGThreadDispatcher.m in Sources */,
+				B98A00E92135F0CD006D12F6 /* LGStringCallbackImpl.m in Sources */,
 				B91D889A211B7B1E003387A4 /* RCTCoreLGFormatRules.m in Sources */,
 				B91D8861211B29C9003387A4 /* RCTCoreLGBitcoinLikeTransactionCallback.m in Sources */,
 				B97DA0DC2064133100418351 /* RCTCoreLGCurrencyCallback.m in Sources */,
+				B98A00DC2135F0CD006D12F6 /* LGAccountCallbackImpl.m in Sources */,
 				B97DA10E2064133100418351 /* RCTCoreLGBitcoinLikeTransaction.m in Sources */,
+				B98A00D92135F0CD006D12F6 /* LGEthereumPublicKeyProviderImpl.m in Sources */,
+				B98A00DA2135F0CD006D12F6 /* LGEventReceiverImpl.m in Sources */,
+				B98A00E62135F0CD006D12F6 /* LGExtendedKeyAccountCreationInfoCallbackImpl.m in Sources */,
+				B98A00D62135F0CD006D12F6 /* LGWalletCallbackImpl.m in Sources */,
 				B91D8868211B29C9003387A4 /* RCTCoreLGAddressListCallback.m in Sources */,
+				B98A00C92135F0CD006D12F6 /* LGWebSocketClientImpl.m in Sources */,
+				B98A00CA2135F0CD006D12F6 /* LGCurrencyCallbackImpl.m in Sources */,
+				B98A00CB2135F0CD006D12F6 /* LGAccountListCallbackImpl.m in Sources */,
 				B97DA0E02064133100418351 /* RCTCoreLGHttpRequest.m in Sources */,
+				B98A00CD2135F0CD006D12F6 /* LGGetEthreumLikeWalletCallbackImpl.m in Sources */,
 				B97DA0E12064133100418351 /* RCTCoreLGRunnable.m in Sources */,
+				B98A00DD2135F0CD006D12F6 /* LGHttpClientImpl.m in Sources */,
 				B97DA0E42064133100418351 /* RCTCoreLGKeychainEngines.m in Sources */,
 				B97DA0DF2064133100418351 /* RCTCoreLGDatabaseBackend.m in Sources */,
 				B97DA0F92064133100418351 /* RCTCoreLGWalletListCallback.m in Sources */,
+				B98A00D02135F0CD006D12F6 /* LGBinaryCallbackImpl.m in Sources */,
 				B97DA0EC2064133100418351 /* RCTCoreLGBigInt.m in Sources */,
 				B97DA10D2064133100418351 /* RCTCoreLGI32Callback.m in Sources */,
 				B97DA0EF2064133100418351 /* RCTCoreLGAmountCallback.m in Sources */,
 				B97DA0E72064133100418351 /* RCTCoreLGAccountListCallback.m in Sources */,
+				B98A00CC2135F0CD006D12F6 /* LGExecutionContextImpl.m in Sources */,
 				B97DA0F22064133100418351 /* RCTCoreLGBitcoinLikeWallet.m in Sources */,
 				B91D885B211B29C9003387A4 /* RCTCoreLGErrorCodeCallback.m in Sources */,
 				B97DA1112064133100418351 /* RCTCoreLGTrustIndicator.m in Sources */,
 				B97DA0DA2064133100418351 /* RCTCoreLGWebSocketClient.m in Sources */,
 				B97DA0D62064133100418351 /* RCTCoreLGPoolConfiguration.m in Sources */,
+				B98A00E82135F0CD006D12F6 /* LGI32CallbackImpl.m in Sources */,
 				B97DA1002064133100418351 /* RCTCoreLGAmount.m in Sources */,
 				B97DA0D22064133100418351 /* RCTCoreLGDynamicArray.m in Sources */,
 				B97DA0DB2064133100418351 /* RCTCoreLGBitcoinLikeAccount.m in Sources */,
 				B97DA1192064133100418351 /* RCTCoreLGLedgerCore.m in Sources */,
 				B97DA1012064133100418351 /* RCTCoreLGHttpUrlConnection.m in Sources */,
+				B98A00D32135F0CD006D12F6 /* LGThreadDispatcherImpl.m in Sources */,
+				B98A00DF2135F0CD006D12F6 /* LGPathResolverImpl.m in Sources */,
+				B98A00E22135F0CD006D12F6 /* LGOperationListCallbackImpl.m in Sources */,
 				B91D8879211B29C9003387A4 /* RCTCoreLGAmountListCallback.m in Sources */,
 				B97DA1072064133100418351 /* RCTCoreLGStringCallback.m in Sources */,
 				B97DA0EB2064133100418351 /* RCTCoreLGHttpClient.m in Sources */,
@@ -1008,7 +1212,9 @@
 				B91D8893211B7B1E003387A4 /* RCTCoreLGHttpReadBodyResult.m in Sources */,
 				B97DA0F12064133100418351 /* RCTCoreLGEthereumPublicKeyProvider.m in Sources */,
 				B97DA0F72064133100418351 /* RCTCoreLGAccountCallback.m in Sources */,
+				B98A00E02135F0CD006D12F6 /* LGBlockCallbackImpl.m in Sources */,
 				B97DA0E62064133100418351 /* RCTCoreLGRandomNumberGenerator.m in Sources */,
+				B98A00D22135F0CD006D12F6 /* LGLockImpl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

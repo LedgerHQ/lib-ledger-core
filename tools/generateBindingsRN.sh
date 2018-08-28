@@ -17,7 +17,7 @@ CORE_CPP_JNI=core/src/jni
     --jni-include-cpp-prefix "../../api/" \
     --jni-out $CORE_CPP_JNI/jni \
     --objc-type-prefix LG \
-    --react-native-out $DEST/src/react-native \
+    --react-native-objc-out $DEST/src/react-native \
     --react-native-type-prefix RCTCore \
     --react-include-objc-impl  ../objc-impl \
     --react-native-objc-impl-suffix Impl \
