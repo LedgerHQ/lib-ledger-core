@@ -37,5 +37,35 @@ public class RCTCoreEthereumPublicKeyProvider extends ReactContextBaseJavaModule
     {
         return "RCTCoreEthereumPublicKeyProvider";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreEthereumPublicKeyProvider", "First parameter of RCTCoreEthereumPublicKeyProvider::release should be an instance of RCTCoreEthereumPublicKeyProvider");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, EthereumPublicKeyProviderImpl> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
 }

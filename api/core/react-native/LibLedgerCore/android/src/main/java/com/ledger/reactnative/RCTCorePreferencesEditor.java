@@ -38,6 +38,36 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
     {
         return "RCTCorePreferencesEditor";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCorePreferencesEditor", "First parameter of RCTCorePreferencesEditor::release should be an instance of RCTCorePreferencesEditor");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, PreferencesEditor> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     /**
      * Sets the value to the given key in the Preferences.

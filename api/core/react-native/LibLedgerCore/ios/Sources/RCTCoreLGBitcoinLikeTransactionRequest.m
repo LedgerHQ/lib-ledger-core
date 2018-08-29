@@ -68,7 +68,7 @@ RCT_REMAP_METHOD(init, initWithUtxo:(NSArray <NSDictionary *> *)utxo
         [field_0 addObject:field_0_elem];
 
     }
-    [implementationsData setObject:field_0_data forKey:@"field_0"];
+    [implementationsData setObject:field_0_data forKey:@"utxo"];
 
     NSMutableArray *field_1 = [[NSMutableArray alloc] init];
 
@@ -82,14 +82,14 @@ RCT_REMAP_METHOD(init, initWithUtxo:(NSArray <NSDictionary *> *)utxo
         [field_1 addObject:field_1_elem];
 
     }
-    [implementationsData setObject:field_1_data forKey:@"field_1"];
+    [implementationsData setObject:field_1_data forKey:@"outputs"];
 
     RCTCoreLGAmount *rctParam_baseFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
     LGAmount *field_2 = (LGAmount *)[rctParam_baseFees.objcImplementations objectForKey:baseFees[@"uid"]];
-    [implementationsData setObject:baseFees[@"uid"] forKey:@"field_2"];
+    [implementationsData setObject:baseFees[@"uid"] forKey:@"baseFees"];
     RCTCoreLGAmount *rctParam_totalFees = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
     LGAmount *field_3 = (LGAmount *)[rctParam_totalFees.objcImplementations objectForKey:totalFees[@"uid"]];
-    [implementationsData setObject:totalFees[@"uid"] forKey:@"field_3"];
+    [implementationsData setObject:totalFees[@"uid"] forKey:@"totalFees"];
 
 
     LGBitcoinLikeTransactionRequest * finalResult = [[LGBitcoinLikeTransactionRequest alloc] initWithUtxo:field_0 outputs:field_1 baseFees:field_2 totalFees:field_3 lockTime:lockTime];

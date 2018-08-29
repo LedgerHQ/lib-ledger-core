@@ -36,6 +36,38 @@ public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
     {
         return "RCTCoreEstimatedSize";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreEstimatedSize", "First parameter of RCTCoreEstimatedSize::release should be an instance of RCTCoreEstimatedSize");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, EstimatedSize> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(int Min, int Max, Promise promise) {
         EstimatedSize javaResult = new EstimatedSize(Min, Max);
 
@@ -46,4 +78,36 @@ public class RCTCoreEstimatedSize extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getMin(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            EstimatedSize javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getMin();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreEstimatedSize::getMin", "First parameter of RCTCoreEstimatedSize::getMin should be an instance of RCTCoreEstimatedSize");
+        }
+    }
+
+    @ReactMethod
+    public void getMax(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            EstimatedSize javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getMax();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreEstimatedSize::getMax", "First parameter of RCTCoreEstimatedSize::getMax should be an instance of RCTCoreEstimatedSize");
+        }
+    }
+
 }

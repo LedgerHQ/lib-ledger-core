@@ -36,6 +36,38 @@ public class RCTCoreLocale extends ReactContextBaseJavaModule {
     {
         return "RCTCoreLocale";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreLocale", "First parameter of RCTCoreLocale::release should be an instance of RCTCoreLocale");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, Locale> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(String DecimalSeparator, String ThousandsSeparator, boolean IsPrefixedByCurrencySymbol, Promise promise) {
         Locale javaResult = new Locale(DecimalSeparator, ThousandsSeparator, IsPrefixedByCurrencySymbol);
 
@@ -46,4 +78,52 @@ public class RCTCoreLocale extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getDecimalSeparator(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Locale javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getDecimalSeparator();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreLocale::getDecimalSeparator", "First parameter of RCTCoreLocale::getDecimalSeparator should be an instance of RCTCoreLocale");
+        }
+    }
+
+    @ReactMethod
+    public void getThousandsSeparator(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Locale javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getThousandsSeparator();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreLocale::getThousandsSeparator", "First parameter of RCTCoreLocale::getThousandsSeparator should be an instance of RCTCoreLocale");
+        }
+    }
+
+    @ReactMethod
+    public void getIsPrefixedByCurrencySymbol(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Locale javaObj = this.javaObjects.get(uid);
+            boolean result = javaObj.getIsPrefixedByCurrencySymbol();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreLocale::getIsPrefixedByCurrencySymbol", "First parameter of RCTCoreLocale::getIsPrefixedByCurrencySymbol should be an instance of RCTCoreLocale");
+        }
+    }
+
 }

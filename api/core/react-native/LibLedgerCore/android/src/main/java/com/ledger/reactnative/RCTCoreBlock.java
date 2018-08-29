@@ -38,6 +38,38 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBlock";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBlock", "First parameter of RCTCoreBlock::release should be an instance of RCTCoreBlock");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, Block> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(String blockHash, String uid, Date time, String currencyName, long height, Promise promise) {
         Block javaResult = new Block(blockHash, uid, time, currencyName, height);
 
@@ -48,4 +80,84 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getBlockHash(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Block javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getBlockHash();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBlock::getBlockHash", "First parameter of RCTCoreBlock::getBlockHash should be an instance of RCTCoreBlock");
+        }
+    }
+
+    @ReactMethod
+    public void getUid(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Block javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getUid();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBlock::getUid", "First parameter of RCTCoreBlock::getUid should be an instance of RCTCoreBlock");
+        }
+    }
+
+    @ReactMethod
+    public void getTime(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Block javaObj = this.javaObjects.get(uid);
+            Date result = javaObj.getTime();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBlock::getTime", "First parameter of RCTCoreBlock::getTime should be an instance of RCTCoreBlock");
+        }
+    }
+
+    @ReactMethod
+    public void getCurrencyName(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Block javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getCurrencyName();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBlock::getCurrencyName", "First parameter of RCTCoreBlock::getCurrencyName should be an instance of RCTCoreBlock");
+        }
+    }
+
+    @ReactMethod
+    public void getHeight(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Block javaObj = this.javaObjects.get(uid);
+            long result = javaObj.getHeight();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBlock::getHeight", "First parameter of RCTCoreBlock::getHeight should be an instance of RCTCoreBlock");
+        }
+    }
+
 }

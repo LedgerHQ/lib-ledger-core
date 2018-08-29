@@ -1,7 +1,7 @@
 package co.ledger.core;
 
 /**Class representing context in which tasks get executed */
-public class ExecutionContextImpl extends ExecutionContext {
+public class ExecutionContextImpl extends co.ledger.core.ExecutionContext {
     /**
      *Execute a given runnable
      *@param runnalbe, Runnable object

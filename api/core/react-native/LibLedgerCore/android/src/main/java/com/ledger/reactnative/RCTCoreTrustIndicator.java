@@ -39,6 +39,36 @@ public class RCTCoreTrustIndicator extends ReactContextBaseJavaModule {
     {
         return "RCTCoreTrustIndicator";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreTrustIndicator", "First parameter of RCTCoreTrustIndicator::release should be an instance of RCTCoreTrustIndicator");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, TrustIndicator> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     @ReactMethod
     public void getTrustWeight(Map<String, String> currentInstance, Promise promise) {

@@ -36,6 +36,38 @@ public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeOperator";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeOperator", "First parameter of RCTCoreBitcoinLikeOperator::release should be an instance of RCTCoreBitcoinLikeOperator");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeOperator> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(String operatorName, byte value, Promise promise) {
         BitcoinLikeOperator javaResult = new BitcoinLikeOperator(operatorName, value);
 
@@ -46,4 +78,36 @@ public class RCTCoreBitcoinLikeOperator extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getOperatorName(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeOperator javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getOperatorName();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeOperator::getOperatorName", "First parameter of RCTCoreBitcoinLikeOperator::getOperatorName should be an instance of RCTCoreBitcoinLikeOperator");
+        }
+    }
+
+    @ReactMethod
+    public void getValue(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeOperator javaObj = this.javaObjects.get(uid);
+            byte result = javaObj.getValue();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeOperator::getValue", "First parameter of RCTCoreBitcoinLikeOperator::getValue should be an instance of RCTCoreBitcoinLikeOperator");
+        }
+    }
+
 }

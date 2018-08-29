@@ -22,6 +22,7 @@ import java.util.UUID;
 public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikeTransactionRequest> javaObjects;
+    private Map<String, Map<String, ArrayList<String>>> implementationsData;
     public Map<String, BitcoinLikeTransactionRequest> getJavaObjects()
     {
         return javaObjects;
@@ -32,6 +33,7 @@ public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaMo
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeTransactionRequest>();
+        this.implementationsData = new HashMap<String, Map<String, ArrayList<String>>>();
     }
 
     @Override
@@ -39,25 +41,74 @@ public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaMo
     {
         return "RCTCoreBitcoinLikeTransactionRequest";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeTransactionRequest", "First parameter of RCTCoreBitcoinLikeTransactionRequest::release should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeTransactionRequest> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(ArrayList <HashMap <String, String>> utxo, ArrayList <HashMap <String, String>> outputs, Optional<HashMap <String, String>> baseFees, Optional<HashMap <String, String>> totalFees, Integer lockTime, Promise promise) {
+        Map<String, ArrayList<String>> implementationsData = new HashMap<String, ArrayList<String>>();
         ArrayList<BitcoinLikeOutput> javaParam_0 = new ArrayList<BitcoinLikeOutput>();
+        ArrayList<String> javaParam_0_data = new ArrayList<String>();
+
         for (HashMap <String, String> utxo_elem : utxo)
         {
             RCTCoreBitcoinLikeOutput rctParam_utxo_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
             BitcoinLikeOutput javaParam_0_elem = rctParam_utxo_elem.getJavaObjects().get(utxo_elem.get("uid"));
+            javaParam_0_data.add(utxo_elem.get("uid"));
             javaParam_0.add(javaParam_0_elem);
         }
+        implementationsData.put("utxo", javaParam_0_data);
+
         ArrayList<BitcoinLikeOutput> javaParam_1 = new ArrayList<BitcoinLikeOutput>();
+        ArrayList<String> javaParam_1_data = new ArrayList<String>();
+
         for (HashMap <String, String> outputs_elem : outputs)
         {
             RCTCoreBitcoinLikeOutput rctParam_outputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
             BitcoinLikeOutput javaParam_1_elem = rctParam_outputs_elem.getJavaObjects().get(outputs_elem.get("uid"));
+            javaParam_1_data.add(outputs_elem.get("uid"));
             javaParam_1.add(javaParam_1_elem);
         }
+        implementationsData.put("outputs", javaParam_1_data);
+
         RCTCoreAmount rctParam_baseFees = this.reactContext.getNativeModule(RCTCoreAmount.class);
         Amount javaParam_2 = rctParam_baseFees.getJavaObjects().get(baseFees.get().get("uid"));
+        ArrayList<String> javaParam_2_tmp = new ArrayList<String>();
+        javaParam_2_tmp.add(baseFees.get().get("uid"));
+        implementationsData.put("baseFees", javaParam_2_tmp);
         RCTCoreAmount rctParam_totalFees = this.reactContext.getNativeModule(RCTCoreAmount.class);
         Amount javaParam_3 = rctParam_totalFees.getJavaObjects().get(totalFees.get().get("uid"));
+        ArrayList<String> javaParam_3_tmp = new ArrayList<String>();
+        javaParam_3_tmp.add(totalFees.get().get("uid"));
+        implementationsData.put("totalFees", javaParam_3_tmp);
         BitcoinLikeTransactionRequest javaResult = new BitcoinLikeTransactionRequest(javaParam_0, javaParam_1, javaParam_2, javaParam_3, lockTime);
 
         String uuid = UUID.randomUUID().toString();
@@ -65,6 +116,99 @@ public class RCTCoreBitcoinLikeTransactionRequest extends ReactContextBaseJavaMo
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikeTransactionRequest");
         finalResult.put("uid",uuid);
+        this.implementationsData.put(uuid, implementationsData);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getUtxo(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeTransactionRequest javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("utxo");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeTransactionRequest::getUtxo", "First parameter of RCTCoreBitcoinLikeTransactionRequest::getUtxo should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+
+    @ReactMethod
+    public void getOutputs(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeTransactionRequest javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("outputs");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeTransactionRequest::getOutputs", "First parameter of RCTCoreBitcoinLikeTransactionRequest::getOutputs should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+
+    @ReactMethod
+    public void getBaseFees(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeTransactionRequest javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("baseFees");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeTransactionRequest::getBaseFees", "First parameter of RCTCoreBitcoinLikeTransactionRequest::getBaseFees should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+
+    @ReactMethod
+    public void getTotalFees(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeTransactionRequest javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("totalFees");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeTransactionRequest::getTotalFees", "First parameter of RCTCoreBitcoinLikeTransactionRequest::getTotalFees should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+
+    @ReactMethod
+    public void getLockTime(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeTransactionRequest javaObj = this.javaObjects.get(uid);
+            Integer result = javaObj.getLockTime();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeTransactionRequest::getLockTime", "First parameter of RCTCoreBitcoinLikeTransactionRequest::getLockTime should be an instance of RCTCoreBitcoinLikeTransactionRequest");
+        }
+    }
+
 }

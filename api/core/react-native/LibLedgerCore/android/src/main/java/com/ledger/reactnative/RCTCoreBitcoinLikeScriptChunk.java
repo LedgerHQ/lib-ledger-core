@@ -38,6 +38,36 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeScriptChunk";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeScriptChunk", "First parameter of RCTCoreBitcoinLikeScriptChunk::release should be an instance of RCTCoreBitcoinLikeScriptChunk");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeScriptChunk> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     @ReactMethod
     public void isOperator(Map<String, String> currentInstance, Promise promise) {

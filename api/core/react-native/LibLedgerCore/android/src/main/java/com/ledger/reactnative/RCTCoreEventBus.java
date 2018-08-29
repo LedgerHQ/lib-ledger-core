@@ -42,6 +42,36 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
     {
         return "RCTCoreEventBus";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreEventBus", "First parameter of RCTCoreEventBus::release should be an instance of RCTCoreEventBus");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, EventBus> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     /**
      *Subscribe an event receiver to the event bus
@@ -58,8 +88,12 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
 
             RCTCoreExecutionContext rctParam_context = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
             ExecutionContext javaParam_0 = rctParam_context.getJavaObjects().get(context.get("uid"));
+            ExecutionContextImpl javaParam_0_java = (ExecutionContextImpl)javaParam_0;
+            javaParam_0_java.setPromise(promise);
             RCTCoreEventReceiver rctParam_receiver = this.reactContext.getNativeModule(RCTCoreEventReceiver.class);
             EventReceiver javaParam_1 = rctParam_receiver.getJavaObjects().get(receiver.get("uid"));
+            EventReceiverImpl javaParam_1_java = (EventReceiverImpl)javaParam_1;
+            javaParam_1_java.setPromise(promise);
             currentInstanceObj.subscribe(javaParam_0, javaParam_1);
         }
         catch(Exception e)
@@ -81,6 +115,8 @@ public class RCTCoreEventBus extends ReactContextBaseJavaModule {
 
             RCTCoreEventReceiver rctParam_receiver = this.reactContext.getNativeModule(RCTCoreEventReceiver.class);
             EventReceiver javaParam_0 = rctParam_receiver.getJavaObjects().get(receiver.get("uid"));
+            EventReceiverImpl javaParam_0_java = (EventReceiverImpl)javaParam_0;
+            javaParam_0_java.setPromise(promise);
             currentInstanceObj.unsubscribe(javaParam_0);
         }
         catch(Exception e)

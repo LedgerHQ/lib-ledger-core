@@ -37,6 +37,38 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     {
         return "RCTCoreCurrencyUnit";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreCurrencyUnit", "First parameter of RCTCoreCurrencyUnit::release should be an instance of RCTCoreCurrencyUnit");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, CurrencyUnit> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(String name, String symbol, String code, int numberOfDecimal, Promise promise) {
         CurrencyUnit javaResult = new CurrencyUnit(name, symbol, code, numberOfDecimal);
 
@@ -47,4 +79,68 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getName(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            CurrencyUnit javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getName();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreCurrencyUnit::getName", "First parameter of RCTCoreCurrencyUnit::getName should be an instance of RCTCoreCurrencyUnit");
+        }
+    }
+
+    @ReactMethod
+    public void getSymbol(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            CurrencyUnit javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getSymbol();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreCurrencyUnit::getSymbol", "First parameter of RCTCoreCurrencyUnit::getSymbol should be an instance of RCTCoreCurrencyUnit");
+        }
+    }
+
+    @ReactMethod
+    public void getCode(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            CurrencyUnit javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getCode();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreCurrencyUnit::getCode", "First parameter of RCTCoreCurrencyUnit::getCode should be an instance of RCTCoreCurrencyUnit");
+        }
+    }
+
+    @ReactMethod
+    public void getNumberOfDecimal(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            CurrencyUnit javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getNumberOfDecimal();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreCurrencyUnit::getNumberOfDecimal", "First parameter of RCTCoreCurrencyUnit::getNumberOfDecimal should be an instance of RCTCoreCurrencyUnit");
+        }
+    }
+
 }

@@ -21,6 +21,7 @@ import java.util.UUID;
 public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private Map<String, BitcoinLikePreparedTransaction> javaObjects;
+    private Map<String, Map<String, ArrayList<String>>> implementationsData;
     public Map<String, BitcoinLikePreparedTransaction> getJavaObjects()
     {
         return javaObjects;
@@ -31,6 +32,7 @@ public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaM
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikePreparedTransaction>();
+        this.implementationsData = new HashMap<String, Map<String, ArrayList<String>>>();
     }
 
     @Override
@@ -38,21 +40,64 @@ public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaM
     {
         return "RCTCoreBitcoinLikePreparedTransaction";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikePreparedTransaction", "First parameter of RCTCoreBitcoinLikePreparedTransaction::release should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikePreparedTransaction> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(int version, ArrayList <HashMap <String, String>> inputs, ArrayList<String> paths, ArrayList <HashMap <String, String>> outputs, int lockTime, Promise promise) {
+        Map<String, ArrayList<String>> implementationsData = new HashMap<String, ArrayList<String>>();
         ArrayList<BitcoinLikeOutput> javaParam_1 = new ArrayList<BitcoinLikeOutput>();
+        ArrayList<String> javaParam_1_data = new ArrayList<String>();
+
         for (HashMap <String, String> inputs_elem : inputs)
         {
             RCTCoreBitcoinLikeOutput rctParam_inputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
             BitcoinLikeOutput javaParam_1_elem = rctParam_inputs_elem.getJavaObjects().get(inputs_elem.get("uid"));
+            javaParam_1_data.add(inputs_elem.get("uid"));
             javaParam_1.add(javaParam_1_elem);
         }
+        implementationsData.put("inputs", javaParam_1_data);
+
         ArrayList<BitcoinLikeOutput> javaParam_3 = new ArrayList<BitcoinLikeOutput>();
+        ArrayList<String> javaParam_3_data = new ArrayList<String>();
+
         for (HashMap <String, String> outputs_elem : outputs)
         {
             RCTCoreBitcoinLikeOutput rctParam_outputs_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
             BitcoinLikeOutput javaParam_3_elem = rctParam_outputs_elem.getJavaObjects().get(outputs_elem.get("uid"));
+            javaParam_3_data.add(outputs_elem.get("uid"));
             javaParam_3.add(javaParam_3_elem);
         }
+        implementationsData.put("outputs", javaParam_3_data);
+
         BitcoinLikePreparedTransaction javaResult = new BitcoinLikePreparedTransaction(version, javaParam_1, paths, javaParam_3, lockTime);
 
         String uuid = UUID.randomUUID().toString();
@@ -60,6 +105,93 @@ public class RCTCoreBitcoinLikePreparedTransaction extends ReactContextBaseJavaM
         Map<String, String> finalResult = new HashMap<String, String>();
         finalResult.put("type","RCTCoreBitcoinLikePreparedTransaction");
         finalResult.put("uid",uuid);
+        this.implementationsData.put(uuid, implementationsData);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getVersion(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikePreparedTransaction javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getVersion();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikePreparedTransaction::getVersion", "First parameter of RCTCoreBitcoinLikePreparedTransaction::getVersion should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+
+    @ReactMethod
+    public void getInputs(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikePreparedTransaction javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("inputs");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikePreparedTransaction::getInputs", "First parameter of RCTCoreBitcoinLikePreparedTransaction::getInputs should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+
+    @ReactMethod
+    public void getPaths(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikePreparedTransaction javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getPaths();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikePreparedTransaction::getPaths", "First parameter of RCTCoreBitcoinLikePreparedTransaction::getPaths should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+
+    @ReactMethod
+    public void getOutputs(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikePreparedTransaction javaObj = this.javaObjects.get(uid);
+            Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
+            ArrayList<String> fieldData = data.get("outputs");
+            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
+            result.put(uid,fieldData);
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikePreparedTransaction::getOutputs", "First parameter of RCTCoreBitcoinLikePreparedTransaction::getOutputs should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+
+    @ReactMethod
+    public void getLockTime(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikePreparedTransaction javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getLockTime();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikePreparedTransaction::getLockTime", "First parameter of RCTCoreBitcoinLikePreparedTransaction::getLockTime should be an instance of RCTCoreBitcoinLikePreparedTransaction");
+        }
+    }
+
 }

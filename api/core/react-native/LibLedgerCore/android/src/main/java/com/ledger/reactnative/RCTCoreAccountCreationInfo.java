@@ -37,6 +37,38 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     {
         return "RCTCoreAccountCreationInfo";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreAccountCreationInfo", "First parameter of RCTCoreAccountCreationInfo::release should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, AccountCreationInfo> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes, Promise promise) {
         AccountCreationInfo javaResult = new AccountCreationInfo(index, owners, derivations, publicKeys, chainCodes);
 
@@ -47,4 +79,84 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getIndex(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            AccountCreationInfo javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getIndex();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreAccountCreationInfo::getIndex", "First parameter of RCTCoreAccountCreationInfo::getIndex should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getOwners(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            AccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getOwners();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreAccountCreationInfo::getOwners", "First parameter of RCTCoreAccountCreationInfo::getOwners should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getDerivations(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            AccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getDerivations();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreAccountCreationInfo::getDerivations", "First parameter of RCTCoreAccountCreationInfo::getDerivations should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getPublicKeys(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            AccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<byte[]> result = javaObj.getPublicKeys();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreAccountCreationInfo::getPublicKeys", "First parameter of RCTCoreAccountCreationInfo::getPublicKeys should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getChainCodes(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            AccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<byte[]> result = javaObj.getChainCodes();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreAccountCreationInfo::getChainCodes", "First parameter of RCTCoreAccountCreationInfo::getChainCodes should be an instance of RCTCoreAccountCreationInfo");
+        }
+    }
+
 }

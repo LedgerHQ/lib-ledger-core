@@ -38,6 +38,38 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
     {
         return "RCTCoreFormatRules";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreFormatRules", "First parameter of RCTCoreFormatRules::release should be an instance of RCTCoreFormatRules");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, FormatRules> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(RoundingMode roundingMode, int maxNumberOfDecimals, Promise promise) {
         FormatRules javaResult = new FormatRules(roundingMode, maxNumberOfDecimals);
 
@@ -48,4 +80,36 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getRoundingMode(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            FormatRules javaObj = this.javaObjects.get(uid);
+            RoundingMode result = javaObj.getRoundingMode();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreFormatRules::getRoundingMode", "First parameter of RCTCoreFormatRules::getRoundingMode should be an instance of RCTCoreFormatRules");
+        }
+    }
+
+    @ReactMethod
+    public void getMaxNumberOfDecimals(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            FormatRules javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getMaxNumberOfDecimals();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreFormatRules::getMaxNumberOfDecimals", "First parameter of RCTCoreFormatRules::getMaxNumberOfDecimals should be an instance of RCTCoreFormatRules");
+        }
+    }
+
 }

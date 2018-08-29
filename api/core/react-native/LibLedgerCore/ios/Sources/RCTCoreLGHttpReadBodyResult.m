@@ -55,7 +55,7 @@ RCT_REMAP_METHOD(init, initWithError:(nullable NSDictionary *)error
     NSMutableDictionary *implementationsData = [[NSMutableDictionary alloc] init];
     RCTCoreLGError *rctParam_error = (RCTCoreLGError *)[self.bridge moduleForName:@"CoreLGError"];
     LGError *field_0 = (LGError *)[rctParam_error.objcImplementations objectForKey:error[@"uid"]];
-    [implementationsData setObject:error[@"uid"] forKey:@"field_0"];
+    [implementationsData setObject:error[@"uid"] forKey:@"error"];
 
 
     LGHttpReadBodyResult * finalResult = [[LGHttpReadBodyResult alloc] initWithError:field_0 data:data];

@@ -37,6 +37,38 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     {
         return "RCTCoreExtendedKeyAccountCreationInfo";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreExtendedKeyAccountCreationInfo", "First parameter of RCTCoreExtendedKeyAccountCreationInfo::release should be an instance of RCTCoreExtendedKeyAccountCreationInfo");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, ExtendedKeyAccountCreationInfo> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys, Promise promise) {
         ExtendedKeyAccountCreationInfo javaResult = new ExtendedKeyAccountCreationInfo(index, owners, derivations, extendedKeys);
 
@@ -47,4 +79,68 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getIndex(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
+            int result = javaObj.getIndex();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreExtendedKeyAccountCreationInfo::getIndex", "First parameter of RCTCoreExtendedKeyAccountCreationInfo::getIndex should be an instance of RCTCoreExtendedKeyAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getOwners(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getOwners();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreExtendedKeyAccountCreationInfo::getOwners", "First parameter of RCTCoreExtendedKeyAccountCreationInfo::getOwners should be an instance of RCTCoreExtendedKeyAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getDerivations(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getDerivations();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreExtendedKeyAccountCreationInfo::getDerivations", "First parameter of RCTCoreExtendedKeyAccountCreationInfo::getDerivations should be an instance of RCTCoreExtendedKeyAccountCreationInfo");
+        }
+    }
+
+    @ReactMethod
+    public void getExtendedKeys(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getExtendedKeys();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreExtendedKeyAccountCreationInfo::getExtendedKeys", "First parameter of RCTCoreExtendedKeyAccountCreationInfo::getExtendedKeys should be an instance of RCTCoreExtendedKeyAccountCreationInfo");
+        }
+    }
+
 }

@@ -37,6 +37,38 @@ public class RCTCoreError extends ReactContextBaseJavaModule {
     {
         return "RCTCoreError";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreError", "First parameter of RCTCoreError::release should be an instance of RCTCoreError");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, Error> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(ErrorCode code, String message, Promise promise) {
         Error javaResult = new Error(code, message);
 
@@ -47,4 +79,36 @@ public class RCTCoreError extends ReactContextBaseJavaModule {
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getCode(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Error javaObj = this.javaObjects.get(uid);
+            ErrorCode result = javaObj.getCode();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreError::getCode", "First parameter of RCTCoreError::getCode should be an instance of RCTCoreError");
+        }
+    }
+
+    @ReactMethod
+    public void getMessage(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            Error javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getMessage();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreError::getMessage", "First parameter of RCTCoreError::getMessage should be an instance of RCTCoreError");
+        }
+    }
+
 }

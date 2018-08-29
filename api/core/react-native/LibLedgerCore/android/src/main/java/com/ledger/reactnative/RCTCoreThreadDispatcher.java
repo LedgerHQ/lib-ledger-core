@@ -42,6 +42,36 @@ public class RCTCoreThreadDispatcher extends ReactContextBaseJavaModule {
     {
         return "RCTCoreThreadDispatcher";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreThreadDispatcher", "First parameter of RCTCoreThreadDispatcher::release should be an instance of RCTCoreThreadDispatcher");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, ThreadDispatcherImpl> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     /**
      *Get an execution context where tasks are executed sequentially

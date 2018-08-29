@@ -39,6 +39,36 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeBlock";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeBlock", "First parameter of RCTCoreBitcoinLikeBlock::release should be an instance of RCTCoreBitcoinLikeBlock");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeBlock> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     /**
      *Hash of block

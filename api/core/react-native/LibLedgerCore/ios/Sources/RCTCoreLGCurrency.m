@@ -69,11 +69,11 @@ RCT_REMAP_METHOD(init, initWithWalletType:(LGWalletType)walletType
         [field_4 addObject:field_4_elem];
 
     }
-    [implementationsData setObject:field_4_data forKey:@"field_4"];
+    [implementationsData setObject:field_4_data forKey:@"units"];
 
     RCTCoreLGBitcoinLikeNetworkParameters *rctParam_bitcoinLikeNetworkParameters = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
     LGBitcoinLikeNetworkParameters *field_5 = (LGBitcoinLikeNetworkParameters *)[rctParam_bitcoinLikeNetworkParameters.objcImplementations objectForKey:bitcoinLikeNetworkParameters[@"uid"]];
-    [implementationsData setObject:bitcoinLikeNetworkParameters[@"uid"] forKey:@"field_5"];
+    [implementationsData setObject:bitcoinLikeNetworkParameters[@"uid"] forKey:@"bitcoinLikeNetworkParameters"];
 
 
     LGCurrency * finalResult = [[LGCurrency alloc] initWithWalletType:walletType name:name bip44CoinType:bip44CoinType paymentUriScheme:paymentUriScheme units:field_4 bitcoinLikeNetworkParameters:field_5];

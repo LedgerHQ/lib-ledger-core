@@ -39,6 +39,36 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
     {
         return "RCTCoreGetEthreumLikeWalletCallback";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreGetEthreumLikeWalletCallback", "First parameter of RCTCoreGetEthreumLikeWalletCallback::release should be an instance of RCTCoreGetEthreumLikeWalletCallback");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, GetEthreumLikeWalletCallbackImpl> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     @ReactMethod
     public void onSuccess(Map<String, String> currentInstance, HashMap <String, String> wallet, boolean isCreated, Promise promise) {

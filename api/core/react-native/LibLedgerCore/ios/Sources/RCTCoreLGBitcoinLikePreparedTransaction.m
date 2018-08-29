@@ -68,7 +68,7 @@ RCT_REMAP_METHOD(init, initWithVersion:(int)version
         [field_1 addObject:field_1_elem];
 
     }
-    [implementationsData setObject:field_1_data forKey:@"field_1"];
+    [implementationsData setObject:field_1_data forKey:@"inputs"];
 
     NSMutableArray *field_3 = [[NSMutableArray alloc] init];
 
@@ -82,7 +82,7 @@ RCT_REMAP_METHOD(init, initWithVersion:(int)version
         [field_3 addObject:field_3_elem];
 
     }
-    [implementationsData setObject:field_3_data forKey:@"field_3"];
+    [implementationsData setObject:field_3_data forKey:@"outputs"];
 
 
 

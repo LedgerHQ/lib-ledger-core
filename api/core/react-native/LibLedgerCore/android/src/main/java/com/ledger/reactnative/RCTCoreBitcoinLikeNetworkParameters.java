@@ -37,6 +37,38 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     {
         return "RCTCoreBitcoinLikeNetworkParameters";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeNetworkParameters", "First parameter of RCTCoreBitcoinLikeNetworkParameters::release should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeNetworkParameters> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
+
+    @ReactMethod
     public void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs, Promise promise) {
         BitcoinLikeNetworkParameters javaResult = new BitcoinLikeNetworkParameters(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
 
@@ -47,4 +79,180 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
         finalResult.put("uid",uuid);
         promise.resolve(finalResult);
     }
+    @ReactMethod
+    public void getIdentifier(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getIdentifier();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getIdentifier", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getIdentifier should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getP2PKHVersion(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            byte[] result = javaObj.getP2PKHVersion();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getP2PKHVersion", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getP2PKHVersion should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getP2SHVersion(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            byte[] result = javaObj.getP2SHVersion();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getP2SHVersion", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getP2SHVersion should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getXPUBVersion(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            byte[] result = javaObj.getXPUBVersion();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getXPUBVersion", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getXPUBVersion should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getFeePolicy(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            BitcoinLikeFeePolicy result = javaObj.getFeePolicy();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getFeePolicy", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getFeePolicy should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getDustAmount(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            long result = javaObj.getDustAmount();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getDustAmount", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getDustAmount should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getMessagePrefix(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            String result = javaObj.getMessagePrefix();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getMessagePrefix", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getMessagePrefix should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getUsesTimestampedTransaction(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            boolean result = javaObj.getUsesTimestampedTransaction();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getUsesTimestampedTransaction", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getUsesTimestampedTransaction should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getTimestampDelay(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            long result = javaObj.getTimestampDelay();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getTimestampDelay", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getTimestampDelay should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getSigHash(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            byte[] result = javaObj.getSigHash();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getSigHash", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getSigHash should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
+    @ReactMethod
+    public void getAdditionalBIPs(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
+            ArrayList<String> result = javaObj.getAdditionalBIPs();
+            promise.resolve(result);
+        }
+        else
+        {
+            promise.reject("Failed to call RCTCoreBitcoinLikeNetworkParameters::getAdditionalBIPs", "First parameter of RCTCoreBitcoinLikeNetworkParameters::getAdditionalBIPs should be an instance of RCTCoreBitcoinLikeNetworkParameters");
+        }
+    }
+
 }

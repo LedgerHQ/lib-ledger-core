@@ -44,6 +44,36 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     {
         return "RCTCoreBitcoinLikeTransaction";
     }
+    @ReactMethod
+    public void release(Map<String, String> currentInstance, Promise promise)
+    {
+        String uid = currentInstance.get("uid");
+        if (uid.length() > 0)
+        {
+            this.javaObjects.remove(uid);
+            promise.resolve(0);
+        }
+        else
+        {
+            promise.reject("Failed to release instance of RCTCoreBitcoinLikeTransaction", "First parameter of RCTCoreBitcoinLikeTransaction::release should be an instance of RCTCoreBitcoinLikeTransaction");
+        }
+    }
+    @ReactMethod
+    public void log(Promise promise)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Map.Entry<String, BitcoinLikeTransaction> elem : this.javaObjects.entrySet())
+        {
+            result.add(elem.getKey());
+        }
+        promise.resolve(0);
+    }
+    @ReactMethod
+    public void flush(Promise promise)
+    {
+        this.javaObjects.clear();
+        promise.resolve(0);
+    }
 
     /** Get the hash of the transaction. */
     @ReactMethod

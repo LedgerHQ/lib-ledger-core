@@ -24,7 +24,7 @@
                     "android/jni/jni/jni",
                 ],
             },
-'libraries': ['libledger-core.so'],
+            'libraries': ['libledger-core.so'],
            'libraries_dir': ['android/jni/prebuilt/'],
         },
     ],
