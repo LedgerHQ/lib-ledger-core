@@ -1,7 +1,7 @@
-package co.ledger.core;
+package com.ledger.java;
 
 /**Class representing a lock, for thread safety purposes */
-public class LockImpl extends Lock {
+public class LockImpl extends co.ledger.core.Lock {
     /**
      *Acquire lock by thread calling this method,
      *If Lock already acquired by another thread, execution of calling thread should be blocked

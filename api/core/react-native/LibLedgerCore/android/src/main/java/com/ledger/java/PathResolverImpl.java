@@ -1,10 +1,10 @@
-package co.ledger.core;
+package com.ledger.java;
 
 /**
  * Module used to resolve file paths. libledger-core has its own iternal representation of the file system that may not
  * be adapted for the runtime platform. All path given to the PathResolver are absolute.
  */
-public class PathResolverImpl extends PathResolver {
+public class PathResolverImpl extends co.ledger.core.PathResolver {
     /**
      * Resolves the path for a SQLite database file.
      * @param path The path to resolve.

@@ -5,12 +5,14 @@ package com.ledger.reactnative;
 
 import co.ledger.core.Error;
 import co.ledger.core.EthereumLikeWallet;
-import co.ledger.core.GetEthreumLikeWalletCallbackImpl;
+import co.ledger.core.GetEthreumLikeWalletCallback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.GetEthreumLikeWalletCallbackImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

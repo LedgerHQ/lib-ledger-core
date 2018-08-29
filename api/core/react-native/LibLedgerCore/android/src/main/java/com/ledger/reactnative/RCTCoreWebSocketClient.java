@@ -3,13 +3,15 @@
 
 package com.ledger.reactnative;
 
-import co.ledger.core.WebSocketClientImpl;
+import co.ledger.core.WebSocketClient;
 import co.ledger.core.WebSocketConnection;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.WebSocketClientImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

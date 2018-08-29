@@ -5,14 +5,15 @@ package com.ledger.reactnative;
 
 import co.ledger.core.EventBus;
 import co.ledger.core.EventReceiver;
-import co.ledger.core.EventReceiverImpl;
 import co.ledger.core.ExecutionContext;
-import co.ledger.core.ExecutionContextImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.EventReceiverImpl;
+import com.ledger.java.ExecutionContextImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

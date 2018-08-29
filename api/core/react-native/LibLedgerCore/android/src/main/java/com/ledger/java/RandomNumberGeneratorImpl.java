@@ -1,14 +1,19 @@
-package co.ledger.core;
-
+package com.ledger.java;
+import java.util.Random;
 /** Class to generate random numbers */
 public class RandomNumberGeneratorImpl extends co.ledger.core.RandomNumberGenerator {
+    private Random rand;
+    public RandomNumberGeneratorImpl() {
+        this.rand = new Random();
+    }
     /**
      * Generates random bytes.
      * @params size number of bytes to generate
      * @return 'size' random bytes
      */
     public byte[] getRandomBytes(int size) {
-        byte [] result = new byte[0];
+        byte [] result = new byte[size];
+        this.rand.nextBytes(result);
     	return result;
     }
 
@@ -17,7 +22,7 @@ public class RandomNumberGeneratorImpl extends co.ledger.core.RandomNumberGenera
      * @return random 32 bits integer
      */
     public int getRandomInt() {
-    	return 0;
+    	return this.rand.nextInt();
     }
 
     /**
@@ -25,7 +30,7 @@ public class RandomNumberGeneratorImpl extends co.ledger.core.RandomNumberGenera
      * @return random 64 bits integer
      */
     public long getRandomLong() {
-    	return 0;
+    	return this.rand.nextLong();
     }
 
     /**
@@ -33,6 +38,6 @@ public class RandomNumberGeneratorImpl extends co.ledger.core.RandomNumberGenera
      * @return random byte
      */
     public byte getRandomByte() {
-    	return 0;
+    	return this.getRandomBytes(1)[0];
     }
 }

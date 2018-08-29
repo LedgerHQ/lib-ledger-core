@@ -7,7 +7,6 @@ import co.ledger.core.Event;
 import co.ledger.core.EventBus;
 import co.ledger.core.EventPublisher;
 import co.ledger.core.ExecutionContext;
-import co.ledger.core.ExecutionContextImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;

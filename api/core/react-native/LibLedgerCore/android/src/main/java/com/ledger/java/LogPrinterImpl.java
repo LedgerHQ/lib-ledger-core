@@ -1,16 +1,25 @@
-package co.ledger.core;
+package com.ledger.java;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *Class representing a printer of errors, warnings, infos ... (at runtime)
  *Printed logs are stored in path set by PathResolver::resolveLogFilePath
  */
-public class LogPrinterImpl extends LogPrinter {
+public class LogPrinterImpl extends co.ledger.core.LogPrinter {
+    private Logger logger;
+    private ExecutionContextImpl executionContext;
+    public LogPrinterImpl() {
+        this.logger = Logger.getLogger("ledger.reactnative");
+        //this.logger = new Logger("ledger.reactnative", null);
+        this.executionContext = new ExecutionContextImpl("__logger__");
+    }
     /**
      *Print different encountered errors
      *@param message, string
      */
     public void printError(String message) {
-
+        this.logger.log(Level.SEVERE, message);
     }
 
     /**
@@ -18,7 +27,7 @@ public class LogPrinterImpl extends LogPrinter {
      *@param message, string
      */
     public void printInfo(String message) {
-
+        this.logger.log(Level.INFO, message);
     }
 
     /**
@@ -26,7 +35,7 @@ public class LogPrinterImpl extends LogPrinter {
      *@param message string
      */
     public void printDebug(String message) {
-
+        this.logger.log(Level.FINE, message);
     }
 
     /**
@@ -34,7 +43,7 @@ public class LogPrinterImpl extends LogPrinter {
      *@param message, string
      */
     public void printWarning(String message) {
-
+        this.logger.log(Level.WARNING, message);
     }
 
     /**
@@ -42,7 +51,7 @@ public class LogPrinterImpl extends LogPrinter {
      *@param message, string
      */
     public void printApdu(String message) {
-
+        this.logger.log(Level.INFO, message);
     }
 
     /**
@@ -50,14 +59,14 @@ public class LogPrinterImpl extends LogPrinter {
      *@param message, string
      */
     public void printCriticalError(String message) {
-
+        this.logger.log(Level.SEVERE, message);
     }
 
     /**
      *Get context in which printer is executed (print)
      *@return ExecutionContext object
      */
-    public ExecutionContext getContext() {
-    	return null;
+    public co.ledger.core.ExecutionContext getContext() {
+    	return this.executionContext;
     }
 }

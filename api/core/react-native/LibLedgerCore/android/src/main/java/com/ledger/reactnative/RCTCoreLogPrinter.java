@@ -4,13 +4,15 @@
 package com.ledger.reactnative;
 
 import co.ledger.core.ExecutionContext;
-import co.ledger.core.ExecutionContextImpl;
-import co.ledger.core.LogPrinterImpl;
+import co.ledger.core.LogPrinter;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.ExecutionContextImpl;
+import com.ledger.java.LogPrinterImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -3,12 +3,14 @@
 
 package com.ledger.reactnative;
 
-import co.ledger.core.RandomNumberGeneratorImpl;
+import co.ledger.core.RandomNumberGenerator;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.RandomNumberGeneratorImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

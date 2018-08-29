@@ -4,12 +4,14 @@
 package com.ledger.reactnative;
 
 import co.ledger.core.HttpReadBodyResult;
-import co.ledger.core.HttpUrlConnectionImpl;
+import co.ledger.core.HttpUrlConnection;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.HttpUrlConnectionImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -3,12 +3,14 @@
 
 package com.ledger.reactnative;
 
-import co.ledger.core.EthereumPublicKeyProviderImpl;
+import co.ledger.core.EthereumPublicKeyProvider;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.ledger.java.EthereumPublicKeyProviderImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -7,7 +7,6 @@ import co.ledger.core.Error;
 import co.ledger.core.HttpMethod;
 import co.ledger.core.HttpRequest;
 import co.ledger.core.HttpUrlConnection;
-import co.ledger.core.HttpUrlConnectionImpl;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
