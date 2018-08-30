@@ -10,7 +10,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -61,12 +66,12 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, Preferences> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -88,8 +93,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getString(key, fallbackValue);
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -111,8 +116,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getInt(key, fallbackValue);
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -134,8 +139,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getLong(key, fallbackValue);
-            Map<String, Long> result = new HashMap<String, Long>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -157,8 +162,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.getBoolean(key, fallbackValue);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -180,8 +185,13 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getStringArray(key, fallbackValue);
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            WritableNativeArray javaResult_list = new WritableNativeArray();
+            for(String javaResult_elem : javaResult)
+            {
+                javaResult_list.pushString(javaResult_elem);
+            }
+            result.putArray("value", javaResult_list);
 
             promise.resolve(result);
         }
@@ -203,8 +213,9 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getData(key, fallbackValue);
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -226,8 +237,8 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.contains(key);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -253,9 +264,9 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCorePreferencesEditor");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCorePreferencesEditor");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }

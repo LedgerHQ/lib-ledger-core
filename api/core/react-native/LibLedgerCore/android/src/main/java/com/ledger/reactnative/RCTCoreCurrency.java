@@ -12,7 +12,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -59,12 +64,12 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, Currency> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -97,9 +102,9 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
 
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, javaResult);
-        Map<String, String> finalResult = new HashMap<String, String>();
-        finalResult.put("type","RCTCoreCurrency");
-        finalResult.put("uid",uuid);
+        WritableNativeMap finalResult = new WritableNativeMap();
+        finalResult.putString("type","RCTCoreCurrency");
+        finalResult.putString("uid",uuid);
         this.implementationsData.put(uuid, implementationsData);
         promise.resolve(finalResult);
     }
@@ -176,8 +181,13 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
             Currency javaObj = this.javaObjects.get(uid);
             Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
             ArrayList<String> fieldData = data.get("units");
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put(uid,fieldData);
+            WritableNativeArray nativeFieldData = new WritableNativeArray();
+            for (String elem : fieldData)
+            {
+                nativeFieldData.pushString(elem);
+            }
+            WritableNativeMap result = new WritableNativeMap();
+            result.putArray(uid,nativeFieldData);
             promise.resolve(result);
         }
         else
@@ -195,8 +205,13 @@ public class RCTCoreCurrency extends ReactContextBaseJavaModule {
             Currency javaObj = this.javaObjects.get(uid);
             Map<String, ArrayList<String>> data = this.implementationsData.get(uid);
             ArrayList<String> fieldData = data.get("bitcoinLikeNetworkParameters");
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put(uid,fieldData);
+            WritableNativeArray nativeFieldData = new WritableNativeArray();
+            for (String elem : fieldData)
+            {
+                nativeFieldData.pushString(elem);
+            }
+            WritableNativeMap result = new WritableNativeMap();
+            result.putArray(uid,nativeFieldData);
             promise.resolve(result);
         }
         else

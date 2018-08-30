@@ -12,7 +12,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,12 +63,12 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, EventPublisher> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -89,9 +94,9 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreEventBus");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreEventBus");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -179,9 +184,9 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreEventPublisher rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventPublisher.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreEventPublisher");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreEventPublisher");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }

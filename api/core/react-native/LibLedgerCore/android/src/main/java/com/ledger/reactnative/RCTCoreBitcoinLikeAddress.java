@@ -10,7 +10,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,12 +61,12 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, BitcoinLikeAddress> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -83,8 +88,9 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getVersion();
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -106,8 +112,9 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getHash160();
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -133,9 +140,9 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBitcoinLikeNetworkParameters");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBitcoinLikeNetworkParameters");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -157,8 +164,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toBase58();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -183,8 +190,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isP2SH();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -206,8 +213,8 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isP2PKH();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }

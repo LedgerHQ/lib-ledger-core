@@ -11,7 +11,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,16 +49,16 @@ public class RCTCoreOperationListCallback extends OperationListCallback {
             {
                 this.promise.reject(error.toString(), error.getMessage());
             }
-            ArrayList<HashMap <String, String>> converted_result = new ArrayList<HashMap <String, String>>();
+            WritableNativeArray converted_result = new WritableNativeArray();
             for (Operation result_elem : result)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreOperation rctImpl_result_elem = this.reactContext.getNativeModule(RCTCoreOperation.class);
                 rctImpl_result_elem.getJavaObjects().put(uuid, result_elem);
-                HashMap<String, String> converted_result_elem = new HashMap<String, String>();
-                converted_result_elem.put("type","RCTCoreOperation");
-                converted_result_elem.put("uid",uuid);
-                converted_result.add(converted_result_elem);
+                WritableNativeMap converted_result_elem = new WritableNativeMap();
+                converted_result_elem.putString("type","RCTCoreOperation");
+                converted_result_elem.putString("uid",uuid);
+                converted_result.pushMap(converted_result_elem);
             }
 
             this.promise.resolve(converted_result);

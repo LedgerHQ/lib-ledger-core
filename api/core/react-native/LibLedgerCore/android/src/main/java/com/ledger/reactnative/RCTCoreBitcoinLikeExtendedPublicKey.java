@@ -10,7 +10,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,12 +60,12 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, BitcoinLikeExtendedPublicKey> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -82,9 +87,9 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBitcoinLikeAddress");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBitcoinLikeAddress");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -102,8 +107,9 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.derivePublicKey(path);
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -121,8 +127,9 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.deriveHash160(path);
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -140,8 +147,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toBase58();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -159,8 +166,8 @@ public class RCTCoreBitcoinLikeExtendedPublicKey extends ReactContextBaseJavaMod
             BitcoinLikeExtendedPublicKey currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getRootPath();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }

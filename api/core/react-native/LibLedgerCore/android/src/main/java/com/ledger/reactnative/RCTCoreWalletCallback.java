@@ -11,7 +11,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,9 +52,9 @@ public class RCTCoreWalletCallback extends WalletCallback {
             String uuid = UUID.randomUUID().toString();
             RCTCoreWallet rctImpl_result = this.reactContext.getNativeModule(RCTCoreWallet.class);
             rctImpl_result.getJavaObjects().put(uuid, result);
-            HashMap<String, String> converted_result = new HashMap<String, String>();
-            converted_result.put("type","RCTCoreWallet");
-            converted_result.put("uid",uuid);
+            WritableNativeMap converted_result = new WritableNativeMap();
+            converted_result.putString("type","RCTCoreWallet");
+            converted_result.putString("uid",uuid);
 
             this.promise.resolve(converted_result);
         }

@@ -11,7 +11,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,9 +52,9 @@ public class RCTCoreExtendedKeyAccountCreationInfoCallback extends ExtendedKeyAc
             String uuid = UUID.randomUUID().toString();
             RCTCoreExtendedKeyAccountCreationInfo rctImpl_result = this.reactContext.getNativeModule(RCTCoreExtendedKeyAccountCreationInfo.class);
             rctImpl_result.getJavaObjects().put(uuid, result);
-            HashMap<String, String> converted_result = new HashMap<String, String>();
-            converted_result.put("type","RCTCoreExtendedKeyAccountCreationInfo");
-            converted_result.put("uid",uuid);
+            WritableNativeMap converted_result = new WritableNativeMap();
+            converted_result.putString("type","RCTCoreExtendedKeyAccountCreationInfo");
+            converted_result.putString("uid",uuid);
 
             this.promise.resolve(converted_result);
         }

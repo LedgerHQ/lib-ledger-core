@@ -9,7 +9,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,9 +48,9 @@ public class RCTCoreEthereumPublicKeyProvider extends ReactContextBaseJavaModule
         EthereumPublicKeyProviderImpl newInstance = new EthereumPublicKeyProviderImpl(this.reactContext);
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, newInstance);
-        Map<String, String> finalResult = new HashMap<String, String>();
-        finalResult.put("type","RCTCoreEthereumPublicKeyProvider");
-        finalResult.put("uid",uuid);
+        WritableNativeMap finalResult = new WritableNativeMap();
+        finalResult.putString("type","RCTCoreEthereumPublicKeyProvider");
+        finalResult.putString("uid",uuid);
         promise.resolve(finalResult);
     }
     @ReactMethod
@@ -65,12 +70,12 @@ public class RCTCoreEthereumPublicKeyProvider extends ReactContextBaseJavaModule
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, EthereumPublicKeyProviderImpl> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)

@@ -21,6 +21,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,12 +72,12 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, Account> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -95,8 +99,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getIndex();
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -119,9 +123,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreOperationQuery");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreOperationQuery");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -186,8 +190,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isSynchronizing();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -213,9 +217,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreEventBus");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreEventBus");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -241,9 +245,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCorePreferences");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCorePreferences");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -269,9 +273,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreLogger rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLogger.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreLogger");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreLogger");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -300,9 +304,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCorePreferences");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCorePreferences");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -324,9 +328,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAccount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAccount.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBitcoinLikeAccount");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBitcoinLikeAccount");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -350,8 +354,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfBitcoinLikeAccount();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -373,8 +377,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfEthereumLikeAccount();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -396,8 +400,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfRippleLikeAccount();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -436,8 +440,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             WalletType javaResult = currentInstanceObj.getWalletType();
-            Map<String, WalletType> result = new HashMap<String, WalletType>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = javaResult.toString();
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -463,9 +468,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreEventBus");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreEventBus");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -519,8 +524,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isObservingBlockchain();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -559,8 +564,8 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getRestoreKey();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }

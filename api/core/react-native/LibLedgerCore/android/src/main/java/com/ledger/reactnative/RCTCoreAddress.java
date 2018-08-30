@@ -11,7 +11,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,12 +61,12 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, Address> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -83,8 +88,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getDerivationPath();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -106,8 +111,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -129,9 +134,9 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBitcoinLikeAddress");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBitcoinLikeAddress");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -149,8 +154,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfBitcoinLikeAddress();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -172,9 +177,9 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreCurrency");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreCurrency");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -201,9 +206,9 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAddress.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreAddress");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreAddress");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -225,8 +230,8 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
             RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
             Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
             boolean javaResult = Address.isValid(address, javaParam_1);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }

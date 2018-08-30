@@ -9,7 +9,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,12 +60,12 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, BigInt> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -89,9 +94,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -120,9 +125,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -151,9 +156,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -182,9 +187,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -210,16 +215,16 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             ArrayList<BigInt> javaResult = currentInstanceObj.divideAndRemainder(javaParam_0);
 
-            ArrayList<HashMap <String, String>> result = new ArrayList<HashMap <String, String>>();
+            WritableNativeArray result = new WritableNativeArray();
             for (BigInt javaResult_elem : javaResult)
             {
                 String uuid = UUID.randomUUID().toString();
                 RCTCoreBigInt rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBigInt.class);
                 rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
-                HashMap<String, String> result_elem = new HashMap<String, String>();
-                result_elem.put("type","RCTCoreBigInt");
-                result_elem.put("uid",uuid);
-                result.add(result_elem);
+                WritableNativeMap result_elem = new WritableNativeMap();
+                result_elem.putString("type","RCTCoreBigInt");
+                result_elem.putString("uid",uuid);
+                result.pushMap(result_elem);
             }
 
             promise.resolve(result);
@@ -247,9 +252,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -274,8 +279,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toDecimalString(precision, decimalSeparator, thousandSeparator);
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -297,8 +302,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.toString(radix);
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -321,8 +326,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.intValue();
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -347,8 +352,8 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
             int javaResult = currentInstanceObj.compare(javaParam_0);
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -374,9 +379,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -400,9 +405,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -425,9 +430,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBigInt");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBigInt");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }

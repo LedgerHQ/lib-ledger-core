@@ -10,7 +10,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,9 +50,9 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
         HttpUrlConnectionImpl newInstance = new HttpUrlConnectionImpl(this.reactContext);
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, newInstance);
-        Map<String, String> finalResult = new HashMap<String, String>();
-        finalResult.put("type","RCTCoreHttpUrlConnection");
-        finalResult.put("uid",uuid);
+        WritableNativeMap finalResult = new WritableNativeMap();
+        finalResult.putString("type","RCTCoreHttpUrlConnection");
+        finalResult.putString("uid",uuid);
         promise.resolve(finalResult);
     }
     @ReactMethod
@@ -67,12 +72,12 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, HttpUrlConnectionImpl> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -94,8 +99,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getStatusCode();
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -117,8 +122,8 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getStatusText();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -140,8 +145,14 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             HttpUrlConnectionImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             HashMap<String, String> javaResult = currentInstanceObj.getHeaders();
-            Map<String, HashMap<String, String>> result = new HashMap<String, HashMap<String, String>>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            WritableNativeMap javaResult_map = new WritableNativeMap();
+            for(String javaResult_key : javaResult.keySet())
+            {
+                String javaResult_elem_value = javaResult.get(javaResult_key);
+                javaResult_map.putString(javaResult_key, javaResult_elem_value);
+            }
+            result.putMap("value", javaResult_map);
 
             promise.resolve(result);
         }
@@ -167,9 +178,9 @@ public class RCTCoreHttpUrlConnection extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreHttpReadBodyResult rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreHttpReadBodyResult.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreHttpReadBodyResult");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreHttpReadBodyResult");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }

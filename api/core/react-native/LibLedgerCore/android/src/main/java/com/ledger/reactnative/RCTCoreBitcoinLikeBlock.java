@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,12 +60,12 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, BitcoinLikeBlock> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -83,8 +87,8 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getHash();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -106,8 +110,8 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.getHeight();
-            Map<String, Long> result = new HashMap<String, Long>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -129,8 +133,10 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getTime();
-            Map<String, Date> result = new HashMap<String, Date>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            String finalJavaResult = dateFormat.format(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }

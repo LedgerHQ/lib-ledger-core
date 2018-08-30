@@ -11,7 +11,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,12 +65,12 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, DynamicObject> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -93,9 +98,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -123,9 +128,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -153,9 +158,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -183,9 +188,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -213,9 +218,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -243,9 +248,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -274,9 +279,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -305,9 +310,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -330,8 +335,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getString(key);
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -354,8 +359,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             Integer javaResult = currentInstanceObj.getInt(key);
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -378,8 +383,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             Long javaResult = currentInstanceObj.getLong(key);
-            Map<String, Long> result = new HashMap<String, Long>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -402,8 +407,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             Double javaResult = currentInstanceObj.getDouble(key);
-            Map<String, Double> result = new HashMap<String, Double>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -426,8 +431,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getData(key);
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -450,8 +456,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             Boolean javaResult = currentInstanceObj.getBoolean(key);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -478,9 +484,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -507,9 +513,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicArray rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicArray.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicArray");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicArray");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -532,8 +538,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.contains(key);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -556,8 +562,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.remove(key);
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -579,8 +585,13 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getKeys();
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            WritableNativeArray javaResult_list = new WritableNativeArray();
+            for(String javaResult_elem : javaResult)
+            {
+                javaResult_list.pushString(javaResult_elem);
+            }
+            result.putArray("value", javaResult_list);
 
             promise.resolve(result);
         }
@@ -603,8 +614,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             DynamicType javaResult = currentInstanceObj.getType(key);
-            Map<String, DynamicType> result = new HashMap<String, DynamicType>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = javaResult.toString();
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -626,8 +638,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.dump();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -649,8 +661,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.serialize();
-            Map<String, byte[]> result = new HashMap<String, byte[]>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = new String(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -672,8 +685,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isReadOnly();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -695,8 +708,8 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             DynamicObject currentInstanceObj = this.javaObjects.get(sUid);
 
             long javaResult = currentInstanceObj.size();
-            Map<String, Long> result = new HashMap<String, Long>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -718,9 +731,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -743,9 +756,9 @@ public class RCTCoreDynamicObject extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreDynamicObject");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreDynamicObject");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }

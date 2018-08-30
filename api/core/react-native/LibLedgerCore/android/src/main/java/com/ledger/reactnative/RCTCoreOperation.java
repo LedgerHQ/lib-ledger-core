@@ -16,6 +16,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,12 +67,12 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
     @ReactMethod
     public void log(Promise promise)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        WritableNativeArray result = new WritableNativeArray();
         for (Map.Entry<String, Operation> elem : this.javaObjects.entrySet())
         {
-            result.add(elem.getKey());
+            result.pushString(elem.getKey());
         }
-        promise.resolve(0);
+        promise.resolve(result);
     }
     @ReactMethod
     public void flush(Promise promise)
@@ -90,8 +94,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             String javaResult = currentInstanceObj.getUid();
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("value", javaResult);
 
             promise.resolve(result);
         }
@@ -113,8 +117,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             int javaResult = currentInstanceObj.getAccountIndex();
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putInt("value", javaResult);
 
             promise.resolve(result);
         }
@@ -136,8 +140,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationType javaResult = currentInstanceObj.getOperationType();
-            Map<String, OperationType> result = new HashMap<String, OperationType>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = javaResult.toString();
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -159,8 +164,10 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getDate();
-            Map<String, Date> result = new HashMap<String, Date>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            String finalJavaResult = dateFormat.format(javaResult);
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -182,8 +189,13 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getSenders();
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            WritableNativeArray javaResult_list = new WritableNativeArray();
+            for(String javaResult_elem : javaResult)
+            {
+                javaResult_list.pushString(javaResult_elem);
+            }
+            result.putArray("value", javaResult_list);
 
             promise.resolve(result);
         }
@@ -205,8 +217,13 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             ArrayList<String> javaResult = currentInstanceObj.getRecipients();
-            Map<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            WritableNativeArray javaResult_list = new WritableNativeArray();
+            for(String javaResult_elem : javaResult)
+            {
+                javaResult_list.pushString(javaResult_elem);
+            }
+            result.putArray("value", javaResult_list);
 
             promise.resolve(result);
         }
@@ -232,9 +249,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreAmount");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreAmount");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -260,9 +277,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreAmount");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreAmount");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -288,9 +305,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCorePreferences");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCorePreferences");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -316,9 +333,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreTrustIndicator rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreTrustIndicator.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreTrustIndicator");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreTrustIndicator");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -340,8 +357,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             Long javaResult = currentInstanceObj.getBlockHeight();
-            Map<String, Long> result = new HashMap<String, Long>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putDouble("value", javaResult);
 
             promise.resolve(result);
         }
@@ -367,9 +384,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeOperation rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOperation.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreBitcoinLikeOperation");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreBitcoinLikeOperation");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
@@ -387,8 +404,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfBitcoinLikeOperation();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -411,8 +428,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfEthereumLikeOperation();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -435,8 +452,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isInstanceOfRippleLikeOperation();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -458,8 +475,8 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             boolean javaResult = currentInstanceObj.isComplete();
-            Map<String, Boolean> result = new HashMap<String, Boolean>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putBoolean("value", javaResult);
 
             promise.resolve(result);
         }
@@ -481,8 +498,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             Operation currentInstanceObj = this.javaObjects.get(sUid);
 
             WalletType javaResult = currentInstanceObj.getWalletType();
-            Map<String, WalletType> result = new HashMap<String, WalletType>();
-            result.put("value", javaResult);
+            WritableNativeMap result = new WritableNativeMap();
+            String finalJavaResult = javaResult.toString();
+            result.putString("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -504,9 +522,9 @@ public class RCTCoreOperation extends ReactContextBaseJavaModule {
             String uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
             rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
-            HashMap<String, String> result = new HashMap<String, String>();
-            result.put("type","RCTCoreCurrency");
-            result.put("uid",uuid);
+            WritableNativeMap result = new WritableNativeMap();
+            result.putString("type","RCTCoreCurrency");
+            result.putString("uid",uuid);
 
             promise.resolve(result);
         }
