@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.ledger.java.NativeLibLoader;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,9 +24,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
+import com.ledger.java.NativeLibLoader;
 /**Class representing a database */
 public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
+
+
 
     private final ReactApplicationContext reactContext;
     private Map<String, DatabaseBackend> javaObjects;
@@ -31,7 +37,23 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         return javaObjects;
     }
 
-    public RCTCoreDatabaseBackend(ReactApplicationContext reactContext)
+    //System.loadLibrary("lib-binding”)
+
+    static {
+        try {
+            //WORKS BUT JNI error not finding "ThreadDispatcher" class looking into /data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/base.apk"],
+            // nativeLibraryDirectories=[/data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/lib/x86,
+            // /data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/base.apk!/lib/x86, /system/lib, /vendor/lib]
+
+            System.loadLibrary("-binding");
+            //System.load("/Users/elkhalilbellakrid/Desktop/Playground_15/lib-ledger-core/api/core/react-native/LibLedgerCore/android/binding/android/libs/x86/lib-binding.so");
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("###### Native Library failed to load.\n" + e);
+            System.exit(1);
+        }
+    }
+
+    public RCTCoreDatabaseBackend(ReactApplicationContext reactContext) throws URISyntaxException, IOException
     {
         super(reactContext);
         this.reactContext = reactContext;

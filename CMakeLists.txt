@@ -31,6 +31,10 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
+if(APPLE)
+    set(JAVA_INCLUDE_PATH2 "$ENV{JAVA_HOME}/include" CACHE PATH "")
+endif()
+
 add_subdirectory(doc)
 add_subdirectory(core)
 
