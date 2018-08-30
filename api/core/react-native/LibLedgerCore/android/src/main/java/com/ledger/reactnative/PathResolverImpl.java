@@ -1,6 +1,8 @@
-package com.ledger.java;
+package com.ledger.reactnative;
 
 import android.content.Context;
+
+import com.facebook.react.bridge.ReactApplicationContext;
 
 import java.io.File;
 
@@ -9,7 +11,9 @@ import java.io.File;
  * be adapted for the runtime platform. All path given to the PathResolver are absolute.
  */
 public class PathResolverImpl extends co.ledger.core.PathResolver {
-    public PathResolverImpl() {
+    private ReactApplicationContext reactContext;
+    public PathResolverImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
     }
     /**
      * Resolves the path for a SQLite database file.
@@ -17,8 +21,10 @@ public class PathResolverImpl extends co.ledger.core.PathResolver {
      * @return The resolved path.
      */
     public String resolveDatabasePath(String path) {
-		File file = context.getFilesDir();
-        return "";
+        String base = "database_";
+        File file = this.reactContext.getFilesDir();
+        String modifiedPath = file.getAbsolutePath().replace("/","__");
+        return modifiedPath.concat(base);
     }
 
     /**
@@ -27,7 +33,10 @@ public class PathResolverImpl extends co.ledger.core.PathResolver {
      * @return The resolved path.
      */
     public String resolveLogFilePath(String path) {
-		return "";
+        String base = "log_file_";
+        File file = this.reactContext.getFilesDir();
+        String modifiedPath = file.getAbsolutePath().replace("/","__");
+        return modifiedPath.concat(base);
     }
 
     /**
@@ -36,6 +45,9 @@ public class PathResolverImpl extends co.ledger.core.PathResolver {
      * @return The resolved path.
      */
     public String resolvePreferencesPath(String path) {
-		return "";
+        String base = "preferences_";
+        File file = this.reactContext.getFilesDir();
+        String modifiedPath = file.getAbsolutePath().replace("/","__");
+        return modifiedPath.concat(base);
     }
 }

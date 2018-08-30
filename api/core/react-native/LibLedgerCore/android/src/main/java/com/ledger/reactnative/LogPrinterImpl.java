@@ -1,4 +1,6 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+
+import com.facebook.react.bridge.ReactApplicationContext;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,11 +10,12 @@ import java.util.logging.Logger;
  */
 public class LogPrinterImpl extends co.ledger.core.LogPrinter {
     private Logger logger;
+
     private ExecutionContextImpl executionContext;
-    public LogPrinterImpl() {
+    public LogPrinterImpl(ReactApplicationContext reactContext) {
         this.logger = Logger.getLogger("ledger.reactnative");
         //this.logger = new Logger("ledger.reactnative", null);
-        this.executionContext = new ExecutionContextImpl("__logger__");
+        this.executionContext = new ExecutionContextImpl(reactContext,"__logger__");
     }
     /**
      *Print different encountered errors

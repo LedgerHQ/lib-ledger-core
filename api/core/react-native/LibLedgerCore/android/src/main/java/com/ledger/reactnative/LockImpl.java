@@ -1,7 +1,13 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+
+import com.facebook.react.bridge.ReactApplicationContext;
 
 /**Class representing a lock, for thread safety purposes */
 public class LockImpl extends co.ledger.core.Lock {
+    private ReactApplicationContext reactContext;
+    public LockImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+    }
     /**
      *Acquire lock by thread calling this method,
      *If Lock already acquired by another thread, execution of calling thread should be blocked

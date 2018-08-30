@@ -11,8 +11,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.ledger.java.GetEthreumLikeWalletCallbackImpl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +38,17 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
     public String getName()
     {
         return "RCTCoreGetEthreumLikeWalletCallback";
+    }
+    @ReactMethod
+    public void newInstance(Promise promise)
+    {
+        GetEthreumLikeWalletCallbackImpl newInstance = new GetEthreumLikeWalletCallbackImpl(this.reactContext);
+        String uuid = UUID.randomUUID().toString();
+        this.javaObjects.put(uuid, newInstance);
+        Map<String, String> finalResult = new HashMap<String, String>();
+        finalResult.put("type","RCTCoreGetEthreumLikeWalletCallback");
+        finalResult.put("uid",uuid);
+        promise.resolve(finalResult);
     }
     @ReactMethod
     public void release(Map<String, String> currentInstance, Promise promise)

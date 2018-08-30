@@ -1,9 +1,14 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+import com.facebook.react.bridge.ReactApplicationContext;
+
 import java.util.Random;
 /** Class to generate random numbers */
 public class RandomNumberGeneratorImpl extends co.ledger.core.RandomNumberGenerator {
+    private ReactApplicationContext reactContext;
     private Random rand;
-    public RandomNumberGeneratorImpl() {
+
+    public RandomNumberGeneratorImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
         this.rand = new Random();
     }
     /**

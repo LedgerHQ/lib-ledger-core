@@ -1,5 +1,5 @@
-package co.ledger.core;
+package com.ledger.java;
 
-public class EthereumPublicKeyProviderImpl extends EthereumPublicKeyProvider {
+public class EthereumPublicKeyProviderImpl extends co.ledger.core.EthereumPublicKeyProvider {
 
 }

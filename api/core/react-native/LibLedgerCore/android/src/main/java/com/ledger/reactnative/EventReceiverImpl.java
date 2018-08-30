@@ -1,12 +1,18 @@
-package com.ledger.java;
+package com.ledger.reactnative;
 import co.ledger.core.Event;
 import co.ledger.core.EventCode;
 import co.ledger.core.DynamicObject;
 
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+
 /**Class respresenting an event receiver */
 public class EventReceiverImpl extends co.ledger.core.EventReceiver {
+    private ReactApplicationContext reactContext;
     private Promise promise;
+    public EventReceiverImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+    }
     public void setPromise(Promise _promise) {
         this.promise = promise;
     }

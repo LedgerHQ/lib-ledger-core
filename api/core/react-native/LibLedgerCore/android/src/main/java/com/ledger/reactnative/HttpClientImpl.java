@@ -1,4 +1,7 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.ledger.java.HttpUrlConnectionImpl;
 
 import co.ledger.core.HttpRequest;
 import co.ledger.core.Error;
@@ -15,6 +18,10 @@ import java.util.Map;
 
 /**Class representing the http client performing the http requests */
 public class HttpClientImpl extends co.ledger.core.HttpClient {
+    private ReactApplicationContext reactContext;
+    public HttpClientImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+    }
     /**
      *Execute a giver Http request\
      *@param request, HttpRequest object, requestr to execute

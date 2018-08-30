@@ -1,4 +1,6 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+
+import com.facebook.react.bridge.ReactApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -6,7 +8,10 @@ import java.security.NoSuchAlgorithmException;
 
 /** Helper class for commonly used crypto algorithms */
 public class HashAlgorithmHelperImpl extends co.ledger.core.HashAlgorithmHelper {
-
+    private ReactApplicationContext reactContext;
+    public HashAlgorithmHelperImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+    }
     /**
      *RACE Integrity Primitives Evaluation Message Digest (used in Bitcoin)
      *@param data in bytes, message to hash

@@ -1,6 +1,8 @@
-package com.ledger.java;
+package com.ledger.reactnative;
 
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+
 import co.ledger.core.Runnable;
 import java.util.Deque;
 import java.util.PriorityQueue;
@@ -9,15 +11,26 @@ import java.util.concurrent.SynchronousQueue;
 
 /**Class representing context in which tasks get executed */
 public class ExecutionContextImpl extends co.ledger.core.ExecutionContext {
+    private ReactApplicationContext reactContext;
     private Queue<co.ledger.core.Runnable> queue;
     private Promise promise;
 
-    public ExecutionContextImpl(String name) {
+
+    private static Queue<co.ledger.core.Runnable> newQueue(ReactApplicationContext reactContext, String name) {
         if (name == "__main__") {
-            this.queue = new PriorityQueue<co.ledger.core.Runnable>();
+            return new PriorityQueue<co.ledger.core.Runnable>();
         } else {
-            this.queue = new SynchronousQueue<co.ledger.core.Runnable>();
+            return new SynchronousQueue<co.ledger.core.Runnable>();
         }
+    }
+    public ExecutionContextImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+        this.queue = newQueue(reactContext, "__main__");
+    }
+
+    public ExecutionContextImpl(ReactApplicationContext reactContext, String name) {
+        this.reactContext = reactContext;
+        this.queue = newQueue(reactContext, name);
     }
 
     public void setPromise(Promise _promise) {

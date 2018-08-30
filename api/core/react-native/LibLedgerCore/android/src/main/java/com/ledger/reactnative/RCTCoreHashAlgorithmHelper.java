@@ -9,8 +9,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.ledger.java.HashAlgorithmHelperImpl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +37,17 @@ public class RCTCoreHashAlgorithmHelper extends ReactContextBaseJavaModule {
     public String getName()
     {
         return "RCTCoreHashAlgorithmHelper";
+    }
+    @ReactMethod
+    public void newInstance(Promise promise)
+    {
+        HashAlgorithmHelperImpl newInstance = new HashAlgorithmHelperImpl(this.reactContext);
+        String uuid = UUID.randomUUID().toString();
+        this.javaObjects.put(uuid, newInstance);
+        Map<String, String> finalResult = new HashMap<String, String>();
+        finalResult.put("type","RCTCoreHashAlgorithmHelper");
+        finalResult.put("uid",uuid);
+        promise.resolve(finalResult);
     }
     @ReactMethod
     public void release(Map<String, String> currentInstance, Promise promise)

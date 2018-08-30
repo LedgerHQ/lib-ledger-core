@@ -1,4 +1,6 @@
-package com.ledger.java;
+package com.ledger.reactnative;
+
+import com.facebook.react.bridge.ReactApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,10 +8,13 @@ import java.util.Map;
 
 /**Class representing a thread dispatcher */
 public class ThreadDispatcherImpl extends co.ledger.core.ThreadDispatcher {
+    private ReactApplicationContext reactContext;
     private Map<String, ExecutionContextImpl> contexts;
-    public ThreadDispatcherImpl() {
+    public ThreadDispatcherImpl(ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
         this.contexts = new HashMap<String, ExecutionContextImpl>();
     }
+
     /**
      *Get an execution context where tasks are executed sequentially
      *@param name, string, name of execution context to retrieve
@@ -18,7 +23,7 @@ public class ThreadDispatcherImpl extends co.ledger.core.ThreadDispatcher {
     public co.ledger.core.ExecutionContext getSerialExecutionContext(String name) {
         ExecutionContextImpl context = this.contexts.get(name);
         if (context == null) {
-            context = new ExecutionContextImpl(name);
+            context = new ExecutionContextImpl(this.reactContext,name);
         }
         return context;
     }

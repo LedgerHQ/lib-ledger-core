@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.ledger.java.HttpClientImpl;
+import com.facebook.react.bridge.WritableNativeMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +40,17 @@ public class RCTCoreHttpClient extends ReactContextBaseJavaModule {
     public String getName()
     {
         return "RCTCoreHttpClient";
+    }
+    @ReactMethod
+    public void newInstance(Promise promise)
+    {
+        HttpClientImpl newInstance = new HttpClientImpl(this.reactContext);
+        String uuid = UUID.randomUUID().toString();
+        this.javaObjects.put(uuid, newInstance);
+        WritableNativeMap finalResult = new WritableNativeMap();
+        finalResult.putString("type","RCTCoreHttpClient");
+        finalResult.putString("uid",uuid);
+        promise.resolve(finalResult);
     }
     @ReactMethod
     public void release(Map<String, String> currentInstance, Promise promise)
