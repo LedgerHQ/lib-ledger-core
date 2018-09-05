@@ -7,7 +7,6 @@ jobs:
   build_linux_release:
     docker:
       - image: debian:stretch
-      - image: circleci/android:api-27-alpha
     working_directory: ~/lib-ledger-core
     steps:
       - run:
@@ -15,24 +14,6 @@ jobs:
             apt-get update
             apt-get -y install git ssh
       - checkout
-      - run:
-          name: Setup NDK
-          command: |
-            apt-get install -y zip unzip
-            apt-get install -y apt-transport-https wget
-            wget --quiet https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-            unzip -q android-ndk-r16b-linux-x86_64.zip -d /home/circleci
-            ls -la /home/circleci/android-ndk-r16b
-            echo ">>>>> Add architecture i386"
-            dpkg --add-architecture i386
-            echo ">>>>> Install openjdk-8-jdk:i386"
-            apt-get update
-            apt-get install openjdk-8-jdk:i386 -y
-            echo ">>>>> JAVA HOME"
-            echo $JAVA_HOME
-            ls -la /usr/lib/jvm/
-            ls -la /usr/lib/jvm/java-8-openjdk-i386
-
       - run:
           name: Setup
           command: |
@@ -49,8 +30,109 @@ jobs:
           name: Build_Library
           command: |
             . .circleci/build_lib.sh Release
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
+      - deploy:
+          requires:
+            - hold
+          name: Deploy
+          command: |
+            . .circleci/deploy.sh
+  build_linux_debug:
+      docker:
+        - image: debian:stretch
+      working_directory: ~/lib-ledger-core
+      steps:
+        - run:
+            command: |
+              apt-get update
+              apt-get -y install git ssh
+        - checkout
+        - run:
+            name: Setup
+            command: |
+              . .circleci/setup_debian.sh Debug
+        - run:
+            name: Submodule_Initialization
+            command: |
+              . .circleci/init_submodules.sh
+        - run:
+            name: CMake_Install
+            command: |
+              . .circleci/cmake-install.sh
+        - run:
+            name: Build_Library
+            command: |
+              . .circleci/build_lib.sh Debug
+        - run:
+            name: Build_Module
+            command: |
+              . .circleci/build_node_module.sh
+        - run:
+            name: Run_Tests
+            command: |
+                cd ../lib-ledger-core-build
+                ctest
+  build_macos_release:
+    macos:
+      xcode: "9.2.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_macos.sh Release
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Build_Library
+          command: |
+            . .circleci/build_lib.sh Release
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
+      - deploy:
+          name: Deploy
+          command: |
+            . .circleci/deploy.sh
+  build_macos_debug:
+    macos:
+      xcode: "9.2.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_macos.sh Debug
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Build_Library
+          command: |
+            . .circleci/build_lib.sh Debug
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
+      - run:
+          name: Run_Tests
+          command: |
+              cd ../lib-ledger-core-build
+              ctest
 workflows:
   version: 2
   build:
     jobs:
+      - build_linux_debug
+      - build_macos_debug
       - build_linux_release
+      - build_macos_release

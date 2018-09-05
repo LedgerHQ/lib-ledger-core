@@ -36,11 +36,3 @@ apt-get install -y libboost-all-dev
 	apt-get update && apt-get install -y yarn
 #fi
 
-echo "============> Install for Android"
-apt-get install default-jdk -y
-dpkg --add-architecture i386
-apt-get update
-apt-get install -y libc6:i386 libstdc++6:i386 zlib1g:i386
-
-
-
