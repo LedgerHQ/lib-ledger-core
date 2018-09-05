@@ -6,6 +6,15 @@ echo "========> Install basic config"
 brew update
 brew install wget
 
+echo "========> Install Java"
+brew cask install java
+echo "========> Java Installed"
+brew cask info java
+echo "$(/usr/libexec/java_home -v 1.8)"
+export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+
+
+
 if [ "$BUILD_CONFIG" == "Release" ]; then
 	brew install awscli
 fi

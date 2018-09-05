@@ -7,6 +7,12 @@ apt-get update
 apt-get install -y apt-transport-https wget python build-essential libx11-xcb-dev
 apt-get install -y libssl-dev curl
 
+echo "========> Install Java"
+apt-get install openjdk-8-jdk -y
+echo "========> Java Installed"
+echo $JAVA_HOME
+ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
+
 if [ "$BUILD_CONFIG" == "Release" ]; then
 	apt-get install -y awscli
 fi
