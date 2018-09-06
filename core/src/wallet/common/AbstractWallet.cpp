@@ -38,7 +38,10 @@
 #include <api/AccountListCallback.hpp>
 #include <async/algorithm.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
+#include <async/DedicatedContext.hpp>
 namespace ledger {
     namespace core {
         AbstractWallet::AbstractWallet(const std::string &walletName,
@@ -240,13 +243,14 @@ namespace ledger {
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
             auto self = shared_from_this();
             return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
+                soci::session sql(self->getDatabase()->getPool());
                 auto it = self->_accounts.find(index);
                 if (it != self->_accounts.end()) {
                     auto ptr = it->second;
                     if (ptr != nullptr)
                         return ptr;
                 }
-                soci::session sql(self->getDatabase()->getPool());
+
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
                     throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
                 }
@@ -302,6 +306,54 @@ namespace ledger {
 
         void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
             getLastBlock().callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            eraseDataSince(date).callback(getMainExecutionContext(), callback);
+        }
+
+        Future<api::ErrorCode> AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point &date) {
+            auto self = shared_from_this();
+            auto uid = getWalletUid();
+            //auto accounts = _accounts;
+            _logger->debug("Start erasing data of wallet : {} since : {}", uid, DateUtils::toJSON(date));
+            static std::function<Future<api::ErrorCode> (int , const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &)> eraseAccount = [date] (int index, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &accountsToErase) -> Future<api::ErrorCode> {
+
+                if (index == accountsToErase.size()) {
+                    return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+                }
+
+                return accountsToErase.at(index)->eraseDataSince(date).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE,[index, accountsToErase] (const api::ErrorCode &errorCode) -> Future<api::ErrorCode> {
+
+                    if (errorCode != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
+                        return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase accounts of wallet !"));
+                    }
+
+                    return eraseAccount(index + 1, accountsToErase);
+                });
+            };
+            return eraseAccount(0, _accounts).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE, [self, date, uid] (const api::ErrorCode &err) {
+
+                if (err != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
+                    return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase accounts of wallet {}", uid));
+                }
+
+                soci::session sql(self->getDatabase()->getPool());
+                //Remove all accounts created after date
+                soci::rowset<soci::row> accounts = (sql.prepare << "SELECT idx FROM accounts "
+                                                                    "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
+                                                                    soci::use(uid), soci::use(date));
+                
+                for (auto& account : accounts) {
+                    if (account.get_indicator(0) != soci::i_null) {
+                        self->_accounts.erase(account.get<int32_t>(0));
+                    }
+                }
+                sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid AND created_at >= :date", soci::use(uid), soci::use(date);
+                self->logger()->debug("Finish erasing data of wallet : {} since : {}",uid, DateUtils::toJSON(date));
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+
         }
 
     }

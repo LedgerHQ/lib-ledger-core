@@ -8,24 +8,65 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGOperation)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGOperation alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::release, first argument should be an instance of LGOperation", nil);
+    }
+    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *uuids = [[NSMutableArray alloc] init];
+    for (id key in self.objcImplementations)
+    {
+        [uuids addObject:key];
+    }
+    NSDictionary *result = @{@"value" : uuids};
+    resolve(result);
+}
+RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.objcImplementations removeAllObjects];
+    resolve(@(YES));
 }
 
 /**
  *Get id's operation
  *@return string
  */
-RCT_REMAP_METHOD(getUid,getUidWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getUid]};
+RCT_REMAP_METHOD(getUid,getUid:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getUid, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getUid, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSString * objcResult = [currentInstanceObj getUid];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -34,15 +75,27 @@ RCT_REMAP_METHOD(getUid,getUidWithResolver:(RCTPromiseResolveBlock)resolve rejec
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getUid", nil);
     }
+
 }
 
 /**
  *Get account's index in user's wallet
  *@return 32 bits integer
  */
-RCT_REMAP_METHOD(getAccountIndex,getAccountIndexWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl getAccountIndex])};if(result)
+RCT_REMAP_METHOD(getAccountIndex,getAccountIndex:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getAccountIndex, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getAccountIndex, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    int32_t objcResult = [currentInstanceObj getAccountIndex];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -50,15 +103,27 @@ RCT_REMAP_METHOD(getAccountIndex,getAccountIndexWithResolver:(RCTPromiseResolveB
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getAccountIndex", nil);
     }
+
 }
 
 /**
  *Get type of operation
  *@return OperationType object (for more details refer to OperationType)
  */
-RCT_REMAP_METHOD(getOperationType,getOperationTypeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl getOperationType])};if(result)
+RCT_REMAP_METHOD(getOperationType,getOperationType:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getOperationType, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getOperationType, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGOperationType objcResult = [currentInstanceObj getOperationType];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -66,15 +131,26 @@ RCT_REMAP_METHOD(getOperationType,getOperationTypeWithResolver:(RCTPromiseResolv
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getOperationType", nil);
     }
+
 }
 
 /**
  *Return date on which operation was issued
  *@return date object
  */
-RCT_REMAP_METHOD(getDate,getDateWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getDate]};
+RCT_REMAP_METHOD(getDate,getDate:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getDate, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getDate, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSDate * objcResult = [currentInstanceObj getDate];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -83,15 +159,26 @@ RCT_REMAP_METHOD(getDate,getDateWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getDate", nil);
     }
+
 }
 
 /**
  *Get senders of operation
  *@return List of string, list of all senders
  */
-RCT_REMAP_METHOD(getSenders,getSendersWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getSenders]};
+RCT_REMAP_METHOD(getSenders,getSenders:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getSenders, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getSenders, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSArray<NSString *> * objcResult = [currentInstanceObj getSenders];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -100,15 +187,26 @@ RCT_REMAP_METHOD(getSenders,getSendersWithResolver:(RCTPromiseResolveBlock)resol
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getSenders", nil);
     }
+
 }
 
 /**
  *Get recipients of operation
  *@return List of string, list of all recipients
  */
-RCT_REMAP_METHOD(getRecipients,getRecipientsWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getRecipients]};
+RCT_REMAP_METHOD(getRecipients,getRecipients:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getRecipients, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getRecipients, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSArray<NSString *> * objcResult = [currentInstanceObj getRecipients];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -117,15 +215,31 @@ RCT_REMAP_METHOD(getRecipients,getRecipientsWithResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getRecipients", nil);
     }
+
 }
 
 /**
  *Get amount of operation
  *@return Amount object
  */
-RCT_REMAP_METHOD(getAmount,getAmountWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getAmount,getAmount:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getAmount, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getAmount, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGAmount * objcResult = [currentInstanceObj getAmount];
 
-    id result = @{@"result" :[self.objcImpl getAmount]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -134,15 +248,31 @@ RCT_REMAP_METHOD(getAmount,getAmountWithResolver:(RCTPromiseResolveBlock)resolve
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getAmount", nil);
     }
+
 }
 
 /**
  *Get fees of operation
  *@return Optional Amount object
  */
-RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getFees,getFees:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getFees, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getFees, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGAmount * objcResult = [currentInstanceObj getFees];
 
-    id result = @{@"result" :[self.objcImpl getFees]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAmount *rctImpl_objcResult = (RCTCoreLGAmount *)[self.bridge moduleForName:@"CoreLGAmount"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGAmount", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -151,15 +281,31 @@ RCT_REMAP_METHOD(getFees,getFeesWithResolver:(RCTPromiseResolveBlock)resolve rej
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getFees", nil);
     }
+
 }
 
 /**
  *Get preferences of operation
  *@return Prefences object
  */
-RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getPreferences,getPreferences:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getPreferences, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getPreferences, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGPreferences * objcResult = [currentInstanceObj getPreferences];
 
-    id result = @{@"result" :[self.objcImpl getPreferences]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGPreferences *rctImpl_objcResult = (RCTCoreLGPreferences *)[self.bridge moduleForName:@"CoreLGPreferences"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferences", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -168,15 +314,31 @@ RCT_REMAP_METHOD(getPreferences,getPreferencesWithResolver:(RCTPromiseResolveBlo
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getPreferences", nil);
     }
+
 }
 
 /**
  *Get trust indicator of operation
  *@return TrustIndicator object
  */
-RCT_REMAP_METHOD(getTrust,getTrustWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getTrust,getTrust:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getTrust, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getTrust, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGTrustIndicator * objcResult = [currentInstanceObj getTrust];
 
-    id result = @{@"result" :[self.objcImpl getTrust]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGTrustIndicator *rctImpl_objcResult = (RCTCoreLGTrustIndicator *)[self.bridge moduleForName:@"CoreLGTrustIndicator"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGTrustIndicator", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -185,15 +347,26 @@ RCT_REMAP_METHOD(getTrust,getTrustWithResolver:(RCTPromiseResolveBlock)resolve r
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getTrust", nil);
     }
+
 }
 
 /**
  *Get block height on which operation was included
  *@return Optional 64 bits integer, height of block in which operation was validated
  */
-RCT_REMAP_METHOD(getBlockHeight,getBlockHeightWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[self.objcImpl getBlockHeight]};
+RCT_REMAP_METHOD(getBlockHeight,getBlockHeight:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getBlockHeight, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getBlockHeight, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    NSNumber * objcResult = [currentInstanceObj getBlockHeight];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -202,15 +375,31 @@ RCT_REMAP_METHOD(getBlockHeight,getBlockHeightWithResolver:(RCTPromiseResolveBlo
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getBlockHeight", nil);
     }
+
 }
 
 /**
  *Convert operation as Bitcoin operation
  *@return BitcoinLikeOperation object
  */
-RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperation:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::asBitcoinLikeOperation, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::asBitcoinLikeOperation, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGBitcoinLikeOperation * objcResult = [currentInstanceObj asBitcoinLikeOperation];
 
-    id result = @{@"result" :[self.objcImpl asBitcoinLikeOperation]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBitcoinLikeOperation *rctImpl_objcResult = (RCTCoreLGBitcoinLikeOperation *)[self.bridge moduleForName:@"CoreLGBitcoinLikeOperation"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeOperation", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -219,11 +408,23 @@ RCT_REMAP_METHOD(asBitcoinLikeOperation,asBitcoinLikeOperationWithResolver:(RCTP
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::asBitcoinLikeOperation", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isInstanceOfBitcoinLikeOperation])};if(result)
+RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperation:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::isInstanceOfBitcoinLikeOperation, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::isInstanceOfBitcoinLikeOperation, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isInstanceOfBitcoinLikeOperation];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -231,6 +432,7 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperati
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::isInstanceOfBitcoinLikeOperation", nil);
     }
+
 }
 
 /**
@@ -238,9 +440,20 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeOperation,isInstanceOfBitcoinLikeOperati
  *# asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
  *Same as isInstanceOfBitcoinLikeOperation for ethereum
  */
-RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isInstanceOfEthereumLikeOperation])};if(result)
+RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOperation:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::isInstanceOfEthereumLikeOperation, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::isInstanceOfEthereumLikeOperation, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isInstanceOfEthereumLikeOperation];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -248,6 +461,7 @@ RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOpera
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::isInstanceOfEthereumLikeOperation", nil);
     }
+
 }
 
 /**
@@ -255,9 +469,20 @@ RCT_REMAP_METHOD(isInstanceOfEthereumLikeOperation,isInstanceOfEthereumLikeOpera
  *# asRippleLikeOperation(): Callback<RippleLikeOperation>;
  *Same as isInstanceOfBitcoinLikeOperation for ripple
  */
-RCT_REMAP_METHOD(isInstanceOfRippleLikeOperation,isInstanceOfRippleLikeOperationWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isInstanceOfRippleLikeOperation])};if(result)
+RCT_REMAP_METHOD(isInstanceOfRippleLikeOperation,isInstanceOfRippleLikeOperation:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::isInstanceOfRippleLikeOperation, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::isInstanceOfRippleLikeOperation, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isInstanceOfRippleLikeOperation];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -265,15 +490,27 @@ RCT_REMAP_METHOD(isInstanceOfRippleLikeOperation,isInstanceOfRippleLikeOperation
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::isInstanceOfRippleLikeOperation", nil);
     }
+
 }
 
 /**
  *Tells if the operation is complete
  *@return boolean
  */
-RCT_REMAP_METHOD(isComplete,isCompleteWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl isComplete])};if(result)
+RCT_REMAP_METHOD(isComplete,isComplete:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::isComplete, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::isComplete, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    BOOL objcResult = [currentInstanceObj isComplete];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -281,15 +518,27 @@ RCT_REMAP_METHOD(isComplete,isCompleteWithResolver:(RCTPromiseResolveBlock)resol
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::isComplete", nil);
     }
+
 }
 
 /**
  *Get type of wallet from which operation was issued
  *@return WalletType object
  */
-RCT_REMAP_METHOD(getWalletType,getWalletTypeWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([self.objcImpl getWalletType])};if(result)
+RCT_REMAP_METHOD(getWalletType,getWalletType:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getWalletType, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getWalletType, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGWalletType objcResult = [currentInstanceObj getWalletType];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -297,11 +546,27 @@ RCT_REMAP_METHOD(getWalletType,getWalletTypeWithResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getWalletType", nil);
     }
+
 }
 
-RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGOperation::getCurrency, first argument should be an instance of LGOperation", nil);
+    }
+    LGOperation *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGOperation::getCurrency, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    LGCurrency * objcResult = [currentInstanceObj getCurrency];
 
-    id result = @{@"result" :[self.objcImpl getCurrency]};
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
+    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+
     if(result)
     {
         resolve(result);
@@ -310,5 +575,6 @@ RCT_REMAP_METHOD(getCurrency,getCurrencyWithResolver:(RCTPromiseResolveBlock)res
     {
         reject(@"impl_call_error", @"Error while calling LGOperation::getCurrency", nil);
     }
+
 }
 @end

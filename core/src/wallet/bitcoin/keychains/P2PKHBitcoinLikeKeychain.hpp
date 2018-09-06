@@ -31,69 +31,22 @@
 #ifndef LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 #define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
-#include "BitcoinLikeKeychain.hpp"
-#include <set>
+#include "CommonBitcoinLikeKeychains.hpp"
 #include "../../../collections/DynamicObject.hpp"
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
-        struct P2PKHKeychainPersistentState {
-            uint32_t maxConsecutiveChangeIndex;
-            uint32_t maxConsecutiveReceiveIndex;
-            std::set<uint32_t> nonConsecutiveChangeIndexes;
-            std::set<uint32_t> nonConsecutiveReceiveIndexes;
-            bool empty;
-
-            template <class Archive>
-            void serialize(Archive& archive, std::uint32_t const version) {
-                if (version == 0) {
-                    archive(
-                            maxConsecutiveChangeIndex,
-                            maxConsecutiveReceiveIndex,
-                            nonConsecutiveChangeIndexes,
-                            nonConsecutiveReceiveIndexes,
-                            empty
-                    );
-                }
-            }
-        };
-
-        class P2PKHBitcoinLikeKeychain : public BitcoinLikeKeychain {
+        class P2PKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
         public:
             P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
-
-            bool markPathAsUsed(const DerivationPath &path) override;
-
-            std::string getFreshAddress(KeyPurpose purpose) override;
-            std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to) override;
-            std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) override;
-            Option<KeyPurpose> getAddressPurpose(const std::string &address) const override;
-            Option<std::string> getAddressDerivationPath(const std::string &address) const override;
-            std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
-            bool isEmpty() const override;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
-            std::string getRestoreKey() const override;
-
-            bool contains(const std::string &address) const override;
-
-            int32_t getObservableRangeSize() const override;
-
             Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
-
-            Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
-
+            int32_t getOutputSizeAsSignedTxInput() const override ;
         private:
-            std::string derive(KeyPurpose purpose, off_t index);
-            void saveState();
-        private:
-            P2PKHKeychainPersistentState _state;
-            uint32_t _observableRange;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
-            std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
+            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index) override;
         };
     }
 }

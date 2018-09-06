@@ -7,11 +7,18 @@
 #import "LGCurrencyUnit.h"
 #import "LGFormatRules.h"
 #import "LGLocale.h"
+#import "RCTCoreLGAmount.h"
+#import "RCTCoreLGBigInt.h"
+#import "RCTCoreLGCurrency.h"
+#import "RCTCoreLGCurrencyUnit.h"
+#import "RCTCoreLGFormatRules.h"
+#import "RCTCoreLGLocale.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing amount of transaction, output, inputs ... */
 @interface RCTCoreLGAmount : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGAmount *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

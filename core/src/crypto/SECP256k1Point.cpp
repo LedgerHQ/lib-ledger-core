@@ -39,7 +39,8 @@ namespace ledger {
 
         SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
             _pubKey = new secp256k1_pubkey();
-            secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size());
+            if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == -1)
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to parse secp256k1 point");
         }
 
         SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const {
@@ -83,7 +84,7 @@ namespace ledger {
             memcpy(pubKey, _pubKey, sizeof(*pubKey));
             std::vector<uint8_t> serializedKey(33);
             auto len = serializedKey.size();
-            auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, n.data());
+            auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, num.data());
             if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
             secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, pubKey, SECP256K1_EC_COMPRESSED);
             return SECP256k1Point(serializedKey);

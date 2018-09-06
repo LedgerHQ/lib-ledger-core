@@ -34,15 +34,16 @@
 #include "../api/BitcoinLikeAddress.hpp"
 #include "../api/BitcoinLikeNetworkParameters.hpp"
 #include "../utils/optional.hpp"
+#include <wallet/common/AbstractAddress.h>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAddress : public api::BitcoinLikeAddress {
+        class BitcoinLikeAddress : public api::BitcoinLikeAddress, public AbstractAddress {
         public:
-            BitcoinLikeAddress(const api::BitcoinLikeNetworkParameters& params,
+            BitcoinLikeAddress(const api::Currency& currency,
                                const std::vector<uint8_t>& hash160,
                                const std::vector<uint8_t>& version,
-                               optional<std::string> derivationPath = optional<std::string>());
+                               const Option<std::string>& derivationPath = Option<std::string>());
             virtual std::vector<uint8_t> getVersion() override;
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
@@ -52,11 +53,19 @@ namespace ledger {
             virtual bool isP2PKH() override;
             virtual optional<std::string> getDerivationPath() override;
 
+            std::string toString() override;
+
+            static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
+                                                          const Option<std::string>& derivationPath = Option<std::string>());
+            static std::shared_ptr<BitcoinLikeAddress> fromBase58(const std::string& address,
+                                                               const api::Currency& currency,
+                                                               const Option<std::string>& derivationPath = Option<std::string>());
+
         private:
             const std::vector<uint8_t> _version;
             const std::vector<uint8_t> _hash160;
             const api::BitcoinLikeNetworkParameters _params;
-            const optional<std::string> _derivationPath;
+            const Option<std::string> _derivationPath;
         };
     }
 }

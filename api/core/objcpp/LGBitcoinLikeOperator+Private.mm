@@ -10,14 +10,14 @@ namespace djinni_generated {
 auto BitcoinLikeOperator::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
-    return {::djinni::String::toCpp(obj.name),
+    return {::djinni::String::toCpp(obj.operatorName),
             ::djinni::I8::toCpp(obj.value)};
 }
 
 auto BitcoinLikeOperator::fromCpp(const CppType& cpp) -> ObjcType
 {
-    return [[LGBitcoinLikeOperator alloc] initWithName:(::djinni::String::fromCpp(cpp.name))
-                                                 value:(::djinni::I8::fromCpp(cpp.value))];
+    return [[LGBitcoinLikeOperator alloc] initWithOperatorName:(::djinni::String::fromCpp(cpp.operatorName))
+                                                         value:(::djinni::I8::fromCpp(cpp.value))];
 }
 
 }  // namespace djinni_generated

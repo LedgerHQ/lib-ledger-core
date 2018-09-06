@@ -6,26 +6,26 @@
 
 @implementation LGEstimatedSize
 
-- (nonnull instancetype)initWithMin:(int32_t)min
-                                max:(int32_t)max
+- (nonnull instancetype)initWithMin:(int32_t)Min
+                                Max:(int32_t)Max
 {
     if (self = [super init]) {
-        _min = min;
-        _max = max;
+        _Min = Min;
+        _Max = Max;
     }
     return self;
 }
 
-+ (nonnull instancetype)EstimatedSizeWithMin:(int32_t)min
-                                         max:(int32_t)max
++ (nonnull instancetype)EstimatedSizeWithMin:(int32_t)Min
+                                         Max:(int32_t)Max
 {
-    return [[self alloc] initWithMin:min
-                                 max:max];
+    return [[self alloc] initWithMin:Min
+                                 Max:Max];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p min:%@ max:%@>", self.class, (void *)self, @(self.min), @(self.max)];
+    return [NSString stringWithFormat:@"<%@ %p Min:%@ Max:%@>", self.class, (void *)self, @(self.Min), @(self.Max)];
 }
 
 @end

@@ -3,7 +3,9 @@
 
 #import "LGExecutionContext.h"
 #import "LGLogPrinterImpl.h"
+#import "RCTCoreLGExecutionContext.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,5 +14,5 @@
  *Printed logs are stored in path set by PathResolver::resolveLogFilePath
  */
 @interface RCTCoreLGLogPrinter : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGLogPrinterImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

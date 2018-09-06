@@ -34,10 +34,10 @@
 #include <utils/DateUtils.hpp>
 #include <cereal/types/vector.hpp>
 #include <algorithm>
-#include <async/algorithm.h>
 #include <debug/Benchmarker.h>
 #include <utils/DurationUtils.h>
-
+#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 namespace ledger {
     namespace core {
 
@@ -140,20 +140,71 @@ namespace ledger {
             buddy->keychain = account->getKeychain();
             buddy->savedState = buddy->preferences
                                      ->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
-
             buddy->logger
-                 ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
-                        account->getIndex(),
-                        account->getKeychain()
-                               ->getRestoreKey(),
-                        account->getWallet()
-                               ->getName(), DateUtils::toJSON(buddy->startDate)
-                 );
+                    ->info("Starting synchronization for account#{} ({}) of wallet {} at {}",
+                           account->getIndex(),
+                           account->getKeychain()
+                                   ->getRestoreKey(),
+                           account->getWallet()
+                                   ->getName(), DateUtils::toJSON(buddy->startDate)
+                    );
+
+            //Check if reorganization happened
+            soci::session sql(buddy->wallet->getDatabase()->getPool());
+            if (buddy->savedState.nonEmpty()) {
+                
+                //Get deepest block saved in batches to be part of reorg
+                auto sortedBatches = buddy->savedState.getValue().batches;
+                std::sort(sortedBatches.begin(), sortedBatches.end(), [](const BlockchainExplorerAccountSynchronizationBatchSavedState &lhs,
+                                                             const BlockchainExplorerAccountSynchronizationBatchSavedState &rhs) -> bool {
+                    return lhs.blockHeight < rhs.blockHeight;
+                });
+                
+                auto currencyName = buddy->wallet->getCurrency().name;
+                size_t index = 0;
+                //Reorg can't happen until genesis block, safely initialize with 0
+                uint64_t deepestFailedBlockHeight = 0;
+                while (index < sortedBatches.size() && !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
+                    deepestFailedBlockHeight = sortedBatches[index].blockHeight;
+                    index ++;
+                }
+
+                //Case of reorg, update savedState's batches
+                if (deepestFailedBlockHeight > 0) {
+                    //Get last block (in DB) which contains current account's operations
+                    auto previousBlock = AccountDatabaseHelper::getLastBlockWithOperations(sql, buddy->account->getAccountUid());
+                    for (auto& batch : buddy->savedState.getValue().batches) {
+                        if (batch.blockHeight >= deepestFailedBlockHeight) {
+                            batch.blockHeight = previousBlock.nonEmpty() ? (uint32_t)previousBlock.getValue().height : 0;
+                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
+                        }
+                    }
+                }
+            }
 
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
+
+            //Get all transactions in DB that may be dropped (txs without block_uid)
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, btc_op.transaction_hash FROM operations AS op "
+                                                            "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
+                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",
+                                                            soci::use(account->getAccountUid()));
+
+            for (auto &row : rows) {
+                if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
+                    buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
+                }
+            }
+
             auto self = shared_from_this();
+            _explorer->getCurrentBlock().onComplete(account->getContext(), [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
+                if (block.isSuccess()) {
+                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                    buddy->account->putBlock(sql, *block.getValue());
+                }
+            });
             return _explorer->startSession().map<Unit>(account->getContext(), [buddy] (void * const& t) -> Unit {
-                buddy->logger->info("GOT A TOKEN");
+                buddy->logger->info("Synchronization token obtained");
                 buddy->token = Option<void *>(t);
                 return unit;
             }).flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
@@ -165,6 +216,18 @@ namespace ledger {
                         (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                 buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                              buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
+
+                //Delete dropped txs from DB
+                soci::session sql(buddy->wallet->getDatabase()->getPool());
+                for (auto& tx : buddy->transactionsToDrop) {
+                    //Check if tx is pending
+                    auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
+                    if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
+                        //delete tx.second from DB (from operations)
+                        sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                    }
+                }
+
                 self->_currentAccount = nullptr;
                 return unit;
             }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
@@ -192,8 +255,60 @@ namespace ledger {
             return synchronizeBatch(currentBatchIndex, buddy).flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) -> Future<Unit> {
                 benchmark->stop();
                 buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                if (!done || (done && hadTransactions)) {
+                //Sync stops if there are no more batches in savedState and last batch has no transactions
+                //But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
+                auto discoveredAddresses = currentBatchIndex * buddy->halfBatchSize;
+                auto lastDiscoverableAddress = buddy->configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(buddy->halfBatchSize);
+                if (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses) {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
+                }
+                return Future<Unit>::successful(unit);
+            }).recoverWith(ImmediateExecutionContext::INSTANCE, [=] (const Exception &exception) -> Future<Unit> {
+
+                //A block reorganization happened
+                if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
+                    buddy->savedState.nonEmpty()) {
+
+                    //Get its block/block height
+                    auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                    auto failedBlockHeight = failedBatch.blockHeight;
+                    auto failedBlockHash = failedBatch.blockHash;
+                    if (failedBlockHeight > 0) {
+
+                        //Delete data related to failedBlock (and all blocks above it)
+                        soci::session sql(buddy->wallet->getDatabase()->getPool());
+                        sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(failedBlockHeight);
+
+                        //Get last block not part from reorg
+                        auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
+
+                        //Resync from the "beginning" if no last block in DB
+                        int64_t lastBlockHeight = 0;
+                        std::string lastBlockHash;
+                        if (lastBlock.nonEmpty()) {
+                            lastBlockHeight = lastBlock.getValue().height;
+                            lastBlockHash = lastBlock.getValue().blockHash;
+                        }
+
+                        //Update savedState's batches
+                        for (auto &batch : buddy->savedState.getValue().batches) {
+                            if (batch.blockHeight > lastBlockHeight) {
+                                batch.blockHeight = (uint32_t)lastBlockHeight;
+                                batch.blockHash = lastBlockHash;
+                            }
+                        }
+
+                        //Save new savedState
+                        buddy->preferences->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>(
+                                "state", buddy->savedState.getValue())->commit();
+                        
+                        //Synchronize same batch now with an existing block (of hash lastBlockHash)
+                        //if failedBatch was not the deepest block part of that reorg, this recursive call
+                        //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                        return self->synchronizeBatches(currentBatchIndex, buddy);
+                    }
+                } else {
+                    return Future<Unit>::failure(exception);
                 }
                 return Future<Unit>::successful(unit);
             });
@@ -210,8 +325,14 @@ namespace ledger {
                 blockHash = Option<std::string>(batchState.blockHash);
             auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
             derivationBenchmark->start();
-            auto batch = buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
-                                                                    (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1));
+            auto batch = vector::map<std::string, BitcoinLikeKeychain::Address>(
+                    buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
+                                                               (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1)),
+                [] (const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
+                    return addr->toString();
+                }
+            );
+
             derivationBenchmark->stop();
             auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
             benchmark->start();
@@ -226,6 +347,19 @@ namespace ledger {
                         soci::transaction tr(sql);
                         for (const auto& tx : bulk->transactions) {
                             buddy->account->putTransaction(sql, tx);
+
+                            //Update first pendingTxHash in savedState
+                            auto it = buddy->transactionsToDrop.find(tx.hash);
+                            if (it != buddy->transactionsToDrop.end()) {
+                                //If block non empty, tx is no longer pending
+                                if (tx.block.nonEmpty()) {
+                                    buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                                } else { //Otherwise tx is in mempool but pending
+                                    buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                                }
+                            }
+                            //Remove from tx to drop
+                            buddy->transactionsToDrop.erase(tx.hash);
                         }
                         tr.commit();
                         buddy->account->emitEventsNow();

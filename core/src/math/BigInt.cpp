@@ -96,6 +96,9 @@ namespace ledger {
             _negative = value < 0LL;
         }
 
+        BigInt::BigInt(const std::string& str) : BigInt(str, 10)
+        {};
+
         BigInt& BigInt::assignI64(int64_t value) {
             auto bytes = endianness::scalar_type_to_array<int64_t >(std::abs(value), endianness::Endianness::BIG);
             bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(int64_t));

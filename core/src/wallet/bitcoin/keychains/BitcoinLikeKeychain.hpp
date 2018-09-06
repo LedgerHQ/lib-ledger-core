@@ -43,6 +43,8 @@
 #include <api/AccountCreationInfo.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 
+#include <bitcoin/BitcoinLikeAddress.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -53,6 +55,8 @@ namespace ledger {
             };
 
         public:
+            using Address = std::shared_ptr<BitcoinLikeAddress>;
+
             BitcoinLikeKeychain(
                     const std::shared_ptr<api::DynamicObject>& configuration,
                     const api::Currency& params,
@@ -63,11 +67,11 @@ namespace ledger {
             virtual bool markAsUsed(const std::string& address);
             virtual bool markPathAsUsed(const DerivationPath& path) = 0;
 
-            virtual std::vector<std::string> getAllObservableAddresses(uint32_t from, uint32_t to)  = 0;
-            virtual std::vector<std::string> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) = 0;
+            virtual std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to)  = 0;
+            virtual std::vector<Address> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) = 0;
 
-            virtual std::string getFreshAddress(KeyPurpose purpose) = 0;
-            virtual std::vector<std::string> getFreshAddresses(KeyPurpose purpose, size_t n) = 0;
+            virtual Address getFreshAddress(KeyPurpose purpose) = 0;
+            virtual std::vector<Address> getFreshAddresses(KeyPurpose purpose, size_t n) = 0;
 
             virtual Option<KeyPurpose> getAddressPurpose(const std::string& address) const = 0;
             virtual Option<std::string> getAddressDerivationPath(const std::string& address) const = 0;
@@ -84,11 +88,12 @@ namespace ledger {
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;
             const DerivationScheme& getFullDerivationScheme() const;
+            bool isSegwit() const;
 
             virtual std::string getRestoreKey() const = 0;
             virtual int32_t getObservableRangeSize() const = 0;
             virtual bool contains(const std::string& address) const = 0;
-
+            virtual int32_t getOutputSizeAsSignedTxInput() const = 0;
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
             DerivationScheme& getDerivationScheme();

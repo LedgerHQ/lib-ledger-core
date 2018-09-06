@@ -83,6 +83,24 @@ void NJSCurrencyListCallback::onCallback(const std::experimental::optional<std::
                 Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_tmp_elem_6_tmp_7);
                 auto arg_0_tmp_elem_6_tmp_8 = Nan::New<Boolean>(arg_0_tmp_elem_6_optional.UsesTimestampedTransaction);
                 Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_tmp_elem_6_tmp_8);
+                auto arg_0_tmp_elem_6_tmp_9 = Nan::New<Number>(arg_0_tmp_elem_6_optional.TimestampDelay);
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_tmp_elem_6_tmp_9);
+                Local<Array> arg_0_tmp_elem_6_tmp_10 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_10_id = 0; arg_0_tmp_elem_6_tmp_10_id < arg_0_tmp_elem_6_optional.SigHash.size(); arg_0_tmp_elem_6_tmp_10_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_10_elem = Nan::New<Uint32>(arg_0_tmp_elem_6_optional.SigHash[arg_0_tmp_elem_6_tmp_10_id]);
+                    arg_0_tmp_elem_6_tmp_10->Set((int)arg_0_tmp_elem_6_tmp_10_id,arg_0_tmp_elem_6_tmp_10_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_tmp_elem_6_tmp_10);
+                Local<Array> arg_0_tmp_elem_6_tmp_11 = Nan::New<Array>();
+                for(size_t arg_0_tmp_elem_6_tmp_11_id = 0; arg_0_tmp_elem_6_tmp_11_id < arg_0_tmp_elem_6_optional.AdditionalBIPs.size(); arg_0_tmp_elem_6_tmp_11_id++)
+                {
+                    auto arg_0_tmp_elem_6_tmp_11_elem = Nan::New<String>(arg_0_tmp_elem_6_optional.AdditionalBIPs[arg_0_tmp_elem_6_tmp_11_id]).ToLocalChecked();
+                    arg_0_tmp_elem_6_tmp_11->Set((int)arg_0_tmp_elem_6_tmp_11_id,arg_0_tmp_elem_6_tmp_11_elem);
+                }
+
+                Nan::DefineOwnProperty(arg_0_tmp_elem_6_tmp, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_tmp_elem_6_tmp_11);
 
                 arg_0_tmp_elem_6 = arg_0_tmp_elem_6_tmp;
             }

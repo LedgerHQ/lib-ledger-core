@@ -18,7 +18,10 @@ auto BitcoinLikeNetworkParameters::toCpp(ObjcType obj) -> CppType
             ::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::toCpp(obj.FeePolicy),
             ::djinni::I64::toCpp(obj.DustAmount),
             ::djinni::String::toCpp(obj.MessagePrefix),
-            ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction)};
+            ::djinni::Bool::toCpp(obj.UsesTimestampedTransaction),
+            ::djinni::I64::toCpp(obj.TimestampDelay),
+            ::djinni::Binary::toCpp(obj.SigHash),
+            ::djinni::List<::djinni::String>::toCpp(obj.AdditionalBIPs)};
 }
 
 auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
@@ -30,7 +33,10 @@ auto BitcoinLikeNetworkParameters::fromCpp(const CppType& cpp) -> ObjcType
                                                             FeePolicy:(::djinni::Enum<::ledger::core::api::BitcoinLikeFeePolicy, LGBitcoinLikeFeePolicy>::fromCpp(cpp.FeePolicy))
                                                            DustAmount:(::djinni::I64::fromCpp(cpp.DustAmount))
                                                         MessagePrefix:(::djinni::String::fromCpp(cpp.MessagePrefix))
-                                           UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))];
+                                           UsesTimestampedTransaction:(::djinni::Bool::fromCpp(cpp.UsesTimestampedTransaction))
+                                                       TimestampDelay:(::djinni::I64::fromCpp(cpp.TimestampDelay))
+                                                              SigHash:(::djinni::Binary::fromCpp(cpp.SigHash))
+                                                       AdditionalBIPs:(::djinni::List<::djinni::String>::fromCpp(cpp.AdditionalBIPs))];
 }
 
 }  // namespace djinni_generated

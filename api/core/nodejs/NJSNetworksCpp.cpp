@@ -55,6 +55,24 @@ NAN_METHOD(NJSNetworks::bitcoin) {
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("MessagePrefix").ToLocalChecked(), arg_0_7);
     auto arg_0_8 = Nan::New<Boolean>(result.UsesTimestampedTransaction);
     Nan::DefineOwnProperty(arg_0, Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked(), arg_0_8);
+    auto arg_0_9 = Nan::New<Number>(result.TimestampDelay);
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("TimestampDelay").ToLocalChecked(), arg_0_9);
+    Local<Array> arg_0_10 = Nan::New<Array>();
+    for(size_t arg_0_10_id = 0; arg_0_10_id < result.SigHash.size(); arg_0_10_id++)
+    {
+        auto arg_0_10_elem = Nan::New<Uint32>(result.SigHash[arg_0_10_id]);
+        arg_0_10->Set((int)arg_0_10_id,arg_0_10_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("SigHash").ToLocalChecked(), arg_0_10);
+    Local<Array> arg_0_11 = Nan::New<Array>();
+    for(size_t arg_0_11_id = 0; arg_0_11_id < result.AdditionalBIPs.size(); arg_0_11_id++)
+    {
+        auto arg_0_11_elem = Nan::New<String>(result.AdditionalBIPs[arg_0_11_id]).ToLocalChecked();
+        arg_0_11->Set((int)arg_0_11_id,arg_0_11_elem);
+    }
+
+    Nan::DefineOwnProperty(arg_0, Nan::New<String>("AdditionalBIPs").ToLocalChecked(), arg_0_11);
 
 
     //Return result

@@ -8,15 +8,46 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGEventBus)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGEventBus alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventBus::release, first argument should be an instance of LGEventBus", nil);
+    }
+    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *uuids = [[NSMutableArray alloc] init];
+    for (id key in self.objcImplementations)
+    {
+        [uuids addObject:key];
+    }
+    NSDictionary *result = @{@"value" : uuids};
+    resolve(result);
+}
+RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.objcImplementations removeAllObjects];
+    resolve(@(YES));
 }
 
 /**
@@ -24,18 +55,62 @@ RCT_EXPORT_MODULE(RCTCoreLGEventBus)
  *@param context, ExecutionContext object, execution context in which receiver will be notified
  *@param reveiver, EventReceiver object, receiver that event bu will notify
  */
-RCT_REMAP_METHOD(subscribe,subscribe:(nullable id<LGExecutionContext>)context
-                            receiver:(nullable id<LGEventReceiver>)receiver) {
+RCT_REMAP_METHOD(subscribe,subscribe:(NSDictionary *)currentInstance withParams:(NSDictionary *)context
+                                                                       receiver:(NSDictionary *)receiver withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventBus::subscribe, first argument should be an instance of LGEventBus", nil);
+    }
+    LGEventBus *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventBus::subscribe, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGExecutionContext *rctParam_context = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
+    id<LGExecutionContext>objcParam_0 = (id<LGExecutionContext>)[rctParam_context.objcImplementations objectForKey:context[@"uid"]];
+    LGExecutionContextImpl *objcParam_0_objc = (LGExecutionContextImpl *)objcParam_0;
+    if (objcParam_0_objc)
+    {
+        objcParam_0_objc.resolve = resolve;
+        objcParam_0_objc.reject = reject;
+    }
+    RCTCoreLGEventReceiver *rctParam_receiver = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
+    id<LGEventReceiver>objcParam_1 = (id<LGEventReceiver>)[rctParam_receiver.objcImplementations objectForKey:receiver[@"uid"]];
+    LGEventReceiverImpl *objcParam_1_objc = (LGEventReceiverImpl *)objcParam_1;
+    if (objcParam_1_objc)
+    {
+        objcParam_1_objc.resolve = resolve;
+        objcParam_1_objc.reject = reject;
+    }
+    [currentInstanceObj subscribe:objcParam_0 receiver:objcParam_1];
 
-    [self.objcImpl subscribe:context receiver:receiver];
 }
 
 /**
  *Unsubscribe an event receiver from the event bus
  *@param receiver, EventReceiver object, receiver to unsubscribe
  */
-RCT_REMAP_METHOD(unsubscribe,unsubscribe:(nullable id<LGEventReceiver>)receiver) {
+RCT_REMAP_METHOD(unsubscribe,unsubscribe:(NSDictionary *)currentInstance withParams:(NSDictionary *)receiver withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEventBus::unsubscribe, first argument should be an instance of LGEventBus", nil);
+    }
+    LGEventBus *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGEventBus::unsubscribe, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    RCTCoreLGEventReceiver *rctParam_receiver = (RCTCoreLGEventReceiver *)[self.bridge moduleForName:@"CoreLGEventReceiver"];
+    id<LGEventReceiver>objcParam_0 = (id<LGEventReceiver>)[rctParam_receiver.objcImplementations objectForKey:receiver[@"uid"]];
+    LGEventReceiverImpl *objcParam_0_objc = (LGEventReceiverImpl *)objcParam_0;
+    if (objcParam_0_objc)
+    {
+        objcParam_0_objc.resolve = resolve;
+        objcParam_0_objc.reject = reject;
+    }
+    [currentInstanceObj unsubscribe:objcParam_0];
 
-    [self.objcImpl unsubscribe:receiver];
 }
 @end

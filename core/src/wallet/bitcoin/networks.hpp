@@ -31,14 +31,39 @@
 #ifndef LEDGER_CORE_NETWORKS_HPP
 #define LEDGER_CORE_NETWORKS_HPP
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include "../../api/BitcoinLikeNetworkParameters.hpp"
 
 namespace ledger {
     namespace core {
+
         namespace networks {
-            extern const api::BitcoinLikeNetworkParameters BITCOIN;
-            extern const api::BitcoinLikeNetworkParameters BITCOIN_TESTNET;
-            extern const std::vector<api::BitcoinLikeNetworkParameters> ALL;
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName);
+            extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
+
+            //BIP115 (ex: Zencash)
+            extern LIBCORE_EXPORT const std::string BIP115;
+            struct BIP115Parameters {
+                std::string blockHash;
+                std::vector<uint8_t> blockHeight;
+            };
+            extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
+
+            //ZIP143 (ex: Zcash overwinter)
+            extern LIBCORE_EXPORT const std::string ZIP143;
+            struct ZIP143Parameters {
+                uint32_t version;
+                std::vector<uint8_t> overwinterFlag;
+                std::vector<uint8_t> versionGroupId;
+            };
+            extern LIBCORE_EXPORT const ZIP143Parameters ZIP143_PARAMETERS;
 
             template<class Archive>
             void serialize(Archive & archive,
@@ -52,7 +77,10 @@ namespace ledger {
                     p.FeePolicy,
                     p.DustAmount,
                     p.MessagePrefix,
-                    p.UsesTimestampedTransaction
+                    p.UsesTimestampedTransaction,
+                    p.TimestampDelay,
+                    p.SigHash,
+                    p.AdditionalBIPs
                 );
             }
 

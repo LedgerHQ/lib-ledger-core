@@ -118,13 +118,16 @@ namespace ledger {
             newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
                                           const std::shared_ptr<api::AccountCallback> &callback) override;
 
+            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+
+
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;
             virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex) = 0;
             virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) = 0;
             virtual Future<api::AccountCreationInfo> getNextAccountCreationInfo();
             virtual Future<api::ExtendedKeyAccountCreationInfo> getNextExtendedKeyAccountCreationInfo();
-
         public:
             virtual std::shared_ptr<Preferences> getAccountExternalPreferences(int32_t index);
             virtual std::shared_ptr<Preferences> getAccountInternalPreferences(int32_t index);

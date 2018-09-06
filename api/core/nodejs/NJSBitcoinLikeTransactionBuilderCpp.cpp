@@ -313,6 +313,36 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::sendToAddress) {
     //Return result
     info.GetReturnValue().Set(arg_2);
 }
+NAN_METHOD(NJSBitcoinLikeTransactionBuilder::wipeToAddress) {
+
+    //Check if method called with right number of arguments
+    if(info.Length() != 1)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::wipeToAddress needs 1 arguments");
+    }
+
+    //Check if parameters have correct types
+    String::Utf8Value string_arg_0(info[0]->ToString());
+    auto arg_0 = std::string(*string_arg_0);
+
+    //Unwrap current object and retrieve its Cpp Implementation
+    NJSBitcoinLikeTransactionBuilder* obj = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(info.This());
+    auto cpp_impl = obj->getCppImpl();
+    if(!cpp_impl)
+    {
+        return Nan::ThrowError("NJSBitcoinLikeTransactionBuilder::wipeToAddress : implementation of BitcoinLikeTransactionBuilder is not valid");
+    }
+
+    auto result = cpp_impl->wipeToAddress(arg_0);
+
+    //Wrap result in node object
+    auto arg_1_wrap = NJSBitcoinLikeTransactionBuilder::wrap(result);
+    auto arg_1 = Nan::ObjectWrap::Unwrap<NJSBitcoinLikeTransactionBuilder>(arg_1_wrap)->handle();
+
+
+    //Return result
+    info.GetReturnValue().Set(arg_1);
+}
 NAN_METHOD(NJSBitcoinLikeTransactionBuilder::setFeesPerByte) {
 
     //Check if method called with right number of arguments
@@ -535,7 +565,37 @@ NAN_METHOD(NJSBitcoinLikeTransactionBuilder::parseRawUnsignedTransaction) {
 
         auto field_opt_arg_0_6_8 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("UsesTimestampedTransaction").ToLocalChecked()).ToLocalChecked();
         auto opt_arg_0_6_8 = Nan::To<bool>(field_opt_arg_0_6_8).FromJust();
-        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8);
+
+        auto field_opt_arg_0_6_9 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("TimestampDelay").ToLocalChecked()).ToLocalChecked();
+        auto opt_arg_0_6_9 = Nan::To<int64_t>(field_opt_arg_0_6_9).FromJust();
+
+        auto field_opt_arg_0_6_10 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("SigHash").ToLocalChecked()).ToLocalChecked();
+        vector<uint8_t> opt_arg_0_6_10;
+        Local<Array> opt_arg_0_6_10_container = Local<Array>::Cast(field_opt_arg_0_6_10);
+        for(uint32_t opt_arg_0_6_10_id = 0; opt_arg_0_6_10_id < opt_arg_0_6_10_container->Length(); opt_arg_0_6_10_id++)
+        {
+            if(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)->IsUint32())
+            {
+                auto opt_arg_0_6_10_elem = Nan::To<uint32_t>(opt_arg_0_6_10_container->Get(opt_arg_0_6_10_id)).FromJust();
+                opt_arg_0_6_10.emplace_back(opt_arg_0_6_10_elem);
+            }
+        }
+
+
+        auto field_opt_arg_0_6_11 = Nan::Get(field_arg_0_6->ToObject(), Nan::New<String>("AdditionalBIPs").ToLocalChecked()).ToLocalChecked();
+        vector<std::string> opt_arg_0_6_11;
+        Local<Array> opt_arg_0_6_11_container = Local<Array>::Cast(field_opt_arg_0_6_11);
+        for(uint32_t opt_arg_0_6_11_id = 0; opt_arg_0_6_11_id < opt_arg_0_6_11_container->Length(); opt_arg_0_6_11_id++)
+        {
+            if(opt_arg_0_6_11_container->Get(opt_arg_0_6_11_id)->IsString())
+            {
+                String::Utf8Value string_opt_arg_0_6_11_elem(opt_arg_0_6_11_container->Get(opt_arg_0_6_11_id)->ToString());
+                auto opt_arg_0_6_11_elem = std::string(*string_opt_arg_0_6_11_elem);
+                opt_arg_0_6_11.emplace_back(opt_arg_0_6_11_elem);
+            }
+        }
+
+        BitcoinLikeNetworkParameters opt_arg_0_6(opt_arg_0_6_1, opt_arg_0_6_2, opt_arg_0_6_3, opt_arg_0_6_4, opt_arg_0_6_5, opt_arg_0_6_6, opt_arg_0_6_7, opt_arg_0_6_8, opt_arg_0_6_9, opt_arg_0_6_10, opt_arg_0_6_11);
 
         arg_0_6.emplace(opt_arg_0_6);
     }
@@ -633,6 +693,7 @@ void NJSBitcoinLikeTransactionBuilder::Initialize(Local<Object> target) {
     Nan::SetPrototypeMethod(func_template,"setMinAmountOnChange", setMinAmountOnChange);
     Nan::SetPrototypeMethod(func_template,"pickInputs", pickInputs);
     Nan::SetPrototypeMethod(func_template,"sendToAddress", sendToAddress);
+    Nan::SetPrototypeMethod(func_template,"wipeToAddress", wipeToAddress);
     Nan::SetPrototypeMethod(func_template,"setFeesPerByte", setFeesPerByte);
     Nan::SetPrototypeMethod(func_template,"build", build);
     Nan::SetPrototypeMethod(func_template,"clone", clone);

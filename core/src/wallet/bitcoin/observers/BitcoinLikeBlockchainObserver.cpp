@@ -117,8 +117,12 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, block] () {
-                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    if (account->putBlock(sql, block))
+                    bool shouldEmitNow = false;
+                    {
+                        soci::session sql(account->getWallet()->getDatabase()->getPool());
+                        shouldEmitNow = account->putBlock(sql, block);
+                    }
+                    if (shouldEmitNow)
                         account->emitEventsNow();
                 });
             }

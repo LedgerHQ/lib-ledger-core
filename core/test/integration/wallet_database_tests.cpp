@@ -59,7 +59,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
     EXPECT_FALSE(db.accountExists(0));
 
     // We need to create the abstract entry first to satisfy the foreign key constraint
-    createWallet(pool, "my_wallet");
+    createWallet(pool, "my_wallet", "bitcoin", DynamicObject::newInstance());
     createAccount(pool, "my_wallet", 0);
 
     db.createAccount(0, XPUB_1);
@@ -71,22 +71,27 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
 
     EXPECT_EQ(db.getAccountsCount(), 1);
     EXPECT_EQ(db.getNextAccountIndex(), 1);
     for (auto i = 1; i < 100; i++) {
-        newBitcoinAccount(pool, "my_wallet", i, XPUB_1);
+        newBitcoinAccount(pool, "my_wallet", currencyName, configuration, i, XPUB_1);
     }
     EXPECT_EQ(db.getAccountsCount(), 100);
 
-    auto database = pool->getDatabaseSessionPool();
-    soci::session sql(database->getPool());
+    {
+        auto database = pool->getDatabaseSessionPool();
+        soci::session sql(database->getPool());
 
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
-    EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
-    AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
-    EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
+        auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
+        EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
+        AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
+        EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
+    }
+
     EXPECT_EQ(db.getAccountsCount(), 99);
     EXPECT_EQ(db.getNextAccountIndex(), 0);
 }
@@ -94,7 +99,10 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
 TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     auto transaction = JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION);
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
@@ -117,7 +125,10 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
 TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     auto pool = newDefaultPool();
 
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", 0, XPUB_1);
+    auto currencyName = "bitcoin";
+    auto configuration = DynamicObject::newInstance();
+
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION),
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_2),
@@ -185,12 +196,16 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
             *JSONUtils::parse<TransactionParser>(TX_3),
             *JSONUtils::parse<TransactionParser>(TX_4)
     };
-    soci::session sql(pool->getDatabaseSessionPool()->getPool());
-    sql.begin();
-    for (auto& tx : transactions) {
-        account->putTransaction(sql, tx);
+
+
+    {
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.begin();
+        for (auto& tx : transactions) {
+            account->putTransaction(sql, tx);
+        }
+        sql.commit();
     }
-    sql.commit();
 
     auto query = account->queryOperations()->complete();
     auto queryWithOrders = query->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);

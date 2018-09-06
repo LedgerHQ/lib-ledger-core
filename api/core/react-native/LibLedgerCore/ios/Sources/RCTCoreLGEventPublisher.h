@@ -5,11 +5,16 @@
 #import "LGEventBus.h"
 #import "LGEventPublisher.h"
 #import "LGExecutionContext.h"
+#import "RCTCoreLGEvent.h"
+#import "RCTCoreLGEventBus.h"
+#import "RCTCoreLGEventPublisher.h"
+#import "RCTCoreLGExecutionContext.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing an event publisher */
 @interface RCTCoreLGEventPublisher : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGEventPublisher *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

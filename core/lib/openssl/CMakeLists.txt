@@ -38,12 +38,14 @@ if( WIN32 AND NOT CYGWIN )
 
 endif ( )
 
-if( MINGW )
+if( MINGW OR MSVC)
   set( CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all" )
 endif()
 
 add_subdirectory( crypto )
-add_subdirectory( ssl )
+if(BUILD_TESTS)
+  add_subdirectory( ssl )#needed for tests
+endif()
 # add_subdirectory( apps )
 
 install( FILES e_os2.h DESTINATION include/openssl )

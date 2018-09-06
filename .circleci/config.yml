@@ -4,54 +4,153 @@ dependencies:
   cache_directories:
     - ~/cmake-3.10.3
 jobs:
-  build:
+  build_linux_release:
     docker:
       - image: debian:stretch
     working_directory: ~/lib-ledger-core
     steps:
-      - checkout
       - run:
           command: |
-            . .circleci/setup_debian.sh
+            apt-get update
+            apt-get -y install git ssh
+      - checkout
       - run:
+          name: Setup
+          command: |
+            . .circleci/setup_debian.sh Release
+      - run:
+          name: Submodule_Initialization
           command: |
             . .circleci/init_submodules.sh
       - run:
+          name: CMake_Install
           command: |
             . .circleci/cmake-install.sh
       - run:
+          name: Build_Library
           command: |
-            . .circleci/build_lib.sh
+            . .circleci/build_lib.sh Release
       - run:
-          name: build node module
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
+      - deploy:
+          requires:
+            - hold
+          name: Deploy
+          command: |
+            . .circleci/deploy.sh
+      - run:
+          name: Build_Library_jni
+          command: |
+            . .circleci/build_lib.sh target_jni Release
+      - deploy:
+          requires:
+            - hold
+          name: Deploy_jni
+          command: |
+            . .circleci/deploy.sh target_jni
+  build_linux_debug:
+      docker:
+        - image: debian:stretch
+      working_directory: ~/lib-ledger-core
+      steps:
+        - run:
+            command: |
+              apt-get update
+              apt-get -y install git ssh
+        - checkout
+        - run:
+            name: Setup
+            command: |
+              . .circleci/setup_debian.sh Debug
+        - run:
+            name: Submodule_Initialization
+            command: |
+              . .circleci/init_submodules.sh
+        - run:
+            name: CMake_Install
+            command: |
+              . .circleci/cmake-install.sh
+        - run:
+            name: Build_Library
+            command: |
+              . .circleci/build_lib.sh Debug
+        - run:
+            name: Build_Module
+            command: |
+              . .circleci/build_node_module.sh
+        - run:
+            name: Run_Tests
+            command: |
+                cd ../lib-ledger-core-build
+                ctest
+  build_macos_release:
+    macos:
+      xcode: "9.2.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_macos.sh Release
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Build_Library
+          command: |
+            . .circleci/build_lib.sh Release
+      - run:
+          name: Build_Module
+          command: |
+            . .circleci/build_node_module.sh
+      - deploy:
+          name: Deploy
+          command: |
+            . .circleci/deploy.sh
+      - run:
+          name: Build_Library_jni
+          command: |
+            . .circleci/build_lib.sh target_jni Release
+      - deploy:
+          name: Deploy_jni
+          command: |
+            . .circleci/deploy.sh target_jni
+  build_macos_debug:
+    macos:
+      xcode: "9.2.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            . .circleci/setup_macos.sh Debug
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Build_Library
+          command: |
+            . .circleci/build_lib.sh Debug
+      - run:
+          name: Build_Module
           command: |
             . .circleci/build_node_module.sh
       - run:
-          name: run tests
+          name: Run_Tests
           command: |
               cd ../lib-ledger-core-build
               ctest
-      - run:
-          command: |
-              mkdir -p /tmp/core_dumps
-              cp ./sample/tmp/log_file_test_instance-l.log /tmp/core_dumps
-          when: on_fail
-      - store_artifacts:
-          path: /tmp/core_dumps
-      - run:
-          command: |
-              mkdir -p /tmp/lib
-              cp ../lib-ledger-core-build/core/src/libledger-core.so /tmp/lib
-      - store_artifacts:
-          path: /tmp/lib
-      - run:
-          command: |
-              mkdir -p /tmp/node_module
-              cp ./build/Release/ledgerapp_nodejs.node /tmp/node_module
-      - store_artifacts:
-          path: /tmp/node_module
-      - deploy:
-          name: Deploy to s3 bucket
-          command: |
-            aws s3 sync ../lib-ledger-core-build/core/src/ s3://ledger-lib-ledger-core/ --acl public-read --exclude "CMakeFiles/*" --exclude "MakeFile" --exclude "cmake_install.cmake" && \
-            aws s3 ls s3://ledger-lib-ledger-core/;
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_linux_debug
+      - build_macos_debug
+      - build_linux_release
+      - build_macos_release

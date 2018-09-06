@@ -35,6 +35,9 @@
 #include <api/CurrencyListCallback.hpp>
 #include <api/CurrencyCallback.hpp>
 #include <api/WalletListCallback.hpp>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 
 namespace ledger {
     namespace core {
@@ -159,5 +162,10 @@ namespace ledger {
                                          const std::shared_ptr<api::BlockCallback> &callback) {
             _pool->getLastBlock(currencyName).callback(_mainContext, callback);
         }
+
+        void WalletPoolApi::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            _pool->eraseDataSince(date).callback(_mainContext, callback);
+        }
+
     }
 }

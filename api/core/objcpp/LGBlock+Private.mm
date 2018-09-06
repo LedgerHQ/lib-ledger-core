@@ -10,7 +10,7 @@ namespace djinni_generated {
 auto Block::toCpp(ObjcType obj) -> CppType
 {
     assert(obj);
-    return {::djinni::String::toCpp(obj.hash),
+    return {::djinni::String::toCpp(obj.blockHash),
             ::djinni::String::toCpp(obj.uid),
             ::djinni::Date::toCpp(obj.time),
             ::djinni::String::toCpp(obj.currencyName),
@@ -19,11 +19,11 @@ auto Block::toCpp(ObjcType obj) -> CppType
 
 auto Block::fromCpp(const CppType& cpp) -> ObjcType
 {
-    return [[LGBlock alloc] initWithHash:(::djinni::String::fromCpp(cpp.hash))
-                                     uid:(::djinni::String::fromCpp(cpp.uid))
-                                    time:(::djinni::Date::fromCpp(cpp.time))
-                            currencyName:(::djinni::String::fromCpp(cpp.currencyName))
-                                  height:(::djinni::I64::fromCpp(cpp.height))];
+    return [[LGBlock alloc] initWithBlockHash:(::djinni::String::fromCpp(cpp.blockHash))
+                                          uid:(::djinni::String::fromCpp(cpp.uid))
+                                         time:(::djinni::Date::fromCpp(cpp.time))
+                                 currencyName:(::djinni::String::fromCpp(cpp.currencyName))
+                                       height:(::djinni::I64::fromCpp(cpp.height))];
 }
 
 }  // namespace djinni_generated

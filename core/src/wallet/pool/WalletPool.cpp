@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
+#include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include "WalletPool.hpp"
-
+#include <database/soci-date.h>
 namespace ledger {
     namespace core {
 
@@ -74,6 +74,7 @@ namespace ledger {
                 _pathResolver
             );
 
+            _logPrinter = logPrinter;
             // Logger management
             _logger = logger::create(
                     name + "-l",
@@ -397,6 +398,55 @@ namespace ledger {
                 }
                 return block.getValue();
             });
+        }
+
+        Future<api::ErrorCode> WalletPool::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+            auto self = shared_from_this();
+            auto name = getName();
+            _logger->debug("Start erasing data of WalletPool : {}",name);
+
+            return getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(getContext(), [self] (int64_t count) {
+                return self->getWallets(0, count);
+            }).flatMap<api::ErrorCode>(getContext(), [self, date] (const std::vector<std::shared_ptr<AbstractWallet>> &wallets) -> Future<api::ErrorCode>{
+
+                static std::function<Future<api::ErrorCode> (int, const std::vector<std::shared_ptr<AbstractWallet>> &)>  eraseWallet = [date] (int index, const std::vector<std::shared_ptr<AbstractWallet>> &walletsToErase) -> Future<api::ErrorCode> {
+
+                    if (index == walletsToErase.size()) {
+                        return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+                    }
+
+                    return walletsToErase[index]->eraseDataSince(date).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE,[date, index, walletsToErase] (const api::ErrorCode &errorCode) -> Future<api::ErrorCode> {
+
+                        if (errorCode != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
+                            return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase wallets of WalletPool !"));
+                        }
+
+                        return eraseWallet(index + 1, walletsToErase);
+                    });
+                };
+                return eraseWallet(0, wallets);
+
+            }).flatMap<api::ErrorCode>(getContext(), [self, name, date] (const api::ErrorCode &err) {
+
+                if (err != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
+                    return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase wallets of WalletPool !"));
+                }
+
+                //Erase wallets created after date
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                soci::rowset<soci::row> wallets = (sql.prepare << "SELECT uid FROM wallets "
+                                                                    "WHERE pool_name = :pool_name AND created_at >= :date ",
+                                                                    soci::use(name), soci::use(date));
+                for (auto& wallet : wallets) {
+                    if (wallet.get_indicator(0) != soci::i_null) {
+                        self->_wallets.erase(wallet.get<std::string>(0));
+                    }
+                }
+                sql << "DELETE FROM wallets WHERE pool_name = :pool_name AND created_at >= :date ", soci::use(name), soci::use(date);
+                self->logger()->debug("Finish erasing data of WalletPool : {}",name);
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+
         }
 
         WalletPool::~WalletPool() {

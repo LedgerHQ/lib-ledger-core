@@ -50,7 +50,7 @@ TEST_F(WalletTests, GetAccountWithSameInstance) {
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto fetchedAccount = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));
     EXPECT_EQ(account.get(), fetchedAccount.get());
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
 }
 
 TEST_F(WalletTests, GetAccountOnEmptyWallet) {
@@ -82,13 +82,13 @@ TEST_F(WalletTests, GetAccountAfterPoolReopen) {
         auto pool = newDefaultPool();
         auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-        addr = wait(account->getFreshPublicAddresses())[0];
+        addr = wait(account->getFreshPublicAddresses())[0]->toString();
     }
     {
         auto pool = newDefaultPool();
         auto wallet = wait(pool->getWallet("my_wallet"));
         auto account = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(0)));
-        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], addr);
+        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), addr);
     }
 }
 
@@ -97,10 +97,10 @@ TEST_F(WalletTests, CreateNonContiguousAccount) {
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
     auto fetchedAccount = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(6)));
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
     auto accountCount = wait(wallet->getAccountCount());
     auto accounts = wait(wallet->getAccounts(0, accountCount));
-    EXPECT_EQ(wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0], wait(fetchedAccount->getFreshPublicAddresses())[0]);
+    EXPECT_EQ(wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
 }
 
 
@@ -128,9 +128,12 @@ TEST_F(WalletTests, CreateAccountBug) {
             return Future<Unit>::successful(unit);
         });
     };
+    //Otherwise test takes a long time
+    //int LOOP_COUNT = 250;
+    int LOOP_COUNT = 5;
     std::function<void (int)> loop;
-    loop = [&loop, &wallet, this, list] (int index) {
-        if (index >= 250) {
+    loop = [&loop, &wallet, this, list, LOOP_COUNT] (int index) {
+        if (index >= LOOP_COUNT) {
             dispatcher->stop();
             return ;
         }

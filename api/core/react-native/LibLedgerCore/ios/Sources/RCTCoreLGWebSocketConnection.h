@@ -4,9 +4,10 @@
 #import "LGErrorCode.h"
 #import "LGWebSocketConnection.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGWebSocketConnection : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWebSocketConnection *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

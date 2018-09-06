@@ -34,6 +34,7 @@
 #include <api/WalletPool.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <api/WalletPoolCallback.hpp>
+#include <api/ErrorCodeCallback.hpp>
 #include <debug/LoggerApi.hpp>
 
 namespace ledger {
@@ -67,6 +68,8 @@ namespace ledger {
 
             void
             getLastBlock(const std::string &currencyName, const std::shared_ptr<api::BlockCallback> &callback) override;
+
+            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
 
             ~WalletPoolApi();
 

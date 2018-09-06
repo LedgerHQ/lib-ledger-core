@@ -1,0 +1,118 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    sourceSets {
+        main {
+            java.srcDirs = ['src', '../sources/java']
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+task ndkBuild(type: Exec) {
+
+    def mainDirectory = System.getProperty("user.dir")
+    def ndkDir = System.getProperty("ndk.dir")
+    if (ndkDir == null) {
+        def prop = new Properties()
+        prop.load(project.rootProject.file('local.properties').newDataInputStream())
+        ndkDir = prop.getProperty("ndk.dir")
+    }
+
+    if (ndkDir == null) {
+        def gradle_project_root = project.rootProject.rootDir
+        throw new GradleException("NDK is not configured. Make sure there is a local.properties " +
+        "file with an ndk.dir entry in the directory ${gradle_project_root}, or set the " +
+        "ANDROID_NDK envrionment variable")
+    }
+
+    def ndkBuildExecutable = new File(ndkDir, 'ndk-build')
+    if (!ndkBuildExecutable.exists()) {
+        throw new GradleException("Could not find ndk-build. The configured NDK directory ${ndkDir} may not be correct.")
+    }
+    // Since this project actually follows the standard jni project layout, we don't need to set
+    // the project path.  There would be no problem setting it, except I can't figure out how to
+    // properly escape paths as env variables :(
+    environment("NDK_PROJECT_PATH", mainDirectory)
+    environment("GYP_CONFIGURATION", "Release")
+    commandLine(ndkBuildExecutable, "-j8")
+}
+
+task generateApplicationMk << {
+
+    println ">>> Start ndkBuild task"
+    def userDir = System.getProperty("user.dir")
+    def applicationMkFile = new File(userDir + "/jni/Application.mk")
+    def archList = System.getProperty("arch", "x86")
+
+    if (archList == "all") {
+        archList = "armeabi-v7a,arm64-v8a,x86,x86_64,mips,mips64"
+    }
+
+    def appProperties = [
+        "APP_ALLOW_MISSING_DEPS": true,
+        "APP_STL": "c++_shared",
+        "NDK_TOOLCHAIN_VERSION": "clang",
+        "APP_PLATFORM"         : "android-16",
+        "APP_ABI"              : archList,
+        "APP_MODULES"          : "lib-binding",
+    ]
+
+    def mkText = "## DO NOT EDIT. This file is generated from gradle task. ##\r\n\r\n"
+    appProperties.each { key, val ->
+        mkText += key + " := " + val + "\r\n"
+    }
+    applicationMkFile.text = mkText
+
+}
+
+task nativeLibsToJar(type: Zip,
+                     description: 'create a jar archive of the native libs') {
+    println ">>> Start nativeLibsToJar task"
+    destinationDir file('./libs')
+    baseName 'binding'
+    extension 'jar'
+    from 'libs/'
+    include '**/*.so'
+    into 'binding/'
+}
+
+nativeLibsToJar {
+    dependsOn 'ndkBuild'
+}
+ndkBuild {
+    dependsOn 'generateApplicationMk'
+}
+
+task buildJar {
+    println ">>> Start building JAR"
+}
+

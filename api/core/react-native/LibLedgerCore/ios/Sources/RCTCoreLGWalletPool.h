@@ -7,6 +7,7 @@
 #import "LGCurrencyListCallback.h"
 #import "LGDatabaseBackend.h"
 #import "LGDynamicObject.h"
+#import "LGErrorCodeCallback.h"
 #import "LGEventBus.h"
 #import "LGHttpClient.h"
 #import "LGI32Callback.h"
@@ -20,11 +21,32 @@
 #import "LGWalletListCallback.h"
 #import "LGWalletPool.h"
 #import "LGWebSocketClient.h"
+#import "RCTCoreLGBlockCallback.h"
+#import "RCTCoreLGCurrency.h"
+#import "RCTCoreLGCurrencyCallback.h"
+#import "RCTCoreLGCurrencyListCallback.h"
+#import "RCTCoreLGDatabaseBackend.h"
+#import "RCTCoreLGDynamicObject.h"
+#import "RCTCoreLGErrorCodeCallback.h"
+#import "RCTCoreLGEventBus.h"
+#import "RCTCoreLGHttpClient.h"
+#import "RCTCoreLGI32Callback.h"
+#import "RCTCoreLGLogPrinter.h"
+#import "RCTCoreLGLogger.h"
+#import "RCTCoreLGPathResolver.h"
+#import "RCTCoreLGPreferences.h"
+#import "RCTCoreLGRandomNumberGenerator.h"
+#import "RCTCoreLGThreadDispatcher.h"
+#import "RCTCoreLGWalletCallback.h"
+#import "RCTCoreLGWalletListCallback.h"
+#import "RCTCoreLGWalletPool.h"
+#import "RCTCoreLGWebSocketClient.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class respresenting a pool of wallets */
 @interface RCTCoreLGWalletPool : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWalletPool *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

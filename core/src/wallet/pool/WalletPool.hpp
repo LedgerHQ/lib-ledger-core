@@ -94,7 +94,7 @@ namespace ledger {
             Future<Unit> deleteWallet(const std::string& name);
 
             Future<api::Block> getLastBlock(const std::string& currencyName);
-
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
             // Currencies management
             Option<api::Currency> getCurrency(const std::string& name) const;
             const std::vector<api::Currency>& getCurrencies() const;
@@ -155,6 +155,7 @@ namespace ledger {
 
             // Logger
             std::shared_ptr<spdlog::logger> _logger;
+            std::shared_ptr<api::LogPrinter> _logPrinter;
 
             // Threading management
             std::shared_ptr<api::ThreadDispatcher> _threadDispatcher;

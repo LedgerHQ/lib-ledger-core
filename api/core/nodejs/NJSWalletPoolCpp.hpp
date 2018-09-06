@@ -14,6 +14,7 @@
 #include "NJSCurrencyListCallback.hpp"
 #include "NJSDatabaseBackendCpp.hpp"
 #include "NJSDynamicObjectCpp.hpp"
+#include "NJSErrorCodeCallback.hpp"
 #include "NJSEventBusCpp.hpp"
 #include "NJSHttpClient.hpp"
 #include "NJSI32Callback.hpp"
@@ -26,6 +27,7 @@
 #include "NJSWalletCallback.hpp"
 #include "NJSWalletListCallback.hpp"
 #include "NJSWebSocketClient.hpp"
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -140,6 +142,12 @@ private:
      *@param EventBus object
      */
     static NAN_METHOD(getEventBus);
+
+    /**
+     *Erase data (in user's DB) relative to wallet since given date
+     *@param date, start date of data deletion
+     */
+    static NAN_METHOD(eraseDataSince);
 
     static NAN_METHOD(New);
 

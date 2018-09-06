@@ -69,9 +69,9 @@ namespace ledger {
             const std::list<BitcoinLikeScriptChunk>& toList() const;
             bool isP2PKH() const;
             bool isP2SH() const;
-            Option<BitcoinLikeAddress> parseAddress(const api::BitcoinLikeNetworkParameters& params) const;
+            Option<BitcoinLikeAddress> parseAddress(const api::Currency& currency) const;
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t>& script);
-            static BitcoinLikeScript fromAddress(const std::string& address, const api::BitcoinLikeNetworkParameters& params);
+            static BitcoinLikeScript fromAddress(const std::string& address, const api::Currency& currency);
 
         private:
             std::list<BitcoinLikeScriptChunk> _chunks;

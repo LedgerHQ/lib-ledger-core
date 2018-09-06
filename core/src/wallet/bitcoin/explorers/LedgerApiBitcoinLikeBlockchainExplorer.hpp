@@ -62,6 +62,8 @@ namespace ledger {
 
             FuturePtr<Transaction> getTransactionByHash(const String &transactionHash) override;
 
+            Future<int64_t > getTimestamp() override;
+
         private:
             std::shared_ptr<HttpClient> _http;
             api::BitcoinLikeNetworkParameters _parameters;

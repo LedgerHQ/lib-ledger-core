@@ -31,7 +31,6 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
 #include <wallet/common/OperationQuery.h>
-#include <api/StringListCallback.hpp>
 #include <api/AmountCallback.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -135,12 +134,19 @@ namespace ledger {
             return _externalPreferences;
         }
 
-        void AbstractAccount::getFreshPublicAddresses(const std::shared_ptr<api::StringListCallback> &callback) {
+        void AbstractAccount::getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) {
             getFreshPublicAddresses().callback(getMainExecutionContext(), callback);
         }
 
         void AbstractAccount::getBalance(const std::shared_ptr<api::AmountCallback> &callback) {
             getBalance().callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractAccount::getBalanceHistory(const std::string & start,
+                               const std::string & end,
+                               api::TimePeriod precision,
+                               const std::shared_ptr<api::AmountListCallback> & callback) {
+            getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::EventBus> AbstractAccount::getEventBus() {
@@ -191,7 +197,9 @@ namespace ledger {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
-
+        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            eraseDataSince(date).callback(getMainExecutionContext(), callback);
+        }
 
     }
 }

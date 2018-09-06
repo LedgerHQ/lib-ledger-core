@@ -96,17 +96,56 @@ namespace ledger {
         void
         OperationDatabaseHelper::updateBitcoinOperation(soci::session &sql, const Operation &operation, bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
-                BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction
+
+                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction
                                                                                    .getValue());
                 if (insert)
-                    sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_hash)", use(operation.uid)
-                            , use(operation.bitcoinTransaction.getValue().hash);
+                    sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operation.bitcoinTransaction.getValue().hash);
             }
         }
 
         void OperationDatabaseHelper::queryOperations(soci::session &sql, int32_t from, int32_t to, bool complete,
                                                       bool excludeDropped, std::vector<Operation> &out) {
 
+        }
+
+        std::size_t
+        OperationDatabaseHelper::queryOperations(soci::session &sql,
+                                                 const std::string &accountUid,
+                                                 std::vector<Operation> &operations,
+                                                 std::function<bool(const std::string &address)> filter) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
+                                                    " FROM operations AS op "
+                                                    " WHERE op.account_uid = :uid ",
+                                                    use(accountUid));
+
+            auto filterList = [&] (const std::vector<std::string> &list) -> bool {
+                for (auto& elem : list) {
+                    if (filter(elem)) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            std::size_t c = 0;
+            for (auto& row : rows) {
+                auto type = api::from_string<api::OperationType>(row.get<std::string>(2));
+                auto senders = strings::split(row.get<std::string>(4), ",");
+                auto recipients = strings::split(row.get<std::string>(5), ",");
+                if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
+                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
+                    operations.resize(operations.size() + 1);
+                    auto& operation = operations[operations.size() - 1];
+                    operation.amount = row.get<BigInt>(0);
+                    operation.fees = row.get<BigInt>(1);
+                    operation.type = type;
+                    operation.date = DateUtils::fromJSON(row.get<std::string>(3));
+                    c += 1;
+                }
+            }
+            return c;
         }
 
     }

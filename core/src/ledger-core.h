@@ -31,7 +31,15 @@
 #ifndef LEDGER_CORE_LEDGER_CORE_H
 #define LEDGER_CORE_LEDGER_CORE_H
 
-#include <boost/preprocessor.hpp>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
+#include <string>
 
 /**
  * Ledger root namespace
@@ -43,14 +51,11 @@ namespace ledger {
      */
     namespace core {
 
-        const int LIB_VERSION = LIB_VERSION_MAJOR << 16 | LIB_VERSION_MINOR << 8 | LIB_VERSION_PATCH;
-        const int VERSION_MAJOR = LIB_VERSION_MAJOR;
-        const int VERSION_MINOR = LIB_VERSION_MINOR;
-        const int VERSION_PATCH = LIB_VERSION_PATCH;
-        const std::string LIB_STRING_VERSION =
-                BOOST_PP_STRINGIZE(LIB_VERSION_MAJOR) "."
-                BOOST_PP_STRINGIZE(LIB_VERSION_MINOR) "."
-                BOOST_PP_STRINGIZE(LIB_VERSION_PATCH);
+        extern LIBCORE_EXPORT const int LIB_VERSION;
+        extern LIBCORE_EXPORT const int VERSION_MAJOR;
+        extern LIBCORE_EXPORT const int VERSION_MINOR;
+        extern LIBCORE_EXPORT const int VERSION_PATCH;
+        extern LIBCORE_EXPORT const std::string LIB_STRING_VERSION;
 
     }
 

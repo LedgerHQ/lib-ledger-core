@@ -36,6 +36,10 @@
 #include <ledger/core/api/BitcoinLikeExtendedPublicKey.hpp>
 #include <ledger/core/utils/optional.hpp>
 #include <ledger/core/api/Networks.hpp>
+#include <wallet/currencies.hpp>
+#include <api/Address.hpp>
+#include <bitcoin/BitcoinLikeExtendedPublicKey.hpp>
+
 
 std::vector<std::vector<std::string>> fixtures = {
         {"010966776006953D5567439E5E39F86A0D273BEE", "16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM", "00"},
@@ -49,17 +53,18 @@ std::vector<std::vector<std::string>> fixtures = {
 using namespace ledger::core::api;
 using namespace ledger::core;
 
-const BitcoinLikeNetworkParameters params = api::Networks::bitcoin();
+const Currency currency = currencies::BITCOIN;
 
 TEST(Address, AddressFromBase58String) {
      for (auto& item : fixtures) {
-         EXPECT_TRUE(BitcoinLikeAddress::isAddressValid(params, item[1]));
-         EXPECT_EQ(BitcoinLikeAddress::fromBase58(params, item[1])->getHash160(), hex::toByteArray(item[0]));
-         EXPECT_EQ(BitcoinLikeAddress::fromBase58(params, item[1])->getVersion(), hex::toByteArray(item[2]));
+         EXPECT_TRUE(Address::isValid(item[1], currency));
+         auto address = Address::parse(item[1], currency)->asBitcoinLikeAddress();
+         EXPECT_EQ(address->getHash160(), hex::toByteArray(item[0]));
+         EXPECT_EQ(address->getVersion(), hex::toByteArray(item[2]));
          if (item[2] == "05") {
-             EXPECT_TRUE(BitcoinLikeAddress::fromBase58(params, item[1])->isP2SH());
+             EXPECT_TRUE(address->isP2SH());
          } else {
-             EXPECT_TRUE(BitcoinLikeAddress::fromBase58(params, item[1])->isP2PKH());
+             EXPECT_TRUE(address->isP2PKH());
          }
      }
 }
@@ -67,7 +72,7 @@ TEST(Address, AddressFromBase58String) {
 
 TEST(Address, XpubFromBase58String) {
     auto addr = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
-    auto xpub = BitcoinLikeExtendedPublicKey::fromBase58(params, addr, optional<std::string>("44'/0'/0'"));
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"));
     EXPECT_EQ(xpub->toBase58(), addr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), "14NjenDKkGGq1McUgoSkeUHJpW3rrKLbPW");
     EXPECT_EQ(xpub->derive("0/1")->toBase58(), "1Pn6i3cvdGhqbdgNjXHfbaYfiuviPiymXj");

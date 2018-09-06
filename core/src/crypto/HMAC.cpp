@@ -36,25 +36,25 @@
 std::vector<uint8_t> ledger::core::HMAC::sha256(const std::vector<uint8_t>& key,
                                                     const std::vector<uint8_t>& data) {
     auto len = SHA256_DIGEST_LENGTH;
-    uint8_t hash[len];
+    std::vector<uint8_t> hash(len);
     HMAC_CTX hmac;
     HMAC_CTX_init(&hmac);
     HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha256(), NULL);
     HMAC_Update(&hmac, data.data(), data.size());
-    HMAC_Final(&hmac, hash, (unsigned int *)(&len));
+    HMAC_Final(&hmac, hash.data(), (unsigned int *)(&len));
     HMAC_cleanup(&hmac);
-    return std::vector<uint8_t>(hash, hash + SHA256_DIGEST_LENGTH);
+    return hash;
 }
 
 std::vector<uint8_t> ledger::core::HMAC::sha512(const std::vector<uint8_t>& key,
                                                     const std::vector<uint8_t>& data) {
     auto len = SHA512_DIGEST_LENGTH;
-    uint8_t hash[len];
+    std::vector<uint8_t> hash(len);
     HMAC_CTX hmac;
     HMAC_CTX_init(&hmac);
     HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha512(), NULL);
     HMAC_Update(&hmac, data.data(), data.size());
-    HMAC_Final(&hmac, hash, (unsigned int *)(&len));
+    HMAC_Final(&hmac, hash.data(), (unsigned int *)(&len));
     HMAC_cleanup(&hmac);
-    return std::vector<uint8_t>(hash, hash + SHA512_DIGEST_LENGTH);
+    return hash;
 }

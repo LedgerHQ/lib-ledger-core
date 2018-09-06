@@ -31,6 +31,14 @@
 #ifndef LEDGER_CORE_BIGINT_H
 #define LEDGER_CORE_BIGINT_H
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include <string>
 #include <vector>
 #include <bigd.h>
@@ -48,49 +56,49 @@ namespace ledger {
         class BigInt {
 
         public:
-            static const BigInt ZERO;
-            static const BigInt ONE;
-            static const BigInt TEN;
+            static LIBCORE_EXPORT const BigInt ZERO;
+            static LIBCORE_EXPORT const BigInt ONE;
+            static LIBCORE_EXPORT const BigInt TEN;
             typedef unsigned int SimpleInt;
             typedef unsigned long DoubleInt;
             /**
              * Available digits for conversion to and from strings.
              */
-            static const std::string DIGITS;
+            static LIBCORE_EXPORT const std::string DIGITS;
             /**
              * The maximum radix available for conversion to and from strings.
              */
-            static const int MIN_RADIX;
+            static LIBCORE_EXPORT const int MIN_RADIX;
             /**
              * The minimum radix available for conversion to and from strings.
              */
-            static const int MAX_RADIX;
+            static LIBCORE_EXPORT const int MAX_RADIX;
 
             /**
              * Creates a new BigInt from the given hexadecimal encoded string.
              * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
              * @return An instance of BigInt
              */
-            static BigInt* from_hex(const std::string& str);
+            static LIBCORE_EXPORT BigInt* from_hex(const std::string& str);
             /**
             * Creates a new BigInt from the given hexadecimal encoded string.
             * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
             */
-            static BigInt fromHex(const std::string& str);
+            static LIBCORE_EXPORT BigInt fromHex(const std::string& str);
             /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
-            static BigInt* from_dec(const std::string& str);
+            static LIBCORE_EXPORT BigInt* from_dec(const std::string& str);
             /**
             * Creates a new BigInt from the given decimal encoded string.
             * @param str The number encoded in decimal (e.g. "125")
             * @return
             */
-            static BigInt fromDecimal(const std::string& str);
+            static LIBCORE_EXPORT BigInt fromDecimal(const std::string& str);
 
-            static BigInt fromString(const std::string& str);
+            static LIBCORE_EXPORT BigInt fromString(const std::string& str);
 
             template <typename T>
             static BigInt fromScalar(T value) {
@@ -131,7 +139,7 @@ namespace ledger {
              * @param str
              * @return
              */
-            BigInt(const std::string& str) : BigInt(str, 10) {};
+            BigInt(const std::string& str);
 
             /**
              * Converts the BigInt to int

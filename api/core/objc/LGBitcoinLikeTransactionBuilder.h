@@ -82,6 +82,13 @@
                                                     address:(nonnull NSString *)address;
 
 /**
+ * Send all available funds to the given address.
+ * @param address Address of the recipient
+ * @return A reference on the same builder in order to chain calls.
+ */
+- (nullable LGBitcoinLikeTransactionBuilder *)wipeToAddress:(nonnull NSString *)address;
+
+/**
  * Set the amount of fees per byte (of the raw transaction).
  * @return A reference on the same builder in order to chain calls.
  */

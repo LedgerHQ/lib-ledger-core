@@ -12,6 +12,7 @@
 #import "LGCurrencyListCallback+Private.h"
 #import "LGDatabaseBackend+Private.h"
 #import "LGDynamicObject+Private.h"
+#import "LGErrorCodeCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGHttpClient+Private.h"
 #import "LGI32Callback+Private.h"
@@ -156,6 +157,14 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getEventBus();
         return ::djinni_generated::EventBus::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)eraseDataSince:(nonnull NSDate *)date
+              callback:(nullable id<LGErrorCodeCallback>)callback {
+    try {
+        _cppRefHandle.get()->eraseDataSince(::djinni::Date::toCpp(date),
+                                            ::djinni_generated::ErrorCodeCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

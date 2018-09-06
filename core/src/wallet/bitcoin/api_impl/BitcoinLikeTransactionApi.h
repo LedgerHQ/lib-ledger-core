@@ -46,7 +46,7 @@ namespace ledger {
         class BytesWriter;
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
-            explicit BitcoinLikeTransactionApi(const api::Currency& currency);
+            explicit BitcoinLikeTransactionApi(const api::Currency& currency, bool isSegwit = false);
             explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi>& operation);
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> getInputs() override;
             std::vector<std::shared_ptr<api::BitcoinLikeOutput>> getOutputs() override;
@@ -60,6 +60,7 @@ namespace ledger {
             optional<std::vector<uint8_t>> getWitness() override;
             api::EstimatedSize getEstimatedSize() override;
             std::vector<uint8_t> serializeOutputs() override;
+            int32_t getVersion() override;
 
 
             BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);
@@ -96,6 +97,7 @@ namespace ledger {
             api::Currency _currency;
             Option<uint32_t> _timestamp;
             bool _writable;
+            bool _isSegwit;
         };
     }
 }

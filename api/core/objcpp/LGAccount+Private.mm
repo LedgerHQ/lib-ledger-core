@@ -6,14 +6,17 @@
 #import "DJICppWrapperCache+Private.h"
 #import "DJIError.h"
 #import "DJIMarshal+Private.h"
+#import "LGAddressListCallback+Private.h"
 #import "LGAmountCallback+Private.h"
+#import "LGAmountListCallback+Private.h"
 #import "LGBitcoinLikeAccount+Private.h"
 #import "LGBlockCallback+Private.h"
+#import "LGErrorCodeCallback+Private.h"
 #import "LGEventBus+Private.h"
 #import "LGLogger+Private.h"
 #import "LGOperationQuery+Private.h"
 #import "LGPreferences+Private.h"
-#import "LGStringListCallback+Private.h"
+#import "LGTimePeriod+Private.h"
 #import "LGWalletType+Private.h"
 #include <exception>
 #include <stdexcept>
@@ -56,6 +59,18 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
 - (void)getBalance:(nullable id<LGAmountCallback>)callback {
     try {
         _cppRefHandle.get()->getBalance(::djinni_generated::AmountCallback::toCpp(callback));
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)getBalanceHistory:(nonnull NSString *)start
+                      end:(nonnull NSString *)end
+                   period:(LGTimePeriod)period
+                 callback:(nullable id<LGAmountListCallback>)callback {
+    try {
+        _cppRefHandle.get()->getBalanceHistory(::djinni::String::toCpp(start),
+                                               ::djinni::String::toCpp(end),
+                                               ::djinni::Enum<::ledger::core::api::TimePeriod, LGTimePeriod>::toCpp(period),
+                                               ::djinni_generated::AmountListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -122,9 +137,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (void)getFreshPublicAddresses:(nullable id<LGStringListCallback>)callback {
+- (void)getFreshPublicAddresses:(nullable id<LGAddressListCallback>)callback {
     try {
-        _cppRefHandle.get()->getFreshPublicAddresses(::djinni_generated::StringListCallback::toCpp(callback));
+        _cppRefHandle.get()->getFreshPublicAddresses(::djinni_generated::AddressListCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
@@ -171,6 +186,14 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     try {
         auto objcpp_result_ = _cppRefHandle.get()->getRestoreKey();
         return ::djinni::String::fromCpp(objcpp_result_);
+    } DJINNI_TRANSLATE_EXCEPTIONS()
+}
+
+- (void)eraseDataSince:(nonnull NSDate *)date
+              callback:(nullable id<LGErrorCodeCallback>)callback {
+    try {
+        _cppRefHandle.get()->eraseDataSince(::djinni::Date::toCpp(date),
+                                            ::djinni_generated::ErrorCodeCallback::toCpp(callback));
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

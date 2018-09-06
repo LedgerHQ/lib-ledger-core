@@ -35,14 +35,17 @@
 #include "../collections/vector.hpp"
 #include "../utils/Exception.hpp"
 
-ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::BitcoinLikeNetworkParameters &params,
+using namespace ledger::core;
+
+ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Currency &currency,
                                                      const std::vector<uint8_t>& hash160,
                                                      const std::vector<uint8_t>& version,
-                                                     ledger::core::optional<std::string> derivationPath) :
-        _params(params),
+                                                     const Option<std::string>& derivationPath) :
+        _params(currency.bitcoinLikeNetworkParameters.value()),
         _version(version),
         _derivationPath(derivationPath),
-        _hash160(hash160)
+        _hash160(hash160),
+        AbstractAddress(currency, derivationPath)
 {
 
 }
@@ -72,33 +75,45 @@ bool ledger::core::BitcoinLikeAddress::isP2PKH() {
 }
 
 std::experimental::optional<std::string> ledger::core::BitcoinLikeAddress::getDerivationPath() {
-    return _derivationPath;
+    return _derivationPath.toOptional();
 }
 
 std::string ledger::core::BitcoinLikeAddress::toBase58() const {
     return Base58::encodeWithChecksum(vector::concat(_version, _hash160));
 }
 
-std::shared_ptr<ledger::core::api::BitcoinLikeAddress>
-        ledger::core::api::BitcoinLikeAddress::fromBase58(const BitcoinLikeNetworkParameters &params,
-                                                          const std::string &address) {
+std::shared_ptr<ledger::core::AbstractAddress>
+ledger::core::BitcoinLikeAddress::parse(const std::string &address, const ledger::core::api::Currency &currency,
+                                        const Option<std::string>& derivationPath) {
+    auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
+        return fromBase58(address, currency, derivationPath);
+    });
+    return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
+}
+
+std::string ledger::core::BitcoinLikeAddress::toString() {
+    return toBase58();
+}
+
+std::shared_ptr<BitcoinLikeAddress> ledger::core::BitcoinLikeAddress::fromBase58(const std::string &address,
+                                                                              const api::Currency &currency,
+                                                                              const Option<std::string>& derivationPath) {
     auto decoded = Base58::checkAndDecode(address);
     if (decoded.isFailure()) {
         throw decoded.getFailure();
     }
+    auto& params = currency.bitcoinLikeNetworkParameters.value();
     auto value = decoded.getValue();
+
+    //Check decoded address size
+    if (value.size() <= 20) {
+        throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
+    }
+
     std::vector<uint8_t> hash160(value.end() - 20, value.end());
     std::vector<uint8_t> version(value.begin(), value.end() - 20);
     if (version != params.P2PKHVersion && version != params.P2SHVersion) {
-        throw Exception(ErrorCode::INVALID_VERSION, "Address version doesn't belong to the given network parameters");
+        throw Exception(api::ErrorCode::INVALID_VERSION, "Address version doesn't belong to the given network parameters");
     }
-    return std::make_shared<ledger::core::BitcoinLikeAddress>(params, hash160, version);
-}
-
-bool
-ledger::core::api::BitcoinLikeAddress::isAddressValid(const ledger::core::api::BitcoinLikeNetworkParameters &params,
-                                                      const std::string &address) {
-    return Try<std::shared_ptr<ledger::core::api::BitcoinLikeAddress>>::from([&] () {
-        return fromBase58(params, address);
-    }).isSuccess();
+    return std::make_shared<ledger::core::BitcoinLikeAddress>(currency, hash160, version, derivationPath);
 }
