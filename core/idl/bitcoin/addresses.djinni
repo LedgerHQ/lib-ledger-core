@@ -1,0 +1,52 @@
+
+BitcoinLikeFeePolicy = enum {
+    PER_BYTE;
+    PER_KBYTE;
+}
+
+BitcoinLikeNetworkParameters = record {
+    Identifier: string;
+    P2PKHVersion: binary;
+    P2SHVersion: binary;
+    XPUBVersion: binary;
+    FeePolicy: BitcoinLikeFeePolicy;
+    DustAmount: i64;
+    MessagePrefix: string;
+    UsesTimestampedTransaction: bool;
+    TimestampDelay: i64;
+    SigHash: binary;
+    AdditionalBIPs: list<string>;
+}
+
+# Helper class for manipulating Bitcoin like addresses
+BitcoinLikeAddress = interface +c {
+    # Gets the version of the address (P2SH or P2PKH)
+    # @return The version of the address
+    getVersion(): binary;
+    # Gets the raw hash160 of the public key
+    # @return The 20 bytes of the public key hash160
+    getHash160(): binary;
+    # Gets the network parameters used for serializing the address
+    # @return The network parameters of the address
+    getNetworkParameters(): BitcoinLikeNetworkParameters;
+    # Serializes the hash160 into a Base58 encoded address (with checksum)
+    # @return The Base58 serialization
+    toBase58(): string;
+    # Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
+    # @return A payment uri to this address
+    # toPaymentUri(): string;
+    # Checks if the given address is a P2SH address
+    # @return True if the version byte matches the P2SH byte version of the address network parameters
+    isP2SH(): bool;
+    # Checks if the given address is a P2PKH address
+    # @return True if the version byte matches the P2PKH byte version of the address network parameters
+    isP2PKH(): bool;
+}
+
+BitcoinLikeExtendedPublicKey = interface +c {
+    derive(path: string): BitcoinLikeAddress;
+    derivePublicKey(path: string): binary;
+    deriveHash160(path: string): binary;
+    toBase58(): string;
+    getRootPath(): string;
+}

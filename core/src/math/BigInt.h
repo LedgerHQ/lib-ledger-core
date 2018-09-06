@@ -31,10 +31,19 @@
 #ifndef LEDGER_CORE_BIGINT_H
 #define LEDGER_CORE_BIGINT_H
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include <string>
 #include <vector>
 #include <bigd.h>
 #include <memory>
+#include "../utils/endian.h"
 
 namespace ledger {
 
@@ -47,43 +56,64 @@ namespace ledger {
         class BigInt {
 
         public:
-            static const BigInt ZERO;
-            static const BigInt ONE;
-            static const BigInt TEN;
+            static LIBCORE_EXPORT const BigInt ZERO;
+            static LIBCORE_EXPORT const BigInt ONE;
+            static LIBCORE_EXPORT const BigInt TEN;
             typedef unsigned int SimpleInt;
             typedef unsigned long DoubleInt;
             /**
              * Available digits for conversion to and from strings.
              */
-            static const std::string DIGITS;
+            static LIBCORE_EXPORT const std::string DIGITS;
             /**
              * The maximum radix available for conversion to and from strings.
              */
-            static const int MIN_RADIX;
+            static LIBCORE_EXPORT const int MIN_RADIX;
             /**
              * The minimum radix available for conversion to and from strings.
              */
-            static const int MAX_RADIX;
+            static LIBCORE_EXPORT const int MAX_RADIX;
 
             /**
              * Creates a new BigInt from the given hexadecimal encoded string.
              * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
              * @return An instance of BigInt
              */
-            static BigInt* from_hex(const std::string& str);
+            static LIBCORE_EXPORT BigInt* from_hex(const std::string& str);
+            /**
+            * Creates a new BigInt from the given hexadecimal encoded string.
+            * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
+            */
+            static LIBCORE_EXPORT BigInt fromHex(const std::string& str);
             /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
-            static BigInt* from_dec(const std::string& str);
+            static LIBCORE_EXPORT BigInt* from_dec(const std::string& str);
+            /**
+            * Creates a new BigInt from the given decimal encoded string.
+            * @param str The number encoded in decimal (e.g. "125")
+            * @return
+            */
+            static LIBCORE_EXPORT BigInt fromDecimal(const std::string& str);
+
+            static LIBCORE_EXPORT BigInt fromString(const std::string& str);
+
+            template <typename T>
+            static BigInt fromScalar(T value) {
+              BigInt result;
+              result.assignScalar<T>(value);
+              return result;
+            }
 
         private:
-            BigInt();
             BigInt(const std::string& str, int radix);
 
         public:
+            BigInt();
             BigInt(const BigInt& cpy);
+            BigInt(BigInt&& mov);
 
             /**
              * Initializes a new BigInt with the given big endian data.
@@ -92,6 +122,7 @@ namespace ledger {
              * @param negative true if the number is negative false otherwise
              */
             BigInt(const void *data, size_t length, bool negative);
+            BigInt(const std::vector<uint8_t>& data, bool negative);
 
             /**
              * Initializes a new BigInt with the runtime int.
@@ -99,15 +130,16 @@ namespace ledger {
              * @param bits
              * @return
              */
-            BigInt(int value);
-            BigInt(unsigned int value);;
-
+            explicit BigInt(int value);
+            explicit BigInt(unsigned int value);
+            explicit BigInt(unsigned long long value);
+            explicit BigInt(int64_t value);
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str
              * @return
              */
-            BigInt(const std::string& str) : BigInt(str, 10) {};
+            BigInt(const std::string& str);
 
             /**
              * Converts the BigInt to int
@@ -122,6 +154,7 @@ namespace ledger {
             unsigned toUnsignedInt() const;
 
             uint64_t toUint64() const;
+            int64_t toInt64() const;
 
             /**
              * Serializes the BigInt into a decimal std::string.
@@ -163,7 +196,9 @@ namespace ledger {
             bool operator>(const BigInt&) const;
             bool operator>=(const BigInt&) const;
 
-            BigInt pow(unsigned short p);
+            int compare(const BigInt&) const;
+
+            BigInt pow(unsigned short p) const;
 
             unsigned long getBitSize() const;
             bool isNegative() const;
@@ -172,8 +207,18 @@ namespace ledger {
             BigInt negative() const;
             BigInt positive() const;
 
-            virtual ~BigInt();
+            BigInt& assignI64(int64_t value);
 
+            template <typename T>
+            BigInt& assignScalar(T value) {
+                auto bytes = endianness::scalar_type_to_array<T>(std::abs(value), endianness::Endianness::BIG);
+                bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
+                std::free(bytes);
+                _negative = value < 0LL;
+                return *this;
+            }
+
+            virtual ~BigInt();
 
         private:
             BIGD _bigd;

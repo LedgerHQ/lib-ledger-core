@@ -1,5 +1,6 @@
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 cmake_minimum_required(VERSION 2.8.12)
 
 # Determine if fmt is built as a subproject (using add_subdirectory)

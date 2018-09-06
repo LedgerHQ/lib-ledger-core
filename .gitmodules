@@ -1,0 +1,15 @@
+[submodule "djinni"]
+	path = djinni
+	url = git@github.com:LedgerHQ/djinni.git
+[submodule "toolchains/polly"]
+	path = toolchains/polly
+	url = git@github.com:ruslo/polly.git
+[submodule "tools/gyp"]
+	path = tools/gyp
+	url = git@github.com:bnoordhuis/gyp.git
+[submodule "core/lib/leveldb"]
+	path = core/lib/leveldb
+	url = git@github.com:LedgerHQ/leveldb.git
+[submodule "core/lib/spdlog"]
+	path = core/lib/spdlog
+	url = git@github.com:LedgerHQ/spdlog.git

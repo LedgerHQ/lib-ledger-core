@@ -50,6 +50,13 @@ namespace ledger {
             return *this;
         }
 
+        BytesWriter &BytesWriter::writeLeByteArray(const std::vector<uint8_t> &data) {
+            for (auto it = data.rbegin(); it != data.rend(); it++) {
+                writeByte(*it);
+            }
+            return *this;
+        }
+
         BytesWriter &BytesWriter::writeBeBigInt(const BigInt &i) {
             auto bytes = i.toByteArray();
             return writeByteArray(bytes);

@@ -81,6 +81,7 @@ namespace ledger {
              * @return A vector of read bytes.
              */
             std::vector<uint8_t> read(unsigned long length);
+            void read(unsigned long length, std::vector<uint8_t>& out);
 
             /**
              * Reads a single byte.
@@ -129,6 +130,13 @@ namespace ledger {
 
             uint64_t readNextVarInt();
             std::string readNextVarString();
+
+            std::vector<uint8_t> readUntilEnd();
+
+            /**
+            * Reset cursor position and offset to 0
+            */
+            void reset();
 
             /**
              * Gets current cursor position

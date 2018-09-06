@@ -6,11 +6,10 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get update
     sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install gcc-5 g++-5
     sudo cp /bin/true /usr/bin/dpkg-maintscript-helper
-    sudo apt-get -o Dpkg::Options::="--force-all" -y --force-yes install mingw-w64
-
+    bash tools/install_mingw64.sh
 elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
    brew update
    brew upgrade cmake || true
    brew install wget || true
-   wget https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip && unzip android-ndk-r13b-darwin-x86_64.zip
+   wget https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip && unzip android-ndk-r13b-darwin-x86_64.zip > /dev/null
 fi;

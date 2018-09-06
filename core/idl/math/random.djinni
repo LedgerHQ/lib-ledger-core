@@ -1,0 +1,16 @@
+# Class to generate random numbers
+RandomNumberGenerator = interface +j +o +n {
+    # Generates random bytes.
+    # @params size number of bytes to generate
+    # @return 'size' random bytes
+    getRandomBytes(size: i32): binary;
+    # Generates random 32 bits integer.
+    # @return random 32 bits integer
+    getRandomInt(): i32;
+    # Generates random 64 bits integer.
+    # @return random 64 bits integer
+    getRandomLong(): i64;
+    # Generates random byte.
+    # @return random byte
+    getRandomByte(): i8;
+}

@@ -1,0 +1,6 @@
+
+Locale = record {
+    DecimalSeparator: string;
+    ThousandsSeparator: string;
+    IsPrefixedByCurrencySymbol: bool;
+}

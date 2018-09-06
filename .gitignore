@@ -9,3 +9,15 @@ CTestTestfile.cmake
 build/
 .DS_Store
 .idea/
+externals/build/
+build_jni/
+cmake-build-debug/
+
+core/lib/secp256k1/include/
+core/lib/secp256k1/lib/
+core/lib/secp256k1/src/
+core/lib/secp256k1/tmp/
+
+node_modules
+api/djinni/support-lib/*.mk
+api/djinni/support-lib/*.Makefile

@@ -1,0 +1,102 @@
+
+ErrorCode = enum {
+    # Pool errors
+    #unknown_network_parameters;
+
+    # Crypto errors
+    ec_priv_key_invalid_format;
+    ec_pub_key_invalid;
+    ec_der_signature_invalid;
+    ec_sign_failed;
+
+    # Device errors
+
+    # Wallet errors
+    wallet_not_found;
+    wallet_already_exists;
+    raw_transaction_not_found;
+
+    # Account errors
+    account_already_exists;
+    account_not_found;
+    missing_derivation;
+
+    # Block error
+    block_not_found;
+
+    # User land errors
+    cancelled_by_user;
+
+    unsupported_currency;
+    currency_already_exists;
+    currency_not_found;
+    currency_unit_not_found;
+
+    # Others
+    invalid_base58_format;
+    invalid_checksum;
+    invalid_version;
+
+    # DeterministicPublicKey
+    private_derivation_not_supported;
+
+    # Bitcoin error
+    invalid_network_address_version;
+    incomplete_transaction;
+
+    # Generic
+    runtime_error;
+    out_of_range;
+    illegal_argument;
+    invalid_argument;
+    illegal_state;
+    null_pointer;
+    unsupported_operation;
+    unknown;
+    implementation_is_missing;
+    future_was_successfull;
+    already_completed;
+    no_such_element;
+
+    # Preferences Error
+    unable_to_open_leveldb;
+
+    # Network errors
+    no_internet_connectivity;
+    unable_to_resolve_host;
+    unable_to_connect_to_host;
+    http_error;
+    ssl_error;
+    too_many_redirect;
+    authentication_required;
+    http_timeout;
+    proxy_error;
+
+    # API errors
+    api_error;
+    transaction_not_found;
+
+    # Format
+    invalid_date_format;
+    invalid_derivation_scheme;
+
+    # Wallet building errors
+    unknown_keychain_engine;
+    unknown_blockchain_explorer_engine;
+    unknown_blockchain_observer_engine;
+    unknown_synchronization_engine;
+
+    # Wallet transaction
+    not_enough_funds;
+
+    # Bad cast
+    bad_cast;
+
+    # Query build
+    link_non_tail_filter;
+}
+
+Error = record {
+    code: ErrorCode;
+    message: string;
+}

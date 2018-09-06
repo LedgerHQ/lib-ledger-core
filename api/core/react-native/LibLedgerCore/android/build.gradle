@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['binding/libs']
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.facebook.react:react-native:+'
+    compile project(':binding')
+    compile fileTree(dir: 'binding/android/libs', include: '*.jar')
+}
+
+task nativeLibsToJar(type: Zip,
+                     description: 'create a jar archive of the native libs') {
+    destinationDir file('./libs')
+    baseName 'LibLedgerCore'
+    extension 'jar'
+    from 'libs/'
+    include '**/*.so'
+    into 'LibLedgerCore/'
+}
+
+
+

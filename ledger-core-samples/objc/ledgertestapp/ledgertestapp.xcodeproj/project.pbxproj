@@ -1,0 +1,443 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B91D3005207F4F8800EC285F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D3004207F4F8800EC285F /* AppDelegate.m */; };
+		B91D3008207F4F8800EC285F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D3007207F4F8800EC285F /* ViewController.m */; };
+		B91D300B207F4F8800EC285F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B91D3009207F4F8800EC285F /* Main.storyboard */; };
+		B91D300D207F4F8800EC285F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B91D300C207F4F8800EC285F /* Assets.xcassets */; };
+		B91D3010207F4F8800EC285F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B91D300E207F4F8800EC285F /* LaunchScreen.storyboard */; };
+		B91D3013207F4F8800EC285F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D3012207F4F8800EC285F /* main.m */; };
+		B91D3024207F501D00EC285F /* libledger-core-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D301E207F4FAD00EC285F /* libledger-core-objc.a */; };
+		B91D3056207F53D200EC285F /* private.txt in Resources */ = {isa = PBXBuildFile; fileRef = B91D3055207F53D200EC285F /* private.txt */; };
+		B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3225207F5F9300EC285F /* Foundation.framework */; };
+		B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D3227207F5FA500EC285F /* UIKit.framework */; };
+		B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B91D322B207F68C800EC285F /* libc++.1.dylib */; };
+		B9A5639D20848C8E00BA1BC1 /* libledger-core.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B9A5639E20848C9A00BA1BC1 /* libledger-core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B91D301D207F4FAD00EC285F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B91D3019207F4FAD00EC285F /* ledger-core-objc.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 806874EA0767DF98F3C38899;
+			remoteInfo = "libledger-core-objc";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B91D3025207F506B00EC285F /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B9A5639D20848C8E00BA1BC1 /* libledger-core.dylib in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B91D3000207F4F8800EC285F /* ledgertestapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ledgertestapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B91D3003207F4F8800EC285F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B91D3004207F4F8800EC285F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B91D3006207F4F8800EC285F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		B91D3007207F4F8800EC285F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		B91D300A207F4F8800EC285F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B91D300C207F4F8800EC285F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B91D300F207F4F8800EC285F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B91D3011207F4F8800EC285F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B91D3012207F4F8800EC285F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B91D3019207F4FAD00EC285F /* ledger-core-objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ledger-core-objc.xcodeproj"; path = "../../../api/core/react-native/LibLedgerCore/build_ios/ledger-core-objc.xcodeproj"; sourceTree = "<group>"; };
+		B91D3055207F53D200EC285F /* private.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = private.txt; sourceTree = "<group>"; };
+		B91D3224207F5F4F00EC285F /* libdjinni_objc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libdjinni_objc.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B91D3225207F5F9300EC285F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B91D3227207F5FA500EC285F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B91D322B207F68C800EC285F /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
+		B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libledger-core.dylib"; path = "../../../../lib-ledger-core-build/core/src/Release-iphonesimulator/libledger-core.dylib"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B91D2FFD207F4F8800EC285F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B91D322C207F68C800EC285F /* libc++.1.dylib in Frameworks */,
+				B91D3228207F5FA500EC285F /* UIKit.framework in Frameworks */,
+				B91D3226207F5F9300EC285F /* Foundation.framework in Frameworks */,
+				B9A5639E20848C9A00BA1BC1 /* libledger-core.dylib in Frameworks */,
+				B91D3024207F501D00EC285F /* libledger-core-objc.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B91D2FF7207F4F8800EC285F = {
+			isa = PBXGroup;
+			children = (
+				B9A5639C20848C8E00BA1BC1 /* libledger-core.dylib */,
+				B91D301F207F4FB100EC285F /* Libraries */,
+				B91D3002207F4F8800EC285F /* ledgertestapp */,
+				B91D3001207F4F8800EC285F /* Products */,
+				B91D3022207F501D00EC285F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B91D3001207F4F8800EC285F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B91D3000207F4F8800EC285F /* ledgertestapp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B91D3002207F4F8800EC285F /* ledgertestapp */ = {
+			isa = PBXGroup;
+			children = (
+				B91D3003207F4F8800EC285F /* AppDelegate.h */,
+				B91D3004207F4F8800EC285F /* AppDelegate.m */,
+				B91D3006207F4F8800EC285F /* ViewController.h */,
+				B91D3007207F4F8800EC285F /* ViewController.m */,
+				B91D3009207F4F8800EC285F /* Main.storyboard */,
+				B91D300C207F4F8800EC285F /* Assets.xcassets */,
+				B91D300E207F4F8800EC285F /* LaunchScreen.storyboard */,
+				B91D3011207F4F8800EC285F /* Info.plist */,
+				B91D3012207F4F8800EC285F /* main.m */,
+				B91D3055207F53D200EC285F /* private.txt */,
+			);
+			path = ledgertestapp;
+			sourceTree = "<group>";
+		};
+		B91D301A207F4FAD00EC285F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B91D301E207F4FAD00EC285F /* libledger-core-objc.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B91D301F207F4FB100EC285F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				B91D3019207F4FAD00EC285F /* ledger-core-objc.xcodeproj */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		B91D3022207F501D00EC285F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B91D322B207F68C800EC285F /* libc++.1.dylib */,
+				B91D3227207F5FA500EC285F /* UIKit.framework */,
+				B91D3225207F5F9300EC285F /* Foundation.framework */,
+				B91D3224207F5F4F00EC285F /* libdjinni_objc.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B91D2FFF207F4F8800EC285F /* ledgertestapp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B91D3016207F4F8800EC285F /* Build configuration list for PBXNativeTarget "ledgertestapp" */;
+			buildPhases = (
+				B91D2FFC207F4F8800EC285F /* Sources */,
+				B91D2FFD207F4F8800EC285F /* Frameworks */,
+				B91D2FFE207F4F8800EC285F /* Resources */,
+				B91D3025207F506B00EC285F /* Copy Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ledgertestapp;
+			productName = ledgertestapp;
+			productReference = B91D3000207F4F8800EC285F /* ledgertestapp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B91D2FF8207F4F8800EC285F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "El Khalil Bellakrid";
+				TargetAttributes = {
+					B91D2FFF207F4F8800EC285F = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B91D2FFB207F4F8800EC285F /* Build configuration list for PBXProject "ledgertestapp" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B91D2FF7207F4F8800EC285F;
+			productRefGroup = B91D3001207F4F8800EC285F /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B91D301A207F4FAD00EC285F /* Products */;
+					ProjectRef = B91D3019207F4FAD00EC285F /* ledger-core-objc.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				B91D2FFF207F4F8800EC285F /* ledgertestapp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B91D301E207F4FAD00EC285F /* libledger-core-objc.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libledger-core-objc.a";
+			remoteRef = B91D301D207F4FAD00EC285F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B91D2FFE207F4F8800EC285F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B91D3010207F4F8800EC285F /* LaunchScreen.storyboard in Resources */,
+				B91D300D207F4F8800EC285F /* Assets.xcassets in Resources */,
+				B91D3056207F53D200EC285F /* private.txt in Resources */,
+				B91D300B207F4F8800EC285F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B91D2FFC207F4F8800EC285F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B91D3008207F4F8800EC285F /* ViewController.m in Sources */,
+				B91D3013207F4F8800EC285F /* main.m in Sources */,
+				B91D3005207F4F8800EC285F /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B91D3009207F4F8800EC285F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B91D300A207F4F8800EC285F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B91D300E207F4F8800EC285F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B91D300F207F4F8800EC285F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B91D3014207F4F8800EC285F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B91D3015207F4F8800EC285F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B91D3017207F4F8800EC285F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9UNWQ87UJ9;
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/djinni/support-lib/**",
+					"../.../../djinni/support-lib/**",
+				);
+				INFOPLIST_FILE = ledgertestapp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks ../../../../lib-ledger-core-build/core/src ../../../lib-ledger-core-build/core/src @loader_path/../Frameworks @loader_path/Frameworks @executable_path/ledger-core @executable_path ${PROJECT_DIR}";
+				LIBRARY_SEARCH_PATHS = (
+					"../../../djinni/support-lib/**",
+					"../../../../lib-ledger-core-build/core/src/Release-iphonesimulator",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ledger.ledgertestapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B91D3018207F4F8800EC285F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9UNWQ87UJ9;
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"/Users/elkhalilbellakrid/Desktop/Playground_04/lib-ledger-core/djinni/support-lib/**",
+					"../.../../djinni/support-lib/**",
+				);
+				INFOPLIST_FILE = ledgertestapp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks ../../../../lib-ledger-core-build/core/src ../../../lib-ledger-core-build/core/src @loader_path/../Frameworks @loader_path/Frameworks @executable_path/ledger-core @executable_path ${PROJECT_DIR}";
+				LIBRARY_SEARCH_PATHS = (
+					"../../../djinni/support-lib/**",
+					"../../../../lib-ledger-core-build/core/src/Release-iphonesimulator",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ledger.ledgertestapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B91D2FFB207F4F8800EC285F /* Build configuration list for PBXProject "ledgertestapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B91D3014207F4F8800EC285F /* Debug */,
+				B91D3015207F4F8800EC285F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B91D3016207F4F8800EC285F /* Build configuration list for PBXNativeTarget "ledgertestapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B91D3017207F4F8800EC285F /* Debug */,
+				B91D3018207F4F8800EC285F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B91D2FF8207F4F8800EC285F /* Project object */;
+}

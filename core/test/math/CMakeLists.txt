@@ -6,8 +6,12 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-math-tests main.cpp bigint_tests.cpp)
+add_executable(ledger-core-math-tests main.cpp bigint_tests.cpp bigint_api_tests.cpp base58_test.cpp fibonacci_test.cpp)
 
 target_link_libraries(ledger-core-math-tests gtest gtest_main)
 target_link_libraries(ledger-core-math-tests ledger-core)
+
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(ledger-core-math-tests crypto ledger-core)
+
 add_test (NAME ledger-core-math-tests COMMAND ledger-core-math-tests)

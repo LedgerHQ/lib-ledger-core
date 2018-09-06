@@ -1,0 +1,23 @@
+#Callback triggered by main completed task,
+#returns optional result as list of template type T
+ListCallback = interface[T] +j +o +s +n {
+    # Method triggered when main task complete
+    # @params result optional of type list<T>, non null if main task failed
+    # @params error optional of type Error, non null if main task succeeded
+    onCallback(result: optional<list<T>>, error: optional<Error>);
+}
+#Callback triggered by main completed task,
+#returns optional result of template type T
+Callback = interface[T] +j +o +s +n {
+    # Method triggered when main task complete
+    # @params result optional of type T, non null if main task failed
+    # @params error optional of type Error, non null if main task succeeded
+    onCallback(result: optional<T>, error: optional<Error>);
+}
+#Block to execute after a main task is completed
+CompletionBlock = interface[T] +c {
+    # Method triggered when main task complete
+    # @params result optional result of type T, non null if main task succeeded
+    # @params error optional error of type Error, non null if main task failed
+    complete(result: optional<T>, error: optional<Error>);
+}

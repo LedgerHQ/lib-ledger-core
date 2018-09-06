@@ -61,22 +61,22 @@ namespace ledger {
                     break;
             }
             if (off < _offset) {
-                throw std::out_of_range(fmt::format("Offset [{}] is to low (minimum value is {})", off, _offset));
+                throw std::out_of_range(fmt::format("Offset [{}] is too low (minimum value is {})", off, _offset));
             } else if (off > (_offset + _length)) {
-                throw std::out_of_range(fmt::format("Offset [{}] is to high (maximum value is {})", off, _offset + _length));
+                throw std::out_of_range(fmt::format("Offset [{}] is too high (maximum value is {})", off, _offset + _length));
             }
             _cursor = off;
         }
 
         std::vector<uint8_t> BytesReader::read(unsigned long length) {
-            std::vector<uint8_t> data(length);
-            for (auto i = 0; i < length; i++) {
-                data[i] = _bytes[_cursor];
-                seek(1, Seek::CUR);
-            }
-            return data;
+           std::vector<uint8_t> out(length);
+            read(length, out);
+            return out;
         }
-
+        void BytesReader::reset() {
+            _cursor = 0;
+            _offset = 0;
+        }
         unsigned long BytesReader::getCursor() const {
             return _cursor - _offset;
         }
@@ -165,12 +165,14 @@ namespace ledger {
         }
 
         ledger::core::BigInt BytesReader::readNextBeBigInt(size_t bytes) {
-            auto data = read(bytes);
+            std::vector<uint8_t> data(bytes);
+            read(bytes, data);
             return BigInt(data.data(), data.size(), false);
         }
 
         ledger::core::BigInt BytesReader::readNextLeBigInt(size_t bytes) {
-            auto data = read(bytes);
+            std::vector<uint8_t> data(bytes);
+            read(bytes, data);
             std::reverse(data.begin(), data.end());
             return BigInt(data.data(), data.size(), false);
         }
@@ -200,6 +202,17 @@ namespace ledger {
 
         uint8_t BytesReader::peek() const {
             return _bytes[_cursor];
+        }
+
+        std::vector<uint8_t> BytesReader::readUntilEnd() {
+            return read(available());
+        }
+
+        void BytesReader::read(unsigned long length, std::vector<uint8_t> &data) {
+            for (auto i = 0; i < length; i++) {
+                data[i] = _bytes[_cursor];
+                seek(1, Seek::CUR);
+            }
         }
 
 

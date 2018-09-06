@@ -31,6 +31,16 @@
 #ifndef LEDGER_CORE_LEDGER_CORE_H
 #define LEDGER_CORE_LEDGER_CORE_H
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
+#include <string>
+
 /**
  * Ledger root namespace
  */
@@ -40,6 +50,12 @@ namespace ledger {
      * Ledger core root namespace
      */
     namespace core {
+
+        extern LIBCORE_EXPORT const int LIB_VERSION;
+        extern LIBCORE_EXPORT const int VERSION_MAJOR;
+        extern LIBCORE_EXPORT const int VERSION_MINOR;
+        extern LIBCORE_EXPORT const int VERSION_PATCH;
+        extern LIBCORE_EXPORT const std::string LIB_STRING_VERSION;
 
     }
 

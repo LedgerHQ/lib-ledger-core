@@ -1,0 +1,13 @@
+#Enum of different event codes
+EventCode = enum {
+
+    undefined;
+
+    new_operation;
+    new_block;
+
+    synchronization_started;
+    synchronization_failed;
+    synchronization_succeed;
+    synchronization_succeed_on_previously_empty_account;
+}
