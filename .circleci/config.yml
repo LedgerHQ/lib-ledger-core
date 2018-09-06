@@ -9,6 +9,10 @@ jobs:
       - image: debian:stretch
     working_directory: ~/lib-ledger-core
     steps:
+      - run:
+          command: |
+            apt-get update
+            apt-get -y install git ssh
       - checkout
       - run:
           name: Setup
@@ -36,11 +40,25 @@ jobs:
           name: Deploy
           command: |
             . .circleci/deploy.sh
+      - run:
+          name: Build_Library_jni
+          command: |
+            . .circleci/build_lib.sh target_jni Release
+      - deploy:
+          requires:
+            - hold
+          name: Deploy_jni
+          command: |
+            . .circleci/deploy.sh target_jni
   build_linux_debug:
       docker:
         - image: debian:stretch
       working_directory: ~/lib-ledger-core
       steps:
+        - run:
+            command: |
+              apt-get update
+              apt-get -y install git ssh
         - checkout
         - run:
             name: Setup
@@ -93,6 +111,14 @@ jobs:
           name: Deploy
           command: |
             . .circleci/deploy.sh
+      - run:
+          name: Build_Library_jni
+          command: |
+            . .circleci/build_lib.sh target_jni Release
+      - deploy:
+          name: Deploy_jni
+          command: |
+            . .circleci/deploy.sh target_jni
   build_macos_debug:
     macos:
       xcode: "9.2.0"

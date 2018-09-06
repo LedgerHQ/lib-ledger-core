@@ -5,16 +5,14 @@
 
 
 @implementation RCTCoreLGAccountListCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGAccountListCallback)
-
--(instancetype)init
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGAccountListCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -24,9 +22,24 @@ RCT_EXPORT_MODULE(RCTCoreLGAccountListCallback)
  * @params result optional of type list<T>, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable NSArray<LGAccount *> *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable NSArray<LGAccount *> *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGAccountListCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+    NSMutableArray *converted_result = [[NSMutableArray alloc] init];
+    for (id result_elem in result)
+    {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        RCTCoreLGAccount *rctImpl_result_elem = (RCTCoreLGAccount *)[self.bridge moduleForName:@"CoreLGAccount"];
+        [rctImpl_result_elem.objcImplementations setObject:result_elem forKey:uuid];
+        NSDictionary *converted_result_elem = @{@"type" : @"CoreLGAccount", @"uid" : uuid };
+        [converted_result addObject:converted_result_elem];
+    }
+
+    self.resolve(converted_result);
+
 }
 @end

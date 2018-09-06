@@ -39,6 +39,7 @@
 #include <collections/functional.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
 #include <events/EventPublisher.hpp>
@@ -55,6 +56,8 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+
+
 namespace ledger {
     namespace core {
 
@@ -223,19 +226,20 @@ namespace ledger {
                         emitNewOperationEvent(operation);
                 }
 
+                auto accountUid = getAccountUid();
                 //Update account_uid column of bitcoin_outputs table
                 for (auto& o : accountOutputs) {
                     if (o.first->address.nonEmpty()) {
 
-                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address",
-                                                        soci::use(o.first->address.getValue()));
-                        auto accountUid = getAccountUid();
+                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address AND account_uid IS NULL ",
+                                soci::use(o.first->address.getValue()));
+
                         for (auto &row : rows) {
                             auto txUid = row.get<std::string>(0);
-
+                            auto txHash = row.get<std::string>(1);
                             //This check is made to avoid setting account_uid of bitcoin_outputs which was set during another's account scan/sync
                             //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
-                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, row.get<std::string>(1))) {
+                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, txHash)) {
                                 sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
                                         soci::use(accountUid), soci::use(o.first->address.getValue()), soci::use(txUid);
                             }
@@ -517,8 +521,64 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
-                return seq.str();
+            auto self = getSelf();
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+                //Store newly broadcasted tx in db
+                //First parse it
+                auto txHash = seq.str();
+                auto tx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(self->getWallet()->getCurrency(), transaction);
+
+                //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
+                BitcoinLikeBlockchainExplorer::Transaction txExplorer;
+                txExplorer.hash = txHash;
+                txExplorer.lockTime = tx->getLockTime();
+                txExplorer.receivedAt = std::chrono::system_clock::now();
+                txExplorer.version = tx->getVersion();
+                txExplorer.confirmations = 0;
+
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+
+                //Inputs
+                auto inputCount = tx->getInputs().size();
+                for (auto index = 0; index < inputCount; index++) {
+                    auto input = tx->getInputs()[index];
+                    BitcoinLikeBlockchainExplorer::Input in;
+                    in.index = index;
+                    auto prevTxHash = input->getPreviousTxHash().value_or("");
+                    auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
+                    BitcoinLikeBlockchainExplorer::Transaction prevTx;
+                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
+                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
+                    }
+                    in.value = prevTx.outputs[prevTxOutputIndex].value;
+                    in.signatureScript = hex::toString(input->getScriptSig());
+                    in.previousTxHash = prevTxHash;
+                    in.previousTxOutputIndex = prevTxOutputIndex;
+                    in.sequence = input->getSequence();
+                    in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
+                    txExplorer.inputs.push_back(in);
+                }
+
+                //Outputs
+                auto keychain = self->getKeychain();
+                auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+                auto outputCount = tx->getOutputs().size();
+                for (auto index = 0; index < outputCount; index++) {
+                    auto output = tx->getOutputs()[index];
+                    BitcoinLikeBlockchainExplorer::Output out;
+                    out.value = BigInt(output->getValue()->toString());
+                    out.time = DateUtils::toJSON(std::chrono::system_clock::now());
+                    out.transactionHash = output->getTransactionHash();
+                    out.index = output->getOutputIndex();
+                    out.script = hex::toString(output->getScript());
+                    out.address = output->getAddress().value_or("");
+                    txExplorer.outputs.push_back(out);
+                }
+
+                //Store in DB
+                self->putTransaction(sql, txExplorer);
+
+                return txHash;
             }).callback(getContext(), callback);
         }
 
@@ -580,7 +640,7 @@ namespace ledger {
                 for (auto& batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
                         batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().hash;
+                        batch.blockHash = previousBlock.getValue().blockHash;
                     } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
                         batch.blockHeight = 0;
                         batch.blockHash = "";

@@ -15,7 +15,6 @@
 			'sources': [
 				"<!@(python glob.py ../../objc *.h *.m *.mm)",
 				"<!@(python glob.py ../../objcpp *.h *.m *.mm)",
-				"<!@(python glob.py ../../src/objc *.h *.m *.mm)",
 			],
             'include_dirs': [
 				"<@(core_library)/include/ledger/core/api",

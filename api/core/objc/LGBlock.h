@@ -5,19 +5,19 @@
 
 /**Structure of a block in the blockchain */
 @interface LGBlock : NSObject
-- (nonnull instancetype)initWithHash:(nonnull NSString *)hash
-                                 uid:(nonnull NSString *)uid
-                                time:(nonnull NSDate *)time
-                        currencyName:(nonnull NSString *)currencyName
-                              height:(int64_t)height;
-+ (nonnull instancetype)BlockWithHash:(nonnull NSString *)hash
-                                  uid:(nonnull NSString *)uid
-                                 time:(nonnull NSDate *)time
-                         currencyName:(nonnull NSString *)currencyName
-                               height:(int64_t)height;
+- (nonnull instancetype)initWithBlockHash:(nonnull NSString *)blockHash
+                                      uid:(nonnull NSString *)uid
+                                     time:(nonnull NSDate *)time
+                             currencyName:(nonnull NSString *)currencyName
+                                   height:(int64_t)height;
++ (nonnull instancetype)BlockWithBlockHash:(nonnull NSString *)blockHash
+                                       uid:(nonnull NSString *)uid
+                                      time:(nonnull NSDate *)time
+                              currencyName:(nonnull NSString *)currencyName
+                                    height:(int64_t)height;
 
 /**String, block's hash */
-@property (nonatomic, readonly, nonnull) NSString * hash;
+@property (nonatomic, readonly, nonnull) NSString * blockHash;
 
 /**String, id of block (usually height of block) */
 @property (nonatomic, readonly, nonnull) NSString * uid;

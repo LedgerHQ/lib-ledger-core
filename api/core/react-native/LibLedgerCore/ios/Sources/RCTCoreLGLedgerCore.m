@@ -8,15 +8,46 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGLedgerCore)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGLedgerCore alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLedgerCore::release, first argument should be an instance of LGLedgerCore", nil);
+    }
+    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *uuids = [[NSMutableArray alloc] init];
+    for (id key in self.objcImplementations)
+    {
+        [uuids addObject:key];
+    }
+    NSDictionary *result = @{@"value" : uuids};
+    resolve(result);
+}
+RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.objcImplementations removeAllObjects];
+    resolve(@(YES));
 }
 
 /**
@@ -24,8 +55,8 @@ RCT_EXPORT_MODULE(RCTCoreLGLedgerCore)
  * @return The version of the library (e.g. '1.0.1')
  */
 RCT_REMAP_METHOD(getStringVersion,getStringVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :[LGLedgerCore getStringVersion]};
+    NSString * objcResult = [LGLedgerCore getStringVersion];
+    NSDictionary *result = @{@"value" : objcResult};
     if(result)
     {
         resolve(result);
@@ -34,6 +65,7 @@ RCT_REMAP_METHOD(getStringVersion,getStringVersionWithResolver:(RCTPromiseResolv
     {
         reject(@"impl_call_error", @"Error while calling LGLedgerCore::getStringVersion", nil);
     }
+
 }
 
 /**
@@ -41,8 +73,9 @@ RCT_REMAP_METHOD(getStringVersion,getStringVersionWithResolver:(RCTPromiseResolv
  * @return The integer version of the library
  */
 RCT_REMAP_METHOD(getIntVersion,getIntVersionWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
-    id result = @{@"result" :@([LGLedgerCore getIntVersion])};if(result)
+    int32_t objcResult = [LGLedgerCore getIntVersion];
+    NSDictionary *result = @{@"value" : @(objcResult)};
+    if(result)
     {
         resolve(result);
     }
@@ -50,5 +83,6 @@ RCT_REMAP_METHOD(getIntVersion,getIntVersionWithResolver:(RCTPromiseResolveBlock
     {
         reject(@"impl_call_error", @"Error while calling LGLedgerCore::getIntVersion", nil);
     }
+
 }
 @end

@@ -60,6 +60,7 @@ namespace ledger {
             optional<std::vector<uint8_t>> getWitness() override;
             api::EstimatedSize getEstimatedSize() override;
             std::vector<uint8_t> serializeOutputs() override;
+            int32_t getVersion() override;
 
 
             BitcoinLikeTransactionApi& addInput(const std::shared_ptr<BitcoinLikeWritableInputApi>& input);

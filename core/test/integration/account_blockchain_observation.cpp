@@ -127,7 +127,7 @@ TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
                 auto hash = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_HASH).value_or("");
                 auto block = wait(pool->getLastBlock("bitcoin"));
                 EXPECT_EQ(height, block.height);
-                EXPECT_EQ(hash, block.hash);
+                EXPECT_EQ(hash, block.blockHash);
             } catch (const std::exception& ex) {
                 fmt::print("{}", ex.what());
                 FAIL();

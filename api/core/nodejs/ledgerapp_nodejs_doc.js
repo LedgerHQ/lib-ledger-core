@@ -1609,6 +1609,8 @@ declare class NJSBitcoinLikeTransaction
     declare function getTime(): Date;
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     declare function getTimestamp(): ?number;
+    /** Get Transaction version */
+    declare function getVersion(): number;
     /** Serialize the transaction to its raw format. */
     declare function serialize(): Object;
     /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */

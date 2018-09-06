@@ -8,14 +8,56 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGEthereumPublicKeyProvider)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGEthereumPublicKeyProviderImpl alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEthereumPublicKeyProvider::release, first argument should be an instance of LGEthereumPublicKeyProvider", nil);
+    }
+    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *uuids = [[NSMutableArray alloc] init];
+    for (id key in self.objcImplementations)
+    {
+        [uuids addObject:key];
+    }
+    NSDictionary *result = @{@"value" : uuids};
+    resolve(result);
+}
+RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.objcImplementations removeAllObjects];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    LGEthereumPublicKeyProviderImpl *objcResult = [[LGEthereumPublicKeyProviderImpl alloc] init];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSDictionary *result = @{@"type" : @"CoreLGEthereumPublicKeyProviderImpl", @"uid" : uuid };
+    if (!objcResult || !result)
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGEthereumPublicKeyProviderImpl::init", nil);
+    }
+    resolve(result);
 }
 @end

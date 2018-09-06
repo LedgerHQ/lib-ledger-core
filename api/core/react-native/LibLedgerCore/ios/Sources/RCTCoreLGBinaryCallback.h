@@ -3,7 +3,9 @@
 
 #import "LGBinaryCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -11,6 +13,9 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGBinaryCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBinaryCallbackImpl *objcImpl;
+@interface RCTCoreLGBinaryCallback : NSObject <LGBinaryCallback>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+@property (nonatomic, weak) RCTBridge *bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge;
 @end

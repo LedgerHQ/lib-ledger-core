@@ -43,8 +43,13 @@ namespace ledger {
             _context = context;
             _resolver = resolver;
             _name = name;
+#if defined(_WIN32) || defined(_WIN64)
+            ToWide(name, _base_filename);
+            ToWide("log", _extension);
+#else
             _base_filename = name;
             _extension = "log";
+#endif
             _password = password;
             _max_size = maxSize;
             _max_files = maxFiles;
@@ -93,8 +98,33 @@ namespace ledger {
             else
                 w.write(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
             auto mangledFilename = w.str();
+
+
+#if defined(_WIN32) || defined(_WIN64)
+            std::string narrowFilename;
+            ToNarrow(mangledFilename, narrowFilename);
+            auto narrowFilePath = resolver->resolveLogFilePath(narrowFilename);
+            std::wstring wideFilePath;
+            ToWide(narrowFilePath, wideFilePath);
+            return wideFilePath;
+#else
             return resolver->resolveLogFilePath(mangledFilename);
+#endif
         }
+
+#if defined(_WIN32) || defined(_WIN64)
+        void RotatingEncryptableSink::ToWide(const std::string &input, std::wstring &output) {
+            wchar_t buffer[MAX_PATH];
+	        MultiByteToWideChar(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH);
+	        output = buffer;
+        }
+
+        void RotatingEncryptableSink::ToNarrow(const std::wstring &input, std::string &output) {
+            char buffer[MAX_PATH];
+	        WideCharToMultiByte(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH, NULL, NULL);
+	        output = buffer;
+        }
+#endif
 
         void RotatingEncryptableSink::_rotate() {
             auto resolver = _resolver.lock();

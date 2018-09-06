@@ -75,7 +75,13 @@ namespace ledger {
         }
 
         std::string Amount::toString() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::string Amount::toString()");
+            auto magnitude = getMagnitude();
+            BigInt value = _value;
+            while (magnitude > 0) {
+                value = value / BigInt(10);
+                magnitude -= 1;
+            }
+            return value.toString();
         }
 
         int64_t Amount::toLong() {

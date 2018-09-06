@@ -5,11 +5,15 @@
 #import "LGOperationOrderKey.h"
 #import "LGOperationQuery.h"
 #import "LGQueryFilter.h"
+#import "RCTCoreLGOperationListCallback.h"
+#import "RCTCoreLGOperationQuery.h"
+#import "RCTCoreLGQueryFilter.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class respresenting a query for a set of operations */
 @interface RCTCoreLGOperationQuery : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGOperationQuery *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

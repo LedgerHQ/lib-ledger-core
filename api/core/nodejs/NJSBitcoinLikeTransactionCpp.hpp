@@ -65,6 +65,9 @@ private:
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     static NAN_METHOD(getTimestamp);
 
+    /** Get Transaction version */
+    static NAN_METHOD(getVersion);
+
     /** Serialize the transaction to its raw format. */
     static NAN_METHOD(serialize);
 

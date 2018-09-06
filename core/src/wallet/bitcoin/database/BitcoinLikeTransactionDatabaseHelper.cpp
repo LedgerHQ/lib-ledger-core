@@ -111,17 +111,32 @@ namespace ledger {
                                                                const std::string& accountUid,
                                                                const std::string& transactionHash,
                                                                const BitcoinLikeBlockchainExplorer::Input &input) {
+            /*
+             * In case transactions are issued with respect to zero knowledge protocol,
+             * previousTxHash is empty which causes conflict in bitcoin_inputs table
+             * Right now we generate a random 'hash' to compute inputUid, should be improved
+             * (e.g. use scriptSig of each input and sha256 it ...)
+            */
+            std::string hash;
+
+            //Returned by explorers when tx from zk protocol
+            std::string emptyPreviousTxHash = "0000000000000000000000000000000000000000000000000000000000000000";
+            auto previousTxHash = input.previousTxHash.getValueOr(emptyPreviousTxHash);
+            if (previousTxHash == emptyPreviousTxHash && input.signatureScript.nonEmpty()) {
+                previousTxHash =  SHA256::stringToHexHash(input.signatureScript.getValue());
+            }
+
             auto uid = createInputUid(accountUid,
                                       input.previousTxOutputIndex.getValueOr(0),
-                                      input.previousTxHash.getValueOr(""),
-                                      input.coinbase.getValueOr("")
-            );
+                                      previousTxHash,
+                                      input.coinbase.getValueOr(""));
+
             auto amount = input.value.map<uint64_t>([] (const BigInt& v) {
                 return v.toUint64();
             });
 
             std::string prevBtcTxUid;
-            if (input.previousTxHash.nonEmpty()) {
+            if (input.previousTxHash.nonEmpty() && input.previousTxHash.getValue() != emptyPreviousTxHash) {
                 prevBtcTxUid = createBitcoinTransactionUid(accountUid, input.previousTxHash.getValue());
             }
 

@@ -4,7 +4,10 @@
 #import "LGAmount.h"
 #import "LGAmountCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGAmount.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,9 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGAmountCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGAmountCallbackImpl *objcImpl;
+@interface RCTCoreLGAmountCallback : NSObject <LGAmountCallback>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+@property (nonatomic, weak) RCTBridge *bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge;
 @end

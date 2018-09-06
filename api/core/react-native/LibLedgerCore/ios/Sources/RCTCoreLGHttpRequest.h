@@ -5,11 +5,14 @@
 #import "LGHttpMethod.h"
 #import "LGHttpRequest.h"
 #import "LGHttpUrlConnection.h"
+#import "RCTCoreLGError.h"
+#import "RCTCoreLGHttpUrlConnection.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing an Http request */
 @interface RCTCoreLGHttpRequest : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGHttpRequest *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

@@ -3,7 +3,9 @@
 
 #import "LGPreferences.h"
 #import "LGPreferencesEditor.h"
+#import "RCTCoreLGPreferencesEditor.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -14,5 +16,5 @@
  * is highly inspired by Android SharedPreferences.
  */
 @interface RCTCoreLGPreferences : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGPreferences *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

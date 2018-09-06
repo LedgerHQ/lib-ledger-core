@@ -7,11 +7,17 @@
 #import "LGBitcoinLikeOutput.h"
 #import "LGBitcoinLikeTransaction.h"
 #import "LGEstimatedSize.h"
+#import "RCTCoreLGAmount.h"
+#import "RCTCoreLGBitcoinLikeBlock.h"
+#import "RCTCoreLGBitcoinLikeInput.h"
+#import "RCTCoreLGBitcoinLikeOutput.h"
+#import "RCTCoreLGEstimatedSize.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing a Bitcoin transaction */
 @interface RCTCoreLGBitcoinLikeTransaction : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeTransaction *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end
