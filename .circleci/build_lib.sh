@@ -20,6 +20,11 @@ function command_Release {
   add_to_cmake_params -DBUILD_TESTS=OFF
 }
 
+function command_Debug {
+  BUILD_CONFIG="Debug"
+  add_to_cmake_params -DBUILD_TESTS=ON
+}
+
 ###
 # Utilities functions
 ###

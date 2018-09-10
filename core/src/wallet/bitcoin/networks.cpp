@@ -43,14 +43,12 @@ namespace ledger {
                 SIGHASH_ANYONECANPAY = 0x80
             };
 
-            const std::string BIP115 = "BIP115";
             const BIP115Parameters BIP115_PARAMETERS = {
                     "9ec9845acb02fab24e1c0368b3b517c1a4488fba97f0e3459ac053ea01000000",
                     {0xC0,0x1F,0x02}
             };
 
             //Zcash overwinter
-            const std::string ZIP143 = "ZIP143";
             const ZIP143Parameters ZIP143_PARAMETERS = {
                     3,
                     {0x80},
@@ -130,7 +128,7 @@ namespace ledger {
                             false,
                             0,
                             {sigHashType::SIGHASH_ALL},
-                            {ZIP143}
+                            {"ZIP143"}
                     );
                     return ZCASH;
                 } else if (networkName == "zencash") {
@@ -145,7 +143,7 @@ namespace ledger {
                             false,
                             0,
                             {sigHashType::SIGHASH_ALL},
-                            {BIP115}
+                            {"BIP115"}
                     );
                     return ZENCASH;
                 } else if (networkName == "litecoin") {

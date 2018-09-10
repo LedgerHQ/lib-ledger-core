@@ -198,5 +198,13 @@ namespace ledger {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
         }
 
+        template <> void migrate<4>(soci::session& sql) {
+            auto count = 0;
+            sql << "SELECT COUNT(*) FROM bitcoin_currencies WHERE identifier = 'dgb'", soci::into(count);
+            if (count > 0) {
+                sql << "UPDATE bitcoin_currencies SET p2sh_version = '3f' WHERE identifier = 'dgb' ";
+            }
+        }
+
     }
 }

@@ -229,7 +229,7 @@ namespace ledger {
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
 
             auto &additionalBIPs = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
-            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), networks::ZIP143);
+            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP143");
 
             if (it != additionalBIPs.end()) {
                 setVersion(networks::ZIP143_PARAMETERS.version);
@@ -318,7 +318,7 @@ namespace ledger {
             auto version = reader.readNextLeUint();
 
             auto &additionalBIPs = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
-            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), networks::ZIP143);
+            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP143");
 
             if (it != additionalBIPs.end()) {
                 //Substract overwinterFlag

@@ -128,7 +128,7 @@ namespace ledger {
             }
 
             auto &additionalBIPS = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
-            auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), networks::BIP115);
+            auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), "BIP115");
             if (it != additionalBIPS.end()) {
                 script << hex::toByteArray(networks::BIP115_PARAMETERS.blockHash)
                        << networks::BIP115_PARAMETERS.blockHeight
