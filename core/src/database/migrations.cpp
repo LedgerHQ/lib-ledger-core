@@ -269,6 +269,13 @@ namespace ledger {
                     "status BIGINT NOT NULL"
                     ")";
 
+            sql << "CREATE TABLE erc20_tokens("
+                    "contract_address VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "name VARCHAR(255) NOT NULL,"
+                    "symbol VARCHAR(255) NOT NULL,"
+                    "number_of_decimal INTEGER NOT NULL"
+                    ")";
+
         }
 
     }

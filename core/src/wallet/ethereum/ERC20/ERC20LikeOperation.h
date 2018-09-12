@@ -45,6 +45,7 @@ namespace ledger {
             ERC20LikeOperation(const std::string &accountAddress,
                                const std::string &operationUid,
                                const Operation &operation,
+                               const api::ERC20Token &token,
                                const api::Currency &currency);
             std::string getHash() override;
             int32_t getNonce() override;

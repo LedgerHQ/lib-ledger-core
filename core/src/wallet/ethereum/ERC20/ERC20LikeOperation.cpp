@@ -40,10 +40,11 @@ namespace ledger {
             ERC20LikeOperation::ERC20LikeOperation(const std::string &accountAddress,
                                                    const std::string &operationUid,
                                                    const Operation &operation,
+                                                   const api::ERC20Token &token,
                                                    const api::Currency &currency) {
 
                 auto& tx = operation.ethereumTransaction.getValue();
-                _token = erc20Tokens::ALL_ERC20.at(tx.erc20.getValue().contractAddress);
+                _token = token;
                 _hash = tx.hash;
                 _nonce = std::make_shared<BigInt>(tx.nonce);
                 _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
