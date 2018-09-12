@@ -31,6 +31,7 @@
 #include "OperationDatabaseHelper.h"
 #include "BlockDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
+#include <api/Amount.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
@@ -94,6 +95,33 @@ namespace ledger {
             }
 
         }
+
+        bool OperationDatabaseHelper::putERC20Operation(soci::session& sql,
+                                                        const std::shared_ptr<ERC20LikeOperation>& operation,
+                                                        const std::string &erc20AccountUid,
+                                                        const std::string &ethOperationUid) {
+            auto count = 0;
+            sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", use(operation->getOperationUid()), into(count);
+            auto newOperation = count == 0;
+            if (newOperation)
+                auto type = api::to_string(operation->getOperationType());
+                auto inputData = hex::toString(operation->getData());
+
+                sql << "INSERT INTO erc20_operations VALUES("
+                        ":eth_op_uid, :erc20_account_uid, :hash,"
+                        ":nonce, :value, :time,"
+                        ":sender, :receiver, :input_data,"
+                        ":gas_price, :gas_limit, :gas_used,"
+                        ":status"
+                        ")"
+                        , use(ethOperationUid), use(erc20AccountUid), use(operation->getHash())
+                        , use(operation->getNonce()), use(operation->getValue()->toString()), use(operation->getTime())
+                        , use(operation->getSender()), use(operation->getReceiver()), use(inputData)
+                        , use(operation->getGasPrice()->toString()), use(operation->getGasLimit()->toString()), use(operation->getUsedGas()->toString())
+                        , use(operation->getStatus());
+                return true;
+        }
+
 
         void
         OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {

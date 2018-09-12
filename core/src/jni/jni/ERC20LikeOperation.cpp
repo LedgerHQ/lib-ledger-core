@@ -61,12 +61,12 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeOperation_00024CppProxy_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeOperation_00024CppProxy_native_1getUsedLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeOperation_00024CppProxy_native_1getUsedGas(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::ERC20LikeOperation>(nativeRef);
-        auto r = ref->getUsedLimit();
+        auto r = ref->getUsedGas();
         return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
@@ -128,6 +128,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeOperation_00024CppProxy_
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::ERC20LikeOperation>(nativeRef);
         auto r = ref->getOperationType();
         return ::djinni::release(::djinni_generated::OperationType::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jint JNICALL Java_co_ledger_core_ERC20LikeOperation_00024CppProxy_native_1getStatus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::ERC20LikeOperation>(nativeRef);
+        auto r = ref->getStatus();
+        return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

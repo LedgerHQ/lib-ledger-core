@@ -246,6 +246,29 @@ namespace ledger {
                     "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
 
+            sql << "CREATE TABLE erc20_accounts("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_account_uid VARCHAR(255) NOT NULL REFERENCES ehtereum_accounts(uid) ON DELETE CASCADE,"
+                    "contract_address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE erc20_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES ehtereum_operations(uid) ON DELETE CASCADE,"
+                    "erc20_account_uid VARCHAR(255) NOT NULL REFERENCES erc20_accounts(uid) ON DELETE CASCADE"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "nonce VARCHAR(255) NOT NULL,"
+                    "value BIGINT NOT NULL,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255),"
+                    "gas_price BIGINT NOT NULL,"
+                    "gas_limit BIGINT NOT NULL,"
+                    "gas_used BIGINT NOT NULL,"
+                    "status BIGINT NOT NULL"
+                    ")";
+
         }
 
     }

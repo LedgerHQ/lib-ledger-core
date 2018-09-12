@@ -43,21 +43,25 @@ namespace ledger {
         class ERC20LikeOperation : public api::ERC20LikeOperation {
         public:
             ERC20LikeOperation(const std::string &accountAddress,
+                               const std::string &operationUid,
                                const Operation &operation,
                                const api::Currency &currency);
             std::string getHash() override;
             int32_t getNonce() override;
             std::shared_ptr<api::Amount> getGasPrice() override;
             std::shared_ptr<api::Amount> getGasLimit() override;
-            std::shared_ptr<api::Amount> getUsedLimit() override;
+            std::shared_ptr<api::Amount> getUsedGas() override;
             std::string getSender() override;
             std::string getReceiver() override;
             std::shared_ptr<api::Amount> getValue() override ;
             std::vector<uint8_t> getData() override ;
             std::chrono::system_clock::time_point getTime() override;
             api::OperationType getOperationType() override;
+            std::string getOperationUid();
+            int32_t getStatus() override ;
         private:
             api::ERC20Token _token;
+            std::string _uid;
             std::string _hash;
             std::shared_ptr<BigInt> _nonce;
             std::shared_ptr<api::Amount> _gasPrice;
@@ -69,7 +73,7 @@ namespace ledger {
             std::vector<uint8_t> _data;
             std::chrono::system_clock::time_point _time;
             api::OperationType _operationType;
-            //std::shared_ptr<EthereumLikeBlockApi> _block;
+            int32_t _status;
         };
 
     }

@@ -43,6 +43,13 @@ namespace ledger {
             sql << "INSERT INTO ethereum_accounts VALUES(:uid, :wallet, :idx, :xpub)",use(uid), use(walletUid), use(index), use(xpub);
         }
 
+        void EthereumLikeAccountDatabaseHelper::createERC20Account(soci::session &sql,
+                                                                   const std::string &ethAccountUid,
+                                                                   const std::string &erc20AccountUid,
+                                                                   const std::string &contractAddress) {
+            sql << "INSERT INTO erc20_accounts VALUES(:uid, :account, :contract_address)",use(erc20AccountUid), use(ethAccountUid), use(contractAddress);
+        }
+
         bool EthereumLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                              const std::string &accountUid,
                                                              EthereumLikeAccountDatabaseEntry &entry) {
