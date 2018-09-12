@@ -105,6 +105,16 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
     return inserted;
 }
 
+bool ledger::core::CurrenciesDatabaseHelper::insertERC20Token(soci::session &sql,
+                                                              const ledger::core::api::ERC20Token &token) {
+    sql << "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, :number_of_decimal)",
+            use(token.contractAddress),
+            use(token.name),
+            use(token.symbol),
+            use(token.numberOfDecimal);
+    return true;
+}
+
 void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql,
                                                               std::vector<ledger::core::api::Currency> &currencies) {
     rowset<row> rows = (sql.prepare << "SELECT currencies.name, currencies.type, currencies.bip44_coin_type, currencies.payment_uri_scheme FROM currencies ");

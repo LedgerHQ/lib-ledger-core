@@ -41,16 +41,12 @@ namespace ledger {
                                                              "0x9549e8a940062615cee20c0420c98c25ffa2b214",
                                                              2);
                     return LEDGER_COIN;
-                } else {
-                    static const api::ERC20Token UNKNOWN("Unknown", "", "", 0);
-                    return UNKNOWN;
                 }
             }
 
             //const std::vector<api::ERC20Token> ALL_ERC20({getERC20Token("0x9549e8a940062615cee20c0420c98c25ffa2b214")});
             const std::map<std::string, api::ERC20Token> ALL_ERC20({
-                                                                           std::pair<std::string, api::ERC20Token>("0x9549e8a940062615cee20c0420c98c25ffa2b214", getERC20Token("ledger_coin")),
-                                                                           std::pair<std::string, api::ERC20Token>("", getERC20Token(""))
+                                                                           std::pair<std::string, api::ERC20Token>("0x9549e8a940062615cee20c0420c98c25ffa2b214", getERC20Token("ledger_coin"))
                                                                    });
         }
     }
