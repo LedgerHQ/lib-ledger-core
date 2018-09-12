@@ -29,7 +29,7 @@ ERC20LikeOperation = interface +c {
 	# Get start gas (in wei) : maximum amount of gas the originator is willing to pay
 	getGasLimit(): Amount;
 	# Used gas (in wei) : used gas during this transaction
-	getUsedLimit(): Amount;
+	getUsedGas(): Amount;
 	# Get source ETH address
 	getSender(): string;
 	# Get destination ETH address
@@ -42,4 +42,5 @@ ERC20LikeOperation = interface +c {
 	# this transaction
 	getTime(): date;
 	getOperationType(): OperationType;
+	getStatus(): i32;
 }

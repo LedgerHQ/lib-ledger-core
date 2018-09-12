@@ -38,6 +38,7 @@ namespace ledger {
     namespace core {
 
             ERC20LikeOperation::ERC20LikeOperation(const std::string &accountAddress,
+                                                   const std::string &operationUid,
                                                    const Operation &operation,
                                                    const api::Currency &currency) {
 
@@ -48,7 +49,7 @@ namespace ledger {
                 _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
                 _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasLimit);
                 _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());
-
+                _status = tx.status;
                 auto operationType = operation.type;
                 if ( operationType == api::OperationType::SEND) {
                     _receiver = tx.receiver;
@@ -80,7 +81,7 @@ namespace ledger {
                 return _gasLimit;
             }
 
-            std::shared_ptr<api::Amount> ERC20LikeOperation::getUsedLimit() {
+            std::shared_ptr<api::Amount> ERC20LikeOperation::getUsedGas() {
                 return _gasUsed;
             }
 
@@ -106,6 +107,14 @@ namespace ledger {
 
             api::OperationType ERC20LikeOperation::getOperationType() {
                 return _operationType;
+            }
+
+            std::string ERC20LikeOperation::getOperationUid() {
+                return _uid;
+            }
+
+            int32_t ERC20LikeOperation::getStatus() {
+                return _status;
             }
     }
 }

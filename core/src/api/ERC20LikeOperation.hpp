@@ -33,7 +33,7 @@ public:
     virtual std::shared_ptr<Amount> getGasLimit() = 0;
 
     /** Used gas (in wei) : used gas during this transaction */
-    virtual std::shared_ptr<Amount> getUsedLimit() = 0;
+    virtual std::shared_ptr<Amount> getUsedGas() = 0;
 
     /** Get source ETH address */
     virtual std::string getSender() = 0;
@@ -54,6 +54,8 @@ public:
     virtual std::chrono::system_clock::time_point getTime() = 0;
 
     virtual OperationType getOperationType() = 0;
+
+    virtual int32_t getStatus() = 0;
 };
 
 } } }  // namespace ledger::core::api

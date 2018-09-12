@@ -45,6 +45,10 @@ namespace ledger {
                                       const std::string walletUid,
                                       int32_t index,
                                       const std::string& xpub);
+            static void createERC20Account(soci::session &sql,
+                                           const std::string &ethAccountUid,
+                                           const std::string &erc20AccountUid,
+                                           const std::string &contractAddress);
             static bool queryAccount(soci::session& sql,
                                      const std::string& accountUid,
                                      EthereumLikeAccountDatabaseEntry& entry);

@@ -33,6 +33,7 @@
 
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
@@ -126,7 +127,7 @@ namespace ledger {
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
                     OperationDatabaseHelper::putOperation(sql, operation);
-                    updateERC20Accounts(operation);
+                    updateERC20Accounts(sql, operation);
                 }
 
                 if (isAccountAddress(_keychain, transaction.receiver)) {
@@ -134,18 +135,21 @@ namespace ledger {
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
                     OperationDatabaseHelper::putOperation(sql, operation);
-                    updateERC20Accounts(operation);
+                    updateERC20Accounts(sql, operation);
                 }
 
                 return result;
         }
 
-        void EthereumLikeAccount::updateERC20Accounts(const Operation &operation) {
+        void EthereumLikeAccount::updateERC20Accounts(soci::session &sql,
+                                                      const Operation &operation) {
             auto transaction = operation.ethereumTransaction.getValue();
             if (transaction.erc20.nonEmpty()) {
                 auto accountAddress = (operation.type == api::OperationType::SEND)? transaction.sender : transaction.receiver;
                 auto erc20Token = erc20Tokens::ALL_ERC20.at(transaction.erc20.getValue().contractAddress);
-                auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, operation, getWallet()->getCurrency());
+                auto operationUid = OperationDatabaseHelper::createUid(getAccountUid(), erc20Token.contractAddress, operation.type);
+                auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, operationUid, operation, getWallet()->getCurrency());
+                auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20Token.contractAddress);
                 //Check if account already exists
                 auto needNewAccount = true;
                 for (auto& account : _erc20LikeAccounts) {
@@ -154,6 +158,7 @@ namespace ledger {
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
                         erc20Account->putOperation(erc20Operation);
+                        OperationDatabaseHelper::putERC20Operation(sql, erc20Operation, erc20AccountUid, operation.uid);
                         needNewAccount = false;
                     }
                 }
@@ -163,6 +168,8 @@ namespace ledger {
                     auto newAccount = std::make_shared<ERC20LikeAccount>(erc20Token, accountAddress);
                     newAccount->putOperation(erc20Operation);
                     _erc20LikeAccounts.push_back(newAccount);
+                    //Persist erc20 account
+                    EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
                 }
             }
         }
