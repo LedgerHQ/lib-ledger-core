@@ -65,7 +65,7 @@ namespace ledger {
             _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
-            _keychain->getAllObservableAddresses(0, 40);
+            _accountAddress = keychain->getFreshAddress()->toString();
         }
 
 
@@ -123,7 +123,7 @@ namespace ledger {
                     return path.nonEmpty();
                 };
 
-                if (isAccountAddress(_keychain, transaction.sender)) {
+                if (_accountAddress == transaction.sender) {
                     operation.amount = transaction.value + operation.fees.getValueOr(BigInt::ZERO);
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
@@ -131,7 +131,7 @@ namespace ledger {
                     updateERC20Accounts(sql, operation);
                 }
 
-                if (isAccountAddress(_keychain, transaction.receiver)) {
+                if (_accountAddress == transaction.receiver) {
                     operation.amount = transaction.value;
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
@@ -164,7 +164,7 @@ namespace ledger {
                     erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", erc20Address, 0);
                 }
 
-                auto erc20OperationUid = OperationDatabaseHelper::createUid(getAccountUid(), erc20Token.contractAddress, operation.type);
+                auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20Token.contractAddress, operation.type);
                 auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, erc20OperationUid, operation, erc20Token, getWallet()->getCurrency());
                 auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20Token.contractAddress);
                 //Check if account already exists
@@ -175,7 +175,11 @@ namespace ledger {
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
                         erc20Account->putOperation(erc20Operation);
-                        OperationDatabaseHelper::putERC20Operation(sql, erc20Operation, erc20AccountUid, operation.uid);
+                        auto erc20OpCount = 0;
+                        sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
+                        if (erc20OpCount == 0) {
+                            OperationDatabaseHelper::putERC20Operation(sql, erc20Operation, erc20AccountUid, operation.uid);
+                        }
                         needNewAccount = false;
                     }
                 }

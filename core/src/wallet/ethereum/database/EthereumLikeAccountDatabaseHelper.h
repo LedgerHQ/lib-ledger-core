@@ -44,7 +44,7 @@ namespace ledger {
             static void createAccount(soci::session& sql,
                                       const std::string walletUid,
                                       int32_t index,
-                                      const std::string& xpub);
+                                      const std::string& address);
             static void createERC20Account(soci::session &sql,
                                            const std::string &ethAccountUid,
                                            const std::string &erc20AccountUid,

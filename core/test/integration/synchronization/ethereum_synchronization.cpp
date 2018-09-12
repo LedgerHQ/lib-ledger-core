@@ -50,7 +50,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth01.explorer.theory.rbx.ledger.fr:8104");
+        //http://eth01.explorer.theory.rbx.ledger.fr:8104
+        //http://eth01.explorer.theory.rbx.ledger.fr:21000
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth01.explorer.theory.rbx.ledger.fr:21000");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -81,14 +84,6 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto balance = wait(account->getBalance());
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
-//                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-//                std::cout << "Ops: " << ops.size() << std::endl;
-//                for (auto& op : ops) {
-//                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
-//                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
-//                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
-//                }
-
                 auto erc20Accounts = account->getERC20Accounts();
                 EXPECT_EQ(erc20Accounts.size(), 1);
                 EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);

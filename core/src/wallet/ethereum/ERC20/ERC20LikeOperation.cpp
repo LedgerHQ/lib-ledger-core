@@ -45,6 +45,7 @@ namespace ledger {
 
                 auto& tx = operation.ethereumTransaction.getValue();
                 _token = token;
+                _uid = operationUid;
                 _hash = tx.hash;
                 _nonce = std::make_shared<BigInt>(tx.nonce);
                 _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
