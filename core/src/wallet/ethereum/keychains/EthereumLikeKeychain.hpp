@@ -81,6 +81,12 @@ namespace ledger {
                                  const std::shared_ptr<api::EthereumLikeExtendedPublicKey> &xpub,
                                  const std::shared_ptr<Preferences> &preferences);
 
+            EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                 const api::Currency &params,
+                                 int account,
+                                 const std::string &accountAddress,
+                                 const std::shared_ptr<Preferences>& preferences);
+
             std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
 
             Address getFreshAddress();
@@ -88,7 +94,7 @@ namespace ledger {
 
             Option<std::string> getAddressDerivationPath(const std::string& address) const ;
             std::shared_ptr<api::EthereumLikeExtendedPublicKey> getExtendedPublicKey() const;
-            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t>& hash160) const ;
+            //Option<std::string> getHash160DerivationPath(const std::vector<uint8_t>& hash160) const ;
             bool isEmpty() const ;
 
             int getAccountIndex() const;
@@ -122,6 +128,8 @@ namespace ledger {
             EthKeychainPersistentState _state;
             std::shared_ptr<api::EthereumLikeExtendedPublicKey> _xpub;
             uint32_t _observableRange;
+            std::string _accountAddress;
+            std::string _localPath;
         };
     }
 }

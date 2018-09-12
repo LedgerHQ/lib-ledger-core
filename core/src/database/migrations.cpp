@@ -220,7 +220,7 @@ namespace ledger {
                     "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "idx INTEGER NOT NULL,"
-                    "xpub VARCHAR(255) NOT NULL"
+                    "address VARCHAR(255) NOT NULL"
                     ")";
 
             sql << "CREATE TABLE ethereum_transactions("
@@ -248,14 +248,14 @@ namespace ledger {
 
             sql << "CREATE TABLE erc20_accounts("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
-                    "ethereum_account_uid VARCHAR(255) NOT NULL REFERENCES ehtereum_accounts(uid) ON DELETE CASCADE,"
+                    "ethereum_account_uid VARCHAR(255) NOT NULL REFERENCES ethereum_accounts(uid) ON DELETE CASCADE,"
                     "contract_address VARCHAR(255) NOT NULL"
                     ")";
 
             sql << "CREATE TABLE erc20_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
-                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES ehtereum_operations(uid) ON DELETE CASCADE,"
-                    "erc20_account_uid VARCHAR(255) NOT NULL REFERENCES erc20_accounts(uid) ON DELETE CASCADE"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES ethereum_operations(uid) ON DELETE CASCADE,"
+                    "erc20_account_uid VARCHAR(255) NOT NULL REFERENCES erc20_accounts(uid) ON DELETE CASCADE,"
                     "hash VARCHAR(255) NOT NULL,"
                     "nonce VARCHAR(255) NOT NULL,"
                     "value BIGINT NOT NULL,"

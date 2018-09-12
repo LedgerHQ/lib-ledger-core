@@ -270,6 +270,9 @@ namespace ledger {
                                             std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy) {
 
                 buddy->logger->info("SYNC BATCHES");
+                //For ethereum like wallets, one account corresponds to one ETH address,
+                //so ne need to discover other batches
+                auto isETHWallet = buddy->wallet->getWalletType() == api::WalletType::ETHEREUM;
                 auto done = (currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1);
                 if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
                     buddy->savedState.getValue().batches.push_back(BlockchainExplorerAccountSynchronizationBatchSavedState());
@@ -285,7 +288,7 @@ namespace ledger {
                     //But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
                     auto discoveredAddresses = currentBatchIndex * buddy->halfBatchSize;
                     auto lastDiscoverableAddress = buddy->configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(buddy->halfBatchSize);
-                    if (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses) {
+                    if (!isETHWallet && (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses)) {
                         return self->synchronizeBatches(currentBatchIndex + 1, buddy);
                     }
                     return Future<Unit>::successful(unit);

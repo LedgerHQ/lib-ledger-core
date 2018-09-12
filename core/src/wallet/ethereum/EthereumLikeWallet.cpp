@@ -138,6 +138,11 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         EthereumLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+
+            if (info.extendedKeys.empty()) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Empty extended keys passed to newAccountWithExtendedKeyInfo");
+            }
+
             auto self = getSelf();
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
@@ -158,7 +163,7 @@ namespace ledger {
                 if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index))
                     throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
                 AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
-                EthereumLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, keychain->getRestoreKey());
+                EthereumLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, info.extendedKeys[info.extendedKeys.size() - 1]);
                 tr.commit();
                 auto account = std::static_pointer_cast<api::Account>(std::make_shared<EthereumLikeAccount>(
                         self->shared_from_this(),

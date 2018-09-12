@@ -38,16 +38,16 @@ namespace ledger {
     namespace core {
         void EthereumLikeAccountDatabaseHelper::createAccount(soci::session &sql,
                                                          const std::string walletUid, int32_t index,
-                                                         const std::string &xpub) {
+                                                         const std::string &address) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-            sql << "INSERT INTO ethereum_accounts VALUES(:uid, :wallet, :idx, :xpub)",use(uid), use(walletUid), use(index), use(xpub);
+            sql << "INSERT INTO ethereum_accounts VALUES(:uid, :wallet_uid, :idx, :address)",use(uid), use(walletUid), use(index), use(address);
         }
 
         void EthereumLikeAccountDatabaseHelper::createERC20Account(soci::session &sql,
                                                                    const std::string &ethAccountUid,
                                                                    const std::string &erc20AccountUid,
                                                                    const std::string &contractAddress) {
-            sql << "INSERT INTO erc20_accounts VALUES(:uid, :account, :contract_address)",use(erc20AccountUid), use(ethAccountUid), use(contractAddress);
+            sql << "INSERT INTO erc20_accounts VALUES(:uid, :ethereum_account_uid, :contract_address)",use(erc20AccountUid), use(ethAccountUid), use(contractAddress);
         }
 
         bool EthereumLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
