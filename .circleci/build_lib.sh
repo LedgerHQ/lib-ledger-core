@@ -41,15 +41,14 @@ function command_ios {
 	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3'
 	export OSX_SYSROOT=iphonesimulator
 	export ARCH=x86_64
+	#Copy iphone.cmake which is not forcing CMAKE_OSX_SYSROOT to iphoneos in cache
+	cp `pwd`/../lib-ledger-core/tools/build_ios/iphone.cmake `pwd`/../lib-ledger-core/toolchains/polly/os/
   fi
   BUILD_CONFIG="Release"
-  add_to_cmake_params -G "Xcode" -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DCMAKE_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
+  add_to_cmake_params -G "Xcode" -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 }
 
 function command_android {
-  #TODO
-  #/home/circleci/android-ndk-r16b
-  echo $HOME
   echo "Set Android NDK variable"
   export ANDROID_NDK_r16b=/home/circleci/android-ndk-r16b
   export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)" || export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"

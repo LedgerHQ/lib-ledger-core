@@ -30,11 +30,12 @@ if [ "$branchstr" == "develop" ]; then
 
 	PATH_TO_LIB=../lib-ledger-core-build/core/src/
 	if [ "$TARGET" == "ios" ]; then
-		PATH_TO_LIB=../lib-ledger-core-build/core/src/Release-iphoneos
 		if [ "$ARCH" == "armv7" -o "$ARCH" == "arm64" ]; then
 			export BUILD_TYPE=ios/${ARCH}
+			PATH_TO_LIB=../lib-ledger-core-build/core/src/Release-iphoneos
 		else
 			export BUILD_TYPE=ios/x86_64
+			PATH_TO_LIB=../lib-ledger-core-build/core/src/Release-iphonesimulator
 		fi
 	elif [ "$TARGET" == "android" ]; then
 		if [ "$ARCH" == "armeabi-v7a" -o "$ARCH" == "arm64-v8a" ]; then
