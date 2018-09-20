@@ -72,8 +72,9 @@ namespace ledger {
                 auto publicKeyHash160 = xpub->deriveHash160(p);
                 script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                 //Hash script
-                auto hash160 = HASH160::hash(script);
                 const auto& params = currency.bitcoinLikeNetworkParameters.value();
+                HashAlgorithm hashAlgorithm(params.Identifier);
+                auto hash160 = HASH160::hash(script, hashAlgorithm);
                 BitcoinLikeAddress btcLikeAddress(currency, hash160, params.P2SHVersion);
                 address = btcLikeAddress.toBase58();
 

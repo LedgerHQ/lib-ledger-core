@@ -32,7 +32,8 @@
 #include "BigInt.h"
 #include <sstream>
 #include "../collections/vector.hpp"
-#include "../crypto/SHA256.hpp"
+#include <crypto/HashAlgorithm.h>
+#include <utils/hex.h>
 #include <functional>
 
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -58,8 +59,8 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes) {
     return ss.str();
 }
 
-std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes) {
-    return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes)));
+std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes, const std::string &networkIdentifier) {
+    return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes, networkIdentifier)));
 }
 
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(ledger::core::Exception) {
@@ -81,12 +82,14 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(
     return vector::concat(prefix, intData.toByteArray());
 }
 
-std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uint8_t> &bytes) {
-    auto doubleHash = SHA256::bytesToBytesHash(SHA256::bytesToBytesHash(bytes));
+std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uint8_t> &bytes, const std::string &networkIdentifier) {
+    ledger::core::HashAlgorithm hashAlgorithm(networkIdentifier);
+    auto hash = hashAlgorithm.bytesToBytesHash(bytes);
+    auto doubleHash = hashAlgorithm.bytesToBytesHash(hash);
     return std::vector<uint8_t>(doubleHash.begin(), doubleHash.begin() + 4);
 }
 
-ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str) {
+ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str, const std::string &networkIdentifier) {
     return Try<std::vector<uint8_t>>::from([&] () {
         auto decoded = decode(str);
         //Check decoded address size
@@ -95,7 +98,7 @@ ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(con
         }
         std::vector<uint8_t> data(decoded.begin(), decoded.end() - 4);
         std::vector<uint8_t> checksum(decoded.end() - 4, decoded.end());
-        auto chks = computeChecksum(data);
+        auto chks = computeChecksum(data, networkIdentifier);
         if (checksum != chks) {
             throw Exception(api::ErrorCode::INVALID_CHECKSUM, "Base 58 invalid checksum");
         }

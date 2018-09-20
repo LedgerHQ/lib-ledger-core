@@ -220,6 +220,15 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("clubcoin", 8, "CLUB");
 
+            const api::Currency DECRED =
+                    Currency("decred")
+                            .forkOfBitcoin(networks::getNetworkParameters("decred"))
+                            .bip44(42)
+                            .paymentUri("decred")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("decred", 8, "DCR")
+                            .unit("milli-decred", 5, "mDCR");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -241,7 +250,8 @@ namespace ledger {
                 KOMODO,
                 POSWALLET,
                 PIVX,
-                CLUBCOIN
+                CLUBCOIN,
+                DECRED
             });
         }
     }

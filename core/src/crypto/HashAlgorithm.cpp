@@ -1,13 +1,12 @@
 /*
  *
- * HASH160
- * ledger-core
+ * HashAlgorithm
  *
- * Created by Pierre Pollastri on 16/12/2016.
+ * Created by El Khalil Bellakrid on 19/09/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2018 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,23 +27,38 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HASH160_HPP
-#define LEDGER_CORE_HASH160_HPP
 
-#include "RIPEMD160.hpp"
-#include "SHA256.hpp"
+
 #include "HashAlgorithm.h"
-
+#include "SHA256.hpp"
+#include "BLAKE.h"
+#include <utils/hex.h>
 namespace ledger {
     namespace core {
-        class HASH160 {
-        public:
-            HASH160() = delete;
-            ~HASH160() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data, const HashAlgorithm &hashAlgorithm);
-        };
+        HashAlgorithm::HashAlgorithm(const std::string &networkIdentifier): _identifier(networkIdentifier)
+        {}
+
+        std::string HashAlgorithm::stringToHexHash(const std::string &input) {
+            return hex::toString(stringToBytesHash(input));
+        }
+
+        std::string HashAlgorithm::bytesToHexHash(const std::vector<uint8_t> &bytes) {
+            return hex::toString(bytesToBytesHash(bytes));
+        }
+
+        std::vector<uint8_t> HashAlgorithm::stringToBytesHash(const std::string &input) const {
+            if (_identifier == "dcr") {
+                return BLAKE::stringToBytesHash(input);
+            }
+            return SHA256::stringToBytesHash(input);
+        }
+
+        std::vector<uint8_t> HashAlgorithm::bytesToBytesHash(const std::vector<uint8_t> &bytes) const {
+            if (_identifier == "dcr") {
+                return BLAKE::bytesToBytesHash(bytes);
+            }
+            return SHA256::bytesToBytesHash(bytes);
+        }
+
     }
 }
-
-
-#endif //LEDGER_CORE_HASH160_HPP

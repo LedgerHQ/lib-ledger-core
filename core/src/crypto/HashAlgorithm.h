@@ -1,13 +1,12 @@
 /*
  *
- * HASH160
- * ledger-core
+ * HashAlgorithm
  *
- * Created by Pierre Pollastri on 16/12/2016.
+ * Created by El Khalil Bellakrid on 19/09/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2018 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,23 +27,28 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HASH160_HPP
-#define LEDGER_CORE_HASH160_HPP
 
-#include "RIPEMD160.hpp"
-#include "SHA256.hpp"
-#include "HashAlgorithm.h"
+#ifndef LEDGER_CORE_HASHALGORITHM_H
+#define LEDGER_CORE_HASHALGORITHM_H
+
+#include <string>
+#include <vector>
 
 namespace ledger {
     namespace core {
-        class HASH160 {
+        class HashAlgorithm {
         public:
-            HASH160() = delete;
-            ~HASH160() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data, const HashAlgorithm &hashAlgorithm);
+            HashAlgorithm(const std::string &networkIdentifier = "");
+            std::string stringToHexHash(const std::string& input);
+            std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
+            std::vector<uint8_t> stringToBytesHash(const std::string& input) const;
+            std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes) const;
+        private:
+            std::string _identifier;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_HASH160_HPP
+
+#endif //LEDGER_CORE_HASHALGORITHM_H

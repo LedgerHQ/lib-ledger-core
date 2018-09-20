@@ -38,7 +38,7 @@
 #include "SECP256k1Point.hpp"
 #include "../bytes/BytesWriter.h"
 #include "HASH160.hpp"
-
+#include "HashAlgorithm.h"
 namespace ledger {
     namespace core {
 
@@ -46,8 +46,8 @@ namespace ledger {
 
         DeterministicPublicKey::DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
                                                        const std::vector<uint8_t> &chainCode, uint32_t childNum,
-                                                       uint32_t depth, uint32_t parentFingerprint) :
-            _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint)
+                                                       uint32_t depth, uint32_t parentFingerprint, const std::string &networkIdentifier) :
+            _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint), _networkIdentifier(networkIdentifier)
         {
 
         }
@@ -67,7 +67,8 @@ namespace ledger {
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyHash160() const {
-            return HASH160::hash(_key);
+            HashAlgorithm hashAlgorithm(_networkIdentifier);
+            return HASH160::hash(_key, hashAlgorithm);
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {
@@ -96,7 +97,8 @@ namespace ledger {
                     IR,
                     childIndex,
                     _depth + 1,
-                    getFingerprint()
+                    getFingerprint(),
+                    _networkIdentifier
             );
         }
 
@@ -112,7 +114,7 @@ namespace ledger {
         }
 
         DeterministicPublicKey::DeterministicPublicKey(const DeterministicPublicKey &key) : DeterministicPublicKey(
-                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint
+                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint, key._networkIdentifier
         ) {
 
         }

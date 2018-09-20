@@ -95,4 +95,5 @@ extern KeychainTestData KOMODO_DATA;
 extern KeychainTestData POSWALLET_DATA;
 extern KeychainTestData PIVX_DATA;
 extern KeychainTestData CLUBCOIN_DATA;
+extern KeychainTestData DECRED_DATA;
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

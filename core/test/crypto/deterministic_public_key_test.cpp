@@ -51,7 +51,7 @@ static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
     auto childNum = reader.readNextBeUint();
     auto chainCode = reader.read(32);
     auto publicKey = reader.read(33);
-    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint);
+    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, "btc");
 }
 
 TEST(Derivation, DeriveChildren_1) {
