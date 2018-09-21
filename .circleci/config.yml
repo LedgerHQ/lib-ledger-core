@@ -172,6 +172,10 @@ jobs:
           name: Deploy_ios_arm64
           command: |
             . .circleci/deploy.sh ios arm64
+      - run:
+          name: Build_Fat_Library_ios
+          command: |
+            . .circleci/deploy_fat_lib.sh
   build_macos_debug:
     macos:
       xcode: "9.2.0"
