@@ -49,12 +49,12 @@ namespace ledger {
                 auto conn = std::make_shared<Connection>();
                 conn->api = connection;
                 _connections.push_back(conn);
-                QObject::connect(&conn->socket, &QWebSocket::connected, this, &QtWebSocketClient::onWebSocketConnected);
-                QObject::connect(&conn->socket, &QWebSocket::disconnected, this, &QtWebSocketClient::onWebSocketDisconnected);
-                QObject::connect(&conn->socket, &QWebSocket::textMessageReceived, this, &QtWebSocketClient::onMessageReceived);
-                QObject::connect(&conn->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+                QObject::connect(conn->socket.get(), &QWebSocket::connected, this, &QtWebSocketClient::onWebSocketConnected);
+                QObject::connect(conn->socket.get(), &QWebSocket::disconnected, this, &QtWebSocketClient::onWebSocketDisconnected);
+                QObject::connect(conn->socket.get(), &QWebSocket::textMessageReceived, this, &QtWebSocketClient::onMessageReceived);
+                QObject::connect(conn->socket.get(), SIGNAL(error(QAbstractSocket::SocketError)),
                                  this, SLOT(onError(QAbstractSocket::SocketError)));
-                conn->socket.open(QUrl(QString::fromStdString(url)));
+                conn->socket->open(QUrl(QString::fromStdString(url)));
             }
         }
 
@@ -66,7 +66,7 @@ namespace ledger {
             } else if (conn->api->getConnectionId() == -1) {
                 connection->onError(api::ErrorCode::ILLEGAL_STATE, "Connection is not ready");
             } else {
-                conn->socket.sendTextMessage(QString::fromStdString(data));
+                conn->socket->sendTextMessage(QString::fromStdString(data));
             }
 
         }
@@ -74,13 +74,13 @@ namespace ledger {
         void QtWebSocketClient::disconnect(const std::shared_ptr<core::api::WebSocketConnection> &connection) {
             auto conn = getConnection(connection);
             if (conn != nullptr && conn->api != nullptr) {
-                conn->socket.close(QWebSocketProtocol::CloseCode::CloseCodeNormal, "Disconnected by user");
+                conn->socket->close(QWebSocketProtocol::CloseCode::CloseCodeNormal, "Disconnected by user");
             }
         }
 
         std::shared_ptr<QtWebSocketClient::Connection> QtWebSocketClient::getConnection(QObject *sender) const {
             for (auto& conn : _connections) {
-                if (static_cast<QObject *>(&conn->socket) == sender)
+                if (static_cast<QObject *>(conn->socket.get()) == sender)
                     return conn;
             }
             return nullptr;
@@ -101,10 +101,10 @@ namespace ledger {
             while (it != end) {
                 auto conn = *it;
                 if (conn.get() == connection) {
-                    QObject::disconnect(&conn->socket, &QWebSocket::connected, this, &QtWebSocketClient::onWebSocketConnected);
-                    QObject::disconnect(&conn->socket, &QWebSocket::disconnected, this, &QtWebSocketClient::onWebSocketDisconnected);
-                    QObject::disconnect(&conn->socket, &QWebSocket::textMessageReceived, this, &QtWebSocketClient::onMessageReceived);
-                    QObject::disconnect(&conn->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+                    QObject::disconnect(conn->socket.get(), &QWebSocket::connected, this, &QtWebSocketClient::onWebSocketConnected);
+                    QObject::disconnect(conn->socket.get(), &QWebSocket::disconnected, this, &QtWebSocketClient::onWebSocketDisconnected);
+                    QObject::disconnect(conn->socket.get(), &QWebSocket::textMessageReceived, this, &QtWebSocketClient::onMessageReceived);
+                    QObject::disconnect(conn->socket.get(), SIGNAL(error(QAbstractSocket::SocketError)),
                                      this, SLOT(onError(QAbstractSocket::SocketError)));
                     _connections.erase(it);
                     return true;
@@ -141,55 +141,55 @@ namespace ledger {
                 QString message;
                 switch (error) {
                     case QAbstractSocket::ConnectionRefusedError:
-                        message = QString("Connection refused to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Connection refused to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::RemoteHostClosedError:
-                        message = QString("Remote host closed connection to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Remote host closed connection to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::HostNotFoundError:
-                        message = QString("Host not found for %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Host not found for %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SocketAccessError:
-                        message = QString("Socket access error to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Socket access error to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SocketResourceError:
-                        message = QString("Socket resource failed to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Socket resource failed to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SocketTimeoutError:
-                        message = QString("Socket timed out to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Socket timed out to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::DatagramTooLargeError:
-                        message = QString("Too large datagram for %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Too large datagram for %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::NetworkError:
-                        message = QString("Network error to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Network error to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::AddressInUseError:
-                        message = QString("Address is in use for %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Address is in use for %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SocketAddressNotAvailableError:
-                        message = QString("Address %1 not available").arg(conn->socket.requestUrl().toString());
+                        message = QString("Address %1 not available").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::UnsupportedSocketOperationError:
-                        message = QString("Unsopported operation to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Unsopported operation to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::UnfinishedSocketOperationError:
-                        message = QString("Unfinished operation for %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Unfinished operation for %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::ProxyAuthenticationRequiredError:
                         message = QString("Proxy authentication required");
                         break;
                     case QAbstractSocket::SslHandshakeFailedError:
-                        message = QString("SSL handshake failed to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("SSL handshake failed to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::ProxyConnectionRefusedError:
-                        message = QString("Proxy connection refused to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Proxy connection refused to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::ProxyConnectionClosedError:
-                        message = QString("Proxy connection closed to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Proxy connection closed to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::ProxyConnectionTimeoutError:
-                        message = QString("Proxy connection timed out to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Proxy connection timed out to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::ProxyNotFoundError:
                         message = QString("Proxy not found");
@@ -198,19 +198,19 @@ namespace ledger {
                         message = QString("Proxy protocol error");
                         break;
                     case QAbstractSocket::OperationError:
-                        message = QString("Operation error to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Operation error to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SslInternalError:
-                        message = QString("SSL internal error to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("SSL internal error to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::SslInvalidUserDataError:
-                        message = QString("SSSL invalid user data error for %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("SSSL invalid user data error for %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::TemporaryError:
-                        message = QString("Tempory error to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Tempory error to %1").arg(conn->socket->requestUrl().toString());
                         break;
                     case QAbstractSocket::UnknownSocketError:
-                        message = QString("Connection refused to %1").arg(conn->socket.requestUrl().toString());
+                        message = QString("Connection refused to %1").arg(conn->socket->requestUrl().toString());
                         break;
                 }
                 conn->api->onError(api::ErrorCode::HTTP_ERROR, message.toStdString());

@@ -20,6 +20,9 @@ if [ "${ARCH}" == 'armv7' ]; then
 elif [ "${ARCH}" == 'arm64' ]; then
 	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3-arm64'
 	export OSX_SYSROOT=iphoneos
+elif [ "${ARCH}" == 'bitcode' ]; then
+	#ios-nocodesign-11-2-dep-9-0-bitcode-cxx11
+	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-0-bitcode-cxx11'
 else
 	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3'
 	export OSX_SYSROOT=iphonesimulator
@@ -27,7 +30,10 @@ else
 	cp `pwd`/../lib-ledger-core/tools/build_ios/iphone.cmake $POLLY_ROOT/os/
 fi
 
-#iOS simulator
 echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
-cmake -G "Xcode" -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake -DBUILD_TESTS=OFF ../lib-ledger-core
+if [ "${ARCH}" == 'bitcode' ]; then
+	cmake -G "Xcode" -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake -DBUILD_TESTS=OFF ../lib-ledger-core
+else
+	cmake -G "Xcode" -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake -DBUILD_TESTS=OFF ../lib-ledger-core
+fi
 xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4

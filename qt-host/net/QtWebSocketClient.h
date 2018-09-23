@@ -58,7 +58,11 @@ namespace ledger {
 
         private:
             struct Connection {
-                QWebSocket socket;
+                Connection(QObject* parent = Q_NULLPTR) {
+                    QString origin("Test Connection");
+                    socket = std::make_shared<QWebSocket>(origin, QWebSocketProtocol::VersionLatest, parent);
+                };
+                std::shared_ptr<QWebSocket> socket;
                 std::shared_ptr<core::api::WebSocketConnection> api;
                 ~Connection() = default;
             };
