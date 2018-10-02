@@ -46,7 +46,7 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-set(LIB_BUILD_TYPE SHARED wallet/common/AbstractAddress.cpp wallet/common/AbstractAddress.h ledger-core.cpp)
+set(LIB_BUILD_TYPE SHARED)
 
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
@@ -57,6 +57,42 @@ add_library(ledger-core ${LIB_BUILD_TYPE}
             ${ledger-core-sources}
             ${SRC_FILES}
             ${HEADERS_FILES})
+
+string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
+if(IS_IOS GREATER_EQUAL 0)
+    set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
+    set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
+    set(DEPLOYMENT_TARGET 8.0)
+    set(DEVICE_FAMILY "1")
+    set(PRODUCT_NAME ledger_core)
+    set_target_properties(ledger-core PROPERTIES
+            FRAMEWORK TRUE
+            FRAMEWORK_VERSION A
+            MACOSX_FRAMEWORK_IDENTIFIER ${FRAMEWORK_BUNDLE_IDENTIFIER}
+            MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION_MAJOR}
+            MACOSX_FRAMEWORK_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+            MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_BINARY_DIR}/framework.plist.in
+            # "current version" in semantic format in Mach-O binary file
+            VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+            # "compatibility version" in semantic format in Mach-O binary file
+            SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+            PUBLIC_HEADER "${CMAKE_BINARY_DIR}/include/ledger/core"
+            XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${DEPLOYMENT_TARGET}
+            XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${DEVICE_FAMILY}
+            XCODE_ATTRIBUTE_SKIP_INSTALL "YES"
+            )
+    add_custom_command(
+            TARGET ledger-core
+            POST_BUILD
+            COMMAND /bin/bash -c "${CMAKE_BINARY_DIR}/install_name.sh \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}"
+    )
+    add_custom_command(
+            TARGET ledger-core
+            POST_BUILD
+            COMMAND install_name_tool -id \"@rpath/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}\"
+            \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
+    )
+endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_libraries(ledger-core -static-libstdc++)

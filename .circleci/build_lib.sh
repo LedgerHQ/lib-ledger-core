@@ -44,6 +44,10 @@ function command_ios {
 	#Copy iphone.cmake which is not forcing CMAKE_OSX_SYSROOT to iphoneos in cache
 	cp `pwd`/../lib-ledger-core/tools/build_ios/iphone.cmake `pwd`/../lib-ledger-core/toolchains/polly/os/
   fi
+
+  cp `pwd`/../lib-ledger-core/tools/build_ios/framework.plist.in `pwd`
+  cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd`
+
   BUILD_CONFIG="Release"
   add_to_cmake_params -G "Xcode" -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 }
@@ -141,11 +145,11 @@ if [ "$1" == "ios" ]; then
 		PATH_TO_LIB=core/src/Release-iphonesimulator
 	fi
 
-	echo "======> Set rpath"
-	install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
-	install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
+	#echo "======> Set rpath"
+	#install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
+	#install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
 
-	echo "======> Store artifacts to build fat dylib"
-	mkdir -p /Users/distiller/ios/$ARCH && cp $PATH_TO_LIB/libledger-core.dylib /Users/distiller/ios/$ARCH
+	echo "======> Store artifacts to build fat framework"
+	mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
 fi
 

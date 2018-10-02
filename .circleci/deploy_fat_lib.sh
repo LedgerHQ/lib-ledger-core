@@ -7,8 +7,13 @@ cd /Users/distiller/ios
 
 echo "======> Build Fat Library"
 pwd
-lipo -create x86_64/libledger-core.dylib armv7/libledger-core.dylib arm64/libledger-core.dylib -o libledger-core.dylib
-lipo -info libledger-core.dylib
+
+#We don't put x86_64/ledger-core.framework/ledger-core otherwise we have a problem when pushing to AppStore
+lipo -create armv7/ledger-core.framework/ledger-core arm64/ledger-core.framework/ledger-core -o ledger-core
+mkdir ledger-core.framework
+mv ledger-core ledger-core.framework/
+cp arm64/ledger-core.framework/Info.plist ledger-core.framework/
+lipo -info ledger-core.framework/ledger-core
 
 echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"
 

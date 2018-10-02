@@ -3,7 +3,6 @@
 unamestr=$(uname)
 TARGET=$1
 ARCH=$2
-#branchstr=`git rev-parse --abbrev-ref HEAD`
 branchstr=$(git branch | grep '*' | sed 's/^..//')
 
 echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"

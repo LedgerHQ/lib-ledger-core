@@ -9,7 +9,7 @@ endif()
 
 set(CMAKE_OSX_SYSROOT "iphoneos" CACHE STRING "System root for iOS")
 set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
-
+#set(IOS_SDK_VERSION "12.0" CACHE STRING "Updating Xcode leads to this" FORCE)
 # find 'iphoneos' and 'iphonesimulator' roots and version
 find_program(XCODE_SELECT_EXECUTABLE xcode-select)
 if(NOT XCODE_SELECT_EXECUTABLE)
