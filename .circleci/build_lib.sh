@@ -143,6 +143,9 @@ if [ "$1" == "ios" ]; then
 		PATH_TO_LIB=core/src/Release-iphoneos
 	else
 		PATH_TO_LIB=core/src/Release-iphonesimulator
+		#Remove signature
+		rm -rf $PATH_TO_LIB/ledger-core.framework/_CodeSignature
+		codesign --remove-signature $PATH_TO_LIB/ledger-core.framework/ledger-core
 	fi
 
 	#echo "======> Set rpath"

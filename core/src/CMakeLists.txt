@@ -62,7 +62,7 @@ string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0)
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
     set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
-    set(DEPLOYMENT_TARGET 8.0)
+    set(DEPLOYMENT_TARGET 9.0)
     set(DEVICE_FAMILY "1")
     set(PRODUCT_NAME ledger_core)
     set_target_properties(ledger-core PROPERTIES
