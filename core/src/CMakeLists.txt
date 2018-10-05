@@ -84,7 +84,7 @@ if(IS_IOS GREATER_EQUAL 0)
     add_custom_command(
             TARGET ledger-core
             POST_BUILD
-            COMMAND /bin/bash -c "${CMAKE_BINARY_DIR}/install_name.sh \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}"
+            COMMAND /bin/bash -c "${CMAKE_BINARY_DIR}/install_name.sh \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME} ${CMAKE_OSX_ARCHITECTURES}"
     )
     add_custom_command(
             TARGET ledger-core

@@ -13,6 +13,7 @@ lipo -create armv7/ledger-core.framework/ledger-core arm64/ledger-core.framework
 mkdir ledger-core.framework
 mv ledger-core ledger-core.framework/
 cp arm64/ledger-core.framework/Info.plist ledger-core.framework/
+install_name_tool -add_rpath "@executable_path/Frameworks/universal" ledger-core.framework/ledger-core
 lipo -info ledger-core.framework/ledger-core
 
 echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"

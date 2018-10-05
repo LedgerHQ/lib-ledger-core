@@ -48,6 +48,7 @@ function command_ios {
   cp `pwd`/../lib-ledger-core/tools/build_ios/framework.plist.in `pwd`
   cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd`
 
+
   BUILD_CONFIG="Release"
   add_to_cmake_params -G "Xcode" -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH} -DCMAKE_MACOSX_BUNDLE:BOOL=ON -DCMAKE_OSX_SYSROOT:STRING=${OSX_SYSROOT} -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 }

@@ -32,7 +32,10 @@ else
 fi
 
 cp `pwd`/../lib-ledger-core/tools/build_ios/framework.plist.in `pwd`
-cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd`
+
+cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd` $ARCH
+
+
 
 echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
 if [ "${ARCH}" == 'bitcode' ]; then
