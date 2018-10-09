@@ -36,12 +36,11 @@
 
 
 #if defined(_WIN32) || defined(_WIN64)
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        long shift = 0;
-        int result = _get_timezone(&shift);
-        #define timezone  shift
+    #if defined(_MSC_VER)
+        time_t timegm(struct tm* tm) { return _mkgmtime(tm); }
+    #else
+        time_t timegm(struct tm* tm) { return mktime(tm) - timezone; }
     #endif
-time_t timegm(struct tm* tm) { return mktime(tm) - timezone; }
 #endif
 
 std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const std::string &str) {
