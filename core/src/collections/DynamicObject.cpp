@@ -97,7 +97,7 @@ namespace ledger {
 
         optional<std::string> DynamicObject::getString(const std::string &key) {
             auto v = _values.lift(key);
-            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::STRING)
+            if (!v.hasValue() || v.getValue().type != api::DynamicType::STRING)
                 return optional<std::string>();
             return optional<std::string>(v.getValue().string);
         }
