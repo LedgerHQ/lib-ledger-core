@@ -58,7 +58,7 @@ namespace ledger {
             virtual void flush() override;
 
         protected:
-            void _sink_it(std::string msg, std::size_t size);
+            void _sink_it(std::string msg);
 
         private:
             static spdlog::filename_t calc_filename(
