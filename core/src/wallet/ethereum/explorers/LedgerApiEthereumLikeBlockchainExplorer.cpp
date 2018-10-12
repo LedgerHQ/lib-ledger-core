@@ -41,17 +41,18 @@ namespace ledger {
                                         DedicatedContext(context), EthereumLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
+            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
     }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getNonce(const std::string &address) {
-            return _http->GET(fmt::format("/blockchain/v2/{}/addresses/{}/nonce?noToken=true",_parameters.Identifier, address))
-                    .json().map<std::shared_ptr<BigInt>>(getContext(), [address] (const HttpRequest::JsonResult& result) {
+            return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/nonce",_explorerVersion, _parameters.Identifier, address))
+                    .json().mapPtr<BigInt>(getContext(), [address] (const HttpRequest::JsonResult& result) {
                         auto& json = *std::get<1>(result);
                         if (!json.IsArray() || json.Size() != 1 || !json[0].HasMember("nonce") || !json[0]["nonce"].IsUint64()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get nonce for {}", address);
                         }
                         auto nonce = json[0]["nonce"].GetUint64();
-                        return std::make_shared<BigInt>(nonce);
+                        return std::make_shared<BigInt>((int64_t)nonce);
                     });
         }
 
@@ -66,8 +67,8 @@ namespace ledger {
                     addressesStr += ",";
                 }
             }
-            return _http->GET(fmt::format("/blockchain/v2/{}/addresses/{}/balance?noToken=true",_parameters.Identifier, addressesStr))
-                    .json().map<std::shared_ptr<BigInt>>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
+            return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/balance", _explorerVersion, _parameters.Identifier, addressesStr))
+                    .json().mapPtr<BigInt>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
                         auto& json = *std::get<1>(result);
                         if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsUint64()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
@@ -80,7 +81,7 @@ namespace ledger {
                             }
                         }
 
-                        return std::make_shared<BigInt>(balance);
+                        return std::make_shared<BigInt>((int64_t)balance);
                     });
         }
 
@@ -125,6 +126,10 @@ namespace ledger {
 
         api::EthereumLikeNetworkParameters LedgerApiEthereumLikeBlockchainExplorer::getNetworkParameters() {
             return _parameters;
+        }
+
+        std::string LedgerApiEthereumLikeBlockchainExplorer::getExplorerVersion() {
+            return _explorerVersion;
         }
     }
 }

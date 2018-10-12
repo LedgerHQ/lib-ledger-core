@@ -70,10 +70,11 @@ namespace ledger {
 
             std::shared_ptr<api::ExecutionContext> getExplorerContext() override;
             api::EthereumLikeNetworkParameters getNetworkParameters() override;
-
+            std::string getExplorerVersion() override;
 
         private:
             api::EthereumLikeNetworkParameters _parameters;
+            std::string _explorerVersion;
         };
     }
 }

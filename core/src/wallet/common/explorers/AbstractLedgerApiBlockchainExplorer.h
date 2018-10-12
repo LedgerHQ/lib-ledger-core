@@ -72,7 +72,7 @@ namespace ledger {
                     }
                     params = params + "blockHash=" + fromBlockHash.getValue();
                 }
-                return _http->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", getNetworkParameters().Identifier, joinedAddresses, params), headers)
+                return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>())
                         .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
                             if (result.isLeft()) {
@@ -89,7 +89,7 @@ namespace ledger {
 
             FuturePtr<Block>
             getLedgerApiCurrentBlock() {
-                return _http->GET(fmt::format("/blockchain/v2/{}/blocks/current", getNetworkParameters().Identifier))
+                return _http->GET(fmt::format("/blockchain/{}/{}/blocks/current", getExplorerVersion(), getNetworkParameters().Identifier))
                         .template json<Block, Exception>(LedgerApiParser<Block, BlockParser>())
                         .template mapPtr<Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<Block>>& result) {
                             if (result.isLeft()) {
@@ -102,7 +102,7 @@ namespace ledger {
 
             FuturePtr<BlockchainExplorerTransaction>
             getLedgerApiTransactionByHash(const String &transactionHash) {
-                return _http->GET(fmt::format("/blockchain/v2/{}/transactions/{}", getNetworkParameters().Identifier, transactionHash.str()))
+                return _http->GET(fmt::format("/blockchain/{}/{}/transactions/{}", getExplorerVersion(), getNetworkParameters().Identifier, transactionHash.str()))
                         .template json<std::vector<BlockchainExplorerTransaction>, Exception>(LedgerApiParser<std::vector<BlockchainExplorerTransaction>, TransactionsParser>())
                         .template mapPtr<BlockchainExplorerTransaction>(getExplorerContext(), [transactionHash] (const Either<Exception, std::shared_ptr<std::vector<BlockchainExplorerTransaction>>>& result) {
                             if (result.isLeft()) {
@@ -118,7 +118,7 @@ namespace ledger {
             };
 
             Future<void *> startLedgerApiSession() {
-                return _http->GET(fmt::format("/blockchain/v2/{}/syncToken", getNetworkParameters().Identifier))
+                return _http->GET(fmt::format("/blockchain/{}/{}/syncToken", getExplorerVersion(), getNetworkParameters().Identifier))
                         .json().template map<void *>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) {
                             auto& json = *std::get<1>(result);
                             return new std::string(json["token"].GetString(), json["token"].GetStringLength());
@@ -127,7 +127,7 @@ namespace ledger {
 
             Future<Unit> killLedgerApiSession(void *session) {
                 return _http->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
-                        .DEL(fmt::format("/blockchain/v2/{}/syncToken", getNetworkParameters().Identifier))
+                        .DEL(fmt::format("/blockchain/{}/{}/syncToken", getExplorerVersion(), getNetworkParameters().Identifier))
                         .json().template map<Unit>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) {
                             return unit;
                         });
@@ -137,7 +137,7 @@ namespace ledger {
                 std::stringstream body;
                 body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
                 auto bodyString = body.str();
-                return _http->POST(fmt::format("/blockchain/v2/{}/transactions/send", getNetworkParameters().Identifier),
+                return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
                                    std::vector<uint8_t>(bodyString.begin(), bodyString.end())
                 ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
                     auto& json = *std::get<1>(result);
@@ -146,7 +146,7 @@ namespace ledger {
             }
 
             Future<Bytes> getLedgerApiRawTransaction(const String& transactionHash) {
-                return _http->GET(fmt::format("/blockchain/v2/{}/transactions/{}/hex", getNetworkParameters().Identifier, transactionHash.str()))
+                return _http->GET(fmt::format("/blockchain/{}/{}/transactions/{}/hex", getExplorerVersion(), getNetworkParameters().Identifier, transactionHash.str()))
                         .json().template map<Bytes>(getExplorerContext(), [transactionHash] (const HttpRequest::JsonResult& result) {
                             auto& json = *std::get<1>(result);
                             if (json.GetArray().Size() == 0) {
@@ -170,6 +170,7 @@ namespace ledger {
         protected:
             virtual std::shared_ptr<api::ExecutionContext> getExplorerContext() = 0;
             virtual NetworkParameters getNetworkParameters() = 0;
+            virtual std::string getExplorerVersion() = 0;
             std::shared_ptr<HttpClient> _http;
         };
     }

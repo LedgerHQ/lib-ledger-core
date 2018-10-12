@@ -107,12 +107,20 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
 
 bool ledger::core::CurrenciesDatabaseHelper::insertERC20Token(soci::session &sql,
                                                               const ledger::core::api::ERC20Token &token) {
-    sql << "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, :number_of_decimal)",
-            use(token.contractAddress),
-            use(token.name),
-            use(token.symbol),
-            use(token.numberOfDecimal);
-    return true;
+
+    auto count = 0;
+    sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :address",
+            soci::use(token.contractAddress),
+            soci::into(count);
+    if (count == 0) {
+        sql << "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, :number_of_decimal)",
+                use(token.contractAddress),
+                use(token.name),
+                use(token.symbol),
+                use(token.numberOfDecimal);
+        return true;
+    }
+    return false;
 }
 
 void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql,

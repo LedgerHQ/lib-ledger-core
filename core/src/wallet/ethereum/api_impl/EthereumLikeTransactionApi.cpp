@@ -65,7 +65,7 @@ namespace ledger {
             _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());
             _value = std::make_shared<Amount>(currency, 0, tx.value);
 
-            _nonce = std::make_shared<BigInt>(tx.nonce);
+            _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
             _data = tx.inputData;
             _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, currency);
         }

@@ -42,6 +42,7 @@ namespace ledger {
                 BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
+            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
         Future<void *> LedgerApiBitcoinLikeBlockchainExplorer::startSession() {
@@ -86,6 +87,10 @@ namespace ledger {
 
         api::BitcoinLikeNetworkParameters LedgerApiBitcoinLikeBlockchainExplorer::getNetworkParameters() {
             return _parameters;
+        }
+
+        std::string LedgerApiBitcoinLikeBlockchainExplorer::getExplorerVersion() {
+            return _explorerVersion;
         }
 
     }

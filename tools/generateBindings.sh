@@ -21,7 +21,6 @@ CORE_CPP_JNI=core/src/jni
     --node-include-cpp ../include \
     --node-package $PACKAGE_NAME
 
-
 # copy include files
 rm -rf $DEST/include
 cp -r $CORE_CPP_API $DEST/include
