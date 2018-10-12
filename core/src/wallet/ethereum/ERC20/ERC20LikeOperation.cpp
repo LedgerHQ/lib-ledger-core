@@ -47,7 +47,7 @@ namespace ledger {
                 _token = token;
                 _uid = operationUid;
                 _hash = tx.hash;
-                _nonce = std::make_shared<BigInt>(tx.nonce);
+                _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
                 _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
                 _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasLimit);
                 _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());

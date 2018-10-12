@@ -49,7 +49,6 @@ namespace ledger {
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             //BIP115 (ex: Zencash)
-            //extern LIBCORE_EXPORT const std::string BIP115;
             struct BIP115Parameters {
                 std::string blockHash;
                 std::vector<uint8_t> blockHeight;

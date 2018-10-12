@@ -52,8 +52,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         //http://eth01.explorer.theory.rbx.ledger.fr:8104
         //http://eth01.explorer.theory.rbx.ledger.fr:21000
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth01.explorer.theory.rbx.ledger.fr:21000");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://18.202.239.45:21000");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v3");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         std::set<std::string> emittedOperations;
         {

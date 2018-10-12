@@ -34,6 +34,9 @@ public:
     /** Sets the API endpoint for API based engine (Ledger's API) */
     static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_API_ENDPOINT;
 
+    /** Sets the API version */
+    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_VERSION;
+
     /** Selects the blockchain observer engine (Ledger's API) */
     static LIBCORE_EXPORT std::string const BLOCKCHAIN_OBSERVER_ENGINE;
 

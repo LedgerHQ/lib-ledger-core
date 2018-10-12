@@ -220,9 +220,8 @@ namespace ledger {
                 auto range = getWallet()->getConfiguration()->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
                 auto listAddresses = _keychain->getAllObservableAddresses(0, range);
                 auto currency = getWallet()->getCurrency();
-                return _explorer->getBalance(listAddresses).flatMap<std::shared_ptr<Amount>>(getContext(), [currency] (const std::shared_ptr<BigInt> &balance) {
-                    auto balanceAmount = std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
-                    return FuturePtr<Amount>::successful(balanceAmount);
+                return _explorer->getBalance(listAddresses).mapPtr<Amount>(getContext(), [currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+                    return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
                 });
         }
 
