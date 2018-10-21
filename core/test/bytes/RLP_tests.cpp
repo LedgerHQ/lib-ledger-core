@@ -165,3 +165,10 @@ TEST(RLPTests, Tx) {
 }
 
 
+TEST(RLPTests, BigInt) {
+    auto bigInt = std::shared_ptr<BigInt>(BigInt::from_hex("100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    auto encoder = std::make_shared<RLPStringEncoder>(hex::toByteArray(bigInt->toHexString()));
+    std::string sBigInt = "a0100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    EXPECT_EQ(hex::toString(encoder->encode()), sBigInt);
+}
+

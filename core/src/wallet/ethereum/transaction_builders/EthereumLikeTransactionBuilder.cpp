@@ -34,7 +34,6 @@
 #include <api/EthereumLikeTransactionCallback.hpp>
 #include <bytes/RLP/RLPDecoder.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
-
 namespace ledger {
     namespace core {
 
@@ -122,22 +121,25 @@ namespace ledger {
                 if (child->isList()) {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No List in this TX");
                 }
-                auto childString = child->toString();
+                auto childHexString = child->toString();
+                auto bigIntChild = std::shared_ptr<BigInt>(BigInt::from_hex(childHexString));
                 switch (index) {
                     case 0:
-                        tx->setNonce(std::make_shared<BigInt>(childString));
+                        tx->setNonce(bigIntChild);
                         break;
                     case 1:
-                        tx->setGasPrice(std::make_shared<BigInt>(childString));
+                        tx->setGasPrice(bigIntChild);
                         break;
                     case 2:
-                        tx->setGasLimit(std::make_shared<BigInt>(childString));
+                        tx->setGasLimit(bigIntChild);
                         break;
-                    case 3:
-                        tx->setReceiver(childString);
+                    case 3: {
+                        auto ethAddress = "0x" + childHexString;
+                        tx->setReceiver(ethAddress);
                         break;
+                    }
                     case 4:
-                        tx->setValue(std::make_shared<BigInt>(childString));
+                        tx->setValue(bigIntChild);
                         break;
                     case 5:
                         tx->setData(child->encode());

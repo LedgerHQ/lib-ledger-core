@@ -7,7 +7,7 @@ namespace ledger {
 	namespace testing {
 		namespace eth_xpub {
 			core::api::ExtendedKeyAccountCreationInfo XPUB_INFO(
-			        0, {"eth"}, {"49'/1'/0'"}, {"xpub6E3C4qRJgptBznysvYD9JW7BNXQXvjhNBHYqASZKeF6konKuAH5bAm9Q9444SBasXSAB56BjjYnGCg9z1RYZzcEJeMxe6g4Ppgw8Q7Fo8fh"}
+			        0, {"eth"}, {"49'/1'/0'"}, {"0x3ad0bd678b6e4767c62dfb843449396936a1e952"}
 			);
 			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				auto account = std::dynamic_pointer_cast<core::EthereumLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));

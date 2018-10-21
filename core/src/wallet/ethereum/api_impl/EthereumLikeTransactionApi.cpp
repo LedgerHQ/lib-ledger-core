@@ -37,6 +37,7 @@
 #include <bytes/BytesWriter.h>
 #include <bytes/RLP/RLPListEncoder.h>
 #include <bytes/RLP/RLPStringEncoder.h>
+#include <utils/hex.h>
 
 namespace ledger {
     namespace core {
@@ -106,21 +107,25 @@ namespace ledger {
             //Construct RLP object from tx
             //TODO:  need forEIP155 ?
             bool forEIP155 = true;
-            auto txList = std::make_shared<RLPListEncoder>(_nonce->toString());
-            txList->append(std::make_shared<RLPStringEncoder>(_gasPrice->toString()));
-            txList->append(std::make_shared<RLPStringEncoder>(_gasLimit->toString()));
+            auto txList = std::make_shared<RLPListEncoder>();
+            txList->append(hex::toByteArray(_nonce->toHexString()));
+            BigInt gasPrice(_gasPrice->toString());
+            txList->append(hex::toByteArray(gasPrice.toHexString()));
+            BigInt gasLimit(_gasLimit->toString());
+            txList->append(hex::toByteArray(gasLimit.toHexString()));
             auto receiver = _receiver->toEIP55();
-            txList->append(std::make_shared<RLPStringEncoder>(receiver.substr(2,receiver.size() - 2)));
-            txList->append(std::make_shared<RLPStringEncoder>(_value->toString()));
-            txList->append(std::make_shared<RLPStringEncoder>(_data));
-
+            auto sReceiver = receiver.substr(2,receiver.size() - 2);
+            txList->append(hex::toByteArray(sReceiver));
+            BigInt value(_value->toString());
+            txList->append(hex::toByteArray(value.toHexString()));
+            txList->append(_data);
             //TODO:  get it from EthLikeNetworkParameters
             std::vector<uint8_t> chainID{0x01};
-            txList->append(std::make_shared<RLPStringEncoder>(chainID));
+            txList->append(chainID);
 
-            std::vector<uint8_t> zero{0x00};
-            txList->append(std::make_shared<RLPStringEncoder>(zero));
-            txList->append(std::make_shared<RLPStringEncoder>(zero));
+            std::vector<uint8_t> empty;
+            txList->append(empty);
+            txList->append(empty);
 
             BytesWriter writer;
             writer.writeByteArray(txList->encode());

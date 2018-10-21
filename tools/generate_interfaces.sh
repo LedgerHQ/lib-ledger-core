@@ -8,6 +8,8 @@ else
     trace="false";
 fi
 echo "Enable debug compilation " $trace
+PACKAGE_NAME=ledgerapp_nodejs
+DEST=api/core/nodejs
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
 
@@ -27,6 +29,10 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
                     --java-out api/core/java \
                     --java-package co.ledger.core \
+                    --node-out $DEST \
+                    --node-type-prefix NJS \
+                    --node-include-cpp ../../../core/src/api \
+                    --node-package $PACKAGE_NAME \
 		    		--export-header-name libcore_export \
                     --trace $trace
 
