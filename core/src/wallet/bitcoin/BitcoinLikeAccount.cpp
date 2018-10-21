@@ -526,7 +526,7 @@ namespace ledger {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
-                auto tx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(self->getWallet()->getCurrency(), transaction);
+                auto tx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
 
                 //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
                 BitcoinLikeBlockchainExplorer::Transaction txExplorer;
@@ -599,7 +599,7 @@ namespace ledger {
                     getContext(),
                     getWallet()->getCurrency(),
                     logger(),
-                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, logger())
+                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, _currentBlockHeight,logger())
             );
         }
 

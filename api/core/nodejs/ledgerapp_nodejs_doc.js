@@ -1707,7 +1707,11 @@ declare class NJSBitcoinLikeTransactionBuilder
     declare function clone(): NJSBitcoinLikeTransactionBuilder;
     /** Reset the current instance to its initial state */
     declare function reset();
-    static declare function parseRawUnsignedTransaction(currency: Currency, rawTransaction: Object): NJSBitcoinLikeTransaction;
+    /**
+     * Parsing unsigned transaction
+     * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+     */
+    static declare function parseRawUnsignedTransaction(currency: Currency, rawTransaction: Object, currentBlockHeight: ?number): NJSBitcoinLikeTransaction;
 }
 /**
  *Callback triggered by main completed task,

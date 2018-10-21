@@ -169,12 +169,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024C
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jobject j_currentBlockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
-                                                                                                 ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+                                                                                                 ::djinni::Binary::toCpp(jniEnv, j_rawTransaction),
+                                                                                                 ::djinni::Optional<std::experimental::optional, ::djinni::I32>::toCpp(jniEnv, j_currentBlockHeight));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

@@ -49,10 +49,18 @@ namespace ledger {
             };
 
             //Zcash overwinter
-            const ZIP143Parameters ZIP143_PARAMETERS = {
+            const ZIPParameters ZIP143_PARAMETERS = {
                     3,
                     {0x80},
-                    {0x03, 0xC4, 0x82, 0x70}
+                    {0x03, 0xC4, 0x82, 0x70},
+                    347500
+            };
+            //Zcash Sapling (starting from block 419200)
+            const ZIPParameters ZIP_SAPLING_PARAMETERS = {
+                    4,
+                    {0x80},
+                    {0x89, 0x2F, 0x20, 0x85},
+                    419200
             };
 
             const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName) {
@@ -128,7 +136,7 @@ namespace ledger {
                             false,
                             0,
                             {sigHashType::SIGHASH_ALL},
-                            {"ZIP143"}
+                            {"ZIP"}
                     );
                     return ZCASH;
                 } else if (networkName == "zencash") {

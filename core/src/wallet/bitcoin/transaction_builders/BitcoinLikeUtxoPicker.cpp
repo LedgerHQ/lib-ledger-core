@@ -51,13 +51,15 @@ namespace ledger {
                                                 const BitcoinLikeGetTxFunction& getTransaction,
                                                 const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
                                                 const std::shared_ptr<BitcoinLikeKeychain> &keychain,
+                                                const uint64_t currentBlockHeight,
                                                 const std::shared_ptr<spdlog::logger>& logger
         ) {
             auto self = shared_from_this();
             logger->info("Get build function");
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
-                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->isSegwit());
+                    logger->info("Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", currentBlockHeight);
+                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->isSegwit(), currentBlockHeight);
                     auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
                     return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
@@ -71,7 +73,7 @@ namespace ledger {
                         return buddy->transaction;
                     });;
                 });
-            };
+            };;
         }
 
         const api::Currency &BitcoinLikeUtxoPicker::getCurrency() const {

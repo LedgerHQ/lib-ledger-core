@@ -56,15 +56,15 @@ namespace ledger {
             };
             extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
 
-            //ZIP143 (ex: Zcash overwinter)
-            //extern LIBCORE_EXPORT const std::string ZIP143;
-            struct ZIP143Parameters {
+            //ZIP: Zcash improvements/updates (ex: Zcash overwinter, Sapling ...)
+            struct ZIPParameters {
                 uint32_t version;
                 std::vector<uint8_t> overwinterFlag;
                 std::vector<uint8_t> versionGroupId;
+                uint64_t blockHeight; //block height at which ZIP will be effective
             };
-            extern LIBCORE_EXPORT const ZIP143Parameters ZIP143_PARAMETERS;
-
+            extern LIBCORE_EXPORT const ZIPParameters ZIP143_PARAMETERS;
+            extern LIBCORE_EXPORT const ZIPParameters ZIP_SAPLING_PARAMETERS;
             template<class Archive>
             void serialize(Archive & archive,
                            api::BitcoinLikeNetworkParameters & p)
