@@ -38,7 +38,7 @@ namespace ledger {
     namespace core {
         struct EthereumLikeAccountDatabaseEntry {
             int32_t index;
-            std::string xpub;
+            std::string address;
         };
     }
 }

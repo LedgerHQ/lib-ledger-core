@@ -41,7 +41,9 @@ using namespace std;
 
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     void SetUpConfig() override {
-        testData.configuration = DynamicObject::newInstance();
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        testData.configuration = configuration;
         testData.walletName = "my_wallet";
         testData.currencyName = "ethereum";
         testData.inflate_eth = ledger::testing::eth_xpub::inflate;
@@ -59,7 +61,7 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
 
     builder->setGasPrice(api::Amount::fromLong(currency, 200000));
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
-    builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
+    builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfB98Bdd04d82648f25E67041D6E27a866BEC0B47");
     builder->setInputData({0x00});
     auto f = builder->build();
     auto tx = ::wait(f);

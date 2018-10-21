@@ -31,7 +31,7 @@
 
 #include "RLPStringEncoder.h"
 #include "../../utils/Exception.hpp"
-
+#include <utils/hex.h>
 namespace ledger {
     namespace core {
         //TODO : other constructors (operators)
@@ -58,6 +58,10 @@ namespace ledger {
             _data.insert(_data.end(), strVector.begin(), strVector.end());
         }
 
+        void RLPStringEncoder::append(const std::vector<uint8_t> &data) {
+            _data.insert(_data.end(), data.begin(), data.end());
+        }
+
         void RLPStringEncoder::append(const std::shared_ptr<RLPEncoder> &child) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "RLP string encoder: Impossible to append child");
         }
@@ -67,7 +71,8 @@ namespace ledger {
         }
 
         std::string RLPStringEncoder::toString() {
-            return std::string(_data.begin(), _data.end());
+            //return std::string(_data.begin(), _data.end());
+            return hex::toString(_data);
         }
 
         std::vector<std::shared_ptr<RLPEncoder>> RLPStringEncoder::getChildren() {

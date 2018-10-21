@@ -45,6 +45,7 @@ namespace ledger {
             RLPStringEncoder(const std::vector<uint8_t> &data);
             std::vector<uint8_t> encode() override ;
             void append(const std::string &str) override ;
+            void append(const std::vector<uint8_t> &data) override ;
             void append(const std::shared_ptr<RLPEncoder> &child) override ;
             bool isList() override ;
             std::string toString() override ;

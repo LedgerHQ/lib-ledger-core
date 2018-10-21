@@ -42,6 +42,7 @@ namespace ledger {
             //TODO: replace append by pushList or pushString
             virtual std::vector<uint8_t> encode() = 0;
             virtual void append(const std::string &str) = 0;
+            virtual void append(const std::vector<uint8_t> &data) = 0;
             virtual void append(const std::shared_ptr<RLPEncoder> &child) = 0;
             virtual std::string toString() = 0;
             virtual bool isList() = 0;

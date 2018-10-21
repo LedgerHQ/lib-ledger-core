@@ -53,10 +53,10 @@ namespace ledger {
         bool EthereumLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                              const std::string &accountUid,
                                                              EthereumLikeAccountDatabaseEntry &entry) {
-            rowset<row> rows = (sql.prepare << "SELECT idx, xpub FROM ethereum_accounts WHERE uid = :uid", use(accountUid));
+            rowset<row> rows = (sql.prepare << "SELECT idx, address FROM ethereum_accounts WHERE uid = :uid", use(accountUid));
             for (auto& row : rows) {
                 entry.index = row.get<int32_t>(0);
-                entry.xpub = row.get<std::string>(1);
+                entry.address = row.get<std::string>(1);
                 return true;
             }
             return false;

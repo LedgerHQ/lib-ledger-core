@@ -73,6 +73,10 @@ namespace ledger {
             _children.push_back(std::make_shared<RLPStringEncoder>(str));
         }
 
+        void RLPListEncoder::append(const std::vector<uint8_t > &data) {
+            _children.push_back(std::make_shared<RLPStringEncoder>(data));
+        }
+
         bool RLPListEncoder::isList() {
             return true;
         }
