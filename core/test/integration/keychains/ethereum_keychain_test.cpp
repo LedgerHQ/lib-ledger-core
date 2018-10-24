@@ -33,6 +33,7 @@
 #include <gtest/gtest.h>
 #include <src/wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <src/ethereum/EthereumLikeExtendedPublicKey.h>
+#include <src/ethereum/EthereumLikeAddress.h>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
 #include <iostream>
@@ -74,4 +75,11 @@ TEST_F(EthereumKeychains, KeychainDerivation) {
         EXPECT_EQ(addresses[4]->toEIP55(), "0xd882C00D07925Ead728fe8297Cb5D824AE71cB2A");
         EXPECT_EQ(addresses[5]->toEIP55(), "0x6BCaB158C9BbC113ed5678eaEF46A73347d73973");
     });
+}
+
+TEST_F(EthereumKeychains, EthereumAddressValidation) {
+    auto address = "0x8f7A0aFAAEE372EEFd020056FC552BD87DD75D73";
+    auto ethAddress = ledger::core::EthereumLikeAddress::fromEIP55(address, ledger::core::currencies::ETHEREUM);
+    EXPECT_EQ(ethAddress->toEIP55(), address);
+
 }
