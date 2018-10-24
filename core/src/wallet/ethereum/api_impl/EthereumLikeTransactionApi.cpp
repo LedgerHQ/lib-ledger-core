@@ -107,28 +107,28 @@ namespace ledger {
             //Construct RLP object from tx
             //TODO:  need forEIP155 ?
             bool forEIP155 = true;
-            auto txList = std::make_shared<RLPListEncoder>();
-            txList->append(hex::toByteArray(_nonce->toHexString()));
+            RLPListEncoder txList;
+            txList.append(hex::toByteArray(_nonce->toHexString()));
             BigInt gasPrice(_gasPrice->toString());
-            txList->append(hex::toByteArray(gasPrice.toHexString()));
+            txList.append(hex::toByteArray(gasPrice.toHexString()));
             BigInt gasLimit(_gasLimit->toString());
-            txList->append(hex::toByteArray(gasLimit.toHexString()));
+            txList.append(hex::toByteArray(gasLimit.toHexString()));
             auto receiver = _receiver->toEIP55();
             auto sReceiver = receiver.substr(2,receiver.size() - 2);
-            txList->append(hex::toByteArray(sReceiver));
+            txList.append(hex::toByteArray(sReceiver));
             BigInt value(_value->toString());
-            txList->append(hex::toByteArray(value.toHexString()));
-            txList->append(_data);
+            txList.append(hex::toByteArray(value.toHexString()));
+            txList.append(_data);
             //TODO:  get it from EthLikeNetworkParameters
             std::vector<uint8_t> chainID{0x01};
-            txList->append(chainID);
+            txList.append(chainID);
 
             std::vector<uint8_t> empty;
-            txList->append(empty);
-            txList->append(empty);
+            txList.append(empty);
+            txList.append(empty);
 
             BytesWriter writer;
-            writer.writeByteArray(txList->encode());
+            writer.writeByteArray(txList.encode());
             return writer.toByteArray();
         }
 

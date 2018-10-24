@@ -34,12 +34,18 @@
 #include <api_impl/BigIntImpl.hpp>
 #include <api/Amount.hpp>
 #include <api/OperationType.hpp>
-//#include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
+#include <bytes/RLP/RLPStringEncoder.h>
+#include <utils/hex.h>
+#include <math/BigInt.h>
+#include <api/Address.hpp>
 namespace ledger {
     namespace core {
         ERC20LikeAccount::ERC20LikeAccount(const api::ERC20Token &erc20Token,
-                                           const std::string &accountAddress):
-                                            _token(erc20Token), _accountAddress(accountAddress) {
+                                           const std::string &accountAddress,
+                                           const api::Currency &parentCurrency):
+                                            _token(erc20Token),
+                                            _accountAddress(accountAddress),
+                                            _parentCurrency(parentCurrency) {
 
         }
 
@@ -67,6 +73,19 @@ namespace ledger {
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getOperations() {
             return _operations;
+        }
+
+        std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::Amount> & amount,
+                                                                        const std::string & address) {
+            if (! api::Address::isValid(address, _parentCurrency)) {
+                throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
+            }
+
+            RLPStringEncoder transferEncoder("transfer");
+            transferEncoder.append(hex::toByteArray(address.substr(2,address.size() - 2)));
+            BigInt bigAmount(amount->toString());
+            transferEncoder.append(hex::toByteArray(bigAmount.toHexString()));
+            return transferEncoder.encode();
         }
 
         void ERC20LikeAccount::putOperation(const std::shared_ptr<api::ERC20LikeOperation> &operation) {

@@ -186,7 +186,7 @@ namespace ledger {
 
                 //Create a new account
                 if (needNewAccount) {
-                    auto newAccount = std::make_shared<ERC20LikeAccount>(erc20Token, accountAddress);
+                    auto newAccount = std::make_shared<ERC20LikeAccount>(erc20Token, accountAddress, getWallet()->getCurrency());
                     newAccount->putOperation(erc20Operation);
                     _erc20LikeAccounts.push_back(newAccount);
                     //Persist erc20 account

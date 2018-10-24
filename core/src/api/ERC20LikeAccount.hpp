@@ -4,12 +4,14 @@
 #ifndef DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 #define DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace ledger { namespace core { namespace api {
 
+class Amount;
 class BigInt;
 class ERC20LikeOperation;
 struct ERC20Token;
@@ -26,6 +28,8 @@ public:
     virtual std::shared_ptr<BigInt> getBalance() = 0;
 
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;
+
+    virtual std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<Amount> & amount, const std::string & address) = 0;
 };
 
 } } }  // namespace ledger::core::api
