@@ -41,6 +41,7 @@ enum class ErrorCode : int {
     CURRENCY_UNIT_NOT_FOUND,
     /** Others */
     INVALID_BASE58_FORMAT,
+    INVALID_EIP55_FORMAT,
     INVALID_CHECKSUM,
     INVALID_VERSION,
     /** DeterministicPublicKey */
