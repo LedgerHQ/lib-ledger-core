@@ -52,15 +52,15 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         //http://eth01.explorer.theory.rbx.ledger.fr:8104
         //http://eth01.explorer.theory.rbx.ledger.fr:21000
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://18.202.239.45:21000");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v3");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
+        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://18.202.239.45:20000");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_ROPSTEN_XPUB_INFO);
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_MAIN_XPUB_INFO);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -85,15 +85,20 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
-                EXPECT_EQ(erc20Accounts.size(), 1);
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);
-                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
+                //EXPECT_EQ(erc20Accounts.size(), 1);
+                //EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);
+                //EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
                 dispatcher->stop();
             });
 
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
+
+            //auto opQuery = account->queryOperations()->complete();
+            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            //auto ops = ::wait(std::dynamic_pointer_cast<OperationQuery>(opQuery)->execute());
+            std::cout << "Ops: " << ops.size() << std::endl;
 
             auto block = wait(account->getLastBlock());
             auto blockHash = block.blockHash;

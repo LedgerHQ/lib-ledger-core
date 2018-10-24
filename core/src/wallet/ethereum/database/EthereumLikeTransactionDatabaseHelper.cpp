@@ -66,8 +66,7 @@ namespace ledger {
                                                                        const soci::row &row,
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
-            tx.value = BigInt(row.get<std::string>(1));
-
+            tx.value = BigInt(get_number<int64_t>(row, 1));
             auto nonceBytes = hex::toByteArray(row.get<std::string>(2));
             auto shift = 0;
             for (auto& byte : nonceBytes) {
@@ -78,9 +77,9 @@ namespace ledger {
             tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
             tx.inputData = hex::toByteArray(row.get<std::string>(4));
 
-            tx.gasPrice = BigInt(row.get<std::string>(5));
-            tx.gasLimit = BigInt(row.get<std::string>(6));
-            tx.gasUsed = BigInt(row.get<std::string>(7));
+            tx.gasPrice = BigInt(get_number<int64_t>(row, 5));
+            tx.gasLimit = BigInt(get_number<int64_t>(row, 6));
+            tx.gasUsed = BigInt(get_number<int64_t>(row, 7));
 
             tx.receiver = row.get<std::string>(8);
             tx.sender = row.get<std::string>(9);

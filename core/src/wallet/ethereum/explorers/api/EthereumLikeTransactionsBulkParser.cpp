@@ -93,7 +93,7 @@ namespace ledger {
         }
 
         bool EthereumLikeTransactionsBulkParser::StartArray() {
-            if (_depth >= 1 || _lastKey == "") {
+            if (_depth >= 1 || _lastKey == "txs") {
                 _depth += 1;
             }
 

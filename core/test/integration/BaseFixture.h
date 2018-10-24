@@ -72,6 +72,7 @@ extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO;
+extern api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
 
 extern const std::string TX_1;
 extern const std::string TX_2;

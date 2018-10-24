@@ -35,6 +35,7 @@
 #include <database/soci-option.h>
 #include <database/soci-number.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -196,7 +197,11 @@ namespace ledger {
         }
 
         void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation)");
+            EthereumLikeBlockchainExplorerTransaction tx;
+            operation.getBackend().ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(tx);
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM ethereum_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            EthereumLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().ethereumTransaction.getValue());
         }
 
         void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation) {
