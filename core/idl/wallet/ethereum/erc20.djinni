@@ -16,6 +16,7 @@ ERC20LikeAccount = interface +c {
 	getAddress(): string;
 	getBalance(): BigInt;
 	getOperations(): list<ERC20LikeOperation>;
+	getTransferToAddressData(amount: Amount, address: string): binary;
 }
 
 #Class representing a Ethereum transaction
