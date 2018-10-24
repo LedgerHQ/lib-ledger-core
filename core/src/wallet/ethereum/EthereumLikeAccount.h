@@ -94,6 +94,7 @@ namespace ledger {
                                       const std::shared_ptr<api::StringCallback> & callback) override;
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> buildTransaction() override;
+            std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override ;
 

@@ -225,6 +225,17 @@ namespace ledger {
                 });
         }
 
+        std::shared_ptr<api::OperationQuery> EthereumLikeAccount::queryOperations() {
+            auto query = std::make_shared<OperationQuery>(
+                    api::QueryFilter::accountEq(getAccountUid()),
+                    getWallet()->getDatabase(),
+                    getWallet()->getContext(),
+                    getWallet()->getMainExecutionContext()
+            );
+            query->registerAccount(shared_from_this());
+            return query;
+        }
+
         Future<AbstractAccount::AddressList> EthereumLikeAccount::getFreshPublicAddresses() {
                 auto keychain = getKeychain();
                 return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
