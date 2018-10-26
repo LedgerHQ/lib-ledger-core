@@ -223,6 +223,8 @@ namespace ledger {
                     //Check if tx is pending
                     auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
                     if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
+                        buddy->logger->info("Drop transaction {}", tx.first);
+                        buddy->logger->info("Deleting operation {}", tx.second);
                         //delete tx.second from DB (from operations)
                         sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
                     }
@@ -265,10 +267,12 @@ namespace ledger {
                 return Future<Unit>::successful(unit);
             }).recoverWith(ImmediateExecutionContext::INSTANCE, [=] (const Exception &exception) -> Future<Unit> {
 
+                buddy->logger->info("Recovering from failing synchronization : {}", exception.getMessage());
                 //A block reorganization happened
                 if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
                     buddy->savedState.nonEmpty()) {
 
+                    buddy->logger->info("Recovering from reorganization");
                     //Get its block/block height
                     auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
                     auto failedBlockHeight = failedBatch.blockHeight;
@@ -276,6 +280,7 @@ namespace ledger {
                     if (failedBlockHeight > 0) {
 
                         //Delete data related to failedBlock (and all blocks above it)
+                        buddy->logger->info("Deleting blocks above blbock height: {}", failedBlockHeight);
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
                         sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(failedBlockHeight);
 
@@ -305,6 +310,7 @@ namespace ledger {
                         //Synchronize same batch now with an existing block (of hash lastBlockHash)
                         //if failedBatch was not the deepest block part of that reorg, this recursive call
                         //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                        buddy->logger->info("Relaunch synchronization after recovering from reorganization");
                         return self->synchronizeBatches(currentBatchIndex, buddy);
                     }
                 } else {

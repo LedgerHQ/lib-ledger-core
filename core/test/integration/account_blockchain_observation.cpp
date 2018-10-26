@@ -150,6 +150,7 @@ TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
     ws->setOnConnectCallback([&] () {
         ws->push(NOTIF_WITH_BLOCK);
     });
+    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
     account->startBlockchainObservation();
     dispatcher->waitUntilStopped();
