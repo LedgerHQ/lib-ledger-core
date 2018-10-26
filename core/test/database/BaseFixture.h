@@ -94,7 +94,7 @@ public:
                                                                 int32_t index,
                                                                 const api::AccountCreationInfo &info
     );
-    static std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                  int32_t index,
                                                                  const api::ExtendedKeyAccountCreationInfo& info
     );
