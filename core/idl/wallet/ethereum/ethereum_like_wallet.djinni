@@ -22,8 +22,12 @@ EthereumLikeTransaction = interface +c {
     getGasPrice(): Amount;
     # Get start gas (in wei) : maximum amount of gas the originator is willing to pay
     getGasLimit(): Amount;
+    # Effective used gas
+    getGasUsed(): Amount;
     # Get destination ETH address
     getReceiver(): EthereumLikeAddress;
+    # Get ETH sender address
+    getSender(): EthereumLikeAddress;
     # Get amount of ether to send
     getValue(): Amount;
     # Get binary data payload
@@ -32,7 +36,7 @@ EthereumLikeTransaction = interface +c {
     serialize(): binary;
     # Get the time when the transaction was issued or the time of the block including
     # this transaction
-    getTime(): date;
+    getDate(): date;
 }
 
 #Class representing a Ethereum Operation

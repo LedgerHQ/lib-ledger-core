@@ -51,11 +51,13 @@ namespace ledger {
             int32_t getNonce() override;
             std::shared_ptr<api::Amount> getGasPrice() override ;
             std::shared_ptr<api::Amount> getGasLimit() override ;
+            std::shared_ptr<api::Amount> getGasUsed() override ;
             std::shared_ptr<api::EthereumLikeAddress> getReceiver() override ;
+            std::shared_ptr<api::EthereumLikeAddress> getSender() override;
             std::shared_ptr<api::Amount> getValue() override;
             std::experimental::optional<std::vector<uint8_t>> getData() override;
             std::vector<uint8_t> serialize() override;
-            std::chrono::system_clock::time_point getTime() override;
+            std::chrono::system_clock::time_point getDate() override;
 
             EthereumLikeTransactionApi & setGasPrice(const std::shared_ptr<BigInt>& gasPrice);
             EthereumLikeTransactionApi & setGasLimit(const std::shared_ptr<BigInt>& gasLimit);
@@ -76,6 +78,7 @@ namespace ledger {
             std::shared_ptr<BigInt> _nonce;
             std::vector<uint8_t> _data;
             std::shared_ptr<api::EthereumLikeAddress> _receiver;
+            std::shared_ptr<api::EthereumLikeAddress> _sender;
         };
     }
 }

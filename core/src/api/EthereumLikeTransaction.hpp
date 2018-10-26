@@ -33,8 +33,14 @@ public:
     /** Get start gas (in wei) : maximum amount of gas the originator is willing to pay */
     virtual std::shared_ptr<Amount> getGasLimit() = 0;
 
+    /** Effective used gas */
+    virtual std::shared_ptr<Amount> getGasUsed() = 0;
+
     /** Get destination ETH address */
     virtual std::shared_ptr<EthereumLikeAddress> getReceiver() = 0;
+
+    /** Get ETH sender address */
+    virtual std::shared_ptr<EthereumLikeAddress> getSender() = 0;
 
     /** Get amount of ether to send */
     virtual std::shared_ptr<Amount> getValue() = 0;
@@ -49,7 +55,7 @@ public:
      * Get the time when the transaction was issued or the time of the block including
      * this transaction
      */
-    virtual std::chrono::system_clock::time_point getTime() = 0;
+    virtual std::chrono::system_clock::time_point getDate() = 0;
 };
 
 } } }  // namespace ledger::core::api

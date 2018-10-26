@@ -69,6 +69,7 @@ namespace ledger {
             _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
             _data = tx.inputData;
             _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, currency);
+            _sender = EthereumLikeAddress::fromEIP55(tx.sender, currency);
         }
 
         std::string EthereumLikeTransactionApi::getHash() {
@@ -86,11 +87,18 @@ namespace ledger {
         std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getGasLimit() {
             return _gasLimit;
         }
-        
+
+        std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getGasUsed() {
+            return _gasUsed;
+        }
         std::shared_ptr<api::EthereumLikeAddress> EthereumLikeTransactionApi::getReceiver() {
             return _receiver;
         }
-        
+
+        std::shared_ptr<api::EthereumLikeAddress> EthereumLikeTransactionApi::getSender() {
+            return _sender;
+        }
+
         std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getValue() {
             return _value;
         }
@@ -99,7 +107,7 @@ namespace ledger {
             return _data;
         }
 
-        std::chrono::system_clock::time_point EthereumLikeTransactionApi::getTime() {
+        std::chrono::system_clock::time_point EthereumLikeTransactionApi::getDate() {
             return _time;
         }
 
