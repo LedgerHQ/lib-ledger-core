@@ -74,7 +74,7 @@ namespace ledger {
         int32_t AccountDatabaseHelper::computeNextAccountIndex(soci::session &sql, const std::string &walletUid) {
             //TODO: Enhance performance for huge wallets by reducing the select range.
             int32_t currentIndex = 0;
-            rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid", use(walletUid));
+            rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY idx", use(walletUid));
             for (auto& idx : rows) {
                 if (idx > currentIndex) {
                     return currentIndex;
