@@ -5,7 +5,7 @@ branches:
 image:
 - Visual Studio 2015
 environment:
-  LIB_VERSION: 1.1.3 #Hardcode the LIB_VERSION : should be retrieved by building libcore node module and run tests/lib_version.js
+  LIB_VERSION: 1.1.4 #Hardcode the LIB_VERSION : should be retrieved by building libcore node module and run tests/lib_version.js
   nodejs_version: "9"
   appveyor_rdp_password:
     secure: jb1LsDmcxCww7tA38S3xSw==
