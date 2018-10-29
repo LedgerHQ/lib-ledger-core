@@ -60,11 +60,10 @@ namespace ledger {
 
         void RotatingEncryptableSink::log(const spdlog::details::log_msg &msg) {
             auto context = _context;
-            std::string message = msg.formatted.data();
-            auto size = msg.formatted.size();
+            std::string message = msg.formatted.str();
             auto self = shared_from_this();
-            context->execute(make_runnable([self, message, size] () {
-                self->_sink_it(message, size);
+            context->execute(make_runnable([self, message] () {
+                self->_sink_it(message);
             }));
         }
 
@@ -75,13 +74,13 @@ namespace ledger {
             }));
         }
 
-        void RotatingEncryptableSink::_sink_it(std::string msg, std::size_t size) {
+        void RotatingEncryptableSink::_sink_it(std::string msg) {
             // TODO: implement encryption
-            _current_size += size;
+            _current_size += msg.size();
             if (_current_size > _max_size)
             {
                 _rotate();
-                _current_size = size;
+                _current_size = msg.size();
             }
 
             spdlog::details::log_msg spdlog_msg;

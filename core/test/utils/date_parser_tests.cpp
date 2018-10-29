@@ -36,12 +36,12 @@ using namespace ledger::core;
 
 TEST(DateParser, ParseJSONDate) {
     auto date = "2012-04-23T18:25:43.511Z";
-    EXPECT_EQ(DateUtils::fromJSON(date).time_since_epoch().count(), 1335205543000000);
+    EXPECT_EQ(std::chrono::duration_cast<std::chrono::microseconds>(DateUtils::fromJSON(date).time_since_epoch()).count(), 1335205543000000);
 }
 
 TEST(DateParser, ParseJSONDate2) {
     auto date = "2017-03-27T09:10:22Z";
-    EXPECT_EQ(DateUtils::fromJSON(date).time_since_epoch().count(), 1490605822000000);
+    EXPECT_EQ(std::chrono::duration_cast<std::chrono::microseconds>(DateUtils::fromJSON(date).time_since_epoch()).count(), 1490605822000000);
 }
 
 TEST(DateParser, ToJSONDate) {
