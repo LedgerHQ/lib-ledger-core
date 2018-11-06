@@ -34,13 +34,16 @@
 #include <bytes/BytesWriter.h>
 #include <utils/hex.h>
 #include <wallet/bitcoin/networks.hpp>
+#include <api/KeychainEngines.hpp>
+#include <crypto/HASH160.hpp>
 namespace ledger {
     namespace core {
 
-        Try<BitcoinLikeScript> BitcoinLikeScript::parse(const std::vector<uint8_t> &script) {
+        Try<BitcoinLikeScript> BitcoinLikeScript::parse(const std::vector<uint8_t>& script,
+                                                        const BitcoinLikeScriptConfiguration &configuration) {
             return Try<BitcoinLikeScript>::from([&] () -> BitcoinLikeScript {
                 BytesReader reader(script);
-                BitcoinLikeScript s;
+                BitcoinLikeScript s(configuration);
                 while (reader.hasNext()) {
                     auto byte = reader.readNextByte();
                     if (byte >= 0x01 && byte <= 0x4b) {
@@ -139,12 +142,18 @@ namespace ledger {
         }
 
         bool BitcoinLikeScript::isP2PKH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP32_P2PKH;
+            }
             return  size() >= 5 && (*this)[0].isEqualTo(btccore::OP_DUP) && (*this)[1].isEqualTo(btccore::OP_HASH160)
                     && (*this)[2].sizeEqualsTo(20) && (*this)[3].isEqualTo(btccore::OP_EQUALVERIFY)
                     && (*this)[4].isEqualTo(btccore::OP_CHECKSIG);
         }
 
         bool BitcoinLikeScript::isP2SH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP49_P2SH;
+            }
             return (size() >= 3 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20)
                     && (*this)[22].isEqualTo(btccore::OP_EQUAL));
         }
@@ -164,10 +173,25 @@ namespace ledger {
         Option<BitcoinLikeAddress>
         BitcoinLikeScript::parseAddress(const api::Currency &currency) const {
             const auto& params = currency.bitcoinLikeNetworkParameters.value();
-            if (isP2SH())
+            if (isP2SH()) {
+                //Signed : <ScriptSig> <PubKey>
+                if (_configuration.isSigned) {
+                    std::vector<uint8_t> script = {0x00, 0x14};
+                    //Hash160 of public key
+                    auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes());
+                    script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
+                    return Option<BitcoinLikeAddress>(BitcoinLikeAddress(currency, HASH160::hash(script), params.P2SHVersion));
+                }
+                //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
-            else if (isP2PKH())
-                return Option<BitcoinLikeAddress>(BitcoinLikeAddress(currency, (*this)[2].getBytes(), params.P2PKHVersion));
+            }
+            else if (isP2PKH()) {
+                //Signed : <ScriptSig> <PubKey>
+                auto index = _configuration.isSigned ? 1 : 2;
+                //Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), params.P2PKHVersion));
+            }
             return Option<BitcoinLikeAddress>();
         }
 

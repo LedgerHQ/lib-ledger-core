@@ -51,6 +51,7 @@
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <spdlog/logger.h>
 #include <utils/DateUtils.hpp>
 #include <database/soci-number.h>
@@ -526,7 +527,7 @@ namespace ledger {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
-                auto tx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
+                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
 
                 //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
                 BitcoinLikeBlockchainExplorer::Transaction txExplorer;
