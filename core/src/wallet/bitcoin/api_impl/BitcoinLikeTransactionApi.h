@@ -43,6 +43,34 @@
 
 namespace ledger {
     namespace core {
+
+        struct BitcoinLikePreparedInput {
+            uint32_t sequence;
+            std::string address;
+            std::string previousTxHash;
+            int32_t outputIndex;
+            std::vector<std::vector<uint8_t>> pubKeys;
+            BitcoinLikeBlockchainExplorer::Output output;
+            BitcoinLikePreparedInput() = default;
+            BitcoinLikePreparedInput (uint32_t sequence_,
+                                      const std::string &address_,
+                                      const std::string &previousTxHash_,
+                                      int32_t outputIndex_,
+                                      std::vector<std::vector<uint8_t>> pubKeys_,
+                                      BitcoinLikeBlockchainExplorer::Output output_) : sequence(sequence_),
+                                                                                       address(address_),
+                                                                                       previousTxHash(previousTxHash_),
+                                                                                       outputIndex(outputIndex_), pubKeys(pubKeys_){
+                output.value = output_.value;
+                output.index = output_.index;
+                output.address = output_.address;
+                output.script = output_.script;
+                output.transactionHash = output_.transactionHash;
+                output.time = output_.time;
+
+            }
+        };
+
         class BytesWriter;
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
@@ -70,7 +98,13 @@ namespace ledger {
             BitcoinLikeTransactionApi& setTimestamp(uint32_t timestamp);
 
 
-        public:
+            static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
+                                                                                    const std::vector<uint8_t> &rawTransaction,
+                                                                                    std::experimental::optional<int32_t> currentBlockHeight,
+                                                                                    bool isSigned);
+            static std::shared_ptr<api::BitcoinLikeTransaction> parseRawSignedTransaction(const api::Currency &currency,
+                                                                                          const std::vector<uint8_t> &rawTransaction,
+                                                                                          std::experimental::optional<int32_t> currentBlockHeight);
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                             std::size_t outputCount,
                                             bool hasTimestamp,

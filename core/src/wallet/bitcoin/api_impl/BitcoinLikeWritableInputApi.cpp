@@ -43,14 +43,23 @@ namespace ledger {
                 const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,
                 const std::shared_ptr<api::Amount> &amount, const std::string &previousTxHash, int32_t index,
                 const std::vector<uint8_t>& scriptSig,
-                const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput) : _explorer(explorer), _context(context), _sequence(sequence),
-                                                        _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
-                                                        _amount(amount), _previousHash(previousTxHash),
-                                                                    _previousScript(previousOutput)
+                const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput,
+                const std::string &keychainEngine) :
+                _explorer(explorer), _context(context), _sequence(sequence),
+                _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
+                _amount(amount), _previousHash(previousTxHash),
+                _previousScript(previousOutput)
 
         {
             // TODO handle the case where explorer, context are missing properly
-            // TODO handle script sig initialization
+            if (!scriptSig.empty()) {
+                auto isSigned = true;
+                auto strScriptSig = hex::toString(scriptSig);
+                auto parsedScript = BitcoinLikeScript::parse(scriptSig, BitcoinLikeScriptConfiguration(isSigned, keychainEngine));
+                if (parsedScript.isSuccess()) {
+                    _scriptSig = parsedScript.getValue();
+                }
+            }
         }
 
         optional<std::string> BitcoinLikeWritableInputApi::getAddress() {
