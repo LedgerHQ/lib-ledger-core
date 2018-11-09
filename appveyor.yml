@@ -146,20 +146,12 @@ build_script:
 #- set LIB_VERSION=$(node sample/lib-version.js)
 #- echo " >> Get Libcore version %LIB_VERSION%"
 
+after_build:
+  - if %APPVEYOR_REPO_BRANCH%==develop aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%LIB_VERSION%/win/%TOOL_CONFIG%" --acl public-read
+
 artifacts:
   - path: .\%LIB_VERSION%\win\%TOOL_CONFIG%\*
     name: core_library
-deploy:
-  - provider: S3
-    on:
-      branch: develop
-    access_key_id: AKIAJSAWFEBNBALPW4LQ
-    secret_access_key:
-      secure: ULBO2dVcftolkrtW0MAvJ4EWcWMCFdmkmsHxfuAjG9/a6U/JrKkzD/f2CUukj4hV
-    bucket: ledger-lib-ledger-core
-    region: eu-west-1
-    set_public: true
-    artifact: core_library
 
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

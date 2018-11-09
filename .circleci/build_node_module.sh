@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+echo "=====>Install nvm"
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+export NVM_DIR="${XDG_CONFIG_HOME/:-$HOME/.}nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+source ~/.bashrc
+
+echo "=====>Change node version"
+node --version
+nvm install 8.9.4
+nvm use 8.9.4
+node --version
 
 echo "=====>Build node module"
 

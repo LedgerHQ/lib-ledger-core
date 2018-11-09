@@ -116,7 +116,7 @@ jobs:
                 ctest
   build_macos_release:
     macos:
-      xcode: "9.2.0"
+      xcode: "10.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -178,7 +178,7 @@ jobs:
             . .circleci/deploy_fat_lib.sh
   build_macos_debug:
     macos:
-      xcode: "9.2.0"
+      xcode: "10.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout

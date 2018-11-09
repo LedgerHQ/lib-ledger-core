@@ -33,7 +33,7 @@ fi
 
 cp `pwd`/../lib-ledger-core/tools/build_ios/framework.plist.in `pwd`
 
-cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd` $ARCH
+cp `pwd`/../lib-ledger-core/tools/build_ios/install_name.sh `pwd`
 
 
 
