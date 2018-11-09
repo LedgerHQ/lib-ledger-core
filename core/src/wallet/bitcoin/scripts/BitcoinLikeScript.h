@@ -42,16 +42,24 @@
 namespace ledger {
     namespace core {
 
-        using  BitcoinLikeScriptOpCode = btccore::opcodetype;
+        using BitcoinLikeScriptOpCode = btccore::opcodetype;
+
         class BitcoinLikeScriptChunk {
         public:
             explicit BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op);
-            explicit BitcoinLikeScriptChunk(const std::vector<uint8_t>& bytes);
-            const std::vector<uint8_t>& getBytes() const;
+
+            explicit BitcoinLikeScriptChunk(const std::vector<uint8_t> &bytes);
+
+            const std::vector<uint8_t> &getBytes() const;
+
             bool isBytes() const;
+
             BitcoinLikeScriptOpCode getOpCode() const;
+
             bool isEqualTo(btccore::opcodetype code) const;
+
             bool sizeEqualsTo(std::size_t size) const;
+
             bool isOpCode() const;
 
         private:
@@ -61,41 +69,59 @@ namespace ledger {
         struct BitcoinLikeScriptConfiguration {
             bool isSigned;
             std::string keychainEngine;
+
             BitcoinLikeScriptConfiguration(bool isSigned_,
                                            const std::string &keychainEngine_) : isSigned(isSigned_),
-                                                                                 keychainEngine(keychainEngine_)
-            {
+                                                                                 keychainEngine(keychainEngine_) {
                 if (isSigned_ && keychainEngine_.empty()) {
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Keychain engine required when constructing signed scripts");
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
+                                         "Keychain engine required when constructing signed scripts");
                 }
             }
-            BitcoinLikeScriptConfiguration(const BitcoinLikeScriptConfiguration& copy) {
+
+            BitcoinLikeScriptConfiguration(const BitcoinLikeScriptConfiguration &copy) {
                 this->isSigned = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
             }
-            BitcoinLikeScriptConfiguration &operator=(const BitcoinLikeScriptConfiguration& copy) {
+
+            BitcoinLikeScriptConfiguration &operator=(const BitcoinLikeScriptConfiguration &copy) {
                 this->isSigned = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
                 return *this;
             }
         };
+
         class BitcoinLikeScript {
         public:
             BitcoinLikeScript() : _configuration(BitcoinLikeScriptConfiguration(false, "")) {};
-            BitcoinLikeScript(const BitcoinLikeScriptConfiguration& configuration) : _configuration(configuration){};
-            BitcoinLikeScript& operator<<(btccore::opcodetype op_code);
-            BitcoinLikeScript& operator<<(const std::vector<uint8_t>& bytes);
-            const BitcoinLikeScriptChunk& operator[](int index) const;
+
+            BitcoinLikeScript(const BitcoinLikeScriptConfiguration &configuration) : _configuration(configuration) {};
+
+            BitcoinLikeScript &operator<<(btccore::opcodetype op_code);
+
+            BitcoinLikeScript &operator<<(const std::vector<uint8_t> &bytes);
+
+            const BitcoinLikeScriptChunk &operator[](int index) const;
+
             std::size_t size() const;
+
             std::string toString() const;
+
             std::vector<uint8_t> serialize() const;
-            const std::list<BitcoinLikeScriptChunk>& toList() const;
+
+            const std::list<BitcoinLikeScriptChunk> &toList() const;
+
             bool isP2PKH() const;
+
             bool isP2SH() const;
-            Option<BitcoinLikeAddress> parseAddress(const api::Currency& currency) const;
-            static Try<BitcoinLikeScript> parse(const std::vector<uint8_t>& script,
-                                                const BitcoinLikeScriptConfiguration &configuration = BitcoinLikeScriptConfiguration(false, ""));
-            static BitcoinLikeScript fromAddress(const std::string& address, const api::Currency& currency);
+
+            Option<BitcoinLikeAddress> parseAddress(const api::Currency &currency) const;
+
+            static Try<BitcoinLikeScript> parse(const std::vector<uint8_t> &script,
+                                                const BitcoinLikeScriptConfiguration &configuration = BitcoinLikeScriptConfiguration(
+                                                        false, ""));
+
+            static BitcoinLikeScript fromAddress(const std::string &address, const api::Currency &currency);
 
         private:
             std::list<BitcoinLikeScriptChunk> _chunks;

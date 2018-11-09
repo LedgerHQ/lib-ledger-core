@@ -42,20 +42,19 @@ namespace ledger {
                 const std::vector<std::vector<uint8_t> > &pubKeys,
                 const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,
                 const std::shared_ptr<api::Amount> &amount, const std::string &previousTxHash, int32_t index,
-                const std::vector<uint8_t>& scriptSig,
-                const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput,
+                const std::vector<uint8_t> &scriptSig,
+                const std::shared_ptr<api::BitcoinLikeOutput> &previousOutput,
                 const std::string &keychainEngine) :
                 _explorer(explorer), _context(context), _sequence(sequence),
                 _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
                 _amount(amount), _previousHash(previousTxHash),
-                _previousScript(previousOutput)
-
-        {
+                _previousScript(previousOutput) {
             // TODO handle the case where explorer, context are missing properly
             if (!scriptSig.empty()) {
                 auto isSigned = true;
                 auto strScriptSig = hex::toString(scriptSig);
-                auto parsedScript = BitcoinLikeScript::parse(scriptSig, BitcoinLikeScriptConfiguration(isSigned, keychainEngine));
+                auto parsedScript = BitcoinLikeScript::parse(scriptSig,
+                                                             BitcoinLikeScriptConfiguration(isSigned, keychainEngine));
                 if (parsedScript.isSuccess()) {
                     _scriptSig = parsedScript.getValue();
                 }
@@ -132,9 +131,10 @@ namespace ledger {
         }
 
         Future<std::vector<uint8_t>> BitcoinLikeWritableInputApi::getPreviousTransaction() {
-            return _explorer->getRawTransaction(getPreviousTxHash().value()).map<std::vector<uint8_t> >(_context, [] (const Bytes& bytes) {
-                return bytes.getContainer();
-            });
+            return _explorer->getRawTransaction(getPreviousTxHash().value()).map<std::vector<uint8_t> >(_context,
+                                                                                                        [](const Bytes &bytes) {
+                                                                                                            return bytes.getContainer();
+                                                                                                        });
         }
 
     }
