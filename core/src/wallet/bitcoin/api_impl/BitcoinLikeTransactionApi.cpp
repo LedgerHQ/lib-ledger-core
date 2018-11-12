@@ -464,6 +464,7 @@ namespace ledger {
                         BitcoinLikeAddress localAddress(currency, HASH160::hash(pubKey, hashAlgorithm),
                                                         currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
                         address = localAddress.toBase58();
+                        output.script = hex::toString(scriptSig);
                     } else if (isSigned && isSegwit) {
                         //Get address from redeem script
                         auto redeemScriptSize = localReader.readNextVarInt();
@@ -500,14 +501,14 @@ namespace ledger {
                     reader.read(2);
                 }
                 auto scriptSize = reader.readNextVarInt();
-                auto scriptSig = reader.read(scriptSize);
-                auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
+                auto lockScript = reader.read(scriptSize);
+                auto parsedScript = ledger::core::BitcoinLikeScript::parse(lockScript);
                 if (parsedScript.isSuccess()) {
                     auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue())
                         output.address = Option<std::string>(parsedAddress.getValue().toBase58());
                 }
-                output.script = hex::toString(scriptSig);
+                output.script = hex::toString(lockScript);
                 tx->addOutput(std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
                         output, currency
                 )));
