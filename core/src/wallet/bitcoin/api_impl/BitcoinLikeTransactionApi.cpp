@@ -138,14 +138,33 @@ namespace ledger {
         }
 
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
+            bool isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
             BytesWriter witness;
-            if (_isSegwit) {
+            if (_isSegwit && !isDecred) {
                 for (auto &input : _inputs) {
                     auto scriptSig = input->getScriptSig();
                     if (!scriptSig.empty()) {
                         //Stack size
                         witness.writeVarInt(2);
                         witness.writeByteArray(scriptSig);
+                    }
+                }
+            } else if (isDecred){
+                witness.writeVarInt(_inputs.size());
+                for (auto &input : _inputs) {
+                    //TODO: Amount (not used can be anything)
+                    witness.writeByteArray({0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
+                    witness.writeByteArray({0x00, 0x00, 0x00, 0x00});
+                    witness.writeByteArray({0xff, 0xff, 0xff, 0xff});
+                    auto scriptSig = input->getScriptSig();
+                    witness.writeVarInt(scriptSig.size());
+                    if (!scriptSig.empty()) {
+                        witness.writeByteArray(scriptSig);
+                    }
+                    auto pubKeys = input->getPublicKeys();
+                    if (!pubKeys.empty()) {
+                        witness.writeVarInt(pubKeys[0].size());
+                        witness.writeByteArray(pubKeys[0]);
                     }
                 }
             }
@@ -342,8 +361,13 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
-            auto witness = getWitness();
-            writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
+            auto isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
+
+            if (!isDecred) {
+                auto witness = getWitness();
+                writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
+            }
+
             writer.writeLeValue<int32_t>(_lockTime);
 
             //TODO: activate when LedgerJS not adding expiryHeight and extraData to transaction
@@ -364,6 +388,12 @@ namespace ledger {
             //Decred has an expiry height
             if (_currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr") {
                 writer.writeByteArray({0xff, 0xff, 0xff, 0xff});
+            }
+
+
+            if (isDecred) {
+                auto witness = getWitness();
+                writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             }
         }
 
@@ -439,50 +469,51 @@ namespace ledger {
             for (auto index = 0; index < inputsCount; index++) {
                 auto previousTxHash = hex::toString(reader.readNextLeBigInt(32).toByteArray());
                 auto outputIndex = reader.readNextLeUint();
-                auto scriptSize = reader.readNextVarInt();
-                auto scriptSig = reader.read(scriptSize);
-                auto sequence = reader.readNextLeUint();
+
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
+                std::string address;
+                std::vector<std::vector<uint8_t>> pubKeys;
 
                 //Decred has an tree field (1 bytes)
                 if (isDecred) {
                     reader.readNextByte();
-                }
+                } else {
+                    auto scriptSize = reader.readNextVarInt();
+                    auto scriptSig = reader.read(scriptSize);
+                    auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
+                    if (parsedScript.isSuccess()) {
+                        BytesReader localReader(scriptSig);
+                        if (isSigned && !isSegwit) {
+                            //Get address from signed script
+                            auto sigSize = localReader.readNextVarInt();
+                            auto sig = localReader.read(sigSize);
+                            auto pubKeySize = localReader.readNextVarInt();
+                            auto pubKey = localReader.read(pubKeySize);
+                            pubKeys.push_back(pubKey);
+                            BitcoinLikeAddress localAddress(currency, HASH160::hash(pubKey, hashAlgorithm),
+                                                            currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
+                            address = localAddress.toBase58();
+                            output.script = hex::toString(scriptSig);
+                        } else if (isSigned && isSegwit) {
+                            //Get address from redeem script
+                            auto redeemScriptSize = localReader.readNextVarInt();
+                            auto redeemScript = localReader.read(redeemScriptSize);
+                            //Get pubKeys from Redeem script : 0x00 0x14 <pubKey>
+                            std::vector<uint8_t> pubKey(redeemScript.begin() + 2, redeemScript.end());
+                            pubKeys.push_back(pubKey);
+                            BitcoinLikeAddress localAddress(currency, HASH160::hash(redeemScript, hashAlgorithm),
+                                                            currency.bitcoinLikeNetworkParameters.value().P2SHVersion);
+                            address = localAddress.toBase58();
 
-                std::string address;
-                std::vector<std::vector<uint8_t>> pubKeys;
-                auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
-                if (parsedScript.isSuccess()) {
-                    BytesReader localReader(scriptSig);
-                    if (isSigned && !isSegwit) {
-                        //Get address from signed script
-                        auto sigSize = localReader.readNextVarInt();
-                        auto sig = localReader.read(sigSize);
-                        auto pubKeySize = localReader.readNextVarInt();
-                        auto pubKey = localReader.read(pubKeySize);
-                        pubKeys.push_back(pubKey);
-                        BitcoinLikeAddress localAddress(currency, HASH160::hash(pubKey, hashAlgorithm),
-                                                        currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
-                        address = localAddress.toBase58();
-                        output.script = hex::toString(scriptSig);
-                    } else if (isSigned && isSegwit) {
-                        //Get address from redeem script
-                        auto redeemScriptSize = localReader.readNextVarInt();
-                        auto redeemScript = localReader.read(redeemScriptSize);
-                        //Get pubKeys from Redeem script : 0x00 0x14 <pubKey>
-                        std::vector<uint8_t> pubKey(redeemScript.begin() + 2, redeemScript.end());
-                        pubKeys.push_back(pubKey);
-                        BitcoinLikeAddress localAddress(currency, HASH160::hash(redeemScript, hashAlgorithm),
-                                                        currency.bitcoinLikeNetworkParameters.value().P2SHVersion);
-                        address = localAddress.toBase58();
-
-                    } else {
-                        auto parsedAddress = parsedScript.getValue().parseAddress(currency);
-                        if (parsedAddress.hasValue()) {
-                            address = parsedAddress.getValue().toBase58();
+                        } else {
+                            auto parsedAddress = parsedScript.getValue().parseAddress(currency);
+                            if (parsedAddress.hasValue()) {
+                                address = parsedAddress.getValue().toBase58();
+                            }
                         }
                     }
                 }
+                auto sequence = reader.readNextLeUint();
                 output.address = address;
                 output.transactionHash = previousTxHash;
                 output.index = outputIndex;
@@ -514,16 +545,38 @@ namespace ledger {
                 )));
             }
 
+            if (isDecred) {
+                //LockTime
+                tx->setLockTime(reader.readNextLeUint());
+                //Expiry Height
+                reader.read(4);
+                //Number of inputs
+                reader.readNextVarInt();
+            }
+
             //Get witness if needed
             if (isSigned && (isSegwit || isDecred)) {
                 for (auto index = 0; index < inputsCount; index++) {
-                    auto stackSize = reader.readNextVarInt();
+                    //Decred has no stack size on witness
+                    auto stackSize = isDecred ? 2 : reader.readNextVarInt();
                     if (stackSize != 0 && stackSize != 2) {
                         throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                              "Stack size not valid in signed segwit transaction");
                     }
 
                     if (stackSize == 2) {
+
+                        if (isDecred) {
+                            //Amount
+                            reader.read(8);
+                            //Block height
+                            reader.read(4);
+                            //Block Index
+                            reader.read(4);
+                            //Whole script size
+                            reader.readNextVarInt();
+                        }
+
                         auto scriptSigSize = reader.readNextVarInt();
                         auto scriptSig = reader.read(scriptSigSize);
                         auto pubKeySize = reader.readNextVarInt();
@@ -548,6 +601,12 @@ namespace ledger {
                         preparedInputs[index].output.script = hex::toString(writer.toByteArray());
                     }
                 }
+            }
+
+
+            //Decred has a expiry height (4 byte)
+            if (!isDecred) {
+                tx->setLockTime(reader.readNextLeUint());
             }
 
             //Finally append inputs to tx
@@ -578,12 +637,6 @@ namespace ledger {
                                 )
                         )
                 );
-            }
-            tx->setLockTime(reader.readNextLeUint());
-
-            //Decred has a expiry height (4 byte)
-            if (isDecred) {
-                reader.read(4);
             }
 
             return tx;

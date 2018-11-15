@@ -35,6 +35,7 @@
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 class BitcoinLikeWalletP2SHSynchronization : public BaseFixture {
 
@@ -253,5 +254,15 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
             dispatcher->waitUntilStopped();
         }
+    }
+}
+
+TEST_F(BitcoinLikeWalletP2SHSynchronization, DecredParsingAndSerialization) {
+    auto pool = newDefaultPool();
+    {
+        auto wallet = wait(pool->createWallet("testnet_wallet", "decred",DynamicObject::newInstance()));
+        auto strTx = "01000000016b9b4d4cdd2cf78907e62cddf31911ae4d4af1d89228ae4afc4459edee6a60c40100000000ffffff000240420f000000000000001976a9141d19445f397f6f0d3e2e6d741f61ba66b53886cf88acf0d31d000000000000001976a91415101bac61dca29add75996a0836a469dc8eee0788ac000000000000000001000000000000000000000000ffffffff6a47304402200466bbc2aa8a742e85c3b68911502e73cdcb620ceaaa7a3cd199dbb4f8e9b969022063afeedd37d05e44b655a9de92eb36124acc045baf7b9e2941f81e41af91f1150121030ac79bab351084fdc82b4fa46eaa6a9cd2b5eb97ee93e367422bf47219b54a14";
+        auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
+        EXPECT_EQ(hex::toString(tx->serialize()), strTx);
     }
 }
