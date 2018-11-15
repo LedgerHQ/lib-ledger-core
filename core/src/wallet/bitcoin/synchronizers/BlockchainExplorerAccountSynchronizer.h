@@ -37,6 +37,7 @@
 #include <preferences/Preferences.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <async/DedicatedContext.hpp>
+#include <database/PartialBlocksDB.hpp>
 
 namespace ledger {
     namespace core {
@@ -70,20 +71,20 @@ namespace ledger {
             }
         };
 
-        class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer,
-                                                      public DedicatedContext,
-                                                        public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
+        class BlockchainExplorerAccountSynchronizer : 
+			public BitcoinLikeAccountSynchronizer,
+			public DedicatedContext,
+            public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
         public:
-            BlockchainExplorerAccountSynchronizer(
-                    const std::shared_ptr<WalletPool>& pool,
-                    const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer
+			BlockchainExplorerAccountSynchronizer(
+				const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
+				const std::shared_ptr<db::PartialBlocksDB>& partialBlocksDB
             );
             void reset(const std::shared_ptr<BitcoinLikeAccount> &account,
-                       const std::chrono::system_clock::time_point &toDate) override;
-            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount> &account) override;
+                       const std::chrono::system_clock::time_point &toDate);
+            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount> &account);
 
-            bool isSynchronizing() const override;
-
+            bool isSynchronizing() const;
         private:
 
             struct SynchronizationBuddy {
@@ -111,7 +112,6 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<ProgressNotifier<Unit>> _notifier;
             std::shared_ptr<Preferences> _internalPreferences;
-            std::shared_ptr<BitcoinLikeAccount> _currentAccount;
             std::mutex _lock;
         };
     }
