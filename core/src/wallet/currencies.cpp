@@ -110,6 +110,16 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("peercoin", 6, "PPC")
                             .unit("milli-peercoin", 3, "mPPC");
+            
+            const api::Currency GAMECREDITS =
+                    Currency("gamecredits")
+                            .forkOfBitcoin(networks::getNetworkParameters("gamecredits"))
+                            .bip44(101)
+                            .paymentUri("gamecredits")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("gamecredits", 8, "GAME")
+                            .unit("milli-gamecredits", 5, "mGAME")
+                            .unit("micro-gamecredits", 2, "μGAME");
 
             const api::Currency DIGIBYTE =
                     Currency("digibyte")
@@ -229,6 +239,7 @@ namespace ledger {
                 ZENCASH,
                 LITECOIN,
                 PEERCOIN,
+                GAMECREDITS,
                 DIGIBYTE,
                 HCASH,
                 QTUM,
