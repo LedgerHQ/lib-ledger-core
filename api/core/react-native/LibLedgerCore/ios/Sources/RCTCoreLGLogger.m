@@ -8,15 +8,46 @@
 //Export module
 RCT_EXPORT_MODULE(RCTCoreLGLogger)
 
+@synthesize bridge = _bridge;
+
 -(instancetype)init
 {
     self = [super init];
     //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGLogger alloc] init];
+        self.objcImplementations = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::release, first argument should be an instance of LGLogger", nil);
+    }
+    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
+    resolve(@(YES));
+}
+RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *uuids = [[NSMutableArray alloc] init];
+    for (id key in self.objcImplementations)
+    {
+        [uuids addObject:key];
+    }
+    NSDictionary *result = @{@"value" : uuids};
+    resolve(result);
+}
+RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.objcImplementations removeAllObjects];
+    resolve(@(YES));
 }
 
 /**
@@ -24,10 +55,20 @@ RCT_EXPORT_MODULE(RCTCoreLGLogger)
  *@param tag, string
  *@param message, string
  */
-RCT_REMAP_METHOD(d,d:(nonnull NSString *)tag
-             message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(d,d:(NSDictionary *)currentInstance withParams:(nonnull NSString *)tag
+                                                        message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::d, first argument should be an instance of LGLogger", nil);
+    }
+    LGLogger *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLogger::d, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj d:tag message:message];
 
-    [self.objcImpl d:tag message:message];
 }
 
 /**
@@ -35,10 +76,20 @@ RCT_REMAP_METHOD(d,d:(nonnull NSString *)tag
  *@param tag, string
  *@param message, string
  */
-RCT_REMAP_METHOD(i,i:(nonnull NSString *)tag
-             message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(i,i:(NSDictionary *)currentInstance withParams:(nonnull NSString *)tag
+                                                        message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::i, first argument should be an instance of LGLogger", nil);
+    }
+    LGLogger *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLogger::i, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj i:tag message:message];
 
-    [self.objcImpl i:tag message:message];
 }
 
 /**
@@ -46,10 +97,20 @@ RCT_REMAP_METHOD(i,i:(nonnull NSString *)tag
  *@param tag, string
  *@param message, string
  */
-RCT_REMAP_METHOD(e,e:(nonnull NSString *)tag
-             message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(e,e:(NSDictionary *)currentInstance withParams:(nonnull NSString *)tag
+                                                        message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::e, first argument should be an instance of LGLogger", nil);
+    }
+    LGLogger *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLogger::e, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj e:tag message:message];
 
-    [self.objcImpl e:tag message:message];
 }
 
 /**
@@ -57,10 +118,20 @@ RCT_REMAP_METHOD(e,e:(nonnull NSString *)tag
  *@param tag, string
  *@param message, string
  */
-RCT_REMAP_METHOD(w,w:(nonnull NSString *)tag
-             message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(w,w:(NSDictionary *)currentInstance withParams:(nonnull NSString *)tag
+                                                        message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::w, first argument should be an instance of LGLogger", nil);
+    }
+    LGLogger *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLogger::w, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj w:tag message:message];
 
-    [self.objcImpl w:tag message:message];
 }
 
 /**
@@ -68,9 +139,19 @@ RCT_REMAP_METHOD(w,w:(nonnull NSString *)tag
  *@param tag, string
  *@param message, string
  */
-RCT_REMAP_METHOD(c,c:(nonnull NSString *)tag
-             message:(nonnull NSString *)message) {
+RCT_REMAP_METHOD(c,c:(NSDictionary *)currentInstance withParams:(nonnull NSString *)tag
+                                                        message:(nonnull NSString *)message withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
+    {
+        reject(@"impl_call_error", @"Error while calling RCTCoreLGLogger::c, first argument should be an instance of LGLogger", nil);
+    }
+    LGLogger *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
+    if (!currentInstanceObj)
+    {
+        NSString *error = [NSString stringWithFormat:@"Error while calling LGLogger::c, instance of uid %@ not found", currentInstance[@"uid"]];
+        reject(@"impl_call_error", error, nil);
+    }
+    [currentInstanceObj c:tag message:message];
 
-    [self.objcImpl c:tag message:message];
 }
 @end

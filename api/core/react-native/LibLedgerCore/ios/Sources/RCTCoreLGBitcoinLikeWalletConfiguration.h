@@ -3,10 +3,11 @@
 
 #import "LGBitcoinLikeWalletConfiguration.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class of constants to set Bitcoin like wallet configurations */
 @interface RCTCoreLGBitcoinLikeWalletConfiguration : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeWalletConfiguration *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

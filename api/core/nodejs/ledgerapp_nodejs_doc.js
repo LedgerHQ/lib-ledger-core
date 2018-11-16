@@ -1609,6 +1609,8 @@ declare class NJSBitcoinLikeTransaction
     declare function getTime(): Date;
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     declare function getTimestamp(): ?number;
+    /** Get Transaction version */
+    declare function getVersion(): number;
     /** Serialize the transaction to its raw format. */
     declare function serialize(): Object;
     /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
@@ -1705,7 +1707,11 @@ declare class NJSBitcoinLikeTransactionBuilder
     declare function clone(): NJSBitcoinLikeTransactionBuilder;
     /** Reset the current instance to its initial state */
     declare function reset();
-    static declare function parseRawUnsignedTransaction(currency: Currency, rawTransaction: Object): NJSBitcoinLikeTransaction;
+    /**
+     * Parsing unsigned transaction
+     * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+     */
+    static declare function parseRawUnsignedTransaction(currency: Currency, rawTransaction: Object, currentBlockHeight: ?number): NJSBitcoinLikeTransaction;
 }
 /**
  *Callback triggered by main completed task,

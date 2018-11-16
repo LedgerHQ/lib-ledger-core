@@ -8,10 +8,17 @@
 #import "LGBitcoinLikeTransactionBuilder.h"
 #import "LGBitcoinLikeTransactionCallback.h"
 #import "LGCurrency.h"
+#import "RCTCoreLGAmount.h"
+#import "RCTCoreLGBitcoinLikeScript.h"
+#import "RCTCoreLGBitcoinLikeTransaction.h"
+#import "RCTCoreLGBitcoinLikeTransactionBuilder.h"
+#import "RCTCoreLGBitcoinLikeTransactionCallback.h"
+#import "RCTCoreLGCurrency.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGBitcoinLikeTransactionBuilder : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeTransactionBuilder *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

@@ -81,7 +81,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
             dispatcher->waitUntilStopped();
 
             auto block = wait(account->getLastBlock());
-            auto blockHash = block.hash;
+            auto blockHash = block.blockHash;
         }
     }
 }

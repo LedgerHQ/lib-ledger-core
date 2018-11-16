@@ -117,7 +117,7 @@ namespace ledger {
             rowset<row> rows = (sql.prepare <<
                                             "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
                                                     " FROM operations AS op "
-                                                    " WHERE op.account_uid = :uid ",
+                                                    " WHERE op.account_uid = :uid ORDER BY op.date",
                                                     use(accountUid));
 
             auto filterList = [&] (const std::vector<std::string> &list) -> bool {

@@ -133,6 +133,8 @@ BitcoinLikeTransaction = interface +c {
     getTime(): date;
     # Get the timestamps serialized in the raw transaction if the underlying currency handles it.
     getTimestamp(): optional<i32>;
+    # Get Transaction version
+    getVersion(): i32;
     # Serialize the transaction to its raw format.
     serialize(): binary;
     # Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format.
@@ -252,7 +254,9 @@ BitcoinLikeTransactionBuilder = interface +c {
     # Reset the current instance to its initial state
     reset();
 
-    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): BitcoinLikeTransaction;
+    # Parsing unsigned transaction
+    # parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, currentBlockHeight: optional<i32>): BitcoinLikeTransaction;
 }
 
 #Class representing a Bitcoin account

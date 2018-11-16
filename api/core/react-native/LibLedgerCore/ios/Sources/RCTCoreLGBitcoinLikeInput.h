@@ -7,11 +7,17 @@
 #import "LGBitcoinLikeOutput.h"
 #import "LGBitcoinLikeScript.h"
 #import "LGDerivationPath.h"
+#import "RCTCoreLGAmount.h"
+#import "RCTCoreLGBinaryCallback.h"
+#import "RCTCoreLGBitcoinLikeOutput.h"
+#import "RCTCoreLGBitcoinLikeScript.h"
+#import "RCTCoreLGDerivationPath.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing Bitcoin inputs */
 @interface RCTCoreLGBitcoinLikeInput : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBitcoinLikeInput *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

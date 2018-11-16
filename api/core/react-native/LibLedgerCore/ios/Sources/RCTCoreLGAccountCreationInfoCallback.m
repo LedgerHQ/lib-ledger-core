@@ -5,16 +5,14 @@
 
 
 @implementation RCTCoreLGAccountCreationInfoCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGAccountCreationInfoCallback)
-
--(instancetype)init
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGAccountCreationInfoCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -24,9 +22,19 @@ RCT_EXPORT_MODULE(RCTCoreLGAccountCreationInfoCallback)
  * @params result optional of type T, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable LGAccountCreationInfo *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable LGAccountCreationInfo *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGAccountCreationInfoCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGAccountCreationInfo *rctImpl_result = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
+    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
+    NSDictionary *converted_result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : uuid };
+
+    self.resolve(converted_result);
+
 }
 @end

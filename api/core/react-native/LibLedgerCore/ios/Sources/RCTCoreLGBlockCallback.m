@@ -5,16 +5,14 @@
 
 
 @implementation RCTCoreLGBlockCallback
-//Export module
-RCT_EXPORT_MODULE(RCTCoreLGBlockCallback)
-
--(instancetype)init
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge
 {
     self = [super init];
-    //Init Objc implementation
     if(self)
     {
-        self.objcImpl = [[LGBlockCallbackImpl alloc] init];
+        self.resolve = resolve;
+        self.reject = reject;
+        self.bridge = bridge;
     }
     return self;
 }
@@ -24,9 +22,19 @@ RCT_EXPORT_MODULE(RCTCoreLGBlockCallback)
  * @params result optional of type T, non null if main task failed
  * @params error optional of type Error, non null if main task succeeded
  */
-RCT_REMAP_METHOD(onCallback,onCallback:(nullable LGBlock *)result
-                                 error:(nullable LGError *)error) {
+- (void)onCallback:(nullable LGBlock *)result
+             error:(nullable LGError *)error {
+    if (error)
+    {
+        self.reject(@"RCTCoreLGBlockCallback Error", error.message, nil);
+    }
 
-    [self.objcImpl onCallback:result error:error];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    RCTCoreLGBlock *rctImpl_result = (RCTCoreLGBlock *)[self.bridge moduleForName:@"CoreLGBlock"];
+    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
+    NSDictionary *converted_result = @{@"type" : @"CoreLGBlock", @"uid" : uuid };
+
+    self.resolve(converted_result);
+
 }
 @end

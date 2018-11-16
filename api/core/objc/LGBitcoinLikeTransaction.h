@@ -39,6 +39,9 @@
 /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
 - (nullable NSNumber *)getTimestamp;
 
+/** Get Transaction version */
+- (int32_t)getVersion;
+
 /** Serialize the transaction to its raw format. */
 - (nonnull NSData *)serialize;
 

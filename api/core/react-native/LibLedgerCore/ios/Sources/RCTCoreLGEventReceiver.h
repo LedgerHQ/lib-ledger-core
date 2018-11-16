@@ -3,11 +3,13 @@
 
 #import "LGEvent.h"
 #import "LGEventReceiverImpl.h"
+#import "RCTCoreLGEvent.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class respresenting an event receiver */
 @interface RCTCoreLGEventReceiver : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGEventReceiverImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

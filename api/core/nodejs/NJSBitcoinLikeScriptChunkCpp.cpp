@@ -85,8 +85,8 @@ NAN_METHOD(NJSBitcoinLikeScriptChunk::getOperator) {
     {
         auto arg_0_optional = (result).value();
         auto arg_0_tmp = Nan::New<Object>();
-        auto arg_0_tmp_1 = Nan::New<String>(arg_0_optional.name).ToLocalChecked();
-        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("name").ToLocalChecked(), arg_0_tmp_1);
+        auto arg_0_tmp_1 = Nan::New<String>(arg_0_optional.operatorName).ToLocalChecked();
+        Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("operatorName").ToLocalChecked(), arg_0_tmp_1);
         auto arg_0_tmp_2 = Nan::New<Int32>(arg_0_optional.value);
         Nan::DefineOwnProperty(arg_0_tmp, Nan::New<String>("value").ToLocalChecked(), arg_0_tmp_2);
 

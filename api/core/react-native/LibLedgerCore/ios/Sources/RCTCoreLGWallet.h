@@ -17,11 +17,26 @@
 #import "LGPreferences.h"
 #import "LGWallet.h"
 #import "LGWalletType.h"
+#import "RCTCoreLGAccountCallback.h"
+#import "RCTCoreLGAccountCreationInfo.h"
+#import "RCTCoreLGAccountCreationInfoCallback.h"
+#import "RCTCoreLGAccountListCallback.h"
+#import "RCTCoreLGBitcoinLikeWallet.h"
+#import "RCTCoreLGBlockCallback.h"
+#import "RCTCoreLGCurrency.h"
+#import "RCTCoreLGErrorCodeCallback.h"
+#import "RCTCoreLGEventBus.h"
+#import "RCTCoreLGExtendedKeyAccountCreationInfo.h"
+#import "RCTCoreLGExtendedKeyAccountCreationInfoCallback.h"
+#import "RCTCoreLGI32Callback.h"
+#import "RCTCoreLGLogger.h"
+#import "RCTCoreLGPreferences.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing a wallet */
 @interface RCTCoreLGWallet : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGWallet *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

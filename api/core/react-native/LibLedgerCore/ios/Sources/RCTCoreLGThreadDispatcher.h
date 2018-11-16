@@ -4,11 +4,14 @@
 #import "LGExecutionContext.h"
 #import "LGLock.h"
 #import "LGThreadDispatcherImpl.h"
+#import "RCTCoreLGExecutionContext.h"
+#import "RCTCoreLGLock.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class representing a thread dispatcher */
 @interface RCTCoreLGThreadDispatcher : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGThreadDispatcherImpl *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

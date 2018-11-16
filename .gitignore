@@ -19,3 +19,6 @@ core/lib/secp256k1/src/
 core/lib/secp256k1/tmp/
 
 node_modules
+api/djinni/support-lib/*.mk
+api/djinni/support-lib/*.Makefile
+.vscode/

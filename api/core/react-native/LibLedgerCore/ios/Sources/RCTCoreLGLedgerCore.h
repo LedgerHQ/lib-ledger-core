@@ -3,9 +3,10 @@
 
 #import "LGLedgerCore.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 @interface RCTCoreLGLedgerCore : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGLedgerCore *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

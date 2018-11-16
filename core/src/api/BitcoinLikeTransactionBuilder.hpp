@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKETRANSACTIONBUILDER_HPP
 #define DJINNI_GENERATED_BITCOINLIKETRANSACTIONBUILDER_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -109,7 +110,11 @@ public:
     /** Reset the current instance to its initial state */
     virtual void reset() = 0;
 
-    static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
+    /**
+     * Parsing unsigned transaction
+     * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+     */
+    static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, std::experimental::optional<int32_t> currentBlockHeight);
 };
 
 } } }  // namespace ledger::core::api

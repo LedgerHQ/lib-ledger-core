@@ -60,6 +60,7 @@ namespace ledger {
                     const BitcoinLikeGetTxFunction& getTransaction,
                     const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
                     const std::shared_ptr<BitcoinLikeKeychain>& keychain,
+                    const uint64_t currentBlockHeight,
                     const std::shared_ptr<spdlog::logger>& logger
             );
             const api::Currency& getCurrency() const;

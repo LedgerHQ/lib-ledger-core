@@ -4,7 +4,10 @@
 #import "LGBlock.h"
 #import "LGBlockCallbackImpl.h"
 #import "LGError.h"
+#import "RCTCoreLGBlock.h"
+#import "RCTCoreLGError.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -12,6 +15,9 @@
  *Callback triggered by main completed task,
  *returns optional result of template type T
  */
-@interface RCTCoreLGBlockCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGBlockCallbackImpl *objcImpl;
+@interface RCTCoreLGBlockCallback : NSObject <LGBlockCallback>
+@property (nonatomic, strong) RCTPromiseResolveBlock resolve;
+@property (nonatomic, strong) RCTPromiseRejectBlock reject;
+@property (nonatomic, weak) RCTBridge *bridge;
+-(instancetype)initWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock) reject andBridge: (RCTBridge *) bridge;
 @end

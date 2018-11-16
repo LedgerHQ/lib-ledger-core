@@ -32,12 +32,13 @@
 #include "../BaseFixture.h"
 #include "../../fixtures/testnet_xpub_fixtures.h"
 #include "../../fixtures/btg_xpub_fixtures.h"
-
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
 #include "transaction_test_helper.h"
 
 #include <utils/hex.h>
-
+#include <utils/DateUtils.hpp>
+#include <crypto/HASH160.hpp>
 struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
@@ -56,7 +57,7 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
     auto tx = ::wait(f);
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
     //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }
@@ -74,9 +75,17 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
     EXPECT_EQ(outputs.size(), 1);
     auto maxAmount = outputs[0]->getValue();
     EXPECT_EQ(balance->toLong(), maxAmount->toLong() + fees->toLong());
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }
+
+TEST_F(BitcoinMakeP2SHTransaction, ParseSignedRawTransaction) {
+    //Tx hash 93ae1990d10745e3ab4bf742d4b06bd513e7a26384617a17525851e4e3ed7038
+    auto strTx = "0100000000010182815d16259062c4bc08c4fb3aa985444b7208197cf676212f1b3da93782e19f0100000017160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2ffffffff0280f0fa020000000017a91428242bc4e7266060e084fab55fb70916b605d0b3870f4a9b040000000017a91401445204b7063c76c702501899334d6f7499806d870248304502210085a85a2dec818ece4748c0c9d71640a5703a5eec9112dd58183b048c6a9961cf02201dd0beabc1c3500f75849a046deab9e2d2ce388fff6cb92693508f5ea406471d012103d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad48600000000";
+    auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(currency, hex::toByteArray(strTx), 0);
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+}
+
 
 struct BTGMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
@@ -96,7 +105,7 @@ TEST_F(BTGMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
     auto f = builder->build();
     auto tx = ::wait(f);
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize());
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
     //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }

@@ -39,6 +39,7 @@
 #include <collections/functional.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
 #include <events/EventPublisher.hpp>
@@ -50,11 +51,14 @@
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <spdlog/logger.h>
 #include <utils/DateUtils.hpp>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+
+
 namespace ledger {
     namespace core {
 
@@ -136,6 +140,7 @@ namespace ledger {
             }
 
             // Find outputs
+            auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
             for (auto index = 0; index < outputCount; index++) {
                 auto& output = transaction.outputs[index];
@@ -145,10 +150,10 @@ namespace ledger {
                         DerivationPath p(path.getValue());
                         accountOutputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Output *>(&output), p));
                         if (p.getNonHardenedChildNum(nodeIndex) == 1) {
-                            if (sentAmount == 0L) {
+                            if (hasSpentNothing) {
                                 receivedAmount +=  output.value.toUint64();
                             }
-                            if (recipients.size() == 0 && index + 1 >= outputCount) {
+                            if ((recipients.size() == 0 && index + 1 >= outputCount) || hasSpentNothing) {
                                 recipients.push_back(output.address.getValue());
                             }
                         } else {
@@ -223,19 +228,20 @@ namespace ledger {
                         emitNewOperationEvent(operation);
                 }
 
+                auto accountUid = getAccountUid();
                 //Update account_uid column of bitcoin_outputs table
                 for (auto& o : accountOutputs) {
                     if (o.first->address.nonEmpty()) {
 
-                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address",
-                                                        soci::use(o.first->address.getValue()));
-                        auto accountUid = getAccountUid();
+                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address AND account_uid IS NULL ",
+                                soci::use(o.first->address.getValue()));
+
                         for (auto &row : rows) {
                             auto txUid = row.get<std::string>(0);
-
+                            auto txHash = row.get<std::string>(1);
                             //This check is made to avoid setting account_uid of bitcoin_outputs which was set during another's account scan/sync
                             //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
-                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, row.get<std::string>(1))) {
+                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, txHash)) {
                                 sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
                                         soci::use(accountUid), soci::use(o.first->address.getValue()), soci::use(txUid);
                             }
@@ -428,65 +434,67 @@ namespace ledger {
             });
         }
 
-        Future<std::vector<std::shared_ptr<api::Amount>>> BitcoinLikeAccount::getBalanceHistory(const std::string & start,
-                                                                                           const std::string & end,
-                                                                                           api::TimePeriod precision) {
+        Future<std::vector<std::shared_ptr<api::Amount>>>
+        BitcoinLikeAccount::getBalanceHistory(const std::string &start,
+                                              const std::string &end,
+                                              api::TimePeriod precision) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
-
-                const int32_t BATCH_SIZE = 100;
-                const auto& uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                std::vector<Operation> operations;
-                auto offset = 0;
-                std::size_t count = 0;
-
-                auto keychain = self->getKeychain();
-                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
-
-                //Query all utxos in date range
-                for (; (count = OperationDatabaseHelper::queryOperations(sql, uid, operations, filter)) == BATCH_SIZE; offset += count) {}
+            return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
 
                 auto startDate = DateUtils::fromJSON(start);
                 auto endDate = DateUtils::fromJSON(end);
+                if (startDate >= endDate) {
+                    throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
+                                         "Start date should be strictly greater than end date");
+                }
+
+                const auto &uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<Operation> operations;
+
+                auto keychain = self->getKeychain();
+                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+
+                //Get operations related to an account
+                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+
+                auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
 
                 std::vector<std::shared_ptr<api::Amount>> amounts;
                 std::size_t operationsCount = 0;
-                bool increment = true;
-                BigInt sum(0);
-                while (upperDate <= endDate) {
+                BigInt sum;
+                while (lowerDate <= endDate && operationsCount < operations.size()) {
 
-                    if(operationsCount < operations.size()) {
-                        auto operation = operations[operationsCount];
-                        if (operation.date <= upperDate) {
-                            increment = false;
-                            switch (operation.type) {
-                                case api::OperationType::RECEIVE:
-                                {
-                                    sum = sum + operation.amount;
-                                    break;
-                                }
-                                case api::OperationType::SEND:
-                                {
-                                    sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
-                                    break;
-                                }
+                    auto operation = operations[operationsCount];
+                    while (operation.date > upperDate && lowerDate < endDate) {
+                        lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                        upperDate = DateUtils::incrementDate(upperDate, precision);
+                        amounts.emplace_back(
+                                std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                    }
+
+                    if (operation.date <= upperDate) {
+                        switch (operation.type) {
+                            case api::OperationType::RECEIVE: {
+                                sum = sum + operation.amount;
+                                break;
                             }
-                            operationsCount += 1;
+                            case api::OperationType::SEND: {
+                                sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                break;
+                            }
                         }
                     }
+                    operationsCount += 1;
+                }
 
-                    if(increment) {
-                        //Save amount
-                        amounts.emplace_back(std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
-                        //Increment Date
-                        upperDate = DateUtils::incrementDate(upperDate, precision);
-                    }
-
-                    increment = true;
+                while (lowerDate < endDate) {
+                    lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                    amounts.emplace_back(
+                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
                 }
 
                 return amounts;
@@ -517,8 +525,64 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
-                return seq.str();
+            auto self = getSelf();
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+                //Store newly broadcasted tx in db
+                //First parse it
+                auto txHash = seq.str();
+                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
+
+                //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
+                BitcoinLikeBlockchainExplorer::Transaction txExplorer;
+                txExplorer.hash = txHash;
+                txExplorer.lockTime = tx->getLockTime();
+                txExplorer.receivedAt = std::chrono::system_clock::now();
+                txExplorer.version = tx->getVersion();
+                txExplorer.confirmations = 0;
+
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+
+                //Inputs
+                auto inputCount = tx->getInputs().size();
+                for (auto index = 0; index < inputCount; index++) {
+                    auto input = tx->getInputs()[index];
+                    BitcoinLikeBlockchainExplorer::Input in;
+                    in.index = index;
+                    auto prevTxHash = input->getPreviousTxHash().value_or("");
+                    auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
+                    BitcoinLikeBlockchainExplorer::Transaction prevTx;
+                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
+                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
+                    }
+                    in.value = prevTx.outputs[prevTxOutputIndex].value;
+                    in.signatureScript = hex::toString(input->getScriptSig());
+                    in.previousTxHash = prevTxHash;
+                    in.previousTxOutputIndex = prevTxOutputIndex;
+                    in.sequence = input->getSequence();
+                    in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
+                    txExplorer.inputs.push_back(in);
+                }
+
+                //Outputs
+                auto keychain = self->getKeychain();
+                auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+                auto outputCount = tx->getOutputs().size();
+                for (auto index = 0; index < outputCount; index++) {
+                    auto output = tx->getOutputs()[index];
+                    BitcoinLikeBlockchainExplorer::Output out;
+                    out.value = BigInt(output->getValue()->toString());
+                    out.time = DateUtils::toJSON(std::chrono::system_clock::now());
+                    out.transactionHash = output->getTransactionHash();
+                    out.index = output->getOutputIndex();
+                    out.script = hex::toString(output->getScript());
+                    out.address = output->getAddress().value_or("");
+                    txExplorer.outputs.push_back(out);
+                }
+
+                //Store in DB
+                self->putTransaction(sql, txExplorer);
+
+                return txHash;
             }).callback(getContext(), callback);
         }
 
@@ -539,7 +603,7 @@ namespace ledger {
                     getContext(),
                     getWallet()->getCurrency(),
                     logger(),
-                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, logger())
+                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, _currentBlockHeight,logger())
             );
         }
 
@@ -580,7 +644,7 @@ namespace ledger {
                 for (auto& batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
                         batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().hash;
+                        batch.blockHash = previousBlock.getValue().blockHash;
                     } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
                         batch.blockHeight = 0;
                         batch.blockHash = "";

@@ -74,7 +74,7 @@ namespace ledger {
         int32_t AccountDatabaseHelper::computeNextAccountIndex(soci::session &sql, const std::string &walletUid) {
             //TODO: Enhance performance for huge wallets by reducing the select range.
             int32_t currentIndex = 0;
-            rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid", use(walletUid));
+            rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY idx", use(walletUid));
             for (auto& idx : rows) {
                 if (idx > currentIndex) {
                     return currentIndex;
@@ -100,10 +100,10 @@ namespace ledger {
 
         Option<api::Block> AccountDatabaseHelper::getLastBlockWithOperations(soci::session &sql, const std::string &accountUid) {
             //Get block_uid of most recent operation from DB
-            rowset<row> rows = (sql.prepare << "SELECT op.block_uid, b.hash, b.height, b.time, b.currency_name"
+            rowset<row> rows = (sql.prepare << "SELECT op.block_uid, b.hash, b.height, b.time, b.currency_name "
                                                     "FROM operations AS op "
-                                                    "JOIN blocks AS b ON op.block_uid = b.uid"
-                                                    "WHERE op.account_uid = :uid ORDER BY op.created_at DESC LIMIT 1",
+                                                    "JOIN blocks AS b ON op.block_uid = b.uid "
+                                                    "WHERE op.account_uid = :uid ORDER BY op.date DESC LIMIT 1",
                                                     use(accountUid));
             for (auto& row : rows) {
                 auto block_uid = row.get<std::string>(0);

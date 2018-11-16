@@ -58,14 +58,17 @@ namespace ledger {
             virtual void flush() override;
 
         protected:
-            void _sink_it(std::string msg, std::size_t size);
+            void _sink_it(std::string msg);
 
         private:
             static spdlog::filename_t calc_filename(
                     std::shared_ptr<api::PathResolver> resolver,
                     const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
             void _rotate();
-
+#if defined(_WIN32) || defined(_WIN64)
+            static void ToWide(const std::string &input, std::wstring &output);
+            static void ToNarrow(const std::wstring &input, std::string &output);
+#endif
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::weak_ptr<api::PathResolver> _resolver;

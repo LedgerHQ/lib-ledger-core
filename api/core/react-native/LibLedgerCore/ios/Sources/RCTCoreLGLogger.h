@@ -3,10 +3,11 @@
 
 #import "LGLogger.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
 /**Class to print logs to console */
 @interface RCTCoreLGLogger : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGLogger *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end

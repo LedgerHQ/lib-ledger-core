@@ -3,6 +3,7 @@
 
 #import "LGRunnable.h"
 #import <Foundation/Foundation.h>
+#import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
@@ -11,5 +12,5 @@
  *A runnable, needs a specific execution context (refer to ExecutionContext) to run
  */
 @interface RCTCoreLGRunnable : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) LGRunnable *objcImpl;
+@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
 @end
