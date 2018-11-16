@@ -140,6 +140,9 @@ namespace ledger {
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
             bool isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
             BytesWriter witness;
+
+            //Decred has a special witness with nb of witnesses and no stack size,
+            //and additional fields: amount, block height, block index
             if (_isSegwit && !isDecred) {
                 for (auto &input : _inputs) {
                     auto scriptSig = input->getScriptSig();
@@ -361,10 +364,11 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
+            auto witness = getWitness();
             auto isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
 
+            //Decred has witness after lockTime
             if (!isDecred) {
-                auto witness = getWitness();
                 writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             }
 
@@ -385,14 +389,10 @@ namespace ledger {
                 }
             }
             */
-            //Decred has an expiry height
-            if (_currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr") {
-                writer.writeByteArray({0xff, 0xff, 0xff, 0xff});
-            }
 
-
+            //Decred has a witness and an expiry height
             if (isDecred) {
-                auto witness = getWitness();
+                writer.writeByteArray({0xff, 0xff, 0xff, 0xff});
                 writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             }
         }
@@ -474,7 +474,7 @@ namespace ledger {
                 std::string address;
                 std::vector<std::vector<uint8_t>> pubKeys;
 
-                //Decred has an tree field (1 bytes)
+                //Decred has a tree field (1 bytes) and nothing else
                 if (isDecred) {
                     reader.readNextByte();
                 } else {
@@ -527,7 +527,7 @@ namespace ledger {
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
                 output.index = static_cast<uint64_t>(index);
                 output.value = reader.readNextLeBigInt(8);
-                //Decred has a version script (2 byte)
+                //Decred has an additional version script (2 byte)
                 if (isDecred) {
                     reader.read(2);
                 }
@@ -545,6 +545,7 @@ namespace ledger {
                 )));
             }
 
+            //Decred has lockTime, expiry height and nb of witnesses before witness
             if (isDecred) {
                 //LockTime
                 tx->setLockTime(reader.readNextLeUint());
@@ -604,7 +605,7 @@ namespace ledger {
             }
 
 
-            //Decred has a expiry height (4 byte)
+            //Decred has lockTime before witness
             if (!isDecred) {
                 tx->setLockTime(reader.readNextLeUint());
             }
