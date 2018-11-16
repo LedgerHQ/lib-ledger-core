@@ -82,6 +82,11 @@ KeychainTestData PEERCOIN_DATA(ledger::core::networks::getNetworkParameters("pee
                                  "r29uBq5Q9CB7aRvUAcj5rj4DsqrkTfSr8KczaATNrkm4Wo8odYxDAxE2T8y9mwZpDVNuEdUYVddi8c3E86EvJK36SFUP421yF5qAfY8A5RDn865p",
                                  "44'/6'/0'");
 
+KeychainTestData GAMECREDITS_DATA(ledger::core::networks::getNetworkParameters("gamecredits"),
+                              ledger::core::currencies::GAMECREDITS,
+                              "Ltpv71G8qDifUiNeuLi8DnxLFrdaD7UsxeYypRb6KR987W3crFxREFvU9wpvP5AVmjtQCa9RSi9qiRS7UUppzdcMiarR7FEPfWGMFZCYLoCudcy",
+                              "44'/101'/0'");
+
 KeychainTestData DIGIBYTE_DATA(ledger::core::networks::getNetworkParameters("digibyte"),
                                ledger::core::currencies::DIGIBYTE,
                                "xpub6CgBxxzcxNuygpe1v55VpTBbU6X5xubFGS8uYJWovN1wyh58ubdDszeAEpQKpRsbnqtM6UBdiCai6PkPRCThKhbhGTAKAFdr4Hrak5nMDWb",
