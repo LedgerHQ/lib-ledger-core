@@ -110,6 +110,13 @@ TEST_F(BitcoinKeychains, PeerCoinKeychainDerivation) {
     });
 }
 
+TEST_F(BitcoinKeychains, GAMEKeychainDerivation) {
+    testP2PKHKeychain(GAMECREDITS_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "GYk6atv3qgr26kMzEqUwmiJVLeVMMii6g9");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "GX1rVnRgf2Jt2BRfmyjmcbGjVKTCwAJYTL");
+    });
+}
+
 TEST_F(BitcoinKeychains, DigiByteKeychainDerivation) {
     testP2PKHKeychain(DIGIBYTE_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "DH9fuU2RNiEbwAcgKsh6ZyzRnBfuafsn2y");
