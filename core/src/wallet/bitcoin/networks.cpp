@@ -172,9 +172,9 @@ namespace ledger {
                 } else if (networkName == "gamecredits") {
                     static const api::BitcoinLikeNetworkParameters GAMECREDITS(
                             "game",
-                            {0x30},
-                            {0x32},
-                            {0x01, 0x9D, 0xA4, 0x62}, // HDPubByte
+                            {0x38}, // pubKeyHash
+                            {0x62}, // scriptHash
+                            {0x04, 0x88, 0xB2, 0x1E}, // HDPubByte https://github.com/gamecredits-project/GameCredits/blob/master/src/chainparams.cpp#L136
                             api::BitcoinLikeFeePolicy::PER_BYTE,
                             10000,
                             "Gamecredits Signed Message:\n",
