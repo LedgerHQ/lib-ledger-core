@@ -33,34 +33,26 @@
 
 #include "TransactionsParser.hpp"
 #include "../BitcoinLikeBlockchainExplorer.hpp"
-
+#include <wallet/common/explorers/api/AbstractTransactionsBulkParser.h>
 namespace ledger {
     namespace core {
-        class TransactionsBulkParser {
+        class TransactionsBulkParser : public AbstractTransactionsBulkParser<BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsParser> {
         public:
-            typedef BitcoinLikeBlockchainExplorer::TransactionsBulk Result;
-            TransactionsBulkParser(std::string& lastKey);
-            void init(BitcoinLikeBlockchainExplorer::TransactionsBulk* bulk);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+            TransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey), _transactionsParser(lastKey) {
+                _depth = 0;
+            };
+        protected:
+            TransactionsParser getTransactionsParser() override {
+                return _transactionsParser;
+            }
+
+            std::string &getLastKey() override {
+                return _lastKey;
+            }
 
         private:
-            BitcoinLikeBlockchainExplorer::TransactionsBulk* _bulk;
             TransactionsParser _transactionsParser;
             std::string& _lastKey;
-            int _depth;
         };
     }
 }

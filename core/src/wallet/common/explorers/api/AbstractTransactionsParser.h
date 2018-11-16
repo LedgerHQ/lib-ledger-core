@@ -36,75 +36,76 @@
 #ifndef LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
 #define LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
 
-#define PROXY_PARSE(method, ...)                                            \
+#define PROXY_PARSE_TX(method, ...)                                            \
     if (_arrayDepth > 0) {                                                  \
-        return _transactionParser.method(__VA_ARGS__);                      \
+        return getTransactionParser().method(__VA_ARGS__);                      \
     } else {                                                                \
         return true;                                                        \
     }
 
 namespace ledger {
     namespace core {
-        template <typename BlockchainExplorerTransaction, typename TransactionParser>
-        class AbstractTransactionParser {
+        template <typename BlockchainExplorerTransaction, typename TxParser>
+        class AbstractTransactionsParser {
 
+        public:
             bool Null() {
-                PROXY_PARSE(Null)
+                PROXY_PARSE_TX(Null)
             };
 
             bool Bool(bool b) {
-                PROXY_PARSE(Bool, b)
+                PROXY_PARSE_TX(Bool, b)
             };
 
             bool Int(int i) {
-                PROXY_PARSE(Int, i)
+                PROXY_PARSE_TX(Int, i)
             };
 
             bool Uint(unsigned i) {
-                PROXY_PARSE(Uint, i)
+                PROXY_PARSE_TX(Uint, i)
             };
 
             bool Int64(int64_t i) {
-                PROXY_PARSE(Int64, i)
+                PROXY_PARSE_TX(Int64, i)
             };
 
             bool Uint64(uint64_t i) {
-                PROXY_PARSE(Uint64, i)
+                PROXY_PARSE_TX(Uint64, i)
             };
 
             bool Double(double d) {
-                PROXY_PARSE(Double, d)
+                PROXY_PARSE_TX(Double, d)
             };
 
             bool
             RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE(RawNumber, str, length, copy)
+                PROXY_PARSE_TX(RawNumber, str, length, copy)
             };
 
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE(String, str, length, copy)
+                PROXY_PARSE_TX(String, str, length, copy)
             };
 
             bool StartObject() {
                 _objectDepth += 1;
 
                 if (_arrayDepth == 1 && _objectDepth == 1) {
-                    BitcoinLikeBlockchainExplorerTransaction transaction;
+                    BlockchainExplorerTransaction transaction;
                     _transactions->push_back(transaction);
-                    _transactionParser.init(&_transactions->back());
+                    getTransactionParser().init(&_transactions->back());
                 }
 
-                PROXY_PARSE(StartObject)
+                PROXY_PARSE_TX(StartObject)
             };
 
             bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE(Key, str, length, copy)
+                PROXY_PARSE_TX(Key, str, length, copy)
             };
 
             bool EndObject(rapidjson::SizeType memberCount) {
                 if (_arrayDepth > 0) {
                     _objectDepth -= 1;
-                    auto result =  _transactionParser.EndObject(memberCount);
+                    auto result =  getTransactionParser().EndObject(memberCount);
                     return result;
                 } else {
                     return true;
@@ -114,7 +115,7 @@ namespace ledger {
             bool StartArray() {
                 if (_arrayDepth > 0) {
                     _arrayDepth = _arrayDepth + 1;
-                    return _transactionParser.StartArray();
+                    return getTransactionParser().StartArray();
                 } else {
                     _arrayDepth = _arrayDepth + 1;
                     return true;
@@ -123,14 +124,10 @@ namespace ledger {
 
             bool EndArray(rapidjson::SizeType elementCount) {
                 _arrayDepth -= 1;
-                PROXY_PARSE(EndArray, elementCount)
+                PROXY_PARSE_TX(EndArray, elementCount)
                 return true;
             };
 
-//            TransactionsParser(std::string& lastKey) : _lastKey(lastKey), _transactionParser(lastKey) {
-//                _arrayDepth = 0;
-//                _objectDepth = 0;
-//            };
 
             void init(
                     std::vector<BlockchainExplorerTransaction> *transactions) {
@@ -138,11 +135,10 @@ namespace ledger {
             };
 
         protected:
-            std::string& _lastKey;
+            virtual TxParser getTransactionParser() = 0;
             std::vector<BlockchainExplorerTransaction>* _transactions;
             uint32_t _arrayDepth;
             uint32_t _objectDepth;
-            TransactionParser _transactionParser;
         };
     }
 }
