@@ -34,35 +34,29 @@
 
 #include "../EthereumLikeBlockchainExplorer.h"
 #include <wallet/ethereum/explorers/api/EthereumLikeTransactionsParser.h>
-
+#include <wallet/common/explorers/api/AbstractTransactionsBulkParser.h>
 namespace ledger {
     namespace core {
         class EthereumLikeBlockchainExplorer;
-        class EthereumLikeTransactionsBulkParser {
+        class EthereumLikeTransactionsBulkParser : public AbstractTransactionsBulkParser<EthereumLikeBlockchainExplorer::TransactionsBulk, EthereumLikeTransactionsParser> {
         public:
-            typedef EthereumLikeBlockchainExplorer::TransactionsBulk Result;
-            EthereumLikeTransactionsBulkParser(std::string& lastKey);
-            void init(EthereumLikeBlockchainExplorer::TransactionsBulk* bulk);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+            EthereumLikeTransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey),
+                                                                       _transactionsParser(lastKey)
+            {
+                _depth = 0;
+            };
 
+        protected:
+            EthereumLikeTransactionsParser getTransactionsParser() override {
+                return _transactionsParser;
+            }
+
+            std::string &getLastKey() override {
+                return _lastKey;
+            }
         private:
-            EthereumLikeBlockchainExplorer::TransactionsBulk* _bulk;
             EthereumLikeTransactionsParser _transactionsParser;
             std::string& _lastKey;
-            int _depth;
         };
     }
 }

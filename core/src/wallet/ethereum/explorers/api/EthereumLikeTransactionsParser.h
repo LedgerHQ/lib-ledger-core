@@ -35,33 +35,24 @@
 #include "../EthereumLikeBlockchainExplorer.h"
 #include "EthereumLikeTransactionParser.hpp"
 
+#include <wallet/common/explorers/api/AbstractTransactionsParser.h>
+
 namespace ledger {
     namespace core {
-        class EthereumLikeTransactionsParser {
+        class EthereumLikeTransactionsParser : public AbstractTransactionsParser<EthereumLikeBlockchainExplorerTransaction, EthereumLikeTransactionParser> {
         public:
-            typedef std::vector<EthereumLikeBlockchainExplorerTransaction> Result;
-            EthereumLikeTransactionsParser(std::string& lastKey);
-            void init(std::vector<EthereumLikeBlockchainExplorerTransaction>* transactions);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+            EthereumLikeTransactionsParser(std::string& lastKey) : _transactionParser(lastKey)
+            {
+                _arrayDepth = 0;
+                _objectDepth = 0;
+            }
+
+        protected:
+            EthereumLikeTransactionParser getTransactionParser() override {
+                return _transactionParser;
+            }
 
         private:
-            std::string& _lastKey;
-            std::vector<EthereumLikeBlockchainExplorerTransaction>* _transactions;
-            uint32_t _arrayDepth;
-            uint32_t _objectDepth;
             EthereumLikeTransactionParser _transactionParser;
         };
     }
