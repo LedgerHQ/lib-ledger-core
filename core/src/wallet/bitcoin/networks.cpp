@@ -169,6 +169,21 @@ namespace ledger {
                             {}
                     );
                     return LITECOIN;
+                } else if (networkName == "gamecredits") {
+                    static const api::BitcoinLikeNetworkParameters GAMECREDITS(
+                            "game",
+                            {0x30},
+                            {0x32},
+                            {0x01, 0x9D, 0xA4, 0x62},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "Gamecredits Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return GAMECREDITS;
                 } else if (networkName == "peercoin") {
                     static const api::BitcoinLikeNetworkParameters PEERCOIN(
                             "ppc",
@@ -394,6 +409,7 @@ namespace ledger {
                 getNetworkParameters("zencash"),
                 getNetworkParameters("litecoin"),
                 getNetworkParameters("peercoin"),
+                getNetworkParameters("gamecredits"),
                 getNetworkParameters("digibyte"),
                 getNetworkParameters("hcash"),
                 getNetworkParameters("qtum"),
