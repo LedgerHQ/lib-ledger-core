@@ -83,9 +83,11 @@ namespace ledger {
             }
 
             Option<V> lift(const K &key) const {
-                return Try<V>::from([this, &key] () {
-                    return at(key);
-                }).toOption();
+                auto it = _container.find(key);
+                if (it == _container.end()) {
+                    return Option<V>::NONE;
+                }
+                return Option<V>(it->second);
             }
 
             bool contains(const K &key) const {

@@ -13,7 +13,7 @@ git submodule sync
 echo "========> Update all submodules "
 #No need for those
 #git submodule update -- djinni || echo "===========Djinni submodule already updated"
-#git submodule update -- toolchains/polly || echo "===========Polly submodule already updated"
+git submodule update -- toolchains/polly || echo "===========Polly submodule already updated"
 #git submodule update -- tools/gyp || echo "===========gyp submodule already updated"
 git submodule update -- core/lib/spdlog || echo "===========spdlog submodule already updated"
 git submodule update -- core/lib/leveldb || echo "===========leveldb submodule already updated"

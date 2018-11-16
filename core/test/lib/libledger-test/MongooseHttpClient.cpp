@@ -159,7 +159,7 @@ void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRe
         }
 
         nc = mg_connect_http(&_mgr, ::ev_handler, method.c_str(), request->getUrl().c_str(), headers.str().c_str(), c_body); // Pass headers and body data
-
+        assert(nc != nullptr);
         nc->user_data = new std::pair<std::shared_ptr<ledger::core::api::HttpRequest>, std::shared_ptr<MongooseHttpClient>>(request, self);
         mg_set_protocol_http_websocket(nc);
     }));

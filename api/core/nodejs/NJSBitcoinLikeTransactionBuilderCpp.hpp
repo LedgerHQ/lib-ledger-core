@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKETRANSACTIONBUILDER_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "../../../core/src/api/BitcoinLikeNetworkParameters.hpp"
 #include "../../../core/src/api/BitcoinLikePickingStrategy.hpp"
 #include "../../../core/src/api/Currency.hpp"
@@ -126,6 +127,10 @@ private:
     /** Reset the current instance to its initial state */
     static NAN_METHOD(reset);
 
+    /**
+     * Parsing unsigned transaction
+     * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+     */
     static NAN_METHOD(parseRawUnsignedTransaction);
 
     static NAN_METHOD(New);

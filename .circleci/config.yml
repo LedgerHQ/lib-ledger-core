@@ -45,11 +45,40 @@ jobs:
           command: |
             . .circleci/build_lib.sh target_jni Release
       - deploy:
-          requires:
-            - hold
           name: Deploy_jni
           command: |
             . .circleci/deploy.sh target_jni
+      - run:
+          name: Setup NDK
+          command: |
+            apt-get install -y zip unzip
+            wget --quiet https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
+            unzip -q android-ndk-r16b-linux-x86_64.zip -d /home/circleci
+            ls -la /home/circleci/android-ndk-r16b
+      - run:
+          name: Build_Library_android
+          command: |
+            . .circleci/build_lib.sh android
+      - deploy:
+          name: Deploy_android
+          command: |
+            . .circleci/deploy.sh android
+      - run:
+          name: Build_Library_android_armeabi-v7a
+          command: |
+            . .circleci/build_lib.sh android armeabi-v7a
+      - deploy:
+          name: Deploy_android_armeabi-v7a
+          command: |
+            . .circleci/deploy.sh android armeabi-v7a
+      - run:
+          name: Build_Library_android_arm64-v8a
+          command: |
+            . .circleci/build_lib.sh android arm64-v8a
+      - deploy:
+          name: Deploy_android_arm64-v8a
+          command: |
+            . .circleci/deploy.sh android arm64-v8a
   build_linux_debug:
       docker:
         - image: debian:stretch
@@ -87,7 +116,7 @@ jobs:
                 ctest
   build_macos_release:
     macos:
-      xcode: "9.2.0"
+      xcode: "10.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -119,9 +148,37 @@ jobs:
           name: Deploy_jni
           command: |
             . .circleci/deploy.sh target_jni
+      - run:
+          name: Build_Library_ios_x86
+          command: |
+            . .circleci/build_lib.sh ios
+      - deploy:
+          name: Deploy_ios_x86
+          command: |
+            . .circleci/deploy.sh ios
+      - run:
+          name: Build_Library_ios_armv7
+          command: |
+            . .circleci/build_lib.sh ios armv7
+      - deploy:
+          name: Deploy_ios_armv7
+          command: |
+            . .circleci/deploy.sh ios armv7
+      - run:
+          name: Build_Library_ios_arm64
+          command: |
+            . .circleci/build_lib.sh ios arm64
+      - deploy:
+          name: Deploy_ios_arm64
+          command: |
+            . .circleci/deploy.sh ios arm64
+      - run:
+          name: Build_Fat_Library_ios
+          command: |
+            . .circleci/deploy_fat_lib.sh
   build_macos_debug:
     macos:
-      xcode: "9.2.0"
+      xcode: "10.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout

@@ -57,26 +57,8 @@ class QueryBuilderTest : public BaseFixture {
 };
 
 TEST_F(QueryBuilderTest, SimpleOperationQuery) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto newPool = [&]() -> std::shared_ptr<WalletPool> {
-        return WalletPool::newInstance(
-                "my_pool",
-                Option<std::string>::NONE,
-                nullptr,
-                nullptr,
-                resolver,
-                printer,
-                dispatcher,
-                nullptr,
-                backend,
-                api::DynamicObject::newInstance()
-        );
-    };
+    auto pool = newDefaultPool();
     {
-        auto pool = newPool();
         auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
         auto nextIndex = wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
@@ -97,11 +79,11 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
                 .select("uid")
                 .from("operations")
                 .to("o")
-                .where(api::QueryFilter::operationUidEq("1770fe39ddeef5ee97ad0ef19c1a26c0350316bb743b3a7d9f93c3fbadf3111e"))
+                .where(api::QueryFilter::operationUidEq("c099e0118230697140916ff925e4cd2dd9acdce97bbb80b31cab401a5b169ed1"))
                 .execute(sql);
         auto count = 0;
         for (auto& row : rows) {
-            EXPECT_EQ(row.get<std::string>(0), "1770fe39ddeef5ee97ad0ef19c1a26c0350316bb743b3a7d9f93c3fbadf3111e");
+            EXPECT_EQ(row.get<std::string>(0), "c099e0118230697140916ff925e4cd2dd9acdce97bbb80b31cab401a5b169ed1");
             count += 1;
         }
         EXPECT_EQ(count, 1);
