@@ -174,7 +174,7 @@ namespace ledger {
                             "game",
                             {0x30},
                             {0x32},
-                            {0x01, 0x9D, 0xA4, 0x62},
+                            {0x01, 0x9D, 0xA4, 0x62}, // HDPubByte
                             api::BitcoinLikeFeePolicy::PER_BYTE,
                             10000,
                             "Gamecredits Signed Message:\n",
