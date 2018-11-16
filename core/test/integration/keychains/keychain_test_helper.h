@@ -80,6 +80,7 @@ extern KeychainTestData ZENCASH_DATA;
 extern KeychainTestData LTC_DATA_LEGACY;
 extern KeychainTestData LTC_DATA_SEGWIT;
 extern KeychainTestData PEERCOIN_DATA;
+extern KeychainTestData GAMECREDITS_DATA;
 extern KeychainTestData DIGIBYTE_DATA;
 extern KeychainTestData HCASH_DATA;
 extern KeychainTestData QTUM_DATA;
