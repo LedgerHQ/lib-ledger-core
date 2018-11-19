@@ -33,77 +33,80 @@
 
 namespace ledger {
     namespace core {
+        namespace bitcoin {
 
-        bool BlockParser::Null() {
-            return true;
-        }
-
-        bool BlockParser::Bool(bool b) {
-            return true;
-        }
-
-        bool BlockParser::Int(int i) {
-            return true;
-        }
-
-        bool BlockParser::Uint(unsigned i) {
-            return true;
-        }
-
-        bool BlockParser::Int64(int64_t i) {
-            return true;
-        }
-
-        bool BlockParser::Uint64(uint64_t i) {
-            return true;
-        }
-
-        bool BlockParser::Double(double d) {
-            return true;
-        }
-
-        bool BlockParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            if (_lastKey == "height") {
-                std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
-                _block->height = value.toUint64();
+            bool BlockParser::Null() {
+                return true;
             }
-            return true;
-        }
 
-        bool BlockParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            std::string value = std::string(str, length);
-            if (_lastKey == "hash") {
-                _block->hash = value;
-            } else if (_lastKey == "time") {
-                _block->createdAt = DateUtils::fromJSON(value);
+            bool BlockParser::Bool(bool b) {
+                return true;
             }
-            return true;
-        }
 
-        bool BlockParser::StartObject() {
-            return true;
-        }
+            bool BlockParser::Int(int i) {
+                return true;
+            }
 
-        bool BlockParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            return true;
-        }
+            bool BlockParser::Uint(unsigned i) {
+                return true;
+            }
 
-        bool BlockParser::EndObject(rapidjson::SizeType memberCount) {
-            return true;
-        }
+            bool BlockParser::Int64(int64_t i) {
+                return true;
+            }
 
-        bool BlockParser::StartArray() {
-            return true;
-        }
+            bool BlockParser::Uint64(uint64_t i) {
+                return true;
+            }
 
-        bool BlockParser::EndArray(rapidjson::SizeType elementCount) {
-            return true;
-        }
+            bool BlockParser::Double(double d) {
+                return true;
+            }
 
-        void BlockParser::init(BitcoinLikeNetwork::Block *block) {
-            _block = block;
-        }
+            bool BlockParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                if (_lastKey == "height") {
+                    std::string number(str, length);
+                    BigInt value = BigInt::fromString(number);
+                    _block->height = value.toUint64();
+                }
+                return true;
+            }
 
+            bool BlockParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                std::string value = std::string(str, length);
+                if (_lastKey == "hash") {
+                    _block->hash = value;
+                }
+                else if (_lastKey == "time") {
+                    _block->createdAt = DateUtils::fromJSON(value);
+                }
+                return true;
+            }
+
+            bool BlockParser::StartObject() {
+                return true;
+            }
+
+            bool BlockParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                return true;
+            }
+
+            bool BlockParser::EndObject(rapidjson::SizeType memberCount) {
+                return true;
+            }
+
+            bool BlockParser::StartArray() {
+                return true;
+            }
+
+            bool BlockParser::EndArray(rapidjson::SizeType elementCount) {
+                return true;
+            }
+
+            void BlockParser::init(BitcoinLikeNetwork::Block *block) {
+                _block = block;
+            }
+
+        }
     }
 }

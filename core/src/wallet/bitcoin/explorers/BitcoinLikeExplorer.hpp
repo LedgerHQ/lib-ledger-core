@@ -33,6 +33,8 @@
 #include <wallet/NetworkTypes.hpp>
 
 #include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/DynamicObject.hpp>
+#include <utils/ConfigurationMatchable.h>
 #include <collections/collections.hpp>
 #include <async/Future.hpp>
 #include <net/HttpClient.hpp>
@@ -41,36 +43,35 @@
 
 namespace ledger {
     namespace core {
-		namespace bitcoin {
-			class BitcoinLikeExplorer : public ExplorerV2<BitcoinLikeNetwork>, DedicatedContext, public ConfigurationMatchable, public std::enable_shared_from_this<BitcoinLikeExplorer> {
-			public:
-				BitcoinLikeExplorer(
-					const std::shared_ptr<api::ExecutionContext>& context,
-					const std::shared_ptr<HttpClient>& http,
-					const api::BitcoinLikeNetworkParameters& parameters,
-					const std::shared_ptr<api::DynamicObject>& configuration
-				);
-				Future<void *> startSession() override;
-				Future<Unit> killSession(void *session) override;
-				Future<Bytes> getRawTransaction(const std::string& transactionHash) override;
-				Future<std::string> pushTransaction(const std::vector<uint8_t>& transaction) override;
+        namespace bitcoin {
+            class BitcoinLikeExplorer : public ExplorerV2<BitcoinLikeNetwork>, DedicatedContext, public ConfigurationMatchable, public std::enable_shared_from_this<BitcoinLikeExplorer> {
+            public:
+                BitcoinLikeExplorer(
+                    const std::shared_ptr<api::ExecutionContext>& context,
+                    const std::shared_ptr<HttpClient>& http,
+                    const api::BitcoinLikeNetworkParameters& parameters,
+                    const std::shared_ptr<api::DynamicObject>& configuration
+                );
+                Future<void *> startSession() override;
+                Future<Unit> killSession(void *session) override;
+                Future<Bytes> getRawTransaction(const std::string& transactionHash) override;
+                Future<std::string> pushTransaction(const std::vector<uint8_t>& transaction) override;
 
-				FuturePtr<TransactionBulk>
-					getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
-						Option<void *> session = Option<void *>()) override;
+                FuturePtr<TransactionBulk>
+                    getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
+                        Option<void *> session = Option<void *>()) override;
 
-				FuturePtr<Block> getCurrentBlock() override;
+                FuturePtr<Block> getCurrentBlock() override;
 
-				FuturePtr<Transaction> getTransactionByHash(const std::string &transactionHash) override;
+                FuturePtr<Transaction> getTransactionByHash(const std::string &transactionHash) override;
 
-				Future<int64_t > getTimestamp() override;
+                Future<int64_t > getTimestamp() override;
 
-			private:
-				std::shared_ptr<HttpClient> _http;
-				api::BitcoinLikeNetworkParameters _parameters;
-                
-			};
-		}
+            private:
+                std::shared_ptr<HttpClient> _http;
+                api::BitcoinLikeNetworkParameters _parameters;
+            };
+        }
     }
 }
 
