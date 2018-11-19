@@ -29,13 +29,11 @@
  *
  */
 
-#ifndef LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
-#define LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
+#pragma once
 
 #include "../../../../collections/collections.hpp"
 #include <cstdio>
 #include <cstdint>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
 #include "BlockParser.hpp"
 #include <rapidjson/reader.h>
@@ -80,6 +78,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H

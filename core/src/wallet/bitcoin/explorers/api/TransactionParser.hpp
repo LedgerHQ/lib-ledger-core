@@ -28,54 +28,52 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_TRANSACTIONPARSER_HPP
-#define LEDGER_CORE_TRANSACTIONPARSER_HPP
+#pragma once
 
 #include "../../../../collections/collections.hpp"
 #include <cstdio>
 #include <cstdint>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
 #include "BlockParser.hpp"
 #include <rapidjson/reader.h>
 #include <stack>
 #include "InputParser.hpp"
 #include "OutputParser.hpp"
+#include <wallet/BlockchainNetworkType.hpp>
 
 namespace ledger {
     namespace core {
-        class TransactionParser {
-        public:
-            typedef BitcoinLikeBlockchainExplorer::Transaction Result;
+        namespace bitcoin {
+            class TransactionParser {
+            public:
+                typedef BitcoinLikeNetwork::Transaction Result;
 
-            TransactionParser(std::string& lastKey);
-            void init(BitcoinLikeBlockchainExplorer::Transaction* transaction);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+                TransactionParser(std::string& lastKey);
+                void init(BitcoinLikeNetwork::Transaction* transaction);
+                bool Null();
+                bool Bool(bool b);
+                bool Int(int i);
+                bool Uint(unsigned i);
+                bool Int64(int64_t i);
+                bool Uint64(uint64_t i);
+                bool Double(double d);
+                bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool StartObject();
+                bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool EndObject(rapidjson::SizeType memberCount);
+                bool StartArray();
+                bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            std::string& _lastKey;
-            BitcoinLikeBlockchainExplorer::Transaction* _transaction;
-            std::stack<std::string> _hierarchy;
-            uint32_t _arrayDepth;
-            BlockParser _blockParser;
-            InputParser _inputParser;
-            OutputParser _outputParser;
-        };
+            private:
+                std::string& _lastKey;
+                BitcoinLikeNetwork::Transaction* _transaction;
+                std::stack<std::string> _hierarchy;
+                uint32_t _arrayDepth;
+                BlockParser _blockParser;
+                InputParser _inputParser;
+                OutputParser _outputParser;
+            };
+        }
     }
 }
-
-
-#endif //LEDGER_CORE_TRANSACTIONPARSER_HPP

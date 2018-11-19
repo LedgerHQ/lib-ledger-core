@@ -76,7 +76,7 @@ namespace ledger {
             if (_lastKey == "hash") {
                 _block->hash = value;
             } else if (_lastKey == "time") {
-                _block->time = DateUtils::fromJSON(value);
+                _block->createdAt = DateUtils::fromJSON(value);
             }
             return true;
         }
@@ -101,7 +101,7 @@ namespace ledger {
             return true;
         }
 
-        void BlockParser::init(BitcoinLikeBlockchainExplorer::Block *block) {
+        void BlockParser::init(BitcoinLikeNetwork::Block *block) {
             _block = block;
         }
 

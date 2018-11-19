@@ -38,48 +38,48 @@
     }
 
 
-bool ledger::core::TransactionsParser::Null() {
+bool ledger::core::bitcoin::TransactionsParser::Null() {
     PROXY_PARSE(Null)
 }
 
-bool ledger::core::TransactionsParser::Bool(bool b) {
+bool ledger::core::bitcoin::TransactionsParser::Bool(bool b) {
     PROXY_PARSE(Bool, b)
 }
 
-bool ledger::core::TransactionsParser::Int(int i) {
+bool ledger::core::bitcoin::TransactionsParser::Int(int i) {
     PROXY_PARSE(Int, i)
 }
 
-bool ledger::core::TransactionsParser::Uint(unsigned i) {
+bool ledger::core::bitcoin::TransactionsParser::Uint(unsigned i) {
     PROXY_PARSE(Uint, i)
 }
 
-bool ledger::core::TransactionsParser::Int64(int64_t i) {
+bool ledger::core::bitcoin::TransactionsParser::Int64(int64_t i) {
     PROXY_PARSE(Int64, i)
 }
 
-bool ledger::core::TransactionsParser::Uint64(uint64_t i) {
+bool ledger::core::bitcoin::TransactionsParser::Uint64(uint64_t i) {
     PROXY_PARSE(Uint64, i)
 }
 
-bool ledger::core::TransactionsParser::Double(double d) {
+bool ledger::core::bitcoin::TransactionsParser::Double(double d) {
     PROXY_PARSE(Double, d)
 }
 
 bool
-ledger::core::TransactionsParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+ledger::core::bitcoin::TransactionsParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
     PROXY_PARSE(RawNumber, str, length, copy)
 }
 
-bool ledger::core::TransactionsParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+bool ledger::core::bitcoin::TransactionsParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
     PROXY_PARSE(String, str, length, copy)
 }
 
-bool ledger::core::TransactionsParser::StartObject() {
+bool ledger::core::bitcoin::TransactionsParser::StartObject() {
     _objectDepth += 1;
 
     if (_arrayDepth == 1 && _objectDepth == 1) {
-        BitcoinLikeBlockchainExplorer::Transaction transaction;
+        BitcoinLikeNetwork::Transaction transaction;
         _transactions->push_back(transaction);
         _transactionParser.init(&_transactions->back());
     }
@@ -87,11 +87,11 @@ bool ledger::core::TransactionsParser::StartObject() {
     PROXY_PARSE(StartObject)
 }
 
-bool ledger::core::TransactionsParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+bool ledger::core::bitcoin::TransactionsParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
     PROXY_PARSE(Key, str, length, copy)
 }
 
-bool ledger::core::TransactionsParser::EndObject(rapidjson::SizeType memberCount) {
+bool ledger::core::bitcoin::TransactionsParser::EndObject(rapidjson::SizeType memberCount) {
     if (_arrayDepth > 0) {
         _objectDepth -= 1;
         auto result =  _transactionParser.EndObject(memberCount);
@@ -101,7 +101,7 @@ bool ledger::core::TransactionsParser::EndObject(rapidjson::SizeType memberCount
     }
 }
 
-bool ledger::core::TransactionsParser::StartArray() {
+bool ledger::core::bitcoin::TransactionsParser::StartArray() {
     if (_arrayDepth > 0) {
         _arrayDepth = _arrayDepth + 1;
         return _transactionParser.StartArray();
@@ -111,18 +111,17 @@ bool ledger::core::TransactionsParser::StartArray() {
     }
 }
 
-bool ledger::core::TransactionsParser::EndArray(rapidjson::SizeType elementCount) {
+bool ledger::core::bitcoin::TransactionsParser::EndArray(rapidjson::SizeType elementCount) {
     _arrayDepth -= 1;
     PROXY_PARSE(EndArray, elementCount)
     return true;
 }
 
-ledger::core::TransactionsParser::TransactionsParser(std::string& lastKey) : _lastKey(lastKey), _transactionParser(lastKey) {
+ledger::core::bitcoin::TransactionsParser::TransactionsParser(std::string& lastKey) : _lastKey(lastKey), _transactionParser(lastKey) {
     _arrayDepth = 0;
     _objectDepth = 0;
 }
 
-void ledger::core::TransactionsParser::init(
-std::vector<ledger::core::BitcoinLikeBlockchainExplorer::Transaction> *transactions) {
+void ledger::core::bitcoin::TransactionsParser::init(Result *transactions) {
     _transactions = transactions;
 }

@@ -46,7 +46,7 @@ namespace ledger {
 
         bool TransactionsBulkParser::Bool(bool b) {
             if (_lastKey == "truncated" && _depth == 0) {
-                _bulk->hasNext = b;
+                _bulk->second = b;
             }
             PROXY_PARSE(Bool, b)
         }
@@ -97,7 +97,7 @@ namespace ledger {
             }
 
             if (_depth == 1) {
-                _transactionsParser.init(&_bulk->transactions);
+                _transactionsParser.init(&_bulk->first);
             }
 
             PROXY_PARSE(StartArray)
@@ -115,7 +115,7 @@ namespace ledger {
             _depth = 0;
         }
 
-        void TransactionsBulkParser::init(BitcoinLikeBlockchainExplorer::TransactionsBulk *bulk) {
+        void TransactionsBulkParser::init(Result *bulk) {
             _bulk = bulk;
         }
     }

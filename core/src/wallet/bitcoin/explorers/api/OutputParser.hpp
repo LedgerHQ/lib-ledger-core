@@ -28,43 +28,41 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OUTPUTPARSER_HPP
-#define LEDGER_CORE_OUTPUTPARSER_HPP
+#pragma once
 
 #include <rapidjson/reader.h>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
+#include <wallet/BlockchainNetworkType.hpp>
 #include "../../../../net/HttpClient.hpp"
 
 namespace ledger {
     namespace core {
-        class OutputParser {
-        public:
-            typedef BitcoinLikeBlockchainExplorer::Output Result;
+        namespace bitcoin {
+            class OutputParser {
+            public:
+                typedef BitcoinLikeNetwork::Output Result;
 
-            OutputParser(std::string& lastKey) : _lastKey(lastKey) {};
-            void init(BitcoinLikeBlockchainExplorer::Output* output);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+                OutputParser(std::string& lastKey) : _lastKey(lastKey) {};
+                void init(BitcoinLikeNetwork::Output* output);
+                bool Null();
+                bool Bool(bool b);
+                bool Int(int i);
+                bool Uint(unsigned i);
+                bool Int64(int64_t i);
+                bool Uint64(uint64_t i);
+                bool Double(double d);
+                bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool StartObject();
+                bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool EndObject(rapidjson::SizeType memberCount);
+                bool StartArray();
+                bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            std::string& _lastKey;
-            BitcoinLikeBlockchainExplorer::Output* _output;
+            private:
+                std::string& _lastKey;
+                BitcoinLikeNetwork::Output* _output;
 
-        };
+            };
+        }
     }
 }
-
-
-#endif //LEDGER_CORE_OUTPUTPARSER_HPP
