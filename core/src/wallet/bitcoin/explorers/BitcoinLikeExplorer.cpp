@@ -102,7 +102,7 @@ namespace ledger {
 				});
 			}
 
-			FuturePtr<TransactionBulk>
+			FuturePtr<BitcoinLikeExplorer::TransactionBulk>
 				BitcoinLikeExplorer::getTransactions(const std::vector<std::string> &addresses,
 					Option<std::string> fromBlockHash,
 					Option<void *> session) {
@@ -160,14 +160,14 @@ namespace ledger {
 			FuturePtr<Transaction>
 				BitcoinLikeExplorer::getTransactionByHash(const std::string &transactionHash) {
 				return _http
-					->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash.str()))
+					->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash))
 					.json<std::vector<Transaction>, Exception>(LedgerApiParser<std::vector<Transaction>, TransactionsParser>())
 					.mapPtr<Transaction>(_executionContext, [transactionHash](const Either<Exception, std::shared_ptr<std::vector<Transaction>>>& result) {
 					if (result.isLeft()) {
 						throw result.getLeft();
 					}
 					else if (result.getRight()->size() == 0) {
-						throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash.str());
+						throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash);
 					}
 					else {
 						auto tx = (*result.getRight())[0];
