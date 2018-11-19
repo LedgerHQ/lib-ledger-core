@@ -28,19 +28,19 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_TRANSACTIONSBULK_HPP
-#define LEDGER_CORE_TRANSACTIONSBULK_HPP
+#pragma once
 
 #include "TransactionsParser.hpp"
-#include "../BitcoinLikeBlockchainExplorer.hpp"
+#include <utility>
+#include <wallet/BlockchainNetworkType.hpp>
 
 namespace ledger {
     namespace core {
         class TransactionsBulkParser {
         public:
-            typedef BitcoinLikeBlockchainExplorer::TransactionsBulk Result;
+            typedef std::pair<std::vector<BitcoinLikeNetwork::Transaction>, bool> Result;
             TransactionsBulkParser(std::string& lastKey);
-            void init(BitcoinLikeBlockchainExplorer::TransactionsBulk* bulk);
+            void init(Result* bulk);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -57,13 +57,10 @@ namespace ledger {
             bool EndArray(rapidjson::SizeType elementCount);
 
         private:
-            BitcoinLikeBlockchainExplorer::TransactionsBulk* _bulk;
+            Result* _bulk;
             TransactionsParser _transactionsParser;
             std::string& _lastKey;
             int _depth;
         };
     }
 }
-
-
-#endif //LEDGER_CORE_TRANSACTIONSBULK_HPP

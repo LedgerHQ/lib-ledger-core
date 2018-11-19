@@ -32,17 +32,17 @@
 #define LEDGER_CORE_INPUTPARSER_HPP
 
 #include <rapidjson/reader.h>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
+#include <wallet/BlockchainNetworkType.hpp>
 #include "../../../../net/HttpClient.hpp"
 
 namespace ledger {
     namespace core {
         class InputParser {
         public:
-            typedef BitcoinLikeBlockchainExplorer::Input Result;
+            typedef BitcoinLikeNetwork::Input Result;
 
             InputParser(std::string& lastKey) : _lastKey(lastKey) {};
-            void init(BitcoinLikeBlockchainExplorer::Input* input);
+            void init(BitcoinLikeNetwork::Input* input);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -60,7 +60,7 @@ namespace ledger {
 
         private:
             std::string& _lastKey;
-            BitcoinLikeBlockchainExplorer::Input* _input;
+            BitcoinLikeNetwork::Input* _input;
 
         };
     }
