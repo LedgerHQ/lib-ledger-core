@@ -395,6 +395,21 @@ namespace ledger {
                             {}
                     );
                     return DECRED;
+                } else if (networkName == "stakenet") {
+                    static const api::BitcoinLikeNetworkParameters STAKENET(
+                        "xsn",
+                        {0x4C},
+                        {0x10},
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        api::BitcoinLikeFeePolicy::PER_BYTE,
+                        10000,
+                        "Stakenet Signed Message:\n",
+                        false,
+                        0,
+                        {sigHashType::SIGHASH_ALL},
+                        {}
+                    );
+                    return STAKENET;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -423,7 +438,8 @@ namespace ledger {
                 getNetworkParameters("poswallet"),
                 getNetworkParameters("pivx"),
                 getNetworkParameters("clubcoin"),
-                getNetworkParameters("decred")
+                getNetworkParameters("decred"),
+                getNetworkParameters("stakenet")
             });
         }
     }
