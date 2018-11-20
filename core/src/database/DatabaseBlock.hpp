@@ -1,5 +1,4 @@
-#ifndef LEDGER_CORE_DB_DATABASEBLOCK_HPP
-#define LEDGER_CORE_DB_DATABASEBLOCK_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -20,4 +19,3 @@ namespace ledger {
 		}
 	}
 }
-#endif //LEDGER_CORE_DB_DATABASEBLOCK_HPP

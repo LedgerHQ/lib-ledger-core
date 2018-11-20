@@ -31,47 +31,28 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <utils/Either.hpp>
 #include <events/ProgressNotifier.h>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/Explorer.hpp>
-#include <wallet/PartialBlockStorage.hpp>
+#include <wallet/BlockainDatabase.hpp>
+#include <wallet/AddressesSources.hpp>
 
 namespace ledger {
     namespace core {
         template<typename NetworkType>
-        class AccountSynchronizer : public std::enable_shared_from_this<AccountSynchronizer<NetworkType>> {
+        class AccountSynchronizer {
         public:
             typedef ExplorerV2<NetworkType> Explorer;
             typedef typename Explorer::TransactionBulk Bulk_;
+            
+            Future<Unit> synchronize() {
 
-            AccountSynchronizer(const std::shared_ptr<api::ExecutionContext>& executionContext,
-                const std::shared_ptr<Explorer>& explorer)
-                : _executionContext(executionContext)
-                , _explorer(explorer) {};
-
-            Future<bool> DownloadBlockTransactions(
-                const api::ExecutionContext& executionContext,
-                const PartialBlockStorage<NetworkType>& storage,
-                const std::vector<std::string>& addresses,
-                const std::string& blockHash)
-            {
-                return _explorer
-                    ->getTransactions(addresses, blockHash)
-                    .flatMap<Future<bool>>(executionContext,
-                        [](const std::shared_ptr<Bulk_>& bulk) -> Future<bool> 
-                        {
-                            if (bulk->first.size() > 0)
-                            {
-
-                            }
-                            return 0;
-                        });
             }
         private:
-            std::shared_ptr<api::ExecutionContext> _executionContext;
-            std::shared_ptr<Explorer> _explorer;
+            AddressSou
         }
     }
 }
