@@ -38,6 +38,7 @@
 #include <utils/hex.h>
 #include <math/BigInt.h>
 #include <api/Address.hpp>
+#include "erc20Tokens.h"
 namespace ledger {
     namespace core {
         ERC20LikeAccount::ERC20LikeAccount(const api::ERC20Token &erc20Token,
@@ -81,11 +82,33 @@ namespace ledger {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
 
-            RLPStringEncoder transferEncoder("transfer");
-            transferEncoder.append(hex::toByteArray(address.substr(2,address.size() - 2)));
+            if (getBalance() < amount->toBigInt()) {
+                throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+            }
+
+            BytesWriter writer;
+            writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
+
+            auto toUint256Format = [=](const std::string &hexInput) -> std::string {
+                if (hexInput.size() > 64) {
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid argument passed to toUint256Format");
+                }
+                auto hexOutput = hexInput;
+                while (hexOutput.size() != 64) {
+                    hexOutput = "00" + hexInput;
+                }
+
+                return hexOutput;
+            };
+
+            writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
+
+            BigInt nbOfDecimal(_token.numberOfDecimal);
             BigInt bigAmount(amount->toString());
-            transferEncoder.append(hex::toByteArray(bigAmount.toHexString()));
-            return transferEncoder.encode();
+            BigInt finalAmount = nbOfDecimal * bigAmount;
+            writer.writeByteArray(hex::toByteArray(toUint256Format(finalAmount.toHexString())));
+
+            return writer.toByteArray();
         }
 
         void ERC20LikeAccount::putOperation(const std::shared_ptr<api::ERC20LikeOperation> &operation) {
