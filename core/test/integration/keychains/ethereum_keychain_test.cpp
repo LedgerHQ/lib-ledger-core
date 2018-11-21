@@ -65,15 +65,15 @@ public:
 TEST_F(EthereumKeychains, KeychainDerivation) {
     testEthKeychain(ETHEREUM_DATA, [] (EthereumLikeKeychain& keychain) {
         auto ethAddress = keychain.getFreshAddress();
-        EXPECT_EQ(keychain.getFreshAddress()->toEIP55(), "0x8f7A0aFAAEE372EEFd020056FC552BD87DD75D73");
+        EXPECT_EQ(keychain.getFreshAddress()->toEIP55(), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
         auto addresses = keychain.getAllObservableAddresses(0, 5);
         EXPECT_EQ(addresses.size(), 6);
-        EXPECT_EQ(addresses[0]->toEIP55(), "0x8f7A0aFAAEE372EEFd020056FC552BD87DD75D73");
-        EXPECT_EQ(addresses[1]->toEIP55(), "0x7B11BB01B3356A6Cd36C83e5bF085Eaf4950de00");
-        EXPECT_EQ(addresses[2]->toEIP55(), "0x1dCa2E750444cED2052723A744D4Bd6fE3586866");
-        EXPECT_EQ(addresses[3]->toEIP55(), "0x450D0b5Fe25DD93Db3DD1e2A50E0583E1282011D");
-        EXPECT_EQ(addresses[4]->toEIP55(), "0xd882C00D07925Ead728fe8297Cb5D824AE71cB2A");
-        EXPECT_EQ(addresses[5]->toEIP55(), "0x6BCaB158C9BbC113ed5678eaEF46A73347d73973");
+        EXPECT_EQ(addresses[0]->toEIP55(), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");
+        EXPECT_EQ(addresses[1]->toEIP55(), "0xEC9eD3b9489735992B3c48DE9F3b6bD076eC3bfA");
+        EXPECT_EQ(addresses[2]->toEIP55(), "0x67C236376fbB0FBC3662aFdf78d3A3D46F756306");
+        EXPECT_EQ(addresses[3]->toEIP55(), "0x1aED60053943aD2eDEA0dd9652CBF4e783D1bdA3");
+        EXPECT_EQ(addresses[4]->toEIP55(), "0xF503aE5520B1315BA575393FFA61B413C77Ba45d");
+        EXPECT_EQ(addresses[5]->toEIP55(), "0x6965130E8687767ABA43911846122EC3293429dF");
     });
 }
 

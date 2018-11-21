@@ -44,8 +44,7 @@ namespace ledger {
                                            const std::shared_ptr<Preferences>& accountPreferences,
                                            const api::Currency& currency) {
             if (!info.extendedKeys.empty()) {
-                //Might be useful, current model: one account is associated with one address
-                /*
+
                 auto xpub = make_try<std::shared_ptr<EthereumLikeExtendedPublicKey>>([&] () -> std::shared_ptr<EthereumLikeExtendedPublicKey> {
                     return EthereumLikeExtendedPublicKey::fromBase58(
                             currency,
@@ -62,9 +61,9 @@ namespace ledger {
                     );
                     return keychain;
                 }
-                */
-                return std::make_shared<EthereumLikeKeychain>(configuration, currency, index,
-                                                              info.extendedKeys[info.extendedKeys.size() - 1], accountPreferences);
+
+                //return std::make_shared<EthereumLikeKeychain>(configuration, currency, index,
+                //                                              info.extendedKeys[info.extendedKeys.size() - 1], accountPreferences);
             } else {
                 throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString());
             }
