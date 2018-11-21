@@ -60,8 +60,12 @@ api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO(
         0, {"main"}, {"44'/60'/0'"}, {"0x3ad0bd678b6e4767c62dfb843449396936a1e952"}
 );
 
+//api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO(
+//        0, {"main"}, {"44'/60'/0'"}, {"0xAc6603e97e774Cd34603293b69bBBB1980acEeaA"}
+//);
+
 api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO(
-        0, {"main"}, {"44'/60'/0'"}, {"0xAc6603e97e774Cd34603293b69bBBB1980acEeaA"}
+        0, {"main"}, {"44'/60'/0'"}, {"xpub6EswUg1PkDcQqx6xKrwxdVnnf5Wmi7nX6A9KjpufdCrzxMzwqNnnwmGFWnsWzsz3Es8nCqCjGJAGHdP3b8jMSfWmzPWskqrfzHuYbrSFYif"}
 );
 
 

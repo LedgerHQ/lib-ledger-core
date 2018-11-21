@@ -122,8 +122,8 @@ namespace ledger {
         }
 
         EthereumLikeKeychain::Address EthereumLikeKeychain::getFreshAddress() {
-            //return derive(_state.maxConsecutiveIndex);
-            return derive(0);
+            return derive(_state.maxConsecutiveIndex);
+            //return derive(0);
         }
 
         bool EthereumLikeKeychain::isEmpty() const {
@@ -132,23 +132,21 @@ namespace ledger {
 
         std::vector<EthereumLikeKeychain::Address>
         EthereumLikeKeychain::getFreshAddresses(size_t n) {
-            //Might be useful, current model: one account is associated with one address
-            /*
+
             auto startOffset = _state.maxConsecutiveIndex;
             std::vector<EthereumLikeKeychain::Address> result(n);
             for (auto i = 0; i < n; i++) {
                 result[i] = derive(startOffset + i);
             }
-            */
-            std::vector<EthereumLikeKeychain::Address> result;
-            result.push_back(derive(0));
+
+            //std::vector<EthereumLikeKeychain::Address> result;
+            //result.push_back(derive(0));
             return result;
         }
 
 
         Option<std::string> EthereumLikeKeychain::getAddressDerivationPath(const std::string &address) const {
-            //Might be useful, current model: one account is associated with one address
-            /*
+
             auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
             if (path.empty()) {
                 return Option<std::string>();
@@ -156,24 +154,22 @@ namespace ledger {
                 auto derivation = DerivationPath(getExtendedPublicKey()->getRootPath()) + DerivationPath(path);
                 return Option<std::string>(derivation.toString());
             }
-             */
+
             return Option<std::string>(_localPath);
         }
 
 
         std::vector<EthereumLikeKeychain::Address>
         EthereumLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            //Might be useful, current model: one account is associated with one address
-            /*
             auto maxObservableIndex = _state.maxConsecutiveIndex + _state.nonConsecutiveIndexes.size() + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
             std::vector<EthereumLikeKeychain::Address> result;
             for (auto i = 0; i <= length; i++) {
                 result.push_back(derive(from + i));
             }
-             */
-            std::vector<EthereumLikeKeychain::Address> result;
-            result.push_back(derive(0));
+
+            //std::vector<EthereumLikeKeychain::Address> result;
+            //result.push_back(derive(0));
             return result;
         }
 
@@ -196,8 +192,8 @@ namespace ledger {
         }
 
         std::string EthereumLikeKeychain::getRestoreKey() const {
-            //return _xpub->toBase58();
-            return _accountAddress;
+            return _xpub->toBase58();
+            //return _accountAddress;
         }
 
         int32_t EthereumLikeKeychain::getObservableRangeSize() const {
@@ -205,8 +201,8 @@ namespace ledger {
         }
 
         bool EthereumLikeKeychain::contains(const std::string &address) const {
-            //return getAddressDerivationPath(address).nonEmpty();
-            return address == _accountAddress;
+            return getAddressDerivationPath(address).nonEmpty();
+            //return address == _accountAddress;
         }
 
         int32_t EthereumLikeKeychain::getOutputSizeAsSignedTxInput() const {
@@ -214,27 +210,23 @@ namespace ledger {
         }
 
         Option<std::vector<uint8_t>> EthereumLikeKeychain::getPublicKey(const std::string &address) const {
-            //Might be useful, current model: one account is associated with one address
-            /*
             auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
             if (path.empty()) {
                 Option<std::vector<uint8_t>>();
             }
             return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
-            */
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeKeychain::getPublicKey no concept of public key for EthereumLikeAccounts");
+
+            //throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeKeychain::getPublicKey no concept of public key for EthereumLikeAccounts");
         }
 
         EthereumLikeKeychain::Address EthereumLikeKeychain::derive(off_t index) {
 
-            _localPath = getDerivationScheme()
+            auto localPath = getDerivationScheme()
                     .setAccountIndex(getAccountIndex())
                     .setCoinType(getCurrency().bip44CoinType)
                     .setNode(0)
-                    .setAddressIndex(0).getPath().toString();
+                    .setAddressIndex((int) index).getPath().toString();
 
-            //Might be useful, current model: one account is associated with one address
-            /*
             auto cacheKey = fmt::format("path:{}", localPath);
             auto address = getPreferences()->getString(cacheKey, "");
             if (address.empty()) {
@@ -253,10 +245,11 @@ namespace ledger {
                         ->putString(fmt::format("address:{}", address), localPath)
                         ->commit();
             }
-            */
 
-            auto abstractAddress = EthereumLikeAddress::parse(_accountAddress, getCurrency(), Option<std::string>(_localPath));
-            return std::dynamic_pointer_cast<EthereumLikeAddress>(abstractAddress);
+
+            //auto abstractAddress = EthereumLikeAddress::parse(_accountAddress, getCurrency(), Option<std::string>(_localPath));
+            //return std::dynamic_pointer_cast<EthereumLikeAddress>(abstractAddress);
+            return std::dynamic_pointer_cast<EthereumLikeAddress>(EthereumLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
         }
 
 
