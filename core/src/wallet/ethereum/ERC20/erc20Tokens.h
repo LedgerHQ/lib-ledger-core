@@ -46,6 +46,7 @@
 namespace ledger {
     namespace core {
         namespace erc20Tokens {
+            extern LIBCORE_EXPORT const std::map<std::string, std::string> ERC20MethodsID;
             extern LIBCORE_EXPORT const std::map<std::string, api::ERC20Token> ALL_ERC20;
             extern LIBCORE_EXPORT const api::ERC20Token LEDGER_COIN;
         };
