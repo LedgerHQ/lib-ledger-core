@@ -29,8 +29,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATION_H
-#define LEDGER_CORE_OPERATION_H
+#pragma once
 
 #include <string>
 #include <api/WalletType.hpp>
@@ -40,10 +39,10 @@
 #include <utils/Option.hpp>
 #include "TrustIndicator.h"
 #include <memory>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/NetworkTypes.hpp>
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
-#include "Block.h"
+#include <wallet/common/Block.hpp>
 
 namespace ledger {
     namespace core {
@@ -61,7 +60,7 @@ namespace ledger {
             std::string currencyName;
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
-            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
+            Option<BitcoinLikeNetwork::Transaction> bitcoinTransaction;
 
             Operation() {};
             void refreshUid();
@@ -71,6 +70,3 @@ namespace ledger {
     }
 
 }
-
-
-#endif //LEDGER_CORE_OPERATION_H

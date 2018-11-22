@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_TYPES_H
-#define LEDGER_CORE_TYPES_H
+#pragma once
 
 #include <api/BitcoinLikeOutput.hpp>
 
@@ -40,4 +39,3 @@ namespace ledger {
         using BitcoinLikeApiOutputVector = BitcoinLikeApiUtxoVector;
     }
 }
-#endif //LEDGER_CORE_TYPES_H

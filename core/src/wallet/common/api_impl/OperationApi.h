@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATIONAPI_H
-#define LEDGER_CORE_OPERATIONAPI_H
+#pragma once
 
 #include <api/Operation.hpp>
 #include "../Operation.h"
@@ -71,6 +70,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_OPERATIONAPI_H

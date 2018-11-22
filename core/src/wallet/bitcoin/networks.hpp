@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
+#pragma once
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER) && _MSC_VER <= 1900
@@ -87,6 +86,3 @@ namespace ledger {
         }
     }
 }
-
-
-#endif //LEDGER_CORE_NETWORKS_HPP

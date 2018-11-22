@@ -28,12 +28,11 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
-#define LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
+#pragma once
 
 #include <api/BitcoinLikeTransaction.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/NetworkTypes.hpp>
 #include "BitcoinLikeInputApi.h"
 #include "BitcoinLikeOutputApi.h"
 #include <api/BitcoinLikeBlock.hpp>
@@ -50,7 +49,7 @@ namespace ledger {
             std::string previousTxHash;
             int32_t outputIndex;
             std::vector<std::vector<uint8_t>> pubKeys;
-            BitcoinLikeBlockchainExplorer::Output output;
+            BitcoinLikeNetwork::Output output;
 
             BitcoinLikePreparedInput() = default;
 
@@ -59,7 +58,7 @@ namespace ledger {
                                      const std::string &previousTxHash_,
                                      int32_t outputIndex_,
                                      std::vector<std::vector<uint8_t>> pubKeys_,
-                                     BitcoinLikeBlockchainExplorer::Output output_) : sequence(sequence_),
+                                     BitcoinLikeNetwork::Output output_) : sequence(sequence_),
                                                                                       address(address_),
                                                                                       previousTxHash(previousTxHash_),
                                                                                       outputIndex(outputIndex_),
@@ -166,6 +165,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H

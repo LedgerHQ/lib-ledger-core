@@ -80,7 +80,7 @@ namespace ledger {
                 const auto outputIndex = std::get<1>(i);
                 //TODO: Replace with db call
                 buddy->logger->info("GET TX 1");
-                return buddy->explorer->getTransactionByHash(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) -> Future<BigInt> {
+                return buddy->explorer->getTransactionByHash(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeNetwork::Transaction>& tx) -> Future<BigInt> {
                     buddy->logger->info("GOT TX 1");
                     auto newIt = it;
                     return go(newIt++, v + tx->outputs[outputIndex].value, buddy);
@@ -105,7 +105,7 @@ namespace ledger {
                 }
                 auto hash = utxo[index]->getTransactionHash();
                 buddy->logger->info("GET TX 2");
-                return buddy->getTransaction(hash).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) mutable -> Future<Unit> {
+                return buddy->getTransaction(hash).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeNetwork::Transaction>& tx) mutable -> Future<Unit> {
                     buddy->logger->info("GOT TX 2");
                     uint64_t block_height = (tx->block.nonEmpty()) ? tx->block.getValue().height :
                                             std::numeric_limits<uint64_t>::max();

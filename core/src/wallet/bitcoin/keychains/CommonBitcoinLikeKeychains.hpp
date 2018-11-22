@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
-#define LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
+#pragma once
 
 #include "BitcoinLikeKeychain.hpp"
 #include <set>
@@ -99,5 +98,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H

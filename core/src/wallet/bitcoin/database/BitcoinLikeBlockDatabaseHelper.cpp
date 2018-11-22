@@ -35,13 +35,13 @@ namespace ledger {
     namespace core {
 
         bool BitcoinLikeBlockDatabaseHelper::blockExists(soci::session &sql,
-                                                         const BitcoinLikeBlockchainExplorer::Block &block) {
+                                                         const BitcoinLikeNetwork::Block &block) {
 
             return false;
         }
 
         bool BitcoinLikeBlockDatabaseHelper::putBlock(soci::session &sql,
-                                                      const BitcoinLikeBlockchainExplorer::Block &block) {
+                                                      const BitcoinLikeNetwork::Block &block) {
             return false;
         }
     }

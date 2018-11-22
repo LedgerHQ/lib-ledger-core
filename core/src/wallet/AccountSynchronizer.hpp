@@ -1,6 +1,4 @@
 /*
- *
- * BlockchainSynchronizer.hpp
  * ledger-core
  *
  * Created by Andrii Korol on 19/11/2018.
@@ -31,28 +29,14 @@
 #pragma once
 
 #include <memory>
-#include <vector>
-
-#include <utils/Either.hpp>
 #include <events/ProgressNotifier.h>
-#include <wallet/NetworkTypes.hpp>
-#include <wallet/Explorer.hpp>
-#include <wallet/BlockainDatabase.hpp>
-#include <wallet/AddressesSources.hpp>
 
 namespace ledger {
     namespace core {
-        template<typename NetworkType>
         class AccountSynchronizer {
         public:
-            typedef ExplorerV2<NetworkType> Explorer;
-            typedef typename Explorer::TransactionBulk Bulk_;
-            
-            Future<Unit> synchronize() {
-
-            }
-        private:
-            AddressSou
-        }
+            virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize() = 0;
+            virtual ~AccountSynchronizer() {};
+        };
     }
 }

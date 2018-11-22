@@ -31,6 +31,7 @@
 #include "BitcoinLikeInputApi.h"
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,7 +59,7 @@ namespace ledger {
             return getInput().coinbase.toOptional();
         }
 
-        BitcoinLikeBlockchainExplorer::Input &BitcoinLikeInputApi::getInput() {
+        BitcoinLikeNetwork::Input &BitcoinLikeInputApi::getInput() {
             return _operation->getBackend().bitcoinTransaction.getValue().inputs[_inputIndex];
         }
 

@@ -1,6 +1,5 @@
 /*
  *
- * LedgerApiBitcoinLikeBlockchainExplorer
  * ledger-core
  *
  * Created by Pierre Pollastri on 10/03/2017.
@@ -43,157 +42,157 @@
 
 namespace ledger {
     namespace core {
-		namespace bitcoin {
-			BitcoinLikeExplorer::BitcoinLikeExplorer(
-				const std::shared_ptr<api::ExecutionContext> &context,
-				const std::shared_ptr<HttpClient> &http,
-				const api::BitcoinLikeNetworkParameters& parameters,
-				const std::shared_ptr<api::DynamicObject>& configuration) :
-				DedicatedContext(context),
-				ConfigurationMatchable( { api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT }) {
+        namespace bitcoin {
+            BitcoinLikeExplorer::BitcoinLikeExplorer(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http,
+                const api::BitcoinLikeNetworkParameters& parameters,
+                const std::shared_ptr<api::DynamicObject>& configuration) :
+                DedicatedContext(context),
+                ConfigurationMatchable( { api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT }) {
                 setConfiguration(configuration);
-				_http = http;
-				_parameters = parameters;
-			}
+                _http = http;
+                _parameters = parameters;
+            }
 
-			Future<void *> BitcoinLikeExplorer::startSession() {
-				return _http
-					->GET(fmt::format("/blockchain/v2/{}/syncToken", _parameters.Identifier))
-					.json().map<void *>(getContext(), [](const HttpRequest::JsonResult& result) {
-					auto& json = *std::get<1>(result);
-					return new std::string(json["token"].GetString(), json["token"].GetStringLength());
-				});
-			}
+            Future<void *> BitcoinLikeExplorer::startSession() {
+                return _http
+                    ->GET(fmt::format("/blockchain/v2/{}/syncToken", _parameters.Identifier))
+                    .json().map<void *>(getContext(), [](const HttpRequest::JsonResult& result) {
+                    auto& json = *std::get<1>(result);
+                    return new std::string(json["token"].GetString(), json["token"].GetStringLength());
+                });
+            }
 
-			Future<Unit> BitcoinLikeExplorer::killSession(void *session) {
-				return _http
-					->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
-					.DEL(fmt::format("/blockchain/v2/{}/syncToken", _parameters.Identifier))
-					.json().map<Unit>(getContext(), [](const HttpRequest::JsonResult& result) {
-					return unit;
-				});
-			}
+            Future<Unit> BitcoinLikeExplorer::killSession(void *session) {
+                return _http
+                    ->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
+                    .DEL(fmt::format("/blockchain/v2/{}/syncToken", _parameters.Identifier))
+                    .json().map<Unit>(getContext(), [](const HttpRequest::JsonResult& result) {
+                    return unit;
+                });
+            }
 
-			Future<std::string> BitcoinLikeExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-				std::stringstream body;
-				body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
-				auto bodyString = body.str();
-				return _http
-					->POST(fmt::format("/blockchain/v2/{}/transactions/send", _parameters.Identifier),
-						std::vector<uint8_t>(bodyString.begin(), bodyString.end())
-					).json().map<std::string>(getContext(), [](const HttpRequest::JsonResult& result) -> std::string {
-					auto& json = *std::get<1>(result);
-					return std::string(json["result"].GetString());
-				});
-			}
+            Future<std::string> BitcoinLikeExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+                std::stringstream body;
+                body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
+                auto bodyString = body.str();
+                return _http
+                    ->POST(fmt::format("/blockchain/v2/{}/transactions/send", _parameters.Identifier),
+                        std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+                    ).json().map<std::string>(getContext(), [](const HttpRequest::JsonResult& result) -> std::string {
+                    auto& json = *std::get<1>(result);
+                    return std::string(json["result"].GetString());
+                });
+            }
 
-			Future<Bytes> BitcoinLikeExplorer::getRawTransaction(const std::string& transactionHash) {
-				return _http
-					->GET(fmt::format("/blockchain/v2/{}/transactions/{}/hex", _parameters.Identifier, transactionHash))
-					.json().map<Bytes>(getContext(), [transactionHash](const HttpRequest::JsonResult& result) {
-					auto& json = *std::get<1>(result);
-					if (json.GetArray().Size() == 0) {
-						throw make_exception(api::ErrorCode::RAW_TRANSACTION_NOT_FOUND, "Unable to retrieve {}", transactionHash);
-					}
-					else {
-						auto& hex = json[0].GetObject()["hex"];
-						return Bytes(ledger::core::hex::toByteArray(std::string(hex.GetString(), hex.GetStringLength())));
-					}
-				});
-			}
+            Future<Bytes> BitcoinLikeExplorer::getRawTransaction(const std::string& transactionHash) {
+                return _http
+                    ->GET(fmt::format("/blockchain/v2/{}/transactions/{}/hex", _parameters.Identifier, transactionHash))
+                    .json().map<Bytes>(getContext(), [transactionHash](const HttpRequest::JsonResult& result) {
+                    auto& json = *std::get<1>(result);
+                    if (json.GetArray().Size() == 0) {
+                        throw make_exception(api::ErrorCode::RAW_TRANSACTION_NOT_FOUND, "Unable to retrieve {}", transactionHash);
+                    }
+                    else {
+                        auto& hex = json[0].GetObject()["hex"];
+                        return Bytes(ledger::core::hex::toByteArray(std::string(hex.GetString(), hex.GetStringLength())));
+                    }
+                });
+            }
 
-			FuturePtr<BitcoinLikeExplorer::TransactionBulk>
-				BitcoinLikeExplorer::getTransactions(const std::vector<std::string> &addresses,
-					Option<std::string> fromBlockHash,
-					Option<void *> session) {
-				auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
-				std::string params;
-				std::unordered_map<std::string, std::string> headers;
+            FuturePtr<BitcoinLikeExplorer::TransactionBulk>
+                BitcoinLikeExplorer::getTransactions(const std::vector<std::string> &addresses,
+                    Option<std::string> fromBlockHash,
+                    Option<void *> session) {
+                auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
+                std::string params;
+                std::unordered_map<std::string, std::string> headers;
 
-				if (session.isEmpty()) {
-					params = "?noToken=true";
-				}
-				else {
-					headers["X-LedgerWallet-SyncToken"] = *((std::string *)session.getValue());
-				}
-				if (!fromBlockHash.isEmpty()) {
-					if (params.size() > 0) {
-						params = params + "&";
-					}
-					else {
-						params = params + "?";
-					}
-					params = params + "blockHash=" + fromBlockHash.getValue();
-				}
-				return _http
-					->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
-					.json<TransactionBulk, Exception>(LedgerApiParser<TransactionBulk, TransactionsBulkParser>())
-					.mapPtr<TransactionBulk>(_executionContext, [fromBlockHash](const Either<Exception, std::shared_ptr<TransactionBulk>>& result) {
-					if (result.isLeft()) {
-						if (fromBlockHash.isEmpty()) {
-							throw result.getLeft();
-						}
-						else {
-							throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
-						}
-					}
-					else {
-						return result.getRight();
-					}
-				});
-			}
+                if (session.isEmpty()) {
+                    params = "?noToken=true";
+                }
+                else {
+                    headers["X-LedgerWallet-SyncToken"] = *((std::string *)session.getValue());
+                }
+                if (!fromBlockHash.isEmpty()) {
+                    if (params.size() > 0) {
+                        params = params + "&";
+                    }
+                    else {
+                        params = params + "?";
+                    }
+                    params = params + "blockHash=" + fromBlockHash.getValue();
+                }
+                return _http
+                    ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
+                    .json<TransactionBulk, Exception>(LedgerApiParser<TransactionBulk, TransactionsBulkParser>())
+                    .mapPtr<TransactionBulk>(_executionContext, [fromBlockHash](const Either<Exception, std::shared_ptr<TransactionBulk>>& result) {
+                    if (result.isLeft()) {
+                        if (fromBlockHash.isEmpty()) {
+                            throw result.getLeft();
+                        }
+                        else {
+                            throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
+                        }
+                    }
+                    else {
+                        return result.getRight();
+                    }
+                });
+            }
 
-			FuturePtr<Block> BitcoinLikeExplorer::getCurrentBlock() {
-				return _http
-					->GET(fmt::format("/blockchain/v2/{}/blocks/current", _parameters.Identifier))
-					.json<Block, Exception>(LedgerApiParser<Block, BlockParser>())
-					.mapPtr<Block>(_executionContext, [](const Either<Exception, std::shared_ptr<Block>>& result) {
-					if (result.isLeft()) {
-						throw result.getLeft();
-					}
-					else {
-						return result.getRight();
-					}
-				});
-			}
+            FuturePtr<Block> BitcoinLikeExplorer::getCurrentBlock() {
+                return _http
+                    ->GET(fmt::format("/blockchain/v2/{}/blocks/current", _parameters.Identifier))
+                    .json<Block, Exception>(LedgerApiParser<Block, BlockParser>())
+                    .mapPtr<Block>(_executionContext, [](const Either<Exception, std::shared_ptr<Block>>& result) {
+                    if (result.isLeft()) {
+                        throw result.getLeft();
+                    }
+                    else {
+                        return result.getRight();
+                    }
+                });
+            }
 
-			FuturePtr<Transaction>
-				BitcoinLikeExplorer::getTransactionByHash(const std::string &transactionHash) {
-				return _http
-					->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash))
-					.json<std::vector<Transaction>, Exception>(LedgerApiParser<std::vector<Transaction>, TransactionsParser>())
-					.mapPtr<Transaction>(_executionContext, [transactionHash](const Either<Exception, std::shared_ptr<std::vector<Transaction>>>& result) {
-					if (result.isLeft()) {
-						throw result.getLeft();
-					}
-					else if (result.getRight()->size() == 0) {
-						throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash);
-					}
-					else {
-						auto tx = (*result.getRight())[0];
-						auto transaction = std::make_shared<Transaction>();
-						transaction->block = tx.block;
-						transaction->fees = tx.fees;
-						transaction->hash = tx.hash;
-						transaction->lockTime = tx.lockTime;
-						transaction->inputs = tx.inputs;
-						transaction->outputs = tx.outputs;
-						transaction->receivedAt = tx.receivedAt;
-						transaction->confirmations = tx.confirmations;
-						return transaction;
-					}
-				});
-			}
+            FuturePtr<Transaction>
+                BitcoinLikeExplorer::getTransactionByHash(const std::string &transactionHash) {
+                return _http
+                    ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash))
+                    .json<std::vector<Transaction>, Exception>(LedgerApiParser<std::vector<Transaction>, TransactionsParser>())
+                    .mapPtr<Transaction>(_executionContext, [transactionHash](const Either<Exception, std::shared_ptr<std::vector<Transaction>>>& result) {
+                    if (result.isLeft()) {
+                        throw result.getLeft();
+                    }
+                    else if (result.getRight()->size() == 0) {
+                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash);
+                    }
+                    else {
+                        auto tx = (*result.getRight())[0];
+                        auto transaction = std::make_shared<Transaction>();
+                        transaction->block = tx.block;
+                        transaction->fees = tx.fees;
+                        transaction->hash = tx.hash;
+                        transaction->lockTime = tx.lockTime;
+                        transaction->inputs = tx.inputs;
+                        transaction->outputs = tx.outputs;
+                        transaction->receivedAt = tx.receivedAt;
+                        transaction->confirmations = tx.confirmations;
+                        return transaction;
+                    }
+                });
+            }
 
-			Future<int64_t > BitcoinLikeExplorer::getTimestamp() {
-				auto delay = 60 * _parameters.TimestampDelay;
-				return _http->GET(fmt::format("/timestamp"))
-					.json().map<int64_t>(getContext(), [delay](const HttpRequest::JsonResult& result) {
-					auto& json = *std::get<1>(result);
-					return json["timestamp"].GetInt64() - delay;
-				});
+            Future<int64_t > BitcoinLikeExplorer::getTimestamp() {
+                auto delay = 60 * _parameters.TimestampDelay;
+                return _http->GET(fmt::format("/timestamp"))
+                    .json().map<int64_t>(getContext(), [delay](const HttpRequest::JsonResult& result) {
+                    auto& json = *std::get<1>(result);
+                    return json["timestamp"].GetInt64() - delay;
+                });
 
-			}
-		}
+            }
+        }
     }
 }

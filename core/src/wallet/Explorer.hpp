@@ -4,6 +4,7 @@
 #include <vector>
 #include <utils/Option.hpp>
 #include <async/Future.hpp>
+#include <collections/Bytes.hpp>
 
 namespace ledger {
     namespace core {
@@ -11,9 +12,9 @@ namespace ledger {
         template<typename Network>
         class ExplorerV2 {
         public:
-            typedef Network::Transaction Transaction;
-            typedef Network::Block Block;
-            typedef std::pair<std::vector<Transaction>, bool> TransactionBulk;
+            typedef typename Network::Transaction Transaction;
+            typedef typename Network::Block Block;
+            typedef std::pair<std::vector<typename Transaction>, bool> TransactionBulk;
 
             virtual Future<void *> startSession() = 0;
             virtual Future<Unit> killSession(void *session) = 0;

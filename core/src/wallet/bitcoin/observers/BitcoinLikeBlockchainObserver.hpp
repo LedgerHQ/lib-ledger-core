@@ -28,15 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
-#define LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP
+#pragma once
 
 #include <async/DedicatedContext.hpp>
 #include <api/Currency.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/DynamicObject.hpp>
 #include <debug/logger.hpp>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <utils/ConfigurationMatchable.h>
 
 namespace ledger {
     namespace core {
@@ -61,9 +60,6 @@ namespace ledger {
             virtual void onStart() = 0;
             virtual void onStop() = 0;
 
-            void putTransaction(const BitcoinLikeBlockchainExplorer::Transaction& tx);
-            void putBlock(const BitcoinLikeBlockchainExplorer::Block& block);
-
         private:
             bool _isRegistered(std::lock_guard<std::mutex>& lock, const std::shared_ptr<BitcoinLikeAccount>& account);
 
@@ -76,5 +72,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEBLOCKCHAINOBSERVER_HPP

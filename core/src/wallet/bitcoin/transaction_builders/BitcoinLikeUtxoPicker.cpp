@@ -49,7 +49,6 @@ namespace ledger {
         BitcoinLikeTransactionBuildFunction
         BitcoinLikeUtxoPicker::getBuildFunction(const BitcoinLikeGetUtxoFunction &getUtxo,
                                                 const BitcoinLikeGetTxFunction& getTransaction,
-                                                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
                                                 const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                 const uint64_t currentBlockHeight,
                                                 const std::shared_ptr<spdlog::logger>& logger
@@ -61,7 +60,7 @@ namespace ledger {
                     logger->info("Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", currentBlockHeight);
                     auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->isSegwit(), currentBlockHeight);
                     auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
-                    return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx);
+                    return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, keychain, logger, tx);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                     buddy->logger->info("Buddy created");
                     return self->fillInputs(buddy).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
@@ -94,7 +93,7 @@ namespace ledger {
                 auto address = script.parseAddress(getCurrency()).map<std::string>([] (const BitcoinLikeAddress& addr) {
                     return addr.toBase58();
                 });
-                BitcoinLikeBlockchainExplorer::Output out;
+                BitcoinLikeNetwork::Output out;
                 out.index = static_cast<uint64_t>(outputIndex);
                 out.value = *amount;
                 out.address = address;
@@ -123,7 +122,7 @@ namespace ledger {
 
                 auto amount = buddy->changeAmount;
                 auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
-                BitcoinLikeBlockchainExplorer::Output out;
+                BitcoinLikeNetwork::Output out;
                 out.index = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
                 out.value = amount;
                 out.address = Option<std::string>(changeAddress).toOptional();
@@ -148,7 +147,7 @@ namespace ledger {
                 }
             });
 
-            return buddy->explorer->getCurrentBlock().map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) -> Unit{
+            return buddy->explorer->getCurrentBlock().map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeNetwork::Block>& block) -> Unit{
                 buddy->transaction->setLockTime(static_cast<uint32_t>(block->height));
                 return unit;
             });
@@ -186,7 +185,7 @@ namespace ledger {
         Future<Unit> BitcoinLikeUtxoPicker::fillInput(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                       const BitcoinLikeUtxoPicker::UTXODescriptor &desc) {
             const std::string& hash = std::get<0>(desc);
-            return buddy->explorer->getTransactionByHash(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) {
+            return buddy->explorer->getTransactionByHash(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeNetwork::Transaction>& tx) {
                 buddy->logger->debug("Get output {} on {}", std::get<1>(desc), tx->outputs.size());
                 auto output = tx->outputs[std::get<1>(desc)];
                 std::vector<std::vector<uint8_t>> pub_keys;
