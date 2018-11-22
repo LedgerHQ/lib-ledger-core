@@ -31,6 +31,7 @@
 
 #include <gtest/gtest.h>
 #include <src/async/Future.hpp>
+#include <src/async/FutureUtils.hpp>
 #include <iostream>
 #include <async/QtThreadDispatcher.hpp>
 
@@ -352,5 +353,145 @@ TEST(Future, ToCallbackFailure) {
     Future<int>::async(queue, [] () -> int {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Toto");
     }).callback(queue, std::make_shared<Callback>(dispatcher));
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ExecuteAllThreadPoolOK) {
+    struct Callback {
+
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+            EXPECT_TRUE(!!x);
+            EXPECT_TRUE(!error);
+            auto vec = x.value();
+            for (int i = 0; i < 10; ++i)
+                EXPECT_EQ(vec[i], i);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
+    };
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto queue = dispatcher->getThreadPoolExecutionContext("queue");
+    std::vector<Future<int>> futures;
+    for (int i = 0; i < 10; ++i)
+    {
+        auto f = Future<int>::async(queue, [i]() -> int {
+            return i;
+        });
+        futures.push_back(f);
+    }
+    Future<std::vector<int>> res = executeAll(queue, futures);
+    res.callback(queue, std::make_shared<Callback>(dispatcher));
+
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ExecuteAllSingleThreadOK) {
+    struct Callback {
+
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+            EXPECT_TRUE(!!x);
+            EXPECT_TRUE(!error);
+            auto vec = x.value();
+            for (int i = 0; i < 10; ++i)
+                EXPECT_EQ(vec[i], i);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
+    };
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    std::vector<Future<int>> futures;
+    for (int i = 0; i < 10; ++i)
+    {
+        auto f = Future<int>::async(queue, [i]() -> int {
+            return i;
+        });
+        futures.push_back(f);
+    }
+    Future<std::vector<int>> res = executeAll(queue, futures);
+    res.callback(queue, std::make_shared<Callback>(dispatcher));
+
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ExecuteAllSingleThreadFail) {
+    struct Callback {
+
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+            EXPECT_FALSE(!!x);
+            EXPECT_FALSE(!error);
+            EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
+    };
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto queue = dispatcher->getSerialExecutionContext("queue");
+    std::vector<Future<int>> futures;
+    for (int i = 0; i < 10; ++i)
+    {
+        auto f = Future<int>::async(queue, [i]() -> int {
+            if (i == 6)
+            {
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Failed on 6");
+            }
+            return i;
+        });
+        futures.push_back(f);
+    }
+    Future<std::vector<int>> res = executeAll(queue, futures);
+    res.callback(queue, std::make_shared<Callback>(dispatcher));
+
+    dispatcher->waitUntilStopped();
+}
+
+TEST(Future, ExecuteAllThreadPoolFail) {
+    struct Callback {
+
+        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+            this->dispatcher = dispatcher;
+        }
+
+        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+            EXPECT_FALSE(!!x);
+            EXPECT_FALSE(!error);
+            EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
+            dispatcher->stop();
+        }
+
+        std::shared_ptr<QtThreadDispatcher> dispatcher;
+    };
+    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto queue = dispatcher->getThreadPoolExecutionContext("queue");
+    std::vector<Future<int>> futures;
+    for (int i = 0; i < 10; ++i)
+    {
+        auto f = Future<int>::async(queue, [i]() -> int {
+            if (i == 6)
+            {
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Failed on 6");
+            }
+            return i;
+        });
+        futures.push_back(f);
+    }
+    Future<std::vector<int>> res = executeAll(queue, futures);
+    res.callback(queue, std::make_shared<Callback>(dispatcher));
+
     dispatcher->waitUntilStopped();
 }
