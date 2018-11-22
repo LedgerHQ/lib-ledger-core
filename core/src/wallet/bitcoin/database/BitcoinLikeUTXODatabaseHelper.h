@@ -29,11 +29,10 @@
  *
  */
 
-#ifndef LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
-#define LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+#pragma once
 
 #include <soci.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/NetworkTypes.hpp>
 namespace ledger {
     namespace core {
         class BitcoinLikeUTXODatabaseHelper {
@@ -45,7 +44,7 @@ namespace ledger {
             static std::size_t queryUTXO(soci::session &sql, const std::string &accountUid,
                            int32_t offset,
                            int32_t count,
-                           std::vector<BitcoinLikeBlockchainExplorer::Output>& out,
+                           std::vector<BitcoinLikeNetwork::Output>& out,
                            std::function<bool (const std::string& address)> filter);
 
             static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid,
@@ -53,5 +52,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H

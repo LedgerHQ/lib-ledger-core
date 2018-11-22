@@ -102,30 +102,6 @@ namespace ledger {
             return _logger;
         }
 
-        void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorer::Transaction &tx) {
-            std::lock_guard<std::mutex> lock(_lock);
-            for (const auto& account : _accounts) {
-                account->run([account, tx] () {
-                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    if (account->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED)
-                        account->emitEventsNow();
-                });
-            }
-        }
 
-        void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block &block) {
-            std::lock_guard<std::mutex> lock(_lock);
-            for (const auto& account : _accounts) {
-                account->run([account, block] () {
-                    bool shouldEmitNow = false;
-                    {
-                        soci::session sql(account->getWallet()->getDatabase()->getPool());
-                        shouldEmitNow = account->putBlock(sql, block);
-                    }
-                    if (shouldEmitNow)
-                        account->emitEventsNow();
-                });
-            }
-        }
     }
 }

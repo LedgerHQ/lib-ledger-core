@@ -29,20 +29,17 @@
  *
  */
 
-#ifndef LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
-#define LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#pragma once
 
 #include <soci.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeBlockDatabaseHelper {
         public:
-            static bool blockExists(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
-            static bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+            static bool blockExists(soci::session& sql, const BitcoinLikeNetwork::Block& block);
+            static bool putBlock(soci::session& sql, const BitcoinLikeNetwork::Block& block);
         };
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H

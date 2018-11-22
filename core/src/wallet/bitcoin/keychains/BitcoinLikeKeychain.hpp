@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
-#define LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
+#pragma once
 
 #include "../../../bitcoin/BitcoinLikeExtendedPublicKey.hpp"
 #include <string>
@@ -108,5 +107,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP

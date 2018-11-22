@@ -28,23 +28,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H
-#define LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H
+#pragma once
 
 #include <api/BitcoinLikeOutput.hpp>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
 #include <utils/Either.hpp>
 #include <wallet/common/Amount.h>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeOutputApi : public api::BitcoinLikeOutput {
         public:
             BitcoinLikeOutputApi(const std::shared_ptr<OperationApi>& operation, int32_t outputIndex);
-            BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output& output, const api::Currency& currency);
+            BitcoinLikeOutputApi(const BitcoinLikeNetwork::Output& output, const api::Currency& currency);
             BitcoinLikeOutputApi(
-                    const BitcoinLikeBlockchainExplorer::Output& output,
+                    const BitcoinLikeNetwork::Output& output,
                     const api::Currency& currency,
                     const std::shared_ptr<api::DerivationPath>& path
             );
@@ -61,16 +60,13 @@ namespace ledger {
             const BigInt& value();
 
         private:
-            BitcoinLikeBlockchainExplorer::Output& getOutput();
+            BitcoinLikeNetwork::Output& getOutput();
 
         private:
-            Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorer::Output>  _backend;
+            Either<std::shared_ptr<OperationApi>, BitcoinLikeNetwork::Output>  _backend;
             std::shared_ptr<api::DerivationPath> _path;
             int32_t _outputIndex;
             api::Currency _currency;
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H

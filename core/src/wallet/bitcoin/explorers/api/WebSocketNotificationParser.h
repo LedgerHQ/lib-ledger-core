@@ -39,14 +39,15 @@
 #include <rapidjson/reader.h>
 #include <stack>
 #include "TransactionParser.hpp"
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
         class WebSocketNotificationParser {
         public:
             struct Result {
-                BitcoinLikeBlockchainExplorer::Transaction transaction;
-                BitcoinLikeBlockchainExplorer::Block block;
+                BitcoinLikeNetwork::Transaction transaction;
+                BitcoinLikeNetwork::Block block;
                 std::string type;
                 std::string blockchain;
             };

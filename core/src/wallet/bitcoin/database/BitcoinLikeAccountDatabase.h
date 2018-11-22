@@ -28,11 +28,9 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
-#define LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
+#pragma once
 
 #include "BitcoinLikeAccountDatabaseEntry.h"
-#include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
 #include <database/DatabaseSessionPool.hpp>
 
 namespace ledger {
@@ -47,6 +45,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H

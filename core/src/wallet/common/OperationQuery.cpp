@@ -184,8 +184,8 @@ namespace ledger {
         }
 
         void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, OperationApi &operation) {
-            BitcoinLikeBlockchainExplorer::Transaction tx;
-            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
+            BitcoinLikeNetwork::Transaction tx;
+            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeNetwork::Transaction>(tx);
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
             BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().bitcoinTransaction.getValue());

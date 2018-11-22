@@ -29,14 +29,13 @@
  *
  */
 
-#ifndef LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
-#define LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
+#pragma once
 
 #include <async/DedicatedContext.hpp>
 #include "BitcoinLikeTransactionBuilder.h"
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/NetworkTypes.hpp>
 #include <api/Currency.hpp>
 #include <async/Future.hpp>
 #include <api/BitcoinLikeOutput.hpp>
@@ -47,7 +46,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi;
         class BitcoinLikeWritableInputApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
-        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> (const std::string&)>;
+        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeNetwork::Transaction> (const std::string&)>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
         public:
@@ -58,7 +57,6 @@ namespace ledger {
             virtual BitcoinLikeTransactionBuildFunction getBuildFunction(
                     const BitcoinLikeGetUtxoFunction& getUtxo,
                     const BitcoinLikeGetTxFunction& getTransaction,
-                    const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
                     const std::shared_ptr<BitcoinLikeKeychain>& keychain,
                     const uint64_t currentBlockHeight,
                     const std::shared_ptr<spdlog::logger>& logger
@@ -73,11 +71,10 @@ namespace ledger {
                         const BitcoinLikeTransactionBuildRequest& r,
                         const BitcoinLikeGetUtxoFunction& g,
                         const BitcoinLikeGetTxFunction& tx,
-                        const std::shared_ptr<BitcoinLikeBlockchainExplorer>& e,
                         const std::shared_ptr<BitcoinLikeKeychain>& k,
                         const std::shared_ptr<spdlog::logger>& l,
                         std::shared_ptr<BitcoinLikeTransactionApi> t)
-                        : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g),
+                        : request(r), keychain(k), transaction(t), getUtxo(g),
                           getTransaction(tx), logger(l)
                 {
                     if(request.wipe) {
@@ -90,7 +87,6 @@ namespace ledger {
                 const BitcoinLikeTransactionBuildRequest request;
                 BitcoinLikeGetUtxoFunction getUtxo;
                 BitcoinLikeGetTxFunction getTransaction;
-                std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer;
                 std::shared_ptr<BitcoinLikeKeychain> keychain;
                 std::shared_ptr<BitcoinLikeTransactionApi> transaction;
                 BigInt outputAmount;
@@ -112,6 +108,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEUTXOPICKER_H

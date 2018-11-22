@@ -37,7 +37,7 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeWritableInputApi::BitcoinLikeWritableInputApi(
-                const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<ledger::core::BitcoinLikeNetwork> &explorer,
                 const std::shared_ptr<api::ExecutionContext> &context, uint32_t sequence,
                 const std::vector<std::vector<uint8_t> > &pubKeys,
                 const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,

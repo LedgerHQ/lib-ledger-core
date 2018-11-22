@@ -113,7 +113,7 @@ namespace ledger {
             };
         }
 
-        std::shared_ptr<BitcoinLikeBlockchainExplorer>
+        std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>
         BitcoinLikeWalletFactory::getExplorer(const std::string &currencyName,
                                               const std::shared_ptr<api::DynamicObject> &configuration) {
             auto it = _runningExplorers.begin();

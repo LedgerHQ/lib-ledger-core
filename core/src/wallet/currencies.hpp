@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CURRENCIES_HPP
-#define LEDGER_CORE_CURRENCIES_HPP
+#pragma once
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER) && _MSC_VER <= 1900
@@ -69,6 +68,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_CURRENCIES_HPP

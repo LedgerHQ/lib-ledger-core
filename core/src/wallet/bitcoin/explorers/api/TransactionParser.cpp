@@ -59,16 +59,16 @@ namespace ledger {
             auto& currentObject = _hierarchy.top();
 
             if (currentObject == "inputs") {
-                BitcoinLikeBlockchainExplorer::Input input;
+                BitcoinLikeNetwork::Input input;
                 _transaction->inputs.push_back(input);
                 _inputParser.init(&_transaction->inputs.back());
             } else if (currentObject == "outputs") {
-                BitcoinLikeBlockchainExplorer::Output output;
+                BitcoinLikeNetwork::Output output;
                 _transaction->outputs.push_back(output);
                 _outputParser.init(&_transaction->outputs.back());
             } else if (currentObject == "block") {
-                BitcoinLikeBlockchainExplorer::Block block;
-                _transaction->block = Option<BitcoinLikeBlockchainExplorer::Block>(block);
+                BitcoinLikeNetwork::Block block;
+                _transaction->block = Option<BitcoinLikeNetwork::Block>(block);
                 _blockParser.init(&_transaction->block.getValue());
             }
 
@@ -169,7 +169,7 @@ namespace ledger {
             _arrayDepth = 0;
         }
 
-        void TransactionParser::init(BitcoinLikeBlockchainExplorer::Transaction *transaction) {
+        void TransactionParser::init(BitcoinLikeNetwork::Transaction *transaction) {
             _transaction = transaction;
         }
 

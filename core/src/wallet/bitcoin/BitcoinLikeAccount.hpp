@@ -28,25 +28,25 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEACCOUNT_HPP
-#define LEDGER_CORE_BITCOINLIKEACCOUNT_HPP
+#pragma once
 
 #include "BitcoinLikeWallet.hpp"
-#include <api/BitcoinLikeAccount.hpp>
-#include "explorers/BitcoinLikeBlockchainExplorer.hpp"
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
-#include <soci.h>
-#include <preferences/Preferences.hpp>
-#include <wallet/common/AbstractAccount.hpp>
+
 #include <api/Amount.hpp>
 #include <api/AmountCallback.hpp>
-#include <api/OperationListCallback.hpp>
+#include <api/BitcoinLikeAccount.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BitcoinLikePickingStrategy.hpp>
 #include <api/BitcoinLikeTransactionRequest.hpp>
 #include <api/BitcoinLikePreparedTransaction.hpp>
+#include <api/OperationListCallback.hpp>
+#include <preferences/Preferences.hpp>
+#include <wallet/AccountSynchronizer.hpp>
+#include <wallet/NetworkTypes.hpp>
+#include <wallet/TransactionBroadcaster.hpp>
 #include <wallet/bitcoin/types.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
@@ -64,26 +64,12 @@ namespace ledger {
 
             BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                int32_t index,
-                               const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
+                               const std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>>& broadcaster,
                                const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                               const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
-                               const std::shared_ptr<BitcoinLikeKeychain>& keychain
-            );
+                               const std::shared_ptr<AccountSynchronizer>& synchronizer,
+                               const std::shared_ptr<BitcoinLikeKeychain>& keychain);
 
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
-
-            /**
-             *
-             * @param transaction
-             * @return A flag indicating if the transaction was ignored, inserted
-             */
-            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorer::Transaction& transaction);
-            /**
-             *
-             * @param block
-             * @return true if the block wasn't already known.
-             */
-            bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 
@@ -103,7 +89,7 @@ namespace ledger {
                                                                            const std::string & end,
                                                                            api::TimePeriod precision) override;
 
-            FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> getTransaction(const std::string& hash);
+            FuturePtr<BitcoinLikeNetwork::Transaction> getTransaction(const std::string& hash);
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
@@ -130,8 +116,6 @@ namespace ledger {
 
             std::string getRestoreKey() override;
 
-            const std::shared_ptr<BitcoinLikeBlockchainExplorer>& getExplorer() const;
-
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
         protected:
@@ -141,18 +125,18 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeAccount> getSelf();
             inline void inflateOperation(Operation& out,
                                          const std::shared_ptr<const AbstractWallet>& wallet,
-                                         const BitcoinLikeBlockchainExplorer::Transaction& tx);
+                                         const BitcoinLikeNetwork::Transaction& tx);
             inline void computeOperationTrust(Operation& operation,
                                               const std::shared_ptr<const AbstractWallet>& wallet,
-                                              const BitcoinLikeBlockchainExplorer::Transaction& tx);
+                                              const BitcoinLikeNetwork::Transaction& tx);
 
         private:
+            std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>> _broadcaster;
+            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
-            std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
+            std::shared_ptr<AccountSynchronizer> _synchronizer;
             std::shared_ptr<BitcoinLikeUtxoPicker> _picker;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
@@ -160,6 +144,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNT_HPP

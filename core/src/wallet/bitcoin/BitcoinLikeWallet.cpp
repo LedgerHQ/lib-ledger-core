@@ -45,11 +45,12 @@ namespace ledger {
         const api::WalletType BitcoinLikeWallet::type = api::WalletType::BITCOIN;
 
         BitcoinLikeWallet::BitcoinLikeWallet(const std::string &name,
-                                             const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
+                                             const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
                                              const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<BitcoinLikeKeychainFactory> &keychainFactory,
-                                             const BitcoinLikeAccountSynchronizerFactory &synchronizer,
-                                             const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
+                                             const AccountSynchronizerFactory &synchronizerFactory,
+                                             const std::shared_ptr<WalletPool> &pool,
+                                             const api::Currency &network,
                                              const std::shared_ptr<DynamicObject>& configuration,
                                              const DerivationScheme& scheme
         )
@@ -57,7 +58,7 @@ namespace ledger {
             _explorer = explorer;
             _observer = observer;
             _keychainFactory = keychainFactory;
-            _synchronizerFactory = synchronizer;
+            _synchronizerFactory = synchronizerFactory;
         }
 
         bool BitcoinLikeWallet::isSynchronizing() {
@@ -226,10 +227,6 @@ namespace ledger {
                                                         _observer,
                                                         _synchronizerFactory(),
                                                         keychain);
-        }
-
-        std::shared_ptr<BitcoinLikeBlockchainExplorer> BitcoinLikeWallet::getBlockchainExplorer() {
-            return _explorer;
         }
 
     }

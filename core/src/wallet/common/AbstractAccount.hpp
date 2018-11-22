@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ABSTRACTACCOUNT_HPP
-#define LEDGER_CORE_ABSTRACTACCOUNT_HPP
+#pragma once
 
 #include <api/Account.hpp>
 #include "AbstractWallet.hpp"
@@ -116,6 +115,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_ABSTRACTACCOUNT_HPP

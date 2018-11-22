@@ -28,12 +28,11 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEINPUTAPI_H
-#define LEDGER_CORE_BITCOINLIKEINPUTAPI_H
+#pragma once
 
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
-#include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
@@ -70,7 +69,7 @@ namespace ledger {
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
         private:
-            inline BitcoinLikeBlockchainExplorer::Input& getInput();
+            inline BitcoinLikeNetwork::Input& getInput();
 
         private:
             std::shared_ptr<OperationApi> _operation;
@@ -78,5 +77,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEINPUTAPI_H

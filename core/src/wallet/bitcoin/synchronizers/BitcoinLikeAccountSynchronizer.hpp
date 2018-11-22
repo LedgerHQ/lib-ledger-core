@@ -1,46 +1,58 @@
-/*
- *
- * BitcoinLikeAccountSynchronizer
- * ledger-core
- *
- * Created by Pierre Pollastri on 28/04/2017.
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2016 Ledger
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
-#ifndef LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
-#define LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
+#pragma once
 
-#include <utils/Option.hpp>
-#include <events/ProgressNotifier.h>
+#include <api/ExecutionContext.hpp>
+#include <async/DedicatedContext.hpp>
+#include <database/PartialBlocksDB.hpp>
+#include <preferences/Preferences.hpp>
+#include <wallet/BlockainDatabase.hpp>
+#include <wallet/Explorer.hpp>
+#include <wallet/NetworkTypes.hpp>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
+#include <wallet/AccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
-        class AccountSynchronizer {
-        public:
-            virtual Option<std::shared_ptr<ProgressNotifier<Unit>>> synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) = 0;
-        };
+        namespace bitcoin {
+            // State of the world before synchronization
+            struct BlockchainState {
+                BitcoinLikeNetwork::Block currentBlock;
+                BitcoinLikeNetwork::Block lastStableBlock;
+                BitcoinLikeNetwork::Block lastUnstableBlock;
+            };
+
+            class BitcoinLikeAccountSynchronizer :
+                public AccountSynchronizer,
+                public std::enable_shared_from_this<BitcoinLikeAccountSynchronizer> {
+            public:
+                typedef ExplorerV2<BitcoinLikeNetwork> Explorer;
+                typedef BlockchainDatabase<BitcoinLikeNetwork> BlockchainDB;
+
+                BitcoinLikeAccountSynchronizer(
+                    const std::shared_ptr<api::ExecutionContext>& executionContext,
+                    const std::shared_ptr<Explorer>& explorer,
+                    const std::shared_ptr<BlockchainDB>& stableBlocksDb,
+                    const std::shared_ptr<BlockchainDB>& unstableBlocksDb
+                );
+
+                std::shared_ptr<ProgressNotifier<Unit>> synchronize() override;
+
+                bool isSynchronizing() const;
+            private:
+                Future<BlockchainState> getState();
+                Future<Unit> synchronizeStable(int fromHeight, int toHeight);
+                Future<Unit> synchronizeUnstable(int fromHeight, int toHeight);
+            private:
+                std::shared_ptr<api::ExecutionContext> _executionContext;
+                std::shared_ptr<Explorer> _explorer;
+                // blocks that would not be reverted
+                std::shared_ptr<BlockchainDB> _stableBlocksDb;
+                // blocks that may be reverted
+                std::shared_ptr<BlockchainDB> _unstableBlocksDb;
+                std::shared_ptr<ProgressNotifier<Unit>> _notifier;
+                
+                mutable std::mutex _lock;
+            };
+        }
     }
 }
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
