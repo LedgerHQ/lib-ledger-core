@@ -32,37 +32,36 @@
 
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
+#include <wallet/bitcoin/synchronizers/AccountSynchronizer.hpp>
 #include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 #include "BitcoinLikeKeychainFactory.h"
 #include <wallet/AccountSynchronizer.hpp>
 #include <wallet/NetworkTypes.hpp>
+#include <wallet/common/ExplorerTransactionBroadcaster.hpp>
 
 namespace ledger {
     namespace core {
 
-        using AccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer> ()>;
         class WalletPool;
+        namespace bitcoin {
+            class BitcoinLikeWalletFactory : public AbstractWalletFactory {
+            public:
+                BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+                std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+            private:
+                std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> getExplorer(const std::shared_ptr<api::DynamicObject>& configuration);
+                std::shared_ptr<BitcoinLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
+                std::shared_ptr<ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>
+                    createBroadcaster(const std::shared_ptr<api::DynamicObject> &configuration);
+            private:
 
-        class BitcoinLikeWalletFactory : public AbstractWalletFactory {
-        public:
-            BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
-            std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+                // Observers
+                std::list<std::weak_ptr<BitcoinLikeBlockchainObserver>> _runningObservers;
 
-        private:
-            std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-            std::shared_ptr<BitcoinLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-        private:
-            // Explorers
-            std::list<std::weak_ptr<ExplorerV2<BitcoinLikeNetwork>>> _runningExplorers;
+                // Keychain factories
+                std::unordered_map<std::string, std::shared_ptr<BitcoinLikeKeychainFactory>> _keychainFactories;
 
-            // Observers
-            std::list<std::weak_ptr<BitcoinLikeBlockchainObserver>> _runningObservers;
-
-            // Keychain factories
-            std::unordered_map<std::string, std::shared_ptr<BitcoinLikeKeychainFactory>> _keychainFactories;
-
-        };
+            };
+        }
     }
 }

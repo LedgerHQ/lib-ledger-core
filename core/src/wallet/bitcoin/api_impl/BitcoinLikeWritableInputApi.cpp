@@ -131,10 +131,7 @@ namespace ledger {
         }
 
         Future<std::vector<uint8_t>> BitcoinLikeWritableInputApi::getPreviousTransaction() {
-            return _explorer->getRawTransaction(getPreviousTxHash().value()).map<std::vector<uint8_t> >(_context,
-                                                                                                        [](const Bytes &bytes) {
-                                                                                                            return bytes.getContainer();
-                                                                                                        });
+            return Future<std::vector<uint8_t>>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
         }
 
     }

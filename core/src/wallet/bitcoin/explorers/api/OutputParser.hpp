@@ -31,7 +31,7 @@
 #pragma once
 
 #include <rapidjson/reader.h>
-#include <wallet/BlockchainNetworkType.hpp>
+#include <wallet/NetworkTypes.hpp>
 #include "../../../../net/HttpClient.hpp"
 
 namespace ledger {

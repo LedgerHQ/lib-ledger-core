@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEOPERATION_H
-#define LEDGER_CORE_BITCOINLIKEOPERATION_H
+#pragma once
 
 #include <api/BitcoinLikeOperation.hpp>
 #include <wallet/common/Operation.h>
@@ -48,6 +47,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEOPERATION_H

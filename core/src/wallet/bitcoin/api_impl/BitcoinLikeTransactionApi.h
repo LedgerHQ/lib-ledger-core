@@ -42,7 +42,6 @@
 
 namespace ledger {
     namespace core {
-
         struct BitcoinLikePreparedInput {
             uint32_t sequence;
             std::string address;
@@ -54,15 +53,15 @@ namespace ledger {
             BitcoinLikePreparedInput() = default;
 
             BitcoinLikePreparedInput(uint32_t sequence_,
-                                     const std::string &address_,
-                                     const std::string &previousTxHash_,
-                                     int32_t outputIndex_,
-                                     std::vector<std::vector<uint8_t>> pubKeys_,
-                                     BitcoinLikeNetwork::Output output_) : sequence(sequence_),
-                                                                                      address(address_),
-                                                                                      previousTxHash(previousTxHash_),
-                                                                                      outputIndex(outputIndex_),
-                                                                                      pubKeys(pubKeys_) {
+                const std::string &address_,
+                const std::string &previousTxHash_,
+                int32_t outputIndex_,
+                std::vector<std::vector<uint8_t>> pubKeys_,
+                BitcoinLikeNetwork::Output output_) : sequence(sequence_),
+                address(address_),
+                previousTxHash(previousTxHash_),
+                outputIndex(outputIndex_),
+                pubKeys(pubKeys_) {
                 output.value = output_.value;
                 output.index = output_.index;
                 output.address = output_.address;
@@ -78,7 +77,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
             explicit BitcoinLikeTransactionApi(const api::Currency &currency, bool isSegwit = false,
-                                               uint64_t currentBlockHeight = 0);
+                uint64_t currentBlockHeight = 0);
 
             explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
 
@@ -121,18 +120,18 @@ namespace ledger {
 
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
-                                                                                    const std::vector<uint8_t> &rawTransaction,
-                                                                                    std::experimental::optional<int32_t> currentBlockHeight,
-                                                                                    bool isSigned);
+                const std::vector<uint8_t> &rawTransaction,
+                std::experimental::optional<int32_t> currentBlockHeight,
+                bool isSigned);
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawSignedTransaction(const api::Currency &currency,
-                                                                                          const std::vector<uint8_t> &rawTransaction,
-                                                                                          std::experimental::optional<int32_t> currentBlockHeight);
+                const std::vector<uint8_t> &rawTransaction,
+                std::experimental::optional<int32_t> currentBlockHeight);
 
             static api::EstimatedSize estimateSize(std::size_t inputCount,
-                                                   std::size_t outputCount,
-                                                   bool hasTimestamp,
-                                                   bool useSegwit
+                std::size_t outputCount,
+                bool hasTimestamp,
+                bool useSegwit
             );
 
         private:

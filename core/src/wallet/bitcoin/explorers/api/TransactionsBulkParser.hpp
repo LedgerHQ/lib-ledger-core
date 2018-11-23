@@ -32,35 +32,37 @@
 
 #include "TransactionsParser.hpp"
 #include <utility>
-#include <wallet/BlockchainNetworkType.hpp>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
-        class TransactionsBulkParser {
-        public:
-            typedef std::pair<std::vector<BitcoinLikeNetwork::Transaction>, bool> Result;
-            TransactionsBulkParser(std::string& lastKey);
-            void init(Result* bulk);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+        namespace bitcoin {
+            class TransactionsBulkParser {
+            public:
+                typedef std::pair<std::vector<BitcoinLikeNetwork::Transaction>, bool> Result;
+                TransactionsBulkParser(std::string& lastKey);
+                void init(Result* bulk);
+                bool Null();
+                bool Bool(bool b);
+                bool Int(int i);
+                bool Uint(unsigned i);
+                bool Int64(int64_t i);
+                bool Uint64(uint64_t i);
+                bool Double(double d);
+                bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+                bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+                bool StartObject();
+                bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+                bool EndObject(rapidjson::SizeType memberCount);
+                bool StartArray();
+                bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            Result* _bulk;
-            TransactionsParser _transactionsParser;
-            std::string& _lastKey;
-            int _depth;
-        };
+            private:
+                Result* _bulk;
+                TransactionsParser _transactionsParser;
+                std::string& _lastKey;
+                int _depth;
+            };
+        }
     }
 }

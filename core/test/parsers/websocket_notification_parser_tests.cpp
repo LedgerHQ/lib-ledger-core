@@ -48,7 +48,7 @@ static const std::string NOTIF_WITH_BLOCK_9 = "\"bcea0c64e5d51baf8615c0373e94833
 using namespace ledger::core;
 
 TEST(WebSocketNotificationParserTest, NotificationWithTransaction) {
-    auto notif = JSONUtils::parse<WebSocketNotificationParser>(NOTIF_WITH_TX);
+    auto notif = JSONUtils::parse<bitcoin::WebSocketNotificationParser>(NOTIF_WITH_TX);
     EXPECT_EQ(notif->type, "new-transaction");
     EXPECT_EQ(notif->blockchain, "btc");
     EXPECT_EQ(notif->transaction.inputs.size(), 1);
@@ -69,7 +69,7 @@ TEST(WebSocketNotificationParserTest, NotificationWithBlock) {
     NOTIF_WITH_BLOCK.append(NOTIF_WITH_BLOCK_7);
     NOTIF_WITH_BLOCK.append(NOTIF_WITH_BLOCK_8);
     NOTIF_WITH_BLOCK.append(NOTIF_WITH_BLOCK_9);
-    auto notif = JSONUtils::parse<WebSocketNotificationParser>(NOTIF_WITH_BLOCK);
+    auto notif = JSONUtils::parse<bitcoin::WebSocketNotificationParser>(NOTIF_WITH_BLOCK);
     EXPECT_EQ(notif->type, "new-block");
     EXPECT_EQ(notif->blockchain, "btc");
     EXPECT_EQ(notif->block.hash, "00000000000000000072536b889dd63381cba497d7148816a5f0b35712d5712e");

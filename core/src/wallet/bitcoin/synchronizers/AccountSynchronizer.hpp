@@ -4,7 +4,7 @@
 #include <async/DedicatedContext.hpp>
 #include <database/PartialBlocksDB.hpp>
 #include <preferences/Preferences.hpp>
-#include <wallet/BlockainDatabase.hpp>
+#include <wallet/BlockchainDatabase.hpp>
 #include <wallet/Explorer.hpp>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
@@ -16,19 +16,19 @@ namespace ledger {
         namespace bitcoin {
             // State of the world before synchronization
             struct BlockchainState {
-                BitcoinLikeNetwork::Block currentBlock;
-                BitcoinLikeNetwork::Block lastStableBlock;
-                BitcoinLikeNetwork::Block lastUnstableBlock;
+                std::shared_ptr<BitcoinLikeNetwork::Block> currentBlock;
+                std::shared_ptr<BitcoinLikeNetwork::Block> lastStableBlock;
+                std::shared_ptr<BitcoinLikeNetwork::Block> lastUnstableBlock;
             };
 
-            class BitcoinLikeAccountSynchronizer :
-                public AccountSynchronizer,
-                public std::enable_shared_from_this<BitcoinLikeAccountSynchronizer> {
+            class AccountSynchronizer :
+                public core::AccountSynchronizer,
+                public std::enable_shared_from_this<AccountSynchronizer> {
             public:
                 typedef ExplorerV2<BitcoinLikeNetwork> Explorer;
                 typedef BlockchainDatabase<BitcoinLikeNetwork> BlockchainDB;
 
-                BitcoinLikeAccountSynchronizer(
+                AccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
                     const std::shared_ptr<Explorer>& explorer,
                     const std::shared_ptr<BlockchainDB>& stableBlocksDb,

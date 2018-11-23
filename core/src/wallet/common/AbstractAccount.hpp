@@ -32,9 +32,9 @@
 
 #include <api/Account.hpp>
 #include "AbstractWallet.hpp"
-#include "OperationQuery.h"
 #include <async/Future.hpp>
 #include <wallet/common/Amount.h>
+#include <wallet/common/Operation.h>
 #include <events/EventPublisher.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
@@ -97,7 +97,6 @@ namespace ledger {
 
         protected:
             void emitNewOperationEvent(const Operation& operation);
-            void emitNewBlockEvent(const Block& block);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
         private:

@@ -43,39 +43,41 @@
 
 namespace ledger {
     namespace core {
-        class WebSocketNotificationParser {
-        public:
-            struct Result {
-                BitcoinLikeNetwork::Transaction transaction;
-                BitcoinLikeNetwork::Block block;
-                std::string type;
-                std::string blockchain;
+        namespace bitcoin {
+            class WebSocketNotificationParser {
+            public:
+                struct Result {
+                    BitcoinLikeNetwork::Transaction transaction;
+                    BitcoinLikeNetwork::Block block;
+                    std::string type;
+                    std::string blockchain;
+                };
+
+                WebSocketNotificationParser(std::string& lastKey);
+                void init(Result* result);
+                bool Null();
+                bool Bool(bool b);
+                bool Int(int i);
+                bool Uint(unsigned i);
+                bool Int64(int64_t i);
+                bool Uint64(uint64_t i);
+                bool Double(double d);
+                bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool StartObject();
+                bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+                bool EndObject(rapidjson::SizeType memberCount);
+                bool StartArray();
+                bool EndArray(rapidjson::SizeType elementCount);
+
+            private:
+                std::string& _lastKey;
+                Result* _result;
+                int32_t  _depth;
+                std::string _currentObject;
+                BlockParser _blockParser;
+                TransactionParser _transactionParser;
             };
-
-            WebSocketNotificationParser(std::string& lastKey);
-            void init(Result* result);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
-
-        private:
-            std::string& _lastKey;
-            Result* _result;
-            int32_t  _depth;
-            std::string _currentObject;
-            BlockParser _blockParser;
-            TransactionParser _transactionParser;
-        };
+        }
     }
 }

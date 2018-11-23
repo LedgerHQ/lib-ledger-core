@@ -28,9 +28,7 @@
  * SOFTWARE.
  *
  */
-
-#ifndef LEDGER_CORE_BITCOINLIKEWRITABLEINPUTAPI_H
-#define LEDGER_CORE_BITCOINLIKEWRITABLEINPUTAPI_H
+#pragma once
 
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
@@ -94,6 +92,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEWRITABLEINPUTAPI_H

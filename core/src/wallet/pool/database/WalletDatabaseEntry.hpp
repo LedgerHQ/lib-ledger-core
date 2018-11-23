@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_WALLETDATABASEENTRY_HPP
-#define LEDGER_CORE_WALLETDATABASEENTRY_HPP
+#pragma once
 
 #include <string>
 #include <collections/DynamicObject.hpp>
@@ -49,6 +48,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_WALLETDATABASEENTRY_HPP

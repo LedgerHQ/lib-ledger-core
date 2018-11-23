@@ -117,12 +117,11 @@ namespace ledger {
         void LedgerApiBitcoinLikeBlockchainObserver::onMessage(const std::string &message) {
             auto self = shared_from_this();
             run([message, self] () {
-                auto result = JSONUtils::parse<WebSocketNotificationParser>(message);
-                result->block.currencyName = self->getCurrency().name;
+                auto result = JSONUtils::parse<bitcoin::WebSocketNotificationParser>(message);
                 if (result->type == "new-transaction") {
-                    self->putTransaction(result->transaction);
+                    // do something 
                 } else if (result->type == "new-block") {
-                    self->putBlock(result->block);
+                    // do something
                 }
             });
         }

@@ -30,10 +30,8 @@
  */
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
-#include <wallet/common/OperationQuery.h>
 #include <api/AmountCallback.hpp>
 #include <events/Event.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -118,12 +116,9 @@ namespace ledger {
         }
 
         std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
-            return std::make_shared<OperationQuery>(
-                    api::QueryFilter::accountEq(getAccountUid()),
-                    getWallet()->getDatabase(),
-                    getContext(),
-                    getMainExecutionContext()
-            );
+            // Get all operation
+            throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me");
+            return nullptr;
         }
 
         std::shared_ptr<Preferences> AbstractAccount::getInternalPreferences() const {
@@ -159,15 +154,6 @@ namespace ledger {
             payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
             payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
             auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
-            pushEvent(event);
-        }
-
-        void AbstractAccount::emitNewBlockEvent(const Block &block) {
-            auto payload = DynamicObject::newInstance();
-            payload->putLong(api::Account::EV_NEW_BLOCK_HEIGHT, block.height);
-            payload->putString(api::Account::EV_NEW_BLOCK_HASH, block.hash);
-            payload->putString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME, block.currencyName);
-            auto event = Event::newInstance(api::EventCode::NEW_BLOCK, payload);
             pushEvent(event);
         }
 

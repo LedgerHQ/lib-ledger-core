@@ -14,7 +14,6 @@
 #include <wallet/common/CurrencyBuilder.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>

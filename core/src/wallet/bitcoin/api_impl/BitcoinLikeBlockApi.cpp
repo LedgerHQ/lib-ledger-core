@@ -39,7 +39,7 @@ int64_t ledger::core::BitcoinLikeBlockApi::getHeight() {
 }
 
 std::chrono::system_clock::time_point ledger::core::BitcoinLikeBlockApi::getTime() {
-    return _block.time;
+    return _block.createdAt;
 }
 
 ledger::core::BitcoinLikeBlockApi::BitcoinLikeBlockApi(const ledger::core::Block &block) {

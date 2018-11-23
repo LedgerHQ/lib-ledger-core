@@ -39,84 +39,85 @@
 
 namespace ledger {
     namespace core {
-
-        bool TransactionsBulkParser::Null() {
-            PROXY_PARSE(Null)
-        }
-
-        bool TransactionsBulkParser::Bool(bool b) {
-            if (_lastKey == "truncated" && _depth == 0) {
-                _bulk->second = b;
-            }
-            PROXY_PARSE(Bool, b)
-        }
-
-        bool TransactionsBulkParser::Int(int i) {
-            PROXY_PARSE(Int, i)
-        }
-
-        bool TransactionsBulkParser::Uint(unsigned i) {
-            PROXY_PARSE(Uint, i)
-        }
-
-        bool TransactionsBulkParser::Int64(int64_t i) {
-            PROXY_PARSE(Int64, i)
-        }
-
-        bool TransactionsBulkParser::Uint64(uint64_t i) {
-            PROXY_PARSE(Uint64, i)
-        }
-
-        bool TransactionsBulkParser::Double(double d) {
-            PROXY_PARSE(Double, d)
-        }
-
-        bool TransactionsBulkParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(RawNumber, str, length, copy)
-        }
-
-        bool TransactionsBulkParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(String, str, length, copy)
-        }
-
-        bool TransactionsBulkParser::StartObject() {
-            PROXY_PARSE(StartObject)
-        }
-
-        bool TransactionsBulkParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(Key, str, length, copy)
-        }
-
-        bool TransactionsBulkParser::EndObject(rapidjson::SizeType memberCount) {
-            PROXY_PARSE(EndObject, memberCount)
-        }
-
-        bool TransactionsBulkParser::StartArray() {
-            if (_depth >= 1 || _lastKey == "txs") {
-                _depth += 1;
+        namespace bitcoin {
+            bool TransactionsBulkParser::Null() {
+                PROXY_PARSE(Null)
             }
 
-            if (_depth == 1) {
-                _transactionsParser.init(&_bulk->first);
+            bool TransactionsBulkParser::Bool(bool b) {
+                if (_lastKey == "truncated" && _depth == 0) {
+                    _bulk->second = b;
+                }
+                PROXY_PARSE(Bool, b)
             }
 
-            PROXY_PARSE(StartArray)
-        }
-
-        bool TransactionsBulkParser::EndArray(rapidjson::SizeType elementCount) {
-            if (_depth > 0) {
-                _depth -= 1;
+            bool TransactionsBulkParser::Int(int i) {
+                PROXY_PARSE(Int, i)
             }
 
-            PROXY_PARSE(EndArray, elementCount)
-        }
+            bool TransactionsBulkParser::Uint(unsigned i) {
+                PROXY_PARSE(Uint, i)
+            }
 
-        TransactionsBulkParser::TransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey), _transactionsParser(lastKey) {
-            _depth = 0;
-        }
+            bool TransactionsBulkParser::Int64(int64_t i) {
+                PROXY_PARSE(Int64, i)
+            }
 
-        void TransactionsBulkParser::init(Result *bulk) {
-            _bulk = bulk;
+            bool TransactionsBulkParser::Uint64(uint64_t i) {
+                PROXY_PARSE(Uint64, i)
+            }
+
+            bool TransactionsBulkParser::Double(double d) {
+                PROXY_PARSE(Double, d)
+            }
+
+            bool TransactionsBulkParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(RawNumber, str, length, copy)
+            }
+
+            bool TransactionsBulkParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(String, str, length, copy)
+            }
+
+            bool TransactionsBulkParser::StartObject() {
+                PROXY_PARSE(StartObject)
+            }
+
+            bool TransactionsBulkParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(Key, str, length, copy)
+            }
+
+            bool TransactionsBulkParser::EndObject(rapidjson::SizeType memberCount) {
+                PROXY_PARSE(EndObject, memberCount)
+            }
+
+            bool TransactionsBulkParser::StartArray() {
+                if (_depth >= 1 || _lastKey == "txs") {
+                    _depth += 1;
+                }
+
+                if (_depth == 1) {
+                    _transactionsParser.init(&_bulk->first);
+                }
+
+                PROXY_PARSE(StartArray)
+            }
+
+            bool TransactionsBulkParser::EndArray(rapidjson::SizeType elementCount) {
+                if (_depth > 0) {
+                    _depth -= 1;
+                }
+
+                PROXY_PARSE(EndArray, elementCount)
+            }
+
+            TransactionsBulkParser::TransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey), _transactionsParser(lastKey) {
+                _depth = 0;
+            }
+
+            void TransactionsBulkParser::init(Result *bulk) {
+                _bulk = bulk;
+            }
         }
     }
 }

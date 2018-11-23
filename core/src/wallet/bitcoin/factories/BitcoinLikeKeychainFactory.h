@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
-#define LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
+#pragma once
 
 #include <collections/DynamicObject.hpp>
 #include <api/Currency.hpp>
@@ -58,6 +57,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H

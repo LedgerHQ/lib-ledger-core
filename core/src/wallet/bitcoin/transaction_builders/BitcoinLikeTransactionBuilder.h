@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
-#define LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
+#pragma once
 
 #include <api/BitcoinLikeTransactionBuilder.hpp>
 #include <api/BitcoinLikePickingStrategy.hpp>
@@ -119,6 +118,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H

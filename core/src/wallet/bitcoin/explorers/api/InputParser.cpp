@@ -30,6 +30,7 @@
  */
 #include "InputParser.hpp"
 #include "utils/DateUtils.hpp"
+#include <math/BigInt.h>
 
 namespace ledger {
     namespace core {

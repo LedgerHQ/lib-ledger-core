@@ -28,11 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_INPUTPARSER_HPP
-#define LEDGER_CORE_INPUTPARSER_HPP
+#pragma once
 
 #include <rapidjson/reader.h>
-#include <wallet/BlockchainNetworkType.hpp>
+#include <wallet/NetworkTypes.hpp>
 #include "../../../../net/HttpClient.hpp"
 
 namespace ledger {
@@ -65,6 +64,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_INPUTPARSER_HPP

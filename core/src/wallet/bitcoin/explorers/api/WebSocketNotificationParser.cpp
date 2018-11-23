@@ -43,124 +43,125 @@
 
 namespace ledger {
     namespace core {
+        namespace bitcoin {
+            WebSocketNotificationParser::WebSocketNotificationParser(std::string &lastKey) :
+                _lastKey(lastKey), _blockParser(lastKey), _transactionParser(lastKey), _depth(0) {
 
-        WebSocketNotificationParser::WebSocketNotificationParser(std::string &lastKey) :
-            _lastKey(lastKey), _blockParser(lastKey), _transactionParser(lastKey), _depth(0) {
-
-        }
-
-        void WebSocketNotificationParser::init(WebSocketNotificationParser::Result *result) {
-            _result = result;
-        }
-
-        bool WebSocketNotificationParser::Null() {
-            PROXY_PARSE(Null) {
-                return true;
             }
-        }
 
-        bool WebSocketNotificationParser::Bool(bool b) {
-            PROXY_PARSE(Bool, b) {
-                return true;
+            void WebSocketNotificationParser::init(WebSocketNotificationParser::Result *result) {
+                _result = result;
             }
-        }
 
-        bool WebSocketNotificationParser::Int(int i) {
-            PROXY_PARSE(Int, i) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::Uint(unsigned i) {
-            PROXY_PARSE(Uint, i) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::Int64(int64_t i) {
-            PROXY_PARSE(Int64, i) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::Uint64(uint64_t i) {
-            PROXY_PARSE(Uint64, i) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::Double(double d) {
-            PROXY_PARSE(Double, d) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
-                                                    bool copy) {
-            PROXY_PARSE(RawNumber, str, length, copy) {
-                return true;
-            }
-        }
-
-        bool
-        WebSocketNotificationParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(String, str, length, copy) {
-                if (_lastKey == "type") {
-                    _result->type = std::string(str, length);
-                } else if (_lastKey == "block_chain") {
-                    _result->blockchain = std::string(str, length);
-                }
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::StartObject() {
-            {
-                _depth += 1;
-                if (_depth == 3) {
-                    _currentObject = _lastKey;
-                }
-                auto& currentObject = _currentObject;
-
-                if (currentObject == "transaction") {
-                    _transactionParser.init(&_result->transaction);
-                } else if (currentObject == "block") {
-                    _blockParser.init(&_result->block);
+            bool WebSocketNotificationParser::Null() {
+                PROXY_PARSE(Null) {
+                    return true;
                 }
             }
-            PROXY_PARSE(StartObject) {
-                return true;
+
+            bool WebSocketNotificationParser::Bool(bool b) {
+                PROXY_PARSE(Bool, b) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Int(int i) {
+                PROXY_PARSE(Int, i) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Uint(unsigned i) {
+                PROXY_PARSE(Uint, i) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Int64(int64_t i) {
+                PROXY_PARSE(Int64, i) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Uint64(uint64_t i) {
+                PROXY_PARSE(Uint64, i) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Double(double d) {
+                PROXY_PARSE(Double, d) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
+                bool copy) {
+                PROXY_PARSE(RawNumber, str, length, copy) {
+                    return true;
+                }
+            }
+
+            bool
+                WebSocketNotificationParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(String, str, length, copy) {
+                    if (_lastKey == "type") {
+                        _result->type = std::string(str, length);
+                    }
+                    else if (_lastKey == "block_chain") {
+                        _result->blockchain = std::string(str, length);
+                    }
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::StartObject() {
+                {
+                    _depth += 1;
+                    if (_depth == 3) {
+                        _currentObject = _lastKey;
+                    }
+                    auto& currentObject = _currentObject;
+
+                    if (currentObject == "transaction") {
+                        _transactionParser.init(&_result->transaction);
+                    }
+                    else if (currentObject == "block") {
+                        _blockParser.init(&_result->block);
+                    }
+                }
+                PROXY_PARSE(StartObject) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                _lastKey = std::string(str, length);
+                PROXY_PARSE(Key, str, length, copy) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::EndObject(rapidjson::SizeType memberCount) {
+                _depth -= 1;
+                if (_depth == 2)
+                    _currentObject = "";
+                PROXY_PARSE(EndObject, memberCount) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::StartArray() {
+                PROXY_PARSE(StartArray) {
+                    return true;
+                }
+            }
+
+            bool WebSocketNotificationParser::EndArray(rapidjson::SizeType elementCount) {
+                PROXY_PARSE(EndArray, elementCount) {
+                    return false;
+                }
             }
         }
-
-        bool WebSocketNotificationParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
-            PROXY_PARSE(Key, str, length, copy) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::EndObject(rapidjson::SizeType memberCount) {
-            _depth -= 1;
-            if (_depth == 2)
-                _currentObject = "";
-            PROXY_PARSE(EndObject, memberCount) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::StartArray() {
-            PROXY_PARSE(StartArray) {
-                return true;
-            }
-        }
-
-        bool WebSocketNotificationParser::EndArray(rapidjson::SizeType elementCount) {
-            PROXY_PARSE(EndArray, elementCount) {
-                return false;
-            }
-        }
-
-
     }
 }

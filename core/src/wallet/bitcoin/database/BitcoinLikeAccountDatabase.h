@@ -35,13 +35,15 @@
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAccountDatabase {
-        public:
-            BitcoinLikeAccountDatabase(const std::string& walletUid, int32_t index);
+        namespace bitcoin {
+            class BitcoinLikeAccountDatabase {
+            public:
+                BitcoinLikeAccountDatabase(const std::string& walletUid, int32_t index);
 
 
-        private:
-            std::string _accountUid;
-        };
+            private:
+                std::string _accountUid;
+            };
+        }
     }
 }

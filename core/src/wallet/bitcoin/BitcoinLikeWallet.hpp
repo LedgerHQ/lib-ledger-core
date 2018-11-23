@@ -30,62 +30,69 @@
  */
 #pragma once
 
-#include "../../api/BitcoinLikeWallet.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/BitcoinLikeWallet.hpp>
 #include <memory>
-#include "keychains/BitcoinLikeKeychain.hpp"
-#include "observers/BitcoinLikeBlockchainObserver.hpp"
-#include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
-#include <src/wallet/common/AbstractWallet.hpp>
-#include <src/api/BitcoinLikeNetworkParameters.hpp>
-#include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <wallet/AccountSynchronizerFactory.hpp>
 #include <wallet/NetworkTypes.hpp>
+#include <wallet/TransactionBroadcaster.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <wallet/bitcoin/factories/AccountSynchronizerFactory.hpp>
+#include <wallet/bitcoin/factories/BitcoinLikeKeychainFactory.h>
+#include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
+#include "wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp"
+#include "wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp"
+#include "wallet/bitcoin/synchronizers/AccountSynchronizer.hpp"
+#include <wallet/common/AbstractWallet.hpp>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
-        public:
-            static const api::WalletType type;
-            typedef typename ExplorerV2<BitcoinLikeNetwork> Explorer;
-            BitcoinLikeWallet(
-                const std::string& name,
-                const std::shared_ptr<Explorer>& explorer,
-                const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
-                const std::shared_ptr<AccountSynchronizerFactory>& synchronizerFactory,
-                const std::shared_ptr<WalletPool>& pool,
-                const api::Currency& network,
-                const std::shared_ptr<DynamicObject>& configuration,
-                const DerivationScheme& scheme
-            );
+        namespace bitcoin {
+            class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
+            public:
+                static const api::WalletType type;
+                typedef typename TransactionBroadcaster<BitcoinLikeNetwork> TransactionBroadcaster;
+                
+                BitcoinLikeWallet(
+                    const std::string& name,
+                    const std::shared_ptr<TransactionBroadcaster>& transactionBroadcaster,
+                    const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
+                    const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
+                    const std::shared_ptr<AccountSynchronizerFactory>& synchronizerFactory,
+                    const std::shared_ptr<WalletPool>& pool,
+                    const api::Currency& network,
+                    const std::shared_ptr<DynamicObject>& configuration,
+                    const DerivationScheme& scheme
+                );
 
-            // API methods
-            bool isSynchronizing() override;
-            std::shared_ptr<api::EventBus> synchronize() override;
+                // API methods
+                bool isSynchronizing() override;
+                std::shared_ptr<api::EventBus> synchronize() override;
 
-            FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
+                FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
 
-            FuturePtr<ledger::core::api::Account>
-            newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
+                FuturePtr<ledger::core::api::Account>
+                    newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
 
-            Future<api::ExtendedKeyAccountCreationInfo>
-            getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
+                Future<api::ExtendedKeyAccountCreationInfo>
+                    getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
 
-            Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
+                Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
-        protected:
-            std::shared_ptr<AbstractAccount>
-            createAccountInstance(soci::session &sql, const std::string &accountUid) override;
+            protected:
+                std::shared_ptr<AbstractAccount>
+                    createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
-        private:
-            std::shared_ptr<BitcoinLikeWallet> getSelf();
+            private:
+                std::shared_ptr<BitcoinLikeWallet> getSelf();
 
-        private:
-            std::shared_ptr<Explorer> _explorer;
-            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
-            std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
-            AccountSynchronizerFactory _synchronizerFactory;
-            api::BitcoinLikeNetworkParameters _network;
-        };
+            private:
+                std::shared_ptr<TransactionBroadcaster> _transactionBroadcaster;
+                std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
+                std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
+                std::shared_ptr<AccountSynchronizerFactory> _synchronizerFactory;
+                api::BitcoinLikeNetworkParameters _network;
+            };
+        }
     }
 }

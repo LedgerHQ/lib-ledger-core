@@ -39,7 +39,7 @@
 #include <stack>
 #include "InputParser.hpp"
 #include "OutputParser.hpp"
-#include <wallet/BlockchainNetworkType.hpp>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {

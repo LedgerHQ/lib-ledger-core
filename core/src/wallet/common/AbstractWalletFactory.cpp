@@ -54,7 +54,7 @@ namespace ledger {
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::BITCOIN>(const api::Currency& currency,
                                                                                       const std::shared_ptr<WalletPool>& pool) {
-            return std::make_shared<BitcoinLikeWalletFactory>(currency, pool);
+            return std::make_shared<bitcoin::BitcoinLikeWalletFactory>(currency, pool);
         }
 
         template <>

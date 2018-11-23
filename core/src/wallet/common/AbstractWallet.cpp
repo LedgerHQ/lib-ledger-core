@@ -37,7 +37,6 @@
 #include "AbstractAccount.hpp"
 #include <api/AccountListCallback.hpp>
 #include <async/algorithm.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
@@ -139,7 +138,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BitcoinLikeWallet> AbstractWallet::asBitcoinLikeWallet() {
-            return asInstanceOf<BitcoinLikeWallet>();
+            return asInstanceOf<bitcoin::BitcoinLikeWallet>();
         }
 
         std::shared_ptr<api::ExecutionContext> AbstractWallet::getMainExecutionContext() const {
@@ -294,14 +293,7 @@ namespace ledger {
         }
 
         Future<api::Block> AbstractWallet::getLastBlock() {
-            auto self = shared_from_this();
-            return async<api::Block>([self] () -> api::Block {
-                soci::session sql(self->getDatabase()->getPool());
-                auto block = BlockDatabaseHelper::getLastBlock(sql, self->getCurrency().name);
-                if (block.isEmpty())
-                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "No block for this currency");
-                return block.getValue();
-            });
+            return Future<api::Block>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
         }
 
         void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {

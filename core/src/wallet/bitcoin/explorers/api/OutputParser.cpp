@@ -29,82 +29,85 @@
  *
  */
 #include "OutputParser.hpp"
+#include <math/BigInt.h>
 
 namespace ledger {
     namespace core {
-
-        bool OutputParser::Null() {
-            return true;
-        }
-
-        bool OutputParser::Bool(bool b) {
-            return true;
-        }
-
-        bool OutputParser::Int(int i) {
-            return true;
-        }
-
-        bool OutputParser::Uint(unsigned int i) {
-            return true;
-        }
-
-        bool OutputParser::Int64(int64_t i) {
-            return true;
-        }
-
-        bool OutputParser::Uint64(uint64_t i) {
-            return true;
-        }
-
-        bool OutputParser::Double(double d) {
-            return true;
-        }
-
-        bool OutputParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            std::string number(str, length);
-            BigInt value = BigInt::fromString(number);
-            if (_lastKey == "output_index") {
-                _output->index = value.toUnsignedInt();
-            } else if (_lastKey == "value") {
-                _output->value = value;
+        namespace bitcoin {
+            bool OutputParser::Null() {
+                return true;
             }
-            return true;
-        }
 
-        bool OutputParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            std::string value = std::string(str, length);
-            if (_lastKey == "address") {
-                _output->address = Option<std::string>(value);
-            } else if (_lastKey == "script_hex") {
-                _output->script = value;
+            bool OutputParser::Bool(bool b) {
+                return true;
             }
-            return true;
-        }
 
-        bool OutputParser::StartObject() {
-            return true;
-        }
+            bool OutputParser::Int(int i) {
+                return true;
+            }
 
-        bool OutputParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            return true;
-        }
+            bool OutputParser::Uint(unsigned int i) {
+                return true;
+            }
 
-        bool OutputParser::EndObject(rapidjson::SizeType memberCount) {
-            return true;
-        }
+            bool OutputParser::Int64(int64_t i) {
+                return true;
+            }
 
-        bool OutputParser::StartArray() {
-            return true;
-        }
+            bool OutputParser::Uint64(uint64_t i) {
+                return true;
+            }
 
-        bool OutputParser::EndArray(rapidjson::SizeType elementCount) {
-            return true;
-        }
+            bool OutputParser::Double(double d) {
+                return true;
+            }
 
-        void OutputParser::init(BitcoinLikeNetwork::Output *output) {
-            _output = output;
-        }
+            bool OutputParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                std::string number(str, length);
+                BigInt value = BigInt::fromString(number);
+                if (_lastKey == "output_index") {
+                    _output->index = value.toUnsignedInt();
+                }
+                else if (_lastKey == "value") {
+                    _output->value = value;
+                }
+                return true;
+            }
 
+            bool OutputParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                std::string value = std::string(str, length);
+                if (_lastKey == "address") {
+                    _output->address = Option<std::string>(value);
+                }
+                else if (_lastKey == "script_hex") {
+                    _output->script = value;
+                }
+                return true;
+            }
+
+            bool OutputParser::StartObject() {
+                return true;
+            }
+
+            bool OutputParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                return true;
+            }
+
+            bool OutputParser::EndObject(rapidjson::SizeType memberCount) {
+                return true;
+            }
+
+            bool OutputParser::StartArray() {
+                return true;
+            }
+
+            bool OutputParser::EndArray(rapidjson::SizeType elementCount) {
+                return true;
+            }
+
+            void OutputParser::init(BitcoinLikeNetwork::Output *output) {
+                _output = output;
+            }
+        }
     }
 }

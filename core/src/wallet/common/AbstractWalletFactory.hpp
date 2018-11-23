@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP
-#define LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP
+#pragma once
 
 #include <memory>
 #include <wallet/pool/database/WalletDatabaseEntry.hpp>
@@ -56,6 +55,3 @@ namespace ledger {
         std::shared_ptr<AbstractWalletFactory> make_factory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
     }
 }
-
-
-#endif //LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP

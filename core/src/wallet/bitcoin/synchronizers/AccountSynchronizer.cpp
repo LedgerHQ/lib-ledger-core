@@ -29,24 +29,22 @@
  *
  */
 
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
-
 #include <algorithm>
 #include <mutex>
 
-#include <async/wait.h>
+#include <async/FutureUtils.hpp>
 #include <cereal/types/vector.hpp>
 #include <debug/Benchmarker.h>
+#include <wallet/bitcoin/synchronizers/AccountSynchronizer.hpp>
 #include <wallet/AccountSynchronizer.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
 
 namespace ledger {
     namespace core {
         namespace bitcoin {
-            BitcoinLikeAccountSynchronizer::BitcoinLikeAccountSynchronizer(
+            AccountSynchronizer::AccountSynchronizer(
                 const std::shared_ptr<api::ExecutionContext>& executionContext,
                 const std::shared_ptr<Explorer>& explorer,
                 const std::shared_ptr<BlockchainDB>& stableBlocksDb,
@@ -58,7 +56,7 @@ namespace ledger {
                 , _unstableBlocksDb(unstableBlocksDb) {
             }
 
-            std::shared_ptr<ProgressNotifier<Unit>> BitcoinLikeAccountSynchronizer::synchronize() {
+            std::shared_ptr<ProgressNotifier<Unit>> AccountSynchronizer::synchronize() {
                 std::lock_guard<std::mutex> lock(_lock);
                 if (_notifier != nullptr) {
                     // we are currently in synchronization
@@ -69,25 +67,33 @@ namespace ledger {
                 return _notifier;
             }
 
-            Future<BlockchainState> BitcoinLikeAccountSynchronizer::getState() {
-                auto explorerBlock = _explorer->getCurrentBlock();
-                auto lastStableBlock = _stableBlocksDb->getLastBlockHeader();
-                auto lastUnstableBlock = _unstableBlocksDb->getLastBlockHeader();
-
-                return Future<BlockchainState>::failure(core::Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "didn't implement sync yet"));
+            Future<BlockchainState> AccountSynchronizer::getState() {
+                std::vector<FuturePtr<Block>> blocksFuture { 
+                    _explorer->getCurrentBlock(),
+                    _stableBlocksDb->getLastBlockHeader(),
+                    _unstableBlocksDb->getLastBlockHeader()};
+                return executeAll(_executionContext, blocksFuture).map<BlockchainState>(_executionContext, [](const std::vector<std::shared_ptr<Block>> input) {
+                    BlockchainState state;
+                    state.currentBlock = input[0];
+                    state.lastStableBlock = input[1];
+                    state.lastUnstableBlock = input[2];
+                    return state;
+                });
             }
 
-            bool BitcoinLikeAccountSynchronizer::isSynchronizing() const {
+            bool AccountSynchronizer::isSynchronizing() const {
                 std::lock_guard<std::mutex> lock(_lock);
-
+                return _notifier != nullptr;
             }
 
-            Future<Unit> BitcoinLikeAccountSynchronizer::synchronizeStable(int fromHeight, int toHeight) {
-
+            Future<Unit> AccountSynchronizer::synchronizeStable(int fromHeight, int toHeight) {
+                if (toHeight <= fromHeight)
+                    return Future<Unit>::successful(unit);
+                return Future<Unit>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
             }
 
-            Future<Unit> BitcoinLikeAccountSynchronizer::synchronizeUnstable(int fromHeight, int toHeight) {
-
+            Future<Unit> AccountSynchronizer::synchronizeUnstable(int fromHeight, int toHeight) {
+                return Future<Unit>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
             }
                 /*
                         BlockchainExplorerAccountSynchronizer::BlockchainExplorerAccountSynchronizer(

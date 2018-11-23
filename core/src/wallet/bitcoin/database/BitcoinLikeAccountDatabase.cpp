@@ -28,7 +28,7 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccountDatabase.h"
+#include "wallet/bitcoin/database/BitcoinLikeAccountDatabase.h"
 #include "../../common/database/AccountDatabaseHelper.h"
 #include <utils/DateUtils.hpp>
 #include <database/soci-option.h>
@@ -38,11 +38,10 @@ using namespace soci;
 
 namespace ledger {
     namespace core {
-
-        BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
-            _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+        namespace bitcoin {
+            BitcoinLikeAccountDatabase::BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index) {
+                _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+            }
         }
-
-
     }
 }

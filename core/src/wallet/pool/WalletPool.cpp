@@ -33,8 +33,8 @@
 #include <wallet/currencies.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+
 namespace ledger {
     namespace core {
 
@@ -272,23 +272,6 @@ namespace ledger {
                 auto wallet = factory->build(entry);
                 _publisher->relay(wallet->getEventBus());
                 _wallets[entry.uid] = wallet;
-                std::weak_ptr<WalletPool> weakSelf = shared_from_this();
-                _publisher->setFilter([weakSelf] (const std::shared_ptr<api::Event>& event) -> bool {
-                    auto self = weakSelf.lock();
-                    if (self && event->getCode() == api::EventCode::NEW_BLOCK) {
-                        std::lock_guard<std::mutex> lock(self->_eventFilterMutex);
-                        auto height = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT);
-                        auto currency = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME);
-                        auto lastBlockEmitted = self->_lastEmittedBlocks.find(currency.value());
-                        if (lastBlockEmitted != self->_lastEmittedBlocks.end() && height > lastBlockEmitted->second) {
-                            self->_lastEmittedBlocks[currency.value()] = height.value();
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
                 return wallet;
             }
         }
@@ -391,12 +374,7 @@ namespace ledger {
         Future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
             auto self = shared_from_this();
             return async<api::Block>([self, currencyName] () -> api::Block {
-                soci::session sql(self->getDatabaseSessionPool()->getPool());
-                auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
-                if (block.isEmpty()) {
-                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
-                }
-                return block.getValue();
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "New implementation required that ask all accounts with given currency");
             });
         }
 

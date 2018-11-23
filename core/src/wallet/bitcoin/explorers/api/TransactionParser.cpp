@@ -43,135 +43,140 @@
 
 namespace ledger {
     namespace core {
+        namespace bitcoin {
+            bool TransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                _lastKey = std::string(str, length);
+                PROXY_PARSE(Key, str, length, copy) {
+                    return true;
+                }
+            }
 
-        bool TransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
-            PROXY_PARSE(Key, str, length, copy) {
+            bool TransactionParser::StartObject() {
+                if (_arrayDepth == 0) {
+                    _hierarchy.push(_lastKey);
+                }
+
+                auto& currentObject = _hierarchy.top();
+
+                if (currentObject == "inputs") {
+                    BitcoinLikeNetwork::Input input;
+                    _transaction->inputs.push_back(input);
+                    _inputParser.init(&_transaction->inputs.back());
+                }
+                else if (currentObject == "outputs") {
+                    BitcoinLikeNetwork::Output output;
+                    _transaction->outputs.push_back(output);
+                    _outputParser.init(&_transaction->outputs.back());
+                }
+                else if (currentObject == "block") {
+                    BitcoinLikeNetwork::Block block;
+                    _transaction->block = Option<BitcoinLikeNetwork::Block>(block);
+                    _blockParser.init(&_transaction->block.getValue());
+                }
+
                 return true;
             }
-        }
 
-        bool TransactionParser::StartObject() {
-            if (_arrayDepth == 0) {
-                _hierarchy.push(_lastKey);
-            }
+            bool TransactionParser::EndObject(rapidjson::SizeType memberCount) {
+                auto& currentObject = _hierarchy.top();
 
-            auto& currentObject = _hierarchy.top();
-
-            if (currentObject == "inputs") {
-                BitcoinLikeNetwork::Input input;
-                _transaction->inputs.push_back(input);
-                _inputParser.init(&_transaction->inputs.back());
-            } else if (currentObject == "outputs") {
-                BitcoinLikeNetwork::Output output;
-                _transaction->outputs.push_back(output);
-                _outputParser.init(&_transaction->outputs.back());
-            } else if (currentObject == "block") {
-                BitcoinLikeNetwork::Block block;
-                _transaction->block = Option<BitcoinLikeNetwork::Block>(block);
-                _blockParser.init(&_transaction->block.getValue());
-            }
-
-            return true;
-        }
-
-        bool TransactionParser::EndObject(rapidjson::SizeType memberCount) {
-            auto& currentObject = _hierarchy.top();
-
-            if (_arrayDepth == 0) {
-                _hierarchy.pop();
-            }
-            return true;
-        }
-
-        bool TransactionParser::StartArray() {
-            if (_arrayDepth == 0) {
-                _hierarchy.push(_lastKey);
-            }
-            _arrayDepth += 1;
-            return true;
-        }
-
-        bool TransactionParser::EndArray(rapidjson::SizeType elementCount) {
-            _arrayDepth -= 1;
-            if (_arrayDepth == 0) {
-                _hierarchy.pop();
-            }
-            return true;
-        }
-
-        bool TransactionParser::Null() {
-            PROXY_PARSE(Null) {
-                return true;
-            }
-        }
-
-        bool TransactionParser::Bool(bool b) {
-            PROXY_PARSE(Bool, b) {
-                return true;
-            }
-        }
-
-        bool TransactionParser::Int(int i) {
-            return Uint64(i);
-        }
-
-        bool TransactionParser::Uint(unsigned i) {
-            return Uint64(i);
-        }
-
-        bool TransactionParser::Int64(int64_t i) {
-            return Uint64(i);
-        }
-
-        bool TransactionParser::Uint64(uint64_t i) {
-            PROXY_PARSE(Uint64, i) {
-                return true;
-            }
-        }
-
-        bool TransactionParser::Double(double d) {
-            PROXY_PARSE(Double, d) {
-                return true;
-            }
-        }
-
-        bool TransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(RawNumber, str, length, copy) {
-                std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
-                if (_lastKey == "lock_time") {
-                    _transaction->lockTime = value.toUint64();
-                } else if (_lastKey == "fees") {
-                    _transaction->fees = Option<BigInt>(value);
-                } else if (_lastKey == "confirmations") {
-                    _transaction->confirmations = value.toUint64();
+                if (_arrayDepth == 0) {
+                    _hierarchy.pop();
                 }
                 return true;
             }
-        }
 
-        bool TransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            PROXY_PARSE(String, str, length, copy) {
-                std::string value(str, length);
-                if (_lastKey == "hash") {
-                    _transaction->hash = value;
-                } else if (_lastKey == "received_at") {
-                    _transaction->receivedAt = DateUtils::fromJSON(value);
+            bool TransactionParser::StartArray() {
+                if (_arrayDepth == 0) {
+                    _hierarchy.push(_lastKey);
+                }
+                _arrayDepth += 1;
+                return true;
+            }
+
+            bool TransactionParser::EndArray(rapidjson::SizeType elementCount) {
+                _arrayDepth -= 1;
+                if (_arrayDepth == 0) {
+                    _hierarchy.pop();
                 }
                 return true;
             }
-        }
 
-        TransactionParser::TransactionParser(std::string& lastKey) :
-            _lastKey(lastKey), _blockParser(lastKey), _inputParser(lastKey), _outputParser(lastKey)
-        {
-            _arrayDepth = 0;
-        }
+            bool TransactionParser::Null() {
+                PROXY_PARSE(Null) {
+                    return true;
+                }
+            }
 
-        void TransactionParser::init(BitcoinLikeNetwork::Transaction *transaction) {
-            _transaction = transaction;
-        }
+            bool TransactionParser::Bool(bool b) {
+                PROXY_PARSE(Bool, b) {
+                    return true;
+                }
+            }
 
+            bool TransactionParser::Int(int i) {
+                return Uint64(i);
+            }
+
+            bool TransactionParser::Uint(unsigned i) {
+                return Uint64(i);
+            }
+
+            bool TransactionParser::Int64(int64_t i) {
+                return Uint64(i);
+            }
+
+            bool TransactionParser::Uint64(uint64_t i) {
+                PROXY_PARSE(Uint64, i) {
+                    return true;
+                }
+            }
+
+            bool TransactionParser::Double(double d) {
+                PROXY_PARSE(Double, d) {
+                    return true;
+                }
+            }
+
+            bool TransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(RawNumber, str, length, copy) {
+                    std::string number(str, length);
+                    BigInt value = BigInt::fromString(number);
+                    if (_lastKey == "lock_time") {
+                        _transaction->lockTime = value.toUint64();
+                    }
+                    else if (_lastKey == "fees") {
+                        _transaction->fees = Option<BigInt>(value);
+                    }
+                    else if (_lastKey == "confirmations") {
+                        _transaction->confirmations = value.toUint64();
+                    }
+                    return true;
+                }
+            }
+
+            bool TransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                PROXY_PARSE(String, str, length, copy) {
+                    std::string value(str, length);
+                    if (_lastKey == "hash") {
+                        _transaction->hash = value;
+                    }
+                    else if (_lastKey == "received_at") {
+                        _transaction->receivedAt = DateUtils::fromJSON(value);
+                    }
+                    return true;
+                }
+            }
+
+            TransactionParser::TransactionParser(std::string& lastKey) :
+                _lastKey(lastKey), _blockParser(lastKey), _inputParser(lastKey), _outputParser(lastKey)
+            {
+                _arrayDepth = 0;
+            }
+
+            void TransactionParser::init(BitcoinLikeNetwork::Transaction *transaction) {
+                _transaction = transaction;
+            }
+        }
     }
 }
