@@ -4,7 +4,6 @@
 #ifndef DJINNI_GENERATED_DATABASECONNECTIONPOOL_HPP
 #define DJINNI_GENERATED_DATABASECONNECTIONPOOL_HPP
 
-#include <cstdint>
 #include <memory>
 
 namespace ledger { namespace core { namespace api {
@@ -16,8 +15,6 @@ public:
     virtual ~DatabaseConnectionPool() {}
 
     virtual std::shared_ptr<DatabaseConnection> getConnection() = 0;
-
-    virtual int32_t getPoolSize() = 0;
 };
 
 } } }  // namespace ledger::core::api

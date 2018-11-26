@@ -1,13 +1,13 @@
 /*
  *
- * SQLite3Backend
+ * MemoryDatabaseProxy.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 20/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,18 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
-#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#include "DatabaseBackend.hpp"
-#include <memory>
+#ifndef LEDGER_CORE_MEMORYDATABASEPROXY_H
+#define LEDGER_CORE_MEMORYDATABASEPROXY_H
 
-namespace ledger {
- namespace core {
-     class SQLite3Backend : public DatabaseBackend {
-     public:
-         SQLite3Backend();
-         int32_t getConnectionPoolSize() override;
+#include <database/ProxyBackend.h>
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
-                   soci::session &session) override;
+class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
+public:
+    std::shared_ptr<ledger::core::api::DatabaseConnectionPool> connect(const std::string &connectUrl) override;
 
-     private:
-        bool _logging;
-     };
- }
-}
+    int32_t getPoolSize() override;
+};
 
 
-#endif //LEDGER_CORE_SQLITE3BACKEND_HPP
+#endif //LEDGER_CORE_MEMORYDATABASEPROXY_H

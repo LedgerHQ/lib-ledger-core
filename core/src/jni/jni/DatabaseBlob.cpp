@@ -22,5 +22,33 @@ std::vector<uint8_t> DatabaseBlob::JavaProxy::read() {
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::Binary::toCpp(jniEnv, jret);
 }
+int64_t DatabaseBlob::JavaProxy::write(int64_t c_offset, const std::vector<uint8_t> & c_data) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
+    auto jret = jniEnv->CallLongMethod(Handle::get().get(), data.method_write,
+                                       ::djinni::get(::djinni::I64::fromCpp(jniEnv, c_offset)),
+                                       ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c_data)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I64::toCpp(jniEnv, jret);
+}
+int64_t DatabaseBlob::JavaProxy::append(const std::vector<uint8_t> & c_data) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
+    auto jret = jniEnv->CallLongMethod(Handle::get().get(), data.method_append,
+                                       ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c_data)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I64::toCpp(jniEnv, jret);
+}
+int64_t DatabaseBlob::JavaProxy::trim(int64_t c_newLen) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
+    auto jret = jniEnv->CallLongMethod(Handle::get().get(), data.method_trim,
+                                       ::djinni::get(::djinni::I64::fromCpp(jniEnv, c_newLen)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I64::toCpp(jniEnv, jret);
+}
 
 }  // namespace djinni_generated

@@ -87,6 +87,9 @@ ErrorCode = enum {
     unknown_blockchain_observer_engine;
     unknown_synchronization_engine;
 
+    # Database error
+    database_exception;
+
     # Wallet transaction
     not_enough_funds;
 

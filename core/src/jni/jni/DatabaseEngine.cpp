@@ -24,5 +24,13 @@ std::shared_ptr<::ledger::core::api::DatabaseConnectionPool> DatabaseEngine::Jav
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni_generated::DatabaseConnectionPool::toCpp(jniEnv, jret);
 }
+int32_t DatabaseEngine::JavaProxy::getPoolSize() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseEngine>::get();
+    auto jret = jniEnv->CallIntMethod(Handle::get().get(), data.method_getPoolSize);
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I32::toCpp(jniEnv, jret);
+}
 
 }  // namespace djinni_generated

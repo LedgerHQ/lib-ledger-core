@@ -1,13 +1,13 @@
 /*
  *
- * SQLite3Backend
+ * session.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 14/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,46 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
-#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#include "DatabaseBackend.hpp"
-#include <memory>
+#include "soci-proxy.h"
 
-namespace ledger {
- namespace core {
-     class SQLite3Backend : public DatabaseBackend {
-     public:
-         SQLite3Backend();
-         int32_t getConnectionPoolSize() override;
+using namespace soci;
+using namespace ledger::core;
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
-                   soci::session &session) override;
-
-     private:
-        bool _logging;
-     };
- }
+proxy_session_backend::proxy_session_backend(const std::shared_ptr<ledger::core::api::DatabaseConnection> &connection) {
+    _conn = connection;
 }
 
+proxy_session_backend::~proxy_session_backend() {
 
-#endif //LEDGER_CORE_SQLITE3BACKEND_HPP
+}
+
+void proxy_session_backend::begin() {
+    _conn->begin();
+}
+
+void proxy_session_backend::commit() {
+    _conn->commit();
+}
+
+void proxy_session_backend::rollback() {
+    _conn->rollback();
+}
+
+void proxy_session_backend::clean_up() {
+    _conn->close();
+}
+
+proxy_statement_backend *proxy_session_backend::make_statement_backend() {
+   return new proxy_statement_backend(*this);
+}
+
+proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
+    // TODO: Create ROWID interface
+    return nullptr;
+}
+
+proxy_blob_backend *proxy_session_backend::make_blob_backend() {
+    // TODO: Create BLOB interface
+    return nullptr;
+}

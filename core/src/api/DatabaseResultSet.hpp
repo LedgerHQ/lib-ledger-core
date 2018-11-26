@@ -6,49 +6,30 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
 
 namespace ledger { namespace core { namespace api {
 
-class DatabaseBlob;
 class DatabaseError;
+class DatabaseResultRow;
 
 class DatabaseResultSet {
 public:
     virtual ~DatabaseResultSet() {}
 
-    virtual int16_t getShortByName(const std::string & name) = 0;
+    /**
+     *    getShortByName(name: string): i16;
+     *    getIntByName(name: string): i32;
+     *    getFloatByName(name: string): f32;
+     *    getDoubleByName(name: string): f64;
+     *    getLongByName(name: string): i64;
+     *    getStringByName(name: string): string;
+     */
+    virtual std::shared_ptr<DatabaseResultRow> getRow() = 0;
 
-    virtual int32_t getIntByName(const std::string & name) = 0;
+    /** Get the number of rows updated by the query (UPDATE, INSERT, DELETE...) */
+    virtual int32_t getUpdateCount() = 0;
 
-    virtual float getFloatByName(const std::string & name) = 0;
-
-    virtual double getDoubleByName(const std::string & name) = 0;
-
-    virtual int64_t getLongByName(const std::string & name) = 0;
-
-    virtual std::string getStringByName(const std::string & name) = 0;
-
-    virtual bool isNullAtPos(int32_t pos) = 0;
-
-    virtual bool isNullForName(const std::string & name) = 0;
-
-    virtual std::string getColumnName(int32_t pos) = 0;
-
-    virtual int16_t getShortByPos(int32_t pos) = 0;
-
-    virtual int32_t getIntByPos(int32_t pos) = 0;
-
-    virtual float getFloatByPos(int32_t pos) = 0;
-
-    virtual double getDoubleByPos(int32_t pos) = 0;
-
-    virtual int64_t getLongByPos(int32_t pos) = 0;
-
-    virtual std::string getStringByPos(int32_t pos) = 0;
-
-    virtual std::shared_ptr<DatabaseBlob> getBlobByPos(int32_t pos) = 0;
-
+    /** Get the number of row retrieved */
     virtual int32_t getRowNumber() = 0;
 
     virtual int32_t available() = 0;
@@ -59,6 +40,7 @@ public:
 
     virtual void close() = 0;
 
+    /** Get the last error that occured on the database. */
     virtual std::shared_ptr<DatabaseError> getError() = 0;
 };
 

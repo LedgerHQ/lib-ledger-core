@@ -46,7 +46,7 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-set(LIB_BUILD_TYPE SHARED)
+set(LIB_BUILD_TYPE SHARED database/proxy_backend/factory.cpp database/proxy_backend/session.cpp database/proxy_backend/statement.cpp database/proxy_backend/standard-use-type.cpp database/proxy_backend/standard-into-type.cpp)
 
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)

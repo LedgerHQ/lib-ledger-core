@@ -9,15 +9,17 @@
 
 namespace ledger { namespace core { namespace api {
 
-class DatabaseTransaction;
+class DatabaseStatement;
 
 class DatabaseConnection {
 public:
     virtual ~DatabaseConnection() {}
 
-    virtual void prepareStatement(const std::string & query) = 0;
+    virtual std::shared_ptr<DatabaseStatement> prepareStatement(const std::string & query, bool repeatable) = 0;
 
-    virtual std::shared_ptr<DatabaseTransaction> newTransaction() = 0;
+    virtual void begin() = 0;
+
+    virtual void rollback() = 0;
 
     virtual void commit() = 0;
 

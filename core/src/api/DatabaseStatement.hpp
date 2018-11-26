@@ -7,11 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
+class DatabaseBlob;
+class DatabaseColumn;
 class DatabaseResultSet;
+class DatabaseRowId;
 
 class DatabaseStatement {
 public:
@@ -29,9 +31,39 @@ public:
 
     virtual void bindString(int32_t pos, const std::string & value) = 0;
 
-    virtual void bindBinary(int32_t pos, const std::vector<uint8_t> & value) = 0;
+    virtual void bindBlob(int32_t pos, const std::shared_ptr<DatabaseBlob> & value) = 0;
+
+    virtual void bindRowId(int32_t pos, const std::shared_ptr<DatabaseRowId> & value) = 0;
+
+    virtual void bindNull(int32_t pos) = 0;
+
+    virtual void bindShortByName(const std::string & name, int16_t value) = 0;
+
+    virtual void bindIntByName(const std::string & name, int32_t value) = 0;
+
+    virtual void bindLongByName(const std::string & name, int64_t value) = 0;
+
+    virtual void bindFloatByName(const std::string & name, float value) = 0;
+
+    virtual void bindDoubleByName(const std::string & name, double value) = 0;
+
+    virtual void bindStringByName(const std::string & name, const std::string & value) = 0;
+
+    virtual void bindBlobByName(const std::string & name, const std::shared_ptr<DatabaseBlob> & value) = 0;
+
+    virtual void bindRowIdByName(const std::string & name, const std::shared_ptr<DatabaseRowId> & value) = 0;
+
+    virtual void bindNullByName(const std::string & name) = 0;
+
+    virtual std::shared_ptr<DatabaseColumn> describeColumn(int32_t colNum) = 0;
+
+    virtual int32_t getColumnCount() = 0;
 
     virtual std::shared_ptr<DatabaseResultSet> execute() = 0;
+
+    virtual void reset() = 0;
+
+    virtual void close() = 0;
 };
 
 } } }  // namespace ledger::core::api

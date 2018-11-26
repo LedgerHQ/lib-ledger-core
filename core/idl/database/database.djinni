@@ -1,3 +1,7 @@
+DatabaseValueType = enum {
+      string; date; double; integer; long_long; unsigned_long_long;
+}
+
 
 DatabaseError = interface +j +n +o {
     getMessage(): string;
@@ -5,21 +9,19 @@ DatabaseError = interface +j +n +o {
 
 DatabaseBlob = interface +j +n +o {
     read(): binary;
+    write(offset: i64, data: binary): i64;
+    append(data: binary): i64;
+    trim(newLen: i64): i64;
 }
 
-DatabaseResultSet = interface +j +n +o {
-    getShortByName(name: string): i16;
-    getIntByName(name: string): i32;
-    getFloatByName(name: string): f32;
-    getDoubleByName(name: string): f64;
-    getLongByName(name: string): i64;
-    getStringByName(name: string): string;
+DatabaseColumn = interface +j +n +o {
+  getType(): DatabaseValueType;
+  getName(): string;
+}
 
+DatabaseResultRow = interface +j +n +o {
     isNullAtPos(pos: i32): bool;
-    isNullForName(name: string): bool;
-
     getColumnName(pos: i32): string;
-
     getShortByPos(pos: i32): i16;
     getIntByPos(pos: i32): i32;
     getFloatByPos(pos: i32): f32;
@@ -27,13 +29,33 @@ DatabaseResultSet = interface +j +n +o {
     getLongByPos(pos: i32): i64;
     getStringByPos(pos: i32): string;
     getBlobByPos(pos: i32): DatabaseBlob;
+}
 
+DatabaseResultSet = interface +j +n +o {
+#    getShortByName(name: string): i16;
+#    getIntByName(name: string): i32;
+#    getFloatByName(name: string): f32;
+#    getDoubleByName(name: string): f64;
+#    getLongByName(name: string): i64;
+#    getStringByName(name: string): string;
+
+    getRow(): DatabaseResultRow;
+
+    # Get the number of rows updated by the query (UPDATE, INSERT, DELETE...)
+    getUpdateCount(): i32;
+    # Get the number of row retrieved
     getRowNumber(): i32;
     available(): i32;
     hasNext(): bool;
     next(): DatabaseResultSet;
     close();
+    # Get the last error that occured on the database.
     getError(): DatabaseError;
+
+}
+
+DatabaseRowId = interface +j +n +o {
+
 }
 
 DatabaseStatement = interface +j +n +o {
@@ -43,31 +65,44 @@ DatabaseStatement = interface +j +n +o {
     bindFloat(pos: i32, value: f32);
     bindDouble(pos: i32, value: f64);
     bindString(pos: i32, value: string);
-    bindBinary(pos: i32, value: binary);
-    execute(): DatabaseResultSet;
-}
+    bindBlob(pos: i32, value: DatabaseBlob);
+    bindRowId(pos: i32, value: DatabaseRowId);
+    bindNull(pos: i32);
 
-DatabaseTransaction = interface +j +n +o {
-    prepareStatement(query: string);
-    commit();
-    rollback();
+    bindShortByName(name: string, value: i16);
+    bindIntByName(name: string, value: i32);
+    bindLongByName(name: string, value: i64);
+    bindFloatByName(name: string, value: f32);
+    bindDoubleByName(name: string, value: f64);
+    bindStringByName(name: string, value: string);
+    bindBlobByName(name: string, value: DatabaseBlob);
+    bindRowIdByName(name: string, value: DatabaseRowId);
+    bindNullByName(name: string);
+
+    describeColumn(colNum: i32): DatabaseColumn;
+    getColumnCount(): i32;
+    execute(): DatabaseResultSet;
+
+    reset();
+    close();
 }
 
 DatabaseConnection = interface +j +n +o {
-    prepareStatement(query: string);
-    newTransaction(): DatabaseTransaction;
+    prepareStatement(query: string, repeatable: bool): DatabaseStatement;
+    begin();
+    rollback();
     commit();
     close();
 }
 
 DatabaseConnectionPool = interface +j +n +o {
     getConnection(): DatabaseConnection;
-    getPoolSize(): i32;
 }
 
 # An interface to implement a custom SQL backend
 DatabaseEngine = interface +j +n +o {
     connect(connectUrl: string): DatabaseConnectionPool;
+    getPoolSize(): i32;
 }
 
 #Class representing a database

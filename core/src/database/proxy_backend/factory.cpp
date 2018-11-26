@@ -1,13 +1,13 @@
 /*
  *
- * SQLite3Backend
+ * factory.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 14/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,22 +28,35 @@
  * SOFTWARE.
  *
  */
-#include "SQLite3Backend.hpp"
-#include <soci-sqlite3.h>
-#include <utils/Exception.hpp>
+
+#include "soci-proxy.h"
+#include <connection-parameters.h>
 
 using namespace soci;
+using namespace ledger::core;
 
-void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
-                                        const std::string &dbName, soci::session &session) {
-    session.open(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
-    session << "PRAGMA foreign_keys = ON";
+proxy_session_backend* proxy_backend_factory::make_session(const soci::connection_parameters &parameters) const {
+    auto pool = get_pool(parameters);
+    return new proxy_session_backend(pool->getConnection());
 }
 
-int32_t ledger::core::SQLite3Backend::getConnectionPoolSize() {
-    return 1;
+proxy_backend_factory::~proxy_backend_factory() {}
+
+const std::shared_ptr<api::DatabaseEngine>& proxy_backend_factory::getEngine() const {
+    return _engine;
 }
 
+std::shared_ptr<ledger::core::api::DatabaseConnectionPool>
+proxy_backend_factory::get_pool(connection_parameters const &parameters) const {
+    auto it = _pools.find(parameters.get_connect_string());
+    if (it == _pools.end()) {
+        auto pool = _engine->connect(parameters.get_connect_string());
+        _pools.insert(std::make_pair(parameters.get_connect_string(), pool));
+        return pool;
+    }
+    return it->second;
+}
 
-ledger::core::SQLite3Backend::SQLite3Backend() : DatabaseBackend() {
+SOCI_PROXY_DECL backend_factory const* soci::factory_proxy(const std::shared_ptr<api::DatabaseEngine>& engine) {
+    return new proxy_backend_factory(engine);
 }

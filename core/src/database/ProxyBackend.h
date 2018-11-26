@@ -1,13 +1,13 @@
 /*
  *
- * SQLite3Backend
+ * ProxyBackend.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 13/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,31 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
-#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#include "DatabaseBackend.hpp"
-#include <memory>
+#ifndef LEDGER_CORE_PROXYBACKEND_H
+#define LEDGER_CORE_PROXYBACKEND_H
+
+#include <api/DatabaseEngine.hpp>
+#include <database/DatabaseBackend.hpp>
 
 namespace ledger {
- namespace core {
-     class SQLite3Backend : public DatabaseBackend {
-     public:
-         SQLite3Backend();
-         int32_t getConnectionPoolSize() override;
+    namespace core {
+    class ProxyBackend : public DatabaseBackend {
+        public:
+        explicit ProxyBackend(const std::shared_ptr<api::DatabaseEngine>& engine);
+        int32_t getConnectionPoolSize() override;
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
-                   soci::session &session) override;
+        void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+                  soci::session &session) override;
 
-     private:
-        bool _logging;
-     };
- }
+        ~ProxyBackend();
+
+    private:
+            std::shared_ptr<api::DatabaseEngine> _engine;
+            const soci::backend_factory* _factory;
+        };
+    }
 }
 
 
-#endif //LEDGER_CORE_SQLITE3BACKEND_HPP
+#endif //LEDGER_CORE_PROXYBACKEND_H

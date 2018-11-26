@@ -34,8 +34,9 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        void prepareStatement(const std::string & query) override;
-        std::shared_ptr<::ledger::core::api::DatabaseTransaction> newTransaction() override;
+        std::shared_ptr<::ledger::core::api::DatabaseStatement> prepareStatement(const std::string & query, bool repeatable) override;
+        void begin() override;
+        void rollback() override;
         void commit() override;
         void close() override;
 
@@ -44,8 +45,9 @@ private:
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseConnection") };
-    const jmethodID method_prepareStatement { ::djinni::jniGetMethodID(clazz.get(), "prepareStatement", "(Ljava/lang/String;)V") };
-    const jmethodID method_newTransaction { ::djinni::jniGetMethodID(clazz.get(), "newTransaction", "()Lco/ledger/core/DatabaseTransaction;") };
+    const jmethodID method_prepareStatement { ::djinni::jniGetMethodID(clazz.get(), "prepareStatement", "(Ljava/lang/String;Z)Lco/ledger/core/DatabaseStatement;") };
+    const jmethodID method_begin { ::djinni::jniGetMethodID(clazz.get(), "begin", "()V") };
+    const jmethodID method_rollback { ::djinni::jniGetMethodID(clazz.get(), "rollback", "()V") };
     const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
 };

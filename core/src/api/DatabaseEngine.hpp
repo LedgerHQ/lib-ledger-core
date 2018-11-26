@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_DATABASEENGINE_HPP
 #define DJINNI_GENERATED_DATABASEENGINE_HPP
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -17,6 +18,8 @@ public:
     virtual ~DatabaseEngine() {}
 
     virtual std::shared_ptr<DatabaseConnectionPool> connect(const std::string & connectUrl) = 0;
+
+    virtual int32_t getPoolSize() = 0;
 };
 
 } } }  // namespace ledger::core::api

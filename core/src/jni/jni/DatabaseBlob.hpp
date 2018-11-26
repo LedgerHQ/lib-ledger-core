@@ -35,6 +35,9 @@ private:
         ~JavaProxy();
 
         std::vector<uint8_t> read() override;
+        int64_t write(int64_t offset, const std::vector<uint8_t> & data) override;
+        int64_t append(const std::vector<uint8_t> & data) override;
+        int64_t trim(int64_t newLen) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseBlob, ::djinni_generated::DatabaseBlob>;
@@ -42,6 +45,9 @@ private:
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseBlob") };
     const jmethodID method_read { ::djinni::jniGetMethodID(clazz.get(), "read", "()[B") };
+    const jmethodID method_write { ::djinni::jniGetMethodID(clazz.get(), "write", "(J[B)J") };
+    const jmethodID method_append { ::djinni::jniGetMethodID(clazz.get(), "append", "([B)J") };
+    const jmethodID method_trim { ::djinni::jniGetMethodID(clazz.get(), "trim", "(J)J") };
 };
 
 }  // namespace djinni_generated

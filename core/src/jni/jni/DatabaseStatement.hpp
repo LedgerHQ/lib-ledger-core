@@ -40,8 +40,23 @@ private:
         void bindFloat(int32_t pos, float value) override;
         void bindDouble(int32_t pos, double value) override;
         void bindString(int32_t pos, const std::string & value) override;
-        void bindBinary(int32_t pos, const std::vector<uint8_t> & value) override;
+        void bindBlob(int32_t pos, const std::shared_ptr<::ledger::core::api::DatabaseBlob> & value) override;
+        void bindRowId(int32_t pos, const std::shared_ptr<::ledger::core::api::DatabaseRowId> & value) override;
+        void bindNull(int32_t pos) override;
+        void bindShortByName(const std::string & name, int16_t value) override;
+        void bindIntByName(const std::string & name, int32_t value) override;
+        void bindLongByName(const std::string & name, int64_t value) override;
+        void bindFloatByName(const std::string & name, float value) override;
+        void bindDoubleByName(const std::string & name, double value) override;
+        void bindStringByName(const std::string & name, const std::string & value) override;
+        void bindBlobByName(const std::string & name, const std::shared_ptr<::ledger::core::api::DatabaseBlob> & value) override;
+        void bindRowIdByName(const std::string & name, const std::shared_ptr<::ledger::core::api::DatabaseRowId> & value) override;
+        void bindNullByName(const std::string & name) override;
+        std::shared_ptr<::ledger::core::api::DatabaseColumn> describeColumn(int32_t colNum) override;
+        int32_t getColumnCount() override;
         std::shared_ptr<::ledger::core::api::DatabaseResultSet> execute() override;
+        void reset() override;
+        void close() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseStatement, ::djinni_generated::DatabaseStatement>;
@@ -54,8 +69,23 @@ private:
     const jmethodID method_bindFloat { ::djinni::jniGetMethodID(clazz.get(), "bindFloat", "(IF)V") };
     const jmethodID method_bindDouble { ::djinni::jniGetMethodID(clazz.get(), "bindDouble", "(ID)V") };
     const jmethodID method_bindString { ::djinni::jniGetMethodID(clazz.get(), "bindString", "(ILjava/lang/String;)V") };
-    const jmethodID method_bindBinary { ::djinni::jniGetMethodID(clazz.get(), "bindBinary", "(I[B)V") };
+    const jmethodID method_bindBlob { ::djinni::jniGetMethodID(clazz.get(), "bindBlob", "(ILco/ledger/core/DatabaseBlob;)V") };
+    const jmethodID method_bindRowId { ::djinni::jniGetMethodID(clazz.get(), "bindRowId", "(ILco/ledger/core/DatabaseRowId;)V") };
+    const jmethodID method_bindNull { ::djinni::jniGetMethodID(clazz.get(), "bindNull", "(I)V") };
+    const jmethodID method_bindShortByName { ::djinni::jniGetMethodID(clazz.get(), "bindShortByName", "(Ljava/lang/String;S)V") };
+    const jmethodID method_bindIntByName { ::djinni::jniGetMethodID(clazz.get(), "bindIntByName", "(Ljava/lang/String;I)V") };
+    const jmethodID method_bindLongByName { ::djinni::jniGetMethodID(clazz.get(), "bindLongByName", "(Ljava/lang/String;J)V") };
+    const jmethodID method_bindFloatByName { ::djinni::jniGetMethodID(clazz.get(), "bindFloatByName", "(Ljava/lang/String;F)V") };
+    const jmethodID method_bindDoubleByName { ::djinni::jniGetMethodID(clazz.get(), "bindDoubleByName", "(Ljava/lang/String;D)V") };
+    const jmethodID method_bindStringByName { ::djinni::jniGetMethodID(clazz.get(), "bindStringByName", "(Ljava/lang/String;Ljava/lang/String;)V") };
+    const jmethodID method_bindBlobByName { ::djinni::jniGetMethodID(clazz.get(), "bindBlobByName", "(Ljava/lang/String;Lco/ledger/core/DatabaseBlob;)V") };
+    const jmethodID method_bindRowIdByName { ::djinni::jniGetMethodID(clazz.get(), "bindRowIdByName", "(Ljava/lang/String;Lco/ledger/core/DatabaseRowId;)V") };
+    const jmethodID method_bindNullByName { ::djinni::jniGetMethodID(clazz.get(), "bindNullByName", "(Ljava/lang/String;)V") };
+    const jmethodID method_describeColumn { ::djinni::jniGetMethodID(clazz.get(), "describeColumn", "(I)Lco/ledger/core/DatabaseColumn;") };
+    const jmethodID method_getColumnCount { ::djinni::jniGetMethodID(clazz.get(), "getColumnCount", "()I") };
     const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "()Lco/ledger/core/DatabaseResultSet;") };
+    const jmethodID method_reset { ::djinni::jniGetMethodID(clazz.get(), "reset", "()V") };
+    const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
 };
 
 }  // namespace djinni_generated
