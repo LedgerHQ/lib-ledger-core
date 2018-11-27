@@ -47,7 +47,7 @@ namespace ledger {
             };
 
         protected:
-            EthereumLikeTransactionsParser getTransactionsParser() override {
+            EthereumLikeTransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;
             }
 

@@ -42,7 +42,7 @@ namespace ledger {
                 _depth = 0;
             };
         protected:
-            TransactionsParser getTransactionsParser() override {
+            TransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;
             }
 

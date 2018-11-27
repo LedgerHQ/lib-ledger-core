@@ -135,7 +135,7 @@ namespace ledger {
             };
 
         protected:
-            virtual TxParser getTransactionParser() = 0;
+            virtual TxParser &getTransactionParser() = 0;
             std::vector<BlockchainExplorerTransaction>* _transactions;
             uint32_t _arrayDepth;
             uint32_t _objectDepth;

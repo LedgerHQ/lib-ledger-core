@@ -66,7 +66,7 @@ namespace ledger {
                                                                        const soci::row &row,
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
-            tx.value = BigInt(get_number<int64_t>(row, 1));
+            tx.value = BigInt::fromHex(row.get<std::string>(1));
             auto nonceBytes = hex::toByteArray(row.get<std::string>(2));
             auto shift = 0;
             for (auto& byte : nonceBytes) {
@@ -77,9 +77,9 @@ namespace ledger {
             tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
             tx.inputData = hex::toByteArray(row.get<std::string>(4));
 
-            tx.gasPrice = BigInt(get_number<int64_t>(row, 5));
-            tx.gasLimit = BigInt(get_number<int64_t>(row, 6));
-            tx.gasUsed = BigInt(get_number<int64_t>(row, 7));
+            tx.gasPrice = BigInt::fromHex(row.get<std::string>(5));
+            tx.gasLimit = BigInt::fromHex(row.get<std::string>(6));
+            tx.gasUsed = BigInt::fromHex(row.get<std::string>(7));
 
             tx.receiver = row.get<std::string>(8);
             tx.sender = row.get<std::string>(9);
@@ -138,15 +138,15 @@ namespace ledger {
                         use(ethTxUid),
                         use(tx.hash),
                         use(tx.nonce),
-                        use(tx.value.toString()),
+                        use(tx.value.toHexString()),
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.sender),
                         use(tx.receiver),
                         use(txInputData),
-                        use(tx.gasPrice.toString()),
-                        use(tx.gasLimit.toString()),
-                        use(tx.gasUsed.getValueOr(BigInt::ZERO).toString()),
+                        use(tx.gasPrice.toHexString()),
+                        use(tx.gasLimit.toHexString()),
+                        use(tx.gasUsed.getValueOr(BigInt::ZERO).toHexString()),
                         use(tx.confirmations),
                         use(tx.status);
 

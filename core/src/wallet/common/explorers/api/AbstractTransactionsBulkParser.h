@@ -121,7 +121,7 @@ namespace ledger {
             }
 
         protected:
-            virtual TxsParser getTransactionsParser() = 0;
+            virtual TxsParser &getTransactionsParser() = 0;
             virtual std::string &getLastKey() = 0;
             int _depth;
         private:
