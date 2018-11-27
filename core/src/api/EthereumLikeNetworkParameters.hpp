@@ -15,17 +15,20 @@ namespace ledger { namespace core { namespace api {
 struct EthereumLikeNetworkParameters final {
     std::string Identifier;
     std::string MessagePrefix;
+    std::vector<uint8_t> ChainID;
     std::vector<uint8_t> XPUBVersion;
     std::vector<std::string> AdditionalEIPs;
     int64_t TimestampDelay;
 
     EthereumLikeNetworkParameters(std::string Identifier_,
                                   std::string MessagePrefix_,
+                                  std::vector<uint8_t> ChainID_,
                                   std::vector<uint8_t> XPUBVersion_,
                                   std::vector<std::string> AdditionalEIPs_,
                                   int64_t TimestampDelay_)
     : Identifier(std::move(Identifier_))
     , MessagePrefix(std::move(MessagePrefix_))
+    , ChainID(std::move(ChainID_))
     , XPUBVersion(std::move(XPUBVersion_))
     , AdditionalEIPs(std::move(AdditionalEIPs_))
     , TimestampDelay(std::move(TimestampDelay_))
@@ -34,6 +37,7 @@ struct EthereumLikeNetworkParameters final {
     EthereumLikeNetworkParameters(const EthereumLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
        this->MessagePrefix = cpy.MessagePrefix;
+       this->ChainID = cpy.ChainID;
        this->XPUBVersion = cpy.XPUBVersion;
        this->AdditionalEIPs = cpy.AdditionalEIPs;
        this->TimestampDelay = cpy.TimestampDelay;
@@ -45,6 +49,7 @@ struct EthereumLikeNetworkParameters final {
     EthereumLikeNetworkParameters& operator=(const EthereumLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
        this->MessagePrefix = cpy.MessagePrefix;
+       this->ChainID = cpy.ChainID;
        this->XPUBVersion = cpy.XPUBVersion;
        this->AdditionalEIPs = cpy.AdditionalEIPs;
        this->TimestampDelay = cpy.TimestampDelay;
@@ -53,12 +58,12 @@ struct EthereumLikeNetworkParameters final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs, TimestampDelay);
+        archive(Identifier, MessagePrefix, ChainID, XPUBVersion, AdditionalEIPs, TimestampDelay);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalEIPs, TimestampDelay);
+        archive(Identifier, MessagePrefix, ChainID, XPUBVersion, AdditionalEIPs, TimestampDelay);
     }
 };
 

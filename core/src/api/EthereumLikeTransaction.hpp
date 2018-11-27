@@ -15,6 +15,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class EthereumLikeAddress;
+class EthereumLikeBlock;
 
 /**Class representing a Ethereum transaction */
 class EthereumLikeTransaction {
@@ -51,11 +52,19 @@ public:
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 
+    /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx */
+    virtual void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
+
+    virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
+
     /**
      * Get the time when the transaction was issued or the time of the block including
      * this transaction
      */
     virtual std::chrono::system_clock::time_point getDate() = 0;
+
+    /** Get block to which transaction belongs (was mined in) */
+    virtual std::shared_ptr<EthereumLikeBlock> getBlock() = 0;
 };
 
 } } }  // namespace ledger::core::api

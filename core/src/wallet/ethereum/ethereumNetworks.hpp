@@ -55,7 +55,10 @@ namespace ledger {
                 archive(
                     p.Identifier,
                     p.MessagePrefix,
-                    p.AdditionalEIPs
+                    p.ChainID,
+                    p.XPUBVersion,
+                    p.AdditionalEIPs,
+                    p.TimestampDelay
                 );
             }
 

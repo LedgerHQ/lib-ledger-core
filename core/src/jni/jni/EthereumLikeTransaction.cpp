@@ -4,6 +4,7 @@
 #include "EthereumLikeTransaction.hpp"  // my header
 #include "Amount.hpp"
 #include "EthereumLikeAddress.hpp"
+#include "EthereumLikeBlock.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -121,6 +122,25 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024C
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_rSignature, jbyteArray j_sSignature)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
+        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_rSignature),
+                          ::djinni::Binary::toCpp(jniEnv, j_sSignature));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1setDERSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
+        ref->setDERSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1getDate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -128,6 +148,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppP
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
         auto r = ref->getDate();
         return ::djinni::release(::djinni::Date::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1getBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
+        auto r = ref->getBlock();
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeBlock>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

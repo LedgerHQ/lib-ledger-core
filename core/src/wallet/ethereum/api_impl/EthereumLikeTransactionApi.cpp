@@ -35,6 +35,7 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <ethereum/EthereumLikeAddress.h>
 #include <bytes/BytesWriter.h>
+#include <bytes/BytesReader.h>
 #include <bytes/RLP/RLPListEncoder.h>
 #include <bytes/RLP/RLPStringEncoder.h>
 #include <utils/hex.h>
@@ -44,7 +45,6 @@ namespace ledger {
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const api::Currency& currency) {
             _currency = currency;
-            _version = 1;
         }
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const std::shared_ptr<OperationApi>& operation) {
@@ -111,6 +111,33 @@ namespace ledger {
             return _time;
         }
 
+        std::shared_ptr<api::EthereumLikeBlock> EthereumLikeTransactionApi::getBlock() {
+            return _block;
+        }
+
+        void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
+            _rSignature = rSignature;
+            _sSignature = sSignature;
+        }
+
+        void EthereumLikeTransactionApi::setDERSignature(const std::vector<uint8_t> & signature) {
+            BytesReader reader(signature);
+            //DER prefix
+            reader.readNextByte();
+            //Total length
+            reader.readNextVarInt();
+            //Nb of elements for R
+            reader.readNextByte();
+            //R length
+            auto rSize = reader.readNextVarInt();
+            _rSignature = reader.read(rSize);
+            //Nb of elements for S
+            reader.readNextByte();
+            //S length
+            auto sSize = reader.readNextVarInt();
+            _sSignature = reader.read(sSize);
+        }
+
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
             //Construct RLP object from tx
             //TODO:  need forEIP155 ?
@@ -127,13 +154,16 @@ namespace ledger {
             BigInt value(_value->toString());
             txList.append(hex::toByteArray(value.toHexString()));
             txList.append(_data);
-            //TODO:  get it from EthLikeNetworkParameters
-            std::vector<uint8_t> chainID{0x01};
-            txList.append(chainID);
+            txList.append(_currency.ethereumLikeNetworkParameters.value().ChainID);
 
-            std::vector<uint8_t> empty;
-            txList.append(empty);
-            txList.append(empty);
+            if (_rSignature.size() > 0 && _sSignature.size() > 0) {
+                txList.append(_rSignature);
+                txList.append(_sSignature);
+            } else {
+                std::vector<uint8_t> empty;
+                txList.append(empty);
+                txList.append(empty);
+            }
 
             BytesWriter writer;
             writer.writeByteArray(txList.encode());
@@ -157,6 +187,9 @@ namespace ledger {
         }
 
         EthereumLikeTransactionApi & EthereumLikeTransactionApi::setNonce(const std::shared_ptr<BigInt>& nonce) {
+            if (!nonce) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "EthereumLikeTransactionApi::setGasLimit: Invalid Nonce");
+            }
             _nonce = nonce;
             return *this;
         }
