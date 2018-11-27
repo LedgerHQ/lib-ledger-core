@@ -26,7 +26,8 @@ namespace ledger {
             typedef typename NetworkType::Block Block;
 
             virtual ~BlockchainDatabase() = 0;
-            virtual Future<Unit> addBlocks(const std::vector<typename FilledBlock>& blocks) = 0;
+            virtual Future<Unit> addBlock(FilledBlock& blocks) = 0;
+            virtual Future<Unit> addBlocks(const std::vector<FilledBlock>& blocks) = 0;
             // Remove all blocks with height in [heightFrom, heightTo)
             virtual Future<Unit> removeBlocks(int heightFrom, int heightTo) = 0;
             // Remove all blocks with height < heightTo

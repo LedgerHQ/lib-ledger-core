@@ -119,7 +119,7 @@ namespace ledger {
                 if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
                     // TODO implement multi change
                     // TODO implement use specific change address
-                    auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
+                    auto changeAddress = buddy->keychain->getFreshAddress(keychain::CHANGE)->toString();
 
                     auto amount = buddy->changeAmount;
                     auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);

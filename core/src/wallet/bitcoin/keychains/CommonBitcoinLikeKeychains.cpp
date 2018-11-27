@@ -59,14 +59,14 @@ namespace ledger {
                 auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
                         .setAccountIndex(getAccountIndex())
                         .setCoinType(getCurrency().bip44CoinType)
-                        .setNode(RECEIVE).getPath();
+                        .setNode(keychain::RECEIVE).getPath();
                 _publicNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
             {
                 auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
                         .setAccountIndex(getAccountIndex())
                         .setCoinType(getCurrency().bip44CoinType)
-                        .setNode(CHANGE).getPath();
+                        .setNode(keychain::CHANGE).getPath();
                 _internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
 

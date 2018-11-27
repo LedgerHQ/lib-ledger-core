@@ -31,7 +31,7 @@
 
 #include <gtest/gtest.h>
 #include <wallet/bitcoin/networks.hpp>
-#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeExplorer.hpp>
 #include "BaseFixture.h"
 
 class LedgerApiBitcoinLikeBlockchainExplorerTests : public BaseFixture {
@@ -40,7 +40,7 @@ public:
         BaseFixture::SetUp();
         auto worker = dispatcher->getSerialExecutionContext("worker");
         auto client = std::make_shared<HttpClient>("http://api.ledgerwallet.com", http, worker);
-        explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, client, networks::getNetworkParameters("bitcoin"), api::DynamicObject::newInstance());
+        explorer = std::make_shared<bitcoin::BitcoinLikeExplorer>(worker, client, networks::getNetworkParameters("bitcoin"), api::DynamicObject::newInstance());
         logger = ledger::core::logger::create("test_logs",
                                               std::experimental::optional<std::string>(),
                                               dispatcher->getSerialExecutionContext("logger"),
@@ -51,7 +51,7 @@ public:
     }
 
     std::shared_ptr<spdlog::logger> logger;
-    std::shared_ptr<LedgerApiBitcoinLikeBlockchainExplorer> explorer;
+    std::shared_ptr<bitcoin::BitcoinLikeExplorer> explorer;
 };
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, StartSession) {
@@ -81,7 +81,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
     EXPECT_EQ(tx.outputs[1].address.getValue(), "19j8biFtMSy5HFRX6mXiurjz3jszg7nLN5");
     EXPECT_EQ(tx.block.getValue().hash, "0000000000000000026aa418ef33e0b079a42d348f35bc0a2fa4bc150a9c459d");
     EXPECT_EQ(tx.block.getValue().height, 403912);
-    EXPECT_EQ(tx.block.getValue().time.time_since_epoch().count(), 1458734061000000);
+    EXPECT_EQ(tx.block.getValue().createdAt.time_since_epoch().count(), 1458734061000000);
     EXPECT_EQ(tx.receivedAt.time_since_epoch().count(), 1458734061000000);
 }
 

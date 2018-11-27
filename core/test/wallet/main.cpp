@@ -1,9 +1,9 @@
-/*
+/**
  *
- * Unit
+ * main
  * ledger-core
  *
- * Created by Pierre Pollastri on 24/01/2017.
+ * Created by Pierre Pollastri on 15/09/2016.
  *
  * The MIT License (MIT)
  *
@@ -28,20 +28,10 @@
  * SOFTWARE.
  *
  */
-#pragma once
 
-namespace ledger {
-    namespace core {
-        /**
-         * Analogous to the "void" type but allow us to have void values in container.
-         */
-        class Unit {
-        public:
-            Unit() {};
-            bool operator==(const Unit&) const {return true;};
-            bool operator!=(const Unit&) const {return false;};
-        };
+#include <gtest/gtest.h>
 
-        const Unit unit {};
-    }
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

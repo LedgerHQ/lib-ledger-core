@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <wallet/bitcoin/factories/AccountSynchronizerFactory.hpp>
-#include <wallet/bitcoin/synchronizers/AccountSynchronizer.hpp>
+#include <wallet/common/AccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
@@ -15,15 +15,26 @@ namespace ledger {
 
             }
 
-            std::shared_ptr<core::AccountSynchronizer> AccountSynchronizerFactory::createAccountSynchronizer(
-                std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>> stableBlocksDb,
-                std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>> unstableBlocksDb) {
-                return std::make_shared<AccountSynchronizer>(
+            std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> AccountSynchronizerFactory::createAccountSynchronizer(
+                const std::shared_ptr<api::ExecutionContext>& executionContext,
+                const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
+                const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& stableBlocksDb,
+                const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& unstableBlocksDb,
+                const std::shared_ptr<Keychain<BitcoinLikeNetwork>>& keychain,
+                const std::shared_ptr<spdlog::logger>& logger,
+                uint32_t numberOfUnrevertableBlocks,
+                uint32_t maxNumberOfAddressesInRequest,
+                uint32_t discoveryGapSize) {
+                return std::make_shared<common::AccountSynchronizer<BitcoinLikeNetwork>>(
                     _executionContext,
                     _explorer,
                     stableBlocksDb,
-                    unstableBlocksDb
-                    );
+                    unstableBlocksDb,
+                    keychain,
+                    logger,
+                    numberOfUnrevertableBlocks,
+                    maxNumberOfAddressesInRequest,
+                    discoveryGapSize);
             };
         }
     }

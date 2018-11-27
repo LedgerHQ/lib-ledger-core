@@ -43,19 +43,15 @@
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 
 #include <bitcoin/BitcoinLikeAddress.hpp>
+#include <wallet/Keychain.hpp>
 
 namespace ledger {
     namespace core {
 
         class BitcoinLikeKeychain {
         public:
-            enum KeyPurpose {
-                RECEIVE, CHANGE
-            };
-
-        public:
             using Address = std::shared_ptr<BitcoinLikeAddress>;
-
+            typedef keychain::KeyPurpose KeyPurpose;
             BitcoinLikeKeychain(
                     const std::shared_ptr<api::DynamicObject>& configuration,
                     const api::Currency& params,

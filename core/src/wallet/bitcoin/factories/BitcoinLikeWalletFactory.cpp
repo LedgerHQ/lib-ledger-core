@@ -47,7 +47,6 @@
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2SHKeychainFactory.h>
 #include <wallet/bitcoin/factories/AccountSynchronizerFactory.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
-#include <wallet/bitcoin/synchronizers/AccountSynchronizer.hpp>
 #include <wallet/pool/WalletPool.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
@@ -130,7 +129,7 @@ namespace ledger {
                 return explorer;
             }
 
-            std::shared_ptr<ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>
+            std::shared_ptr<common::ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>
                 BitcoinLikeWalletFactory::createBroadcaster(const std::shared_ptr<api::DynamicObject> &configuration) {
                 auto pool = getPool();
                 auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
@@ -145,7 +144,7 @@ namespace ledger {
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto& networkParams = getCurrency().bitcoinLikeNetworkParameters.value();
-                return std::make_shared<ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>(context, http, networkParams, configuration);
+                return std::make_shared<common::ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>(context, http, networkParams, configuration);
             }
 
             std::shared_ptr<BitcoinLikeBlockchainObserver>

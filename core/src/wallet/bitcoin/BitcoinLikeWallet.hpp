@@ -42,7 +42,6 @@
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include "wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp"
 #include "wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp"
-#include "wallet/bitcoin/synchronizers/AccountSynchronizer.hpp"
 #include <wallet/common/AbstractWallet.hpp>
 
 namespace ledger {

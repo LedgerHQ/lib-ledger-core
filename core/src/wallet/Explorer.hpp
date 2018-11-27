@@ -14,8 +14,9 @@ namespace ledger {
         public:
             typedef typename Network::Transaction Transaction;
             typedef typename Network::Block Block;
-            typedef std::pair<std::vector<typename Transaction>, bool> TransactionBulk;
+            typedef std::pair<std::vector<Transaction>, bool> TransactionBulk;
 
+            virtual ~ExplorerV2() {};
             virtual Future<void *> startSession() = 0;
             virtual Future<Unit> killSession(void *session) = 0;
 

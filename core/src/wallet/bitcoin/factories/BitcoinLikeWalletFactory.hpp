@@ -31,18 +31,23 @@
 #pragma once
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/synchronizers/AccountSynchronizer.hpp>
-#include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
-#include "BitcoinLikeKeychainFactory.h"
-#include <wallet/AccountSynchronizer.hpp>
 #include <wallet/NetworkTypes.hpp>
-#include <wallet/common/ExplorerTransactionBroadcaster.hpp>
 
 namespace ledger {
     namespace core {
-
+        class AbstractWallet;
         class WalletPool;
+        class BitcoinLikeBlockchainObserver;
+        class BitcoinLikeKeychainFactory;
+        struct WalletDatabaseEntry;
+
+        template<typename NetworkType>
+        class ExplorerV2;
+        namespace common {
+            template<typename NetworkType>
+            class ExplorerTransactionBroadcaster;
+        };
+
         namespace bitcoin {
             class BitcoinLikeWalletFactory : public AbstractWalletFactory {
             public:
@@ -51,7 +56,7 @@ namespace ledger {
             private:
                 std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> getExplorer(const std::shared_ptr<api::DynamicObject>& configuration);
                 std::shared_ptr<BitcoinLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-                std::shared_ptr<ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>
+                std::shared_ptr<common::ExplorerTransactionBroadcaster<BitcoinLikeNetwork>>
                     createBroadcaster(const std::shared_ptr<api::DynamicObject> &configuration);
             private:
 

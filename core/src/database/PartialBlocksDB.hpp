@@ -1,5 +1,4 @@
-#ifndef LEDGER_CORE_DB_PARTIALBLOCKSDB_HPP
-#define LEDGER_CORE_DB_PARTIALBLOCKSDB_HPP
+#pragma once
 
 #include <vector>
 #include <database/DatabaseBlock.hpp>
@@ -20,5 +19,3 @@ namespace ledger {
 		}
 	}
 }
-
-#endif //LEDGER_CORE_DB_PARTIALBLOCKSDB_HPP

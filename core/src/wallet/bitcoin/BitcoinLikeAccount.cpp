@@ -28,29 +28,28 @@
  * SOFTWARE.
  *
  */
-#include "BitcoinLikeAccount.hpp"
-#include <wallet/common/Operation.h>
-#include <database/query/QueryBuilder.h>
-#include <api/EventCode.hpp>
-#include <utils/DateUtils.hpp>
-#include <api/I32Callback.hpp>
-#include <collections/functional.hpp>
-#include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
-#include <api/BitcoinLikeOutputListCallback.hpp>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <api/BitcoinLikeInput.hpp>
-#include <events/EventPublisher.hpp>
-#include <events/Event.hpp>
+#include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/EventCode.hpp>
+#include <api/I32Callback.hpp>
 #include <api/StringCallback.hpp>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <wallet/NetworkTypes.hpp>
-#include <spdlog/logger.h>
-#include <utils/DateUtils.hpp>
+#include <collections/functional.hpp>
+#include <database/query/QueryBuilder.h>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <events/Event.hpp>
+#include <events/EventPublisher.hpp>
+
+#include <spdlog/logger.h>
+#include <wallet/NetworkTypes.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include <wallet/common/Operation.h>
+#include <utils/DateUtils.hpp>
 
 
 namespace ledger {
@@ -61,7 +60,7 @@ namespace ledger {
                 int32_t index,
                 const std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>>& broadcaster,
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<core::AccountSynchronizer>& synchronizer,
+                const std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>>& synchronizer,
                 const std::shared_ptr<BitcoinLikeKeychain>& keychain)
                 : AbstractAccount(wallet, index)
                 , _observer(observer)

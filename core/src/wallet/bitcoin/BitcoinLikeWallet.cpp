@@ -161,7 +161,7 @@ namespace ledger {
                         index,
                         self->_transactionBroadcaster,
                         self->_observer,
-                        self->_synchronizerFactory->createAccountSynchronizer(nullptr, nullptr),
+                        self->_synchronizerFactory->createAccountSynchronizer(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 6, 20, 20),
                         keychain
                         ));
                     self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
@@ -227,7 +227,7 @@ namespace ledger {
                     entry.index,
                     _transactionBroadcaster,
                     _observer,
-                    _synchronizerFactory->createAccountSynchronizer(nullptr, nullptr),
+                    _synchronizerFactory->createAccountSynchronizer(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 6, 20, 20),
                     keychain);
             }
         }

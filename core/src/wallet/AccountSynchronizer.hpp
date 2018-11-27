@@ -33,6 +33,7 @@
 
 namespace ledger {
     namespace core {
+        template<typename NetworkType>
         class AccountSynchronizer {
         public:
             virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize() = 0;
