@@ -86,8 +86,8 @@ namespace ledger {
                             ":fees, :block_uid, :currency_name, :trust"
                         ")"
                         , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
-                        , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
-                        , use(operation.fees), use(blockUid)
+                        , use(sndrs), use(rcvrs), use(operation.amount.toHexString())
+                        , use(operation.fees.getValueOr(BigInt::ZERO).toHexString()), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
 
                 updateCurrencyOperation(sql, operation, newOperation);
@@ -111,6 +111,10 @@ namespace ledger {
                 auto nonce = operation->getNonce();
                 auto sender = operation->getSender();
                 auto receiver = operation->getReceiver();
+                auto value = BigInt(operation->getValue()->toString());
+                auto gasPrice = BigInt(operation->getGasPrice()->toString());
+                auto gasLimit = BigInt(operation->getGasLimit()->toString());
+                auto gasUsed = BigInt(operation->getUsedGas()->toString());
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":erc20_op_uid, :eth_op_uid, :erc20_account_uid, :hash,"
                         ":nonce, :value, :time,"
@@ -119,9 +123,9 @@ namespace ledger {
                         ":status"
                         ")"
                         , use(erc20OperationUid), use(ethOperationUid), use(erc20AccountUid), use(hash)
-                        , use(nonce), use(operation->getValue()->toString()), use(operation->getTime())
+                        , use(nonce), use(value.toHexString()), use(operation->getTime())
                         , use(sender), use(receiver), use(inputData)
-                        , use(operation->getGasPrice()->toString()), use(operation->getGasLimit()->toString()), use(operation->getUsedGas()->toString())
+                        , use(gasPrice.toHexString()), use(gasLimit.toHexString()), use(gasUsed.toHexString())
                         , use(operation->getStatus());
                 return true;
         }
@@ -175,8 +179,8 @@ namespace ledger {
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
                     operations.resize(operations.size() + 1);
                     auto& operation = operations[operations.size() - 1];
-                    operation.amount = row.get<BigInt>(0);
-                    operation.fees = row.get<BigInt>(1);
+                    operation.amount = BigInt::fromHex(row.get<std::string>(0));
+                    operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
                     operation.date = DateUtils::fromJSON(row.get<std::string>(3));
                     c += 1;

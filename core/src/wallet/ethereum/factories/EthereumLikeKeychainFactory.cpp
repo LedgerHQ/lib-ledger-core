@@ -48,7 +48,7 @@ namespace ledger {
                 auto xpub = make_try<std::shared_ptr<EthereumLikeExtendedPublicKey>>([&] () -> std::shared_ptr<EthereumLikeExtendedPublicKey> {
                     return EthereumLikeExtendedPublicKey::fromBase58(
                             currency,
-                            info.extendedKeys[0],
+                            info.extendedKeys[info.extendedKeys.size() - 1],
                             Option<std::string>(path.toString())
                     );
                 });
