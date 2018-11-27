@@ -2,6 +2,7 @@
 EthereumLikeNetworkParameters = record {
 	Identifier: string;
 	MessagePrefix: string;
+	ChainID: binary;
 	XPUBVersion: binary;
 	AdditionalEIPs: list<string>;
 	TimestampDelay: i64;
