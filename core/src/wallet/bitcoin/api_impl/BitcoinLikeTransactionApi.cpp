@@ -473,7 +473,7 @@ namespace ledger {
                 auto previousTxHash = hex::toString(prevTxHashBytes);
                 auto outputIndex = reader.readNextLeUint();
 
-                ledger::core::BitcoinLikeBlockchainExplorer::Output output;
+                ledger::core::BitcoinLikeBlockchainExplorerOutput output;
                 std::string address;
                 std::vector<std::vector<uint8_t>> pubKeys;
 

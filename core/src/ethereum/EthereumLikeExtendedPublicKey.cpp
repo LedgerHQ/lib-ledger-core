@@ -109,7 +109,7 @@ namespace ledger {
             }
             DerivationPath p(path);
 
-            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint);
+            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, currency.ethereumLikeNetworkParameters.value().Identifier);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
         }
 
@@ -141,7 +141,7 @@ namespace ledger {
             //33 bytes of publicKey
             auto publicKey = reader.readUntilEnd();
 
-            DeterministicPublicKey k(publicKey, chainCode, childNum, depth, fingerprint);
+            DeterministicPublicKey k(publicKey, chainCode, childNum, depth, fingerprint, currency.ethereumLikeNetworkParameters.value().Identifier);
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
 
         }
