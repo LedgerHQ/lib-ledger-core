@@ -11,6 +11,7 @@ add_executable(ledger-core-wallet-tests main.cpp InMemoryPartialBlocksDB_test.cp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)
+target_link_libraries(ledger-core-wallet-tests gmock)
 target_link_libraries(ledger-core-wallet-tests ledger-core)
 
 include(CopyAndInstallImportedTargets)

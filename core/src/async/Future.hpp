@@ -43,6 +43,7 @@
 #include "../traits/callback_traits.hpp"
 #include "../api/Error.hpp"
 #include "../traits/shared_ptr_traits.hpp"
+#include <async/Promise.hpp>
 
 namespace ledger {
     namespace core {
