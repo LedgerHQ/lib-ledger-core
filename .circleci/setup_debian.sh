@@ -2,6 +2,9 @@
 
 BUILD_CONFIG=$1
 
+echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
+echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
+
 echo "========> Install basic config"
 apt-get update
 apt-get install -y apt-transport-https wget python build-essential libx11-xcb-dev

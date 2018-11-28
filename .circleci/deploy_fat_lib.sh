@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-unamestr=$(uname)
-
-if [ "$unamestr" == "Darwin" ]; then
+if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ]; then
 	cd ios
 
 	echo "======> Build Fat Library"
