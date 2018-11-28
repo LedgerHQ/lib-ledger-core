@@ -99,6 +99,7 @@ EthereumLikeTransactionBuilder = interface +c {
     reset();
 
     static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
+    static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
 }
 
 #Class representing a Ethereum account

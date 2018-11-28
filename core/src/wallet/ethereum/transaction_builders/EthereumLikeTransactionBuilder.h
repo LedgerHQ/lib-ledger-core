@@ -91,9 +91,9 @@ namespace ledger {
             
             void reset() override;
 
-            static std::shared_ptr<api::EthereumLikeTransaction> parseRawUnsignedTransaction(const api::Currency & currency,
-                                                                                      const std::vector<uint8_t> & rawTransaction);
-
+            static std::shared_ptr<api::EthereumLikeTransaction> parseRawTransaction(const api::Currency & currency,
+                                                                              const std::vector<uint8_t> & rawTransaction,
+                                                                              bool isSigned);
         private:
             api::Currency _currency;
             //std::shared_ptr<api::EthereumLikeScript> createSendScript(const std::string &address);

@@ -112,4 +112,14 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_pa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::EthereumLikeTransactionBuilder::parseRawSignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
+                                                                                                ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+        return ::djinni::release(::djinni_generated::EthereumLikeTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 }  // namespace djinni_generated

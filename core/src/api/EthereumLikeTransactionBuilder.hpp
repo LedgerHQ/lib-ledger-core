@@ -63,6 +63,8 @@ public:
     virtual void reset() = 0;
 
     static std::shared_ptr<EthereumLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
+
+    static std::shared_ptr<EthereumLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
 };
 
 } } }  // namespace ledger::core::api

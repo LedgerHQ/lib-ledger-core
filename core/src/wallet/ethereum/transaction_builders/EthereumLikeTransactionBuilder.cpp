@@ -109,14 +109,28 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransaction>
-        EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency & currency,
-                                                                    const std::vector<uint8_t> & rawTransaction) {
+        api::EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency & currency,
+                                                                         const std::vector<uint8_t> & rawTransaction) {
+            return ::ledger::core::EthereumLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, false);
+        }
+
+        std::shared_ptr<api::EthereumLikeTransaction>
+        api::EthereumLikeTransactionBuilder::parseRawSignedTransaction(const api::Currency & currency,
+                                                                       const std::vector<uint8_t> & rawTransaction) {
+            return ::ledger::core::EthereumLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, true);
+        }
+
+        std::shared_ptr<api::EthereumLikeTransaction>
+        EthereumLikeTransactionBuilder::parseRawTransaction(const api::Currency & currency,
+                                                            const std::vector<uint8_t> & rawTransaction,
+                                                            bool isSigned) {
             auto decodedRawTx = RLPDecoder::decode(rawTransaction);
             auto children = decodedRawTx->getChildren();
-            
+
             //TODO: throw if size is KO
             auto tx = std::make_shared<EthereumLikeTransactionApi>(currency);
             int index = 0;
+            std::vector<uint8_t> rSignature, sSignature;
             for (auto &child: children) {
                 if (child->isList()) {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No List in this TX");
@@ -143,11 +157,22 @@ namespace ledger {
                         break;
                     case 5:
                         tx->setData(child->encode());
+                    case 7: //6 would be the 'V' field of V,R and S signature
+                        //R signature
+                        rSignature = child->encode();
+                    case 8:
+                        //S signature
+                        sSignature = child->encode();
                     default:
                         break;
                 }
                 index ++;
             }
+
+            if (isSigned) {
+                tx->setSignature(rSignature, sSignature);
+            }
+
             return tx;
         }
 
