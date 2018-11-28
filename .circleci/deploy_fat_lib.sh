@@ -3,7 +3,7 @@
 unamestr=$(uname)
 branchstr=$(git branch | grep '*' | sed 's/^..//')
 
-cd /Users/distiller/ios
+cd ios
 
 echo "======> Build Fat Library"
 pwd
@@ -16,13 +16,7 @@ cp arm64/ledger-core.framework/Info.plist ledger-core.framework/
 install_name_tool -add_rpath "@executable_path/Frameworks/universal" ledger-core.framework/ledger-core
 lipo -info ledger-core.framework/ledger-core
 
-echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"
 
-if [ "$branchstr" == "develop" ]; then
-	echo "======> Start deploy fat library for $unamestr"
-	aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal --acl public-read --exclude "x86_64/*" --exclude "armv7/*" --exclude "arm64/*" && \
-	aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal;
+aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal --acl public-read --exclude "x86_64/*" --exclude "armv7/*" --exclude "arm64/*" && \
+aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal;
 
-else
-	echo "======> Deployment only on Develop (temporary) branch"
-fi
