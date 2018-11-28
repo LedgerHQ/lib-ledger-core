@@ -78,15 +78,7 @@ jobs:
           command: |
             . .circleci/copy_artifacts.sh android arm64-v8a
       - deploy:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              only:
-                - develop
-                - master
-                - ci-improvements #for tests
-          name: Deploy Artifacts
+          name: Deploy_Artifacts
           command: |
             . .circleci/deploy.sh
   build_linux_debug:
@@ -146,52 +138,44 @@ jobs:
           name: Build_Module
           command: |
             . .circleci/build_node_module.sh
-      - deploy:
-          name: Deploy
+      - run:
+          name: Copy_Artifacts
           command: |
-            . .circleci/deploy.sh
+            . .circleci/copy_artifacts.sh
       - run:
           name: Build_Library_jni
           command: |
             . .circleci/build_lib.sh target_jni Release
-      - deploy:
-          name: Deploy_jni
+      - run:
+          name: Copy_Artifacts_jni
           command: |
-            . .circleci/deploy.sh target_jni
+            . .circleci/copy_artifacts.sh target_jni
       - run:
           name: Build_Library_ios_x86
           command: |
             . .circleci/build_lib.sh ios
-      - deploy:
-          name: Deploy_ios_x86
+      - run:
+          name: Copy_Artifacts_ios_x86
           command: |
-            . .circleci/deploy.sh ios
+            . .circleci/copy_artifacts.sh ios
       - run:
           name: Build_Library_ios_armv7
           command: |
             . .circleci/build_lib.sh ios armv7
-      - deploy:
-          name: Deploy_ios_armv7
+      - run:
+          name: Copy_Artifacts_ios_armv7
           command: |
-            . .circleci/deploy.sh ios armv7
+            . .circleci/copy_artifacts.sh ios armv7
       - run:
           name: Build_Library_ios_arm64
           command: |
             . .circleci/build_lib.sh ios arm64
-      - deploy:
-          name: Deploy_ios_arm64
+      - run:
+          name: Copy_Artifacts_ios_arm64
           command: |
-            . .circleci/deploy.sh ios arm64
+            . .circleci/copy_artifacts.sh ios arm64
       - deploy:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              only:
-                - develop
-                - master
-                - ci-improvements #for tests
-          name: Deploy Artifacts
+          name: Deploy_Artifacts
           command: |
             . .circleci/deploy.sh
             . .circleci/deploy_fat_lib.sh
@@ -226,7 +210,13 @@ workflows:
   version: 2
   build:
     jobs:
+      - build_linux_release:
+          filters:
+            tags:
+              only: /.*/
+      - build_macos_release:
+          filters:
+            tags:
+              only: /.*/
       - build_linux_debug
       - build_macos_debug
-      - build_linux_release
-      - build_macos_release
