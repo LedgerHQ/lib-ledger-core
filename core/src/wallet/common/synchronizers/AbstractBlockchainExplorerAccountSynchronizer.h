@@ -269,7 +269,7 @@ namespace ledger {
             };
 
             Future<Unit> synchronizeBatches(uint32_t currentBatchIndex,
-                                            std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy) {
+                                            std::shared_ptr<SynchronizationBuddy> buddy) {
 
                 buddy->logger->info("SYNC BATCHES");
                 //For ethereum like wallets, one account corresponds to one ETH address,
@@ -348,7 +348,7 @@ namespace ledger {
             };
 
             Future<bool> synchronizeBatch(uint32_t currentBatchIndex,
-                                          std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> buddy,
+                                          std::shared_ptr<SynchronizationBuddy> buddy,
                                           bool hadTransactions = false) {
 
                 buddy->logger->info("SYNC BATCH {}", currentBatchIndex);

@@ -41,6 +41,7 @@
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/ethereum/synchronizers/EthereumLikeBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/ethereum/observers/LedgerApiEthereumLikeBlockchainObserver.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -167,7 +168,7 @@ namespace ledger {
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto logger = pool->logger();
                 const auto& currency = getCurrency();
-                observer = std::make_shared<EthereumLikeBlockchainObserver>(context, ws, configuration, logger, currency);
+                observer = std::make_shared<LedgerApiEthereumLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)
                 _runningObservers.push_back(observer);

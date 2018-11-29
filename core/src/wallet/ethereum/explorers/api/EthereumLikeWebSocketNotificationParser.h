@@ -1,13 +1,12 @@
 /*
  *
- * WebSocketNotificationParser.h
- * ledger-core
+ * EthereumLikeWebSocketNotificationParser
  *
- * Created by Pierre Pollastri on 10/10/2017.
+ * Created by El Khalil Bellakrid on 29/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Ledger
+ * Copyright (c) 2018 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,46 +28,48 @@
  *
  */
 
-#ifndef LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
-#define LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
 
-#include "../../../../collections/collections.hpp"
+#ifndef LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H
+#define LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H
+
+
 #include <cstdio>
 #include <cstdint>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
-#include "../../../../net/HttpClient.hpp"
-#include "BlockParser.hpp"
 #include <rapidjson/reader.h>
 #include <stack>
-#include "TransactionParser.hpp"
+#include <net/HttpClient.hpp>
+#include <collections/collections.hpp>
+#include "../EthereumLikeBlockchainExplorer.h"
+#include "EthereumLikeBlockParser.hpp"
+#include "EthereumLikeTransactionParser.hpp"
 #include <wallet/common/explorers/api/AbstractWebSocketNotificationParser.h>
 
 namespace ledger {
     namespace core {
-        class WebSocketNotificationParser : public AbstractWebSocketNotificationParser<BitcoinLikeBlockchainExplorerTransaction, BitcoinLikeBlockchainExplorer::Block, TransactionParser, BlockParser> {
+        class EthereumLikeWebSocketNotificationParser : public AbstractWebSocketNotificationParser<EthereumLikeBlockchainExplorerTransaction, EthereumLikeBlockchainExplorer::Block, EthereumLikeTransactionParser, EthereumLikeBlockParser> {
         public:
 
 
-            explicit WebSocketNotificationParser(std::string& lastKey) : _lastKey(lastKey),
-                                                                        _blockParser(lastKey),
-                                                                        _transactionParser(lastKey) {
+            explicit EthereumLikeWebSocketNotificationParser(std::string& lastKey) : _lastKey(lastKey),
+                                                                                    _blockParser(lastKey),
+                                                                                    _transactionParser(lastKey) {
 
             }
 
             bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) override {
                 _lastKey = std::string(str, length);
-                return AbstractWebSocketNotificationParser<BitcoinLikeBlockchainExplorerTransaction,
-                        BitcoinLikeBlockchainExplorer::Block,
-                        TransactionParser,
-                        BlockParser>::Key(str, length, copy);
+                return AbstractWebSocketNotificationParser<EthereumLikeBlockchainExplorerTransaction,
+                        EthereumLikeBlockchainExplorer::Block,
+                        EthereumLikeTransactionParser,
+                        EthereumLikeBlockParser>::Key(str, length, copy);
             }
 
         protected:
 
-            TransactionParser &getTransactionParser() override {
-              return _transactionParser;
+            EthereumLikeTransactionParser &getTransactionParser() override {
+                return _transactionParser;
             };
-            BlockParser &getBlockParser() override {
+            EthereumLikeBlockParser &getBlockParser() override {
                 return _blockParser;
             };
             std::string &getLastKey() override {
@@ -77,11 +78,11 @@ namespace ledger {
 
         private:
             std::string& _lastKey;
-            BlockParser _blockParser;
-            TransactionParser _transactionParser;
+            EthereumLikeBlockParser _blockParser;
+            EthereumLikeTransactionParser _transactionParser;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
+#endif //LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H

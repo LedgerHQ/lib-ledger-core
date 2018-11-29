@@ -47,73 +47,9 @@ namespace ledger {
             _currency = currency;
             _configuration = configuration;
             setConfiguration(configuration);
-            _logger = logger;
-
+            setLogger(logger);
         }
 
-        EthereumLikeBlockchainObserver::EthereumLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
-                                                                       const std::shared_ptr<WebSocketClient>& client,
-                                                                       const std::shared_ptr<api::DynamicObject>& configuration,
-                                                                       const std::shared_ptr<spdlog::logger>& logger,
-                                                                       const api::Currency &currency) : EthereumLikeBlockchainObserver(context, configuration, logger, currency, {api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT}){
-            _client = client;
-        }
-
-
-        bool EthereumLikeBlockchainObserver::registerAccount(const std::shared_ptr<EthereumLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            if (!_isRegistered(lock, account)) {
-                bool needsStart = _accounts.empty();
-                _accounts.push_front(account);
-                if (needsStart)
-                    onStart();
-                return true;
-            }
-            return false;
-        }
-
-        bool EthereumLikeBlockchainObserver::unregisterAccount(const std::shared_ptr<EthereumLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            if (_isRegistered(lock, account)) {
-                bool needsStop = _accounts.size() == 1;
-                _accounts.remove(account);
-                if (needsStop)
-                    onStop();
-                return true;
-            }
-            return false;
-        }
-
-        bool EthereumLikeBlockchainObserver::isRegistered(const std::shared_ptr<EthereumLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            return _isRegistered(lock, account);
-        }
-
-        bool EthereumLikeBlockchainObserver::_isRegistered(std::lock_guard<std::mutex> &lock,
-                                                          const std::shared_ptr<EthereumLikeAccount> &account) {
-            for (auto& acc : _accounts) {
-                if (acc.get() == account.get())
-                    return true;
-            }
-            return false;
-        }
-
-        const api::Currency &EthereumLikeBlockchainObserver::getCurrency() const {
-            return _currency;
-        }
-
-        bool EthereumLikeBlockchainObserver::isObserving() const {
-            std::lock_guard<std::mutex> lock(_lock);
-            return _accounts.size() > 0;
-        }
-
-        std::shared_ptr<api::DynamicObject> EthereumLikeBlockchainObserver::getConfiguration() const {
-            return _configuration;
-        }
-
-        std::shared_ptr<spdlog::logger> EthereumLikeBlockchainObserver::logger() const {
-            return _logger;
-        }
 
         void EthereumLikeBlockchainObserver::putTransaction(const EthereumLikeBlockchainExplorerTransaction &tx) {
             std::lock_guard<std::mutex> lock(_lock);
@@ -141,71 +77,6 @@ namespace ledger {
             }
         }
 
-        void EthereumLikeBlockchainObserver::onStart() {
-            connect();
-        }
-
-        void EthereumLikeBlockchainObserver::onStop() {
-            auto self = shared_from_this();
-            run([self] () {
-                if (self->_socket != nullptr)
-                    self->_socket->close();
-                self->_handler = [self] (WebSocketEventType event,
-                                         const std::shared_ptr<WebSocketConnection>& connection,
-                                         const Option<std::string>& message, Option<api::ErrorCode> code) {
-
-                };
-            });
-        }
-
-        void EthereumLikeBlockchainObserver::connect() {
-            logger()->info("Connect {} observer", getCurrency().name);
-            auto self = shared_from_this();
-            _handler = [self] (WebSocketEventType event,
-                               const std::shared_ptr<WebSocketConnection>& connection,
-                               const Option<std::string>& message, Option<api::ErrorCode> code) {
-                self->onSocketEvent(event, connection, message, code);
-            };
-            _client->connect(_url, _handler);
-        }
-
-        void EthereumLikeBlockchainObserver::reconnect() {
-            auto self = shared_from_this();
-            auto delay = std::min(std::max(Fibonacci::compute(_attempt) * 500, 30000), 500);
-            logger()->info("Attempt reconnection in {}ms for {} observer", delay, getCurrency().name);
-            getContext()->delay(LambdaRunnable::make([self] () {
-                self->connect();
-            }), delay);
-        }
-
-        void EthereumLikeBlockchainObserver::onSocketEvent(WebSocketEventType event,
-                                                                   const std::shared_ptr<WebSocketConnection> &connection,
-                                                                   const Option<std::string> &message,
-                                                                   Option<api::ErrorCode> code) {
-            switch (event) {
-                case WebSocketEventType::CONNECT:
-                    _socket = connection;
-                    _attempt = 0;
-                    logger()->info("Connected to websocket {}", _url);
-                    break;
-                case WebSocketEventType::RECEIVE:
-                    onMessage(message.getValue());
-                    break;
-                case WebSocketEventType::CLOSE:
-                    _attempt += 1;
-                    _socket = nullptr;
-                    if (code.hasValue())
-                        logger()->error("An error occured to the connection with {}: {}", _url, message.getValue());
-                    else
-                        logger()->info("Close connection to {}", _url);
-                    reconnect();
-                    break;
-            }
-        }
-
-        void EthereumLikeBlockchainObserver::onMessage(const std::string &message) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeBlockchainObserver::onMessage not implemented");
-        }
 
     }
 }
