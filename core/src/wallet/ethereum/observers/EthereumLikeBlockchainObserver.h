@@ -35,7 +35,6 @@
 #include <string>
 #include <list>
 
-//#include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 
 #include <utils/ConfigurationMatchable.h>
@@ -49,66 +48,38 @@
 #include <net/WebSocketConnection.h>
 
 #include <spdlog/logger.h>
-
+#include <wallet/common/observers/AbstractBlockchainObserver.h>
 namespace ledger {
     namespace core {
         class EthereumLikeAccount;
-        class EthereumLikeBlockchainObserver : public DedicatedContext, public ConfigurationMatchable, public std::enable_shared_from_this<EthereumLikeBlockchainObserver> {
+        using EthereumBlockchainObserver = AbstractBlockchainObserver<EthereumLikeAccount, EthereumLikeBlockchainExplorerTransaction, EthereumLikeBlockchainExplorer::Block>;
+        class EthereumLikeBlockchainObserver : public EthereumBlockchainObserver,
+                                               public DedicatedContext,
+                                               public ConfigurationMatchable {
         public:
-            EthereumLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext>& context,
-                                          const std::shared_ptr<api::DynamicObject>& configuration,
-                                          const std::shared_ptr<spdlog::logger>& logger,
-                                          const api::Currency& currency,
-                                          const std::vector<std::string>& matchableKeys);
-
             EthereumLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
-                                           const std::shared_ptr<WebSocketClient>& client,
-                                           const std::shared_ptr<api::DynamicObject>& configuration,
-                                           const std::shared_ptr<spdlog::logger>& logger,
-                                           const api::Currency &currency);
+                                           const std::shared_ptr<api::DynamicObject> &configuration,
+                                           const std::shared_ptr<spdlog::logger> &logger,
+                                           const api::Currency &currency,
+                                           const std::vector<std::string> &matchableKeys);
 
-            bool registerAccount(const std::shared_ptr<EthereumLikeAccount> &account);
-
-            bool unregisterAccount(const std::shared_ptr<EthereumLikeAccount> &account);
-
-            bool isRegistered(const std::shared_ptr<EthereumLikeAccount> &account);
-
-            const api::Currency &getCurrency() const;
-
-            bool isObserving() const;
-
-            std::shared_ptr<api::DynamicObject> getConfiguration() const;
-
-            std::shared_ptr<spdlog::logger> logger() const;
 
         protected:
-            void onStart();
-            void onStop();
+            void putTransaction(const EthereumLikeBlockchainExplorerTransaction &tx) override;
 
-            void putTransaction(const EthereumLikeBlockchainExplorerTransaction &tx);
-            void putBlock(const EthereumLikeBlockchainExplorer::Block &block);
+            void putBlock(const EthereumLikeBlockchainExplorer::Block &block) override;
+
+            const api::Currency &getCurrency() const {
+                return _currency;
+            };
+
+            std::shared_ptr<api::DynamicObject> getConfiguration() const {
+                return _configuration;
+            };
+
         private:
-
-            void connect();
-            void reconnect();
-            void onSocketEvent(WebSocketEventType event,
-                               const std::shared_ptr<WebSocketConnection>& connection,
-                               const Option<std::string>& message, Option<api::ErrorCode> code);
-            void onMessage(const std::string& message);
-
-            bool _isRegistered(std::lock_guard<std::mutex> &lock,
-                               const std::shared_ptr<EthereumLikeAccount> &account);
-            mutable std::mutex _lock;
-            std::list<std::shared_ptr<EthereumLikeAccount>> _accounts;
             api::Currency _currency;
             std::shared_ptr<api::DynamicObject> _configuration;
-            std::shared_ptr<spdlog::logger> _logger;
-            std::shared_ptr<WebSocketClient> _client;
-            std::shared_ptr<WebSocketConnection> _socket;
-            WebSocketEventHandler _handler;
-            int32_t _attempt;
-            std::string _url;
-
         };
     }
 }
