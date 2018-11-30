@@ -247,9 +247,11 @@ namespace ledger {
             }
 
 
-            //auto abstractAddress = EthereumLikeAddress::parse(_accountAddress, getCurrency(), Option<std::string>(_localPath));
-            //return std::dynamic_pointer_cast<EthereumLikeAddress>(abstractAddress);
-            return std::dynamic_pointer_cast<EthereumLikeAddress>(EthereumLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
+            auto ethAddress = EthereumLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath));
+            if (!ethAddress) {
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Could not derive address of index : {}", index));
+            }
+            return std::dynamic_pointer_cast<EthereumLikeAddress>(ethAddress);
         }
 
 
