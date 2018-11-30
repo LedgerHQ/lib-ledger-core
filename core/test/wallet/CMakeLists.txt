@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
+include_directories(.)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})
 include_directories(../../src/)
@@ -7,7 +8,11 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-wallet-tests main.cpp InMemoryPartialBlocksDB_test.cpp BlocksSynchronizer_test.cpp
+add_executable(ledger-core-wallet-tests 
+main.cpp 
+InMemoryPartialBlocksDB_test.cpp 
+BlocksSynchronizer_test.cpp
+Helpers.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)

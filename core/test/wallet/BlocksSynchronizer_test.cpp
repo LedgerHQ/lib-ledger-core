@@ -1,226 +1,376 @@
-#include <boost/lexical_cast.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <iostream>
-#include <map>
 #include <memory>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/common/BlocksSynchronizer.hpp>
 #include <wallet/common/InMemoryPartialBlocksDB.hpp>
 #include <vector>
 
-using namespace ledger::core;
+#include "Helpers.hpp"
+#include "Mocks.hpp"
+
 using namespace testing;
 
-namespace {
-    struct T {
-        std::vector<std::string> inputs;
-        std::vector<std::pair<std::string, uint32_t>> outputs;
-    };
+namespace ledger {
+    namespace core {
+        namespace tests {
 
-    BitcoinLikeNetwork::Block toBlock(const B& b) {
-        BitcoinLikeNetwork::Block block;
-        block.hash = b.hash;
-        block.height = b.height;
-        return block;
-    }
+            class BlockSyncTest : public ::testing::Test {
+            public:
+                BlockSyncTest()
+                    : receivedFake(0, 0) // receive addresses are 0,1,2... change are 1000, 1001...
+                    , changeFake(0, 1000) {
+                    firstBlock = std::make_shared<BitcoinLikeNetwork::Block>();
+                    lastBlock = std::make_shared<BitcoinLikeNetwork::Block>();
+                    explorerMock = std::make_shared<NiceMock<ExplorerMock>>();
+                    keychainReceiveMock = std::make_shared<NiceMock<KeychainMock>>();
+                    keychainChangeMock = std::make_shared<NiceMock<KeychainMock>>();
+                    blocksDBMock = std::make_shared<NiceMock<BlocksDBMock>>();
+                    context = std::make_shared<SimpleExecutionContext>();
+                    
+                }
 
-    BitcoinLikeNetwork::Transaction toTran(const T& tr) {
-        BitcoinLikeNetwork::Transaction tran;
-        tran.hash = "TR{";
-        for (auto& in : tr.inputs) {
-            BitcoinLikeNetwork::Input input;
-            input.address = in;
-            tran.inputs.push_back(input);
-            tran.hash += in + ",";
-        }
-        tran.hash += "}->{";
-        for (auto& out : tr.outputs) {
-            BitcoinLikeNetwork::Output output;
-            output.address = out.first;
-            output.value = BigInt(out.second);
-            tran.outputs.push_back(output);
-            tran.hash += out.first + ",";
-        }
-        tran.hash += "}";
-        return tran;
-    }
+                void SetUp(uint32_t batchSize, uint32_t gapSize, uint32_t maxTransactionsPerResponse = 200) {
+                    synchronizer = std::make_shared<common::BlocksSynchronizer<BitcoinLikeNetwork>>(
+                        context,
+                        explorerMock,
+                        keychainReceiveMock,
+                        keychainChangeMock,
+                        blocksDBMock,
+                        gapSize,
+                        batchSize,
+                        maxTransactionsPerResponse);
+                }
 
-    BitcoinLikeNetwork::Transaction toTran(const B& b, const T& tr) {
-        BitcoinLikeNetwork::Block block = toBlock(b);
-        BitcoinLikeNetwork::Transaction tran = toTran(tr);
-        tran.block = block;
-        return tran;
-    }
+                void setupFakeKeychains() {
+                    ON_CALL(*keychainReceiveMock, getNumberOfUsedAddresses()).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::getNumberOfUsedAddresses));
+                    ON_CALL(*keychainReceiveMock, getAddresses(_, _)).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::getAddresses));
+                    ON_CALL(*keychainReceiveMock, markAsUsed(_)).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::markAsUsed));
+                    ON_CALL(*keychainChangeMock, getNumberOfUsedAddresses()).WillByDefault(Invoke(&changeFake, &FakeKeyChain::getNumberOfUsedAddresses));
+                    ON_CALL(*keychainChangeMock, getAddresses(_, _)).WillByDefault(Invoke(&changeFake, &FakeKeyChain::getAddresses));
+                    ON_CALL(*keychainChangeMock, markAsUsed(_)).WillByDefault(Invoke(&changeFake, &FakeKeyChain::markAsUsed));
+                };
 
-    struct B {
-        uint32_t height;
-        std::string hash;
-        std::vector<T> transactions;
-    };
-};
+                void setBlockchain(const std::vector<BL>& blockChain) {
+                    fakeExplorer.setBlockchain(toFilledBlocks(blockChain));
+                    ON_CALL(*explorerMock, getTransactions(_, _, _)).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getTransactions));
+                }
 
-class FakeExplorer {
-public:
-    typedef ExplorerV2<BitcoinLikeNetwork>::TransactionBulk TransactionBulk;
-    typedef BitcoinLikeNetwork::Transaction Tran;
-    typedef BitcoinLikeNetwork::Input Input;
-    typedef BitcoinLikeNetwork::Output Output;
-    void setBlockchain(const std::vector<B>& blocks) {
-        _transactions.clear();
-        _blockHashes.clear();
-        for (auto& b : blocks) {
-            BitcoinLikeNetwork::Block block = toBlock(b);
-            _blockHashes[block.hash] = block.height;
-            for (auto& tr : b.transactions) {
-                _transactions.push_back(toTran(b, tr));
+                void setupDBThatIsAllwaysHappy() {
+                    ON_CALL(*blocksDBMock, addBlocks(_)).WillByDefault(Invoke([](const std::vector<BitcoinLikeNetwork::FilledBlock>& x) {return Future<Unit>::successful(unit); }));
+                }
+
+                std::function<bool(const std::vector<BitcoinLikeNetwork::FilledBlock>& x)> SameBlocks(const std::vector<BL>& bch) {
+                     return [bch](const std::vector<BitcoinLikeNetwork::FilledBlock>& x) { return blocksSame(x, bch); };
+                };
+
+            public:
+                std::shared_ptr<common::BlocksSynchronizer<BitcoinLikeNetwork>> synchronizer;
+                std::shared_ptr<BitcoinLikeNetwork::Block> firstBlock;
+                std::shared_ptr<BitcoinLikeNetwork::Block> lastBlock;
+                std::shared_ptr<NiceMock<ExplorerMock>> explorerMock;
+                std::shared_ptr<NiceMock<KeychainMock>> keychainReceiveMock;
+                std::shared_ptr<NiceMock<KeychainMock>> keychainChangeMock;
+                std::shared_ptr<NiceMock<BlocksDBMock>> blocksDBMock;
+                std::shared_ptr<SimpleExecutionContext> context;
+                FakeKeyChain receivedFake;
+                FakeKeyChain changeFake;
+                FakeExplorer fakeExplorer;
+            };
+
+            TEST_F(BlockSyncTest, OneTransaction) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } }
+                    }}
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, TwoTransOneBlock) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { "Y" },{ { "0", 10000 } } }
+                    } }
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, TwoBlocks) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } },
+                    BL{ 2, "block 2",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } },
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, OthersTransactionsIgnored) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } },
+                    BL{ 2, "block 2",
+                    {
+                        TR{ { "X" },{ { "Y", 10000 } } },
+                    } },
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } }
+                }
+                ))));
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, IgnoreTooNewBlocks) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } },
+                    BL{ 2, "block 2",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } },
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                    } }
+                }
+                ))));
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 1; // limiting the max block heigh
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, OneBlockDiscovery) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { "X" },{ { "1", 10000 } } },
+                        TR{ { "X" },{ { "2", 10000 } } },
+                        TR{ { "X" },{ { "3", 10000 } } },
+                        TR{ { "X" },{ { "4", 10000 } } },
+                    } },
+                };
+                setBlockchain(bch);
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("5"))).Times(0); // not discovered
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, SeveralBlocksDicovery) {
+                SetUp(1, 1);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch =
+                {
+                    BL{ 1, "block 1",
+                    {
+                        TR{ { "X" },{ { "0", 10000 } } }
+                    }},
+                    BL{ 2, "block 2",
+                    {
+                        TR{ { "X" },{ { "1", 10000 } } }
+                    } },
+                    BL{ 3, "block 3",
+                    {
+                        TR{ { "X" },{ { "2", 10000 } } }
+                    } },
+                    BL{ 4, "block 4",
+                    {
+                        TR{ { "X" },{ { "3", 10000 } } }
+                    } }
+                };
+                setBlockchain(bch);
+                // Write blocks to the disk as soon as possible to not lose it in case of error
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 1, "block 1",{ TR{ { "X" },{ { "0", 10000 } } } } } }))));
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 2, "block 2",{ TR{ { "X" },{ { "1", 10000 } } } } } }))));
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 3, "block 3",{ TR{ { "X" },{ { "2", 10000 } } } } } }))));
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 4, "block 4",{ TR{ { "X" },{ { "3", 10000 } } } } } }))));
+
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4"))).Times(0); // not discovered
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = 10;
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, CheckTruncated) {
+                SetUp(1, 1);
+                const uint32_t LAST_BLOCK = 300;
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch;
+                std::vector<BL> res1;
+                std::vector<BL> res2;
+                for (uint32_t i = 1; i <= 300; ++i) {
+                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
+                    bch.push_back(b);
+                    if (i < 200)
+                        res1.push_back(b);
+                    else
+                        res2.push_back(b);
+                }
+                setBlockchain(bch);
+                
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = LAST_BLOCK;
+
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(res1))));
+                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(res2))));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0"))).Times(AtLeast(1));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1"))).Times(0); // not discovered
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+            }
+
+            TEST_F(BlockSyncTest, ExplorerError) {
+                SetUp(1, 1);
+                const uint32_t LAST_BLOCK = 300;
+                const uint32_t TRUNCATION_LEVEL = 100;
+                fakeExplorer.setTruncationLevel(TRUNCATION_LEVEL);
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch;
+                for (uint32_t i = 1; i <= 300; ++i) {
+                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
+                    bch.push_back(b);
+                }
+                setBlockchain(bch);
+                firstBlock->hash = "block 1";
+                firstBlock->height = 1;
+                lastBlock->height = LAST_BLOCK;
+
+                EXPECT_CALL(*blocksDBMock, addBlocks(_)).Times(0);
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(0); // not discovered
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isFailure());
+                EXPECT_EQ(f.getValue().getValue().getFailure().getErrorCode(), api::ErrorCode::API_ERROR);
+            }
+
+            TEST_F(BlockSyncTest, LongBlockChain) {
+                SetUp(20, 20);
+                const uint32_t LAST_BLOCK = 3000000;
+                setupDBThatIsAllwaysHappy();
+                setupFakeKeychains();
+                std::vector<BL> bch;
+                for (uint32_t i = 1; i <= LAST_BLOCK; i += 500) {
+                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { boost::lexical_cast<std::string>((i/500)% 500), 10000 } } } } };
+                    bch.push_back(b);
+                }
+                setBlockchain(bch);
+                firstBlock->hash = bch[0].hash;
+                firstBlock->height = bch[0].height;
+                lastBlock->height = LAST_BLOCK;
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(AtLeast(1));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("499"))).Times(AtLeast(1));
+                EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("500"))).Times(0); // not discovered
+                auto f = synchronizer->synchronize(firstBlock, lastBlock);
+                context->wait();
+                ASSERT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
             }
         }
-        static std::function<bool(const Tran& l, const Tran& r)> blockLess = [](const Tran& l, const Tran& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
-        std::sort(_transactions.begin(), _transactions.end(), blockLess);
     }
-
-    void setTruncationLevel(uint32_t numberOfTransactionsAllowed) {
-        _numberOfTransactionsAllowed = numberOfTransactionsAllowed;
-    }
-
-    FuturePtr<TransactionBulk> getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session) {
-        uint32_t fromBlockHeight = 0;
-        if (fromBlockHash.hasValue())
-        {
-            auto it = _blockHashes.find(fromBlockHash.getValue());
-            if (it == _blockHashes.end()) {
-                return Future<std::shared_ptr<TransactionBulk>>::failure(Exception(api::ErrorCode::BLOCK_NOT_FOUND, "Very sorry"));
-            }
-            fromBlockHeight = it->second;
-        }
-        auto result = std::make_shared<TransactionBulk>();
-        for (auto& tr : _transactions) {
-            if (tr.block.getValue().height < fromBlockHeight)
-                continue;
-            if ()
-            result->first.push_back();
-        }
-        return FuturePtr<TransactionBulk>::successful(result);
-    }
-private:
-    std::vector<Tran> _transactions;
-    std::map<std::string, uint32_t> _blockHashes;
-    uint32_t _numberOfTransactionsAllowed
-};
-
-class FakeKeyChain : public Keychain<BitcoinLikeNetwork> {
-public:
-    FakeKeyChain(uint32_t alreadyUsed, uint32_t seed)
-        : _alreadyUsed(alreadyUsed)
-        , _seed(seed) {
-    };
-
-    uint32_t getNumberOfUsedAddresses() {
-        return _alreadyUsed;
-    }
-
-    std::vector<std::string> getAddresses(uint32_t startIndex, uint32_t count) {
-        std::vector<std::string> res;
-        for (int i = startIndex; i < startIndex + count; ++i) {
-            res.push_back(boost::lexical_cast<std::string>(i + _seed));
-        }
-        return res;
-    }
-
-    void markAsUsed(std::string& address) {
-        try {
-            auto addr = boost::lexical_cast<uint32_t>(address);
-            _alreadyUsed = std::max(_alreadyUsed, addr - _seed + 1);
-        }
-        catch (const boost::bad_lexical_cast &) {}; // ignore
-    }
-
-private:
-    uint32_t _alreadyUsed;
-    uint32_t _seed;
-};
-
-class ExplorerMock : public ExplorerV2<BitcoinLikeNetwork> {
-public:
-    MOCK_METHOD0(startSession, Future<void *>());
-    MOCK_METHOD1(killSession, Future<Unit>(void *session));
-    MOCK_METHOD3(getTransactions, FuturePtr<TransactionBulk>(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session));
-    MOCK_METHOD0(getCurrentBlock, FuturePtr<Block>());
-    MOCK_METHOD1(getRawTransaction, Future<Bytes>(const std::string& transactionHash));
-    MOCK_METHOD1(getTransactionByHash, FuturePtr<Transaction>(const std::string& transactionHash));
-    MOCK_METHOD1(pushTransaction, Future<std::string>(const std::vector<uint8_t>& transaction));
-    MOCK_METHOD0(getTimestamp, Future<int64_t>());
-};
-
-class KeychainMock : public Keychain<BitcoinLikeNetwork> {
-public:
-    MOCK_METHOD0(getNumberOfUsedAddresses, uint32_t());
-    MOCK_METHOD2(getAddresses, std::vector<std::string>(uint32_t startIndex, uint32_t count));
-    MOCK_METHOD1(markAsUsed, void(std::string& address));
-};
-
-class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork> {
-public:
-    MOCK_METHOD1(addBlocks, Future<Unit> (const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks));
-    MOCK_METHOD2(removeBlocks, Future<Unit>(int heightFrom, int heightTo));
-    MOCK_METHOD1(removeBlocksUpTo, Future<Unit>(int heightTo));
-    MOCK_METHOD2(getBlocks, FuturePtr<std::vector<FilledBlock>>(int heightFrom, int heightTo));
-    MOCK_METHOD0(getLastBlockHeader, FuturePtr<Block> ());
-};
-
-class BlockSyncTest : public ::testing::Test {
-public:
-    BlockSyncTest()
-        : receivedFake(0, 0) // receive addresses are 0,1,2... change are 100, 101...
-        , changeFake(0, 1000) { 
-        firstBlock = std::make_shared<BitcoinLikeNetwork::Block>();
-        lastBlock = std::make_shared<BitcoinLikeNetwork::Block>();
-        _explorerMock = std::make_shared<ExplorerMock>();
-        _keychainReceiveMock = std::make_shared<KeychainMock>();
-        _keychainChangeMock = std::make_shared<KeychainMock>();
-        _blocksDBMock = std::make_shared<BlocksDBMock>();
-        synchronizer = std::make_shared<common::BlocksSynchronizer<BitcoinLikeNetwork>>(
-            ImmediateExecutionContext::INSTANCE,
-            _explorerMock,
-            _keychainReceiveMock,
-            _keychainChangeMock,
-            _blocksDBMock,
-            1,
-            1);
-    }
-
-    void setupFakeKeychains() {
-        ON_CALL(*_keychainReceiveMock, getNumberOfUsedAddresses()).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::getNumberOfUsedAddresses));
-        ON_CALL(*_keychainReceiveMock, getAddresses(_, _)).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::getAddresses));
-        ON_CALL(*_keychainReceiveMock, markAsUsed(_)).WillByDefault(Invoke(&receivedFake, &FakeKeyChain::markAsUsed));
-    };
-
-    void setBlockchain(const std::vector<B>& blockChain) {
-        fakeExplorer.setBlockchain(blockChain);
-        ON_CALL(*_explorerMock, getTransactions(_, _, _)).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getTransactions));
-    }
-
-public:
-    std::shared_ptr<common::BlocksSynchronizer<BitcoinLikeNetwork>> synchronizer;
-    std::shared_ptr<BitcoinLikeNetwork::Block> firstBlock;
-    std::shared_ptr<BitcoinLikeNetwork::Block> lastBlock;
-    std::shared_ptr<ExplorerMock> _explorerMock;
-    std::shared_ptr<KeychainMock> _keychainReceiveMock;
-    std::shared_ptr<KeychainMock> _keychainChangeMock;
-    std::shared_ptr<BlocksDBMock> _blocksDBMock;
-    FakeKeyChain receivedFake;
-    FakeKeyChain changeFake;
-    FakeExplorer fakeExplorer;
-};
-
-TEST_F(BlockSyncTest, OneTransaction) {
-    setupFakeKeychains();
-    setBlockchain(
-    { 
-        B{0, "0 block hash",
-            {T{}
-            }}
-    });
-    synchronizer->synchronize(firstBlock, lastBlock);
 }

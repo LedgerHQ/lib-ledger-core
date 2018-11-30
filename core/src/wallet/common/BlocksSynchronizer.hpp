@@ -9,6 +9,7 @@
 #include <wallet/BlockchainDatabase.hpp>
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
+#include <wallet/common/InMemoryPartialBlocksDB.hpp>
 
 namespace ledger {
     namespace core {
@@ -22,20 +23,24 @@ namespace ledger {
 
                 class BlockSyncState {
                 public:
-                    BlockSyncState(uint32_t batchesToSync)
-                        : _batchesToSync(batchesToSync) {}
-
+                    BlockSyncState()
+                        : _wasFinished(false)
+                        , _batchesToSync(0){
+                    }
                     bool finishBatch() {
                         std::lock_guard<std::mutex> lock(_lock);
-                        if (isCompleted())
+                        if (_wasFinished)
                             return false;
                         _batchesToSync--;
-                        return isCompleted();
+                        bool res = isCompleted();
+                        if (res)
+                            _wasFinished = true;
+                        return res;
                     }
 
                     void addBatch() {
                         std::lock_guard<std::mutex> lock(_lock);
-                        if (isCompleted())
+                        if (_wasFinished)
                             return;
                         _batchesToSync++;
                     }
@@ -45,6 +50,7 @@ namespace ledger {
                     }
                     std::mutex _lock;
                     uint32_t _batchesToSync;
+                    bool _wasFinished;
                 };
 
                 class BlocksSyncState {
@@ -55,16 +61,16 @@ namespace ledger {
                     }
 
                     bool finishBatch(uint32_t blockHeight) {
-                        return _blocks[blockHeight - fromHeight]->finishBatch();
+                        return _blocks[blockHeight - fromHeight].finishBatch();
                     }
 
                     void addBatch(uint32_t from, uint32_t to) {
-                        for (uint32_t i = 0; i <= to - fromHeight; ++i)
-                            _blocks[i]->addBatch();
+                        for (uint32_t i = from - fromHeight; i <= to - fromHeight; ++i)
+                            _blocks[i].addBatch();
                     }
 
                 private:
-                    std::vector<std::shared_ptr<BlockSyncState>> _blocks;
+                    std::vector<BlockSyncState> _blocks;
                 private:
                     const uint32_t fromHeight;
                 };
@@ -86,14 +92,16 @@ namespace ledger {
                     const std::shared_ptr<Keychain<NetworkType>>& changeKeychain,
                     const std::shared_ptr<BlockchainDatabase<NetworkType>>& blocksDB,
                     uint32_t gapSize,
-                    uint32_t batchSize)
+                    uint32_t batchSize,
+                    uint32_t maxTransactionPerResponse)
                 : _executionContext(executionContext)
                 , _explorer(explorer)
                 , _receiveKeychain(receiveKeychain)
                 , _changeKeychain(changeKeychain)
                 , _blocksDB(blocksDB)
                 , _gapSize(gapSize)
-                , _batchSize(batchSize) {
+                , _batchSize(batchSize)
+                , _maxTransactionPerResponse(maxTransactionPerResponse) {
                 }
 
                 Future<Unit> synchronize(
@@ -133,7 +141,7 @@ namespace ledger {
                     uint32_t from,
                     uint32_t to) {
                     uint32_t numberOfAddresses = keychain->getNumberOfUsedAddresses();
-                    for (int i = 0; i < numberOfAddresses; i += _batchSize) {
+                    for (uint32_t i = 0; i < numberOfAddresses; i += _batchSize) {
                         auto batch = std::make_shared<Batch>();
                         auto count = std::min(_batchSize, numberOfAddresses - i);
                         batch->lastAddressIndex = i + count - 1;
@@ -143,7 +151,7 @@ namespace ledger {
                     // add gapped addresses
                     auto batch = std::make_shared<Batch>();
                     batch->addresses = keychain->getAddresses(numberOfAddresses, _gapSize);
-                    tasks.push_back(synchronizeBatch(state, db, batch, keychain, from, to, firstBlockHash, true));
+                    tasks.push_back(createBatchSyncTask(state, db, batch, keychain, from, to, firstBlockHash, true));
                 }
 
                 Future<Unit> finilizeBatch(
@@ -156,21 +164,22 @@ namespace ledger {
                     std::vector<FilledBlock> blocks;
                     for (int i = from; i <= to; ++i) {
                         if (state->finishBatch(i)) {
+                            auto trans = partialDB->getTransactions(i);
+                            if (trans.size() == 0)
+                                continue;
                             FilledBlock block;
                             block.first = Block();
                             block.first.height = i;
-                            auto trans = partialDB->getTransactions(i);
-                            if (trans.size() != 0) {
-                                block.first.hash = trans[0].block.getValue().hash;
-                                block.second = trans;
-                            }
-                            else {
-                                block.first.hash = "####";
-                            }
+                            block.first.hash = trans[0].block.getValue().hash;
+                            block.first.createdAt = trans[0].block.getValue().createdAt;
+                            block.second = trans;
                             blocks.push_back(block);
                             // try to not consume to much memory
                             partialDB->removeBlock(i);
                         }
+                    }
+                    if (blocks.size() == 0) {
+                        return Future<Unit>::successful(unit);
                     }
                     return _blocksDB->addBlocks(blocks);
                 }
@@ -199,15 +208,12 @@ namespace ledger {
                         }
                         uint32_t lastFullBlockHeight = to;
                         if (bulk->second) { //response truncated
-                            if (bulk->first.size() < 200) {
-                                return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, "Explorer returned truncated response with less then 200 operations"));
+                            if (bulk->first.size() < self->_maxTransactionPerResponse) {
+                                return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, fmt::format("Explorer returned truncated response with less then {} operations", self->_maxTransactionPerResponse)));
                             }
-                            if (highestBlock.height == from) {
-                                // trunsaction in the first block was truncated, need to increase the limit or decrease the batch
-                                // can't handle this case for now.
-                                return Future<Unit>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Too many transaction for the batch in one block. Try to decrease the batch size in configuration"));
+                            if (highestBlock.height != from) { // Explorer garanties us that we always get at least one full block
+                                lastFullBlockHeight = highestBlock.height - 1;
                             }
-                            lastFullBlockHeight = highestBlock.height - 1;
                         }
                         uint32_t limit = std::min(lastFullBlockHeight, to); // want only transactions from untruncated blocks
                         for (auto &tr : bulk->first) {
@@ -216,7 +222,6 @@ namespace ledger {
                             }
                         }
                         std::vector<Future<Unit>> tasksToContinueWith;
-                        tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
                         if (isGap) {
                             auto newBatch = std::make_shared<Batch>();
                             for (auto &tr : bulk->first) {
@@ -230,6 +235,7 @@ namespace ledger {
                             newBatch->lastAddressIndex = batch->lastAddressIndex + self->_batchSize;
                             tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, newBatch, keychain, lowestBlock.height, to, lowestBlock.hash, true));
                         }
+                        tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
                         tasksToContinueWith.push_back(self->finilizeBatch(state, partialDB, from, to));
                         return executeAll(self->_executionContext, tasksToContinueWith).map<Unit>(self->_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                     });
@@ -242,6 +248,7 @@ namespace ledger {
                 std::shared_ptr<BlockchainDatabase<NetworkType>> _blocksDB;
                 const uint32_t _gapSize;
                 const uint32_t _batchSize;
+                const uint32_t _maxTransactionPerResponse;
             };
         }
     }
