@@ -73,13 +73,16 @@ namespace ledger {
         EthereumLikeKeychainFactory::restore(int32_t index,
                                              const DerivationPath &path,
                                              const std::shared_ptr<DynamicObject>& configuration,
-                                             const std::string& address,
+                                             const std::string &databaseXpubEntry,
                                              const std::shared_ptr<Preferences>& accountPreferences,
                                              const api::Currency& currency) {
 
             return std::make_shared<EthereumLikeKeychain>(configuration,
                                                           currency, index,
-                                                          address,
+                                                          EthereumLikeExtendedPublicKey::fromBase58(
+                                                                  currency,
+                                                                  databaseXpubEntry, Option<std::string>(path.toString())
+                                                          ),
                                                           accountPreferences);
         }
     }
