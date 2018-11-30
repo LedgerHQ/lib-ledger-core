@@ -154,14 +154,13 @@ namespace ledger {
                     tasks.push_back(createBatchSyncTask(state, db, batch, keychain, from, to, firstBlockHash, true));
                 }
 
-                Future<Unit> finilizeBatch(
+                void finilizeBatch(
                     const std::shared_ptr<BlocksSyncState>& state,
                     const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
                     int from,
                     int to) {
                     if (to < from)
-                        return Future<Unit>::successful(unit);
-                    std::vector<FilledBlock> blocks;
+                        return ;
                     for (int i = from; i <= to; ++i) {
                         if (state->finishBatch(i)) {
                             auto trans = partialDB->getTransactions(i);
@@ -173,15 +172,11 @@ namespace ledger {
                             block.first.hash = trans[0].block.getValue().hash;
                             block.first.createdAt = trans[0].block.getValue().createdAt;
                             block.second = trans;
-                            blocks.push_back(block);
+                            _blocksDB->addBlock(block); // write to disk by default is async
                             // try to not consume to much memory
                             partialDB->removeBlock(i);
                         }
                     }
-                    if (blocks.size() == 0) {
-                        return Future<Unit>::successful(unit);
-                    }
-                    return _blocksDB->addBlocks(blocks);
                 }
 
                 Future<Unit> synchronizeBatch(
@@ -198,7 +193,8 @@ namespace ledger {
                         _explorer->getTransactions(batch->addresses, hashToStartRequestFrom)
                         .flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const std::shared_ptr<TransactionBulk>& bulk) {
                         if (bulk->first.size() == 0) {
-                            return self->finilizeBatch(state, partialDB, from, to);
+                            self->finilizeBatch(state, partialDB, from, to);
+                            return Future<Unit>::successful(unit);
                         }
                         static std::function<bool(const Transaction& l, const Transaction& r)> blockLess = [](const Transaction& l, const Transaction& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
                         Block highestBlock = std::max_element(bulk->first.begin(), bulk->first.end(), blockLess)->block.getValue();
@@ -236,7 +232,7 @@ namespace ledger {
                             tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, newBatch, keychain, lowestBlock.height, to, lowestBlock.hash, true));
                         }
                         tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
-                        tasksToContinueWith.push_back(self->finilizeBatch(state, partialDB, from, to));
+                        self->finilizeBatch(state, partialDB, from, to);
                         return executeAll(self->_executionContext, tasksToContinueWith).map<Unit>(self->_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                     });
                 }

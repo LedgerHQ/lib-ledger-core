@@ -50,8 +50,7 @@ namespace ledger {
             BitcoinLikeNetwork::Block toBlock(const BL& b);
             BitcoinLikeNetwork::Transaction toTran(const BL& b, const TR& tr);
             std::vector<BitcoinLikeNetwork::FilledBlock> toFilledBlocks(const std::vector<BL>& blocks);
-
-            bool blocksSame(const std::vector<BitcoinLikeNetwork::FilledBlock>& fbs, const std::vector<BL>& bs);
+            BitcoinLikeNetwork::FilledBlock toFilledBlock(const BL& block);
 
             class FakeExplorer {
             public:

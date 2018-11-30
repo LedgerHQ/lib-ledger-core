@@ -38,16 +38,20 @@ namespace ledger {
                 return tran;
             }
 
+            BitcoinLikeNetwork::FilledBlock toFilledBlock(const BL& block) {
+                BitcoinLikeNetwork::FilledBlock fb;
+                fb.first = toBlock(block);
+                std::vector<BitcoinLikeNetwork::Transaction> transactions;
+                for (auto& tr : block.transactions) {
+                    fb.second.push_back(toTran(block, tr));
+                }
+                return fb;
+            }
+
             std::vector<BitcoinLikeNetwork::FilledBlock> toFilledBlocks(const std::vector<BL>& blocks) {
                 std::vector<BitcoinLikeNetwork::FilledBlock> res;
                 for (auto& b : blocks) {
-                    BitcoinLikeNetwork::FilledBlock fb;
-                    fb.first = toBlock(b);
-                    std::vector<BitcoinLikeNetwork::Transaction> transactions;
-                    for (auto& tr : b.transactions) {
-                        fb.second.push_back(toTran(b, tr));
-                    }
-                    res.push_back(fb);
+                    res.push_back(toFilledBlock(b));
                 }
                 return res;
             }
@@ -141,40 +145,6 @@ namespace ledger {
                 }
                 catch (const boost::bad_lexical_cast &) {}; // ignore
             }
-
-            bool blocksSame(const std::vector<BitcoinLikeNetwork::FilledBlock>& fbs, const std::vector<BL>& bs) {
-                if (fbs.size() != bs.size())
-                    return false;
-                for (int i = 0; i < fbs.size(); ++i) {
-                    if (fbs[i].first.hash != bs[i].hash)
-                        return false;
-                    if (fbs[i].first.height != bs[i].height)
-                        return false;
-                    if (fbs[i].second.size() != bs[i].transactions.size())
-                        return false;
-                    for (int j = 0; j < bs[i].transactions.size(); ++j) {
-                        if (fbs[i].second[j].inputs.size() != bs[i].transactions[j].inputs.size())
-                            return false;
-                        if (fbs[i].second[j].outputs.size() != bs[i].transactions[j].outputs.size())
-                            return false;
-                        for (int k = 0; k < bs[i].transactions[j].inputs.size(); ++k) {
-                            if (!fbs[i].second[j].inputs[k].address.hasValue())
-                                return false;
-                            if (fbs[i].second[j].inputs[k].address.getValue() != bs[i].transactions[j].inputs[k])
-                                return false;
-                        }
-                        for (int k = 0; k < bs[i].transactions[j].outputs.size(); ++k) {
-                            if (!fbs[i].second[j].outputs[k].address.hasValue())
-                                return false;
-                            if (fbs[i].second[j].outputs[k].address.getValue() != bs[i].transactions[j].outputs[k].first)
-                                return false;
-                            if (!(fbs[i].second[j].outputs[k].value == BigInt(bs[i].transactions[j].outputs[k].second)))
-                                return false;
-                        }
-                    }
-                }
-                return true;
-            };
         }
     }
 }

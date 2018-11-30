@@ -56,14 +56,34 @@ namespace ledger {
                     ON_CALL(*explorerMock, getTransactions(_, _, _)).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getTransactions));
                 }
 
-                void setupDBThatIsAllwaysHappy() {
-                    ON_CALL(*blocksDBMock, addBlocks(_)).WillByDefault(Invoke([](const std::vector<BitcoinLikeNetwork::FilledBlock>& x) {return Future<Unit>::successful(unit); }));
+                bool equal(const BitcoinLikeNetwork::Transaction& tran, const TR& tr) {
+                    if ((tran.inputs.size() != tr.inputs.size()) ||
+                        (tran.outputs.size() != tr.outputs.size()))
+                        return false;
+                    for (int j = 0; j < tran.inputs.size(); ++j) {
+                        if (tran.inputs[j].address != tr.inputs[j])
+                            return false;
+                    }
+                    for (int j = 0; j < tran.outputs.size(); ++j) {
+                        if (tran.outputs[j].address != tr.outputs[j].first)
+                            return false;
+                    }
+                    return true;
                 }
 
-                std::function<bool(const std::vector<BitcoinLikeNetwork::FilledBlock>& x)> SameBlocks(const std::vector<BL>& bch) {
-                     return [bch](const std::vector<BitcoinLikeNetwork::FilledBlock>& x) { return blocksSame(x, bch); };
+                std::function<bool(const BitcoinLikeNetwork::FilledBlock& )> Same(const BL& left) {
+                     return [left](const BitcoinLikeNetwork::FilledBlock& right) 
+                     { 
+                         if ((left.hash != right.first.hash) ||
+                             (left.height != right.first.height) ||
+                             (left.transactions.size() != right.second.size()))
+                             return false;
+                         for (int i = 0; i < left.transactions.size(); ++i) {
+                             
+                         }
+                         return true;
+                     };
                 };
-
             public:
                 std::shared_ptr<common::BlocksSynchronizer<BitcoinLikeNetwork>> synchronizer;
                 std::shared_ptr<BitcoinLikeNetwork::Block> firstBlock;
@@ -80,7 +100,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, OneTransaction) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -90,7 +109,7 @@ namespace ledger {
                     }}
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
                 lastBlock->height = 10;
@@ -102,7 +121,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, TwoTransOneBlock) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -113,7 +131,7 @@ namespace ledger {
                     } }
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
                 lastBlock->height = 10;
@@ -125,7 +143,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, TwoBlocks) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -139,7 +156,11 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                {
+                    ::testing::Sequence s;
+                    EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
+                    EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1]))));
+                }
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
                 lastBlock->height = 10;
@@ -151,7 +172,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, OthersTransactionsIgnored) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -165,14 +185,8 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(
-                {
-                    BL{ 1, "block 1",
-                    {
-                        TR{ { "X" },{ { "0", 10000 } } },
-                    } }
-                }
-                ))));
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
                 lastBlock->height = 10;
@@ -184,7 +198,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, IgnoreTooNewBlocks) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -198,17 +211,12 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(
-                {
-                    BL{ 1, "block 1",
-                    {
-                        TR{ { "X" },{ { "0", 10000 } } },
-                    } }
-                }
-                ))));
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
                 lastBlock->height = 1; // limiting the max block heigh
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
+                
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -217,7 +225,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, OneBlockDiscovery) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -231,7 +238,7 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(bch))));
+                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
@@ -249,7 +256,6 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, SeveralBlocksDicovery) {
                 SetUp(1, 1);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch =
                 {
@@ -272,11 +278,11 @@ namespace ledger {
                 };
                 setBlockchain(bch);
                 // Write blocks to the disk as soon as possible to not lose it in case of error
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 1, "block 1",{ TR{ { "X" },{ { "0", 10000 } } } } } }))));
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 2, "block 2",{ TR{ { "X" },{ { "1", 10000 } } } } } }))));
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 3, "block 3",{ TR{ { "X" },{ { "2", 10000 } } } } } }))));
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks({ BL{ 4, "block 4",{ TR{ { "X" },{ { "3", 10000 } } } } } }))));
-
+                {
+                    ::testing::Sequence s;
+                    for (int i = 0; i < 4; ++i)
+                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[i]))));
+                }
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
@@ -294,18 +300,17 @@ namespace ledger {
             TEST_F(BlockSyncTest, CheckTruncated) {
                 SetUp(1, 1);
                 const uint32_t LAST_BLOCK = 300;
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch;
                 std::vector<BL> res1;
                 std::vector<BL> res2;
-                for (uint32_t i = 1; i <= 300; ++i) {
-                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
-                    bch.push_back(b);
-                    if (i < 200)
-                        res1.push_back(b);
-                    else
-                        res2.push_back(b);
+                {
+                    ::testing::Sequence s;
+                    for (uint32_t i = 1; i <= 300; ++i) {
+                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
+                        bch.push_back(b);
+                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(b))));
+                    }
                 }
                 setBlockchain(bch);
                 
@@ -313,8 +318,6 @@ namespace ledger {
                 firstBlock->height = 1;
                 lastBlock->height = LAST_BLOCK;
 
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(res1))));
-                EXPECT_CALL(*blocksDBMock, addBlocks(Truly(SameBlocks(res2))));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0"))).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1"))).Times(0); // not discovered
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
@@ -328,7 +331,6 @@ namespace ledger {
                 const uint32_t LAST_BLOCK = 300;
                 const uint32_t TRUNCATION_LEVEL = 100;
                 fakeExplorer.setTruncationLevel(TRUNCATION_LEVEL);
-                setupDBThatIsAllwaysHappy();
                 setupFakeKeychains();
                 std::vector<BL> bch;
                 for (uint32_t i = 1; i <= 300; ++i) {
@@ -351,13 +353,16 @@ namespace ledger {
 
             TEST_F(BlockSyncTest, LongBlockChain) {
                 SetUp(20, 20);
-                const uint32_t LAST_BLOCK = 3000000;
-                setupDBThatIsAllwaysHappy();
+                const uint32_t LAST_BLOCK = 300000;
                 setupFakeKeychains();
                 std::vector<BL> bch;
-                for (uint32_t i = 1; i <= LAST_BLOCK; i += 500) {
-                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { boost::lexical_cast<std::string>((i/500)% 500), 10000 } } } } };
-                    bch.push_back(b);
+                {
+                    ::testing::Sequence s;
+                    for (uint32_t i = 1; i <= LAST_BLOCK; i += 500) {
+                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { boost::lexical_cast<std::string>((i / 500) % 500), 10000 } } } } };
+                        bch.push_back(b);
+                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(b)))).Times(1);
+                    }
                 }
                 setBlockchain(bch);
                 firstBlock->hash = bch[0].hash;

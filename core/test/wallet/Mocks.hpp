@@ -28,10 +28,13 @@ namespace ledger {
 
             class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork> {
             public:
-                MOCK_METHOD1(addBlocks, Future<Unit>(const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks));
-                MOCK_METHOD2(removeBlocks, Future<Unit>(int heightFrom, int heightTo));
-                MOCK_METHOD1(removeBlocksUpTo, Future<Unit>(int heightTo));
-                MOCK_METHOD2(getBlocks, FuturePtr<std::vector<FilledBlock>>(int heightFrom, int heightTo));
+                MOCK_METHOD1(addBlocks, void(const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks));
+                MOCK_METHOD1(addBlock, void(const BitcoinLikeNetwork::FilledBlock& blocks));
+                MOCK_METHOD2(removeBlocks, void(int heightFrom, int heightTo));
+                MOCK_METHOD1(removeBlocksUpTo, void(int heightTo));
+                MOCK_METHOD0(CleanAll, void());
+                MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(int heightFrom, int heightTo));
+                MOCK_METHOD1(getBlock, FuturePtr<FilledBlock>(int height));
                 MOCK_METHOD0(getLastBlockHeader, FuturePtr<Block>());
             };
         }
