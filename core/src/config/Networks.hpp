@@ -31,8 +31,9 @@
 #ifndef LEDGER_CORE_NETWORKS_HPP
 #define LEDGER_CORE_NETWORKS_HPP
 
-#include "../api/BitcoinLikeNetworkParameters.hpp"
-#include "../api/Networks.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/EthereumLikeNetworkParameters.hpp>
+#include <api/Networks.hpp>
 
 
 #endif //LEDGER_CORE_NETWORKS_HPP
