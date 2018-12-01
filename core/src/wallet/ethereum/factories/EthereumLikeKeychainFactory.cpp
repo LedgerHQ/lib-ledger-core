@@ -62,8 +62,6 @@ namespace ledger {
                     return keychain;
                 }
 
-                //return std::make_shared<EthereumLikeKeychain>(configuration, currency, index,
-                //                                              info.extendedKeys[info.extendedKeys.size() - 1], accountPreferences);
             } else {
                 throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString());
             }

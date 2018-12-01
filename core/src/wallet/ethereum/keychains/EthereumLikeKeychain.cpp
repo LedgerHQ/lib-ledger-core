@@ -61,22 +61,7 @@ namespace ledger {
                 : EthereumLikeKeychain(configuration, params, account, preferences) {
 
             _xpub = xpub;
-
-            // Try to restore the state from preferences
-            auto state = preferences->getData("state", {});
-            if (!state.empty()) {
-                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&state[0]), state.size());
-                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                ::cereal::BinaryInputArchive archive(is);
-                archive(_state);
-            } else {
-                _state.maxConsecutiveIndex = 0;
-                _state.empty = true;
-            }
-            _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
-
-            getAllObservableAddresses(0, _observableRange);
-
+            getAllObservableAddresses(0,0);
         }
 
         EthereumLikeKeychain::EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
@@ -84,9 +69,8 @@ namespace ledger {
                                                    int account,
                                                    const std::string &accountAddress,
                                                    const std::shared_ptr<Preferences>& preferences)
-                : EthereumLikeKeychain(configuration, params, account, preferences) {
-            _accountAddress = accountAddress;
-        }
+                : EthereumLikeKeychain(configuration, params, account, preferences)
+        {}
         
         int EthereumLikeKeychain::getAccountIndex() const {
             return _account;
@@ -121,32 +105,15 @@ namespace ledger {
             return _fullScheme;
         }
 
-        EthereumLikeKeychain::Address EthereumLikeKeychain::getFreshAddress() {
-            return derive(_state.maxConsecutiveIndex);
-            //return derive(0);
-        }
 
-        bool EthereumLikeKeychain::isEmpty() const {
-            return _state.empty;
-        }
-
-        std::vector<EthereumLikeKeychain::Address>
-        EthereumLikeKeychain::getFreshAddresses(size_t n) {
-
-            auto startOffset = _state.maxConsecutiveIndex;
-            std::vector<EthereumLikeKeychain::Address> result(n);
-            for (auto i = 0; i < n; i++) {
-                result[i] = derive(startOffset + i);
+        std::shared_ptr<EthereumLikeAddress> EthereumLikeKeychain::getAddress() const {
+            if (_address.empty()) {
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Address not derived yet from keychain"));
             }
-
-            //std::vector<EthereumLikeKeychain::Address> result;
-            //result.push_back(derive(0));
-            return result;
+            return std::dynamic_pointer_cast<EthereumLikeAddress>(EthereumLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath)));
         }
-
 
         Option<std::string> EthereumLikeKeychain::getAddressDerivationPath(const std::string &address) const {
-
             auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
             if (path.empty()) {
                 return Option<std::string>();
@@ -154,38 +121,15 @@ namespace ledger {
                 auto derivation = DerivationPath(getExtendedPublicKey()->getRootPath()) + DerivationPath(path);
                 return Option<std::string>(derivation.toString());
             }
-
-            return Option<std::string>(_localPath);
         }
-
 
         std::vector<EthereumLikeKeychain::Address>
         EthereumLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            auto maxObservableIndex = _state.maxConsecutiveIndex + _state.nonConsecutiveIndexes.size() + _observableRange;
-            auto length = std::min<size_t >(to - from, maxObservableIndex - from);
             std::vector<EthereumLikeKeychain::Address> result;
-            for (auto i = 0; i <= length; i++) {
-                result.push_back(derive(from + i));
-            }
-
-            //std::vector<EthereumLikeKeychain::Address> result;
-            //result.push_back(derive(0));
+            result.push_back(derive());
             return result;
         }
 
-        void EthereumLikeKeychain::saveState() {
-
-            while (_state.nonConsecutiveIndexes.find(_state.maxConsecutiveIndex) != _state.nonConsecutiveIndexes.end()) {
-                _state.nonConsecutiveIndexes.erase(_state.maxConsecutiveIndex);
-                _state.maxConsecutiveIndex += 1;
-            }
-
-            std::stringstream is;
-            ::cereal::BinaryOutputArchive archive(is);
-            archive(_state);
-            auto savedState = is.str();
-            getPreferences()->edit()->putData("state", std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size()))->commit();
-        }
 
         std::shared_ptr<api::EthereumLikeExtendedPublicKey> EthereumLikeKeychain::getExtendedPublicKey() const {
             return _xpub;
@@ -193,16 +137,11 @@ namespace ledger {
 
         std::string EthereumLikeKeychain::getRestoreKey() const {
             return _xpub->toBase58();
-            //return _accountAddress;
         }
 
-        int32_t EthereumLikeKeychain::getObservableRangeSize() const {
-            return _observableRange;
-        }
 
         bool EthereumLikeKeychain::contains(const std::string &address) const {
             return getAddressDerivationPath(address).nonEmpty();
-            //return address == _accountAddress;
         }
 
         int32_t EthereumLikeKeychain::getOutputSizeAsSignedTxInput() const {
@@ -215,41 +154,40 @@ namespace ledger {
                 Option<std::vector<uint8_t>>();
             }
             return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
-
-            //throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeKeychain::getPublicKey no concept of public key for EthereumLikeAccounts");
         }
 
-        EthereumLikeKeychain::Address EthereumLikeKeychain::derive(off_t index) {
+        EthereumLikeKeychain::Address EthereumLikeKeychain::derive() {
 
-            auto localPath = getDerivationScheme()
-                    .setAccountIndex(getAccountIndex())
-                    .setCoinType(getCurrency().bip44CoinType)
-                    .setNode(0)
-                    .setAddressIndex((int) index).getPath().toString();
-
-            auto cacheKey = fmt::format("path:{}", localPath);
-            auto address = getPreferences()->getString(cacheKey, "");
-            if (address.empty()) {
-                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+            if (_address.empty()) {
+                _localPath = getDerivationScheme()
                         .setAccountIndex(getAccountIndex())
                         .setCoinType(getCurrency().bip44CoinType)
                         .setNode(0)
-                        .setAddressIndex((int) index).getPath().toString();
-                auto xpub = _xpub;
-                address = xpub->derive(p)->toEIP55();
-                // Feed path -> address cache
-                // Feed address -> path cache
-                getPreferences()
-                        ->edit()
-                        ->putString(cacheKey, address)
-                        ->putString(fmt::format("address:{}", address), localPath)
-                        ->commit();
+                        .setAddressIndex(0).getPath().toString();
+
+                auto cacheKey = fmt::format("path:{}", _localPath);
+                _address = getPreferences()->getString(cacheKey, "");
+                if (_address.empty()) {
+                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                            .setAccountIndex(getAccountIndex())
+                            .setCoinType(getCurrency().bip44CoinType)
+                            .setNode(0)
+                            .setAddressIndex(0).getPath().toString();
+                    auto xpub = _xpub;
+                    _address = xpub->derive(p)->toEIP55();
+                    // Feed path -> address cache
+                    // Feed address -> path cache
+                    getPreferences()
+                            ->edit()
+                            ->putString(cacheKey, _address)
+                            ->putString(fmt::format("address:{}", _address), _localPath)
+                            ->commit();
+                }
             }
 
-
-            auto ethAddress = EthereumLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath));
+            auto ethAddress = EthereumLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath));
             if (!ethAddress) {
-                throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Could not derive address of index : {}", index));
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Could not derive address");
             }
             return std::dynamic_pointer_cast<EthereumLikeAddress>(ethAddress);
         }

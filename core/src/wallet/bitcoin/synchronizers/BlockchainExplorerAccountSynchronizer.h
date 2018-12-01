@@ -45,7 +45,7 @@ namespace ledger {
         class BitcoinLikeAccount;
 
         using BlockchainAccountSynchronizer = AbstractBlockchainExplorerAccountSynchronizer<BitcoinLikeAccount, BitcoinLikeAddress, BitcoinLikeKeychain, BitcoinLikeBlockchainExplorer>;
-        class BlockchainExplorerAccountSynchronizer final : public BitcoinLikeAccountSynchronizer,
+        class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer,
                                                             public BlockchainAccountSynchronizer,
                                                             public DedicatedContext,
                                                             public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {

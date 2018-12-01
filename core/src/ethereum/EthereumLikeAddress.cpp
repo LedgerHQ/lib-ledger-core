@@ -88,7 +88,8 @@ namespace ledger {
             //Remove 0x
             auto tmpAddress = address.substr(2, address.length() - 2);
             auto keccack256 = hex::toByteArray(tmpAddress);
-            if (address != Base58::encodeWithEIP55(keccack256)) {
+            //if (address != Base58::encodeWithEIP55(keccack256)) {
+            if (tmpAddress.size() != 40) {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
             return std::make_shared<ledger::core::EthereumLikeAddress>(currency, keccack256, derivationPath);

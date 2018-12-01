@@ -47,23 +47,6 @@
 namespace ledger {
     namespace core {
 
-        struct EthKeychainPersistentState {
-            uint32_t maxConsecutiveIndex;
-            std::set<uint32_t> nonConsecutiveIndexes;
-            bool empty;
-
-            template <class Archive>
-            void serialize(Archive& archive, std::uint32_t const version) {
-                if (version == 0) {
-                    archive(
-                            maxConsecutiveIndex,
-                            nonConsecutiveIndexes,
-                            empty
-                    );
-                }
-            }
-        };
-
         class EthereumLikeKeychain {
 
         public:
@@ -86,16 +69,10 @@ namespace ledger {
                                  int account,
                                  const std::string &accountAddress,
                                  const std::shared_ptr<Preferences>& preferences);
-
             std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
-
-            Address getFreshAddress();
-            std::vector<Address> getFreshAddresses(size_t n);
-
-            Option<std::string> getAddressDerivationPath(const std::string& address) const ;
+            Address getAddress() const;
+            Option<std::string> getAddressDerivationPath(const std::string &address) const ;
             std::shared_ptr<api::EthereumLikeExtendedPublicKey> getExtendedPublicKey() const;
-            //Option<std::string> getHash160DerivationPath(const std::vector<uint8_t>& hash160) const ;
-            bool isEmpty() const ;
 
             int getAccountIndex() const;
             const api::EthereumLikeNetworkParameters& getNetworkParameters() const;
@@ -109,7 +86,6 @@ namespace ledger {
             const DerivationScheme& getFullDerivationScheme() const;
 
             std::string getRestoreKey() const ;
-            int32_t getObservableRangeSize() const ;
             bool contains(const std::string& address) const ;
             int32_t getOutputSizeAsSignedTxInput() const ;
         protected:
@@ -117,19 +93,16 @@ namespace ledger {
             DerivationScheme& getDerivationScheme();
 
         private:
-            EthereumLikeKeychain::Address derive(off_t index);
+            EthereumLikeKeychain::Address derive();
             const api::Currency _currency;
             DerivationScheme _scheme;
             DerivationScheme _fullScheme;
             int _account;
             std::shared_ptr<Preferences> _preferences;
             std::shared_ptr<api::DynamicObject> _configuration;
-            void saveState();
-            EthKeychainPersistentState _state;
             std::shared_ptr<api::EthereumLikeExtendedPublicKey> _xpub;
-            uint32_t _observableRange;
-            std::string _accountAddress;
             std::string _localPath;
+            std::string _address;
         };
     }
 }
