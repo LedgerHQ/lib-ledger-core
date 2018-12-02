@@ -11,9 +11,9 @@
 
 namespace ledger { namespace core { namespace api {
 
-class Amount;
 class BigInt;
 class ERC20LikeOperation;
+class OperationQuery;
 struct ERC20Token;
 
 /**ERC20-like accounts class */
@@ -29,7 +29,9 @@ public:
 
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;
 
-    virtual std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<Amount> & amount, const std::string & address) = 0;
+    virtual std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<BigInt> & amount, const std::string & address) = 0;
+
+    virtual std::shared_ptr<OperationQuery> queryOperations() = 0;
 };
 
 } } }  // namespace ledger::core::api

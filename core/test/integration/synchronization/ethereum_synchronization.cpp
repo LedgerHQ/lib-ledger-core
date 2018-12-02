@@ -96,9 +96,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
             dispatcher->waitUntilStopped();
 
-            //auto opQuery = account->queryOperations()->complete();
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-            //auto ops = ::wait(std::dynamic_pointer_cast<OperationQuery>(opQuery)->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
 
             auto block = wait(account->getLastBlock());
@@ -113,11 +111,9 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        //http://eth01.explorer.theory.rbx.ledger.fr:8104
-        //http://eth01.explorer.theory.rbx.ledger.fr:21000
-        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://18.202.239.45:20000");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.prod.aws.ledger.fr");
+        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());

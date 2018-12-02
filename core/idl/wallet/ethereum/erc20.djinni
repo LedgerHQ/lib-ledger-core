@@ -16,7 +16,8 @@ ERC20LikeAccount = interface +c {
 	getAddress(): string;
 	getBalance(): BigInt;
 	getOperations(): list<ERC20LikeOperation>;
-	getTransferToAddressData(amount: Amount, address: string): binary;
+	getTransferToAddressData(amount: BigInt, address: string): binary;
+	queryOperations(): OperationQuery;
 }
 
 #Class representing a Ethereum transaction
@@ -24,24 +25,26 @@ ERC20LikeOperation = interface +c {
 	# Get the hash of the transaction.
 	getHash(): string;
 	# Get the nonce of the transaction : sequence number issued by originating EOA
-	getNonce(): i32;
+	getNonce(): BigInt;
 	# Get Gas price (in wei)
-	getGasPrice(): Amount;
+	getGasPrice(): BigInt;
 	# Get start gas (in wei) : maximum amount of gas the originator is willing to pay
-	getGasLimit(): Amount;
+	getGasLimit(): BigInt;
 	# Used gas (in wei) : used gas during this transaction
-	getUsedGas(): Amount;
+	getUsedGas(): BigInt;
 	# Get source ETH address
 	getSender(): string;
 	# Get destination ETH address
 	getReceiver(): string;
 	# Get amount of ether to send
-	getValue(): Amount;
+	getValue(): BigInt;
 	# Get binary data payload
 	getData(): binary;
 	# Get the time when the transaction was issued or the time of the block including
 	# this transaction
 	getTime(): date;
+	# Get operation type : whether it is a SEND or RECEIVE
 	getOperationType(): OperationType;
+	# Get opration status : pending or confirmed
 	getStatus(): i32;
 }

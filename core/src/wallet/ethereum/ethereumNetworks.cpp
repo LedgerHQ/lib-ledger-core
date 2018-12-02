@@ -41,17 +41,19 @@ namespace ledger {
                             "eth",
                             "Ethereum signed message:\n",
                             {0x01},
-                            {0x04, 0x88, 0xb2, 0x1e},
+                            {0x04, 0x88, 0xB2, 0x1E},
                             {},
                             0
                     );
                     return ETHEREUM;
                 } else if (networkName == "ethereum_ropsten") {
+                    //024289ef
+                    //043587cf
                     static const api::EthereumLikeNetworkParameters ETHEREUM_ROPSTEN(
                             "eth_ropsten",
                             "Ethereum signed message:\n",
                             {0x03},
-                            {0x04, 0x88, 0xb2, 0x1e},
+                            {0x04, 0x35, 0x87, 0xCF},
                             {},
                             0
                     );

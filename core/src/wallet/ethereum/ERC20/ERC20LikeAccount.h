@@ -37,28 +37,34 @@
 #include <api/ERC20LikeOperation.hpp>
 #include <api/BigInt.hpp>
 #include <api/Currency.hpp>
-
+#include <api/OperationQuery.hpp>
+#include <wallet/ethereum/EthereumLikeWallet.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
 namespace ledger {
     namespace core {
         class ERC20LikeAccount : public api::ERC20LikeAccount {
 
         public:
-            ERC20LikeAccount(const api::ERC20Token &erc20Token,
+            ERC20LikeAccount(const std::string &accountUid,
+                             const api::ERC20Token &erc20Token,
                              const std::string &accountAddress,
-                            const api::Currency &parentCurrency);
+                             const api::Currency &parentCurrency,
+                             const std::shared_ptr<EthereumLikeAccount> &parentAccount);
             api::ERC20Token getToken() override ;
             std::string getAddress() override ;
             std::shared_ptr<api::BigInt> getBalance() override ;
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> getOperations() override ;
-            std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::Amount> & amount,
+            std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                           const std::string & address) override ;
+            std::shared_ptr<api::OperationQuery> queryOperations() override ;
             void putOperation(const std::shared_ptr<api::ERC20LikeOperation> &operation);
-
         private:
             api::ERC20Token _token;
             std::string _accountAddress;
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> _operations;
             api::Currency _parentCurrency;
+            std::string _accountUid;
+            std::weak_ptr<EthereumLikeAccount> _account;
         };
     }
 }

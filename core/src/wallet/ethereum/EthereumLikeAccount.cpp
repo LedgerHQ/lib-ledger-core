@@ -30,6 +30,7 @@
 
 
 #include "EthereumLikeAccount.h"
+#include "EthereumLikeWallet.h"
 #include <api/ERC20Token.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
@@ -186,7 +187,11 @@ namespace ledger {
 
                 //Create a new account
                 if (needNewAccount) {
-                    auto newAccount = std::make_shared<ERC20LikeAccount>(erc20Token, accountAddress, getWallet()->getCurrency());
+                    auto newAccount = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
+                                                                         erc20Token,
+                                                                         accountAddress,
+                                                                         getWallet()->getCurrency(),
+                                                                         std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
                     newAccount->putOperation(erc20Operation);
                     _erc20LikeAccounts.push_back(newAccount);
                     //Persist erc20 account

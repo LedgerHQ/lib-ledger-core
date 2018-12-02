@@ -32,6 +32,7 @@
 #include "BlockDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
 #include <api/Amount.hpp>
+#include <api/BigInt.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
@@ -103,30 +104,31 @@ namespace ledger {
             auto count = 0;
             sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", use(operation->getOperationUid()), into(count);
             auto newOperation = count == 0;
-            if (newOperation)
-                auto type = api::to_string(operation->getOperationType());
+            if (newOperation) {
+                auto operationType = api::to_string(operation->getOperationType());
                 auto inputData = hex::toString(operation->getData());
                 auto erc20OperationUid = operation->getOperationUid();
                 auto hash = operation->getHash();
-                auto nonce = operation->getNonce();
+                auto nonce = operation->getNonce()->toString(10);
                 auto sender = operation->getSender();
                 auto receiver = operation->getReceiver();
-                auto value = BigInt(operation->getValue()->toString());
-                auto gasPrice = BigInt(operation->getGasPrice()->toString());
-                auto gasLimit = BigInt(operation->getGasLimit()->toString());
-                auto gasUsed = BigInt(operation->getUsedGas()->toString());
+                auto value = BigInt(operation->getValue()->toString(10));
+                auto gasPrice = BigInt(operation->getGasPrice()->toString(10));
+                auto gasLimit = BigInt(operation->getGasLimit()->toString(10));
+                auto gasUsed = BigInt(operation->getUsedGas()->toString(10));
                 sql << "INSERT INTO erc20_operations VALUES("
-                        ":erc20_op_uid, :eth_op_uid, :erc20_account_uid, :hash,"
-                        ":nonce, :value, :time,"
-                        ":sender, :receiver, :input_data,"
-                        ":gas_price, :gas_limit, :gas_used,"
+                        ":erc20_op_uid, :eth_op_uid, :erc20_account_uid, :type, "
+                        ":hash, :nonce, :value, :date, "
+                        ":sender, :receiver, :input_data, "
+                        ":gas_price, :gas_limit, :gas_used, "
                         ":status"
                         ")"
-                        , use(erc20OperationUid), use(ethOperationUid), use(erc20AccountUid), use(hash)
-                        , use(nonce), use(value.toHexString()), use(operation->getTime())
+                        , use(erc20OperationUid), use(ethOperationUid), use(erc20AccountUid), use(operationType)
+                        , use(hash), use(nonce), use(value.toHexString()), use(operation->getTime())
                         , use(sender), use(receiver), use(inputData)
                         , use(gasPrice.toHexString()), use(gasLimit.toHexString()), use(gasUsed.toHexString())
                         , use(operation->getStatus());
+            }
                 return true;
         }
 
