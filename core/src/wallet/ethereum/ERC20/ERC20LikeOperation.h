@@ -39,7 +39,6 @@
 namespace ledger {
     namespace core {
 
-        //, public std::enable_shared_from_this<ERC20LikeOperation>
         class ERC20LikeOperation : public api::ERC20LikeOperation {
         public:
             ERC20LikeOperation(const std::string &accountAddress,
@@ -47,14 +46,17 @@ namespace ledger {
                                const Operation &operation,
                                const api::ERC20Token &token,
                                const api::Currency &currency);
+
+            ERC20LikeOperation() {};
+            
             std::string getHash() override;
-            int32_t getNonce() override;
-            std::shared_ptr<api::Amount> getGasPrice() override;
-            std::shared_ptr<api::Amount> getGasLimit() override;
-            std::shared_ptr<api::Amount> getUsedGas() override;
+            std::shared_ptr<api::BigInt> getNonce() override;
+            std::shared_ptr<api::BigInt> getGasPrice() override;
+            std::shared_ptr<api::BigInt> getGasLimit() override;
+            std::shared_ptr<api::BigInt> getUsedGas() override;
             std::string getSender() override;
             std::string getReceiver() override;
-            std::shared_ptr<api::Amount> getValue() override ;
+            std::shared_ptr<api::BigInt> getValue() override ;
             std::vector<uint8_t> getData() override ;
             std::chrono::system_clock::time_point getTime() override;
             api::OperationType getOperationType() override;
@@ -64,13 +66,13 @@ namespace ledger {
             api::ERC20Token _token;
             std::string _uid;
             std::string _hash;
-            std::shared_ptr<BigInt> _nonce;
-            std::shared_ptr<api::Amount> _gasPrice;
-            std::shared_ptr<api::Amount> _gasLimit;
-            std::shared_ptr<api::Amount> _gasUsed;
+            std::shared_ptr<api::BigInt> _nonce;
+            std::shared_ptr<api::BigInt> _gasPrice;
+            std::shared_ptr<api::BigInt> _gasLimit;
+            std::shared_ptr<api::BigInt> _gasUsed;
             std::string _sender;
             std::string _receiver;
-            std::shared_ptr<api::Amount> _value;
+            std::shared_ptr<api::BigInt> _value;
             std::vector<uint8_t> _data;
             std::chrono::system_clock::time_point _time;
             api::OperationType _operationType;

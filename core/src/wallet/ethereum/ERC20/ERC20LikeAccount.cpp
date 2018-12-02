@@ -39,16 +39,25 @@
 #include <math/BigInt.h>
 #include <api/Address.hpp>
 #include "erc20Tokens.h"
+#include <wallet/common/OperationQuery.h>
+#include <soci.h>
+
+using namespace soci;
+
 namespace ledger {
     namespace core {
-        ERC20LikeAccount::ERC20LikeAccount(const api::ERC20Token &erc20Token,
+        ERC20LikeAccount::ERC20LikeAccount(const std::string &accountUid,
+                                           const api::ERC20Token &erc20Token,
                                            const std::string &accountAddress,
-                                           const api::Currency &parentCurrency):
+                                           const api::Currency &parentCurrency,
+                                           const std::shared_ptr<EthereumLikeAccount> &parentAccount):
+                                            _accountUid(accountUid),
                                             _token(erc20Token),
                                             _accountAddress(accountAddress),
-                                            _parentCurrency(parentCurrency) {
+                                            _parentCurrency(parentCurrency),
+                                            _account(parentAccount)
 
-        }
+        {}
 
         api::ERC20Token ERC20LikeAccount::getToken() {
             return _token;
@@ -62,9 +71,9 @@ namespace ledger {
             auto result = BigInt::ZERO;
             for (auto &op : _operations) {
                 if (op->getOperationType() == api::OperationType::RECEIVE) {
-                    result = result + BigInt(op->getValue()->toString());
+                    result = result + BigInt(op->getValue()->toString(10));
                 } else if (op->getOperationType() == api::OperationType::SEND){
-                    result = result - BigInt(op->getValue()->toString());
+                    result = result - BigInt(op->getValue()->toString(10));
                 }
 
             }
@@ -76,13 +85,13 @@ namespace ledger {
             return _operations;
         }
 
-        std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::Amount> & amount,
+        std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                                         const std::string & address) {
             if (! api::Address::isValid(address, _parentCurrency)) {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
 
-            if (getBalance() < amount->toBigInt()) {
+            if (getBalance() < amount) {
                 throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
@@ -104,7 +113,7 @@ namespace ledger {
             writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
 
             BigInt nbOfDecimal(_token.numberOfDecimal);
-            BigInt bigAmount(amount->toString());
+            BigInt bigAmount(amount->toString(10));
             BigInt finalAmount = nbOfDecimal * bigAmount;
             writer.writeByteArray(hex::toByteArray(toUint256Format(finalAmount.toHexString())));
 
@@ -115,6 +124,20 @@ namespace ledger {
             _operations.push_back(operation);
         }
 
+        std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
+            auto localAccount = _account.lock();
+            auto query = std::dynamic_pointer_cast<AbstractAccount>(localAccount)->queryOperations();
+            auto queryImpl = std::dynamic_pointer_cast<OperationQuery>(query);
+            if (queryImpl) {
+                auto resultFilter = [] (soci::session &sql, const soci::row &row) -> bool {
+                    auto count = 0;
+                    sql << "SELECT COUNT(*) FROM erc20_operations WHERE ethereum_operation_uid = :uid", use(row.get<std::string>(1)), into(count);
+                    return count > 0;
+                };
+                queryImpl->setResultFilter(resultFilter);
+            }
+            return query;
+        }
 
     }
 }

@@ -34,6 +34,7 @@
 #include <src/wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <src/ethereum/EthereumLikeExtendedPublicKey.h>
 #include <src/ethereum/EthereumLikeAddress.h>
+#include <src/utils/optional.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
 #include <iostream>

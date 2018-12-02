@@ -12,7 +12,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-class Amount;
+class BigInt;
 enum class OperationType;
 
 /**Class representing a Ethereum transaction */
@@ -24,16 +24,16 @@ public:
     virtual std::string getHash() = 0;
 
     /** Get the nonce of the transaction : sequence number issued by originating EOA */
-    virtual int32_t getNonce() = 0;
+    virtual std::shared_ptr<BigInt> getNonce() = 0;
 
     /** Get Gas price (in wei) */
-    virtual std::shared_ptr<Amount> getGasPrice() = 0;
+    virtual std::shared_ptr<BigInt> getGasPrice() = 0;
 
     /** Get start gas (in wei) : maximum amount of gas the originator is willing to pay */
-    virtual std::shared_ptr<Amount> getGasLimit() = 0;
+    virtual std::shared_ptr<BigInt> getGasLimit() = 0;
 
     /** Used gas (in wei) : used gas during this transaction */
-    virtual std::shared_ptr<Amount> getUsedGas() = 0;
+    virtual std::shared_ptr<BigInt> getUsedGas() = 0;
 
     /** Get source ETH address */
     virtual std::string getSender() = 0;
@@ -42,7 +42,7 @@ public:
     virtual std::string getReceiver() = 0;
 
     /** Get amount of ether to send */
-    virtual std::shared_ptr<Amount> getValue() = 0;
+    virtual std::shared_ptr<BigInt> getValue() = 0;
 
     /** Get binary data payload */
     virtual std::vector<uint8_t> getData() = 0;
@@ -53,8 +53,10 @@ public:
      */
     virtual std::chrono::system_clock::time_point getTime() = 0;
 
+    /** Get operation type : whether it is a SEND or RECEIVE */
     virtual OperationType getOperationType() = 0;
 
+    /** Get opration status : pending or confirmed */
     virtual int32_t getStatus() = 0;
 };
 

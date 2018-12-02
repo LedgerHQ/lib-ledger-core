@@ -33,7 +33,7 @@
 #include <wallet/common/Amount.h>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <ethereum/EthereumLikeAddress.h>
-
+#include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
@@ -47,10 +47,10 @@ namespace ledger {
                 _token = token;
                 _uid = operationUid;
                 _hash = tx.hash;
-                _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
-                _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
-                _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasLimit);
-                _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());
+                _nonce = std::make_shared<api::BigIntImpl>(BigInt((int64_t)tx.nonce));
+                _gasPrice = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasPrice));
+                _gasLimit = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasLimit));
+                _gasUsed = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasUsed.getValue()));
                 _status = tx.status;
                 auto operationType = operation.type;
                 if ( operationType == api::OperationType::SEND) {
@@ -61,7 +61,7 @@ namespace ledger {
                     _sender = tx.sender;
                 }
 
-                _value = std::make_shared<Amount>(currency, 0, tx.erc20.getValue().value);
+                _value = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.erc20.getValue().value));
                 _data = tx.inputData;
                 _time = tx.receivedAt;
                 _operationType = operationType;
@@ -71,19 +71,19 @@ namespace ledger {
                 return _hash;
             }
 
-            int32_t ERC20LikeOperation::getNonce() {
-                return _nonce->toInt();
+            std::shared_ptr<api::BigInt> ERC20LikeOperation::getNonce() {
+                return _nonce;
             }
 
-            std::shared_ptr<api::Amount> ERC20LikeOperation::getGasPrice() {
+            std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasPrice() {
                 return _gasPrice;
             }
 
-            std::shared_ptr<api::Amount> ERC20LikeOperation::getGasLimit() {
+            std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasLimit() {
                 return _gasLimit;
             }
 
-            std::shared_ptr<api::Amount> ERC20LikeOperation::getUsedGas() {
+            std::shared_ptr<api::BigInt> ERC20LikeOperation::getUsedGas() {
                 return _gasUsed;
             }
 
@@ -95,7 +95,7 @@ namespace ledger {
                 return _receiver;
             }
 
-            std::shared_ptr<api::Amount> ERC20LikeOperation::getValue() {
+            std::shared_ptr<api::BigInt> ERC20LikeOperation::getValue() {
                 return _value;
             }
 
