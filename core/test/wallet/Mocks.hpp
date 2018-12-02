@@ -19,7 +19,7 @@ namespace ledger {
                 MOCK_METHOD0(getTimestamp, Future<int64_t>());
             };
 
-            class KeychainMock : public Keychain<BitcoinLikeNetwork> {
+            class KeychainMock : public Keychain {
             public:
                 MOCK_METHOD0(getNumberOfUsedAddresses, uint32_t());
                 MOCK_METHOD2(getAddresses, std::vector<std::string>(uint32_t startIndex, uint32_t count));

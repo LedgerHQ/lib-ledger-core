@@ -88,8 +88,8 @@ namespace ledger {
                 BlocksSynchronizer(
                     const std::shared_ptr<api::ExecutionContext> executionContext,
                     const std::shared_ptr<Explorer>& explorer,
-                    const std::shared_ptr<Keychain<NetworkType>>& receiveKeychain,
-                    const std::shared_ptr<Keychain<NetworkType>>& changeKeychain,
+                    const std::shared_ptr<Keychain>& receiveKeychain,
+                    const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<BlockchainDatabase<NetworkType>>& blocksDB,
                     uint32_t gapSize,
                     uint32_t batchSize,
@@ -120,7 +120,7 @@ namespace ledger {
                     const std::shared_ptr<BlocksSyncState>& state,
                     const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
                     const std::shared_ptr<Batch>& batch,
-                    const std::shared_ptr<Keychain<NetworkType>>& keychain,
+                    const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
                     uint32_t to,
                     const std::string& firstBlockHash,
@@ -135,7 +135,7 @@ namespace ledger {
                 void bootstrapBatchesTasks(
                     const std::shared_ptr<BlocksSyncState>& state,
                     const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
-                    const std::shared_ptr<Keychain<NetworkType>>& keychain,
+                    const std::shared_ptr<Keychain>& keychain,
                     std::vector<Future<Unit>>& tasks,
                     std::string firstBlockHash,
                     uint32_t from,
@@ -183,7 +183,7 @@ namespace ledger {
                     const std::shared_ptr<BlocksSyncState>& state,
                     const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
                     const std::shared_ptr<Batch>& batch,
-                    const std::shared_ptr<Keychain<NetworkType>>& keychain,
+                    const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
                     uint32_t to,
                     std::string hashToStartRequestFrom,
@@ -239,8 +239,8 @@ namespace ledger {
             private:
                 std::shared_ptr<api::ExecutionContext> _executionContext;
                 std::shared_ptr<Explorer> _explorer;
-                std::shared_ptr<Keychain<NetworkType>> _receiveKeychain;
-                std::shared_ptr<Keychain<NetworkType>> _changeKeychain;
+                std::shared_ptr<Keychain> _receiveKeychain;
+                std::shared_ptr<Keychain> _changeKeychain;
                 std::shared_ptr<BlockchainDatabase<NetworkType>> _blocksDB;
                 const uint32_t _gapSize;
                 const uint32_t _batchSize;

@@ -11,7 +11,7 @@ namespace ledger {
                 RECEIVE, CHANGE
             };
         }
-        template<typename NetworkType>
+
         class Keychain {
         public:
             virtual ~Keychain() {};

@@ -39,7 +39,7 @@ namespace ledger {
                 const std::shared_ptr<Explorer>& explorer,
                 const std::shared_ptr<BlockchainDB>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDB>& unstableBlocksDb,
-                const std::shared_ptr<Keychain<NetworkType>>& keychain,
+                const std::shared_ptr<Keychain>& keychain,
                 const std::shared_ptr<spdlog::logger>& logger,
                 uint32_t maxPossibleUnstableBlocks,
                 uint32_t maxNumberOfAddressesInRequest,
@@ -117,7 +117,7 @@ namespace ledger {
                 std::shared_ptr<BlockchainDB> _stableBlocksDb;
                 // blocks that may be reverted
                 std::shared_ptr<BlockchainDB> _unstableBlocksDb;
-                std::shared_ptr<Keychain<NetworkType>> _keychain;
+                std::shared_ptr<Keychain> _keychain;
                 std::shared_ptr<spdlog::logger> _logger;
 
                 std::shared_ptr<ProgressNotifier<Unit>> _notifier;

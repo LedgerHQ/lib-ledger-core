@@ -13,7 +13,6 @@ namespace ledger {
         template<typename NetworkType>
         class ExplorerV2;
 
-        template<typename NetworkType>
         class Keychain;
 
         template<typename NetworkType>
@@ -24,7 +23,7 @@ namespace ledger {
                 const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
-                const std::shared_ptr<Keychain<NetworkType>>& keychain,
+                const std::shared_ptr<Keychain>& keychain,
                 const std::shared_ptr<spdlog::logger>& logger,
                 uint32_t numberOfUnrevertableBlocks,
                 uint32_t maxNumberOfAddressesInRequest,
