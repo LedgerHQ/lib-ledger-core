@@ -124,7 +124,7 @@ namespace ledger {
                 };
 
                 if (_accountAddress == transaction.sender) {
-                    operation.amount = transaction.value + operation.fees.getValueOr(BigInt::ZERO);
+                    operation.amount = transaction.value;
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
                     OperationDatabaseHelper::putOperation(sql, operation);

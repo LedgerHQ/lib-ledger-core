@@ -77,16 +77,16 @@ namespace ledger {
         FuturePtr<ledger::core::api::Account>
         EthereumLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             if (info.chainCodes.size() != 1 || info.publicKeys.size() != 1 || info.owners.size() != 1)
-                throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (only one public key is needed)");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (only one public key is needed)");
             auto self = getSelf();
             return async<api::ExtendedKeyAccountCreationInfo>([self, info] () -> api::ExtendedKeyAccountCreationInfo {
                 if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
                     info.publicKeys.size() != info.owners.size())
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
                 api::ExtendedKeyAccountCreationInfo result;
 
                 if (info.chainCodes[0].size() != 32 || info.publicKeys[0].size() != 65)
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
                 DerivationPath occurencePath(info.derivations[0]);
 
                 auto xpub = EthereumLikeExtendedPublicKey::fromRaw(
