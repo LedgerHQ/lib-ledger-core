@@ -242,7 +242,7 @@ namespace ledger {
 
             const api::Currency ETHEREUM_ROPSTEN =
                     Currency("ethereum_ropsten")
-                            .bip44(60)
+                            .bip44(1)
                             .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_ropsten"))
                             .paymentUri("ethereum")
                             .unit("wei", 0, "wei")

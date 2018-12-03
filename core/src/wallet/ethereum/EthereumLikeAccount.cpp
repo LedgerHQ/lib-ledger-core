@@ -146,7 +146,7 @@ namespace ledger {
         void EthereumLikeAccount::updateERC20Accounts(soci::session &sql,
                                                       const Operation &operation) {
             auto transaction = operation.ethereumTransaction.getValue();
-            if (transaction.erc20.nonEmpty()) {
+            if (transaction.erc20.nonEmpty() && !transaction.erc20.getValue().contractAddress.empty()) {
                 auto accountAddress = (operation.type == api::OperationType::SEND)? transaction.sender : transaction.receiver;
 
                 auto erc20Address = transaction.erc20.getValue().contractAddress;
