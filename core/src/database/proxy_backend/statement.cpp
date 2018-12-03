@@ -88,19 +88,39 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::execute(i
 }
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::fetch(int number) {
-    SP_PRINT("FETCH")
+    SP_PRINT("FETCH " << number)
+    if (number > 1)
+        return batch_fetch(number);
+    else
+        return single_row_fetch();
+}
 
-    return ef_success;
+details::statement_backend::exec_fetch_result proxy_statement_backend::batch_fetch(int number) {
+    throw soci_error("Batch operation are not supported by proxy backend");
+}
+
+details::statement_backend::exec_fetch_result proxy_statement_backend::single_row_fetch() {
+    SP_PRINT("FETCH SINGLE")
+    if (_results)
+        _lastRow = _results->getRow();
+    else
+        _lastRow = nullptr;
+    if (_results && _results->hasNext())
+        _results = _results->next();
+    else {
+        _results = nullptr;
+    }
+    return _lastRow ? ef_success : ef_no_data;
 }
 
 long long proxy_statement_backend::get_affected_rows() {
     SP_PRINT("GET AFFECTED ROWS")
-    return 0;
+    return _results ? _results->getUpdateCount() : 0;
 }
 
 int proxy_statement_backend::get_number_of_rows() {
-    SP_PRINT("GET NUMBER OF ROWS")
-    return 0;
+    SP_PRINT("GET NUMBER OF ROWS returns " << (_results ? _results->getRowNumber() : 0))
+    return _results ? _results->getRowNumber() : 0;
 }
 
 std::string proxy_statement_backend::get_parameter_name(int index) const {

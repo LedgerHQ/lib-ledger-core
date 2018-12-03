@@ -44,6 +44,7 @@
 #include <list>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <algorithm>
 
 #define BIND(Type) \
     auto pos = sqlite3_bind_parameter_index(_stmt, name.c_str()); \
@@ -64,6 +65,7 @@ const std::vector<std::tuple<std::string, api::DatabaseValueType >> SQLITE3_TYPE
         {"unsigned big int", api::DatabaseValueType::LONG_LONG},
         {"int", api::DatabaseValueType::INTEGER},
         {"float", api::DatabaseValueType::DOUBLE},
+        {"double", api::DatabaseValueType::DOUBLE},
         {"text", api::DatabaseValueType::STRING}
 };
 
@@ -298,7 +300,7 @@ public:
 
     std::shared_ptr<api::DatabaseColumn> describeColumn(int32_t colNum) override {
         // Find type using decltype
-        std::string type {sqlite3_column_decltype(_stmt, colNum)};
+        std::string type {sqlite3_column_decltype(_stmt, colNum - 1)};
 
         for (auto& match : SQLITE3_TYPES) {
             if (boost::iequals(type, std::get<0>(match))) {

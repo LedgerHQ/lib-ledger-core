@@ -157,6 +157,9 @@ namespace soci
         exec_fetch_result execute(int number) SOCI_OVERRIDE;
         exec_fetch_result fetch(int number) SOCI_OVERRIDE;
 
+        exec_fetch_result batch_fetch(int number);
+        exec_fetch_result single_row_fetch();
+
         long long get_affected_rows() SOCI_OVERRIDE;
         int get_number_of_rows() SOCI_OVERRIDE;
         std::string get_parameter_name(int index) const;
@@ -176,6 +179,7 @@ namespace soci
         proxy_session_backend& _session;
         std::shared_ptr<ledger::core::api::DatabaseStatement> _stmt;
         std::shared_ptr<ledger::core::api::DatabaseResultSet> _results;
+        std::shared_ptr<ledger::core::api::DatabaseResultRow> _lastRow;
     };
 
     struct proxy_rowid_backend : details::rowid_backend

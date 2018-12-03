@@ -39,7 +39,7 @@ using namespace ledger::core;
 #define OUT(Type) (static_cast<Type *>(_data))
 #define GET(Type, type) \
      make_try<type>([&, this] () { \
-        return _statement._results->getRow()->get##Type##ByPos(index); \
+        return _statement._lastRow->get##Type##ByPos(index); \
      }).getOrThrowException<soci_error>()
 
 void proxy_standard_into_type_backend::define_by_pos(int &position, void *data, details::exchange_type type) {
@@ -58,7 +58,7 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
 
     auto index = _position - 1;
 
-    if (_statement._results->getRow()->isNullAtPos(index)) {
+    if (_statement._lastRow->isNullAtPos(index)) {
 
         *ind = i_null;
         return ;
