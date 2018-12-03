@@ -254,7 +254,7 @@ namespace ledger {
 
             sql << "CREATE TABLE erc20_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
-                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES ethereum_operations(uid) ON DELETE CASCADE,"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                     "account_uid VARCHAR(255) NOT NULL REFERENCES erc20_accounts(uid) ON DELETE CASCADE,"
                     "type VARCHAR(255) NOT NULL,"
                     "hash VARCHAR(255) NOT NULL,"

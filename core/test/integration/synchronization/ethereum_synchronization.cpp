@@ -154,6 +154,8 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Accounts[0]->getBalance()->toString(10) << std::endl;
+                auto erc20Ops = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                EXPECT_EQ(erc20Accounts[0]->getOperations().size(), erc20Ops.size());
                 dispatcher->stop();
             });
 

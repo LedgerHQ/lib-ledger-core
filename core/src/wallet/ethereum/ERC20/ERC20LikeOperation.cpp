@@ -46,6 +46,7 @@ namespace ledger {
                 auto& tx = operation.ethereumTransaction.getValue();
                 _token = token;
                 _uid = operationUid;
+                _ethUidOperation = operation.uid;
                 _hash = tx.hash;
                 _nonce = std::make_shared<api::BigIntImpl>(BigInt((int64_t)tx.nonce));
                 _gasPrice = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasPrice));
@@ -113,6 +114,10 @@ namespace ledger {
 
             std::string ERC20LikeOperation::getOperationUid() {
                 return _uid;
+            }
+
+            std::string ERC20LikeOperation::getETHOperationUid() {
+                return _ethUidOperation;
             }
 
             int32_t ERC20LikeOperation::getStatus() {

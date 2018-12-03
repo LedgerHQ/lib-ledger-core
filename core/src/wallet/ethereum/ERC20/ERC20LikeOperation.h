@@ -61,10 +61,12 @@ namespace ledger {
             std::chrono::system_clock::time_point getTime() override;
             api::OperationType getOperationType() override;
             std::string getOperationUid();
+            std::string getETHOperationUid();
             int32_t getStatus() override ;
         private:
             api::ERC20Token _token;
             std::string _uid;
+            std::string _ethUidOperation;
             std::string _hash;
             std::shared_ptr<api::BigInt> _nonce;
             std::shared_ptr<api::BigInt> _gasPrice;
