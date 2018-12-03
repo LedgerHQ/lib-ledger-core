@@ -43,6 +43,7 @@
 #include <crypto/SECP256k1Point.hpp>
 #include <crypto/RIPEMD160.hpp>
 #include <crypto/SHA256.hpp>
+#include <crypto/HashAlgorithm.h>
 
 namespace ledger {
     namespace core {
@@ -56,10 +57,12 @@ namespace ledger {
         }
 
         static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
-            if (index >= childNums.size()) {
-                return key;
-            }
-            return _derive(index + 1, childNums, key.derive(childNums[index]));
+            //No derivation in actual model
+            //if (index >= childNums.size()) {
+            //    return key;
+            //}
+            //return _derive(index + 1, childNums, key.derive(childNums[index]));
+            return key;
         }
 
         std::shared_ptr<api::EthereumLikeAddress> EthereumLikeExtendedPublicKey::derive(const std::string & path) {
@@ -82,7 +85,7 @@ namespace ledger {
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithChecksum((_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion)));
+            return Base58::encodeWithChecksum(_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion),_currency.ethereumLikeNetworkParameters.value().Identifier);
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
@@ -96,11 +99,12 @@ namespace ledger {
                 const std::vector<uint8_t> &chainCode,
                 const std::string& path) {
             uint32_t parentFingerprint = 0;
-
+            auto& params = currency.ethereumLikeNetworkParameters.value();
             SECP256k1Point pk(publicKey);
             if (parentPublicKey) {
                 SECP256k1Point ppp(parentPublicKey.value());
-                auto hash = SHA256::bytesToBytesHash(ppp.toByteArray(true));
+                HashAlgorithm hashAlgorithm(params.Identifier);
+                auto hash = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
                 hash = RIPEMD160::hash(hash);
                 parentFingerprint = ((hash[0] & 0xFFU) << 24) |
                                     ((hash[1] & 0xFFU) << 16) |
@@ -108,8 +112,7 @@ namespace ledger {
                                     (hash[3] & 0xFFU);
             }
             DerivationPath p(path);
-
-            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, currency.ethereumLikeNetworkParameters.value().Identifier);
+            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, params.Identifier);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
         }
 

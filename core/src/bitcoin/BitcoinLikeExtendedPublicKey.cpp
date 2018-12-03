@@ -34,7 +34,6 @@
 #include "BitcoinLikeExtendedPublicKey.hpp"
 #include "../utils/djinni_helpers.hpp"
 #include "../crypto/HASH160.hpp"
-#include <crypto/BLAKE.h>
 #include "../math/Base58.hpp"
 #include "../bytes/BytesReader.h"
 #include "BitcoinLikeAddress.hpp"

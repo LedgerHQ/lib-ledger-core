@@ -76,3 +76,14 @@ TEST_F(EthereumKeychains, EthereumAddressValidation) {
     EXPECT_EQ(ethAddress->toEIP55(), address);
 
 }
+
+TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
+    auto address = "0xAc6603e97e774Cd34603293b69bBBB1980acEeaA";
+    auto path = "44'/60'/0'";
+    auto pubKey = "04d1dc4a3180fe2d56a1f02a68b053e59022ce5e107eae879ebef66a46d4ffe04dc3994facd376abcbab49c421599824a2600ee30e8520878e65581f598e2c497a";
+    auto chainCode = "2d560fcaaedb929eea27d316dec7961eee884259e6483fdf192704db7582ca14";
+    auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM, optional<std::vector<uint8_t >>(), hex::toByteArray(pubKey), hex::toByteArray(chainCode), path);
+    auto derive0 = ethXpub->derive("0");
+    EXPECT_EQ(derive0->toEIP55(), address);
+
+}

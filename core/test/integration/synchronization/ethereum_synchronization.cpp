@@ -109,11 +109,12 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
+        //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.prod.aws.ledger.fr");
         //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
+        //auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
