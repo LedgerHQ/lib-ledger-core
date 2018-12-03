@@ -145,8 +145,8 @@ namespace ledger {
                 operation.date = row.get<std::chrono::system_clock::time_point>(4);
                 operation.senders = strings::split(row.get<std::string>(5), ",");
                 operation.recipients = strings::split(row.get<std::string>(6), ",");
-                operation.amount = row.get<BigInt>(7);
-                operation.fees = row.get<Option<BigInt>>(8);
+                operation.amount = BigInt(row.get<std::string>(7));
+                operation.fees = BigInt(row.get<std::string>(8));
                 operation.currencyName = row.get<std::string>(9);
                 operation.trust = nullptr;
                 operation.walletType = account->second->getWalletType();
