@@ -130,6 +130,10 @@ namespace ledger {
                     .outerJoin("blocks AS b", "o.block_uid = b.uid")
                     .execute(sql);
             for (auto& row : rows) {
+                //Filter results
+                if (_resultFilter && !_resultFilter(sql, row)) {
+                    continue;
+                }
                 auto accountUid = row.get<std::string>(0);
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())

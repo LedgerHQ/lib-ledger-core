@@ -148,9 +148,12 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
-                //EXPECT_EQ(erc20Accounts.size(), 1);
-                //EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);
-                //EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
+                EXPECT_EQ(erc20Accounts.size(), 1);
+                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
+                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 2500);
+                auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
+                std::cout << "Contract Address: " << contractAddress << std::endl;
+                std::cout << "ERC20 balance: " << erc20Accounts[0]->getBalance()->toString(10) << std::endl;
                 dispatcher->stop();
             });
 
