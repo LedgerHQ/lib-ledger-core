@@ -111,7 +111,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.prod.aws.ledger.fr");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
         //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         //auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
@@ -159,7 +159,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
 
             dispatcher->waitUntilStopped();
 
-            //auto opQuery = account->queryOperations()->complete();
+            auto opQuery = account->queryOperations()->complete();
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             //auto ops = ::wait(std::dynamic_pointer_cast<OperationQuery>(opQuery)->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
