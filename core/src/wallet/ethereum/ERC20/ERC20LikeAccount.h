@@ -34,7 +34,7 @@
 
 #include <api/ERC20LikeAccount.hpp>
 #include <api/ERC20Token.hpp>
-#include <api/ERC20LikeOperation.hpp>
+#include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 #include <api/BigInt.hpp>
 #include <api/Currency.hpp>
 #include <api/OperationQuery.hpp>
@@ -57,7 +57,7 @@ namespace ledger {
             std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                           const std::string & address) override ;
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
-            void putOperation(const std::shared_ptr<api::ERC20LikeOperation> &operation);
+            void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation);
         private:
             api::ERC20Token _token;
             std::string _accountAddress;

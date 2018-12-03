@@ -175,7 +175,7 @@ namespace ledger {
                     if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
-                        erc20Account->putOperation(erc20Operation);
+                        erc20Account->putOperation(sql, erc20Operation);
                         auto erc20OpCount = 0;
                         sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
                         if (erc20OpCount == 0) {
@@ -192,10 +192,10 @@ namespace ledger {
                                                                          accountAddress,
                                                                          getWallet()->getCurrency(),
                                                                          std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
-                    newAccount->putOperation(erc20Operation);
                     _erc20LikeAccounts.push_back(newAccount);
                     //Persist erc20 account
                     EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
+                    newAccount->putOperation(sql, erc20Operation);
                     //Update erc20 accounts table
                     if (count == 0) {
                         CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token);
