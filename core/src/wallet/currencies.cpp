@@ -178,6 +178,16 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("dogecoin", 8, "DOGE")
                             .unit("milli-dogecoin", 5, "mDOGE");
+							
+            const api::Currency UNOBTANIUM =
+                    Currency("unobtanium")
+                            .forkOfBitcoin(networks::getNetworkParameters("unobtanium"))
+                            .bip44(92)
+                            .paymentUri("unobtanium")
+                            .unit("unoshi", 0, "unoshi")
+                            .unit("unobtanium", 8, "UNO")
+							.unit("milli-unobtanium", 5, "mUNO")
+							.unit("micro-unobtanium", 2, "μUNO");
 
             const api::Currency STRATIS =
                     Currency("stratis")
@@ -237,6 +247,7 @@ namespace ledger {
                 VIACOIN,
                 DASH,
                 DOGECOIN,
+				UNOBTANIUM,
                 STRATIS,
                 KOMODO,
                 POSWALLET,

@@ -304,6 +304,21 @@ namespace ledger {
                             {}
                     );
                     return DOGECOIN;
+                } else if (networkName == "unobtanium") {
+                    static const api::BitcoinLikeNetworkParameters DOGECOIN(
+                            "doge",
+                            {0x82},
+                            {0x1E},
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "Unobtanium Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return DOGECOIN;
                 } else if (networkName == "stratis") {
                     static const api::BitcoinLikeNetworkParameters STRATIS(
                             "strat",
@@ -402,6 +417,7 @@ namespace ledger {
                 getNetworkParameters("viacoin"),
                 getNetworkParameters("dash"),
                 getNetworkParameters("dogecoin"),
+				getNetworkParameters("unobtanium"),
                 getNetworkParameters("stratis"),
                 getNetworkParameters("komodo"),
                 getNetworkParameters("poswallet"),
