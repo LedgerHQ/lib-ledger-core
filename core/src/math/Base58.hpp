@@ -46,7 +46,8 @@ namespace ledger {
             static std::string encode(const std::vector<uint8_t>& bytes);
             static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes);
 
-            static std::vector<uint8_t> decode(const std::string& str) throw(Exception);
+            //may throw
+            static std::vector<uint8_t> decode(const std::string& str);
             static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str);
 
 

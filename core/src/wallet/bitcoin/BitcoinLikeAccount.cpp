@@ -46,8 +46,6 @@
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/common/Operation.h>
 #include <utils/DateUtils.hpp>
 
@@ -60,14 +58,10 @@ namespace ledger {
                 int32_t index,
                 const std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>>& broadcaster,
                 const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                const std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>>& synchronizer,
-                const std::shared_ptr<BitcoinLikeKeychain>& keychain)
+                const std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>>& synchronizer)
                 : AbstractAccount(wallet, index)
                 , _observer(observer)
-                , _synchronizer(synchronizer)
-                , _keychain(keychain) {
-                _keychain->getAllObservableAddresses(0, 40);
-                _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getContext(), getWallet()->getCurrency());
+                , _synchronizer(synchronizer) {
                 _currentBlockHeight = 0;
             }
 
@@ -106,11 +100,6 @@ namespace ledger {
                 }
             }
 
-            std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
-                return _keychain;
-            }
-
-
             bool BitcoinLikeAccount::isSynchronizing() {
                 std::lock_guard<std::mutex> lock(_synchronizationLock);
                 return _currentSyncEventBus != nullptr;
@@ -140,21 +129,11 @@ namespace ledger {
             }
 
             bool BitcoinLikeAccount::checkIfWalletIsEmpty() {
-                return _keychain->isEmpty();
+                throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me");
             }
 
             Future<AbstractAccount::AddressList> BitcoinLikeAccount::getFreshPublicAddresses() {
-                auto keychain = getKeychain();
-                return async<AbstractAccount::AddressList>([=]() -> AbstractAccount::AddressList {
-                    auto addrs = keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
-                    AbstractAccount::AddressList result(addrs.size());
-                    auto i = 0;
-                    for (auto& addr : addrs) {
-                        result[i] = std::dynamic_pointer_cast<api::Address>(addr);
-                        i += 1;
-                    }
-                    return result;
-                });
+                return Future<AbstractAccount::AddressList>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
             }
 
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> BitcoinLikeAccount::getUTXO() {
@@ -206,19 +185,7 @@ namespace ledger {
             }
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
-                auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-                auto getUTXO = [self]() -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                    return self->getUTXO();
-                };
-                auto getTransaction = [self](const std::string& hash) -> FuturePtr<BitcoinLikeNetwork::Transaction> {
-                    return self->getTransaction(hash);
-                };
-                return std::make_shared<BitcoinLikeTransactionBuilder>(
-                    getContext(),
-                    getWallet()->getCurrency(),
-                    logger(),
-                    _picker->getBuildFunction(getUTXO, getTransaction, _keychain, _currentBlockHeight, logger())
-                    );
+                return nullptr;
             }
 
 
@@ -231,7 +198,7 @@ namespace ledger {
             }
 
             std::string BitcoinLikeAccount::getRestoreKey() {
-                return _keychain->getRestoreKey();
+                return "";
             }
 
             Future<api::ErrorCode> BitcoinLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {

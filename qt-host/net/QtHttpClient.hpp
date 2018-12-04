@@ -33,11 +33,11 @@
 
 #include <functional>
 
-#include <src/api/HttpClient.hpp>
-#include <src/api/HttpUrlConnection.hpp>
-#include <src/api/HttpRequest.hpp>
-#include <src/api/HttpReadBodyResult.hpp>
-#include <src/api/HttpMethod.hpp>
+#include <api/HttpClient.hpp>
+#include <api/HttpUrlConnection.hpp>
+#include <api/HttpRequest.hpp>
+#include <api/HttpReadBodyResult.hpp>
+#include <api/HttpMethod.hpp>
 #include <QtNetwork>
 #include <QNetworkReply>
 #include <QObject>

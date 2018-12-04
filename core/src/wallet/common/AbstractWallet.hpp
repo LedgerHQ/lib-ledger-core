@@ -28,18 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ABSTRACTWALLET_HPP
-#define LEDGER_CORE_ABSTRACTWALLET_HPP
+#pragma once
 
-#include <src/api/Wallet.hpp>
-#include <src/api/Currency.hpp>
-#include <src/api/Account.hpp>
-#include <src/preferences/Preferences.hpp>
-#include <src/async/DedicatedContext.hpp>
-#include <src/events/EventPublisher.hpp>
-#include <src/debug/logger.hpp>
-#include <src/api/WalletType.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
+#include <api/Wallet.hpp>
+#include <api/Currency.hpp>
+#include <api/Account.hpp>
+#include <preferences/Preferences.hpp>
+#include <async/DedicatedContext.hpp>
+#include <events/EventPublisher.hpp>
+#include <debug/logger.hpp>
+#include <api/WalletType.hpp>
+#include <database/DatabaseSessionPool.hpp>
 #include <collections/DynamicObject.hpp>
 #include <utils/DerivationScheme.hpp>
 #include <api/AccountCreationInfo.hpp>
@@ -164,6 +163,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_ABSTRACTWALLET_HPP

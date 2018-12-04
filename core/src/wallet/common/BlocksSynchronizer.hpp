@@ -205,28 +205,29 @@ namespace ledger {
                         uint32_t lastFullBlockHeight = to;
                         if (bulk->second) { //response truncated
                             if (bulk->first.size() < self->_maxTransactionPerResponse) {
-                                return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, fmt::format("Explorer returned truncated response with less then {} operations", self->_maxTransactionPerResponse)));
+                               // return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, fmt::format("Explorer returned truncated response with less then {} operations", self->_maxTransactionPerResponse)));
+                                // TODO: log warning
                             }
                             if (highestBlock.height != from) { // Explorer garanties us that we always get at least one full block
                                 lastFullBlockHeight = highestBlock.height - 1;
+                            }
+                            else {
+                                throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "The case with only one block transactions is not supported.");
                             }
                         }
                         uint32_t limit = std::min(lastFullBlockHeight, to); // want only transactions from untruncated blocks
                         for (auto &tr : bulk->first) {
                             if (tr.block.getValue().height <= limit) {
                                 partialDB->addTransaction(tr);
-                            }
-                        }
-                        std::vector<Future<Unit>> tasksToContinueWith;
-                        if (isGap) {
-                            auto newBatch = std::make_shared<Batch>();
-                            for (auto &tr : bulk->first) {
-                                if (tr.block.getValue().height > limit) continue;
                                 for (auto& out : tr.outputs) {
                                     if (!out.address.hasValue()) continue;
                                     keychain->markAsUsed(out.address.getValue());
                                 }
                             }
+                        }
+                        std::vector<Future<Unit>> tasksToContinueWith;
+                        if (isGap) {
+                            auto newBatch = std::make_shared<Batch>();
                             newBatch->addresses = keychain->getAddresses(batch->lastAddressIndex + 1, self->_batchSize);
                             newBatch->lastAddressIndex = batch->lastAddressIndex + self->_batchSize;
                             tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, newBatch, keychain, lowestBlock.height, to, lowestBlock.hash, true));

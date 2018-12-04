@@ -38,6 +38,7 @@
 #include <crypto/HASH160.hpp>
 #include <math/Base58.hpp>
 #include <api/KeychainEngines.hpp>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 
 namespace ledger {
     namespace core {

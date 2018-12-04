@@ -28,9 +28,9 @@
  * SOFTWARE.
  *
  */
-#include <lib/fmt-3.0.0/fmt/format.h>
+#include <fmt/format.h>
 #include "RotatingEncryptableSink.hpp"
-#include "../utils/LambdaRunnable.hpp"
+#include "utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {

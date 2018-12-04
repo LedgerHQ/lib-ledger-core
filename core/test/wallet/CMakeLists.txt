@@ -13,6 +13,7 @@ main.cpp
 InMemoryPartialBlocksDB_test.cpp 
 BlocksSynchronizer_test.cpp
 Helpers.cpp
+ChangeKeychain_test.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)

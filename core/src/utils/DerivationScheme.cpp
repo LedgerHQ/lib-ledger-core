@@ -29,7 +29,7 @@
  *
  */
 #include "DerivationScheme.hpp"
-#include <src/collections/collections.hpp>
+#include <collections/collections.hpp>
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 

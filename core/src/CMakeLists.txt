@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(MSVC)
@@ -101,8 +99,8 @@ endif()
 if(MSVC)
     include(GenerateExportHeader)
     generate_export_header(ledger-core EXPORT_MACRO_NAME LIBCORE_EXPORT
-            EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/ledger/core/libcore_export.h)
-    target_include_directories(ledger-core PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
+            EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/ledger/core/export/libcore_export.h)
+    target_include_directories(ledger-core PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core/export)
 endif(MSVC)
 
 target_link_libraries(ledger-core bigd)
@@ -150,7 +148,7 @@ file(GLOB ledger-core-header
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.h")
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
-target_include_directories(ledger-core PUBLIC ..)
+target_include_directories(ledger-core PUBLIC .)
 target_include_directories(ledger-core PUBLIC ../lib/bigd)
 target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)

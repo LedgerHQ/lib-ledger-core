@@ -35,10 +35,10 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <fmt/format.h>
-#include <src/api/DynamicObject.hpp>
-#include "../../../api/Configuration.hpp"
-#include "../../../utils/DerivationPath.hpp"
-#include "../../../collections/strings.hpp"
+#include <api/DynamicObject.hpp>
+#include "api/Configuration.hpp"
+#include "utils/DerivationPath.hpp"
+#include "collections/strings.hpp"
 #include <bitcoin/BitcoinLikeAddress.hpp>
 
 #include <iostream>

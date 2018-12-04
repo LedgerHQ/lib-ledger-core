@@ -10,7 +10,6 @@
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
 #include <wallet/NetworkTypes.hpp>
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/AccountSynchronizer.hpp>
 #include <async/FutureUtils.hpp>
 

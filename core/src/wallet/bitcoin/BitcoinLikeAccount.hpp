@@ -44,7 +44,6 @@
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/TransactionBroadcaster.hpp>
 #include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 #include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 
@@ -70,12 +69,9 @@ namespace ledger {
                     int32_t index,
                     const std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>>& broadcaster,
                     const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
-                    const std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>>& synchronizer,
-                    const std::shared_ptr<BitcoinLikeKeychain>& keychain);
+                    const std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>>& synchronizer);
 
                 std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
-
-                std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 
                 void startBlockchainObservation() override;
                 void stopBlockchainObservation() override;
@@ -135,7 +131,6 @@ namespace ledger {
             private:
                 std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>> _broadcaster;
                 std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
-                std::shared_ptr<BitcoinLikeKeychain> _keychain;
                 std::shared_ptr<Preferences> _internalPreferences;
                 std::shared_ptr<Preferences> _externalPreferences;
                 std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> _synchronizer;
