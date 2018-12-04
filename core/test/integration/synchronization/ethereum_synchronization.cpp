@@ -156,6 +156,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 std::cout << "ERC20 balance: " << erc20Accounts[0]->getBalance()->toString(10) << std::endl;
                 auto erc20Ops = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
                 EXPECT_EQ(erc20Accounts[0]->getOperations().size(), erc20Ops.size());
+                EXPECT_EQ(erc20Ops[0]->isComplete(), true);
                 dispatcher->stop();
             });
 
@@ -168,7 +169,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             //auto ops = ::wait(std::dynamic_pointer_cast<OperationQuery>(opQuery)->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
-
+            EXPECT_EQ(ops[0]->isComplete(), true);
             auto block = wait(account->getLastBlock());
             auto blockHash = block.blockHash;
         }

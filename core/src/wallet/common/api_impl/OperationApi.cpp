@@ -88,7 +88,12 @@ namespace ledger {
         }
 
         bool OperationApi::isComplete() {
-            return _backend.bitcoinTransaction.nonEmpty();
+            if (_backend.walletType == api::WalletType::BITCOIN) {
+                return _backend.bitcoinTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::ETHEREUM) {
+                return _backend.ethereumTransaction.nonEmpty();
+            }
+            return false;
         }
 
         std::shared_ptr<api::TrustIndicator> OperationApi::getTrust() {
