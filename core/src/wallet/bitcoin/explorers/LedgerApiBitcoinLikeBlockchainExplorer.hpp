@@ -59,6 +59,8 @@ namespace ledger {
                 const api::BitcoinLikeNetworkParameters& parameters,
                 const std::shared_ptr<api::DynamicObject>& configuration
             );
+
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
             Future<Bytes> getRawTransaction(const String& transactionHash) override;
