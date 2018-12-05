@@ -116,19 +116,19 @@ void BaseFixture::createAccount(const std::shared_ptr<WalletPool> &pool, const s
         AccountDatabaseHelper::createAccount(sql, walletUid, index);
 }
 
-std::shared_ptr<BitcoinLikeAccount>
+std::shared_ptr<bitcoin::BitcoinLikeAccount>
 BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
                                       const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<bitcoin::BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(info)));
 }
 
-std::shared_ptr<BitcoinLikeAccount>
+std::shared_ptr<bitcoin::BitcoinLikeAccount>
 BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
                                       const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(info)));
+    return std::dynamic_pointer_cast<bitcoin::BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(info)));
 }
 

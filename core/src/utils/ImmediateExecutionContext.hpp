@@ -39,7 +39,7 @@
     #endif
 #endif
 
-#include "../api/ExecutionContext.hpp"
+#include "api/ExecutionContext.hpp"
 
 namespace ledger {
     namespace core {

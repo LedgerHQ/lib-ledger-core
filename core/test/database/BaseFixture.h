@@ -43,7 +43,6 @@
 #include <wallet/common/CurrencyBuilder.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
@@ -90,11 +89,11 @@ public:
                                                 const std::shared_ptr<api::DynamicObject> &configuration,
                                                 int32_t index,
                                                 const std::string& xpub);
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<bitcoin::BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                 int32_t index,
                                                                 const api::AccountCreationInfo &info
     );
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<bitcoin::BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                  int32_t index,
                                                                  const api::ExtendedKeyAccountCreationInfo& info
     );

@@ -13,19 +13,19 @@ namespace ledger {
             public:
                 virtual ~ReadOnlyBlockchainDB() {};
 				// Get all blocks with height in [heightFrom, heightTo)
-				virtual Future<std::vector<DatabaseBlock>> GetBlocks(int heightFrom, int heightTo) = 0;
-                virtual Future<DatabaseBlock> GetBlock(int height) = 0;
+				virtual Future<std::vector<DatabaseBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
+                virtual Future<Option<DatabaseBlock>> GetBlock(uint32_t height) = 0;
 				virtual Future<Option<DatabaseBlockHeader>> GetLastBlockHeader() = 0;
 			};
 
 			class BlockchainDB: public ReadOnlyBlockchainDB {
 			public:
                 virtual ~BlockchainDB() {};
-				virtual Future<Unit> AddBlock(const DatabaseBlock& blocks) = 0;
+				virtual void AddBlock(const DatabaseBlock& block) = 0;
 				// Remove all blocks with height in [heightFrom, heightTo)
-				virtual Future<Unit> RemoveBlocks(int heightFrom, int heightTo) = 0;
+				virtual void RemoveBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
 				// Remove all blocks with height < heightTo
-				virtual Future<Unit> RemoveBlocksUpTo(int heightTo) = 0;
+				virtual void RemoveBlocksUpTo(uint32_t heightTo) = 0;
                 virtual void CleanAll() = 0;
 			};
 		}

@@ -120,7 +120,8 @@ int main() {
     auto lastBlock = std::make_shared<Block>();
     lastBlock->height = 552412;
     */
-    /*  DIGICODE 
+    /*  DIGICODE */
+    auto network = currencies::DIGIBYTE.bitcoinLikeNetworkParameters.value();
     auto xpub = "xpub6Brsv1WawWHbVBPre4YkJypg5h8n5XyfcXrNREgRWUjemejLB5DGcfSuJLsCT7Bq5AfUN1mnroRw34v31JrmyPQCSxc1dbMmHaRbDTfVgYo";
     auto pub = createKeyFromXpub(xpub);
     auto receiveKey = pub.derive(0);
@@ -132,8 +133,8 @@ int main() {
     firstBlock->hash = "4da631f2ac1bed857bd968c67c913978274d8aabed64ab2bcebc1665d7f4d3a0";
     auto lastBlock = std::make_shared<Block>();
     lastBlock->height = 7783743;
-    */
-    /*  VTC */
+    /**/
+    /*  VTC 
     auto network = currencies::VERTCOIN.bitcoinLikeNetworkParameters.value();
     auto xpub = "xpub6CjCxPW8W5gbr1gyJpGr5BLcocwUpECcmmNBjW8XEAA28eqR5Z9vBKc8tESUhMZGPy2nK7x2fAHnxyzpFqsBz2pFSMfJCNYjDnFsvkGh56P";
     auto pub = createKeyFromXpub(xpub);
@@ -146,7 +147,7 @@ int main() {
     firstBlock->hash = "9249c198d4b1ca38bb92a740d6557df80e746108384552509225e7825556ebdf";
     auto lastBlock = std::make_shared<Block>();
     lastBlock->height = 1045723;
-    /**/
+    */
     
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto mainContext = dispatcher->getMainExecutionContext();
