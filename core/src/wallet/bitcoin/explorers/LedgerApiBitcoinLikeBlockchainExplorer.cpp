@@ -45,6 +45,18 @@ namespace ledger {
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+            std::stringstream body;
+            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
+            auto bodyString = body.str();
+            return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+            ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
+                auto& json = *std::get<1>(result);
+                return json["result"].GetString();
+            });
+        }
+
         Future<void *> LedgerApiBitcoinLikeBlockchainExplorer::startSession() {
             return startLedgerApiSession();
         }

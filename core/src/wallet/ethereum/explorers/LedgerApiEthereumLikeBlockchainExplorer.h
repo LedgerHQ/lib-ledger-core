@@ -53,7 +53,7 @@ namespace ledger {
                                            const std::shared_ptr<api::DynamicObject>& configuration);
             Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) override;
             Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
-
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
             Future<Bytes> getRawTransaction(const String& transactionHash) override;

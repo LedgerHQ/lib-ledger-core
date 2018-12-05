@@ -42,7 +42,7 @@ namespace ledger {
             _http = http;
             _parameters = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
-    }
+        }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getNonce(const std::string &address) {
             return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/nonce",_explorerVersion, _parameters.Identifier, address))
@@ -83,6 +83,19 @@ namespace ledger {
 
                         return std::make_shared<BigInt>((int64_t)balance);
                     });
+        }
+
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+            std::stringstream body;
+            auto hexTx = "0x" + hex::toString(transaction);
+            body << "{" << "\"tx\":" << '"' << hexTx << '"' << "}";
+            auto bodyString = body.str();
+            return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+            ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
+                auto& json = *std::get<1>(result);
+                return json["result"].GetString();
+            });
         }
 
         Future<void *> LedgerApiEthereumLikeBlockchainExplorer::startSession() {

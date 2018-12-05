@@ -133,17 +133,6 @@ namespace ledger {
                         });
             };
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
-                std::stringstream body;
-                body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
-                auto bodyString = body.str();
-                return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
-                                   std::vector<uint8_t>(bodyString.begin(), bodyString.end())
-                ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
-                    auto& json = *std::get<1>(result);
-                    return json["result"].GetString();
-                });
-            }
 
             Future<Bytes> getLedgerApiRawTransaction(const String& transactionHash) {
                 return _http->GET(fmt::format("/blockchain/{}/{}/transactions/{}/hex", getExplorerVersion(), getNetworkParameters().Identifier, transactionHash.str()))
@@ -167,6 +156,7 @@ namespace ledger {
                         });
             }
 
+            virtual Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) = 0 ;
         protected:
             virtual std::shared_ptr<api::ExecutionContext> getExplorerContext() = 0;
             virtual NetworkParameters getNetworkParameters() = 0;
