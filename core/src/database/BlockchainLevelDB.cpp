@@ -40,19 +40,21 @@ namespace ledger {
             void BlockchainLevelDB::RemoveBlocksUpTo(uint32_t heightTo) {
                 leveldb::ReadOptions options;
                 options.fill_cache = false;
-                leveldb::Iterator* it = _db->NewIterator(options);
                 leveldb::WriteBatch batch;
-                for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                    if (deserializeKey(it->key().ToString()) >= heightTo) 
-                        break;
-                    batch.Delete(it->key());
+                {
+                    auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(options));
+                    for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                        if (deserializeKey(it->key().ToString()) >= heightTo)
+                            break;
+                        batch.Delete(it->key());
+                    }
                 }
                 handleError(_db->Write(leveldb::WriteOptions(), &batch));
             }
 
             Future<std::vector<DatabaseBlock>> BlockchainLevelDB::GetBlocks(uint32_t heightFrom, uint32_t heightTo) {
                 std::vector<DatabaseBlock> res;
-                leveldb::Iterator* it = _db->NewIterator(leveldb::ReadOptions());
+                auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 it->Seek(serializeKey(heightFrom));
                 for (; it->Valid(); it->Next()) {
                     if (deserializeKey(it->key().ToString()) >= heightTo)
@@ -75,7 +77,7 @@ namespace ledger {
             }
 
             Future<Option<DatabaseBlockHeader>> BlockchainLevelDB::GetLastBlockHeader() {
-                leveldb::Iterator* it = _db->NewIterator(leveldb::ReadOptions());
+                auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 it->SeekToLast();
                 if (!it->Valid())
                     return Future<Option<DatabaseBlockHeader>>::successful(Option<DatabaseBlockHeader>());
@@ -127,7 +129,7 @@ namespace ledger {
                 return getValue(key, pr.first, pr.second);
             }
 
-            DatabaseBlock BlockchainLevelDB::getValue(leveldb::Iterator* it) {
+            DatabaseBlock BlockchainLevelDB::getValue(const std::shared_ptr<leveldb::Iterator>& it) {
                 return getValue(deserializeKey(it->key().ToString()), it->value().ToString());
             }
         }

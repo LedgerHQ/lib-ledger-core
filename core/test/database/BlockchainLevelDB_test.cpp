@@ -72,6 +72,7 @@ TEST_F(BlockchainLevelDB, ClearAll) {
     auto future = db.GetBlock(100);
     EXPECT_TRUE(same(block, getDatablock(future).getValue()));
     db.CleanAll();
+    future = db.GetBlock(100);
     EXPECT_TRUE(getDatablock(future).isEmpty());
 }
 

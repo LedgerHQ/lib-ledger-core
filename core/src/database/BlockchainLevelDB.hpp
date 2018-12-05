@@ -32,7 +32,7 @@ namespace ledger {
                 std::pair<std::string, std::vector<uint8_t>> deserializeValue(const std::string& value);
                 DatabaseBlock getValue(uint32_t key, const std::string& hash, const std::vector<uint8_t>& data);
                 DatabaseBlock getValue(uint32_t key, const std::string& value);
-                DatabaseBlock getValue(leveldb::Iterator* it);
+                DatabaseBlock getValue(const std::shared_ptr<leveldb::Iterator>& it);
             private:
                 std::shared_ptr<leveldb::DB> _db;
             };
