@@ -16,14 +16,6 @@ class DatabaseResultSet {
 public:
     virtual ~DatabaseResultSet() {}
 
-    /**
-     *    getShortByName(name: string): i16;
-     *    getIntByName(name: string): i32;
-     *    getFloatByName(name: string): f32;
-     *    getDoubleByName(name: string): f64;
-     *    getLongByName(name: string): i64;
-     *    getStringByName(name: string): string;
-     */
     virtual std::shared_ptr<DatabaseResultRow> getRow() = 0;
 
     /** Get the number of rows updated by the query (UPDATE, INSERT, DELETE...) */

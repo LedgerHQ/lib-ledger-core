@@ -8,10 +8,11 @@ DatabaseError = interface +j +n +o {
 }
 
 DatabaseBlob = interface +j +n +o {
-    read(): binary;
+    read(offset: i64, length: i64): binary;
     write(offset: i64, data: binary): i64;
     append(data: binary): i64;
     trim(newLen: i64): i64;
+    size(): i64;
 }
 
 DatabaseColumn = interface +j +n +o {
@@ -32,13 +33,6 @@ DatabaseResultRow = interface +j +n +o {
 }
 
 DatabaseResultSet = interface +j +n +o {
-#    getShortByName(name: string): i16;
-#    getIntByName(name: string): i32;
-#    getFloatByName(name: string): f32;
-#    getDoubleByName(name: string): f64;
-#    getLongByName(name: string): i64;
-#    getStringByName(name: string): string;
-
     getRow(): DatabaseResultRow;
 
     # Get the number of rows updated by the query (UPDATE, INSERT, DELETE...)
@@ -93,6 +87,8 @@ DatabaseConnection = interface +j +n +o {
     rollback();
     commit();
     close();
+    newBlob(): DatabaseBlob;
+    newRowId(): DatabaseRowId;
 }
 
 DatabaseConnectionPool = interface +j +n +o {

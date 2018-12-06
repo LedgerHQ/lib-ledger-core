@@ -111,7 +111,7 @@ void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
             }
             case details::x_blob: {
                 auto blob = static_cast<soci::blob *>(_data);
-                auto backend = static_cast<proxy_blob_backend *>(blob->get_backend())->blob;
+                auto backend = static_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
                 BIND(Blob, backend);
                 break;
             }

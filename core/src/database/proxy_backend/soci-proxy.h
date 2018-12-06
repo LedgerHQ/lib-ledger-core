@@ -60,9 +60,11 @@
 #   define SOCI_OVERRIDE override
 #endif
 
-#define SOCI_PROXY_DEBUG
+// #define SOCI_PROXY_DEBUG
 #ifdef SOCI_PROXY_DEBUG
 #define SP_PRINT(p) std::cout << p << std::endl;
+#else
+#define SP_PRINT(p)
 #endif
 
 namespace soci
@@ -193,19 +195,22 @@ namespace soci
 
     struct proxy_blob_backend : details::blob_backend
     {
-        proxy_blob_backend(proxy_session_backend& session);
+        proxy_blob_backend(const std::shared_ptr<ledger::core::api::DatabaseBlob>& backend) : _backend(backend) {};
 
-        ~proxy_blob_backend() SOCI_OVERRIDE;
+        ~proxy_blob_backend() SOCI_OVERRIDE {};
 
         std::size_t get_len() SOCI_OVERRIDE;
         std::size_t read(std::size_t offset, char* buf, std::size_t toRead) SOCI_OVERRIDE;
         std::size_t write(std::size_t offset, char const* buf, std::size_t toWrite) SOCI_OVERRIDE;
         std::size_t append(char const* buf, std::size_t toWrite) SOCI_OVERRIDE;
+        const std::shared_ptr<ledger::core::api::DatabaseBlob> getBlob() const { return _backend; };
+        void setBlob(const std::shared_ptr<ledger::core::api::DatabaseBlob>& blob) {
+            _backend = blob;
+        }
         void trim(std::size_t newLen) SOCI_OVERRIDE;
 
-        proxy_session_backend& session_;
+        std::shared_ptr<ledger::core::api::DatabaseBlob> _backend;
 
-        std::shared_ptr<ledger::core::api::DatabaseBlob> blob;
     };
 
     struct proxy_session_backend : details::session_backend

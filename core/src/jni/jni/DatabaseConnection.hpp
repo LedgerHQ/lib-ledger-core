@@ -39,6 +39,8 @@ private:
         void rollback() override;
         void commit() override;
         void close() override;
+        std::shared_ptr<::ledger::core::api::DatabaseBlob> newBlob() override;
+        std::shared_ptr<::ledger::core::api::DatabaseRowId> newRowId() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseConnection, ::djinni_generated::DatabaseConnection>;
@@ -50,6 +52,8 @@ private:
     const jmethodID method_rollback { ::djinni::jniGetMethodID(clazz.get(), "rollback", "()V") };
     const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
+    const jmethodID method_newBlob { ::djinni::jniGetMethodID(clazz.get(), "newBlob", "()Lco/ledger/core/DatabaseBlob;") };
+    const jmethodID method_newRowId { ::djinni::jniGetMethodID(clazz.get(), "newRowId", "()Lco/ledger/core/DatabaseRowId;") };
 };
 
 }  // namespace djinni_generated

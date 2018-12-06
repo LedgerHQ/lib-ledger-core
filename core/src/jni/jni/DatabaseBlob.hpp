@@ -34,20 +34,22 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        std::vector<uint8_t> read() override;
+        std::vector<uint8_t> read(int64_t offset, int64_t length) override;
         int64_t write(int64_t offset, const std::vector<uint8_t> & data) override;
         int64_t append(const std::vector<uint8_t> & data) override;
         int64_t trim(int64_t newLen) override;
+        int64_t size() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseBlob, ::djinni_generated::DatabaseBlob>;
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseBlob") };
-    const jmethodID method_read { ::djinni::jniGetMethodID(clazz.get(), "read", "()[B") };
+    const jmethodID method_read { ::djinni::jniGetMethodID(clazz.get(), "read", "(JJ)[B") };
     const jmethodID method_write { ::djinni::jniGetMethodID(clazz.get(), "write", "(J[B)J") };
     const jmethodID method_append { ::djinni::jniGetMethodID(clazz.get(), "append", "([B)J") };
     const jmethodID method_trim { ::djinni::jniGetMethodID(clazz.get(), "trim", "(J)J") };
+    const jmethodID method_size { ::djinni::jniGetMethodID(clazz.get(), "size", "()J") };
 };
 
 }  // namespace djinni_generated

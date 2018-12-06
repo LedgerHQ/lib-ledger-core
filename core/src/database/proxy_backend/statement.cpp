@@ -83,7 +83,10 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::execute(i
     return make_try<details::statement_backend::exec_fetch_result>([&, this] {
         reset_if_necessary();
         _results = _stmt->execute();
-        return _results->getRowNumber() == 0 ? ef_no_data : ef_success;
+        if (number == 0)
+            return _results->getRowNumber() == 0 ? ef_no_data : ef_success;
+        else
+            return fetch(number);
     }).getOrThrowException<soci_error>();
 }
 

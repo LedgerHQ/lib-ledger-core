@@ -14,11 +14,13 @@ DatabaseBlob::JavaProxy::JavaProxy(JniType j) : Handle(::djinni::jniGetThreadEnv
 
 DatabaseBlob::JavaProxy::~JavaProxy() = default;
 
-std::vector<uint8_t> DatabaseBlob::JavaProxy::read() {
+std::vector<uint8_t> DatabaseBlob::JavaProxy::read(int64_t c_offset, int64_t c_length) {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
-    auto jret = (jbyteArray)jniEnv->CallObjectMethod(Handle::get().get(), data.method_read);
+    auto jret = (jbyteArray)jniEnv->CallObjectMethod(Handle::get().get(), data.method_read,
+                                                     ::djinni::get(::djinni::I64::fromCpp(jniEnv, c_offset)),
+                                                     ::djinni::get(::djinni::I64::fromCpp(jniEnv, c_length)));
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::Binary::toCpp(jniEnv, jret);
 }
@@ -47,6 +49,14 @@ int64_t DatabaseBlob::JavaProxy::trim(int64_t c_newLen) {
     const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
     auto jret = jniEnv->CallLongMethod(Handle::get().get(), data.method_trim,
                                        ::djinni::get(::djinni::I64::fromCpp(jniEnv, c_newLen)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I64::toCpp(jniEnv, jret);
+}
+int64_t DatabaseBlob::JavaProxy::size() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseBlob>::get();
+    auto jret = jniEnv->CallLongMethod(Handle::get().get(), data.method_size);
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::I64::toCpp(jniEnv, jret);
 }

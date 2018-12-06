@@ -95,9 +95,13 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
         case details::x_stdtm: throw soci_error("Unsupported type timestamp in select statement");
         case details::x_statement: throw soci_error("Unsupported type statement in select statement");
         case details::x_rowid: {
+            throw soci_error("Unsupported type statement in select statement");
             break;
         }
         case details::x_blob: {
+            auto b = GET(Blob, std::shared_ptr<api::DatabaseBlob>);
+            auto blob = static_cast<proxy_blob_backend *>(static_cast<soci::blob *>(_data)->get_backend());
+            blob->setBlob(b);
             break;
         }
     }
@@ -107,3 +111,4 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
 void proxy_standard_into_type_backend::clean_up() {
     // Do nothing again
 }
+

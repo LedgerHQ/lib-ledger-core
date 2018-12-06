@@ -13,13 +13,15 @@ class DatabaseBlob {
 public:
     virtual ~DatabaseBlob() {}
 
-    virtual std::vector<uint8_t> read() = 0;
+    virtual std::vector<uint8_t> read(int64_t offset, int64_t length) = 0;
 
     virtual int64_t write(int64_t offset, const std::vector<uint8_t> & data) = 0;
 
     virtual int64_t append(const std::vector<uint8_t> & data) = 0;
 
     virtual int64_t trim(int64_t newLen) = 0;
+
+    virtual int64_t size() = 0;
 };
 
 } } }  // namespace ledger::core::api

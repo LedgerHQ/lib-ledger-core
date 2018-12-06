@@ -70,7 +70,42 @@ const std::vector<std::tuple<std::string, api::DatabaseValueType >> SQLITE3_TYPE
 };
 
 class Blob : public api::DatabaseBlob {
+public:
+    Blob(const std::vector<uint8_t>& buffer) : _buffer(buffer) {}
+    Blob() {}
 
+    std::vector<uint8_t> read(int64_t offset, int64_t length) override {
+        if (_buffer.size() <= offset)
+            return std::vector<uint8_t>();
+        auto endIterator = (offset + length) >= _buffer.size() ? _buffer.end() : _buffer.begin() + offset + length;
+        return std::vector<uint8_t>(_buffer.begin() + offset, endIterator);
+    }
+
+    int64_t write(int64_t offset, const std::vector<uint8_t> &data) override {
+        _buffer.insert(_buffer.begin() + offset, data.begin(), data.end());
+        return static_cast<int64_t>(_buffer.size());
+    }
+
+    int64_t append(const std::vector<uint8_t> &data) override {
+        _buffer.insert(_buffer.end(), data.begin(),data.end());
+        return static_cast<int64_t>(_buffer.size());
+    }
+
+    int64_t trim(int64_t newLen) override {
+        _buffer.resize(static_cast<unsigned long>(newLen));
+        return size();
+    }
+
+    int64_t size() override {
+        return static_cast<int64_t>(_buffer.size());
+    }
+
+    const std::vector<uint8_t>& getBuffer() const {
+        return _buffer;
+    }
+
+private:
+    std::vector<uint8_t> _buffer;
 };
 
 class Column : public api::DatabaseColumn {
@@ -137,7 +172,9 @@ public:
     }
 
     std::shared_ptr<api::DatabaseBlob> getBlobByPos(int32_t pos) override {
-        return nullptr;
+        const auto& v = std::get<1>(_columns[pos]);
+        std::vector<uint8_t> buffer(v.begin(), v.end());
+        return std::make_shared<Blob>(buffer);
     }
 
 private:
@@ -241,7 +278,13 @@ public:
     }
 
     void bindBlob(int32_t pos, const std::shared_ptr<api::DatabaseBlob> &value) override {
-
+        sqlite3_bind_blob(
+                _stmt,
+                pos,
+                std::dynamic_pointer_cast<Blob>(value)->getBuffer().data(),
+                std::dynamic_pointer_cast<Blob>(value)->getBuffer().size(),
+                NULL
+        );
     }
 
     void bindRowId(int32_t pos, const std::shared_ptr<api::DatabaseRowId> &value) override {
@@ -334,6 +377,10 @@ class Connection : public api::DatabaseConnection {
 public:
     Connection(sqlite3* db) : _db(db) {};
 
+    std::shared_ptr<api::DatabaseRowId> newRowId() override {
+        return nullptr;
+    }
+
     std::shared_ptr<api::DatabaseStatement> prepareStatement(const std::string &query, bool repeatable) override {
         return std::make_shared<Statement>(_db, query);
     };
@@ -353,6 +400,10 @@ public:
     void close() override {
         sqlite3_close(_db);
     };
+
+    std::shared_ptr<api::DatabaseBlob> newBlob() override {
+        return std::make_shared<Blob>();
+    }
 
 private:
     sqlite3* _db;

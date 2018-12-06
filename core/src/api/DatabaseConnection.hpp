@@ -9,6 +9,8 @@
 
 namespace ledger { namespace core { namespace api {
 
+class DatabaseBlob;
+class DatabaseRowId;
 class DatabaseStatement;
 
 class DatabaseConnection {
@@ -24,6 +26,10 @@ public:
     virtual void commit() = 0;
 
     virtual void close() = 0;
+
+    virtual std::shared_ptr<DatabaseBlob> newBlob() = 0;
+
+    virtual std::shared_ptr<DatabaseRowId> newRowId() = 0;
 };
 
 } } }  // namespace ledger::core::api

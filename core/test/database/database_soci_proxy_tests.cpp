@@ -37,6 +37,7 @@
 #include <list>
 #include <algorithm>
 #include <cmath>
+#include <array>
 
 using namespace ledger::core;
 
@@ -106,11 +107,16 @@ protected:
     }
 
     void insertPeople(soci::session& sql, const People& people) {
-        //soci::blob blob(sql);
-        //blob.write(0, (const char *)picture.data(), picture.size());
-
-        sql << "INSERT INTO people(id, name, age, grade) VALUES(:id, :name, :age, :grade)",
-            soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade);
+        if (!people.picture.empty()) {
+            soci::blob blob(sql);
+            blob.write(0, (const char *)people.picture.data(), people.picture.size());
+            sql << "INSERT INTO people(id, name, age, grade, picture) VALUES(:id, :name, :age, :grade, :picture)",
+                    soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade),
+                    soci::use(blob);
+        } else {
+            sql << "INSERT INTO people(id, name, age, grade) VALUES(:id, :name, :age, :grade)",
+                    soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade);
+        }
         for (const auto& i : people.items) {
             insertItem(sql, i);
         }
@@ -121,9 +127,24 @@ protected:
             soci::use(item.quantity), soci::use(item.owner);
     }
 
-    std::vector<People> generateData(int count) {
+    std::vector<uint8_t> blob_to_vector(soci::blob& blob) {
+        std::vector<uint8_t> out;
+        std::array<uint8_t, 2> buffer;
+        std::size_t offset = 0;
+        begin:
+        auto r = blob.read(offset, (char *)buffer.data(), buffer.size());
+        if (r > 0) {
+            out.insert(out.end(), buffer.begin(), buffer.begin() + r);
+            offset += r;
+            goto begin;
+        }
+        return out;
+    }
+
+    std::vector<People> generateData(int count, bool withPicture = false) {
         int64_t Long = 0xDEADBEEFC0FFEL; // Random sentence
         int Int = 1337; // Because 1337 is always random
+        uint8_t Byte = 0x0F;
         int id = 1;
         double Double = 55.67891;
         std::vector<People> people;
@@ -133,6 +154,14 @@ protected:
             for (auto i = 0; i < itemsCount; i++) {
                 Item item {fmt::format("{}", RAND(Double)), RAND(Long), p.id};
                 p.items.emplace_back(item);
+            }
+            // Generate the picture
+            if (withPicture) {
+                auto pictureLen = 10 + RAND(Int) % 200;
+                while (pictureLen > 0) {
+                    p.picture.push_back(RAND(Byte));
+                    pictureLen -= 1;
+                }
             }
             people.emplace_back(p);
             count = count - 1;
@@ -238,10 +267,35 @@ TEST_F(SociProxyTest, SelectWithRows) {
     EXPECT_EQ(people.size(), from_db.size());
 }
 
+TEST_F(SociProxyTest, SelectNullField) {
+    createTables(sql);
+    auto people = generateData(1);
+    insertPeople(sql, people);
+
+    soci::indicator ind_name, ind_picture;
+    std::string name;
+    soci::blob picture(sql);
+
+    sql << "SELECT name, picture FROM people", soci::into(name, ind_name), soci::into(picture, ind_picture);
+    EXPECT_EQ(ind_picture, soci::i_null);
+    EXPECT_EQ(ind_name, soci::i_ok);
+    EXPECT_EQ(name, people.front().name);
+}
+
 TEST_F(SociProxyTest, GetEntryRowId) {
 
 }
 
 TEST_F(SociProxyTest, InsertAndGetBlobs) {
+    createTables(sql);
+    auto people = generateData(1, true);
+    people[0].items.clear();
+    insertPeople(sql, people[0]);
 
+    std::string name;
+    soci::blob picture(sql);
+
+    sql << "SELECT name, picture FROM people", soci::into(name), soci::into(picture);
+    EXPECT_EQ(name, people.front().name);
+    EXPECT_EQ(blob_to_vector(picture), people.front().picture);
 }
