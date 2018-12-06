@@ -130,7 +130,7 @@ namespace ledger {
             auto length = to - from;
             std::vector<BitcoinLikeKeychain::Address> result;
             result.reserve((length + 1) * 2);
-            for (auto i = 0; i <= length; i++) {
+            for (uint32_t i = 0; i <= length; i++) {
                 result.push_back(derive(KeyPurpose::RECEIVE, from + i));
                 result.push_back(derive(KeyPurpose::CHANGE, from + i));
             }

@@ -97,6 +97,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 if(MSVC)
+    add_definitions(-DHAVE_C99INCLUDES)
     include(GenerateExportHeader)
     generate_export_header(ledger-core EXPORT_MACRO_NAME LIBCORE_EXPORT
             EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/ledger/core/export/libcore_export.h)

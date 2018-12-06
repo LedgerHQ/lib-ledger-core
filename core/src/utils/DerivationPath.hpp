@@ -28,8 +28,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DERIVATIONPATH_HPP
-#define LEDGER_CORE_DERIVATIONPATH_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -46,22 +45,22 @@ namespace ledger {
             DerivationPath& operator=(DerivationPath&& path);
             DerivationPath& operator=(const DerivationPath& path);
             uint32_t getDepth() const;
-            uint32_t getLastChildNum() const throw(ledger::core::Exception);
-            uint32_t getNonHardenedChildNum(int index) const throw(ledger::core::Exception);
-            uint32_t getNonHardenedLastChildNum() const throw(ledger::core::Exception);
-            uint32_t operator[](int index) const throw(Exception);
+            uint32_t getLastChildNum() const;
+            uint32_t getNonHardenedChildNum(int index) const;
+            uint32_t getNonHardenedLastChildNum() const;
+            uint32_t operator[](int index) const;
             DerivationPath operator+(const DerivationPath& derivationPath) const;
             bool operator==(const DerivationPath& path) const;
             bool operator!=(const DerivationPath& path) const;
-            DerivationPath getParent() const throw(ledger::core::Exception);
+            DerivationPath getParent() const ;
             bool isRoot() const;
             std::string toString(bool addLeadingM = false) const;
             std::vector<uint32_t> toVector() const;
-            bool isHardened(int index) const throw(ledger::core::Exception);
-            bool isLastChildHardened() const throw(ledger::core::Exception);
+            bool isHardened(int index) const;
+            bool isLastChildHardened() const;
 
         public:
-            static std::vector<uint32_t> parse(const std::string& path) throw(Exception);
+            static std::vector<uint32_t> parse(const std::string& path);
             static DerivationPath fromScheme(
                 const std::string& scheme,
                 int coinType,
@@ -72,13 +71,10 @@ namespace ledger {
             );
 
         private:
-            inline void assertIndexIsValid(int index, const std::string& method) const throw(Exception);
+            inline void assertIndexIsValid(uint32_t index, const std::string& method) const;
 
         private:
             std::vector<uint32_t> _path;
         };
     }
 }
-
-
-#endif //LEDGER_CORE_DERIVATIONPATH_HPP

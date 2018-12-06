@@ -12,7 +12,7 @@ add_library(ledger-test STATIC
 include_directories(${CMAKE_BINARY_DIR}/include ../../../lib/openssl/include)
 if (MSVC)
     add_dependencies(ledger-test ledger-core)
-    target_include_directories(ledger-test PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
+    target_include_directories(ledger-test PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core ${CMAKE_BINARY_DIR}/include/ledger/core/export)
 endif ()
 target_link_libraries(ledger-test PUBLIC crypto)
 target_link_libraries(ledger-test PUBLIC ssl)
