@@ -1,6 +1,5 @@
 #pragma once
 
-#include <database/DatabaseBlock.hpp>
 #include <utils/Option.hpp>
 #include <async/Future.hpp>
 #include <vector>
@@ -11,17 +10,19 @@ namespace ledger {
 			// Storage interfaces for blockchain
 			class ReadOnlyBlockchainDB {
             public:
+                typedef std::vector<uint8_t> RawBlock;
+                typedef std::pair<uint32_t, RawBlock> RawBlockWithHeight;
                 virtual ~ReadOnlyBlockchainDB() {};
 				// Get all blocks with height in [heightFrom, heightTo)
-				virtual Future<std::vector<DatabaseBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
-                virtual Future<Option<DatabaseBlock>> GetBlock(uint32_t height) = 0;
-				virtual Future<Option<DatabaseBlockHeader>> GetLastBlockHeader() = 0;
+				virtual Future<std::vector<RawBlockWithHeight>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
+                virtual Future<Option<RawBlock>> GetBlock(uint32_t height) = 0;
+				virtual Future<Option<RawBlockWithHeight>> GetLastBlock() = 0;
 			};
 
 			class BlockchainDB: public ReadOnlyBlockchainDB {
 			public:
                 virtual ~BlockchainDB() {};
-				virtual void AddBlock(const DatabaseBlock& block) = 0;
+				virtual void AddBlock(uint32_t height, const RawBlock& block) = 0;
 				// Remove all blocks with height in [heightFrom, heightTo)
 				virtual void RemoveBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
 				// Remove all blocks with height < heightTo

@@ -80,7 +80,7 @@ namespace ledger {
 
                 std::vector<std::string> getAddresses(uint32_t startIndex, uint32_t count);
 
-                void markAsUsed(std::string& address);
+                void markAsUsed(const std::string& address);
 
             private:
                 uint32_t _alreadyUsed;

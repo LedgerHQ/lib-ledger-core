@@ -24,9 +24,10 @@ namespace ledger {
                 }
             }
 
-            void BlockchainLevelDB::AddBlock(const DatabaseBlock& block) {
-                auto key = serializeKey(block.header.height);
-                handleError(_db->Put(leveldb::WriteOptions(), key, serializeValue(block)));
+            void BlockchainLevelDB::AddBlock(uint32_t height, const RawBlock& block) {
+                auto key = serializeKey(height);
+                leveldb::Slice slice(reinterpret_cast<const char*>(block.data()), block.size());
+                handleError(_db->Put(leveldb::WriteOptions(), key, slice));
             }
 
             void BlockchainLevelDB::RemoveBlocks(uint32_t heightFrom, uint32_t heightTo) {
@@ -52,36 +53,42 @@ namespace ledger {
                 handleError(_db->Write(leveldb::WriteOptions(), &batch));
             }
 
-            Future<std::vector<DatabaseBlock>> BlockchainLevelDB::GetBlocks(uint32_t heightFrom, uint32_t heightTo) {
-                std::vector<DatabaseBlock> res;
+            Future<std::vector<BlockchainDB::RawBlockWithHeight>> BlockchainLevelDB::GetBlocks(uint32_t heightFrom, uint32_t heightTo) {
+                std::vector<RawBlockWithHeight> res;
                 auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 it->Seek(serializeKey(heightFrom));
                 for (; it->Valid(); it->Next()) {
-                    if (deserializeKey(it->key().ToString()) >= heightTo)
+                    uint32_t height = deserializeKey(it->key());
+                    if (height >= heightTo)
                         break;
-                    res.push_back(getValue(it));
+                    res.push_back(std::make_pair(height, sliceToBlock(it->value())));
                 }
-                return Future<std::vector<DatabaseBlock>>::successful(res);
+                return Future<std::vector<RawBlockWithHeight>>::successful(res);
             }
 
-            Future<Option<DatabaseBlock>> BlockchainLevelDB::GetBlock(uint32_t height) {
+            Future<Option<BlockchainDB::RawBlock>> BlockchainLevelDB::GetBlock(uint32_t height) {
                 std::string value;
                 auto status = _db->Get(leveldb::ReadOptions(), serializeKey(height), &value);
                 if (status.ok()) {
-                    return Future<Option<DatabaseBlock>>::successful(getValue(height, value));
+                    return Future<Option<RawBlock>>::successful(RawBlock());
                 }
                 if (status.IsNotFound()) { // not a error
-                    return Future<Option<DatabaseBlock>>::successful(Option<DatabaseBlock>());
+                    return Future<Option<RawBlock>>::successful(Option<RawBlock>());
                 }
-                return Future<Option<DatabaseBlock>>::failure(Exception(api::ErrorCode::UNKNOWN, fmt::format("Error during getting block {}: {}", height, status.ToString())));
+                return Future<Option<RawBlock>>::failure(Exception(api::ErrorCode::UNKNOWN, fmt::format("Error during getting block {}: {}", height, status.ToString())));
             }
 
-            Future<Option<DatabaseBlockHeader>> BlockchainLevelDB::GetLastBlockHeader() {
+            Future<Option<BlockchainDB::RawBlockWithHeight>> BlockchainLevelDB::GetLastBlock() {
                 auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 it->SeekToLast();
                 if (!it->Valid())
-                    return Future<Option<DatabaseBlockHeader>>::successful(Option<DatabaseBlockHeader>());
-                return Future<Option<DatabaseBlockHeader>>::successful(Option<DatabaseBlockHeader>(getValue(it).header));
+                    return Future<Option<RawBlockWithHeight>>::successful(Option<RawBlockWithHeight>());
+                return Future<Option<RawBlockWithHeight>>::successful(
+                    Option<RawBlockWithHeight>(std::make_pair(deserializeKey(it->key()), sliceToBlock(it->value()))));
+            }
+
+            BlockchainDB::RawBlock BlockchainLevelDB::sliceToBlock(const leveldb::Slice& value) {
+                return RawBlock(value.data(), value.data() + value.size());
             }
 
             void BlockchainLevelDB::CleanAll() {
@@ -93,44 +100,8 @@ namespace ledger {
                 return key;
             }
 
-            uint32_t BlockchainLevelDB::deserializeKey(const std::string& key) {
-                return boost::lexical_cast<uint32_t>(key);
-            }
-
-            std::string BlockchainLevelDB::serializeValue(const DatabaseBlock& block) {
-                std::stringstream ss;
-                {
-                    cereal::BinaryOutputArchive oarchive(ss);
-                    oarchive(block.header.hash, block.data);
-                }
-                return ss.str();
-            }
-
-            std::pair<std::string, std::vector<uint8_t>> BlockchainLevelDB::deserializeValue(const std::string& value) {
-                std::pair<std::string, std::vector<uint8_t>> res;
-                std::stringstream ss(value);
-                {
-                    cereal::BinaryInputArchive iarchive(ss);
-                    iarchive(res.first, res.second);
-                }
-                return res;
-            }
-
-            DatabaseBlock BlockchainLevelDB::getValue(uint32_t key, const std::string& hash, const std::vector<uint8_t>& data) {
-                DatabaseBlock block;
-                block.header.height = key;
-                block.header.hash = hash;
-                block.data = data;
-                return block;
-            }
-
-            DatabaseBlock BlockchainLevelDB::getValue(uint32_t key, const std::string& value) {
-                auto pr = deserializeValue(value);
-                return getValue(key, pr.first, pr.second);
-            }
-
-            DatabaseBlock BlockchainLevelDB::getValue(const std::shared_ptr<leveldb::Iterator>& it) {
-                return getValue(deserializeKey(it->key().ToString()), it->value().ToString());
+            uint32_t BlockchainLevelDB::deserializeKey(const leveldb::Slice& key) {
+                return boost::lexical_cast<uint32_t>(key.data(), key.size());
             }
         }
     }

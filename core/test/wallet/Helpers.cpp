@@ -138,7 +138,7 @@ namespace ledger {
                 return res;
             }
 
-            void FakeKeyChain::markAsUsed(std::string& address) {
+            void FakeKeyChain::markAsUsed(const std::string& address) {
                 try {
                     auto addr = boost::lexical_cast<uint32_t>(address);
                     _alreadyUsed = std::max(_alreadyUsed, addr - _seed + 1);

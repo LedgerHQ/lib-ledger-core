@@ -23,18 +23,18 @@ namespace ledger {
             public:
                 MOCK_METHOD0(getNumberOfUsedAddresses, uint32_t());
                 MOCK_METHOD2(getAddresses, std::vector<std::string>(uint32_t startIndex, uint32_t count));
-                MOCK_METHOD1(markAsUsed, void(std::string& address));
+                MOCK_METHOD1(markAsUsed, void(const std::string& address));
             };
 
             class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork> {
             public:
                 MOCK_METHOD1(addBlocks, void(const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks));
                 MOCK_METHOD1(addBlock, void(const BitcoinLikeNetwork::FilledBlock& blocks));
-                MOCK_METHOD2(removeBlocks, void(int heightFrom, int heightTo));
-                MOCK_METHOD1(removeBlocksUpTo, void(int heightTo));
+                MOCK_METHOD2(removeBlocks, void(uint32_t heightFrom, uint32_t heightTo));
+                MOCK_METHOD1(removeBlocksUpTo, void(uint32_t heightTo));
                 MOCK_METHOD0(CleanAll, void());
-                MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(int heightFrom, int heightTo));
-                MOCK_METHOD1(getBlock, FuturePtr<FilledBlock>(int height));
+                MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
+                MOCK_METHOD1(getBlock, FuturePtr<FilledBlock>(uint32_t height));
                 MOCK_METHOD0(getLastBlockHeader, FuturePtr<Block>());
             };
         }

@@ -327,16 +327,21 @@ namespace ledger {
             }
 
             TEST_F(BlockSyncTest, ExplorerError) {
+                // Simulate a situation when we have more then TRUNCATION_LEVEL operations on one block
+                // and this block is not the last one thet contain transactions.
+                // This case is not implemented yet, it would require to make additional request to Explorer
+                // to get next block hash.
                 SetUp(1, 1);
                 const uint32_t LAST_BLOCK = 300;
-                const uint32_t TRUNCATION_LEVEL = 100;
+                const uint32_t TRUNCATION_LEVEL = 200;
                 fakeExplorer.setTruncationLevel(TRUNCATION_LEVEL);
                 setupFakeKeychains();
                 std::vector<BL> bch;
-                for (uint32_t i = 1; i <= 300; ++i) {
-                    auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
+                for (uint32_t i = 1; i <= 200; ++i) {
+                    auto b = BL{ 1, "block 1",{ TR{ { "X" + boost::lexical_cast<std::string>(i) },{ { "0", 10000 } } } } };
                     bch.push_back(b);
                 }
+                bch.push_back(BL{ 2, "block 2",{ TR{ { "X" },{ { "0", 10000 } } } } });
                 setBlockchain(bch);
                 firstBlock->hash = "block 1";
                 firstBlock->height = 1;
@@ -348,7 +353,7 @@ namespace ledger {
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isFailure());
-                EXPECT_EQ(f.getValue().getValue().getFailure().getErrorCode(), api::ErrorCode::API_ERROR);
+                EXPECT_EQ(f.getValue().getValue().getFailure().getErrorCode(), api::ErrorCode::IMPLEMENTATION_IS_MISSING);
             }
 
             TEST_F(BlockSyncTest, LongBlockChain) {

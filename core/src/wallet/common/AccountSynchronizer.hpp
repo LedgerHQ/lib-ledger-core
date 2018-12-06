@@ -3,7 +3,6 @@
 
 #include <api/ExecutionContext.hpp>
 #include <async/DedicatedContext.hpp>
-#include <database/PartialBlocksDB.hpp>
 #include <preferences/Preferences.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <wallet/BlockchainDatabase.hpp>
