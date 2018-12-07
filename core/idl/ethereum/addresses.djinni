@@ -1,8 +1,9 @@
+@import "../math/big_int.djinni"
 
 EthereumLikeNetworkParameters = record {
 	Identifier: string;
 	MessagePrefix: string;
-	ChainID: binary;
+	ChainID: string;
 	XPUBVersion: binary;
 	AdditionalEIPs: list<string>;
 	TimestampDelay: i64;

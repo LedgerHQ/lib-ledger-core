@@ -91,7 +91,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :chainID, :xpub, :prefix, :additionalBIPs)",
                         use(currency.name),
                         use(params.Identifier),
-                        use(hex::toString(params.ChainID)),
+                        use(params.ChainID),
                         use(hex::toString(params.XPUBVersion)),
                         use(params.MessagePrefix),
                         use(EIPs);
@@ -172,7 +172,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                         " WHERE ethereum_currencies.name = :currency_name", use(currency.name));
                 for (auto& eth_row : eth_rows) {
                     api::EthereumLikeNetworkParameters params;
-                    params.ChainID = hex::toByteArray(eth_row.get<std::string>(0));
+                    params.ChainID = eth_row.get<std::string>(0);
                     params.XPUBVersion = hex::toByteArray(eth_row.get<std::string>(1));
                     params.MessagePrefix = eth_row.get<std::string>(2);
                     params.Identifier = eth_row.get<std::string>(3);

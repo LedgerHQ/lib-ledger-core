@@ -15,7 +15,7 @@ auto EthereumLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) ->
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.Identifier)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.MessagePrefix)),
-                                                           ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.ChainID)),
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.ChainID)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.XPUBVersion)),
                                                            ::djinni::get(::djinni::List<::djinni::String>::fromCpp(jniEnv, c.AdditionalEIPs)),
                                                            ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.TimestampDelay)))};
@@ -29,7 +29,7 @@ auto EthereumLikeNetworkParameters::toCpp(JNIEnv* jniEnv, JniType j) -> CppType 
     const auto& data = ::djinni::JniClass<EthereumLikeNetworkParameters>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_Identifier)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_MessagePrefix)),
-            ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_ChainID)),
+            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_ChainID)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_XPUBVersion)),
             ::djinni::List<::djinni::String>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_AdditionalEIPs)),
             ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_TimestampDelay))};

@@ -122,12 +122,13 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024C
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_rSignature, jbyteArray j_sSignature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_vSignature, jbyteArray j_rSignature, jbyteArray j_sSignature)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
-        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_rSignature),
+        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_vSignature),
+                          ::djinni::Binary::toCpp(jniEnv, j_rSignature),
                           ::djinni::Binary::toCpp(jniEnv, j_sSignature));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -138,6 +139,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProx
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
         ref->setDERSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppProxy_native_1setVSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_vSignature)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
+        ref->setVSignature(::djinni::Binary::toCpp(jniEnv, j_vSignature));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

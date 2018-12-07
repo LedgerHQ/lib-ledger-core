@@ -35,8 +35,9 @@ EthereumLikeTransaction = interface +c {
     # Serialize the transaction to its raw format.
     serialize(): binary;
     # Set signature of transaction, when a signature is set serialize method gives back serialized Tx
-    setSignature(rSignature: binary, sSignature: binary);
+    setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
     setDERSignature(signature: binary);
+    setVSignature(vSignature: binary);
     # Get the time when the transaction was issued or the time of the block including
     # this transaction
     getDate(): date;

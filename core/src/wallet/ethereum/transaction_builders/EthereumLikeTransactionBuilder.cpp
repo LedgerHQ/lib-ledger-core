@@ -68,7 +68,6 @@ namespace ledger {
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder>
         EthereumLikeTransactionBuilder::wipeToAddress(const std::string & address) {
-            //TODO
             _request.toAddress = address;
             _request.wipe = true;
             return shared_from_this();
@@ -130,7 +129,7 @@ namespace ledger {
             //TODO: throw if size is KO
             auto tx = std::make_shared<EthereumLikeTransactionApi>(currency);
             int index = 0;
-            std::vector<uint8_t> rSignature, sSignature;
+            std::vector<uint8_t> vSignature, rSignature, sSignature;
             for (auto &child: children) {
                 if (child->isList()) {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No List in this TX");
@@ -158,6 +157,9 @@ namespace ledger {
                     case 5:
                         tx->setData(hex::toByteArray(childHexString));
                         break;
+                    case 6:
+                        vSignature = hex::toByteArray(childHexString);
+                        break;
                     case 7: //6 would be the 'V' field of V,R and S signature
                         //R signature
                         rSignature = hex::toByteArray(childHexString);
@@ -173,7 +175,7 @@ namespace ledger {
             }
 
             if (isSigned) {
-                tx->setSignature(rSignature, sSignature);
+                tx->setSignature(vSignature, rSignature, sSignature);
             }
 
             return tx;
