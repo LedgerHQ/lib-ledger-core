@@ -305,8 +305,8 @@ namespace ledger {
                     );
                     return DOGECOIN;
                 } else if (networkName == "unobtanium") {
-                    static const api::BitcoinLikeNetworkParameters DOGECOIN(
-                            "doge",
+                    static const api::BitcoinLikeNetworkParameters UNOBTANIUM(
+                            "uno",
                             {0x82},
                             {0x1E},
                             {0x04, 0x88, 0xB2, 0x1E},
