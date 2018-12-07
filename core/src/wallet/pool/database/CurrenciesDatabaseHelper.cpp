@@ -88,9 +88,10 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 strings::join(params.AdditionalEIPs, additionalEIPs, separator);
                 auto EIPs = additionalEIPs.str();
 
-                sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalBIPs)",
+                sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :chainID, :xpub, :prefix, :additionalBIPs)",
                         use(currency.name),
                         use(params.Identifier),
+                        use(hex::toString(params.ChainID)),
                         use(hex::toString(params.XPUBVersion)),
                         use(params.MessagePrefix),
                         use(EIPs);
@@ -164,17 +165,18 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
             }
             case api::WalletType::ETHEREUM: {
 
-                rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.xpub_version,"
+                rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.chain_id, ethereum_currencies.xpub_version,"
                         " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"
                         " ethereum_currencies.additional_EIPs "
                         " FROM ethereum_currencies "
                         " WHERE ethereum_currencies.name = :currency_name", use(currency.name));
                 for (auto& eth_row : eth_rows) {
                     api::EthereumLikeNetworkParameters params;
-                    params.XPUBVersion = hex::toByteArray(eth_row.get<std::string>(0));
-                    params.MessagePrefix = eth_row.get<std::string>(1);
-                    params.Identifier = eth_row.get<std::string>(2);
-                    params.AdditionalEIPs = strings::split(eth_row.get<std::string>(3), ",");
+                    params.ChainID = hex::toByteArray(eth_row.get<std::string>(0));
+                    params.XPUBVersion = hex::toByteArray(eth_row.get<std::string>(1));
+                    params.MessagePrefix = eth_row.get<std::string>(2);
+                    params.Identifier = eth_row.get<std::string>(3);
+                    params.AdditionalEIPs = strings::split(eth_row.get<std::string>(4), ",");
                     currency.ethereumLikeNetworkParameters = params;
                 }
 

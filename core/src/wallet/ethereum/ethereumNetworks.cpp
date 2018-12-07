@@ -40,7 +40,7 @@ namespace ledger {
                     static const api::EthereumLikeNetworkParameters ETHEREUM(
                             "eth",
                             "Ethereum signed message:\n",
-                            {0x01},
+                            {0x26},
                             {0x04, 0x88, 0xB2, 0x1E},
                             {},
                             0
@@ -52,7 +52,7 @@ namespace ledger {
                     static const api::EthereumLikeNetworkParameters ETHEREUM_ROPSTEN(
                             "eth_ropsten",
                             "Ethereum signed message:\n",
-                            {0x03},
+                            {0x2A},
                             {0x04, 0x35, 0x87, 0xCF},
                             {},
                             0
