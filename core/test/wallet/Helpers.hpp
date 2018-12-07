@@ -55,6 +55,7 @@ namespace ledger {
             class FakeExplorer {
             public:
                 typedef BitcoinLikeNetwork::Transaction Tran;
+                typedef BitcoinLikeNetwork::Block Block;
                 typedef std::pair<std::vector<Tran>, bool> TransactionBulk;
                 typedef BitcoinLikeNetwork::Input Input;
                 typedef BitcoinLikeNetwork::Output Output;
@@ -65,7 +66,7 @@ namespace ledger {
 
                 void setTruncationLevel(uint32_t numberOfTransactionsAllowed);
 
-                FuturePtr<TransactionBulk> getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session); 
+                Future<TransactionBulk> getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session); 
             private:
                 std::vector<Tran> _transactions;
                 std::map<std::string, uint32_t> _blockHashes;

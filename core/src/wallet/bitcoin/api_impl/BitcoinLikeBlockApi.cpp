@@ -42,6 +42,6 @@ std::chrono::system_clock::time_point ledger::core::BitcoinLikeBlockApi::getTime
     return _block.createdAt;
 }
 
-ledger::core::BitcoinLikeBlockApi::BitcoinLikeBlockApi(const ledger::core::Block &block) {
+ledger::core::BitcoinLikeBlockApi::BitcoinLikeBlockApi(const ledger::core::bitcoin::Block &block) {
     _block = block;
 }

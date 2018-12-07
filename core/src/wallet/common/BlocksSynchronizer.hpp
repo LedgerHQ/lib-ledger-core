@@ -105,13 +105,13 @@ namespace ledger {
                 }
 
                 Future<Unit> synchronize(
-                    const std::shared_ptr<Block>& firstBlock,
-                    const std::shared_ptr<Block>& lastBlock) {
+                    const Block& firstBlock,
+                    const Block& lastBlock) {
                     std::vector<Future<Unit>> tasks; 
                     auto partialBlockDB = std::make_shared<InMemoryPartialBlocksDB<NetworkType>>();
-                    auto state = std::make_shared<BlocksSyncState>(firstBlock->height, lastBlock->height);
-                    bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, firstBlock->hash, firstBlock->height, lastBlock->height);
-                    bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, firstBlock->hash, firstBlock->height, lastBlock->height);
+                    auto state = std::make_shared<BlocksSyncState>(firstBlock.height, lastBlock.height);
+                    bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, firstBlock.hash, firstBlock.height, lastBlock.height);
+                    bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, firstBlock.hash, firstBlock.height, lastBlock.height);
                     return executeAll(_executionContext, tasks).map<Unit>(_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                 }
             private:
@@ -167,11 +167,11 @@ namespace ledger {
                             if (trans.size() == 0)
                                 continue;
                             FilledBlock block;
-                            block.first = Block();
-                            block.first.height = i;
-                            block.first.hash = trans[0].block.getValue().hash;
-                            block.first.createdAt = trans[0].block.getValue().createdAt;
-                            block.second = trans;
+                            block.header = Block();
+                            block.header.height = i;
+                            block.header.hash = trans[0].block.getValue().hash;
+                            block.header.createdAt = trans[0].block.getValue().createdAt;
+                            block.transactions = trans;
                             _blocksDB->addBlock(block); // write to disk by default is async
                             // try to not consume to much memory
                             partialDB->removeBlock(i);
@@ -191,20 +191,20 @@ namespace ledger {
                     auto self = shared_from_this();
                     return
                         _explorer->getTransactions(batch->addresses, hashToStartRequestFrom)
-                        .flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const std::shared_ptr<TransactionBulk>& bulk) {
-                        if (bulk->first.size() == 0) {
+                        .flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const TransactionBulk& bulk) {
+                        if (bulk.first.size() == 0) {
                             self->finilizeBatch(state, partialDB, from, to);
                             return Future<Unit>::successful(unit);
                         }
                         static std::function<bool(const Transaction& l, const Transaction& r)> blockLess = [](const Transaction& l, const Transaction& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
-                        Block highestBlock = std::max_element(bulk->first.begin(), bulk->first.end(), blockLess)->block.getValue();
-                        Block lowestBlock = std::min_element(bulk->first.begin(), bulk->first.end(), blockLess)->block.getValue();
+                        Block highestBlock = std::max_element(bulk.first.begin(), bulk.first.end(), blockLess)->block.getValue();
+                        Block lowestBlock = std::min_element(bulk.first.begin(), bulk.first.end(), blockLess)->block.getValue();
                         if (lowestBlock.height < from) {
                             return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, "Explorer return transaction with block height less then requested"));
                         }
                         uint32_t lastFullBlockHeight = to;
-                        if (bulk->second) { //response truncated
-                            if (bulk->first.size() < self->_maxTransactionPerResponse) {
+                        if (bulk.second) { //response truncated
+                            if (bulk.first.size() < self->_maxTransactionPerResponse) {
                                // return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, fmt::format("Explorer returned truncated response with less then {} operations", self->_maxTransactionPerResponse)));
                                 // TODO: log warning
                             }
@@ -216,7 +216,7 @@ namespace ledger {
                             }
                         }
                         uint32_t limit = std::min(lastFullBlockHeight, to); // want only transactions from untruncated blocks
-                        for (auto &tr : bulk->first) {
+                        for (auto &tr : bulk.first) {
                             if (tr.block.getValue().height <= limit) {
                                 partialDB->addTransaction(tr);
                                 for (auto& out : tr.outputs) {

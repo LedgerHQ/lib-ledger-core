@@ -42,7 +42,7 @@
 #include <wallet/NetworkTypes.hpp>
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
-#include <wallet/common/Block.hpp>
+#include <wallet/bitcoin/Bitcoin.hpp> // remove me when you start implement Operation Cache
 
 namespace ledger {
     namespace core {
@@ -56,7 +56,7 @@ namespace ledger {
             std::vector<std::string> recipients;
             BigInt amount;
             Option<BigInt> fees;
-            Option<Block> block;
+            Option<bitcoin::Block> block;
             std::string currencyName;
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;

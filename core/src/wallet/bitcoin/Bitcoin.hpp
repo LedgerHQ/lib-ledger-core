@@ -5,11 +5,26 @@
 #include <vector>
 #include "utils/Option.hpp"
 #include "math/BigInt.h"
-#include <wallet/common/Block.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/common.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/chrono.hpp>
 
 namespace ledger {
     namespace core {
         namespace bitcoin {
+            struct Block {
+                std::string hash;
+                uint32_t height;
+                std::chrono::system_clock::time_point createdAt;
+
+                template <class Archive>
+                void serialize(Archive & ar) {
+                    
+                    ar(height, hash);
+                }
+            };
+
             struct Input {
                 uint64_t index;
                 Option<BigInt> value;
@@ -22,6 +37,19 @@ namespace ledger {
                 Input() {
                     sequence = 0xFFFFFFFF;
                 };
+
+                template <class Archive>
+                void serialize(Archive & ar) {
+                    ar(
+                        index,
+                        value,
+                        previousTxHash,
+                        previousTxOutputIndex,
+                        address,
+                        signatureScript,
+                        coinbase,
+                        sequence);
+                }
             };
 
             struct Output {
@@ -32,6 +60,17 @@ namespace ledger {
                 std::string script;
                 Output() = default;
                 std::string time;
+                template <class Archive>
+                void serialize(Archive & ar) {
+                    ar(
+                        index,
+                        transactionHash,
+                        value,
+                        address,
+                        script,
+                        time);
+                }
+
             };
 
             struct Transaction {
@@ -47,6 +86,19 @@ namespace ledger {
                 Transaction() {
                     version = 1;
                     confirmations = -1;
+                }
+                template <class Archive>
+                void serialize(Archive & ar) {
+                    ar(
+                        version,
+                        hash,
+                        receivedAt,
+                        lockTime,
+                        //block
+                        //inputs,
+                        //outputs,
+                        //fees
+                        confirmations);
                 }
             };
         };

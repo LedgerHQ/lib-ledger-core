@@ -17,6 +17,8 @@
 #include <net/HttpClient.hpp>
 #include <wallet/currencies.hpp>
 #include <ledger/core/api/BitcoinLikeAddress.hpp>
+#include <database/BlockchainLevelDB.hpp>
+#include <wallet/common/PersistentBlockchainDatabase.hpp>
 
 using namespace std;
 using namespace ledger::qt;
@@ -35,38 +37,6 @@ public:
     }
     virtual uint32_t getMaxUsedIndex() {
         return 0;
-    }
-};
-
-class BlockDB : public BlockchainDatabase<BitcoinLikeNetwork> {
-public:
-    void addBlocks(const std::vector<FilledBlock>& blocks) {
-        throw "not implemented";
-    }
-    void addBlock(const FilledBlock& block) {
-        std::cout << block.first.height << " with " << block.second.size() << " transactions"<<std::endl;
-    }
-    
-    void removeBlocks(int heightFrom, int heightTo) {
-        throw "not implemented";
-    }
-    
-    void removeBlocksUpTo(int heightTo) {
-        throw "not implemented";
-    }
-    void CleanAll() {
-        throw "not implemented";
-    }
-    
-    Future<std::vector<FilledBlock>> getBlocks(int heightFrom, int heightTo) {
-        throw "not implemented";
-    }
-    FuturePtr<FilledBlock> getBlock(int height) {
-        throw "not implemented";
-    }
-    // Return the last block header or genesis block
-    FuturePtr<Block> getLastBlockHeader() {
-        throw "not implemented";
     }
 };
 
@@ -128,11 +98,11 @@ int main() {
     auto changeKey = pub.derive(1);
     auto recieveChain = std::make_shared<bitcoin::ChangeKeychain>(receiveKey, getP2PKHAddress, keysDB);
     auto changeChain = std::make_shared<bitcoin::ChangeKeychain>(changeKey, getP2PKHAddress, keysDB);
-    auto firstBlock = std::make_shared<Block>();
-    firstBlock->height = 1;
-    firstBlock->hash = "4da631f2ac1bed857bd968c67c913978274d8aabed64ab2bcebc1665d7f4d3a0";
-    auto lastBlock = std::make_shared<Block>();
-    lastBlock->height = 7783743;
+    BitcoinLikeNetwork::Block firstBlock;
+    firstBlock.height = 1;
+    firstBlock.hash = "4da631f2ac1bed857bd968c67c913978274d8aabed64ab2bcebc1665d7f4d3a0";
+    BitcoinLikeNetwork::Block lastBlock;
+    lastBlock.height = 7783743;
     /**/
     /*  VTC 
     auto network = currencies::VERTCOIN.bitcoinLikeNetworkParameters.value();
@@ -152,7 +122,8 @@ int main() {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto mainContext = dispatcher->getMainExecutionContext();
 
-    auto blockDB = std::make_shared<BlockDB>();
+    std::shared_ptr<db::BlockchainDB> persistentLayer = std::make_shared<db::BlockchainLevelDB>("blockdb");
+    auto blockDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork>>(mainContext, persistentLayer);
     auto httpClient = std::make_shared<QtHttpClient>(mainContext);
     auto coreHttpClient = std::make_shared<HttpClient>("http://api.ledgerwallet.com", httpClient, mainContext);
     auto config = std::make_shared<DynamicObject>();
@@ -170,11 +141,27 @@ int main() {
             200
             );
        
-    block_sync->synchronize(firstBlock, lastBlock).onComplete(mainContext, [](const Try<Unit>& t) {
-        if (t.isSuccess())
+    block_sync->synchronize(firstBlock, lastBlock)
+        .onComplete(mainContext, [mainContext, blockDB](const Try<Unit>& t) {
+        if (t.isSuccess()) {
             std::cout << "success" << std::endl;
-        else
+            blockDB->getLastBlockHeader().onComplete(mainContext, [](const Try<Option<BitcoinLikeNetwork::Block>>& block) {
+                if (block.isSuccess()) {
+                    if (block.getValue().hasValue())
+                        std::cout << block.getValue().getValue().hash << " " << block.getValue().getValue().hash << std::endl;
+                    else
+                        std::cout << "not found" << std::endl;
+                }
+                else {
+                    std::cout << "Failure during reading DB" << std::endl;
+                    std::cout << block.getFailure().getMessage() << std::endl;
+                }
+            });
+        }
+        else {
+            std::cout << "not good" << std::endl;
             std::cout << t.getFailure().getMessage() << std::endl;
+        }
     });
     dispatcher->waitUntilStopped();
     return 0;

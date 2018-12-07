@@ -10,9 +10,11 @@ namespace ledger {
         namespace bitcoin {
             AccountSynchronizerFactory::AccountSynchronizerFactory(
                 std::shared_ptr<api::ExecutionContext> executionContext,
-                std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> explorer)
+                std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> explorer,
+                const BitcoinLikeNetwork::Block& genesisBlock)
             : _executionContext(executionContext)
-            , _explorer(explorer) {
+            , _explorer(explorer)
+            , _genesisBlock(genesisBlock) {
 
             }
 
@@ -35,7 +37,8 @@ namespace ledger {
                     logger,
                     numberOfUnrevertableBlocks,
                     maxNumberOfAddressesInRequest,
-                    discoveryGapSize);
+                    discoveryGapSize,
+                    _genesisBlock);
             };
         }
     }

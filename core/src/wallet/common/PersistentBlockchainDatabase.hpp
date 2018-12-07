@@ -5,6 +5,7 @@
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <database/BlockchainDB.hpp>
+#include <cereal/archives/binary.hpp>
 
 namespace ledger {
     namespace core {
@@ -14,6 +15,7 @@ namespace ledger {
             public:
                 typedef typename NetworkType::FilledBlock FilledBlock;
                 typedef typename NetworkType::Block Block;
+                typedef typename db::BlockchainDB::RawBlock RawBlock;
 
                 PersistentBlockchainDatabase(
                     std::shared_ptr<api::ExecutionContext>& context,
@@ -24,38 +26,73 @@ namespace ledger {
 
                 Future<std::vector<FilledBlock>> getBlocks(uint32_t heightFrom, uint32_t heightTo) override {
                     return _persistentDB->GetBlocks(heightFrom, heightTo)
-                        .map(_context, [](const std::vector<std::vector<>>& blocks) {
+                        .map<std::vector<FilledBlock>>(_context, [](const std::vector<RawBlock>& blocks) {
                         std::vector<FilledBlock> res;
                         for (auto& rawBlock : blocks) {
-                            res.push_back();
+                            FilledBlock fb;
+                            deserialize(rawBlock, fb);
+                            res.push_back(fb);
                         }
                         return res;
                     });
                 }
-                FuturePtr<FilledBlock> getBlock(uint32_t height) override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+
+                Future<Option<FilledBlock>> getBlock(uint32_t height) override {
+                    return _persistentDB->GetBlock(height)
+                        .map<Option<FilledBlock>>(_context, [](const Option<RawBlock>& rawBlock) {
+                        return rawBlock.map<FilledBlock>([](const RawBlock& rawBlock) {
+                            FilledBlock fb;
+                            deserialize(rawBlock, fb);
+                            return fb;});
+                    });
                 }
+
                 // Return the last block header or genesis block
-                FuturePtr<Block> getLastBlockHeader() override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+                Future<Option<Block>> getLastBlockHeader() override {
+                    return _persistentDB->GetLastBlock()
+                        .map<Option<Block>>(_context, [](const Option<RawBlock>& rawBlock) {
+                        return rawBlock.map<Block>([](const RawBlock& block) {
+                            FilledBlock filledBlock;
+                            deserialize(block, filledBlock);
+                            return filledBlock.header;
+                        });
+                    });
                 }
-                void addBlocks(const std::vector<FilledBlock>& blocks) override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
-                }
+
                 void addBlock(const FilledBlock& block) override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+                    RawBlock rawBlock = serialize(block);
+                    _persistentDB->AddBlock(block.header.height, rawBlock);
                 }
                 // Remove all blocks with height in [heightFrom, heightTo)
                 void removeBlocks(uint32_t heightFrom, uint32_t heightTo) override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+                    _persistentDB->RemoveBlocks(heightFrom, heightTo);
                 }
                 // Remove all blocks with height < heightTo
                 void removeBlocksUpTo(uint32_t heightTo) override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+                    _persistentDB->RemoveBlocksUpTo(heightTo);
                 }
                 void CleanAll() override {
-                    throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING);
+                    _persistentDB->CleanAll();
                 }
+            private:
+                static std::vector<uint8_t> serialize(const FilledBlock& filledBlock) {
+                    std::ostringstream  ss;
+                    {
+                        cereal::BinaryOutputArchive oarchive(ss);
+                        oarchive(filledBlock);
+                    }
+                    auto data = ss.str();
+                    return std::vector<uint8_t>(data.begin(), data.end());
+                }
+
+                static void deserialize(const std::vector<uint8_t>& buf, FilledBlock& filledBlock) {
+                    std::istringstream  ss(std::string(buf.begin(), buf.end()));
+                    {
+                        cereal::BinaryInputArchive iarchive(ss);
+                        iarchive(filledBlock);
+                    }
+                }
+
             private:
                 std::shared_ptr<api::ExecutionContext> _context;
                 std::shared_ptr<db::BlockchainDB> _persistentDB;

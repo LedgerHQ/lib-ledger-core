@@ -53,24 +53,24 @@ namespace ledger {
                 handleError(_db->Write(leveldb::WriteOptions(), &batch));
             }
 
-            Future<std::vector<BlockchainDB::RawBlockWithHeight>> BlockchainLevelDB::GetBlocks(uint32_t heightFrom, uint32_t heightTo) {
-                std::vector<RawBlockWithHeight> res;
+            Future<std::vector<BlockchainDB::RawBlock>> BlockchainLevelDB::GetBlocks(uint32_t heightFrom, uint32_t heightTo) {
+                std::vector<RawBlock> res;
                 auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 it->Seek(serializeKey(heightFrom));
                 for (; it->Valid(); it->Next()) {
                     uint32_t height = deserializeKey(it->key());
                     if (height >= heightTo)
                         break;
-                    res.push_back(std::make_pair(height, sliceToBlock(it->value())));
+                    res.push_back(sliceToBlock(it->value()));
                 }
-                return Future<std::vector<RawBlockWithHeight>>::successful(res);
+                return Future<std::vector<RawBlock>>::successful(res);
             }
 
             Future<Option<BlockchainDB::RawBlock>> BlockchainLevelDB::GetBlock(uint32_t height) {
                 std::string value;
                 auto status = _db->Get(leveldb::ReadOptions(), serializeKey(height), &value);
                 if (status.ok()) {
-                    return Future<Option<RawBlock>>::successful(RawBlock());
+                    return Future<Option<RawBlock>>::successful(RawBlock(value.data(), value.data() + value.size()));
                 }
                 if (status.IsNotFound()) { // not a error
                     return Future<Option<RawBlock>>::successful(Option<RawBlock>());
@@ -78,13 +78,13 @@ namespace ledger {
                 return Future<Option<RawBlock>>::failure(Exception(api::ErrorCode::UNKNOWN, fmt::format("Error during getting block {}: {}", height, status.ToString())));
             }
 
-            Future<Option<BlockchainDB::RawBlockWithHeight>> BlockchainLevelDB::GetLastBlock() {
+            Future<Option<BlockchainDB::RawBlock>> BlockchainLevelDB::GetLastBlock() {
                 auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
+                auto res = Future<Option<RawBlock>>::successful(Option<RawBlock>());
                 it->SeekToLast();
-                if (!it->Valid())
-                    return Future<Option<RawBlockWithHeight>>::successful(Option<RawBlockWithHeight>());
-                return Future<Option<RawBlockWithHeight>>::successful(
-                    Option<RawBlockWithHeight>(std::make_pair(deserializeKey(it->key()), sliceToBlock(it->value()))));
+                if (it->Valid())
+                    res = Future<Option<RawBlock>>::successful(sliceToBlock(it->value()));
+                return res;
             }
 
             BlockchainDB::RawBlock BlockchainLevelDB::sliceToBlock(const leveldb::Slice& value) {

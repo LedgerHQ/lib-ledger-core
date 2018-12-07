@@ -253,7 +253,11 @@ namespace ledger {
                 });
             };
 
-
+            static Future<T> mapValueOr(Future<Option<T>>& f, const T& defaultValue) {
+                return f.map<T>(ImmediateExecutionContext::INSTANCE, [defaultValue](const Option<T>& opt) {
+                    return opt.getValueOr(defaultValue);
+                });
+            }
 
             static Future<T> successful(T value) {
                 Promise<T> p;

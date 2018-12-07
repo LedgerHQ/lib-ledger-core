@@ -20,8 +20,6 @@ namespace ledger {
                 BlockSyncTest()
                     : receivedFake(0, 0) // receive addresses are 0,1,2... change are 1000, 1001...
                     , changeFake(0, 1000) {
-                    firstBlock = std::make_shared<BitcoinLikeNetwork::Block>();
-                    lastBlock = std::make_shared<BitcoinLikeNetwork::Block>();
                     explorerMock = std::make_shared<NiceMock<ExplorerMock>>();
                     keychainReceiveMock = std::make_shared<NiceMock<KeychainMock>>();
                     keychainChangeMock = std::make_shared<NiceMock<KeychainMock>>();
@@ -74,9 +72,9 @@ namespace ledger {
                 std::function<bool(const BitcoinLikeNetwork::FilledBlock& )> Same(const BL& left) {
                      return [left](const BitcoinLikeNetwork::FilledBlock& right) 
                      { 
-                         if ((left.hash != right.first.hash) ||
-                             (left.height != right.first.height) ||
-                             (left.transactions.size() != right.second.size()))
+                         if ((left.hash != right.header.hash) ||
+                             (left.height != right.header.height) ||
+                             (left.transactions.size() != right.transactions.size()))
                              return false;
                          for (int i = 0; i < left.transactions.size(); ++i) {
                              
@@ -86,8 +84,8 @@ namespace ledger {
                 };
             public:
                 std::shared_ptr<common::BlocksSynchronizer<BitcoinLikeNetwork>> synchronizer;
-                std::shared_ptr<BitcoinLikeNetwork::Block> firstBlock;
-                std::shared_ptr<BitcoinLikeNetwork::Block> lastBlock;
+                BitcoinLikeNetwork::Block firstBlock;
+                BitcoinLikeNetwork::Block lastBlock;
                 std::shared_ptr<NiceMock<ExplorerMock>> explorerMock;
                 std::shared_ptr<NiceMock<KeychainMock>> keychainReceiveMock;
                 std::shared_ptr<NiceMock<KeychainMock>> keychainChangeMock;
@@ -110,9 +108,9 @@ namespace ledger {
                 };
                 setBlockchain(bch);
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -132,9 +130,9 @@ namespace ledger {
                 };
                 setBlockchain(bch);
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -161,9 +159,9 @@ namespace ledger {
                     EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
                     EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1]))));
                 }
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -187,9 +185,9 @@ namespace ledger {
                 setBlockchain(bch);
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -211,9 +209,9 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 1; // limiting the max block heigh
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 1; // limiting the max block heigh
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
                 EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
                 
@@ -245,9 +243,9 @@ namespace ledger {
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("5"))).Times(0); // not discovered
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -288,9 +286,9 @@ namespace ledger {
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4"))).Times(0); // not discovered
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = 10;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = 10;
                 auto f = synchronizer->synchronize(firstBlock, lastBlock);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -314,9 +312,9 @@ namespace ledger {
                 }
                 setBlockchain(bch);
                 
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = LAST_BLOCK;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = LAST_BLOCK;
 
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0"))).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1"))).Times(0); // not discovered
@@ -343,9 +341,9 @@ namespace ledger {
                 }
                 bch.push_back(BL{ 2, "block 2",{ TR{ { "X" },{ { "0", 10000 } } } } });
                 setBlockchain(bch);
-                firstBlock->hash = "block 1";
-                firstBlock->height = 1;
-                lastBlock->height = LAST_BLOCK;
+                firstBlock.hash = "block 1";
+                firstBlock.height = 1;
+                lastBlock.height = LAST_BLOCK;
 
                 EXPECT_CALL(*blocksDBMock, addBlocks(_)).Times(0);
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(0); // not discovered
@@ -370,9 +368,9 @@ namespace ledger {
                     }
                 }
                 setBlockchain(bch);
-                firstBlock->hash = bch[0].hash;
-                firstBlock->height = bch[0].height;
-                lastBlock->height = LAST_BLOCK;
+                firstBlock.hash = bch[0].hash;
+                firstBlock.height = bch[0].height;
+                lastBlock.height = LAST_BLOCK;
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("499"))).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("500"))).Times(0); // not discovered

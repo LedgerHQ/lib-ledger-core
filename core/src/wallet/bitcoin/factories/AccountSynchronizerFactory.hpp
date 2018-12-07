@@ -12,7 +12,8 @@ namespace ledger {
             public:
                 AccountSynchronizerFactory(
                     std::shared_ptr<api::ExecutionContext> executionContext,
-                    std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> explorer);
+                    std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> explorer,
+                    const BitcoinLikeNetwork::Block& genesisBlock);
                 std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> createAccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
                     const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
@@ -27,6 +28,7 @@ namespace ledger {
             private:
                 std::shared_ptr<api::ExecutionContext> _executionContext;
                 std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> _explorer;
+                const BitcoinLikeNetwork::Block _genesisBlock;
             };
         }
     }

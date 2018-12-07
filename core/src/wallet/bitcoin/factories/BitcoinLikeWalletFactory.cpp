@@ -81,9 +81,14 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE, "Engine '{}' is not a supported synchronization engine.", STRING(api::Configuration::SYNCHRONIZATION_ENGINE, "undefined"));
                 }
 
+                // TODO: put genesis block to network parameters
+                BitcoinLikeNetwork::Block genesisBlock;
+                genesisBlock.height = 0;
+                genesisBlock.hash = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
                 auto synchronizerFactory = std::make_shared<AccountSynchronizerFactory>(
                     pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers"),
-                    explorer);
+                    explorer,
+                    genesisBlock);
                 // Sets the derivation scheme
                 DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"));
                 // Build wallet

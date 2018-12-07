@@ -101,7 +101,7 @@ namespace ledger {
                 });
             }
 
-            FuturePtr<BitcoinLikeExplorer::TransactionBulk>
+            Future<BitcoinLikeExplorer::TransactionBulk>
                 BitcoinLikeExplorer::getTransactions(const std::vector<std::string> &addresses,
                     Option<std::string> fromBlockHash,
                     Option<void *> session) {
@@ -127,7 +127,7 @@ namespace ledger {
                 return _http
                     ->GET(fmt::format("/blockchain/v2/{}/addresses/{}/transactions{}", _parameters.Identifier, joinedAddresses, params), headers)
                     .json<TransactionBulk, Exception>(LedgerApiParser<TransactionBulk, TransactionsBulkParser>())
-                    .mapPtr<TransactionBulk>(_executionContext, [fromBlockHash](const Either<Exception, std::shared_ptr<TransactionBulk>>& result) {
+                    .map<TransactionBulk>(_executionContext, [fromBlockHash](const Either<Exception, std::shared_ptr<TransactionBulk>>& result) {
                     if (result.isLeft()) {
                         if (fromBlockHash.isEmpty()) {
                             throw result.getLeft();
@@ -137,31 +137,31 @@ namespace ledger {
                         }
                     }
                     else {
-                        return result.getRight();
+                        return *result.getRight();
                     }
                 });
             }
 
-            FuturePtr<Block> BitcoinLikeExplorer::getCurrentBlock() {
+            Future<Block> BitcoinLikeExplorer::getCurrentBlock() {
                 return _http
                     ->GET(fmt::format("/blockchain/v2/{}/blocks/current", _parameters.Identifier))
                     .json<Block, Exception>(LedgerApiParser<Block, BlockParser>())
-                    .mapPtr<Block>(_executionContext, [](const Either<Exception, std::shared_ptr<Block>>& result) {
+                    .map<Block>(_executionContext, [](const Either<Exception, std::shared_ptr<Block>>& result) {
                     if (result.isLeft()) {
                         throw result.getLeft();
                     }
                     else {
-                        return result.getRight();
+                        return *result.getRight();
                     }
                 });
             }
 
-            FuturePtr<Transaction>
+            Future<Transaction>
                 BitcoinLikeExplorer::getTransactionByHash(const std::string &transactionHash) {
                 return _http
                     ->GET(fmt::format("/blockchain/v2/{}/transactions/{}", _parameters.Identifier, transactionHash))
                     .json<std::vector<Transaction>, Exception>(LedgerApiParser<std::vector<Transaction>, TransactionsParser>())
-                    .mapPtr<Transaction>(_executionContext, [transactionHash](const Either<Exception, std::shared_ptr<std::vector<Transaction>>>& result) {
+                    .map<Transaction>(_executionContext, [transactionHash](const Either<Exception, std::shared_ptr<std::vector<Transaction>>>& result) {
                     if (result.isLeft()) {
                         throw result.getLeft();
                     }
@@ -170,15 +170,15 @@ namespace ledger {
                     }
                     else {
                         auto tx = (*result.getRight())[0];
-                        auto transaction = std::make_shared<Transaction>();
-                        transaction->block = tx.block;
-                        transaction->fees = tx.fees;
-                        transaction->hash = tx.hash;
-                        transaction->lockTime = tx.lockTime;
-                        transaction->inputs = tx.inputs;
-                        transaction->outputs = tx.outputs;
-                        transaction->receivedAt = tx.receivedAt;
-                        transaction->confirmations = tx.confirmations;
+                        Transaction transaction;
+                        transaction.block = tx.block;
+                        transaction.fees = tx.fees;
+                        transaction.hash = tx.hash;
+                        transaction.lockTime = tx.lockTime;
+                        transaction.inputs = tx.inputs;
+                        transaction.outputs = tx.outputs;
+                        transaction.receivedAt = tx.receivedAt;
+                        transaction.confirmations = tx.confirmations;
                         return transaction;
                     }
                 });

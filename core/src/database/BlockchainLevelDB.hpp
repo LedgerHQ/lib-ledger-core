@@ -21,9 +21,9 @@ namespace ledger {
                 void RemoveBlocks(uint32_t heightFrom, uint32_t heightTo) override;
                 void RemoveBlocksUpTo(uint32_t heightTo) override;
                 void CleanAll() override;
-                Future<std::vector<RawBlockWithHeight>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) override;
+                Future<std::vector<RawBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) override;
                 Future<Option<RawBlock>> GetBlock(uint32_t height) override;
-                Future<Option<RawBlockWithHeight>> GetLastBlock() override;
+                Future<Option<RawBlock>> GetLastBlock() override;
             private:
                 void handleError(const leveldb::Status& status);
                 std::string serializeKey(uint32_t height);

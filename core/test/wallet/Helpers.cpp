@@ -40,10 +40,10 @@ namespace ledger {
 
             BitcoinLikeNetwork::FilledBlock toFilledBlock(const BL& block) {
                 BitcoinLikeNetwork::FilledBlock fb;
-                fb.first = toBlock(block);
+                fb.header = toBlock(block);
                 std::vector<BitcoinLikeNetwork::Transaction> transactions;
                 for (auto& tr : block.transactions) {
-                    fb.second.push_back(toTran(block, tr));
+                    fb.transactions.push_back(toTran(block, tr));
                 }
                 return fb;
             }
@@ -60,8 +60,8 @@ namespace ledger {
                 _transactions.clear();
                 _blockHashes.clear();
                 for (auto& fb : blockchain) {
-                    _blockHashes[fb.first.hash] = fb.first.height;
-                    for (auto& tr : fb.second) {
+                    _blockHashes[fb.header.hash] = fb.header.height;
+                    for (auto& tr : fb.transactions) {
                         _transactions.push_back(tr);
                     }
                 }
@@ -73,20 +73,22 @@ namespace ledger {
                 _numberOfTransactionsAllowed = numberOfTransactionsAllowed;
             }
 
-            FuturePtr<FakeExplorer::TransactionBulk> FakeExplorer::getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session) {
+            Future<FakeExplorer::TransactionBulk> FakeExplorer::getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session) {
                 uint32_t fromBlockHeight = 0;
                 if (fromBlockHash.hasValue())
                 {
                     auto it = _blockHashes.find(fromBlockHash.getValue());
                     if (it == _blockHashes.end()) {
-                        return Future<std::shared_ptr<TransactionBulk>>::failure(Exception(api::ErrorCode::BLOCK_NOT_FOUND, "Very sorry"));
+                        return Future<TransactionBulk>::failure(Exception(api::ErrorCode::BLOCK_NOT_FOUND, "Very sorry"));
                     }
                     fromBlockHeight = it->second;
                 }
-                auto result = std::make_shared<TransactionBulk>();
-                result->second = false;
-                static std::function<bool(const Tran& l, const Tran& r)> blockLess = [](const Tran& l, const Tran& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
-                Tran fff;
+                TransactionBulk result;
+                result.second = false;
+                static std::function<bool(const BitcoinLikeNetwork::Transaction& l, const BitcoinLikeNetwork::Transaction& r)> blockLess =
+                    [](const BitcoinLikeNetwork::Transaction& l, const BitcoinLikeNetwork::Transaction& r)->bool {
+                    return l.block.getValue().height < r.block.getValue().height; };
+                BitcoinLikeNetwork::Transaction fff;
                 Block bbb;
                 bbb.height = fromBlockHeight;
                 fff.block = bbb;
@@ -109,15 +111,15 @@ namespace ledger {
                         }
                     }
                     if (hasAddress) {
-                        if (result->first.size() == _numberOfTransactionsAllowed) {
-                            result->second = true; // truncated
+                        if (result.first.size() == _numberOfTransactionsAllowed) {
+                            result.second = true; // truncated
                             break;
                         }
-                        result->first.push_back(tr);
+                        result.first.push_back(tr);
                     }
                 }
                 // to not execute in stack, but simulate really async environment
-                return FuturePtr<TransactionBulk>::successful(result);
+                return Future<TransactionBulk>::successful(result);
             };
 
 

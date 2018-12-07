@@ -15,9 +15,9 @@ namespace ledger {
             virtual ~ReadOnlyBlockchainDatabase() {};
             // Get all blocks with height in [heightFrom, heightTo)
             virtual Future<std::vector<FilledBlock>> getBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
-            virtual FuturePtr<FilledBlock> getBlock(uint32_t height) = 0;
+            virtual Future<Option<FilledBlock>> getBlock(uint32_t height) = 0;
             // Return the last block header or genesis block
-            virtual FuturePtr<Block> getLastBlockHeader() = 0;
+            virtual Future<Option<Block>> getLastBlockHeader() = 0;
         };
 
         template<typename NetworkType>
@@ -27,7 +27,6 @@ namespace ledger {
             typedef typename NetworkType::Block Block;
 
             virtual ~BlockchainDatabase(){};
-            virtual void addBlocks(const std::vector<FilledBlock>& blocks) = 0;
             virtual void addBlock(const FilledBlock& block) = 0;
             // Remove all blocks with height in [heightFrom, heightTo)
             virtual void removeBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;

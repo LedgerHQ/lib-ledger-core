@@ -57,13 +57,13 @@ namespace ledger {
                 Future<Bytes> getRawTransaction(const std::string& transactionHash) override;
                 Future<std::string> pushTransaction(const std::vector<uint8_t>& transaction) override;
 
-                FuturePtr<TransactionBulk>
+                Future<TransactionBulk>
                     getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
                         Option<void *> session = Option<void *>()) override;
 
-                FuturePtr<Block> getCurrentBlock() override;
+                Future<Block> getCurrentBlock() override;
 
-                FuturePtr<Transaction> getTransactionByHash(const std::string &transactionHash) override;
+                Future<Transaction> getTransactionByHash(const std::string &transactionHash) override;
 
                 Future<int64_t > getTimestamp() override;
 
