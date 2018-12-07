@@ -57,6 +57,12 @@ namespace ledger {
             PreferencesChangeType type;
             std::vector<uint8_t> key;
             std::vector<uint8_t> value;
+
+            PreferencesChange() = default;
+
+            PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v)
+                : type(t), key(k), value(v) {
+            }
         };
 
         class PreferencesBackend {
@@ -66,18 +72,28 @@ namespace ledger {
                     const std::shared_ptr<api::ExecutionContext>& writingContext,
                     const std::shared_ptr<api::PathResolver>& resolver
             );
+
+            ~PreferencesBackend();
+
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
             optional<std::string> get(const std::vector<uint8_t>& key) const;
             void commit(const std::vector<PreferencesChange>& changes);
-            ~PreferencesBackend();
+
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
 
-            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
+            // helper method used to encrypt things we want to put in leveldb
+            std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
+
+            // helper method used to encrypt things we want to put in leveldb
+            optional<PreferencesChange> decrypt_preferences_change(const std::vector<uint8_t>& data);
+
             static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;
+
+            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
         };
     }
 }
