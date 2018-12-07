@@ -318,7 +318,7 @@ namespace ledger {
                             {sigHashType::SIGHASH_ALL},
                             {}
                     );
-                    return DOGECOIN;
+                    return UNOBTANIUM;
                 } else if (networkName == "stratis") {
                     static const api::BitcoinLikeNetworkParameters STRATIS(
                             "strat",
