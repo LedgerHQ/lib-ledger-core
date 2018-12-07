@@ -63,7 +63,6 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     builder->setGasPrice(api::Amount::fromLong(currency, 200000));
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfB98Bdd04d82648f25E67041D6E27a866BEC0B47");
-    builder->setInputData({0x00});
     auto f = builder->build();
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
@@ -98,9 +97,9 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
 
 }
 
-TEST_F(EthereumMakeTransaction, ParseSignedRawTransaction) {
+TEST_F(EthereumMakeTransaction, ParseUnsignedRawTransaction) {
     //Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
-    auto strTx = "E800850165A0BC0083030D4094A49386FFF4E0DD767B145E75D92F7FBA8854553E8301E0F380808080";
+    auto strTx = "E800850165A0BC0083030D4094A49386FFF4E0DD767B145E75D92F7FBA8854553E8301E0F380018080";
     auto tx = api::EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(ledger::core::currencies::ETHEREUM, hex::toByteArray(strTx));
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 }

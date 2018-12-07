@@ -59,8 +59,9 @@ namespace ledger {
             std::vector<uint8_t> serialize() override;
             std::chrono::system_clock::time_point getDate() override;
             std::shared_ptr<api::EthereumLikeBlock> getBlock() override;
-            void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
+            void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
             void setDERSignature(const std::vector<uint8_t> & signature) override;
+            void setVSignature(const std::vector<uint8_t> & vSignature) override;
             EthereumLikeTransactionApi & setGasPrice(const std::shared_ptr<BigInt>& gasPrice);
             EthereumLikeTransactionApi & setGasLimit(const std::shared_ptr<BigInt>& gasLimit);
             EthereumLikeTransactionApi & setNonce(const std::shared_ptr<BigInt>& nonce);
@@ -80,6 +81,7 @@ namespace ledger {
             std::vector<uint8_t> _data;
             std::shared_ptr<api::EthereumLikeAddress> _receiver;
             std::shared_ptr<api::EthereumLikeAddress> _sender;
+            std::vector<uint8_t> _vSignature;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
         };

@@ -15,14 +15,14 @@ namespace ledger { namespace core { namespace api {
 struct EthereumLikeNetworkParameters final {
     std::string Identifier;
     std::string MessagePrefix;
-    std::vector<uint8_t> ChainID;
+    std::string ChainID;
     std::vector<uint8_t> XPUBVersion;
     std::vector<std::string> AdditionalEIPs;
     int64_t TimestampDelay;
 
     EthereumLikeNetworkParameters(std::string Identifier_,
                                   std::string MessagePrefix_,
-                                  std::vector<uint8_t> ChainID_,
+                                  std::string ChainID_,
                                   std::vector<uint8_t> XPUBVersion_,
                                   std::vector<std::string> AdditionalEIPs_,
                                   int64_t TimestampDelay_)

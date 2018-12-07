@@ -26,10 +26,10 @@ private:
     friend ::djinni::JniClass<EthereumLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;[B[BLjava/util/ArrayList;J)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BLjava/util/ArrayList;J)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };
-    const jfieldID field_ChainID { ::djinni::jniGetFieldID(clazz.get(), "ChainID", "[B") };
+    const jfieldID field_ChainID { ::djinni::jniGetFieldID(clazz.get(), "ChainID", "Ljava/lang/String;") };
     const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "[B") };
     const jfieldID field_AdditionalEIPs { ::djinni::jniGetFieldID(clazz.get(), "AdditionalEIPs", "Ljava/util/ArrayList;") };
     const jfieldID field_TimestampDelay { ::djinni::jniGetFieldID(clazz.get(), "TimestampDelay", "J") };

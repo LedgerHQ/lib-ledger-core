@@ -59,17 +59,20 @@ namespace ledger {
 
             _hash = tx.hash;
 
-            auto currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency = operation->getAccount()->getWallet()->getCurrency();
 
-            _gasPrice = std::make_shared<Amount>(currency, 0, tx.gasPrice);
-            _gasLimit = std::make_shared<Amount>(currency, 0, tx.gasLimit);
-            _gasUsed = std::make_shared<Amount>(currency, 0, tx.gasUsed.getValue());
-            _value = std::make_shared<Amount>(currency, 0, tx.value);
+            _gasPrice = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
+            _gasLimit = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
+            _gasUsed = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
+            _value = std::make_shared<Amount>(_currency, 0, tx.value);
 
             _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
             _data = tx.inputData;
-            _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, currency);
-            _sender = EthereumLikeAddress::fromEIP55(tx.sender, currency);
+            _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
+            _sender = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
+
+            auto vBigInt = BigInt(_currency.ethereumLikeNetworkParameters.value().ChainID) * BigInt(2) + BigInt(36);
+            _vSignature = hex::toByteArray(vBigInt.toHexString());
         }
 
         std::string EthereumLikeTransactionApi::getHash() {
@@ -115,7 +118,8 @@ namespace ledger {
             return _block;
         }
 
-        void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
+        void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
+            _vSignature = vSignature;
             _rSignature = rSignature;
             _sSignature = sSignature;
         }
@@ -148,6 +152,10 @@ namespace ledger {
             }
         }
 
+        void EthereumLikeTransactionApi::setVSignature(const std::vector<uint8_t> & vSignature) {
+            _vSignature = vSignature;
+        }
+
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
             //Construct RLP object from tx
             //TODO:  need forEIP155 ?
@@ -171,7 +179,7 @@ namespace ledger {
             txList.append(_data);
 
             if (!_rSignature.empty() && !_sSignature.empty()) {
-                txList.append(_currency.ethereumLikeNetworkParameters.value().ChainID);
+                txList.append(_vSignature);
                 txList.append(_rSignature);
                 txList.append(_sSignature);
             } else {
