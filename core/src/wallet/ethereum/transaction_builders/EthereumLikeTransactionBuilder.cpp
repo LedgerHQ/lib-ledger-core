@@ -156,13 +156,16 @@ namespace ledger {
                         tx->setValue(bigIntChild);
                         break;
                     case 5:
-                        tx->setData(child->encode());
+                        tx->setData(hex::toByteArray(childHexString));
+                        break;
                     case 7: //6 would be the 'V' field of V,R and S signature
                         //R signature
-                        rSignature = child->encode();
+                        rSignature = hex::toByteArray(childHexString);
+                        break;
                     case 8:
                         //S signature
-                        sSignature = child->encode();
+                        sSignature = hex::toByteArray(childHexString);
+                        break;
                     default:
                         break;
                 }

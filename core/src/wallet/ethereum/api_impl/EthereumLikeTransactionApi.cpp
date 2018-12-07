@@ -130,12 +130,22 @@ namespace ledger {
             reader.readNextByte();
             //R length
             auto rSize = reader.readNextVarInt();
-            _rSignature = reader.read(rSize);
+            if (rSize > 0 && reader.peek() == 0x00) {
+                reader.readNextByte();
+                _rSignature = reader.read(rSize - 1);
+            } else {
+                _rSignature = reader.read(rSize);
+            }
             //Nb of elements for S
             reader.readNextByte();
             //S length
             auto sSize = reader.readNextVarInt();
-            _sSignature = reader.read(sSize);
+            if (sSize > 0 && reader.peek() == 0x00) {
+                reader.readNextByte();
+                _sSignature = reader.read(sSize - 1);
+            } else {
+                _sSignature = reader.read(sSize);
+            }
         }
 
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
@@ -143,7 +153,12 @@ namespace ledger {
             //TODO:  need forEIP155 ?
             bool forEIP155 = true;
             RLPListEncoder txList;
-            txList.append(hex::toByteArray(_nonce->toHexString()));
+            std::vector<uint8_t> empty;
+            if (_nonce->toUint64() == 0) {
+                txList.append(empty);
+            } else {
+                txList.append(hex::toByteArray(_nonce->toHexString()));
+            }
             BigInt gasPrice(_gasPrice->toString());
             txList.append(hex::toByteArray(gasPrice.toHexString()));
             BigInt gasLimit(_gasLimit->toString());
@@ -154,13 +169,13 @@ namespace ledger {
             BigInt value(_value->toString());
             txList.append(hex::toByteArray(value.toHexString()));
             txList.append(_data);
-            txList.append(_currency.ethereumLikeNetworkParameters.value().ChainID);
 
-            if (_rSignature.size() > 0 && _sSignature.size() > 0) {
+            if (!_rSignature.empty() && !_sSignature.empty()) {
+                txList.append(_currency.ethereumLikeNetworkParameters.value().ChainID);
                 txList.append(_rSignature);
                 txList.append(_sSignature);
             } else {
-                std::vector<uint8_t> empty;
+                txList.append(std::vector<uint8_t >({0x01}));
                 txList.append(empty);
                 txList.append(empty);
             }
