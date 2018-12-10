@@ -183,7 +183,7 @@ namespace ledger {
                 txList.append(_rSignature);
                 txList.append(_sSignature);
             } else {
-                txList.append(std::vector<uint8_t >({0x01}));
+                txList.append(hex::toByteArray(_currency.ethereumLikeNetworkParameters.value().ChainID));
                 txList.append(empty);
                 txList.append(empty);
             }
