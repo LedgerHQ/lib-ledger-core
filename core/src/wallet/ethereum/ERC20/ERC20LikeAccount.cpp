@@ -104,7 +104,7 @@ namespace ledger {
                 }
                 auto hexOutput = hexInput;
                 while (hexOutput.size() != 64) {
-                    hexOutput = "00" + hexInput;
+                    hexOutput = "00" + hexOutput;
                 }
 
                 return hexOutput;

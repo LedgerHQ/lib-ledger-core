@@ -36,7 +36,6 @@
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
-
 #include <iostream>
 using namespace std;
 
@@ -52,15 +51,15 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         //http://eth01.explorer.theory.rbx.ledger.fr:8104
         //http://eth01.explorer.theory.rbx.ledger.fr:21000
-        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://18.202.239.45:20000");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
+        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_MAIN_XPUB_INFO);
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_VAULT);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -82,12 +81,14 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = wait(account->getBalance());
-                cout<<" ETH Balance: "<<balance->toLong()<<endl;
+                cout<<" SECOND ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
-                //EXPECT_EQ(erc20Accounts.size(), 1);
-                //EXPECT_EQ(erc20Accounts[0]->getOperations().size(),3);
-                //EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
+                EXPECT_EQ(erc20Accounts.size(), 1);
+                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
+                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
+                auto transferData = erc20Accounts[0]->getTransferToAddressData(api::BigInt::fromLong(1), "0xA26FC743509C9f6A6969aD3FE6123327a4b78069");
+                std::cout<<" Transfer Data : "<<hex::toString(transferData)<<std::endl;
                 dispatcher->stop();
             });
 
