@@ -32,17 +32,17 @@ function command_ios {
   export XCODE_XCCONFIG_FILE=$POLLY_ROOT/scripts/NoCodeSign.xcconfig
   echo "command_ios with architecture : $ARCH"
   if [ "$ARCH" == "armv7" ]; then
-	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3-armv7'
-	export OSX_SYSROOT=iphoneos
+    export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3-armv7'
+    export OSX_SYSROOT=iphoneos
   elif [ "$ARCH" == "arm64" ]; then
-	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3-arm64'
-	export OSX_SYSROOT=iphoneos
+    export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3-arm64'
+    export OSX_SYSROOT=iphoneos
   else
-	export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3'
-	export OSX_SYSROOT=iphonesimulator
-	export ARCH=x86_64
-	#Copy iphone.cmake which is not forcing CMAKE_OSX_SYSROOT to iphoneos in cache
-	cp `pwd`/../lib-ledger-core/tools/build_ios/iphone.cmake `pwd`/../lib-ledger-core/toolchains/polly/os/
+    export TOOLCHAIN_NAME='ios-nocodesign-11-2-dep-9-3'
+    export OSX_SYSROOT=iphonesimulator
+    export ARCH=x86_64
+    #Copy iphone.cmake which is not forcing CMAKE_OSX_SYSROOT to iphoneos in cache
+    cp `pwd`/../lib-ledger-core/tools/build_ios/iphone.cmake `pwd`/../lib-ledger-core/toolchains/polly/os/
   fi
 
   cp `pwd`/../lib-ledger-core/tools/build_ios/framework.plist.in `pwd`
@@ -60,11 +60,11 @@ function command_android {
   #Needed for nocodesign toolchains
   echo "command_android with architecture : $ARCH"
   if [ "$ARCH" == "armeabi-v7a" ]; then
-	export TOOLCHAIN_NAME='android-ndk-r16b-api-21-armeabi-v7a-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-armeabi-v7a-clang-libcxx14'
   elif [ "$ARCH" == "arm64-v8a" ]; then
-	export TOOLCHAIN_NAME='android-ndk-r16b-api-24-arm64-v8a-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-24-arm64-v8a-clang-libcxx14'
   else
-	export TOOLCHAIN_NAME='android-ndk-r16b-api-16-x86-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-16-x86-clang-libcxx14'
   fi
   BUILD_CONFIG="Release"
   add_to_cmake_params -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
@@ -83,7 +83,7 @@ function add_to_cmake_params {
 
 function execute_commands {
 if [ "$1" == "ios" -o "$1" == "android" ]; then
-	command_$1
+    command_$1
 else
   local cmd
   for cmd;do
@@ -100,11 +100,11 @@ export POLLY_ROOT=`pwd`/toolchains/polly
 # Clean
 ###
 if [ "$1" == "ios" -o "$1" == "android" ]; then
-	echo "=====>Cleaning to prepare clean build"
-	echo "=====>Cleaning secp256k1"
-	rm -rf core/lib/secp256k1/include core/lib/secp256k1/src core/lib/secp256k1/tmp core/lib/secp256k1/lib || echo "Failed to clean secp256k1"
-	echo "=====>Remove build directory"
-	rm -rf ../lib-ledger-core-build
+    echo "=====>Cleaning to prepare clean build"
+    echo "=====>Cleaning secp256k1"
+    rm -rf core/lib/secp256k1/include core/lib/secp256k1/src core/lib/secp256k1/tmp core/lib/secp256k1/lib || echo "Failed to clean secp256k1"
+    echo "=====>Remove build directory"
+    rm -rf ../lib-ledger-core-build
 fi
 
 echo "=====>Create which will contain artifacts"
@@ -120,43 +120,51 @@ execute_commands $*
 echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
-	if [ "$unamestr" == "Linux" ]; then
+    if [ "$unamestr" == "Linux" ]; then
     add_to_cmake_params "-DCMAKE_PREFIX=$HOME"
-	elif [ "$unamestr" == "Darwin" ]; then
-		version=`ls /usr/local/Cellar/qt | grep 5.`
-		echo "====> Get qt5 version"
-		echo $version
-		export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
-		echo $PATH
+    elif [ "$unamestr" == "Darwin" ]; then
+        version=`ls /usr/local/Cellar/qt | grep 5.`
+        echo "====> Get qt5 version"
+        echo $version
+        export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
+        echo $PATH
     add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version"
-	fi
+    fi
+fi
+
+if [ "$1" == "ios" ]; then
+    echo "Resetting xcode tools..."
+
+    # The reset is necessary for obscure reasons not to sign on iOS (maybe the CI breaks the PATH or
+    # something). See the fix below that removes signatures.
+    sudo xcode-select --reset
 fi
 
 echo $cmake_params
 cmake $cmake_params ../lib-ledger-core
 echo "======> Build for $unamestr in $BUILD_CONFIG mode"
 if [ "$1" == "ios" ]; then
-	echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
-	xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
+    echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
+    xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-	make -j4
+    make -j4
 fi
 
 if [ "$1" == "ios" ]; then
-	if [ "$ARCH" == "armv7" -o "$ARCH" == "arm64" ]; then
-		PATH_TO_LIB=core/src/Release-iphoneos
-	else
-		PATH_TO_LIB=core/src/Release-iphonesimulator
-		#Remove signature
-		rm -rf $PATH_TO_LIB/ledger-core.framework/_CodeSignature
-		codesign --remove-signature $PATH_TO_LIB/ledger-core.framework/ledger-core
-	fi
+    if [ "$ARCH" == "armv7" -o "$ARCH" == "arm64" ]; then
+        PATH_TO_LIB=core/src/Release-iphoneos
+    else
+        PATH_TO_LIB=core/src/Release-iphonesimulator
+        # Remove signature
+        rm -rf $PATH_TO_LIB/ledger-core.framework/_CodeSignature
+        codesign --remove-signature $PATH_TO_LIB/ledger-core.framework/ledger-core
+    fi
 
-	#echo "======> Set rpath"
-	#install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
-	#install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
+    #echo "======> Set rpath"
+    #install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
+    #install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
 
-	#echo "======> Store artifacts to build fat framework"
-	#mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
+    #echo "======> Store artifacts to build fat framework"
+    #mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
 fi
 
