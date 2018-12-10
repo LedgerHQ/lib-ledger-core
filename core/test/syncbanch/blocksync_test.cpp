@@ -81,6 +81,7 @@ std::string getP2PKHAddressVTC(const DeterministicPublicKey& key) {
 
 
 int main() {
+    std::string dbname = "default";
     auto keysDB = std::make_shared<DummyKeysDB>();
     /* BITCOIN 
     auto xpub = "xpub6BezZZ1HGWH3iGguzANbj6zLM4hqjGcpPUtTTwmSUc2DSEybcHSn5BUp5pVH562sWQPCh8qgNZE1NKB4RYL2aEReu4kxBCEYf5nXvsERbxW";
@@ -103,6 +104,7 @@ int main() {
     firstBlock.hash = "4da631f2ac1bed857bd968c67c913978274d8aabed64ab2bcebc1665d7f4d3a0";
     BitcoinLikeNetwork::Block lastBlock;
     lastBlock.height = 7783743;
+    dbname = "digi";
     /**/
     /*  VTC 
     auto network = currencies::VERTCOIN.bitcoinLikeNetworkParameters.value();
@@ -112,17 +114,17 @@ int main() {
     auto changeKey = pub.derive(1);
     auto recieveChain = std::make_shared<bitcoin::ChangeKeychain>(receiveKey, getP2PKHAddressVTC, keysDB);
     auto changeChain = std::make_shared<bitcoin::ChangeKeychain>(changeKey, getP2PKHAddressVTC, keysDB);
-    auto firstBlock = std::make_shared<Block>();
-    firstBlock->height = 1;
-    firstBlock->hash = "9249c198d4b1ca38bb92a740d6557df80e746108384552509225e7825556ebdf";
-    auto lastBlock = std::make_shared<Block>();
-    lastBlock->height = 1045723;
+    bitcoin::Block firstBlock;
+    firstBlock.height = 1;
+    firstBlock.hash = "9249c198d4b1ca38bb92a740d6557df80e746108384552509225e7825556ebdf";
+    bitcoin::Block lastBlock;
+    lastBlock.height = 1045723;
     */
     
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto mainContext = dispatcher->getMainExecutionContext();
 
-    std::shared_ptr<db::BlockchainDB> persistentLayer = std::make_shared<db::BlockchainLevelDB>("blockdb");
+    std::shared_ptr<db::BlockchainDB> persistentLayer = std::make_shared<db::BlockchainLevelDB>(dbname);
     auto blockDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork>>(mainContext, persistentLayer);
     auto httpClient = std::make_shared<QtHttpClient>(mainContext);
     auto coreHttpClient = std::make_shared<HttpClient>("http://api.ledgerwallet.com", httpClient, mainContext);

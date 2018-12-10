@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <utility>
+#include <cereal/types/vector.hpp>
 
 namespace ledger {
     namespace core {

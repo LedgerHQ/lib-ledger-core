@@ -1,7 +1,7 @@
 #pragma once
 
-#include <wallet/BlockchainNetworkType.hpp>
 #include <wallet/bitcoin/Bitcoin.hpp>
+#include <wallet/BlockchainNetworkType.hpp>
 #include <api/BitcoinLikeTransaction.hpp>
 
 namespace ledger {

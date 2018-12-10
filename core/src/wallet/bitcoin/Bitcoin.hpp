@@ -13,15 +13,27 @@
 namespace ledger {
     namespace core {
         namespace bitcoin {
+            static auto optionBigIntToUint64 = [](const Option<BigInt>& bigInt) -> Option<uint64_t> { 
+                return bigInt.map<uint64_t>([](const BigInt& value) { return value.toUint64(); });
+            };
+
+            static auto optionUint64ToBigInt = [](const Option<uint64_t>& value) -> Option<BigInt> {
+                return value.map<BigInt>([](const uint64_t& val) { return BigInt(val); });
+            };
+
             struct Block {
                 std::string hash;
                 uint32_t height;
                 std::chrono::system_clock::time_point createdAt;
 
                 template <class Archive>
-                void serialize(Archive & ar) {
-                    
-                    ar(height, hash);
+                void load(Archive & archive) {
+                    archive(hash, height, createdAt);
+                }
+
+                template <class Archive>
+                void save(Archive & archive) const {
+                    archive(hash, height, createdAt);
                 }
             };
 
@@ -39,10 +51,25 @@ namespace ledger {
                 };
 
                 template <class Archive>
-                void serialize(Archive & ar) {
-                    ar(
+                void load(Archive & archive) {
+                    Option<uint64_t> val;
+                    archive(
                         index,
-                        value,
+                        val,
+                        previousTxHash,
+                        previousTxOutputIndex,
+                        address,
+                        signatureScript,
+                        coinbase,
+                        sequence);
+                    value = optionUint64ToBigInt(val);
+                }
+
+                template <class Archive>
+                void save(Archive & archive) const {
+                    archive(
+                        index,
+                        optionBigIntToUint64(value),
                         previousTxHash,
                         previousTxOutputIndex,
                         address,
@@ -60,17 +87,30 @@ namespace ledger {
                 std::string script;
                 Output() = default;
                 std::string time;
+
                 template <class Archive>
-                void serialize(Archive & ar) {
-                    ar(
+                void load(Archive & archive) {
+                    uint64_t val;
+                    archive(
                         index,
                         transactionHash,
-                        value,
+                        val,
+                        address,
+                        script,
+                        time);
+                    value = BigInt(val);
+                }
+
+                template <class Archive>
+                void save(Archive & archive) const {
+                    archive(
+                        index,
+                        transactionHash,
+                        value.toUint64(),
                         address,
                         script,
                         time);
                 }
-
             };
 
             struct Transaction {
@@ -87,18 +127,35 @@ namespace ledger {
                     version = 1;
                     confirmations = -1;
                 }
-                template <class Archive>
-                void serialize(Archive & ar) {
-                    ar(
+
+                template<class Archive>
+                void save(Archive & archive) const {
+                    archive(
                         version,
                         hash,
                         receivedAt,
                         lockTime,
-                        //block
-                        //inputs,
-                        //outputs,
-                        //fees
+                        block,
+                        inputs,
+                        outputs,
+                        optionBigIntToUint64(fees),
                         confirmations);
+                }
+
+                template<class Archive>
+                void load(Archive & archive) {
+                    Option<uint64_t> fee;
+                    archive(
+                        version,
+                        hash,
+                        receivedAt,
+                        lockTime,
+                        block,
+                        inputs,
+                        outputs,
+                        fee,
+                        confirmations);
+                    fees = optionUint64ToBigInt(fee);
                 }
             };
         };

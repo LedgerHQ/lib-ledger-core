@@ -231,6 +231,30 @@ namespace ledger {
                 return _optional;
             }
 
+            template <class Archive>
+            void save(Archive & archive) const {
+                if (hasValue()) {
+                    archive(true, _optional.value());
+                }
+                else {
+                    archive(false);
+                }
+            }
+
+            template <class Archive>
+            void load(Archive & archive) {
+                bool hasVal;
+                archive(hasVal);
+                if (hasVal) {
+                    T value;
+                    archive(value);
+                    _optional = value;
+                }
+                else {
+                    _optional = optional<T>();
+                }
+            }
+
         private:
             optional<T> _optional;
         };
