@@ -36,6 +36,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+
 namespace ledger {
     namespace core {
 
@@ -54,6 +55,11 @@ namespace ledger {
             _password = password;
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
+            // Preferences encryption
+            auto prefEncryption = _password.map<PreferencesEncryption>([=](const std::string& p) {
+                return PreferencesEncryption(rng, p);
+            });
+
             // File system management
             _pathResolver = pathResolver;
 
@@ -68,15 +74,13 @@ namespace ledger {
                 fmt::format("/{}/preferences.db", _poolName),
                 getContext(),
                 _pathResolver,
-                rng,
-                password
+                prefEncryption
             );
             _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
                 fmt::format("/{}/__preferences__.db", _poolName),
                 getContext(),
                 _pathResolver,
-                rng,
-                password
+                prefEncryption
             );
 
             _logPrinter = logPrinter;

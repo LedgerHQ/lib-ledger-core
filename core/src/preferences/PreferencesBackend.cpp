@@ -68,19 +68,12 @@ namespace ledger {
         }
 
         PreferencesBackend::PreferencesBackend(const std::string &path,
-                                               const std::shared_ptr<api::ExecutionContext> &writingContext,
+                                               const std::shared_ptr<api::ExecutionContext>& writingContext,
                                                const std::shared_ptr<api::PathResolver> &resolver,
-                                               std::shared_ptr<api::RandomNumberGenerator> rng,
-                                               optional<const std::string&> password) {
+                                               Option<PreferencesEncryption> encryption) {
             _context = writingContext;
             _db = obtainInstance(resolver->resolvePreferencesPath(path));
-            _rng = rng;
-
-            if (_password) {
-                _password = optional<std::string>(*password);
-            } else {
-                _password = optional<std::string>();
-            }
+            _encryption = encryption;
         }
 
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
@@ -91,8 +84,8 @@ namespace ledger {
             for (auto& item : changes) {
                 leveldb::Slice k((const char *)item.key.data(), item.key.size());
                 if (item.type == PreferencesChangeType::PUT_TYPE) {
-                    if (_password) {
-                        auto encrypted = encrypt_preferences_change(*_password, item);
+                    if (_encryption.hasValue()) {
+                        auto encrypted = encrypt_preferences_change(_encryption->rng, _encryption->password, item);
                         leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
                         batch.Put(k, v);
                     } else {
@@ -112,9 +105,9 @@ namespace ledger {
 
             auto status = _db->Get(leveldb::ReadOptions(), k, &value);
             if (status.ok()) {
-                if (_password) {
+                if (_encryption.hasValue()) {
                     auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
-                    auto plaindata = decrypt_preferences_change(*_password, key, ciphertext);
+                    auto plaindata = decrypt_preferences_change(_encryption->rng, _encryption->password, key, ciphertext);
                     auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
 
                     return optional<std::string>(plaintext);
@@ -138,14 +131,6 @@ namespace ledger {
                 if (it->key().compare(limit) > 0 || !f(it->key(), it->value())) {
                     break;
                 }
-
-                if (it->key().compare(limit) > 0) {
-                    break;
-                }
-
-                if (_password) {
-                } else {
-                }
             }
         }
 
@@ -155,12 +140,13 @@ namespace ledger {
 
         // Encrypt a preference change.
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
+            const std::shared_ptr<api::RandomNumberGenerator>& rng,
             const std::string& password,
             const PreferencesChange& change
-        ) const {
+        ) {
           // Create an AES256 cipher
           const auto salt = std::string(std::begin(change.key), std::end(change.key));
-          auto cipher = AESCipher(_rng, password, salt, PBKDF2_ITERS);
+          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
 
           // encrypt
           auto input = BytesReader(change.value);
@@ -172,13 +158,14 @@ namespace ledger {
 
         // Decrypt a preference change value.
         std::vector<uint8_t> PreferencesBackend::decrypt_preferences_change(
+            const std::shared_ptr<api::RandomNumberGenerator>& rng,
             const std::string& password,
             const std::vector<uint8_t>& key,
             const std::vector<uint8_t>& data
-        ) const {
+        ) {
           // Create an AES256 cipher
           const auto salt = std::string(std::begin(key), std::end(key));
-          auto cipher = AESCipher(_rng, password, salt, PBKDF2_ITERS);
+          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
 
           // decrypt
           auto input = BytesReader(data);

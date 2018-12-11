@@ -34,6 +34,7 @@
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <ledger/core/preferences/PreferencesBackend.hpp>
+#include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
 #include <fstream>
 
@@ -44,7 +45,8 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
     auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getSerialExecutionContext("worker"),
-            resolver
+            resolver,
+            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
     );
     auto preferences = backend->getPreferences("my_test_preferences");
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
@@ -95,7 +97,8 @@ TEST(Preferences, IterateThroughMembers) {
     auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getSerialExecutionContext("worker"),
-            resolver
+            resolver,
+            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
     );
     auto preferences = backend->getPreferences("my_test_preferences");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
