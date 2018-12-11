@@ -67,12 +67,16 @@ namespace ledger {
             _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
                 fmt::format("/{}/preferences.db", _poolName),
                 getContext(),
-                _pathResolver
+                _pathResolver,
+                rng,
+                password
             );
             _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
                 fmt::format("/{}/__preferences__.db", _poolName),
                 getContext(),
-                _pathResolver
+                _pathResolver,
+                rng,
+                password
             );
 
             _logPrinter = logPrinter;

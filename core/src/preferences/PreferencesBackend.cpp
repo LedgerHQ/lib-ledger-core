@@ -35,6 +35,7 @@
 #include <cstring>
 #include <leveldb/env.h>
 #include "../crypto/AESCipher.hpp"
+#include <iterator>
 
 namespace ledger {
     namespace core {
@@ -68,9 +69,18 @@ namespace ledger {
 
         PreferencesBackend::PreferencesBackend(const std::string &path,
                                                const std::shared_ptr<api::ExecutionContext> &writingContext,
-                                               const std::shared_ptr<api::PathResolver> &resolver) {
+                                               const std::shared_ptr<api::PathResolver> &resolver,
+                                               std::shared_ptr<api::RandomNumberGenerator> rng,
+                                               optional<const std::string&> password) {
             _context = writingContext;
             _db = obtainInstance(resolver->resolvePreferencesPath(path));
+            _rng = rng;
+
+            if (_password) {
+                _password = optional<std::string>(*password);
+            } else {
+                _password = optional<std::string>();
+            }
         }
 
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
@@ -81,9 +91,14 @@ namespace ledger {
             for (auto& item : changes) {
                 leveldb::Slice k((const char *)item.key.data(), item.key.size());
                 if (item.type == PreferencesChangeType::PUT_TYPE) {
-                    // TODO: encrypt here
-                    leveldb::Slice v((const char *)item.value.data(), item.value.size());
-                    batch.Put(k, v);
+                    if (_password) {
+                        auto encrypted = encrypt_preferences_change(*_password, item);
+                        leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
+                        batch.Put(k, v);
+                    } else {
+                        leveldb::Slice v((const char *)item.value.data(), item.value.size());
+                        batch.Put(k, v);
+                    }
                 } else {
                     batch.Delete(k);
                 }
@@ -91,16 +106,24 @@ namespace ledger {
             db->Write(options, &batch);
         }
 
-        optional<std::string>  PreferencesBackend::get(const std::vector<uint8_t> &key) const {
+        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
             leveldb::Slice k((const char *)key.data(), key.size());
             std::string value;
 
-            // TODO: decrypt here
             auto status = _db->Get(leveldb::ReadOptions(), k, &value);
-            if (status.ok())
-                return optional<std::string>(value);
-            else
+            if (status.ok()) {
+                if (_password) {
+                    auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                    auto plaindata = decrypt_preferences_change(*_password, key, ciphertext);
+                    auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
+
+                    return optional<std::string>(plaintext);
+                } else {
+                    return optional<std::string>(value);
+                }
+            } else {
                 return optional<std::string>();
+            }
         }
 
         void PreferencesBackend::iterate(const std::vector<uint8_t> &keyPrefix,
@@ -111,12 +134,18 @@ namespace ledger {
             limitRaw[limitRaw.size() - 1] += 1;
             leveldb::Slice limit((const char *) limitRaw.data(), limitRaw.size());
             for (it->Seek(start); it->Valid(); it->Next()) {
-                fmt::print("Before test\n");
                 // TODO: decrypt here
                 if (it->key().compare(limit) > 0 || !f(it->key(), it->value())) {
                     break;
                 }
-                fmt::print("After all test\n");
+
+                if (it->key().compare(limit) > 0) {
+                    break;
+                }
+
+                if (_password) {
+                } else {
+                }
             }
         }
 
@@ -124,18 +153,14 @@ namespace ledger {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
 
-        PreferencesBackend::~PreferencesBackend() {
-        }
-
         // Encrypt a preference change.
-        std::vector<uint8_t> encrypt_preferences_change(
-            const std::shared_ptr<api::RandomNumberGenerator>& rng,
+        std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
+            const std::string& password,
             const PreferencesChange& change
-        ) {
+        ) const {
           // Create an AES256 cipher
-          const auto password = std::string("foobarzoo_this_is_a_test_remove_me!!!$«(");
           const auto salt = std::string(std::begin(change.key), std::end(change.key));
-          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+          auto cipher = AESCipher(_rng, password, salt, PBKDF2_ITERS);
 
           // encrypt
           auto input = BytesReader(change.value);
@@ -145,26 +170,22 @@ namespace ledger {
           return output.toByteArray();
         }
 
-        // Decrypt a preference change.
-        optional<PreferencesChange> decrypt_preferences_change(
-            const std::shared_ptr<api::RandomNumberGenerator>& rng,
-            PreferencesChangeType ctype,
+        // Decrypt a preference change value.
+        std::vector<uint8_t> PreferencesBackend::decrypt_preferences_change(
+            const std::string& password,
             const std::vector<uint8_t>& key,
             const std::vector<uint8_t>& data
-        ) {
+        ) const {
           // Create an AES256 cipher
-          const auto password = std::string("foobarzoo_this_is_a_test_remove_me!!!$«(");
           const auto salt = std::string(std::begin(key), std::end(key));
-          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+          auto cipher = AESCipher(_rng, password, salt, PBKDF2_ITERS);
 
           // decrypt
           auto input = BytesReader(data);
           auto output = BytesWriter();
           cipher.decrypt(input, output);
 
-          auto value = output.toByteArray();
-
-          return PreferencesChange(ctype, key, value);
+          return output.toByteArray();
         }
     }
 }
