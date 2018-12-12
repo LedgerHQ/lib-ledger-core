@@ -168,7 +168,7 @@ namespace ledger {
 
                 auto erc20OpCount = 0;
                 sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
-
+                auto newOperation = erc20OpCount == 0;
                 //Check if account already exists
                 auto needNewAccount = true;
                 for (auto& account : _erc20LikeAccounts) {
@@ -176,9 +176,7 @@ namespace ledger {
                     if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
-                        if (erc20OpCount == 0) {
-                            erc20Account->putOperation(sql, erc20Operation);
-                        }
+                        erc20Account->putOperation(sql, erc20Operation, newOperation);
                         needNewAccount = false;
                     }
                 }
@@ -192,10 +190,12 @@ namespace ledger {
                                                                          std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
                     _erc20LikeAccounts.push_back(newAccount);
                     //Persist erc20 account
-                    EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
-                    if (erc20OpCount == 0) {
-                        newAccount->putOperation(sql, erc20Operation);
+                    int erc20AccountCount = 0;
+                    sql << "SELECT COUNT(*) FROM erc20_accounts WHERE uid = :uid", soci::use(erc20AccountUid), soci::into(erc20AccountCount);
+                    if (erc20AccountCount == 0) {
+                        EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
                     }
+                    newAccount->putOperation(sql, erc20Operation, newOperation);
                     //Update erc20 accounts table
                     if (count == 0) {
                         CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token);

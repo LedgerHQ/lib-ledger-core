@@ -57,7 +57,7 @@ namespace ledger {
             std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                           const std::string & address) override ;
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
-            void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation);
+            void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation = false);
         private:
             api::ERC20Token _token;
             std::string _accountAddress;

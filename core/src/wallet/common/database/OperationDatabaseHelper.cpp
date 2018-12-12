@@ -109,7 +109,7 @@ namespace ledger {
                 auto inputData = hex::toString(operation->getData());
                 auto erc20OperationUid = operation->getOperationUid();
                 auto hash = operation->getHash();
-                auto nonce = operation->getNonce()->toString(10);
+                auto nonce = operation->getNonce()->toString(16);
                 auto sender = operation->getSender();
                 auto receiver = operation->getReceiver();
                 auto value = BigInt(operation->getValue()->toString(10));
