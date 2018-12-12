@@ -119,10 +119,7 @@ namespace ledger {
                 operation.trust = std::make_shared<TrustIndicator>();
                 operation.date = transaction.receivedAt;
 
-                auto isAccountAddress = [] (const std::shared_ptr<EthereumLikeKeychain> &keychain, const std::string &address) -> bool {
-                    auto path = keychain->getAddressDerivationPath(address);
-                    return path.nonEmpty();
-                };
+
 
                 if (_accountAddress == transaction.sender) {
                     operation.amount = transaction.value;
@@ -175,11 +172,10 @@ namespace ledger {
                     if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
-                        erc20Account->putOperation(sql, erc20Operation);
                         auto erc20OpCount = 0;
                         sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
                         if (erc20OpCount == 0) {
-                            OperationDatabaseHelper::putERC20Operation(sql, erc20Operation, erc20AccountUid, operation.uid);
+                            erc20Account->putOperation(sql, erc20Operation);
                         }
                         needNewAccount = false;
                     }
