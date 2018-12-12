@@ -165,6 +165,10 @@ namespace ledger {
                 auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20Token.contractAddress, operation.type);
                 auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, erc20OperationUid, operation, erc20Token, getWallet()->getCurrency());
                 auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20Token.contractAddress);
+
+                auto erc20OpCount = 0;
+                sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
+
                 //Check if account already exists
                 auto needNewAccount = true;
                 for (auto& account : _erc20LikeAccounts) {
@@ -172,8 +176,6 @@ namespace ledger {
                     if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
                             erc20Account->getAddress() == accountAddress) {
                         //Update account
-                        auto erc20OpCount = 0;
-                        sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
                         if (erc20OpCount == 0) {
                             erc20Account->putOperation(sql, erc20Operation);
                         }
@@ -191,7 +193,9 @@ namespace ledger {
                     _erc20LikeAccounts.push_back(newAccount);
                     //Persist erc20 account
                     EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
-                    newAccount->putOperation(sql, erc20Operation);
+                    if (erc20OpCount == 0) {
+                        newAccount->putOperation(sql, erc20Operation);
+                    }
                     //Update erc20 accounts table
                     if (count == 0) {
                         CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token);
