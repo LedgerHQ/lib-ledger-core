@@ -175,7 +175,11 @@ namespace ledger {
             auto sReceiver = receiver.substr(2,receiver.size() - 2);
             txList.append(hex::toByteArray(sReceiver));
             BigInt value(_value->toString());
-            txList.append(hex::toByteArray(value.toHexString()));
+            if (_value->toBigInt()->intValue() == 0) {
+                txList.append(empty);
+            } else {
+                txList.append(hex::toByteArray(value.toHexString()));
+            }
             txList.append(_data);
 
             if (!_rSignature.empty() && !_sSignature.empty()) {
