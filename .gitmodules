@@ -1,11 +1,9 @@
 [submodule "djinni"]
 	path = djinni
 	url = https://github.com/LedgerHQ/djinni.git
-# temporary fix for ios-nocodesign meanwhile they accept my PR
 [submodule "toolchains/polly"]
 	path = toolchains/polly
-	url = git@github.com:phaazon/polly.git
-    branch = fix/ios-nocodesign
+	url = https://github.com/ruslo/polly.git
 [submodule "tools/gyp"]
 	path = tools/gyp
 	url = https://github.com/bnoordhuis/gyp.git
