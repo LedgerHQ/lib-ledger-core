@@ -105,13 +105,14 @@ namespace ledger {
                 }
 
                 Future<Unit> synchronize(
-                    const Block& firstBlock,
-                    const Block& lastBlock) {
+                    const std::string& blockHashToStart,
+                    uint32_t firstBlockHeightToInclude,
+                    uint32_t lastBlockHeightToInclude) {
                     std::vector<Future<Unit>> tasks; 
                     auto partialBlockDB = std::make_shared<InMemoryPartialBlocksDB<NetworkType>>();
-                    auto state = std::make_shared<BlocksSyncState>(firstBlock.height, lastBlock.height);
-                    bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, firstBlock.hash, firstBlock.height, lastBlock.height);
-                    bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, firstBlock.hash, firstBlock.height, lastBlock.height);
+                    auto state = std::make_shared<BlocksSyncState>(firstBlockHeightToInclude, lastBlockHeightToInclude);
+                    bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
+                    bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
                     return executeAll(_executionContext, tasks).map<Unit>(_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                 }
             private:
@@ -186,7 +187,7 @@ namespace ledger {
                     const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
                     uint32_t to,
-                    std::string hashToStartRequestFrom,
+                    const std::string& hashToStartRequestFrom,
                     bool isGap) {
                     auto self = shared_from_this();
                     return
@@ -205,8 +206,7 @@ namespace ledger {
                         uint32_t lastFullBlockHeight = to;
                         if (bulk.second) { //response truncated
                             if (bulk.first.size() < self->_maxTransactionPerResponse) {
-                               // return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, fmt::format("Explorer returned truncated response with less then {} operations", self->_maxTransactionPerResponse)));
-                                // TODO: log warning
+                                // TODO: log warning and notify Explorer team to increase threshold
                             }
                             if (highestBlock.height != from) { // Explorer garanties us that we always get at least one full block
                                 lastFullBlockHeight = highestBlock.height - 1;

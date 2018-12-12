@@ -4,7 +4,7 @@
 #include <wallet/Keychain.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <database/BlockchainDB.hpp>
-
+#include <spdlog/sinks/sink.h>
 
 namespace ledger {
     namespace core {
@@ -38,6 +38,9 @@ namespace ledger {
                 MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(getBlock, Future<Option<FilledBlock>>(uint32_t height));
                 MOCK_METHOD0(getLastBlockHeader, Future<Option<Block>>());
+                void linkWithFake(const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& fake) {
+                    //ON_CALL(*this, );
+                }
             };
 
             class BlockchainDBMock : public db::BlockchainDB {
@@ -49,6 +52,12 @@ namespace ledger {
                 MOCK_METHOD2(GetBlocks, Future<std::vector<RawBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(GetBlock, Future<Option<RawBlock>>(uint32_t height));
                 MOCK_METHOD0(GetLastBlock, Future<Option<RawBlock>>());
+            };
+
+            class LoggerSinkMock : public spdlog::sinks::sink {
+            public:
+                MOCK_METHOD1(log, void(const spdlog::details::log_msg &msg));
+                MOCK_METHOD0(flush, void());
             };
         }
     }

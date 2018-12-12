@@ -18,12 +18,13 @@ namespace ledger {
         template<typename NetworkType>
         class AccountSynchronizerFactory {
         public:
-            virtual std::shared_ptr<AccountSynchronizer<NetworkType>> createAccountSynchronizer(
+            virtual std::shared_ptr<core::AccountSynchronizer<NetworkType>> createAccountSynchronizer(
                 const std::shared_ptr<api::ExecutionContext>& executionContext,
                 const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
-                const std::shared_ptr<Keychain>& keychain,
+                const std::shared_ptr<Keychain>& receiveKeychain,
+                const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,
                 uint32_t numberOfUnrevertableBlocks,
                 uint32_t maxNumberOfAddressesInRequest,

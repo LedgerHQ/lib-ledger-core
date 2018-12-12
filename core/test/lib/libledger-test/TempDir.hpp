@@ -7,7 +7,7 @@
 namespace ledger {
     namespace core {
         namespace test {
-            std::string GetTempDirPath() {
+            static std::string GetTempDirPath() {
                 std::random_device rd;  //Will be used to obtain a seed for the random number engine
                 std::mt19937 gen(rd());
                 auto path = std::experimental::filesystem::temp_directory_path();
@@ -15,7 +15,7 @@ namespace ledger {
                 return path.string();
             }
 
-            std::string CreateTempDir() {
+            static std::string CreateTempDir() {
                 auto path = GetTempDirPath();
                 std::experimental::filesystem::create_directory(path);
                 return path;

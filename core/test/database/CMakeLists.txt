@@ -14,6 +14,7 @@ include_directories(../lib/libledger-test/)
 add_executable(ledger-core-database-tests main.cpp pool_tests.cpp 
             BaseFixture.cpp BaseFixture.h IntegrationEnvironment.cpp IntegrationEnvironment.h
             BlockchainLevelDB_test.cpp
+            BlockchainDBInMemory_test.cpp
            )
 
 target_link_libraries(ledger-core-database-tests gtest gtest_main)

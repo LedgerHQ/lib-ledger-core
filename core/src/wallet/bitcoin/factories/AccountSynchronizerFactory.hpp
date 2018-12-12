@@ -19,12 +19,12 @@ namespace ledger {
                     const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
                     const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& stableBlocksDb,
                     const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& unstableBlocksDb,
-                    const std::shared_ptr<Keychain>& keychain,
+                    const std::shared_ptr<Keychain>& receiveKeychain,
+                    const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,
                     uint32_t numberOfUnrevertableBlocks,
                     uint32_t maxNumberOfAddressesInRequest,
-                    uint32_t discoveryGapSize
-                ) override;
+                    uint32_t discoveryGapSize) override;
             private:
                 std::shared_ptr<api::ExecutionContext> _executionContext;
                 std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> _explorer;

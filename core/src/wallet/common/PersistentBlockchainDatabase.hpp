@@ -18,8 +18,8 @@ namespace ledger {
                 typedef typename db::BlockchainDB::RawBlock RawBlock;
 
                 PersistentBlockchainDatabase(
-                    std::shared_ptr<api::ExecutionContext>& context,
-                    std::shared_ptr<db::BlockchainDB>& persistentDB)
+                    const std::shared_ptr<api::ExecutionContext>& context,
+                    const std::shared_ptr<db::BlockchainDB>& persistentDB)
                 : _context(context)
                 , _persistentDB(persistentDB) {
                 };

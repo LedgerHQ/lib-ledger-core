@@ -23,22 +23,22 @@ namespace ledger {
                 const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
                 const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& unstableBlocksDb,
-                const std::shared_ptr<Keychain>& keychain,
+                const std::shared_ptr<Keychain>& receiveKeychain,
+                const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,
                 uint32_t numberOfUnrevertableBlocks,
                 uint32_t maxNumberOfAddressesInRequest,
                 uint32_t discoveryGapSize) {
+                common::SynchronizerConfiguration config(numberOfUnrevertableBlocks, maxNumberOfAddressesInRequest, discoveryGapSize, 200, _genesisBlock.hash);
                 return std::make_shared<common::AccountSynchronizer<BitcoinLikeNetwork>>(
                     _executionContext,
                     _explorer,
                     stableBlocksDb,
                     unstableBlocksDb,
-                    keychain,
+                    receiveKeychain,
+                    changeKeychain,
                     logger,
-                    numberOfUnrevertableBlocks,
-                    maxNumberOfAddressesInRequest,
-                    discoveryGapSize,
-                    _genesisBlock);
+                    config);
             };
         }
     }
