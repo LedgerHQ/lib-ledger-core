@@ -118,23 +118,24 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation) {
-
+        void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
             auto erc20OpUid = operation->getOperationUid();
             auto ethOpUid = operation->getETHOperationUid();
             auto hash = operation->getHash();
             auto receiver = operation->getReceiver();
             auto sender = operation->getSender();
-            sql << "INSERT INTO erc20_operations VALUES("
-                    ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
-                    ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
-                    ")"
-                    , use(erc20OpUid), use(ethOpUid)
-                    , use(_accountUid), use(api::to_string(operation->getOperationType())), use(hash)
-                    , use(operation->getNonce()->toString(16)), use(operation->getValue()->toString(16)), use(operation->getTime())
-                    , use(sender), use(receiver), use(hex::toString(operation->getData()))
-                    , use(operation->getGasPrice()->toString(16)), use(operation->getGasLimit()->toString(16)), use(operation->getUsedGas()->toString(16))
-                    , use(operation->getStatus());
+            if (newOperation) {
+                sql << "INSERT INTO erc20_operations VALUES("
+                        ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
+                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
+                        ")"
+                        , use(erc20OpUid), use(ethOpUid)
+                        , use(_accountUid), use(api::to_string(operation->getOperationType())), use(hash)
+                        , use(operation->getNonce()->toString(16)), use(operation->getValue()->toString(16)), use(operation->getTime())
+                        , use(sender), use(receiver), use(hex::toString(operation->getData()))
+                        , use(operation->getGasPrice()->toString(16)), use(operation->getGasLimit()->toString(16)), use(operation->getUsedGas()->toString(16))
+                        , use(operation->getStatus());
+            }
             _operations.push_back(operation);
         }
 
