@@ -43,9 +43,10 @@ public:
 
     void testP2SHKeychain(const KeychainTestData &data, std::function<void (P2SHBitcoinLikeKeychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
+            "/preferences/tests.db",
+            dispatcher->getMainExecutionContext(),
+            resolver,
+            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
         );
         auto xPubBtc = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
                                                                      data.xpub,
