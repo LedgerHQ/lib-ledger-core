@@ -4,9 +4,11 @@
 #include <memory>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/common/AccountSynchronizer.hpp>
+#include <events/ProgressNotifier.h>
 #include <wallet/common/InMemoryPartialBlocksDB.hpp>
 #include <wallet/common/PersistentBlockchainDatabase.hpp>
 #include <vector>
+#include <spdlog/spdlog.h>
 
 #include "Helpers.hpp"
 #include "Mocks.hpp"

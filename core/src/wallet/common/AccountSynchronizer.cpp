@@ -1,10 +1,9 @@
 #include <wallet/common/AccountSynchronizer.hpp>
 #include <spdlog/spdlog.h>
-
+#include <events/ProgressNotifier.h>
 #include <api/ExecutionContext.hpp>
 #include <async/DedicatedContext.hpp>
 #include <preferences/Preferences.hpp>
-#include <wallet/BlockchainDatabase.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
@@ -18,9 +17,9 @@ namespace ledger {
         namespace common {
             template <typename NetworkType> AccountSynchronizer<NetworkType>::AccountSynchronizer(
                 const std::shared_ptr<api::ExecutionContext>& executionContext,
-                const std::shared_ptr<Explorer>& explorer,
-                const std::shared_ptr<BlockchainDatabase>& stableBlocksDb,
-                const std::shared_ptr<BlockchainDatabase>& unstableBlocksDb,
+                const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
+                const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
+                const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
                 const std::shared_ptr<Keychain>& receiveKeychain,
                 const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,

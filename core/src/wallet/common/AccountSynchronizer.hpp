@@ -1,21 +1,29 @@
 #pragma once
-#include <spdlog/spdlog.h>
-
-#include <api/ExecutionContext.hpp>
-#include <async/DedicatedContext.hpp>
-#include <preferences/Preferences.hpp>
-#include <wallet/BlockchainDatabase.hpp>
-#include <wallet/BlockchainDatabase.hpp>
-#include <wallet/Explorer.hpp>
-#include <wallet/Keychain.hpp>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/AccountSynchronizer.hpp>
-#include <wallet/common/BlocksSynchronizer.hpp>
 #include <async/FutureUtils.hpp>
+
+namespace spdlog {
+    class logger;
+}
 
 namespace ledger {
     namespace core {
+        class Keychain;
+
+        template<typename T>
+        class BlockchainDatabase;
+
+        template<typename Network>
+        class ExplorerV2;
+
+        namespace api {
+            class ExecutionContext;
+        };
         namespace common {
+            template<typename T>
+            class BlocksSynchronizer;
+
             struct SynchronizerConfiguration {
                 SynchronizerConfiguration(
                     uint32_t _maxPossibleUnstableBlocks,
@@ -47,14 +55,12 @@ namespace ledger {
                 public std::enable_shared_from_this<AccountSynchronizer<NetworkType>> {
             public:
                 typedef typename NetworkType::Block Block;
-                typedef ExplorerV2<NetworkType> Explorer;
-                typedef BlockchainDatabase<NetworkType> BlockchainDatabase;
 
                 AccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
-                    const std::shared_ptr<Explorer>& explorer,
-                    const std::shared_ptr<BlockchainDatabase>& stableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase>& unstableBlocksDb,
+                    const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
+                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
+                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,
@@ -70,11 +76,11 @@ namespace ledger {
 
             private:
                 std::shared_ptr<api::ExecutionContext> _executionContext;
-                std::shared_ptr<Explorer> _explorer;
+                std::shared_ptr<ExplorerV2<NetworkType>> _explorer;
                 // blocks that would not be reverted
-                std::shared_ptr<BlockchainDatabase> _stableBlocksDb;
+                std::shared_ptr<BlockchainDatabase<NetworkType>> _stableBlocksDb;
                 // blocks that may be reverted
-                std::shared_ptr<BlockchainDatabase> _unstableBlocksDb;
+                std::shared_ptr<BlockchainDatabase<NetworkType>> _unstableBlocksDb;
                 std::shared_ptr<Keychain> _receiveKeychain;
                 std::shared_ptr<Keychain> _changeKeychain;
                 std::shared_ptr<spdlog::logger> _logger;
@@ -90,6 +96,5 @@ namespace ledger {
     }
 }
 
-#include <wallet/NetworkTypes.hpp>
 extern template ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>;
 extern template std::shared_ptr<ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>>;

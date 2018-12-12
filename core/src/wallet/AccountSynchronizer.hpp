@@ -29,10 +29,14 @@
 #pragma once
 
 #include <memory>
-#include <events/ProgressNotifier.h>
 
 namespace ledger {
     namespace core {
+        class Unit;
+
+        template<typename T>
+        class ProgressNotifier;
+
         template<typename NetworkType>
         class AccountSynchronizer {
         public:
