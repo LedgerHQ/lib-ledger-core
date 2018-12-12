@@ -112,10 +112,8 @@ namespace ledger {
 
             writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
 
-            BigInt nbOfDecimal(_token.numberOfDecimal);
             BigInt bigAmount(amount->toString(10));
-            BigInt finalAmount = nbOfDecimal * bigAmount;
-            writer.writeByteArray(hex::toByteArray(toUint256Format(finalAmount.toHexString())));
+            writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
 
             return writer.toByteArray();
         }
