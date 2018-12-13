@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ]; then
-	cd ios
+	cd ../lib-ledger-core-artifacts/ios
 
 	echo "======> Build Fat Library"
 	pwd
