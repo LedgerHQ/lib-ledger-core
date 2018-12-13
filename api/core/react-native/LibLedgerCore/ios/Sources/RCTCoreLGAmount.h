@@ -7,6 +7,7 @@
 #import "LGCurrencyUnit.h"
 #import "LGFormatRules.h"
 #import "LGLocale.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAmount.h"
 #import "RCTCoreLGBigInt.h"
 #import "RCTCoreLGCurrency.h"
@@ -19,6 +20,5 @@
 
 
 /**Class representing amount of transaction, output, inputs ... */
-@interface RCTCoreLGAmount : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGAmount : RCTCoreBaseModule <RCTBridgeModule>
 @end

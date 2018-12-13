@@ -4,6 +4,7 @@
 #import "LGExecutionContext.h"
 #import "LGLock.h"
 #import "LGThreadDispatcherImpl.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGExecutionContext.h"
 #import "RCTCoreLGLock.h"
 #import <Foundation/Foundation.h>
@@ -12,6 +13,5 @@
 
 
 /**Class representing a thread dispatcher */
-@interface RCTCoreLGThreadDispatcher : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGThreadDispatcher : RCTCoreBaseModule <RCTBridgeModule>
 @end

@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSKeychainEngines: public Nan::ObjectWrap {
+class NJSKeychainEngines final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSKeychainEngines() {};
-    NJSKeychainEngines(const std::shared_ptr<ledger::core::api::KeychainEngines> &iKeychainEngines):_KeychainEngines(iKeychainEngines){};
+    NJSKeychainEngines() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::KeychainEngines> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::KeychainEngines> &object);
     static Nan::Persistent<ObjectTemplate> KeychainEngines_prototype;
-    std::shared_ptr<ledger::core::api::KeychainEngines> getCppImpl(){return _KeychainEngines;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::KeychainEngines> _KeychainEngines;
 };
 #endif //DJINNI_GENERATED_NJSKEYCHAINENGINES_HPP

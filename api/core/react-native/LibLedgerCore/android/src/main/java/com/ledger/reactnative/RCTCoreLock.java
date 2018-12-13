@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, LockImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -55,9 +60,9 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -84,6 +89,25 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Acquire lock by thread calling this method,
@@ -91,10 +115,10 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
      *until the other thread call the unlock method
      */
     @ReactMethod
-    public void lock(Map<String, String> currentInstance, Promise promise) {
+    public void lock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -112,10 +136,10 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
      *@return bool, return true if Lock acquire by calling thread, false otherwise
      */
     @ReactMethod
-    public void tryLock(Map<String, String> currentInstance, Promise promise) {
+    public void tryLock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -132,10 +156,10 @@ public class RCTCoreLock extends ReactContextBaseJavaModule {
     }
     /**Release Lock ownership by calling thread */
     @ReactMethod
-    public void unlock(Map<String, String> currentInstance, Promise promise) {
+    public void unlock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LockImpl currentInstanceObj = this.javaObjects.get(sUid);
 

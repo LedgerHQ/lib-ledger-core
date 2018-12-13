@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, ExtendedKeyAccountCreationInfo>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
         return "RCTCoreExtendedKeyAccountCreationInfo";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,10 +77,47 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
-    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<String> extendedKeys, Promise promise) {
-        ExtendedKeyAccountCreationInfo javaResult = new ExtendedKeyAccountCreationInfo(index, owners, derivations, extendedKeys);
+    public void init(int index, ReadableArray owners, ReadableArray derivations, ReadableArray extendedKeys, Promise promise) {
+        ArrayList<String> javaParam_1 = new ArrayList<String>();
+        for (int i = 0; i <  owners.size(); i++)
+        {
+            String owners_elem = owners.getString(i);
+            javaParam_1.add(owners_elem);
+        }
+        ArrayList<String> javaParam_2 = new ArrayList<String>();
+        for (int i = 0; i <  derivations.size(); i++)
+        {
+            String derivations_elem = derivations.getString(i);
+            javaParam_2.add(derivations_elem);
+        }
+        ArrayList<String> javaParam_3 = new ArrayList<String>();
+        for (int i = 0; i <  extendedKeys.size(); i++)
+        {
+            String extendedKeys_elem = extendedKeys.getString(i);
+            javaParam_3.add(extendedKeys_elem);
+        }
+        ExtendedKeyAccountCreationInfo javaResult = new ExtendedKeyAccountCreationInfo(index, javaParam_1, javaParam_2, javaParam_3);
 
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, javaResult);
@@ -85,14 +127,16 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getIndex(Map<String, String> currentInstance, Promise promise)
+    public void getIndex(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
             int result = javaObj.getIndex();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -101,14 +145,19 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     }
 
     @ReactMethod
-    public void getOwners(Map<String, String> currentInstance, Promise promise)
+    public void getOwners(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getOwners();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {
@@ -117,14 +166,19 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     }
 
     @ReactMethod
-    public void getDerivations(Map<String, String> currentInstance, Promise promise)
+    public void getDerivations(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getDerivations();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {
@@ -133,14 +187,19 @@ public class RCTCoreExtendedKeyAccountCreationInfo extends ReactContextBaseJavaM
     }
 
     @ReactMethod
-    public void getExtendedKeys(Map<String, String> currentInstance, Promise promise)
+    public void getExtendedKeys(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             ExtendedKeyAccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getExtendedKeys();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {

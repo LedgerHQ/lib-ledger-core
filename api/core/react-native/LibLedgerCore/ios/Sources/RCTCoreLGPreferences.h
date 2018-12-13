@@ -3,6 +3,7 @@
 
 #import "LGPreferences.h"
 #import "LGPreferencesEditor.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGPreferencesEditor.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -15,6 +16,5 @@
  * attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
  * is highly inspired by Android SharedPreferences.
  */
-@interface RCTCoreLGPreferences : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGPreferences : RCTCoreBaseModule <RCTBridgeModule>
 @end

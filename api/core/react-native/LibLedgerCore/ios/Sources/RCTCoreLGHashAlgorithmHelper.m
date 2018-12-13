@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGHashAlgorithmHelper)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,33 @@ RCT_EXPORT_MODULE(RCTCoreLGHashAlgorithmHelper)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelper::release, first argument should be an instance of LGHashAlgorithmHelper", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
+}
+-(NSData *) hexStringToData: (NSString *)hexString 
+{
+    NSMutableData *data= [[NSMutableData alloc] init];
+    unsigned char byte;
+    char byteChars[3] = {'\0','\0','\0'};
+    for (int i = 0; i < ([hexString length] / 2); i++)
+    {
+        byteChars[0] = [hexString characterAtIndex: i*2];
+        byteChars[1] = [hexString characterAtIndex: i*2 + 1];
+        byte = strtol(byteChars, NULL, 16);
+        [data appendBytes:&byte length:1];
+    }
+    return data;
 }
 
 /**
@@ -55,18 +51,22 @@ RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve reject
  *@param data in bytes, message to hash
  *@return 160 bits hashed message
  */
-RCT_REMAP_METHOD(ripemd160,ripemd160:(NSDictionary *)currentInstance withParams:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(ripemd160,ripemd160:(NSDictionary *)currentInstance withParams:(NSString *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelper::ripemd160, first argument should be an instance of LGHashAlgorithmHelperImpl", nil);
+        return;
     }
     LGHashAlgorithmHelperImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGHashAlgorithmHelperImpl::ripemd160, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    NSData * objcResult = [currentInstanceObj ripemd160:data];
+    NSData *objcParam_0 = [self hexStringToData:data];
+
+    NSData * objcResult = [currentInstanceObj ripemd160:objcParam_0];
     NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
@@ -75,6 +75,7 @@ RCT_REMAP_METHOD(ripemd160,ripemd160:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGHashAlgorithmHelperImpl::ripemd160", nil);
+        return;
     }
 
 }
@@ -84,18 +85,22 @@ RCT_REMAP_METHOD(ripemd160,ripemd160:(NSDictionary *)currentInstance withParams:
  *@param data in bytes, message to hash
  *@return 256 bits hashed message
  */
-RCT_REMAP_METHOD(sha256,sha256:(NSDictionary *)currentInstance withParams:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(sha256,sha256:(NSDictionary *)currentInstance withParams:(NSString *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelper::sha256, first argument should be an instance of LGHashAlgorithmHelperImpl", nil);
+        return;
     }
     LGHashAlgorithmHelperImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGHashAlgorithmHelperImpl::sha256, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    NSData * objcResult = [currentInstanceObj sha256:data];
+    NSData *objcParam_0 = [self hexStringToData:data];
+
+    NSData * objcResult = [currentInstanceObj sha256:objcParam_0];
     NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
@@ -104,6 +109,7 @@ RCT_REMAP_METHOD(sha256,sha256:(NSDictionary *)currentInstance withParams:(nonnu
     else
     {
         reject(@"impl_call_error", @"Error while calling LGHashAlgorithmHelperImpl::sha256", nil);
+        return;
     }
 
 }
@@ -113,18 +119,22 @@ RCT_REMAP_METHOD(sha256,sha256:(NSDictionary *)currentInstance withParams:(nonnu
  *@param data in bytes, message to hash
  *@return 256 bits hashed message
  */
-RCT_REMAP_METHOD(keccak256,keccak256:(NSDictionary *)currentInstance withParams:(nonnull NSData *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(keccak256,keccak256:(NSDictionary *)currentInstance withParams:(NSString *)data withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelper::keccak256, first argument should be an instance of LGHashAlgorithmHelperImpl", nil);
+        return;
     }
     LGHashAlgorithmHelperImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGHashAlgorithmHelperImpl::keccak256, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    NSData * objcResult = [currentInstanceObj keccak256:data];
+    NSData *objcParam_0 = [self hexStringToData:data];
+
+    NSData * objcResult = [currentInstanceObj keccak256:objcParam_0];
     NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
@@ -133,17 +143,20 @@ RCT_REMAP_METHOD(keccak256,keccak256:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGHashAlgorithmHelperImpl::keccak256", nil);
+        return;
     }
 
 }
-RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(newInstance, newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGHashAlgorithmHelperImpl *objcResult = [[LGHashAlgorithmHelperImpl alloc] init];
     NSString *uuid = [[NSUUID UUID] UUIDString];
-    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSArray *resultArray = [[NSArray alloc] initWithObjects:objcResult, uuid, nil];
+    [self baseSetObject:resultArray];
     NSDictionary *result = @{@"type" : @"CoreLGHashAlgorithmHelperImpl", @"uid" : uuid };
     if (!objcResult || !result)
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGHashAlgorithmHelperImpl::init", nil);
+        return;
     }
     resolve(result);
 }

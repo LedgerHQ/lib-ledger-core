@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGWalletPoolBuilder)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGWalletPoolBuilder)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::release, first argument should be an instance of LGWalletPoolBuilder", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 
 /**
@@ -59,21 +41,24 @@ RCT_REMAP_METHOD(setHttpClient,setHttpClient:(NSDictionary *)currentInstance wit
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setHttpClient, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setHttpClient, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGHttpClient *rctParam_client = (RCTCoreLGHttpClient *)[self.bridge moduleForName:@"CoreLGHttpClient"];
     id<LGHttpClient>objcParam_0 = (id<LGHttpClient>)[rctParam_client.objcImplementations objectForKey:client[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setHttpClient:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -82,6 +67,7 @@ RCT_REMAP_METHOD(setHttpClient,setHttpClient:(NSDictionary *)currentInstance wit
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setHttpClient", nil);
+        return;
     }
 
 }
@@ -95,21 +81,24 @@ RCT_REMAP_METHOD(setWebsocketClient,setWebsocketClient:(NSDictionary *)currentIn
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setWebsocketClient, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setWebsocketClient, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGWebSocketClient *rctParam_client = (RCTCoreLGWebSocketClient *)[self.bridge moduleForName:@"CoreLGWebSocketClient"];
     id<LGWebSocketClient>objcParam_0 = (id<LGWebSocketClient>)[rctParam_client.objcImplementations objectForKey:client[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setWebsocketClient:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -118,6 +107,7 @@ RCT_REMAP_METHOD(setWebsocketClient,setWebsocketClient:(NSDictionary *)currentIn
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setWebsocketClient", nil);
+        return;
     }
 
 }
@@ -131,21 +121,24 @@ RCT_REMAP_METHOD(setPathResolver,setPathResolver:(NSDictionary *)currentInstance
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setPathResolver, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setPathResolver, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGPathResolver *rctParam_pathResolver = (RCTCoreLGPathResolver *)[self.bridge moduleForName:@"CoreLGPathResolver"];
     id<LGPathResolver>objcParam_0 = (id<LGPathResolver>)[rctParam_pathResolver.objcImplementations objectForKey:pathResolver[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setPathResolver:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -154,6 +147,7 @@ RCT_REMAP_METHOD(setPathResolver,setPathResolver:(NSDictionary *)currentInstance
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setPathResolver", nil);
+        return;
     }
 
 }
@@ -167,21 +161,24 @@ RCT_REMAP_METHOD(setLogPrinter,setLogPrinter:(NSDictionary *)currentInstance wit
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setLogPrinter, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setLogPrinter, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGLogPrinter *rctParam_printer = (RCTCoreLGLogPrinter *)[self.bridge moduleForName:@"CoreLGLogPrinter"];
     id<LGLogPrinter>objcParam_0 = (id<LGLogPrinter>)[rctParam_printer.objcImplementations objectForKey:printer[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setLogPrinter:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -190,6 +187,7 @@ RCT_REMAP_METHOD(setLogPrinter,setLogPrinter:(NSDictionary *)currentInstance wit
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setLogPrinter", nil);
+        return;
     }
 
 }
@@ -203,21 +201,24 @@ RCT_REMAP_METHOD(setThreadDispatcher,setThreadDispatcher:(NSDictionary *)current
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setThreadDispatcher, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setThreadDispatcher, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGThreadDispatcher *rctParam_dispatcher = (RCTCoreLGThreadDispatcher *)[self.bridge moduleForName:@"CoreLGThreadDispatcher"];
     id<LGThreadDispatcher>objcParam_0 = (id<LGThreadDispatcher>)[rctParam_dispatcher.objcImplementations objectForKey:dispatcher[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setThreadDispatcher:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -226,6 +227,7 @@ RCT_REMAP_METHOD(setThreadDispatcher,setThreadDispatcher:(NSDictionary *)current
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setThreadDispatcher", nil);
+        return;
     }
 
 }
@@ -239,19 +241,22 @@ RCT_REMAP_METHOD(setName,setName:(NSDictionary *)currentInstance withParams:(non
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setName, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setName, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setName:name];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -260,6 +265,7 @@ RCT_REMAP_METHOD(setName,setName:(NSDictionary *)currentInstance withParams:(non
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setName", nil);
+        return;
     }
 
 }
@@ -273,19 +279,22 @@ RCT_REMAP_METHOD(setPassword,setPassword:(NSDictionary *)currentInstance withPar
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setPassword, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setPassword, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setPassword:password];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -294,6 +303,7 @@ RCT_REMAP_METHOD(setPassword,setPassword:(NSDictionary *)currentInstance withPar
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setPassword", nil);
+        return;
     }
 
 }
@@ -307,21 +317,24 @@ RCT_REMAP_METHOD(setRandomNumberGenerator,setRandomNumberGenerator:(NSDictionary
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setRandomNumberGenerator, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setRandomNumberGenerator, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGRandomNumberGenerator *rctParam_rng = (RCTCoreLGRandomNumberGenerator *)[self.bridge moduleForName:@"CoreLGRandomNumberGenerator"];
     id<LGRandomNumberGenerator>objcParam_0 = (id<LGRandomNumberGenerator>)[rctParam_rng.objcImplementations objectForKey:rng[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setRandomNumberGenerator:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -330,6 +343,7 @@ RCT_REMAP_METHOD(setRandomNumberGenerator,setRandomNumberGenerator:(NSDictionary
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setRandomNumberGenerator", nil);
+        return;
     }
 
 }
@@ -343,21 +357,24 @@ RCT_REMAP_METHOD(setDatabaseBackend,setDatabaseBackend:(NSDictionary *)currentIn
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setDatabaseBackend, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setDatabaseBackend, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGDatabaseBackend *rctParam_backend = (RCTCoreLGDatabaseBackend *)[self.bridge moduleForName:@"CoreLGDatabaseBackend"];
     LGDatabaseBackend *objcParam_0 = (LGDatabaseBackend *)[rctParam_backend.objcImplementations objectForKey:backend[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setDatabaseBackend:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -366,6 +383,7 @@ RCT_REMAP_METHOD(setDatabaseBackend,setDatabaseBackend:(NSDictionary *)currentIn
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setDatabaseBackend", nil);
+        return;
     }
 
 }
@@ -379,21 +397,24 @@ RCT_REMAP_METHOD(setConfiguration,setConfiguration:(NSDictionary *)currentInstan
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::setConfiguration, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::setConfiguration, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGDynamicObject *rctParam_configuration = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
     LGDynamicObject *objcParam_0 = (LGDynamicObject *)[rctParam_configuration.objcImplementations objectForKey:configuration[@"uid"]];
     LGWalletPoolBuilder * objcResult = [currentInstanceObj setConfiguration:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -402,6 +423,7 @@ RCT_REMAP_METHOD(setConfiguration,setConfiguration:(NSDictionary *)currentInstan
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::setConfiguration", nil);
+        return;
     }
 
 }
@@ -414,12 +436,14 @@ RCT_REMAP_METHOD(build,build:(NSDictionary *)currentInstance WithResolver:(RCTPr
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGWalletPoolBuilder::build, first argument should be an instance of LGWalletPoolBuilder", nil);
+        return;
     }
     LGWalletPoolBuilder *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGWalletPoolBuilder::build, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGWalletPoolCallback *objcParam_0 = [[RCTCoreLGWalletPoolCallback alloc] initWithResolver:resolve rejecter:reject andBridge:self.bridge];
     [currentInstanceObj build:objcParam_0];
@@ -433,10 +457,11 @@ RCT_REMAP_METHOD(build,build:(NSDictionary *)currentInstance WithResolver:(RCTPr
 RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGWalletPoolBuilder * objcResult = [LGWalletPoolBuilder createInstance];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPoolBuilder *rctImpl_objcResult = (RCTCoreLGWalletPoolBuilder *)[self.bridge moduleForName:@"CoreLGWalletPoolBuilder"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGWalletPoolBuilder", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -445,6 +470,7 @@ RCT_REMAP_METHOD(createInstance,createInstanceWithResolver:(RCTPromiseResolveBlo
     else
     {
         reject(@"impl_call_error", @"Error while calling LGWalletPoolBuilder::createInstance", nil);
+        return;
     }
 
 }

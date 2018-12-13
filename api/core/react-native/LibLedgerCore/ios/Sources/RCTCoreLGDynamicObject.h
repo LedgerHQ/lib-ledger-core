@@ -4,6 +4,7 @@
 #import "LGDynamicArray.h"
 #import "LGDynamicObject.h"
 #import "LGDynamicType.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGDynamicArray.h"
 #import "RCTCoreLGDynamicObject.h"
 #import <Foundation/Foundation.h>
@@ -15,6 +16,5 @@
  *Class representing an object that stores values of different types of objects,
  *those values are appended dynamically in a map like structure with a given key through which they can be retreived
  */
-@interface RCTCoreLGDynamicObject : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGDynamicObject : RCTCoreBaseModule <RCTBridgeModule>
 @end

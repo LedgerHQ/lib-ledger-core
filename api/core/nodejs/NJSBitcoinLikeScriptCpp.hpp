@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeScript: public Nan::ObjectWrap {
+class NJSBitcoinLikeScript final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeScript() {};
-    NJSBitcoinLikeScript(const std::shared_ptr<ledger::core::api::BitcoinLikeScript> &iBitcoinLikeScript):_BitcoinLikeScript(iBitcoinLikeScript){};
+    NJSBitcoinLikeScript() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeScript> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeScript> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeScript_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeScript> getCppImpl(){return _BitcoinLikeScript;};
 
 private:
     static NAN_METHOD(head);
@@ -41,6 +39,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeScript> _BitcoinLikeScript;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKESCRIPT_HPP

@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSPreferences: public Nan::ObjectWrap {
+class NJSPreferences final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSPreferences() {};
-    NJSPreferences(const std::shared_ptr<ledger::core::api::Preferences> &iPreferences):_Preferences(iPreferences){};
+    NJSPreferences() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Preferences> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Preferences> &object);
     static Nan::Persistent<ObjectTemplate> Preferences_prototype;
-    std::shared_ptr<ledger::core::api::Preferences> getCppImpl(){return _Preferences;};
 
 private:
     /**
@@ -83,6 +81,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Preferences> _Preferences;
 };
 #endif //DJINNI_GENERATED_NJSPREFERENCES_HPP

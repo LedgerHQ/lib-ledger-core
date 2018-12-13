@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -40,6 +44,7 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, LogPrinterImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -59,9 +64,9 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -88,16 +93,35 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Print different encountered errors
      *@param message, string
      */
     @ReactMethod
-    public void printError(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printError(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -113,10 +137,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void printInfo(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printInfo(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -132,10 +156,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@param message string
      */
     @ReactMethod
-    public void printDebug(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printDebug(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -151,10 +175,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void printWarning(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printWarning(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -170,10 +194,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void printApdu(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printApdu(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -189,10 +213,10 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void printCriticalError(Map<String, String> currentInstance, String message, Promise promise) {
+    public void printCriticalError(ReadableMap currentInstance, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -208,21 +232,21 @@ public class RCTCoreLogPrinter extends ReactContextBaseJavaModule {
      *@return ExecutionContext object
      */
     @ReactMethod
-    public void getContext(Map<String, String> currentInstance, Promise promise) {
+    public void getContext(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             LogPrinterImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             ExecutionContext javaResult = currentInstanceObj.getContext();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreExecutionContext rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, (ExecutionContextImpl)javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, (ExecutionContextImpl)javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreExecutionContext");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

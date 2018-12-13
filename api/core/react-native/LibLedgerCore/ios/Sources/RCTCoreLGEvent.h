@@ -4,6 +4,7 @@
 #import "LGDynamicObject.h"
 #import "LGEvent.h"
 #import "LGEventCode.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGDynamicObject.h"
 #import "RCTCoreLGEvent.h"
 #import <Foundation/Foundation.h>
@@ -12,6 +13,5 @@
 
 
 /**Class representing an event */
-@interface RCTCoreLGEvent : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGEvent : RCTCoreBaseModule <RCTBridgeModule>
 @end

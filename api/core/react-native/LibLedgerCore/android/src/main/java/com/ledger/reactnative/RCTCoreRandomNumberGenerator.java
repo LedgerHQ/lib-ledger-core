@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, RandomNumberGeneratorImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -55,9 +60,9 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -84,6 +89,49 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /**
      * Generates random bytes.
@@ -91,16 +139,16 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
      * @return 'size' random bytes
      */
     @ReactMethod
-    public void getRandomBytes(Map<String, String> currentInstance, int size, Promise promise) {
+    public void getRandomBytes(ReadableMap currentInstance, int size, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getRandomBytes(size);
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -115,10 +163,10 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
      * @return random 32 bits integer
      */
     @ReactMethod
-    public void getRandomInt(Map<String, String> currentInstance, Promise promise) {
+    public void getRandomInt(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -138,10 +186,10 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
      * @return random 64 bits integer
      */
     @ReactMethod
-    public void getRandomLong(Map<String, String> currentInstance, Promise promise) {
+    public void getRandomLong(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -161,10 +209,10 @@ public class RCTCoreRandomNumberGenerator extends ReactContextBaseJavaModule {
      * @return random byte
      */
     @ReactMethod
-    public void getRandomByte(Map<String, String> currentInstance, Promise promise) {
+    public void getRandomByte(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             RandomNumberGeneratorImpl currentInstanceObj = this.javaObjects.get(sUid);
 

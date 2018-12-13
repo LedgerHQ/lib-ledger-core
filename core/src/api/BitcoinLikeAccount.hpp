@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 #define DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -39,7 +40,7 @@ public:
 
     virtual void broadcastTransaction(const std::shared_ptr<BitcoinLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
-    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> buildTransaction() = 0;
+    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> buildTransaction(std::experimental::optional<bool> partial) = 0;
 };
 
 } } }  // namespace ledger::core::api

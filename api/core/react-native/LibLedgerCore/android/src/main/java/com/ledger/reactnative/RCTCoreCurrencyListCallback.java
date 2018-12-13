@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -29,8 +33,8 @@ import java.util.UUID;
  */
 public class RCTCoreCurrencyListCallback extends CurrencyListCallback {
     public Promise promise;
-    public ReactContext reactContext;
-    public static RCTCoreCurrencyListCallback initWithPromise(Promise promise, ReactContext reactContext)
+    public ReactApplicationContext reactContext;
+    public static RCTCoreCurrencyListCallback initWithPromise(Promise promise, ReactApplicationContext reactContext)
     {
         RCTCoreCurrencyListCallback callback = new RCTCoreCurrencyListCallback();
         callback.promise = promise;
@@ -45,19 +49,19 @@ public class RCTCoreCurrencyListCallback extends CurrencyListCallback {
     public void onCallback(ArrayList<Currency> result, Error error) {
         try
         {
-            if (error.getMessage().length() > 0)
+            if (error != null && error.getMessage().length() > 0)
             {
                 this.promise.reject(error.toString(), error.getMessage());
             }
             WritableNativeArray converted_result = new WritableNativeArray();
             for (Currency result_elem : result)
             {
-                String uuid = UUID.randomUUID().toString();
+                String result_elem_uuid = UUID.randomUUID().toString();
                 RCTCoreCurrency rctImpl_result_elem = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-                rctImpl_result_elem.getJavaObjects().put(uuid, result_elem);
+                rctImpl_result_elem.getJavaObjects().put(result_elem_uuid, result_elem);
                 WritableNativeMap converted_result_elem = new WritableNativeMap();
                 converted_result_elem.putString("type","RCTCoreCurrency");
-                converted_result_elem.putString("uid",uuid);
+                converted_result_elem.putString("uid",result_elem_uuid);
                 converted_result.pushMap(converted_result_elem);
             }
 

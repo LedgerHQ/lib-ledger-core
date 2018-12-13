@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, DerivationPath>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         return "RCTCoreDerivationPath";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,13 +77,32 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /** Get the number of element in this path. */
     @ReactMethod
-    public void getDepth(Map<String, String> currentInstance, Promise promise) {
+    public void getDepth(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -95,10 +119,10 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
     }
     /** Get the child num at the given index in the path. */
     @ReactMethod
-    public void getChildNum(Map<String, String> currentInstance, int index, Promise promise) {
+    public void getChildNum(ReadableMap currentInstance, int index, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -118,10 +142,10 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
      * without the hardened marker bit.
      */
     @ReactMethod
-    public void getUnhardenedChildNum(Map<String, String> currentInstance, int index, Promise promise) {
+    public void getUnhardenedChildNum(ReadableMap currentInstance, int index, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -138,10 +162,10 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
     }
     /** Return true if the given index in the path is an hardened child num. */
     @ReactMethod
-    public void isHardened(Map<String, String> currentInstance, int index, Promise promise) {
+    public void isHardened(ReadableMap currentInstance, int index, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -158,10 +182,10 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
     }
     /** Serialize the given path to a human readable string like "44'/0'/0'/0/0" */
     @ReactMethod
-    public void toString(Map<String, String> currentInstance, Promise promise) {
+    public void toString(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -181,21 +205,21 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
      * "44'/0'/0'/0"
      */
     @ReactMethod
-    public void getParent(Map<String, String> currentInstance, Promise promise) {
+    public void getParent(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
             DerivationPath javaResult = currentInstanceObj.getParent();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDerivationPath");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -206,10 +230,10 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
     }
     /** Return an array where which item is a child num of the path. */
     @ReactMethod
-    public void toArray(Map<String, String> currentInstance, Promise promise) {
+    public void toArray(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DerivationPath currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -235,12 +259,12 @@ public class RCTCoreDerivationPath extends ReactContextBaseJavaModule {
         {
             DerivationPath javaResult = DerivationPath.parse(path);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDerivationPath rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDerivationPath");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

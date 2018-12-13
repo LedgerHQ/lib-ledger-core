@@ -1,2 +1,0 @@
-include ':binding'
-project(':binding').projectDir = new File(rootProject.projectDir, 'binding/android')

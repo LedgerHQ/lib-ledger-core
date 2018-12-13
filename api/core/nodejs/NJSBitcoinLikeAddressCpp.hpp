@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeAddress: public Nan::ObjectWrap {
+class NJSBitcoinLikeAddress final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeAddress() {};
-    NJSBitcoinLikeAddress(const std::shared_ptr<ledger::core::api::BitcoinLikeAddress> &iBitcoinLikeAddress):_BitcoinLikeAddress(iBitcoinLikeAddress){};
+    NJSBitcoinLikeAddress() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeAddress> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeAddress> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeAddress_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeAddress> getCppImpl(){return _BitcoinLikeAddress;};
 
 private:
     /**
@@ -74,6 +72,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeAddress> _BitcoinLikeAddress;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEADDRESS_HPP

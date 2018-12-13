@@ -22,16 +22,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSDynamicObject: public Nan::ObjectWrap {
+class NJSDynamicObject final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSDynamicObject() {};
-    NJSDynamicObject(const std::shared_ptr<ledger::core::api::DynamicObject> &iDynamicObject):_DynamicObject(iDynamicObject){};
+    NJSDynamicObject() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::DynamicObject> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::DynamicObject> &object);
     static Nan::Persistent<ObjectTemplate> DynamicObject_prototype;
-    std::shared_ptr<ledger::core::api::DynamicObject> getCppImpl(){return _DynamicObject;};
 
 private:
     /**
@@ -219,6 +217,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::DynamicObject> _DynamicObject;
 };
 #endif //DJINNI_GENERATED_NJSDYNAMICOBJECT_HPP

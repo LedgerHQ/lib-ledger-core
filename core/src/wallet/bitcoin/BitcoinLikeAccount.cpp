@@ -591,7 +591,7 @@ namespace ledger {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 
-        std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
+        std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(std::experimental::optional<bool> partial) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
                 return self->getUTXO();
@@ -603,7 +603,13 @@ namespace ledger {
                     getContext(),
                     getWallet()->getCurrency(),
                     logger(),
-                    _picker->getBuildFunction(getUTXO, getTransaction, _explorer, _keychain, _currentBlockHeight,logger())
+                    _picker->getBuildFunction(getUTXO,
+                                              getTransaction,
+                                              _explorer,
+                                              _keychain,
+                                              _currentBlockHeight,
+                                              logger(),
+                                              partial.value_or(false))
             );
         }
 

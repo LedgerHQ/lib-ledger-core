@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSPoolConfiguration: public Nan::ObjectWrap {
+class NJSPoolConfiguration final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSPoolConfiguration() {};
-    NJSPoolConfiguration(const std::shared_ptr<ledger::core::api::PoolConfiguration> &iPoolConfiguration):_PoolConfiguration(iPoolConfiguration){};
+    NJSPoolConfiguration() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::PoolConfiguration> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::PoolConfiguration> &object);
     static Nan::Persistent<ObjectTemplate> PoolConfiguration_prototype;
-    std::shared_ptr<ledger::core::api::PoolConfiguration> getCppImpl(){return _PoolConfiguration;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::PoolConfiguration> _PoolConfiguration;
 };
 #endif //DJINNI_GENERATED_NJSPOOLCONFIGURATION_HPP

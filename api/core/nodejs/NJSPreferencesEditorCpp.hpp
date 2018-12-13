@@ -19,16 +19,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSPreferencesEditor: public Nan::ObjectWrap {
+class NJSPreferencesEditor final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSPreferencesEditor() {};
-    NJSPreferencesEditor(const std::shared_ptr<ledger::core::api::PreferencesEditor> &iPreferencesEditor):_PreferencesEditor(iPreferencesEditor){};
+    NJSPreferencesEditor() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::PreferencesEditor> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::PreferencesEditor> &object);
     static Nan::Persistent<ObjectTemplate> PreferencesEditor_prototype;
-    std::shared_ptr<ledger::core::api::PreferencesEditor> getCppImpl(){return _PreferencesEditor;};
 
 private:
     /**
@@ -92,6 +90,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::PreferencesEditor> _PreferencesEditor;
 };
 #endif //DJINNI_GENERATED_NJSPREFERENCESEDITOR_HPP

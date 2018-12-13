@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, WebSocketConnection>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         return "RCTCoreWebSocketConnection";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,12 +78,31 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
-    public void onConnect(Map<String, String> currentInstance, int connectionId, Promise promise) {
+    public void onConnect(ReadableMap currentInstance, int connectionId, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -90,10 +114,10 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void onClose(Map<String, String> currentInstance, Promise promise) {
+    public void onClose(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -105,10 +129,10 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void onMessage(Map<String, String> currentInstance, String data, Promise promise) {
+    public void onMessage(ReadableMap currentInstance, String data, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -120,14 +144,20 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void onError(Map<String, String> currentInstance, ErrorCode code, String message, Promise promise) {
+    public void onError(ReadableMap currentInstance, int code, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 
-            currentInstanceObj.onError(code, message);
+            if (code < 0 || ErrorCode.values().length <= code)
+            {
+                promise.reject("Enum error", "Failed to get enum ErrorCode");
+                return;
+            }
+            ErrorCode javaParam_0 = ErrorCode.values()[code];
+            currentInstanceObj.onError(javaParam_0, message);
         }
         catch(Exception e)
         {
@@ -135,10 +165,10 @@ public class RCTCoreWebSocketConnection extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getConnectionId(Map<String, String> currentInstance, Promise promise) {
+    public void getConnectionId(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketConnection currentInstanceObj = this.javaObjects.get(sUid);
 

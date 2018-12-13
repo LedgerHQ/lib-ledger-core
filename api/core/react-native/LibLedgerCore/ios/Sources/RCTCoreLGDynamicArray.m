@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGDynamicArray)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,33 @@ RCT_EXPORT_MODULE(RCTCoreLGDynamicArray)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::release, first argument should be an instance of LGDynamicArray", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
+}
+-(NSData *) hexStringToData: (NSString *)hexString 
+{
+    NSMutableData *data= [[NSMutableData alloc] init];
+    unsigned char byte;
+    char byteChars[3] = {'\0','\0','\0'};
+    for (int i = 0; i < ([hexString length] / 2); i++)
+    {
+        byteChars[0] = [hexString characterAtIndex: i*2];
+        byteChars[1] = [hexString characterAtIndex: i*2 + 1];
+        byte = strtol(byteChars, NULL, 16);
+        [data appendBytes:&byte length:1];
+    }
+    return data;
 }
 
 /**
@@ -58,14 +54,16 @@ RCT_REMAP_METHOD(size,size:(NSDictionary *)currentInstance WithResolver:(RCTProm
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::size, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::size, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int64_t objcResult = [currentInstanceObj size];
+    NSInteger objcResult = [currentInstanceObj size];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -74,6 +72,7 @@ RCT_REMAP_METHOD(size,size:(NSDictionary *)currentInstance WithResolver:(RCTProm
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::size", nil);
+        return;
     }
 
 }
@@ -87,19 +86,22 @@ RCT_REMAP_METHOD(pushInt,pushInt:(NSDictionary *)currentInstance withParams:(int
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushInt, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushInt, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj pushInt:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -108,6 +110,7 @@ RCT_REMAP_METHOD(pushInt,pushInt:(NSDictionary *)currentInstance withParams:(int
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushInt", nil);
+        return;
     }
 
 }
@@ -121,19 +124,22 @@ RCT_REMAP_METHOD(pushLong,pushLong:(NSDictionary *)currentInstance withParams:(i
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushLong, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushLong, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj pushLong:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -142,6 +148,7 @@ RCT_REMAP_METHOD(pushLong,pushLong:(NSDictionary *)currentInstance withParams:(i
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushLong", nil);
+        return;
     }
 
 }
@@ -155,19 +162,22 @@ RCT_REMAP_METHOD(pushString,pushString:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushString, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushString, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj pushString:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -176,6 +186,7 @@ RCT_REMAP_METHOD(pushString,pushString:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushString", nil);
+        return;
     }
 
 }
@@ -189,19 +200,22 @@ RCT_REMAP_METHOD(pushDouble,pushDouble:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushDouble, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushDouble, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj pushDouble:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -210,6 +224,7 @@ RCT_REMAP_METHOD(pushDouble,pushDouble:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushDouble", nil);
+        return;
     }
 
 }
@@ -219,23 +234,28 @@ RCT_REMAP_METHOD(pushDouble,pushDouble:(NSDictionary *)currentInstance withParam
  *@param value, binary
  *@return DynamicArray with value stored in it
  */
-RCT_REMAP_METHOD(pushData,pushData:(NSDictionary *)currentInstance withParams:(nonnull NSData *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(pushData,pushData:(NSDictionary *)currentInstance withParams:(NSString *)value withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushData, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushData, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    LGDynamicArray * objcResult = [currentInstanceObj pushData:value];
+    NSData *objcParam_0 = [self hexStringToData:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    LGDynamicArray * objcResult = [currentInstanceObj pushData:objcParam_0];
+
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -244,6 +264,7 @@ RCT_REMAP_METHOD(pushData,pushData:(NSDictionary *)currentInstance withParams:(n
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushData", nil);
+        return;
     }
 
 }
@@ -257,19 +278,22 @@ RCT_REMAP_METHOD(pushBoolean,pushBoolean:(NSDictionary *)currentInstance withPar
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushBoolean, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushBoolean, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj pushBoolean:value];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -278,6 +302,7 @@ RCT_REMAP_METHOD(pushBoolean,pushBoolean:(NSDictionary *)currentInstance withPar
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushBoolean", nil);
+        return;
     }
 
 }
@@ -291,21 +316,24 @@ RCT_REMAP_METHOD(pushObject,pushObject:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushObject, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushObject, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGDynamicObject *rctParam_value = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
     LGDynamicObject *objcParam_0 = (LGDynamicObject *)[rctParam_value.objcImplementations objectForKey:value[@"uid"]];
     LGDynamicArray * objcResult = [currentInstanceObj pushObject:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -314,6 +342,7 @@ RCT_REMAP_METHOD(pushObject,pushObject:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushObject", nil);
+        return;
     }
 
 }
@@ -327,21 +356,24 @@ RCT_REMAP_METHOD(pushArray,pushArray:(NSDictionary *)currentInstance withParams:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::pushArray, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::pushArray, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGDynamicArray *rctParam_value = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
     LGDynamicArray *objcParam_0 = (LGDynamicArray *)[rctParam_value.objcImplementations objectForKey:value[@"uid"]];
     LGDynamicArray * objcResult = [currentInstanceObj pushArray:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -350,6 +382,7 @@ RCT_REMAP_METHOD(pushArray,pushArray:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::pushArray", nil);
+        return;
     }
 
 }
@@ -363,12 +396,14 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getString, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getString, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj getString:index];
     NSDictionary *result = @{@"value" : objcResult};
@@ -379,6 +414,7 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getString", nil);
+        return;
     }
 
 }
@@ -392,15 +428,17 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(int)i
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getInt, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getInt, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSNumber * objcResult = [currentInstanceObj getInt:index];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : @([objcResult intValue])};
     if(result)
     {
         resolve(result);
@@ -408,6 +446,7 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(int)i
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getInt", nil);
+        return;
     }
 
 }
@@ -421,15 +460,17 @@ RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(int
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getLong, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getLong, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSNumber * objcResult = [currentInstanceObj getLong:index];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : @([objcResult intValue])};
     if(result)
     {
         resolve(result);
@@ -437,6 +478,7 @@ RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(int
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getLong", nil);
+        return;
     }
 
 }
@@ -450,15 +492,17 @@ RCT_REMAP_METHOD(getDouble,getDouble:(NSDictionary *)currentInstance withParams:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getDouble, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getDouble, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSNumber * objcResult = [currentInstanceObj getDouble:index];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : @([objcResult intValue])};
     if(result)
     {
         resolve(result);
@@ -466,6 +510,7 @@ RCT_REMAP_METHOD(getDouble,getDouble:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getDouble", nil);
+        return;
     }
 
 }
@@ -479,15 +524,17 @@ RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(int
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getData, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getData, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSData * objcResult = [currentInstanceObj getData:index];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
         resolve(result);
@@ -495,6 +542,7 @@ RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(int
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getData", nil);
+        return;
     }
 
 }
@@ -508,15 +556,17 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getBoolean, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getBoolean, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSNumber * objcResult = [currentInstanceObj getBoolean:index];
-    NSDictionary *result = @{@"value" : objcResult};
+    NSDictionary *result = @{@"value" : @([objcResult intValue])};
     if(result)
     {
         resolve(result);
@@ -524,6 +574,7 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getBoolean", nil);
+        return;
     }
 
 }
@@ -537,19 +588,25 @@ RCT_REMAP_METHOD(getObject,getObject:(NSDictionary *)currentInstance withParams:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getObject, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getObject, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicObject * objcResult = [currentInstanceObj getObject:index];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicObject *rctImpl_objcResult = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : uuid };
+    if (objcResult)
+    {
+        NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+        [rctImpl_objcResult baseSetObject:objcResult_array];
+    }
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -558,6 +615,7 @@ RCT_REMAP_METHOD(getObject,getObject:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getObject", nil);
+        return;
     }
 
 }
@@ -571,19 +629,25 @@ RCT_REMAP_METHOD(getArray,getArray:(NSDictionary *)currentInstance withParams:(i
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getArray, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getArray, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicArray * objcResult = [currentInstanceObj getArray:index];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    if (objcResult)
+    {
+        NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+        [rctImpl_objcResult baseSetObject:objcResult_array];
+    }
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -592,6 +656,7 @@ RCT_REMAP_METHOD(getArray,getArray:(NSDictionary *)currentInstance withParams:(i
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getArray", nil);
+        return;
     }
 
 }
@@ -605,21 +670,24 @@ RCT_REMAP_METHOD(concat,concat:(NSDictionary *)currentInstance withParams:(NSDic
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::concat, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::concat, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     RCTCoreLGDynamicArray *rctParam_array = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
     LGDynamicArray *objcParam_0 = (LGDynamicArray *)[rctParam_array.objcImplementations objectForKey:array[@"uid"]];
     LGDynamicArray * objcResult = [currentInstanceObj concat:objcParam_0];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -628,6 +696,7 @@ RCT_REMAP_METHOD(concat,concat:(NSDictionary *)currentInstance withParams:(NSDic
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::concat", nil);
+        return;
     }
 
 }
@@ -641,12 +710,14 @@ RCT_REMAP_METHOD(getType,getType:(NSDictionary *)currentInstance withParams:(int
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::getType, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::getType, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSNumber * objcResult = [currentInstanceObj getType:index];
     NSDictionary *result = @{@"value" : objcResult};
@@ -657,6 +728,7 @@ RCT_REMAP_METHOD(getType,getType:(NSDictionary *)currentInstance withParams:(int
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::getType", nil);
+        return;
     }
 
 }
@@ -670,12 +742,14 @@ RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(int)i
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::remove, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::remove, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj remove:index];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -686,6 +760,7 @@ RCT_REMAP_METHOD(remove,remove:(NSDictionary *)currentInstance withParams:(int)i
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::remove", nil);
+        return;
     }
 
 }
@@ -698,12 +773,14 @@ RCT_REMAP_METHOD(dump,dump:(NSDictionary *)currentInstance WithResolver:(RCTProm
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::dump, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::dump, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj dump];
     NSDictionary *result = @{@"value" : objcResult};
@@ -714,6 +791,7 @@ RCT_REMAP_METHOD(dump,dump:(NSDictionary *)currentInstance WithResolver:(RCTProm
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::dump", nil);
+        return;
     }
 
 }
@@ -726,12 +804,14 @@ RCT_REMAP_METHOD(serialize,serialize:(NSDictionary *)currentInstance WithResolve
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::serialize, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::serialize, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSData * objcResult = [currentInstanceObj serialize];
     NSDictionary *result = @{@"value" : objcResult.description};
@@ -742,6 +822,7 @@ RCT_REMAP_METHOD(serialize,serialize:(NSDictionary *)currentInstance WithResolve
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::serialize", nil);
+        return;
     }
 
 }
@@ -754,12 +835,14 @@ RCT_REMAP_METHOD(isReadOnly,isReadOnly:(NSDictionary *)currentInstance WithResol
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDynamicArray::isReadOnly, first argument should be an instance of LGDynamicArray", nil);
+        return;
     }
     LGDynamicArray *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDynamicArray::isReadOnly, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj isReadOnly];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -770,6 +853,7 @@ RCT_REMAP_METHOD(isReadOnly,isReadOnly:(NSDictionary *)currentInstance WithResol
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::isReadOnly", nil);
+        return;
     }
 
 }
@@ -781,10 +865,11 @@ RCT_REMAP_METHOD(isReadOnly,isReadOnly:(NSDictionary *)currentInstance WithResol
 RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGDynamicArray * objcResult = [LGDynamicArray newInstance];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -793,6 +878,7 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::newInstance", nil);
+        return;
     }
 
 }
@@ -802,13 +888,19 @@ RCT_REMAP_METHOD(newInstance,newInstanceWithResolver:(RCTPromiseResolveBlock)res
  *@param serialized, binary to parse
  *@return Optional DynamicArray
  */
-RCT_REMAP_METHOD(load,loadwithParams:(nonnull NSData *)serialized withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    LGDynamicArray * objcResult = [LGDynamicArray load:serialized];
+RCT_REMAP_METHOD(load,loadwithParams:(NSString *)serialized withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSData *objcParam_0 = [self hexStringToData:serialized];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    LGDynamicArray * objcResult = [LGDynamicArray load:objcParam_0];
+
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicArray *rctImpl_objcResult = (RCTCoreLGDynamicArray *)[self.bridge moduleForName:@"CoreLGDynamicArray"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : uuid };
+    if (objcResult)
+    {
+        NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+        [rctImpl_objcResult baseSetObject:objcResult_array];
+    }
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicArray", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -817,6 +909,7 @@ RCT_REMAP_METHOD(load,loadwithParams:(nonnull NSData *)serialized withResolver:(
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDynamicArray::load", nil);
+        return;
     }
 
 }

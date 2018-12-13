@@ -27,10 +27,12 @@
     if (error)
     {
         self.reject(@"RCTCoreLGStringCallback Error", error.message, nil);
+        return;
     }
 
 
-    self.resolve(result);
+    NSDictionary *callbackResult = @{@"value" : result};
+    self.resolve(callbackResult);
 
 }
 @end

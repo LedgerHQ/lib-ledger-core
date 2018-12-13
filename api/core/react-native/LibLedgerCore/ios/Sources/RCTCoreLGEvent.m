@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGEvent)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGEvent)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGEvent::release, first argument should be an instance of LGEvent", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 
 /**
@@ -58,12 +40,14 @@ RCT_REMAP_METHOD(getCode,getCode:(NSDictionary *)currentInstance WithResolver:(R
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGEvent::getCode, first argument should be an instance of LGEvent", nil);
+        return;
     }
     LGEvent *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEvent::getCode, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGEventCode objcResult = [currentInstanceObj getCode];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -74,6 +58,7 @@ RCT_REMAP_METHOD(getCode,getCode:(NSDictionary *)currentInstance WithResolver:(R
     else
     {
         reject(@"impl_call_error", @"Error while calling LGEvent::getCode", nil);
+        return;
     }
 
 }
@@ -86,19 +71,22 @@ RCT_REMAP_METHOD(getPayload,getPayload:(NSDictionary *)currentInstance WithResol
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGEvent::getPayload, first argument should be an instance of LGEvent", nil);
+        return;
     }
     LGEvent *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEvent::getPayload, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDynamicObject * objcResult = [currentInstanceObj getPayload];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDynamicObject *rctImpl_objcResult = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDynamicObject", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -107,6 +95,7 @@ RCT_REMAP_METHOD(getPayload,getPayload:(NSDictionary *)currentInstance WithResol
     else
     {
         reject(@"impl_call_error", @"Error while calling LGEvent::getPayload", nil);
+        return;
     }
 
 }
@@ -119,12 +108,14 @@ RCT_REMAP_METHOD(isSticky,isSticky:(NSDictionary *)currentInstance WithResolver:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGEvent::isSticky, first argument should be an instance of LGEvent", nil);
+        return;
     }
     LGEvent *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEvent::isSticky, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj isSticky];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -135,6 +126,7 @@ RCT_REMAP_METHOD(isSticky,isSticky:(NSDictionary *)currentInstance WithResolver:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGEvent::isSticky", nil);
+        return;
     }
 
 }
@@ -147,14 +139,16 @@ RCT_REMAP_METHOD(getStickyTag,getStickyTag:(NSDictionary *)currentInstance WithR
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGEvent::getStickyTag, first argument should be an instance of LGEvent", nil);
+        return;
     }
     LGEvent *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGEvent::getStickyTag, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int32_t objcResult = [currentInstanceObj getStickyTag];
+    NSInteger objcResult = [currentInstanceObj getStickyTag];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -163,6 +157,7 @@ RCT_REMAP_METHOD(getStickyTag,getStickyTag:(NSDictionary *)currentInstance WithR
     else
     {
         reject(@"impl_call_error", @"Error while calling LGEvent::getStickyTag", nil);
+        return;
     }
 
 }
@@ -173,16 +168,17 @@ RCT_REMAP_METHOD(getStickyTag,getStickyTag:(NSDictionary *)currentInstance WithR
  *@param payload, DynamicObject object
  *@return Event instance
  */
-RCT_REMAP_METHOD(newInstance,newInstancewithParams:(LGEventCode)code
+RCT_REMAP_METHOD(newInstance,newInstancewithParams:(int)code
                                            payload:(NSDictionary *)payload withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     RCTCoreLGDynamicObject *rctParam_payload = (RCTCoreLGDynamicObject *)[self.bridge moduleForName:@"CoreLGDynamicObject"];
     LGDynamicObject *objcParam_1 = (LGDynamicObject *)[rctParam_payload.objcImplementations objectForKey:payload[@"uid"]];
-    LGEvent * objcResult = [LGEvent newInstance:code payload:objcParam_1];
+    LGEvent * objcResult = [LGEvent newInstance:(LGEventCode)code payload:objcParam_1];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGEvent *rctImpl_objcResult = (RCTCoreLGEvent *)[self.bridge moduleForName:@"CoreLGEvent"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGEvent", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGEvent", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -191,6 +187,7 @@ RCT_REMAP_METHOD(newInstance,newInstancewithParams:(LGEventCode)code
     else
     {
         reject(@"impl_call_error", @"Error while calling LGEvent::newInstance", nil);
+        return;
     }
 
 }

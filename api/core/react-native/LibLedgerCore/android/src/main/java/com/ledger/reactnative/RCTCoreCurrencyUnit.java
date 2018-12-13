@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, CurrencyUnit>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
         return "RCTCoreCurrencyUnit";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,6 +77,25 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
     public void init(String name, String symbol, String code, int numberOfDecimal, Promise promise) {
@@ -85,14 +109,16 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getName(Map<String, String> currentInstance, Promise promise)
+    public void getName(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             CurrencyUnit javaObj = this.javaObjects.get(uid);
             String result = javaObj.getName();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -101,14 +127,16 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getSymbol(Map<String, String> currentInstance, Promise promise)
+    public void getSymbol(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             CurrencyUnit javaObj = this.javaObjects.get(uid);
             String result = javaObj.getSymbol();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -117,14 +145,16 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCode(Map<String, String> currentInstance, Promise promise)
+    public void getCode(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             CurrencyUnit javaObj = this.javaObjects.get(uid);
             String result = javaObj.getCode();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -133,14 +163,16 @@ public class RCTCoreCurrencyUnit extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getNumberOfDecimal(Map<String, String> currentInstance, Promise promise)
+    public void getNumberOfDecimal(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             CurrencyUnit javaObj = this.javaObjects.get(uid);
             int result = javaObj.getNumberOfDecimal();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result);
+            promise.resolve(resultMap);
         }
         else
         {

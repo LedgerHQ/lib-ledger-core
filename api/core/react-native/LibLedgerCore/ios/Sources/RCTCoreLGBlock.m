@@ -10,16 +10,6 @@
 RCT_EXPORT_MODULE(RCTCoreLGBlock)
 
 @synthesize bridge = _bridge;
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGBlock)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGBlock::release, first argument should be an instance of LGBlock", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
                                      uid:(nonnull NSString *)uid
@@ -59,7 +41,8 @@ RCT_REMAP_METHOD(init, initWithBlockHash:(nonnull NSString *)blockHash
     LGBlock * finalResult = [[LGBlock alloc] initWithBlockHash:blockHash uid:uid time:time currencyName:currencyName height:height];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGBlock *rctImpl = (RCTCoreLGBlock *)[self.bridge moduleForName:@"CoreLGBlock"];
-    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSArray *finalResultArray = [[NSArray alloc] initWithObjects:finalResult, uuid, nil];
+    [rctImpl baseSetObject:finalResultArray];
     NSDictionary *result = @{@"type" : @"CoreLGBlock", @"uid" : uuid };
     if (result)
     {

@@ -19,14 +19,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSLogPrinter: public Nan::ObjectWrap, public ledger::core::api::LogPrinter {
+class NJSLogPrinter: public ledger::core::api::LogPrinter {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSLogPrinter()
     {
-        persistent().Reset();
-        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSLogPrinter(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -118,8 +116,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSLOGPRINTER_HPP

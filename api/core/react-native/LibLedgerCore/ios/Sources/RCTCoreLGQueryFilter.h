@@ -5,6 +5,7 @@
 #import "LGOperationType.h"
 #import "LGQueryFilter.h"
 #import "LGTrustLevel.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAmount.h"
 #import "RCTCoreLGQueryFilter.h"
 #import <Foundation/Foundation.h>
@@ -13,6 +14,5 @@
 
 
 /**TODO */
-@interface RCTCoreLGQueryFilter : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGQueryFilter : RCTCoreBaseModule <RCTBridgeModule>
 @end

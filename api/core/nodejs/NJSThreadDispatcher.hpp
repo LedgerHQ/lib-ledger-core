@@ -21,14 +21,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSThreadDispatcher: public Nan::ObjectWrap, public ledger::core::api::ThreadDispatcher {
+class NJSThreadDispatcher: public ledger::core::api::ThreadDispatcher {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSThreadDispatcher()
     {
-        persistent().Reset();
-        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSThreadDispatcher(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -90,8 +88,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSTHREADDISPATCHER_HPP

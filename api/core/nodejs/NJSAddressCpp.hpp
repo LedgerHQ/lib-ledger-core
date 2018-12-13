@@ -22,16 +22,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSAddress: public Nan::ObjectWrap {
+class NJSAddress final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSAddress() {};
-    NJSAddress(const std::shared_ptr<ledger::core::api::Address> &iAddress):_Address(iAddress){};
+    NJSAddress() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Address> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Address> &object);
     static Nan::Persistent<ObjectTemplate> Address_prototype;
-    std::shared_ptr<ledger::core::api::Address> getCppImpl(){return _Address;};
 
 private:
     /**
@@ -72,6 +70,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Address> _Address;
 };
 #endif //DJINNI_GENERATED_NJSADDRESS_HPP

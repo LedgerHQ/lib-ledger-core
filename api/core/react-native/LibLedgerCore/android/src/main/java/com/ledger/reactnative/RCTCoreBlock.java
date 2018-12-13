@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Block>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
         return "RCTCoreBlock";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,6 +77,25 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
     public void init(String blockHash, String uid, Date time, String currencyName, long height, Promise promise) {
@@ -85,14 +109,16 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getBlockHash(Map<String, String> currentInstance, Promise promise)
+    public void getBlockHash(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             Block javaObj = this.javaObjects.get(uid);
             String result = javaObj.getBlockHash();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -101,14 +127,16 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getUid(Map<String, String> currentInstance, Promise promise)
+    public void getUid(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             Block javaObj = this.javaObjects.get(uid);
             String result = javaObj.getUid();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -117,14 +145,16 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getTime(Map<String, String> currentInstance, Promise promise)
+    public void getTime(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             Block javaObj = this.javaObjects.get(uid);
             Date result = javaObj.getTime();
-            promise.resolve(result);
+            DateFormat resultDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            String converted_result = resultDateFormat.format(result);
+            promise.resolve(converted_result);
         }
         else
         {
@@ -133,14 +163,16 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCurrencyName(Map<String, String> currentInstance, Promise promise)
+    public void getCurrencyName(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             Block javaObj = this.javaObjects.get(uid);
             String result = javaObj.getCurrencyName();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -149,14 +181,16 @@ public class RCTCoreBlock extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getHeight(Map<String, String> currentInstance, Promise promise)
+    public void getHeight(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             Block javaObj = this.javaObjects.get(uid);
-            long result = javaObj.getHeight();
-            promise.resolve(result);
+            double result = javaObj.getHeight();
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putDouble("value", result);
+            promise.resolve(resultMap);
         }
         else
         {

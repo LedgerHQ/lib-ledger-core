@@ -34,6 +34,6 @@
 - (void)broadcastTransaction:(nullable LGBitcoinLikeTransaction *)transaction
                     callback:(nullable id<LGStringCallback>)callback;
 
-- (nullable LGBitcoinLikeTransactionBuilder *)buildTransaction;
+- (nullable LGBitcoinLikeTransactionBuilder *)buildTransaction:(nullable NSNumber *)partial;
 
 @end

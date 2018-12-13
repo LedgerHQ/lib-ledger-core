@@ -10,16 +10,6 @@
 RCT_EXPORT_MODULE(RCTCoreLGEstimatedSize)
 
 @synthesize bridge = _bridge;
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGEstimatedSize)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGEstimatedSize::release, first argument should be an instance of LGEstimatedSize", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(init, initWithMin:(int)Min
                                Max:(int)Max withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -56,7 +38,8 @@ RCT_REMAP_METHOD(init, initWithMin:(int)Min
     LGEstimatedSize * finalResult = [[LGEstimatedSize alloc] initWithMin:Min Max:Max];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGEstimatedSize *rctImpl = (RCTCoreLGEstimatedSize *)[self.bridge moduleForName:@"CoreLGEstimatedSize"];
-    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSArray *finalResultArray = [[NSArray alloc] initWithObjects:finalResult, uuid, nil];
+    [rctImpl baseSetObject:finalResultArray];
     NSDictionary *result = @{@"type" : @"CoreLGEstimatedSize", @"uid" : uuid };
     if (result)
     {

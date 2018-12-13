@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Logger>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         return "RCTCoreLogger";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,6 +78,25 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Print debug message to console
@@ -80,10 +104,10 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void d(Map<String, String> currentInstance, String tag, String message, Promise promise) {
+    public void d(ReadableMap currentInstance, String tag, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Logger currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -100,10 +124,10 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void i(Map<String, String> currentInstance, String tag, String message, Promise promise) {
+    public void i(ReadableMap currentInstance, String tag, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Logger currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -120,10 +144,10 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void e(Map<String, String> currentInstance, String tag, String message, Promise promise) {
+    public void e(ReadableMap currentInstance, String tag, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Logger currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -140,10 +164,10 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void w(Map<String, String> currentInstance, String tag, String message, Promise promise) {
+    public void w(ReadableMap currentInstance, String tag, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Logger currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -160,10 +184,10 @@ public class RCTCoreLogger extends ReactContextBaseJavaModule {
      *@param message, string
      */
     @ReactMethod
-    public void c(Map<String, String> currentInstance, String tag, String message, Promise promise) {
+    public void c(ReadableMap currentInstance, String tag, String message, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Logger currentInstanceObj = this.javaObjects.get(sUid);
 

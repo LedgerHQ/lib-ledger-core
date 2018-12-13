@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -37,6 +41,7 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, ExecutionContextImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -56,9 +61,9 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -85,21 +90,40 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Execute a given runnable
      *@param runnalbe, Runnable object
      */
     @ReactMethod
-    public void execute(Map<String, String> currentInstance, HashMap <String, String> runnable, Promise promise) {
+    public void execute(ReadableMap currentInstance, ReadableMap runnable, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             ExecutionContextImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
-            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.get("uid"));
+            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.getString("uid"));
             currentInstanceObj.execute(javaParam_0);
         }
         catch(Exception e)
@@ -113,15 +137,15 @@ public class RCTCoreExecutionContext extends ReactContextBaseJavaModule {
      *@param millis, 64 bits integer, delay in milli-seconds
      */
     @ReactMethod
-    public void delay(Map<String, String> currentInstance, HashMap <String, String> runnable, long millis, Promise promise) {
+    public void delay(ReadableMap currentInstance, ReadableMap runnable, long millis, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             ExecutionContextImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreRunnable rctParam_runnable = this.reactContext.getNativeModule(RCTCoreRunnable.class);
-            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.get("uid"));
+            Runnable javaParam_0 = rctParam_runnable.getJavaObjects().get(runnable.getString("uid"));
             currentInstanceObj.delay(javaParam_0, millis);
         }
         catch(Exception e)

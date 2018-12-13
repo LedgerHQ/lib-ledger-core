@@ -12,6 +12,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, EventPublisher>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -47,9 +52,9 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
         return "RCTCoreEventPublisher";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -76,27 +81,46 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Get event bus through which publisher broadcast its events
      *@return EventBus object
      */
     @ReactMethod
-    public void getEventBus(Map<String, String> currentInstance, Promise promise) {
+    public void getEventBus(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             EventPublisher currentInstanceObj = this.javaObjects.get(sUid);
 
             EventBus javaResult = currentInstanceObj.getEventBus();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventBus");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -110,15 +134,15 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
      *@param event, Event object
      */
     @ReactMethod
-    public void post(Map<String, String> currentInstance, HashMap <String, String> event, Promise promise) {
+    public void post(ReadableMap currentInstance, ReadableMap event, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             EventPublisher currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
-            Event javaParam_0 = rctParam_event.getJavaObjects().get(event.get("uid"));
+            Event javaParam_0 = rctParam_event.getJavaObjects().get(event.getString("uid"));
             currentInstanceObj.post(javaParam_0);
         }
         catch(Exception e)
@@ -132,15 +156,15 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
      *@param tag, 32 bits integer, tag of sticky event
      */
     @ReactMethod
-    public void postSticky(Map<String, String> currentInstance, HashMap <String, String> event, int tag, Promise promise) {
+    public void postSticky(ReadableMap currentInstance, ReadableMap event, int tag, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             EventPublisher currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEvent rctParam_event = this.reactContext.getNativeModule(RCTCoreEvent.class);
-            Event javaParam_0 = rctParam_event.getJavaObjects().get(event.get("uid"));
+            Event javaParam_0 = rctParam_event.getJavaObjects().get(event.getString("uid"));
             currentInstanceObj.postSticky(javaParam_0, tag);
         }
         catch(Exception e)
@@ -153,15 +177,15 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
      *@param bus, EventBus object, through which we want to broadcast EventPublisher's event to EventPublisher's receiver
      */
     @ReactMethod
-    public void relay(Map<String, String> currentInstance, HashMap <String, String> bus, Promise promise) {
+    public void relay(ReadableMap currentInstance, ReadableMap bus, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             EventPublisher currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEventBus rctParam_bus = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            EventBus javaParam_0 = rctParam_bus.getJavaObjects().get(bus.get("uid"));
+            EventBus javaParam_0 = rctParam_bus.getJavaObjects().get(bus.getString("uid"));
             currentInstanceObj.relay(javaParam_0);
         }
         catch(Exception e)
@@ -174,19 +198,19 @@ public class RCTCoreEventPublisher extends ReactContextBaseJavaModule {
      *@param context, executionContext object, context in which event publisher broadcast its events
      */
     @ReactMethod
-    public void newInstance(HashMap <String, String> context, Promise promise) {
+    public void newInstance(ReadableMap context, Promise promise) {
         try
         {
             RCTCoreExecutionContext rctParam_context = this.reactContext.getNativeModule(RCTCoreExecutionContext.class);
-            ExecutionContext javaParam_0 = rctParam_context.getJavaObjects().get(context.get("uid"));
+            ExecutionContext javaParam_0 = rctParam_context.getJavaObjects().get(context.getString("uid"));
             EventPublisher javaResult = EventPublisher.newInstance(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventPublisher rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventPublisher.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventPublisher");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

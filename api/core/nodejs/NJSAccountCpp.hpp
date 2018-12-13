@@ -31,16 +31,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSAccount: public Nan::ObjectWrap {
+class NJSAccount final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSAccount() {};
-    NJSAccount(const std::shared_ptr<ledger::core::api::Account> &iAccount):_Account(iAccount){};
+    NJSAccount() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Account> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Account> &object);
     static Nan::Persistent<ObjectTemplate> Account_prototype;
-    std::shared_ptr<ledger::core::api::Account> getCppImpl(){return _Account;};
 
 private:
     /**
@@ -167,6 +165,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Account> _Account;
 };
 #endif //DJINNI_GENERATED_NJSACCOUNT_HPP

@@ -17,14 +17,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSHashAlgorithmHelper: public Nan::ObjectWrap, public ledger::core::api::HashAlgorithmHelper {
+class NJSHashAlgorithmHelper: public ledger::core::api::HashAlgorithmHelper {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSHashAlgorithmHelper()
     {
-        persistent().Reset();
-        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSHashAlgorithmHelper(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -74,8 +72,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSHASHALGORITHMHELPER_HPP

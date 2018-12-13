@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, PathResolverImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -58,9 +63,9 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -87,6 +92,25 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      * Resolves the path for a SQLite database file.
@@ -94,10 +118,10 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
      * @return The resolved path.
      */
     @ReactMethod
-    public void resolveDatabasePath(Map<String, String> currentInstance, String path, Promise promise) {
+    public void resolveDatabasePath(ReadableMap currentInstance, String path, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -118,10 +142,10 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
      * @return The resolved path.
      */
     @ReactMethod
-    public void resolveLogFilePath(Map<String, String> currentInstance, String path, Promise promise) {
+    public void resolveLogFilePath(ReadableMap currentInstance, String path, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -142,10 +166,10 @@ public class RCTCorePathResolver extends ReactContextBaseJavaModule {
      * @return The resolved path.
      */
     @ReactMethod
-    public void resolvePreferencesPath(Map<String, String> currentInstance, String path, Promise promise) {
+    public void resolvePreferencesPath(ReadableMap currentInstance, String path, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PathResolverImpl currentInstanceObj = this.javaObjects.get(sUid);
 

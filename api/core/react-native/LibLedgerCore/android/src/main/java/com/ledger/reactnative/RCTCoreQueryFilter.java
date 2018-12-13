@@ -12,6 +12,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, QueryFilter>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -47,9 +52,9 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         return "RCTCoreQueryFilter";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -76,6 +81,25 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
     public void accountEq(String accountUid, Promise promise) {
@@ -83,12 +107,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.accountEq(accountUid);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -103,12 +127,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.accountNeq(accountUid);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -123,12 +147,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateLte(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -143,12 +167,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateLt(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -163,12 +187,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateGt(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -183,12 +207,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateGte(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -203,12 +227,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateEq(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -223,12 +247,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.dateNeq(time);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -243,12 +267,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.containsRecipient(recipientAddress);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -263,12 +287,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.containsSender(senderAddress);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -283,12 +307,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.currencyEq(currencyName);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -303,12 +327,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.operationUidEq(operationUid);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -323,12 +347,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.operationUidNeq(operationUid);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -338,17 +362,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void trustEq(TrustLevel trust, Promise promise) {
+    public void trustEq(int trust, Promise promise) {
         try
         {
-            QueryFilter javaResult = QueryFilter.trustEq(trust);
+            if (trust < 0 || TrustLevel.values().length <= trust)
+            {
+                promise.reject("Enum error", "Failed to get enum TrustLevel");
+                return;
+            }
+            TrustLevel javaParam_0 = TrustLevel.values()[trust];
+            QueryFilter javaResult = QueryFilter.trustEq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -358,17 +388,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void trustNeq(TrustLevel trust, Promise promise) {
+    public void trustNeq(int trust, Promise promise) {
         try
         {
-            QueryFilter javaResult = QueryFilter.trustNeq(trust);
+            if (trust < 0 || TrustLevel.values().length <= trust)
+            {
+                promise.reject("Enum error", "Failed to get enum TrustLevel");
+                return;
+            }
+            TrustLevel javaParam_0 = TrustLevel.values()[trust];
+            QueryFilter javaResult = QueryFilter.trustNeq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -378,19 +414,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesEq(HashMap <String, String> amount, Promise promise) {
+    public void feesEq(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesEq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -400,19 +436,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesNeq(HashMap <String, String> amount, Promise promise) {
+    public void feesNeq(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesNeq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -422,19 +458,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesGte(HashMap <String, String> amount, Promise promise) {
+    public void feesGte(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesGte(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -444,19 +480,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesGt(HashMap <String, String> amount, Promise promise) {
+    public void feesGt(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesGt(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -466,19 +502,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesLte(HashMap <String, String> amount, Promise promise) {
+    public void feesLte(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesLte(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -488,19 +524,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void feesLt(HashMap <String, String> amount, Promise promise) {
+    public void feesLt(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.feesLt(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -510,19 +546,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountEq(HashMap <String, String> amount, Promise promise) {
+    public void amountEq(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountEq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -532,19 +568,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountNeq(HashMap <String, String> amount, Promise promise) {
+    public void amountNeq(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountNeq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -554,19 +590,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountGte(HashMap <String, String> amount, Promise promise) {
+    public void amountGte(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountGte(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -576,19 +612,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountGt(HashMap <String, String> amount, Promise promise) {
+    public void amountGt(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountGt(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -598,19 +634,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountLte(HashMap <String, String> amount, Promise promise) {
+    public void amountLte(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountLte(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -620,19 +656,19 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void amountLt(HashMap <String, String> amount, Promise promise) {
+    public void amountLt(ReadableMap amount, Promise promise) {
         try
         {
             RCTCoreAmount rctParam_amount = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.get("uid"));
+            Amount javaParam_0 = rctParam_amount.getJavaObjects().get(amount.getString("uid"));
             QueryFilter javaResult = QueryFilter.amountLt(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -647,12 +683,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightEq(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -667,12 +703,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightNeq(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -687,12 +723,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightGte(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -707,12 +743,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightGt(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -727,12 +763,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightLte(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -747,12 +783,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightLt(blockHeight);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -767,12 +803,12 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         {
             QueryFilter javaResult = QueryFilter.blockHeightIsNull();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -782,17 +818,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void operationTypeEq(OperationType operationType, Promise promise) {
+    public void operationTypeEq(int operationType, Promise promise) {
         try
         {
-            QueryFilter javaResult = QueryFilter.operationTypeEq(operationType);
+            if (operationType < 0 || OperationType.values().length <= operationType)
+            {
+                promise.reject("Enum error", "Failed to get enum OperationType");
+                return;
+            }
+            OperationType javaParam_0 = OperationType.values()[operationType];
+            QueryFilter javaResult = QueryFilter.operationTypeEq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -802,17 +844,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void operationTypeNeq(OperationType operationType, Promise promise) {
+    public void operationTypeNeq(int operationType, Promise promise) {
         try
         {
-            QueryFilter javaResult = QueryFilter.operationTypeNeq(operationType);
+            if (operationType < 0 || OperationType.values().length <= operationType)
+            {
+                promise.reject("Enum error", "Failed to get enum OperationType");
+                return;
+            }
+            OperationType javaParam_0 = OperationType.values()[operationType];
+            QueryFilter javaResult = QueryFilter.operationTypeNeq(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -822,23 +870,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void opAnd(Map<String, String> currentInstance, HashMap <String, String> filter, Promise promise) {
+    public void opAnd(ReadableMap currentInstance, ReadableMap filter, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.getString("uid"));
             QueryFilter javaResult = currentInstanceObj.opAnd(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -848,23 +896,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void opOr(Map<String, String> currentInstance, HashMap <String, String> filter, Promise promise) {
+    public void opOr(ReadableMap currentInstance, ReadableMap filter, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.getString("uid"));
             QueryFilter javaResult = currentInstanceObj.opOr(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -874,23 +922,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void opAndNot(Map<String, String> currentInstance, HashMap <String, String> filter, Promise promise) {
+    public void opAndNot(ReadableMap currentInstance, ReadableMap filter, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.getString("uid"));
             QueryFilter javaResult = currentInstanceObj.opAndNot(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -900,23 +948,23 @@ public class RCTCoreQueryFilter extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void opOrNot(Map<String, String> currentInstance, HashMap <String, String> filter, Promise promise) {
+    public void opOrNot(ReadableMap currentInstance, ReadableMap filter, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             QueryFilter currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreQueryFilter rctParam_filter = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.get("uid"));
+            QueryFilter javaParam_0 = rctParam_filter.getJavaObjects().get(filter.getString("uid"));
             QueryFilter javaResult = currentInstanceObj.opOrNot(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

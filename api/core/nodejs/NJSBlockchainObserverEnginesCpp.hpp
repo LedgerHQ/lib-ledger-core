@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBlockchainObserverEngines: public Nan::ObjectWrap {
+class NJSBlockchainObserverEngines final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBlockchainObserverEngines() {};
-    NJSBlockchainObserverEngines(const std::shared_ptr<ledger::core::api::BlockchainObserverEngines> &iBlockchainObserverEngines):_BlockchainObserverEngines(iBlockchainObserverEngines){};
+    NJSBlockchainObserverEngines() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BlockchainObserverEngines> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BlockchainObserverEngines> &object);
     static Nan::Persistent<ObjectTemplate> BlockchainObserverEngines_prototype;
-    std::shared_ptr<ledger::core::api::BlockchainObserverEngines> getCppImpl(){return _BlockchainObserverEngines;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BlockchainObserverEngines> _BlockchainObserverEngines;
 };
 #endif //DJINNI_GENERATED_NJSBLOCKCHAINOBSERVERENGINES_HPP

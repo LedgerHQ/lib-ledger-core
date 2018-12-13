@@ -25,16 +25,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeInput: public Nan::ObjectWrap {
+class NJSBitcoinLikeInput final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeInput() {};
-    NJSBitcoinLikeInput(const std::shared_ptr<ledger::core::api::BitcoinLikeInput> &iBitcoinLikeInput):_BitcoinLikeInput(iBitcoinLikeInput){};
+    NJSBitcoinLikeInput() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeInput> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeInput> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeInput_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeInput> getCppImpl(){return _BitcoinLikeInput;};
 
 private:
     /** Returns the address of the input (if an address can be computed) */
@@ -118,6 +116,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeInput> _BitcoinLikeInput;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEINPUT_HPP

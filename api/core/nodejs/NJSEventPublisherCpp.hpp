@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSEventPublisher: public Nan::ObjectWrap {
+class NJSEventPublisher final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSEventPublisher() {};
-    NJSEventPublisher(const std::shared_ptr<ledger::core::api::EventPublisher> &iEventPublisher):_EventPublisher(iEventPublisher){};
+    NJSEventPublisher() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::EventPublisher> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::EventPublisher> &object);
     static Nan::Persistent<ObjectTemplate> EventPublisher_prototype;
-    std::shared_ptr<ledger::core::api::EventPublisher> getCppImpl(){return _EventPublisher;};
 
 private:
     /**
@@ -66,6 +64,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::EventPublisher> _EventPublisher;
 };
 #endif //DJINNI_GENERATED_NJSEVENTPUBLISHER_HPP

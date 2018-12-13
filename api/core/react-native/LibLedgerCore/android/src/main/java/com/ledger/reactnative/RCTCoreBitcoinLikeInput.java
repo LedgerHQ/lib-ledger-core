@@ -14,6 +14,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -41,6 +45,7 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeInput>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -49,9 +54,9 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         return "RCTCoreBitcoinLikeInput";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -78,13 +83,56 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /** Returns the address of the input (if an address can be computed) */
     @ReactMethod
-    public void getAddress(Map<String, String> currentInstance, Promise promise) {
+    public void getAddress(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -104,10 +152,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      * address which does not belong to your wallet.
      */
     @ReactMethod
-    public void getPublicKeys(Map<String, String> currentInstance, Promise promise) {
+    public void getPublicKeys(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -116,7 +164,7 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
             WritableNativeArray javaResult_list = new WritableNativeArray();
             for(byte[] javaResult_elem : javaResult)
             {
-                String finalJavaResult = new String(javaResult_elem);
+                String finalJavaResult = byteArrayToHexString(javaResult_elem);
                 javaResult_list.pushString(finalJavaResult);
             }
             result.putArray("value", javaResult_list);
@@ -130,10 +178,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Returns the derivation path of this input if the address is owned by the wallet */
     @ReactMethod
-    public void getDerivationPath(Map<String, String> currentInstance, Promise promise) {
+    public void getDerivationPath(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -142,12 +190,12 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
             WritableNativeArray result = new WritableNativeArray();
             for (DerivationPath javaResult_elem : javaResult)
             {
-                String uuid = UUID.randomUUID().toString();
+                String javaResult_elem_uuid = UUID.randomUUID().toString();
                 RCTCoreDerivationPath rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreDerivationPath.class);
-                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                rctImpl_javaResult_elem.getJavaObjects().put(javaResult_elem_uuid, javaResult_elem);
                 WritableNativeMap result_elem = new WritableNativeMap();
                 result_elem.putString("type","RCTCoreDerivationPath");
-                result_elem.putString("uid",uuid);
+                result_elem.putString("uid",javaResult_elem_uuid);
                 result.pushMap(result_elem);
             }
 
@@ -163,21 +211,21 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      * the wallet.
      */
     @ReactMethod
-    public void getValue(Map<String, String> currentInstance, Promise promise) {
+    public void getValue(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getValue();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -191,10 +239,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      * the wallet
      */
     @ReactMethod
-    public void getPreviousTxHash(Map<String, String> currentInstance, Promise promise) {
+    public void getPreviousTxHash(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -216,10 +264,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      *@return Boolean, true if input belongs to coinbase transaction (reward for mining a block)
      */
     @ReactMethod
-    public void isCoinbase(Map<String, String> currentInstance, Promise promise) {
+    public void isCoinbase(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -239,10 +287,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      *@return Optional String
      */
     @ReactMethod
-    public void getCoinbase(Map<String, String> currentInstance, Promise promise) {
+    public void getCoinbase(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -262,15 +310,20 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      *@return Optional 32 bits integer, index of previous transaction
      */
     @ReactMethod
-    public void getPreviousOutputIndex(Map<String, String> currentInstance, Promise promise) {
+    public void getPreviousOutputIndex(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             Integer javaResult = currentInstanceObj.getPreviousOutputIndex();
             WritableNativeMap result = new WritableNativeMap();
+            if (javaResult == null)
+            {
+                promise.resolve(javaResult);
+                return;
+            }
             result.putInt("value", javaResult);
 
             promise.resolve(result);
@@ -287,21 +340,21 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      * @return The output spent by this input.
      */
     @ReactMethod
-    public void getPreviousOuput(Map<String, String> currentInstance, Promise promise) {
+    public void getPreviousOuput(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeOutput javaResult = currentInstanceObj.getPreviousOuput();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeOutput rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeOutput");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -312,16 +365,16 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Get ScriptSig of this input. The scriptsig is the first half of a script necessary to spend a previous output. */
     @ReactMethod
-    public void getScriptSig(Map<String, String> currentInstance, Promise promise) {
+    public void getScriptSig(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getScriptSig();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -333,21 +386,21 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Parse the script sig to a [[BitcoinLikeScript]] */
     @ReactMethod
-    public void parseScriptSig(Map<String, String> currentInstance, Promise promise) {
+    public void parseScriptSig(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeScript javaResult = currentInstanceObj.parseScriptSig();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeScript rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScript.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeScript");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -361,14 +414,16 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
      * @param scriptSig The ScriptSig to use for this input
      */
     @ReactMethod
-    public void setScriptSig(Map<String, String> currentInstance, byte[] scriptSig, Promise promise) {
+    public void setScriptSig(ReadableMap currentInstance, String scriptSig, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
-            currentInstanceObj.setScriptSig(scriptSig);
+            byte [] javaParam_0 = hexStringToByteArray(scriptSig);
+
+            currentInstanceObj.setScriptSig(javaParam_0);
         }
         catch(Exception e)
         {
@@ -377,14 +432,16 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Push data to the end of the current ScriptSig */
     @ReactMethod
-    public void pushToScriptSig(Map<String, String> currentInstance, byte[] data, Promise promise) {
+    public void pushToScriptSig(ReadableMap currentInstance, String data, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
-            currentInstanceObj.pushToScriptSig(data);
+            byte [] javaParam_0 = hexStringToByteArray(data);
+
+            currentInstanceObj.pushToScriptSig(javaParam_0);
         }
         catch(Exception e)
         {
@@ -393,10 +450,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Set the sequence number of this input */
     @ReactMethod
-    public void setSequence(Map<String, String> currentInstance, int sequence, Promise promise) {
+    public void setSequence(ReadableMap currentInstance, int sequence, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -409,10 +466,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Get the sequence number of this input */
     @ReactMethod
-    public void getSequence(Map<String, String> currentInstance, Promise promise) {
+    public void getSequence(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -428,10 +485,10 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getPreviousTransaction(Map<String, String> currentInstance, Promise promise) {
+    public void getPreviousTransaction(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -445,14 +502,16 @@ public class RCTCoreBitcoinLikeInput extends ReactContextBaseJavaModule {
     }
     /** Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature) */
     @ReactMethod
-    public void setP2PKHSigScript(Map<String, String> currentInstance, byte[] signature, Promise promise) {
+    public void setP2PKHSigScript(ReadableMap currentInstance, String signature, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeInput currentInstanceObj = this.javaObjects.get(sUid);
 
-            currentInstanceObj.setP2PKHSigScript(signature);
+            byte [] javaParam_0 = hexStringToByteArray(signature);
+
+            currentInstanceObj.setP2PKHSigScript(javaParam_0);
         }
         catch(Exception e)
         {

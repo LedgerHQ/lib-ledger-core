@@ -25,7 +25,7 @@ public abstract class BitcoinLikeAccount {
 
     public abstract void broadcastTransaction(BitcoinLikeTransaction transaction, StringCallback callback);
 
-    public abstract BitcoinLikeTransactionBuilder buildTransaction();
+    public abstract BitcoinLikeTransactionBuilder buildTransaction(Boolean partial);
 
     private static final class CppProxy extends BitcoinLikeAccount
     {
@@ -83,11 +83,11 @@ public abstract class BitcoinLikeAccount {
         private native void native_broadcastTransaction(long _nativeRef, BitcoinLikeTransaction transaction, StringCallback callback);
 
         @Override
-        public BitcoinLikeTransactionBuilder buildTransaction()
+        public BitcoinLikeTransactionBuilder buildTransaction(Boolean partial)
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_buildTransaction(this.nativeRef);
+            return native_buildTransaction(this.nativeRef, partial);
         }
-        private native BitcoinLikeTransactionBuilder native_buildTransaction(long _nativeRef);
+        private native BitcoinLikeTransactionBuilder native_buildTransaction(long _nativeRef, Boolean partial);
     }
 }

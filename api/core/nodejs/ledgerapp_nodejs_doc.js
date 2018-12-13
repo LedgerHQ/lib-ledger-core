@@ -1743,7 +1743,7 @@ declare class NJSBitcoinLikeAccount
     declare function getUTXOCount(callback: NJSI32Callback);
     declare function broadcastRawTransaction(transaction: Object, callback: NJSStringCallback);
     declare function broadcastTransaction(transaction: NJSBitcoinLikeTransaction, callback: NJSStringCallback);
-    declare function buildTransaction(): NJSBitcoinLikeTransactionBuilder;
+    declare function buildTransaction(partial: ?boolean): NJSBitcoinLikeTransactionBuilder;
 }
 /**
  *Callback triggered by main completed task,

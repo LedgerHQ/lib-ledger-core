@@ -74,17 +74,16 @@ namespace ledger {
             using UDList = std::list<BitcoinLikeUtxoPicker::UTXODescriptor>;
             static std::function<Future<BigInt> (UDList::const_iterator, BigInt, const std::shared_ptr<Buddy>& buddy)> go
                     = [] (const UDList::const_iterator it, BigInt v, const std::shared_ptr<Buddy>& buddy) mutable -> Future<BigInt> {
-                if (it == buddy->request.inputs.end())
-                    return Future<BigInt>::successful(v);
-                const auto& i = *it;
-                const auto outputIndex = std::get<1>(i);
-                //TODO: Replace with db call
-                buddy->logger->info("GET TX 1");
-                return buddy->explorer->getTransactionByHash(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) -> Future<BigInt> {
-                    buddy->logger->info("GOT TX 1");
-                    auto newIt = it;
-                    return go(newIt++, v + tx->outputs[outputIndex].value, buddy);
-                });
+                        if (it == buddy->request.inputs.end())
+                            return Future<BigInt>::successful(v);
+                        const auto& i = *it;
+                        const auto outputIndex = std::get<1>(i);
+                        buddy->logger->info("GET TX 1");
+                        return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) -> Future<BigInt> {
+                            buddy->logger->info("GOT TX 1");
+                            auto newIt = it;
+                            return go(newIt++, v + tx->outputs[outputIndex].value, buddy);
+                        });
             };
             return go(buddy->request.inputs.begin(), BigInt(), buddy);
         }

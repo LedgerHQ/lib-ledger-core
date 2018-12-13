@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeBlock>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         return "RCTCoreBitcoinLikeBlock";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,16 +78,35 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Hash of block
      *@return string representing hash of this block
      */
     @ReactMethod
-    public void getHash(Map<String, String> currentInstance, Promise promise) {
+    public void getHash(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -102,10 +126,10 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
      *@return 64 bits integer, height of block
      */
     @ReactMethod
-    public void getHeight(Map<String, String> currentInstance, Promise promise) {
+    public void getHeight(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -125,16 +149,16 @@ public class RCTCoreBitcoinLikeBlock extends ReactContextBaseJavaModule {
      *@return Date object, date when block was appended to blockchain
      */
     @ReactMethod
-    public void getTime(Map<String, String> currentInstance, Promise promise) {
+    public void getTime(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeBlock currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getTime();
             WritableNativeMap result = new WritableNativeMap();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             String finalJavaResult = dateFormat.format(javaResult);
             result.putString("value", finalJavaResult);
 

@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSSynchronizationStatus: public Nan::ObjectWrap {
+class NJSSynchronizationStatus final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSSynchronizationStatus() {};
-    NJSSynchronizationStatus(const std::shared_ptr<ledger::core::api::SynchronizationStatus> &iSynchronizationStatus):_SynchronizationStatus(iSynchronizationStatus){};
+    NJSSynchronizationStatus() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::SynchronizationStatus> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::SynchronizationStatus> &object);
     static Nan::Persistent<ObjectTemplate> SynchronizationStatus_prototype;
-    std::shared_ptr<ledger::core::api::SynchronizationStatus> getCppImpl(){return _SynchronizationStatus;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::SynchronizationStatus> _SynchronizationStatus;
 };
 #endif //DJINNI_GENERATED_NJSSYNCHRONIZATIONSTATUS_HPP

@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, WebSocketClientImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -55,9 +60,9 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -84,17 +89,36 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
-    public void connect(Map<String, String> currentInstance, String url, HashMap <String, String> connection, Promise promise) {
+    public void connect(ReadableMap currentInstance, String url, ReadableMap connection, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_1 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
+            WebSocketConnection javaParam_1 = rctParam_connection.getJavaObjects().get(connection.getString("uid"));
             currentInstanceObj.connect(url, javaParam_1);
         }
         catch(Exception e)
@@ -103,15 +127,15 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void send(Map<String, String> currentInstance, HashMap <String, String> connection, String data, Promise promise) {
+    public void send(ReadableMap currentInstance, ReadableMap connection, String data, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
+            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.getString("uid"));
             currentInstanceObj.send(javaParam_0, data);
         }
         catch(Exception e)
@@ -120,15 +144,15 @@ public class RCTCoreWebSocketClient extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void disconnect(Map<String, String> currentInstance, HashMap <String, String> connection, Promise promise) {
+    public void disconnect(ReadableMap currentInstance, ReadableMap connection, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             WebSocketClientImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreWebSocketConnection rctParam_connection = this.reactContext.getNativeModule(RCTCoreWebSocketConnection.class);
-            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.get("uid"));
+            WebSocketConnection javaParam_0 = rctParam_connection.getJavaObjects().get(connection.getString("uid"));
             currentInstanceObj.disconnect(javaParam_0);
         }
         catch(Exception e)

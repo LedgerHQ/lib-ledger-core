@@ -14,14 +14,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSEthereumPublicKeyProvider: public Nan::ObjectWrap, public ledger::core::api::EthereumPublicKeyProvider {
+class NJSEthereumPublicKeyProvider: public ledger::core::api::EthereumPublicKeyProvider {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSEthereumPublicKeyProvider()
     {
-        persistent().Reset();
-        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSEthereumPublicKeyProvider(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -29,8 +27,6 @@ public:
 private:
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSETHEREUMPUBLICKEYPROVIDER_HPP

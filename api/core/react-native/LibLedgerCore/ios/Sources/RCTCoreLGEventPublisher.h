@@ -5,6 +5,7 @@
 #import "LGEventBus.h"
 #import "LGEventPublisher.h"
 #import "LGExecutionContext.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGEvent.h"
 #import "RCTCoreLGEventBus.h"
 #import "RCTCoreLGEventPublisher.h"
@@ -15,6 +16,5 @@
 
 
 /**Class representing an event publisher */
-@interface RCTCoreLGEventPublisher : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGEventPublisher : RCTCoreBaseModule <RCTBridgeModule>
 @end

@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_NJSBITCOINLIKEACCOUNT_HPP
 
 
+#include "../../../core/src/api/../utils/optional.hpp"
 #include "NJSBitcoinLikeOutputListCallback.hpp"
 #include "NJSBitcoinLikeTransactionBuilderCpp.hpp"
 #include "NJSBitcoinLikeTransactionCpp.hpp"
@@ -23,16 +24,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeAccount: public Nan::ObjectWrap {
+class NJSBitcoinLikeAccount final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeAccount() {};
-    NJSBitcoinLikeAccount(const std::shared_ptr<ledger::core::api::BitcoinLikeAccount> &iBitcoinLikeAccount):_BitcoinLikeAccount(iBitcoinLikeAccount){};
+    NJSBitcoinLikeAccount() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeAccount> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeAccount> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeAccount_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeAccount> getCppImpl(){return _BitcoinLikeAccount;};
 
 private:
     /**
@@ -58,6 +57,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeAccount> _BitcoinLikeAccount;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEACCOUNT_HPP

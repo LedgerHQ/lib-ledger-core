@@ -27,12 +27,17 @@
     if (error)
     {
         self.reject(@"RCTCoreLGWalletPoolCallback Error", error.message, nil);
+        return;
     }
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *result_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGWalletPool *rctImpl_result = (RCTCoreLGWalletPool *)[self.bridge moduleForName:@"CoreLGWalletPool"];
-    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
-    NSDictionary *converted_result = @{@"type" : @"CoreLGWalletPool", @"uid" : uuid };
+    if (result)
+    {
+        NSArray *result_array = [[NSArray alloc] initWithObjects:result, result_uuid, nil];
+        [rctImpl_result baseSetObject:result_array];
+    }
+    NSDictionary *converted_result = @{@"type" : @"CoreLGWalletPool", @"uid" : result_uuid };
 
     self.resolve(converted_result);
 

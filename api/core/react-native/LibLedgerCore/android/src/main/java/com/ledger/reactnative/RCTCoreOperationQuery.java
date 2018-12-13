@@ -12,6 +12,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, OperationQuery>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -47,9 +52,9 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
         return "RCTCoreOperationQuery";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -76,6 +81,25 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Apply given order to query's operation
@@ -84,21 +108,27 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *@return OperationQuery object, new ordered operation
      */
     @ReactMethod
-    public void addOrder(Map<String, String> currentInstance, OperationOrderKey key, boolean descending, Promise promise) {
+    public void addOrder(ReadableMap currentInstance, int key, boolean descending, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
-            OperationQuery javaResult = currentInstanceObj.addOrder(key, descending);
+            if (key < 0 || OperationOrderKey.values().length <= key)
+            {
+                promise.reject("Enum error", "Failed to get enum OperationOrderKey");
+                return;
+            }
+            OperationOrderKey javaParam_0 = OperationOrderKey.values()[key];
+            OperationQuery javaResult = currentInstanceObj.addOrder(javaParam_0, descending);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -112,21 +142,21 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *@return QueryFilter object
      */
     @ReactMethod
-    public void filter(Map<String, String> currentInstance, Promise promise) {
+    public void filter(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
             QueryFilter javaResult = currentInstanceObj.filter();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreQueryFilter rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreQueryFilter.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreQueryFilter");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -140,21 +170,21 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *@param from, 64 bits integer
      */
     @ReactMethod
-    public void offset(Map<String, String> currentInstance, long from, Promise promise) {
+    public void offset(ReadableMap currentInstance, long from, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationQuery javaResult = currentInstanceObj.offset(from);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -168,21 +198,21 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *@param count, 64 bits integer
      */
     @ReactMethod
-    public void limit(Map<String, String> currentInstance, long count, Promise promise) {
+    public void limit(ReadableMap currentInstance, long count, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationQuery javaResult = currentInstanceObj.limit(count);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -196,21 +226,21 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *Complete the operation query
      */
     @ReactMethod
-    public void complete(Map<String, String> currentInstance, Promise promise) {
+    public void complete(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationQuery javaResult = currentInstanceObj.complete();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -221,21 +251,21 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void partial(Map<String, String> currentInstance, Promise promise) {
+    public void partial(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationQuery javaResult = currentInstanceObj.partial();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -249,10 +279,10 @@ public class RCTCoreOperationQuery extends ReactContextBaseJavaModule {
      *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
      */
     @ReactMethod
-    public void execute(Map<String, String> currentInstance, Promise promise) {
+    public void execute(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             OperationQuery currentInstanceObj = this.javaObjects.get(sUid);
 

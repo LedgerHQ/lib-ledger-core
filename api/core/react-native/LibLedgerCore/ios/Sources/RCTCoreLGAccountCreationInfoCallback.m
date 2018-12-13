@@ -27,12 +27,17 @@
     if (error)
     {
         self.reject(@"RCTCoreLGAccountCreationInfoCallback Error", error.message, nil);
+        return;
     }
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *result_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGAccountCreationInfo *rctImpl_result = (RCTCoreLGAccountCreationInfo *)[self.bridge moduleForName:@"CoreLGAccountCreationInfo"];
-    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
-    NSDictionary *converted_result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : uuid };
+    if (result)
+    {
+        NSArray *result_array = [[NSArray alloc] initWithObjects:result, result_uuid, nil];
+        [rctImpl_result baseSetObject:result_array];
+    }
+    NSDictionary *converted_result = @{@"type" : @"CoreLGAccountCreationInfo", @"uid" : result_uuid };
 
     self.resolve(converted_result);
 

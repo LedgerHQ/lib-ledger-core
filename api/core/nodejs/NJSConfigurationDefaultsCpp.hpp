@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSConfigurationDefaults: public Nan::ObjectWrap {
+class NJSConfigurationDefaults final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSConfigurationDefaults() {};
-    NJSConfigurationDefaults(const std::shared_ptr<ledger::core::api::ConfigurationDefaults> &iConfigurationDefaults):_ConfigurationDefaults(iConfigurationDefaults){};
+    NJSConfigurationDefaults() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::ConfigurationDefaults> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::ConfigurationDefaults> &object);
     static Nan::Persistent<ObjectTemplate> ConfigurationDefaults_prototype;
-    std::shared_ptr<ledger::core::api::ConfigurationDefaults> getCppImpl(){return _ConfigurationDefaults;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::ConfigurationDefaults> _ConfigurationDefaults;
 };
 #endif //DJINNI_GENERATED_NJSCONFIGURATIONDEFAULTS_HPP

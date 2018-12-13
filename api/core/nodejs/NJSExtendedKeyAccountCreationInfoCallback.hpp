@@ -19,13 +19,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSExtendedKeyAccountCreationInfoCallback: public Nan::ObjectWrap, public ledger::core::api::ExtendedKeyAccountCreationInfoCallback {
+class NJSExtendedKeyAccountCreationInfoCallback: public ledger::core::api::ExtendedKeyAccountCreationInfoCallback {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSExtendedKeyAccountCreationInfoCallback()
     {
-        persistent().Reset();
         pers_resolver.Reset();
     };
     NJSExtendedKeyAccountCreationInfoCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
@@ -47,8 +46,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSEXTENDEDKEYACCOUNTCREATIONINFOCALLBACK_HPP

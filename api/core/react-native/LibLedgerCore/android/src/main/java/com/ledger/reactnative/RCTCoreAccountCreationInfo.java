@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, AccountCreationInfo>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
         return "RCTCoreAccountCreationInfo";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,10 +77,81 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     @ReactMethod
-    public void init(int index, ArrayList<String> owners, ArrayList<String> derivations, ArrayList<byte[]> publicKeys, ArrayList<byte[]> chainCodes, Promise promise) {
-        AccountCreationInfo javaResult = new AccountCreationInfo(index, owners, derivations, publicKeys, chainCodes);
+    public void init(int index, ReadableArray owners, ReadableArray derivations, ReadableArray publicKeys, ReadableArray chainCodes, Promise promise) {
+        ArrayList<String> javaParam_1 = new ArrayList<String>();
+        for (int i = 0; i <  owners.size(); i++)
+        {
+            String owners_elem = owners.getString(i);
+            javaParam_1.add(owners_elem);
+        }
+        ArrayList<String> javaParam_2 = new ArrayList<String>();
+        for (int i = 0; i <  derivations.size(); i++)
+        {
+            String derivations_elem = derivations.getString(i);
+            javaParam_2.add(derivations_elem);
+        }
+        ArrayList<byte[]> javaParam_3 = new ArrayList<byte[]>();
+        for (int i = 0; i <  publicKeys.size(); i++)
+        {
+            String publicKeys_elem = publicKeys.getString(i);
+            byte [] javaParam_3_elem = hexStringToByteArray(publicKeys_elem);
+
+            javaParam_3.add(javaParam_3_elem);
+        }
+        ArrayList<byte[]> javaParam_4 = new ArrayList<byte[]>();
+        for (int i = 0; i <  chainCodes.size(); i++)
+        {
+            String chainCodes_elem = chainCodes.getString(i);
+            byte [] javaParam_4_elem = hexStringToByteArray(chainCodes_elem);
+
+            javaParam_4.add(javaParam_4_elem);
+        }
+        AccountCreationInfo javaResult = new AccountCreationInfo(index, javaParam_1, javaParam_2, javaParam_3, javaParam_4);
 
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, javaResult);
@@ -85,14 +161,16 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getIndex(Map<String, String> currentInstance, Promise promise)
+    public void getIndex(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             AccountCreationInfo javaObj = this.javaObjects.get(uid);
             int result = javaObj.getIndex();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -101,14 +179,19 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getOwners(Map<String, String> currentInstance, Promise promise)
+    public void getOwners(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             AccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getOwners();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {
@@ -117,14 +200,19 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getDerivations(Map<String, String> currentInstance, Promise promise)
+    public void getDerivations(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             AccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getDerivations();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {
@@ -133,14 +221,20 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getPublicKeys(Map<String, String> currentInstance, Promise promise)
+    public void getPublicKeys(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             AccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<byte[]> result = javaObj.getPublicKeys();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (byte[] result_elem : result)
+            {
+                String converted_result_elem = byteArrayToHexString(result_elem);
+                converted_result.pushString(converted_result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {
@@ -149,14 +243,20 @@ public class RCTCoreAccountCreationInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getChainCodes(Map<String, String> currentInstance, Promise promise)
+    public void getChainCodes(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             AccountCreationInfo javaObj = this.javaObjects.get(uid);
             ArrayList<byte[]> result = javaObj.getChainCodes();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (byte[] result_elem : result)
+            {
+                String converted_result_elem = byteArrayToHexString(result_elem);
+                converted_result.pushString(converted_result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {

@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGDerivationPath)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGDerivationPath)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::release, first argument should be an instance of LGDerivationPath", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 
 /** Get the number of element in this path. */
@@ -55,14 +37,16 @@ RCT_REMAP_METHOD(getDepth,getDepth:(NSDictionary *)currentInstance WithResolver:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getDepth, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::getDepth, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int32_t objcResult = [currentInstanceObj getDepth];
+    NSInteger objcResult = [currentInstanceObj getDepth];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -71,6 +55,7 @@ RCT_REMAP_METHOD(getDepth,getDepth:(NSDictionary *)currentInstance WithResolver:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::getDepth", nil);
+        return;
     }
 
 }
@@ -80,14 +65,16 @@ RCT_REMAP_METHOD(getChildNum,getChildNum:(NSDictionary *)currentInstance withPar
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getChildNum, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::getChildNum, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int32_t objcResult = [currentInstanceObj getChildNum:index];
+    NSInteger objcResult = [currentInstanceObj getChildNum:index];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -96,6 +83,7 @@ RCT_REMAP_METHOD(getChildNum,getChildNum:(NSDictionary *)currentInstance withPar
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::getChildNum", nil);
+        return;
     }
 
 }
@@ -108,14 +96,16 @@ RCT_REMAP_METHOD(getUnhardenedChildNum,getUnhardenedChildNum:(NSDictionary *)cur
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getUnhardenedChildNum, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::getUnhardenedChildNum, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int32_t objcResult = [currentInstanceObj getUnhardenedChildNum:index];
+    NSInteger objcResult = [currentInstanceObj getUnhardenedChildNum:index];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -124,6 +114,7 @@ RCT_REMAP_METHOD(getUnhardenedChildNum,getUnhardenedChildNum:(NSDictionary *)cur
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::getUnhardenedChildNum", nil);
+        return;
     }
 
 }
@@ -133,12 +124,14 @@ RCT_REMAP_METHOD(isHardened,isHardened:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::isHardened, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::isHardened, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj isHardened:index];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -149,6 +142,7 @@ RCT_REMAP_METHOD(isHardened,isHardened:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::isHardened", nil);
+        return;
     }
 
 }
@@ -158,12 +152,14 @@ RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::toString, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::toString, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj toString];
     NSDictionary *result = @{@"value" : objcResult};
@@ -174,6 +170,7 @@ RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::toString", nil);
+        return;
     }
 
 }
@@ -186,19 +183,22 @@ RCT_REMAP_METHOD(getParent,getParent:(NSDictionary *)currentInstance WithResolve
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::getParent, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::getParent, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGDerivationPath * objcResult = [currentInstanceObj getParent];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDerivationPath *rctImpl_objcResult = (RCTCoreLGDerivationPath *)[self.bridge moduleForName:@"CoreLGDerivationPath"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -207,6 +207,7 @@ RCT_REMAP_METHOD(getParent,getParent:(NSDictionary *)currentInstance WithResolve
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::getParent", nil);
+        return;
     }
 
 }
@@ -216,12 +217,14 @@ RCT_REMAP_METHOD(toArray,toArray:(NSDictionary *)currentInstance WithResolver:(R
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGDerivationPath::toArray, first argument should be an instance of LGDerivationPath", nil);
+        return;
     }
     LGDerivationPath *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGDerivationPath::toArray, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSArray<NSNumber *> * objcResult = [currentInstanceObj toArray];
     NSDictionary *result = @{@"value" : objcResult};
@@ -232,6 +235,7 @@ RCT_REMAP_METHOD(toArray,toArray:(NSDictionary *)currentInstance WithResolver:(R
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::toArray", nil);
+        return;
     }
 
 }
@@ -239,10 +243,11 @@ RCT_REMAP_METHOD(toArray,toArray:(NSDictionary *)currentInstance WithResolver:(R
 RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)path withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGDerivationPath * objcResult = [LGDerivationPath parse:path];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGDerivationPath *rctImpl_objcResult = (RCTCoreLGDerivationPath *)[self.bridge moduleForName:@"CoreLGDerivationPath"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGDerivationPath", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -251,6 +256,7 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)path withResolver:(RC
     else
     {
         reject(@"impl_call_error", @"Error while calling LGDerivationPath::parse", nil);
+        return;
     }
 
 }

@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -38,6 +42,7 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Event>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -46,9 +51,9 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         return "RCTCoreEvent";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -75,23 +80,42 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Get event code (for more details, please refer to EventCode enum)
      *@return EventCode enum entry
      */
     @ReactMethod
-    public void getCode(Map<String, String> currentInstance, Promise promise) {
+    public void getCode(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Event currentInstanceObj = this.javaObjects.get(sUid);
 
             EventCode javaResult = currentInstanceObj.getCode();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = javaResult.toString();
-            result.putString("value", finalJavaResult);
+            int finalJavaResult = javaResult.ordinal();
+            result.putInt("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -105,21 +129,21 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
      *@return DynamicObject object
      */
     @ReactMethod
-    public void getPayload(Map<String, String> currentInstance, Promise promise) {
+    public void getPayload(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Event currentInstanceObj = this.javaObjects.get(sUid);
 
             DynamicObject javaResult = currentInstanceObj.getPayload();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDynamicObject rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDynamicObject");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -133,10 +157,10 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isSticky(Map<String, String> currentInstance, Promise promise) {
+    public void isSticky(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Event currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -156,10 +180,10 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
      *@return 32 bits integer
      */
     @ReactMethod
-    public void getStickyTag(Map<String, String> currentInstance, Promise promise) {
+    public void getStickyTag(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Event currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -181,19 +205,25 @@ public class RCTCoreEvent extends ReactContextBaseJavaModule {
      *@return Event instance
      */
     @ReactMethod
-    public void newInstance(EventCode code, HashMap <String, String> payload, Promise promise) {
+    public void newInstance(int code, ReadableMap payload, Promise promise) {
         try
         {
+            if (code < 0 || EventCode.values().length <= code)
+            {
+                promise.reject("Enum error", "Failed to get enum EventCode");
+                return;
+            }
+            EventCode javaParam_0 = EventCode.values()[code];
             RCTCoreDynamicObject rctParam_payload = this.reactContext.getNativeModule(RCTCoreDynamicObject.class);
-            DynamicObject javaParam_1 = rctParam_payload.getJavaObjects().get(payload.get("uid"));
-            Event javaResult = Event.newInstance(code, javaParam_1);
+            DynamicObject javaParam_1 = rctParam_payload.getJavaObjects().get(payload.getString("uid"));
+            Event javaResult = Event.newInstance(javaParam_0, javaParam_1);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEvent rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEvent.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEvent");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

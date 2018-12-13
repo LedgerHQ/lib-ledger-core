@@ -73,7 +73,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     }
 
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
-        return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction());
+        return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
     }
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;

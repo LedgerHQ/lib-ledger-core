@@ -7,6 +7,7 @@
 #import "LGBitcoinLikeTransactionBuilder.h"
 #import "LGI32Callback.h"
 #import "LGStringCallback.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBitcoinLikeOutputListCallback.h"
 #import "RCTCoreLGBitcoinLikeTransaction.h"
 #import "RCTCoreLGBitcoinLikeTransactionBuilder.h"
@@ -18,6 +19,5 @@
 
 
 /**Class representing a Bitcoin account */
-@interface RCTCoreLGBitcoinLikeAccount : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGBitcoinLikeAccount : RCTCoreBaseModule <RCTBridgeModule>
 @end

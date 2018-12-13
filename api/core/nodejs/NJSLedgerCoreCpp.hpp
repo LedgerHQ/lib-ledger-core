@@ -18,16 +18,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSLedgerCore: public Nan::ObjectWrap {
+class NJSLedgerCore final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSLedgerCore() {};
-    NJSLedgerCore(const std::shared_ptr<ledger::core::api::LedgerCore> &iLedgerCore):_LedgerCore(iLedgerCore){};
+    NJSLedgerCore() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::LedgerCore> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::LedgerCore> &object);
     static Nan::Persistent<ObjectTemplate> LedgerCore_prototype;
-    std::shared_ptr<ledger::core::api::LedgerCore> getCppImpl(){return _LedgerCore;};
 
 private:
     /**
@@ -45,6 +43,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::LedgerCore> _LedgerCore;
 };
 #endif //DJINNI_GENERATED_NJSLEDGERCORE_HPP

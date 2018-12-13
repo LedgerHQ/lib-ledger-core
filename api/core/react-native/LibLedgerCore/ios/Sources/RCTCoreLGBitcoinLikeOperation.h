@@ -3,6 +3,7 @@
 
 #import "LGBitcoinLikeOperation.h"
 #import "LGBitcoinLikeTransaction.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBitcoinLikeTransaction.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -10,6 +11,5 @@
 
 
 /**Class representing a Bitcoin Operation */
-@interface RCTCoreLGBitcoinLikeOperation : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGBitcoinLikeOperation : RCTCoreBaseModule <RCTBridgeModule>
 @end

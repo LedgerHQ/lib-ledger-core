@@ -9,12 +9,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.ledger.java.NativeLibLoader;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,11 +24,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import com.ledger.java.NativeLibLoader;
+
 /**Class representing a database */
 public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
-
-
 
     private final ReactApplicationContext reactContext;
     private Map<String, DatabaseBackend> javaObjects;
@@ -37,27 +35,12 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         return javaObjects;
     }
 
-    //System.loadLibrary("lib-binding”)
-
-    static {
-        try {
-            //WORKS BUT JNI error not finding "ThreadDispatcher" class looking into /data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/base.apk"],
-            // nativeLibraryDirectories=[/data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/lib/x86,
-            // /data/app/com.ledgerlivemobile-F3jjcPWZS9MZ1-CBys0GkA==/base.apk!/lib/x86, /system/lib, /vendor/lib]
-
-            System.loadLibrary("-binding");
-            //System.load("/Users/elkhalilbellakrid/Desktop/Playground_15/lib-ledger-core/api/core/react-native/LibLedgerCore/android/binding/android/libs/x86/lib-binding.so");
-        } catch (UnsatisfiedLinkError e) {
-            System.err.println("###### Native Library failed to load.\n" + e);
-            System.exit(1);
-        }
-    }
-
-    public RCTCoreDatabaseBackend(ReactApplicationContext reactContext) throws URISyntaxException, IOException
+    public RCTCoreDatabaseBackend(ReactApplicationContext reactContext)
     {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, DatabaseBackend>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -66,9 +49,9 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         return "RCTCoreDatabaseBackend";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -95,6 +78,25 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Set database's user name
@@ -102,21 +104,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, databse with user name set
      */
     @ReactMethod
-    public void setUsername(Map<String, String> currentInstance, String username, Promise promise) {
+    public void setUsername(ReadableMap currentInstance, String username, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setUsername(username);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -131,21 +133,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with password set
      */
     @ReactMethod
-    public void setPassword(Map<String, String> currentInstance, String pwd, Promise promise) {
+    public void setPassword(ReadableMap currentInstance, String pwd, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setPassword(pwd);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -160,21 +162,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with host set
      */
     @ReactMethod
-    public void setHost(Map<String, String> currentInstance, String host, Promise promise) {
+    public void setHost(ReadableMap currentInstance, String host, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setHost(host);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -189,21 +191,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with host's address set
      */
     @ReactMethod
-    public void setHostAddr(Map<String, String> currentInstance, String hostAddr, Promise promise) {
+    public void setHostAddr(ReadableMap currentInstance, String hostAddr, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setHostAddr(hostAddr);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -218,21 +220,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with port set
      */
     @ReactMethod
-    public void setPort(Map<String, String> currentInstance, String port, Promise promise) {
+    public void setPort(ReadableMap currentInstance, String port, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setPort(port);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -247,21 +249,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with options set
      */
     @ReactMethod
-    public void setOptions(Map<String, String> currentInstance, String opts, Promise promise) {
+    public void setOptions(ReadableMap currentInstance, String opts, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setOptions(opts);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -276,21 +278,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with mode set
      */
     @ReactMethod
-    public void setSslMode(Map<String, String> currentInstance, String mode, Promise promise) {
+    public void setSslMode(ReadableMap currentInstance, String mode, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setSslMode(mode);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -305,21 +307,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return DatabaseBackend object, database with Kerberos name set
      */
     @ReactMethod
-    public void setKerberosName(Map<String, String> currentInstance, String name, Promise promise) {
+    public void setKerberosName(ReadableMap currentInstance, String name, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setKerberosName(name);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -330,21 +332,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void setService(Map<String, String> currentInstance, String service, Promise promise) {
+    public void setService(ReadableMap currentInstance, String service, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setService(service);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -354,21 +356,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void setConnectionPoolSize(Map<String, String> currentInstance, int size, Promise promise) {
+    public void setConnectionPoolSize(ReadableMap currentInstance, int size, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.setConnectionPoolSize(size);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -378,21 +380,21 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void enableQueryLogging(Map<String, String> currentInstance, boolean enable, Promise promise) {
+    public void enableQueryLogging(ReadableMap currentInstance, boolean enable, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
             DatabaseBackend javaResult = currentInstanceObj.enableQueryLogging(enable);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -406,10 +408,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getUsername(Map<String, String> currentInstance, Promise promise) {
+    public void getUsername(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -429,10 +431,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getPassword(Map<String, String> currentInstance, Promise promise) {
+    public void getPassword(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -452,10 +454,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getHost(Map<String, String> currentInstance, Promise promise) {
+    public void getHost(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -475,10 +477,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getHostAddr(Map<String, String> currentInstance, Promise promise) {
+    public void getHostAddr(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -498,10 +500,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getPort(Map<String, String> currentInstance, Promise promise) {
+    public void getPort(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -521,10 +523,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getOptions(Map<String, String> currentInstance, Promise promise) {
+    public void getOptions(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -544,10 +546,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getSslMode(Map<String, String> currentInstance, Promise promise) {
+    public void getSslMode(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -567,10 +569,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getKerberosName(Map<String, String> currentInstance, Promise promise) {
+    public void getKerberosName(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -587,10 +589,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void getService(Map<String, String> currentInstance, Promise promise) {
+    public void getService(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -606,10 +608,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getConnectionPoolSize(Map<String, String> currentInstance, Promise promise) {
+    public void getConnectionPoolSize(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -625,10 +627,10 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void isLoggingEnabled(Map<String, String> currentInstance, Promise promise) {
+    public void isLoggingEnabled(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             DatabaseBackend currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -653,12 +655,12 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         {
             DatabaseBackend javaResult = DatabaseBackend.getSqlite3Backend();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -677,12 +679,12 @@ public class RCTCoreDatabaseBackend extends ReactContextBaseJavaModule {
         {
             DatabaseBackend javaResult = DatabaseBackend.getPostgreSQLBackend();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreDatabaseBackend rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreDatabaseBackend.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreDatabaseBackend");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

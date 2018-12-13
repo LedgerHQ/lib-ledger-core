@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferences)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,33 @@ RCT_EXPORT_MODULE(RCTCoreLGPreferences)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::release, first argument should be an instance of LGPreferences", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
+}
+-(NSData *) hexStringToData: (NSString *)hexString 
+{
+    NSMutableData *data= [[NSMutableData alloc] init];
+    unsigned char byte;
+    char byteChars[3] = {'\0','\0','\0'};
+    for (int i = 0; i < ([hexString length] / 2); i++)
+    {
+        byteChars[0] = [hexString characterAtIndex: i*2];
+        byteChars[1] = [hexString characterAtIndex: i*2 + 1];
+        byte = strtol(byteChars, NULL, 16);
+        [data appendBytes:&byte length:1];
+    }
+    return data;
 }
 
 /**
@@ -59,12 +55,14 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getString, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getString, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj getString:key fallbackValue:fallbackValue];
     NSDictionary *result = @{@"value" : objcResult};
@@ -75,6 +73,7 @@ RCT_REMAP_METHOD(getString,getString:(NSDictionary *)currentInstance withParams:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getString", nil);
+        return;
     }
 
 }
@@ -88,14 +87,16 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(nonnu
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getInt, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getInt, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int32_t objcResult = [currentInstanceObj getInt:key fallbackValue:fallbackValue];
+    NSInteger objcResult = [currentInstanceObj getInt:key fallbackValue:fallbackValue];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -104,6 +105,7 @@ RCT_REMAP_METHOD(getInt,getInt:(NSDictionary *)currentInstance withParams:(nonnu
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getInt", nil);
+        return;
     }
 
 }
@@ -117,14 +119,16 @@ RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(non
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getLong, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getLong, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    int64_t objcResult = [currentInstanceObj getLong:key fallbackValue:fallbackValue];
+    NSInteger objcResult = [currentInstanceObj getLong:key fallbackValue:fallbackValue];
     NSDictionary *result = @{@"value" : @(objcResult)};
     if(result)
     {
@@ -133,6 +137,7 @@ RCT_REMAP_METHOD(getLong,getLong:(NSDictionary *)currentInstance withParams:(non
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getLong", nil);
+        return;
     }
 
 }
@@ -146,12 +151,14 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParam
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getBoolean, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getBoolean, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj getBoolean:key fallbackValue:fallbackValue];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -162,6 +169,7 @@ RCT_REMAP_METHOD(getBoolean,getBoolean:(NSDictionary *)currentInstance withParam
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getBoolean", nil);
+        return;
     }
 
 }
@@ -175,12 +183,14 @@ RCT_REMAP_METHOD(getStringArray,getStringArray:(NSDictionary *)currentInstance w
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getStringArray, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getStringArray, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSArray<NSString *> * objcResult = [currentInstanceObj getStringArray:key fallbackValue:fallbackValue];
     NSDictionary *result = @{@"value" : objcResult};
@@ -191,6 +201,7 @@ RCT_REMAP_METHOD(getStringArray,getStringArray:(NSDictionary *)currentInstance w
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getStringArray", nil);
+        return;
     }
 
 }
@@ -200,18 +211,22 @@ RCT_REMAP_METHOD(getStringArray,getStringArray:(NSDictionary *)currentInstance w
  * @return The data associated with the key or fallbackValue.
  */
 RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(nonnull NSString *)key
-                                                              fallbackValue:(nonnull NSData *)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+                                                              fallbackValue:(NSString *)fallbackValue withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::getData, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::getData, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
-    NSData * objcResult = [currentInstanceObj getData:key fallbackValue:fallbackValue];
+    NSData *objcParam_1 = [self hexStringToData:fallbackValue];
+
+    NSData * objcResult = [currentInstanceObj getData:key fallbackValue:objcParam_1];
     NSDictionary *result = @{@"value" : objcResult.description};
     if(result)
     {
@@ -220,6 +235,7 @@ RCT_REMAP_METHOD(getData,getData:(NSDictionary *)currentInstance withParams:(non
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::getData", nil);
+        return;
     }
 
 }
@@ -232,12 +248,14 @@ RCT_REMAP_METHOD(contains,contains:(NSDictionary *)currentInstance withParams:(n
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::contains, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::contains, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj contains:key];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -248,6 +266,7 @@ RCT_REMAP_METHOD(contains,contains:(NSDictionary *)currentInstance withParams:(n
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::contains", nil);
+        return;
     }
 
 }
@@ -260,19 +279,22 @@ RCT_REMAP_METHOD(edit,edit:(NSDictionary *)currentInstance WithResolver:(RCTProm
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGPreferences::edit, first argument should be an instance of LGPreferences", nil);
+        return;
     }
     LGPreferences *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGPreferences::edit, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGPreferencesEditor * objcResult = [currentInstanceObj edit];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGPreferencesEditor *rctImpl_objcResult = (RCTCoreLGPreferencesEditor *)[self.bridge moduleForName:@"CoreLGPreferencesEditor"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGPreferencesEditor", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -281,6 +303,7 @@ RCT_REMAP_METHOD(edit,edit:(NSDictionary *)currentInstance WithResolver:(RCTProm
     else
     {
         reject(@"impl_call_error", @"Error while calling LGPreferences::edit", nil);
+        return;
     }
 
 }

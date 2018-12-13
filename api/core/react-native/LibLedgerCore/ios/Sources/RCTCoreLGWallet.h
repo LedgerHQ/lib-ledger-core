@@ -17,6 +17,7 @@
 #import "LGPreferences.h"
 #import "LGWallet.h"
 #import "LGWalletType.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAccountCallback.h"
 #import "RCTCoreLGAccountCreationInfo.h"
 #import "RCTCoreLGAccountCreationInfoCallback.h"
@@ -37,6 +38,5 @@
 
 
 /**Class representing a wallet */
-@interface RCTCoreLGWallet : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGWallet : RCTCoreBaseModule <RCTBridgeModule>
 @end

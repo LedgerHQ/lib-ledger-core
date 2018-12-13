@@ -27,15 +27,20 @@
     if (error)
     {
         self.reject(@"RCTCoreLGCurrencyListCallback Error", error.message, nil);
+        return;
     }
 
     NSMutableArray *converted_result = [[NSMutableArray alloc] init];
     for (id result_elem in result)
     {
-        NSString *uuid = [[NSUUID UUID] UUIDString];
+        NSString *result_elem_uuid = [[NSUUID UUID] UUIDString];
         RCTCoreLGCurrency *rctImpl_result_elem = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
-        [rctImpl_result_elem.objcImplementations setObject:result_elem forKey:uuid];
-        NSDictionary *converted_result_elem = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+        if (result_elem)
+        {
+            NSArray *result_elem_array = [[NSArray alloc] initWithObjects:result_elem, result_elem_uuid, nil];
+            [rctImpl_result_elem baseSetObject:result_elem_array];
+        }
+        NSDictionary *converted_result_elem = @{@"type" : @"CoreLGCurrency", @"uid" : result_elem_uuid };
         [converted_result addObject:converted_result_elem];
     }
 

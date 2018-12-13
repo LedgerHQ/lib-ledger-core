@@ -18,16 +18,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSDatabaseBackend: public Nan::ObjectWrap {
+class NJSDatabaseBackend final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSDatabaseBackend() {};
-    NJSDatabaseBackend(const std::shared_ptr<ledger::core::api::DatabaseBackend> &iDatabaseBackend):_DatabaseBackend(iDatabaseBackend){};
+    NJSDatabaseBackend() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::DatabaseBackend> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::DatabaseBackend> &object);
     static Nan::Persistent<ObjectTemplate> DatabaseBackend_prototype;
-    std::shared_ptr<ledger::core::api::DatabaseBackend> getCppImpl(){return _DatabaseBackend;};
 
 private:
     /**
@@ -163,6 +161,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::DatabaseBackend> _DatabaseBackend;
 };
 #endif //DJINNI_GENERATED_NJSDATABASEBACKEND_HPP

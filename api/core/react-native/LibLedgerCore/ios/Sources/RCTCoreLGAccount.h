@@ -14,6 +14,7 @@
 #import "LGPreferences.h"
 #import "LGTimePeriod.h"
 #import "LGWalletType.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAddressListCallback.h"
 #import "RCTCoreLGAmountCallback.h"
 #import "RCTCoreLGAmountListCallback.h"
@@ -30,6 +31,5 @@
 
 
 /**Class representing an account */
-@interface RCTCoreLGAccount : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGAccount : RCTCoreBaseModule <RCTBridgeModule>
 @end

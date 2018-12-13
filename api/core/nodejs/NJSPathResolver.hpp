@@ -16,14 +16,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSPathResolver: public Nan::ObjectWrap, public ledger::core::api::PathResolver {
+class NJSPathResolver: public ledger::core::api::PathResolver {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSPathResolver()
     {
-        persistent().Reset();
-        njs_impl.Reset();
         njs_impl.Reset();
     };
     NJSPathResolver(Local<Object> njs_implementation){njs_impl.Reset(njs_implementation);};
@@ -73,8 +71,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Object> njs_impl;
 };
 #endif //DJINNI_GENERATED_NJSPATHRESOLVER_HPP

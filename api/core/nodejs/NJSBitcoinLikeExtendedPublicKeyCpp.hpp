@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeExtendedPublicKey: public Nan::ObjectWrap {
+class NJSBitcoinLikeExtendedPublicKey final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeExtendedPublicKey() {};
-    NJSBitcoinLikeExtendedPublicKey(const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKey> &iBitcoinLikeExtendedPublicKey):_BitcoinLikeExtendedPublicKey(iBitcoinLikeExtendedPublicKey){};
+    NJSBitcoinLikeExtendedPublicKey() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKey> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKey> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeExtendedPublicKey_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKey> getCppImpl(){return _BitcoinLikeExtendedPublicKey;};
 
 private:
     static NAN_METHOD(derive);
@@ -45,6 +43,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeExtendedPublicKey> _BitcoinLikeExtendedPublicKey;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEEXTENDEDPUBLICKEY_HPP

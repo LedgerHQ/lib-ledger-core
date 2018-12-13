@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -37,6 +41,7 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Address>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -45,9 +50,9 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         return "RCTCoreAddress";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -74,16 +79,35 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      * Gets an optional derivation path (if the address is owned by an account)
      * @return The derivation path of the address
      */
     @ReactMethod
-    public void getDerivationPath(Map<String, String> currentInstance, Promise promise) {
+    public void getDerivationPath(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -103,10 +127,10 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
      * format (Base58, Bech32, Ethereum...)
      */
     @ReactMethod
-    public void toString(Map<String, String> currentInstance, Promise promise) {
+    public void toString(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -122,21 +146,21 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void asBitcoinLikeAddress(Map<String, String> currentInstance, Promise promise) {
+    public void asBitcoinLikeAddress(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeAddress javaResult = currentInstanceObj.asBitcoinLikeAddress();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAddress.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeAddress");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -146,10 +170,10 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void isInstanceOfBitcoinLikeAddress(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfBitcoinLikeAddress(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -165,21 +189,21 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getCurrency(Map<String, String> currentInstance, Promise promise) {
+    public void getCurrency(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Address currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreCurrency");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -196,19 +220,19 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
      * @return If successful returns the address object otherwise null.
      */
     @ReactMethod
-    public void parse(String address, HashMap <String, String> currency, Promise promise) {
+    public void parse(String address, ReadableMap currency, Promise promise) {
         try
         {
             RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
+            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.getString("uid"));
             Address javaResult = Address.parse(address, javaParam_1);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAddress rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAddress.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAddress");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -224,11 +248,11 @@ public class RCTCoreAddress extends ReactContextBaseJavaModule {
      * @return If successful returns true, false otherwise.
      */
     @ReactMethod
-    public void isValid(String address, HashMap <String, String> currency, Promise promise) {
+    public void isValid(String address, ReadableMap currency, Promise promise) {
         try
         {
             RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
+            Currency javaParam_1 = rctParam_currency.getJavaObjects().get(currency.getString("uid"));
             boolean javaResult = Address.isValid(address, javaParam_1);
             WritableNativeMap result = new WritableNativeMap();
             result.putBoolean("value", javaResult);

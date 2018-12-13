@@ -3,6 +3,7 @@
 
 #import "LGExecutionContext.h"
 #import "LGLogPrinterImpl.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGExecutionContext.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -13,6 +14,5 @@
  *Class representing a printer of errors, warnings, infos ... (at runtime)
  *Printed logs are stored in path set by PathResolver::resolveLogFilePath
  */
-@interface RCTCoreLGLogPrinter : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGLogPrinter : RCTCoreBaseModule <RCTBridgeModule>
 @end

@@ -19,16 +19,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSWebSocketConnection: public Nan::ObjectWrap {
+class NJSWebSocketConnection final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSWebSocketConnection() {};
-    NJSWebSocketConnection(const std::shared_ptr<ledger::core::api::WebSocketConnection> &iWebSocketConnection):_WebSocketConnection(iWebSocketConnection){};
+    NJSWebSocketConnection() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::WebSocketConnection> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::WebSocketConnection> &object);
     static Nan::Persistent<ObjectTemplate> WebSocketConnection_prototype;
-    std::shared_ptr<ledger::core::api::WebSocketConnection> getCppImpl(){return _WebSocketConnection;};
 
 private:
     static NAN_METHOD(onConnect);
@@ -44,6 +42,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::WebSocketConnection> _WebSocketConnection;
 };
 #endif //DJINNI_GENERATED_NJSWEBSOCKETCONNECTION_HPP

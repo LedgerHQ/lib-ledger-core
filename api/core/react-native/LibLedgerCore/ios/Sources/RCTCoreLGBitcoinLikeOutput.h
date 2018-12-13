@@ -5,6 +5,7 @@
 #import "LGBitcoinLikeOutput.h"
 #import "LGBitcoinLikeScript.h"
 #import "LGDerivationPath.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAmount.h"
 #import "RCTCoreLGBitcoinLikeScript.h"
 #import "RCTCoreLGDerivationPath.h"
@@ -14,6 +15,5 @@
 
 
 /**Class representing Bitcoin outputs */
-@interface RCTCoreLGBitcoinLikeOutput : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGBitcoinLikeOutput : RCTCoreBaseModule <RCTBridgeModule>
 @end

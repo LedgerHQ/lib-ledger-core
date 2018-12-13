@@ -28,16 +28,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeTransactionBuilder: public Nan::ObjectWrap {
+class NJSBitcoinLikeTransactionBuilder final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeTransactionBuilder() {};
-    NJSBitcoinLikeTransactionBuilder(const std::shared_ptr<ledger::core::api::BitcoinLikeTransactionBuilder> &iBitcoinLikeTransactionBuilder):_BitcoinLikeTransactionBuilder(iBitcoinLikeTransactionBuilder){};
+    NJSBitcoinLikeTransactionBuilder() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeTransactionBuilder> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeTransactionBuilder> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeTransactionBuilder_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeTransactionBuilder> getCppImpl(){return _BitcoinLikeTransactionBuilder;};
 
 private:
     /**
@@ -136,6 +134,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeTransactionBuilder> _BitcoinLikeTransactionBuilder;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKETRANSACTIONBUILDER_HPP

@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -37,6 +41,7 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeAddress>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -45,9 +50,9 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         return "RCTCoreBitcoinLikeAddress";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -74,22 +79,65 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /**
      * Gets the version of the address (P2SH or P2PKH)
      * @return The version of the address
      */
     @ReactMethod
-    public void getVersion(Map<String, String> currentInstance, Promise promise) {
+    public void getVersion(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getVersion();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -104,16 +152,16 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
      * @return The 20 bytes of the public key hash160
      */
     @ReactMethod
-    public void getHash160(Map<String, String> currentInstance, Promise promise) {
+    public void getHash160(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getHash160();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -128,21 +176,21 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
      * @return The network parameters of the address
      */
     @ReactMethod
-    public void getNetworkParameters(Map<String, String> currentInstance, Promise promise) {
+    public void getNetworkParameters(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeNetworkParameters javaResult = currentInstanceObj.getNetworkParameters();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeNetworkParameters rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeNetworkParameters.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeNetworkParameters");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -156,10 +204,10 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
      * @return The Base58 serialization
      */
     @ReactMethod
-    public void toBase58(Map<String, String> currentInstance, Promise promise) {
+    public void toBase58(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -182,10 +230,10 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
      * @return True if the version byte matches the P2SH byte version of the address network parameters
      */
     @ReactMethod
-    public void isP2SH(Map<String, String> currentInstance, Promise promise) {
+    public void isP2SH(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -205,10 +253,10 @@ public class RCTCoreBitcoinLikeAddress extends ReactContextBaseJavaModule {
      * @return True if the version byte matches the P2PKH byte version of the address network parameters
      */
     @ReactMethod
-    public void isP2PKH(Map<String, String> currentInstance, Promise promise) {
+    public void isP2PKH(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeAddress currentInstanceObj = this.javaObjects.get(sUid);
 

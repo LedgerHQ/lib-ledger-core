@@ -27,12 +27,17 @@
     if (error)
     {
         self.reject(@"RCTCoreLGBitcoinLikeTransactionCallback Error", error.message, nil);
+        return;
     }
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *result_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGBitcoinLikeTransaction *rctImpl_result = (RCTCoreLGBitcoinLikeTransaction *)[self.bridge moduleForName:@"CoreLGBitcoinLikeTransaction"];
-    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
-    NSDictionary *converted_result = @{@"type" : @"CoreLGBitcoinLikeTransaction", @"uid" : uuid };
+    if (result)
+    {
+        NSArray *result_array = [[NSArray alloc] initWithObjects:result, result_uuid, nil];
+        [rctImpl_result baseSetObject:result_array];
+    }
+    NSDictionary *converted_result = @{@"type" : @"CoreLGBitcoinLikeTransaction", @"uid" : result_uuid };
 
     self.resolve(converted_result);
 

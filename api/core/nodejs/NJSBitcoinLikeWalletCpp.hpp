@@ -16,21 +16,18 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBitcoinLikeWallet: public Nan::ObjectWrap {
+class NJSBitcoinLikeWallet final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBitcoinLikeWallet() {};
-    NJSBitcoinLikeWallet(const std::shared_ptr<ledger::core::api::BitcoinLikeWallet> &iBitcoinLikeWallet):_BitcoinLikeWallet(iBitcoinLikeWallet){};
+    NJSBitcoinLikeWallet() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeWallet> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BitcoinLikeWallet> &object);
     static Nan::Persistent<ObjectTemplate> BitcoinLikeWallet_prototype;
-    std::shared_ptr<ledger::core::api::BitcoinLikeWallet> getCppImpl(){return _BitcoinLikeWallet;};
 
 private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BitcoinLikeWallet> _BitcoinLikeWallet;
 };
 #endif //DJINNI_GENERATED_NJSBITCOINLIKEWALLET_HPP

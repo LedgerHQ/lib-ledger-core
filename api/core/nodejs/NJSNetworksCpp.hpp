@@ -18,16 +18,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSNetworks: public Nan::ObjectWrap {
+class NJSNetworks final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSNetworks() {};
-    NJSNetworks(const std::shared_ptr<ledger::core::api::Networks> &iNetworks):_Networks(iNetworks){};
+    NJSNetworks() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Networks> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Networks> &object);
     static Nan::Persistent<ObjectTemplate> Networks_prototype;
-    std::shared_ptr<ledger::core::api::Networks> getCppImpl(){return _Networks;};
 
 private:
     static NAN_METHOD(bitcoin);
@@ -35,6 +33,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Networks> _Networks;
 };
 #endif //DJINNI_GENERATED_NJSNETWORKS_HPP

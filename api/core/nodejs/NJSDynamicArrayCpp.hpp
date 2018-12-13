@@ -22,16 +22,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSDynamicArray: public Nan::ObjectWrap {
+class NJSDynamicArray final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSDynamicArray() {};
-    NJSDynamicArray(const std::shared_ptr<ledger::core::api::DynamicArray> &iDynamicArray):_DynamicArray(iDynamicArray){};
+    NJSDynamicArray() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::DynamicArray> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::DynamicArray> &object);
     static Nan::Persistent<ObjectTemplate> DynamicArray_prototype;
-    std::shared_ptr<ledger::core::api::DynamicArray> getCppImpl(){return _DynamicArray;};
 
 private:
     /**
@@ -207,6 +205,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::DynamicArray> _DynamicArray;
 };
 #endif //DJINNI_GENERATED_NJSDYNAMICARRAY_HPP

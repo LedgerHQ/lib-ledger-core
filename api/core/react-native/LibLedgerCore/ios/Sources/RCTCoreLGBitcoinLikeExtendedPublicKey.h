@@ -3,12 +3,12 @@
 
 #import "LGBitcoinLikeAddress.h"
 #import "LGBitcoinLikeExtendedPublicKey.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBitcoinLikeAddress.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
-@interface RCTCoreLGBitcoinLikeExtendedPublicKey : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGBitcoinLikeExtendedPublicKey : RCTCoreBaseModule <RCTBridgeModule>
 @end

@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeScriptChunk>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         return "RCTCoreBitcoinLikeScriptChunk";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,12 +78,55 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     @ReactMethod
-    public void isOperator(Map<String, String> currentInstance, Promise promise) {
+    public void isOperator(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -94,10 +142,10 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void isPushedData(Map<String, String> currentInstance, Promise promise) {
+    public void isPushedData(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -113,21 +161,21 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getOperator(Map<String, String> currentInstance, Promise promise) {
+    public void getOperator(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeOperator javaResult = currentInstanceObj.getOperator();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeOperator rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOperator.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeOperator");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -137,16 +185,16 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void getPushedData(Map<String, String> currentInstance, Promise promise) {
+    public void getPushedData(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getPushedData();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -157,21 +205,21 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void next(Map<String, String> currentInstance, Promise promise) {
+    public void next(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeScriptChunk javaResult = currentInstanceObj.next();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeScriptChunk rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeScriptChunk.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeScriptChunk");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -181,10 +229,10 @@ public class RCTCoreBitcoinLikeScriptChunk extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void hasNext(Map<String, String> currentInstance, Promise promise) {
+    public void hasNext(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeScriptChunk currentInstanceObj = this.javaObjects.get(sUid);
 

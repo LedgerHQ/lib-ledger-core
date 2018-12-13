@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -29,8 +33,8 @@ import java.util.UUID;
  */
 public class RCTCoreAmountCallback extends AmountCallback {
     public Promise promise;
-    public ReactContext reactContext;
-    public static RCTCoreAmountCallback initWithPromise(Promise promise, ReactContext reactContext)
+    public ReactApplicationContext reactContext;
+    public static RCTCoreAmountCallback initWithPromise(Promise promise, ReactApplicationContext reactContext)
     {
         RCTCoreAmountCallback callback = new RCTCoreAmountCallback();
         callback.promise = promise;
@@ -45,16 +49,16 @@ public class RCTCoreAmountCallback extends AmountCallback {
     public void onCallback(Amount result, Error error) {
         try
         {
-            if (error.getMessage().length() > 0)
+            if (error != null && error.getMessage().length() > 0)
             {
                 this.promise.reject(error.toString(), error.getMessage());
             }
-            String uuid = UUID.randomUUID().toString();
+            String result_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_result = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_result.getJavaObjects().put(uuid, result);
+            rctImpl_result.getJavaObjects().put(result_uuid, result);
             WritableNativeMap converted_result = new WritableNativeMap();
             converted_result.putString("type","RCTCoreAmount");
-            converted_result.putString("uid",uuid);
+            converted_result.putString("uid",result_uuid);
 
             this.promise.resolve(converted_result);
         }

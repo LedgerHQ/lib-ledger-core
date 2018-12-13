@@ -3,6 +3,7 @@
 
 #import "LGHttpClientImpl.h"
 #import "LGHttpRequest.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGHttpRequest.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -10,6 +11,5 @@
 
 
 /**Class representing the http client performing the http requests */
-@interface RCTCoreLGHttpClient : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGHttpClient : RCTCoreBaseModule <RCTBridgeModule>
 @end

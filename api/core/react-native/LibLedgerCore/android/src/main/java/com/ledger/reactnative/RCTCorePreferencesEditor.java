@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, PreferencesEditor>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         return "RCTCorePreferencesEditor";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,6 +78,49 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /**
      * Sets the value to the given key in the Preferences.
@@ -81,21 +129,21 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putString(Map<String, String> currentInstance, String key, String value, Promise promise) {
+    public void putString(ReadableMap currentInstance, String key, String value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putString(key, value);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -111,21 +159,21 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putInt(Map<String, String> currentInstance, String key, int value, Promise promise) {
+    public void putInt(ReadableMap currentInstance, String key, int value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putInt(key, value);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -141,21 +189,21 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putLong(Map<String, String> currentInstance, String key, long value, Promise promise) {
+    public void putLong(ReadableMap currentInstance, String key, long value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putLong(key, value);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -171,21 +219,21 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putBoolean(Map<String, String> currentInstance, String key, boolean value, Promise promise) {
+    public void putBoolean(ReadableMap currentInstance, String key, boolean value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.putBoolean(key, value);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -201,21 +249,27 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putStringArray(Map<String, String> currentInstance, String key, ArrayList<String> value, Promise promise) {
+    public void putStringArray(ReadableMap currentInstance, String key, ReadableArray value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
-            PreferencesEditor javaResult = currentInstanceObj.putStringArray(key, value);
+            ArrayList<String> javaParam_1 = new ArrayList<String>();
+            for (int i = 0; i <  value.size(); i++)
+            {
+                String value_elem = value.getString(i);
+                javaParam_1.add(value_elem);
+            }
+            PreferencesEditor javaResult = currentInstanceObj.putStringArray(key, javaParam_1);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -231,21 +285,23 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void putData(Map<String, String> currentInstance, String key, byte[] value, Promise promise) {
+    public void putData(ReadableMap currentInstance, String key, String value, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
-            PreferencesEditor javaResult = currentInstanceObj.putData(key, value);
+            byte [] javaParam_1 = hexStringToByteArray(value);
 
-            String uuid = UUID.randomUUID().toString();
+            PreferencesEditor javaResult = currentInstanceObj.putData(key, javaParam_1);
+
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -260,21 +316,21 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
      * @return The reference of self in order to chain the call to the editor.
      */
     @ReactMethod
-    public void remove(Map<String, String> currentInstance, String key, Promise promise) {
+    public void remove(ReadableMap currentInstance, String key, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.remove(key);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -285,10 +341,10 @@ public class RCTCorePreferencesEditor extends ReactContextBaseJavaModule {
     }
     /** Persists the changes to the Preferences. */
     @ReactMethod
-    public void commit(Map<String, String> currentInstance, Promise promise) {
+    public void commit(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             PreferencesEditor currentInstanceObj = this.javaObjects.get(sUid);
 

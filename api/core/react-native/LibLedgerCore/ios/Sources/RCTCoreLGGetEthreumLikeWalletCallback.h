@@ -4,6 +4,7 @@
 #import "LGError.h"
 #import "LGEthereumLikeWallet.h"
 #import "LGGetEthreumLikeWalletCallbackImpl.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGError.h"
 #import "RCTCoreLGEthereumLikeWallet.h"
 #import <Foundation/Foundation.h>
@@ -11,6 +12,5 @@
 #import <React/RCTBridgeModule.h>
 
 
-@interface RCTCoreLGGetEthreumLikeWalletCallback : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGGetEthreumLikeWalletCallback : RCTCoreBaseModule <RCTBridgeModule>
 @end

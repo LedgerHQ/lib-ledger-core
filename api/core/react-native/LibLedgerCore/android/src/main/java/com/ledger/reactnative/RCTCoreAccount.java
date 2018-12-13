@@ -21,6 +21,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -48,6 +52,7 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Account>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -56,9 +61,9 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
         return "RCTCoreAccount";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -85,16 +90,35 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Get index of account in user's wallet
      *32 bits integer
      */
     @ReactMethod
-    public void getIndex(Map<String, String> currentInstance, Promise promise) {
+    public void getIndex(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -111,21 +135,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void queryOperations(Map<String, String> currentInstance, Promise promise) {
+    public void queryOperations(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             OperationQuery javaResult = currentInstanceObj.queryOperations();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreOperationQuery rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreOperationQuery.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreOperationQuery");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -139,10 +163,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
      */
     @ReactMethod
-    public void getBalance(Map<String, String> currentInstance, Promise promise) {
+    public void getBalance(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -162,15 +186,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@param callback, ListCallback returning a list of Amount object which represents account's balance
      */
     @ReactMethod
-    public void getBalanceHistory(Map<String, String> currentInstance, String start, String end, TimePeriod period, Promise promise) {
+    public void getBalanceHistory(ReadableMap currentInstance, String start, String end, int period, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
+            if (period < 0 || TimePeriod.values().length <= period)
+            {
+                promise.reject("Enum error", "Failed to get enum TimePeriod");
+                return;
+            }
+            TimePeriod javaParam_2 = TimePeriod.values()[period];
             RCTCoreAmountListCallback javaParam_3 = RCTCoreAmountListCallback.initWithPromise(promise, this.reactContext);
-            currentInstanceObj.getBalanceHistory(start, end, period, javaParam_3);
+            currentInstanceObj.getBalanceHistory(start, end, javaParam_2, javaParam_3);
         }
         catch(Exception e)
         {
@@ -182,10 +212,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isSynchronizing(Map<String, String> currentInstance, Promise promise) {
+    public void isSynchronizing(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -205,21 +235,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return EventBus, handler will be notified of synchronization outcome
      */
     @ReactMethod
-    public void synchronize(Map<String, String> currentInstance, Promise promise) {
+    public void synchronize(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             EventBus javaResult = currentInstanceObj.synchronize();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventBus");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -233,21 +263,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return Preferences object
      */
     @ReactMethod
-    public void getPreferences(Map<String, String> currentInstance, Promise promise) {
+    public void getPreferences(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             Preferences javaResult = currentInstanceObj.getPreferences();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferences");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -261,21 +291,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return Logger Object
      */
     @ReactMethod
-    public void getLogger(Map<String, String> currentInstance, Promise promise) {
+    public void getLogger(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             Logger javaResult = currentInstanceObj.getLogger();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreLogger rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLogger.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreLogger");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -292,21 +322,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@param uid, string of operation id
      */
     @ReactMethod
-    public void getOperationPreferences(Map<String, String> currentInstance, String uid, Promise promise) {
+    public void getOperationPreferences(ReadableMap currentInstance, String uid, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             Preferences javaResult = currentInstanceObj.getOperationPreferences(uid);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferences");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -316,21 +346,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void asBitcoinLikeAccount(Map<String, String> currentInstance, Promise promise) {
+    public void asBitcoinLikeAccount(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeAccount javaResult = currentInstanceObj.asBitcoinLikeAccount();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeAccount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeAccount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeAccount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -346,10 +376,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfBitcoinLikeAccount(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfBitcoinLikeAccount(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -369,10 +399,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfEthereumLikeAccount(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfEthereumLikeAccount(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -392,10 +422,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfRippleLikeAccount(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfRippleLikeAccount(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -412,10 +442,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void getFreshPublicAddresses(Map<String, String> currentInstance, Promise promise) {
+    public void getFreshPublicAddresses(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -432,17 +462,17 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return WalletType object
      */
     @ReactMethod
-    public void getWalletType(Map<String, String> currentInstance, Promise promise) {
+    public void getWalletType(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             WalletType javaResult = currentInstanceObj.getWalletType();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = javaResult.toString();
-            result.putString("value", finalJavaResult);
+            int finalJavaResult = javaResult.ordinal();
+            result.putInt("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -456,21 +486,21 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return EventBus object
      */
     @ReactMethod
-    public void getEventBus(Map<String, String> currentInstance, Promise promise) {
+    public void getEventBus(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
             EventBus javaResult = currentInstanceObj.getEventBus();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventBus");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -481,10 +511,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     }
     /**Start observing blockchain on which account synchronizes and send/receive transactions */
     @ReactMethod
-    public void startBlockchainObservation(Map<String, String> currentInstance, Promise promise) {
+    public void startBlockchainObservation(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -497,10 +527,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     }
     /**Stop observing blockchain */
     @ReactMethod
-    public void stopBlockchainObservation(Map<String, String> currentInstance, Promise promise) {
+    public void stopBlockchainObservation(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -516,10 +546,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@return boolean
      */
     @ReactMethod
-    public void isObservingBlockchain(Map<String, String> currentInstance, Promise promise) {
+    public void isObservingBlockchain(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -539,10 +569,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@param callback, Callback returning, if getLastBlock succeeds, a Block object
      */
     @ReactMethod
-    public void getLastBlock(Map<String, String> currentInstance, Promise promise) {
+    public void getLastBlock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -556,10 +586,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
     }
     /** Get the key used to generate the account */
     @ReactMethod
-    public void getRestoreKey(Map<String, String> currentInstance, Promise promise) {
+    public void getRestoreKey(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -579,10 +609,10 @@ public class RCTCoreAccount extends ReactContextBaseJavaModule {
      *@param date, start date of data deletion
      */
     @ReactMethod
-    public void eraseDataSince(Map<String, String> currentInstance, Date date, Promise promise) {
+    public void eraseDataSince(ReadableMap currentInstance, Date date, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Account currentInstanceObj = this.javaObjects.get(sUid);
 

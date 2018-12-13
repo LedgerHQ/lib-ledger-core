@@ -14,6 +14,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -41,6 +45,7 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Amount>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -49,9 +54,9 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         return "RCTCoreAmount";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -78,27 +83,46 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Get amount as a BitInt
      *@return BitInt
      */
     @ReactMethod
-    public void toBigInt(Map<String, String> currentInstance, Promise promise) {
+    public void toBigInt(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             BigInt javaResult = currentInstanceObj.toBigInt();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -112,21 +136,21 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@return Currency object
      */
     @ReactMethod
-    public void getCurrency(Map<String, String> currentInstance, Promise promise) {
+    public void getCurrency(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreCurrency");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -140,21 +164,21 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@return CurrencyUnit object
      */
     @ReactMethod
-    public void getUnit(Map<String, String> currentInstance, Promise promise) {
+    public void getUnit(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             CurrencyUnit javaResult = currentInstanceObj.getUnit();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreCurrencyUnit rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreCurrencyUnit");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -169,23 +193,23 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@return Amount object, amount in target currency unit
      */
     @ReactMethod
-    public void toUnit(Map<String, String> currentInstance, HashMap <String, String> unit, Promise promise) {
+    public void toUnit(ReadableMap currentInstance, ReadableMap unit, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreCurrencyUnit rctParam_unit = this.reactContext.getNativeModule(RCTCoreCurrencyUnit.class);
-            CurrencyUnit javaParam_0 = rctParam_unit.getJavaObjects().get(unit.get("uid"));
+            CurrencyUnit javaParam_0 = rctParam_unit.getJavaObjects().get(unit.getString("uid"));
             Amount javaResult = currentInstanceObj.toUnit(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -196,21 +220,21 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void toMagnitude(Map<String, String> currentInstance, int magnitude, Promise promise) {
+    public void toMagnitude(ReadableMap currentInstance, int magnitude, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.toMagnitude(magnitude);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -224,10 +248,10 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void toString(Map<String, String> currentInstance, Promise promise) {
+    public void toString(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -247,10 +271,10 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@reutrn 64 bits integer
      */
     @ReactMethod
-    public void toLong(Map<String, String> currentInstance, Promise promise) {
+    public void toLong(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -270,10 +294,10 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
      *@return double
      */
     @ReactMethod
-    public void toDouble(Map<String, String> currentInstance, Promise promise) {
+    public void toDouble(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -290,17 +314,17 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void format(Map<String, String> currentInstance, HashMap <String, String> locale, Optional<HashMap <String, String>> rules, Promise promise) {
+    public void format(ReadableMap currentInstance, ReadableMap locale, Optional<ReadableMap> rules, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Amount currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreLocale rctParam_locale = this.reactContext.getNativeModule(RCTCoreLocale.class);
-            Locale javaParam_0 = rctParam_locale.getJavaObjects().get(locale.get("uid"));
+            Locale javaParam_0 = rctParam_locale.getJavaObjects().get(locale.getString("uid"));
             RCTCoreFormatRules rctParam_rules = this.reactContext.getNativeModule(RCTCoreFormatRules.class);
-            FormatRules javaParam_1 = rctParam_rules.getJavaObjects().get(rules.get().get("uid"));
+            FormatRules javaParam_1 = rctParam_rules.getJavaObjects().get(rules.get().getString("uid"));
             String javaResult = currentInstanceObj.format(javaParam_0, javaParam_1);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("value", javaResult);
@@ -313,19 +337,19 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void fromHex(HashMap <String, String> currency, String hex, Promise promise) {
+    public void fromHex(ReadableMap currency, String hex, Promise promise) {
         try
         {
             RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
+            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.getString("uid"));
             Amount javaResult = Amount.fromHex(javaParam_0, hex);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -335,19 +359,19 @@ public class RCTCoreAmount extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void fromLong(HashMap <String, String> currency, long value, Promise promise) {
+    public void fromLong(ReadableMap currency, long value, Promise promise) {
         try
         {
             RCTCoreCurrency rctParam_currency = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.get("uid"));
+            Currency javaParam_0 = rctParam_currency.getJavaObjects().get(currency.getString("uid"));
             Amount javaResult = Amount.fromLong(javaParam_0, value);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

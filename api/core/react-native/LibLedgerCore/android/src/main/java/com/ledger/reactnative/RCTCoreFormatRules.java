@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, FormatRules>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
         return "RCTCoreFormatRules";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,10 +78,35 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
-    public void init(RoundingMode roundingMode, int maxNumberOfDecimals, Promise promise) {
-        FormatRules javaResult = new FormatRules(roundingMode, maxNumberOfDecimals);
+    public void init(int roundingMode, int maxNumberOfDecimals, Promise promise) {
+        if (roundingMode < 0 || RoundingMode.values().length <= roundingMode)
+        {
+            promise.reject("Enum error", "Failed to get enum RoundingMode");
+            return;
+        }
+        RoundingMode javaParam_0 = RoundingMode.values()[roundingMode];
+        FormatRules javaResult = new FormatRules(javaParam_0, maxNumberOfDecimals);
 
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, javaResult);
@@ -86,14 +116,16 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getRoundingMode(Map<String, String> currentInstance, Promise promise)
+    public void getRoundingMode(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             FormatRules javaObj = this.javaObjects.get(uid);
             RoundingMode result = javaObj.getRoundingMode();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result.ordinal());
+            promise.resolve(resultMap);
         }
         else
         {
@@ -102,14 +134,16 @@ public class RCTCoreFormatRules extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getMaxNumberOfDecimals(Map<String, String> currentInstance, Promise promise)
+    public void getMaxNumberOfDecimals(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             FormatRules javaObj = this.javaObjects.get(uid);
             int result = javaObj.getMaxNumberOfDecimals();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result);
+            promise.resolve(resultMap);
         }
         else
         {

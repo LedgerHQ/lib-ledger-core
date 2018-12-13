@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSTrustIndicator: public Nan::ObjectWrap {
+class NJSTrustIndicator final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSTrustIndicator() {};
-    NJSTrustIndicator(const std::shared_ptr<ledger::core::api::TrustIndicator> &iTrustIndicator):_TrustIndicator(iTrustIndicator){};
+    NJSTrustIndicator() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::TrustIndicator> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::TrustIndicator> &object);
     static Nan::Persistent<ObjectTemplate> TrustIndicator_prototype;
-    std::shared_ptr<ledger::core::api::TrustIndicator> getCppImpl(){return _TrustIndicator;};
 
 private:
     static NAN_METHOD(getTrustWeight);
@@ -43,6 +41,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::TrustIndicator> _TrustIndicator;
 };
 #endif //DJINNI_GENERATED_NJSTRUSTINDICATOR_HPP

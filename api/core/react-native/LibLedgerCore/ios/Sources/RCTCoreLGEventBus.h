@@ -4,6 +4,7 @@
 #import "LGEventBus.h"
 #import "LGEventReceiver.h"
 #import "LGExecutionContext.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGEventReceiver.h"
 #import "RCTCoreLGExecutionContext.h"
 #import <Foundation/Foundation.h>
@@ -12,6 +13,5 @@
 
 
 /**Class representing an event bus through which a receiver gets notified */
-@interface RCTCoreLGEventBus : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGEventBus : RCTCoreBaseModule <RCTBridgeModule>
 @end

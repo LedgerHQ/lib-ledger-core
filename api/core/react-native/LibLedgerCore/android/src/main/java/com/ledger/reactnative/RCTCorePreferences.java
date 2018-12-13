@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -42,6 +46,7 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Preferences>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -50,9 +55,9 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         return "RCTCorePreferences";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -79,16 +84,59 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getString(Map<String, String> currentInstance, String key, String fallbackValue, Promise promise) {
+    public void getString(ReadableMap currentInstance, String key, String fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -108,10 +156,10 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getInt(Map<String, String> currentInstance, String key, int fallbackValue, Promise promise) {
+    public void getInt(ReadableMap currentInstance, String key, int fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -131,10 +179,10 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getLong(Map<String, String> currentInstance, String key, long fallbackValue, Promise promise) {
+    public void getLong(ReadableMap currentInstance, String key, long fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -154,10 +202,10 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getBoolean(Map<String, String> currentInstance, String key, boolean fallbackValue, Promise promise) {
+    public void getBoolean(ReadableMap currentInstance, String key, boolean fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -177,14 +225,20 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getStringArray(Map<String, String> currentInstance, String key, ArrayList<String> fallbackValue, Promise promise) {
+    public void getStringArray(ReadableMap currentInstance, String key, ReadableArray fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
-            ArrayList<String> javaResult = currentInstanceObj.getStringArray(key, fallbackValue);
+            ArrayList<String> javaParam_1 = new ArrayList<String>();
+            for (int i = 0; i <  fallbackValue.size(); i++)
+            {
+                String fallbackValue_elem = fallbackValue.getString(i);
+                javaParam_1.add(fallbackValue_elem);
+            }
+            ArrayList<String> javaResult = currentInstanceObj.getStringArray(key, javaParam_1);
             WritableNativeMap result = new WritableNativeMap();
             WritableNativeArray javaResult_list = new WritableNativeArray();
             for(String javaResult_elem : javaResult)
@@ -205,16 +259,18 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return The data associated with the key or fallbackValue.
      */
     @ReactMethod
-    public void getData(Map<String, String> currentInstance, String key, byte[] fallbackValue, Promise promise) {
+    public void getData(ReadableMap currentInstance, String key, String fallbackValue, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
-            byte[] javaResult = currentInstanceObj.getData(key, fallbackValue);
+            byte [] javaParam_1 = hexStringToByteArray(fallbackValue);
+
+            byte[] javaResult = currentInstanceObj.getData(key, javaParam_1);
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -229,10 +285,10 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return true the preferences contains the key, false otherwise.
      */
     @ReactMethod
-    public void contains(Map<String, String> currentInstance, String key, Promise promise) {
+    public void contains(ReadableMap currentInstance, String key, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -252,21 +308,21 @@ public class RCTCorePreferences extends ReactContextBaseJavaModule {
      * @return An interface for editting preferences.
      */
     @ReactMethod
-    public void edit(Map<String, String> currentInstance, Promise promise) {
+    public void edit(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Preferences currentInstanceObj = this.javaObjects.get(sUid);
 
             PreferencesEditor javaResult = currentInstanceObj.edit();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferencesEditor rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferencesEditor.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferencesEditor");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

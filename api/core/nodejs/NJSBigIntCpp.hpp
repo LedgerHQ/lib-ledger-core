@@ -19,16 +19,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBigInt: public Nan::ObjectWrap {
+class NJSBigInt final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSBigInt() {};
-    NJSBigInt(const std::shared_ptr<ledger::core::api::BigInt> &iBigInt):_BigInt(iBigInt){};
+    NJSBigInt() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::BigInt> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::BigInt> &object);
     static Nan::Persistent<ObjectTemplate> BigInt_prototype;
-    std::shared_ptr<ledger::core::api::BigInt> getCppImpl(){return _BigInt;};
 
 private:
     /**
@@ -130,6 +128,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::BigInt> _BigInt;
 };
 #endif //DJINNI_GENERATED_NJSBIGINT_HPP

@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGThreadDispatcher)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGThreadDispatcher)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcher::release, first argument should be an instance of LGThreadDispatcher", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 
 /**
@@ -59,19 +41,22 @@ RCT_REMAP_METHOD(getSerialExecutionContext,getSerialExecutionContext:(NSDictiona
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcher::getSerialExecutionContext, first argument should be an instance of LGThreadDispatcherImpl", nil);
+        return;
     }
     LGThreadDispatcherImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGThreadDispatcherImpl::getSerialExecutionContext, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     id<LGExecutionContext> objcResult = [currentInstanceObj getSerialExecutionContext:name];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGExecutionContext *rctImpl_objcResult = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -80,6 +65,7 @@ RCT_REMAP_METHOD(getSerialExecutionContext,getSerialExecutionContext:(NSDictiona
     else
     {
         reject(@"impl_call_error", @"Error while calling LGThreadDispatcherImpl::getSerialExecutionContext", nil);
+        return;
     }
 
 }
@@ -94,19 +80,22 @@ RCT_REMAP_METHOD(getThreadPoolExecutionContext,getThreadPoolExecutionContext:(NS
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcher::getThreadPoolExecutionContext, first argument should be an instance of LGThreadDispatcherImpl", nil);
+        return;
     }
     LGThreadDispatcherImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGThreadDispatcherImpl::getThreadPoolExecutionContext, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     id<LGExecutionContext> objcResult = [currentInstanceObj getThreadPoolExecutionContext:name];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGExecutionContext *rctImpl_objcResult = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -115,6 +104,7 @@ RCT_REMAP_METHOD(getThreadPoolExecutionContext,getThreadPoolExecutionContext:(NS
     else
     {
         reject(@"impl_call_error", @"Error while calling LGThreadDispatcherImpl::getThreadPoolExecutionContext", nil);
+        return;
     }
 
 }
@@ -127,19 +117,22 @@ RCT_REMAP_METHOD(getMainExecutionContext,getMainExecutionContext:(NSDictionary *
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcher::getMainExecutionContext, first argument should be an instance of LGThreadDispatcherImpl", nil);
+        return;
     }
     LGThreadDispatcherImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGThreadDispatcherImpl::getMainExecutionContext, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     id<LGExecutionContext> objcResult = [currentInstanceObj getMainExecutionContext];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGExecutionContext *rctImpl_objcResult = (RCTCoreLGExecutionContext *)[self.bridge moduleForName:@"CoreLGExecutionContext"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGExecutionContext", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -148,6 +141,7 @@ RCT_REMAP_METHOD(getMainExecutionContext,getMainExecutionContext:(NSDictionary *
     else
     {
         reject(@"impl_call_error", @"Error while calling LGThreadDispatcherImpl::getMainExecutionContext", nil);
+        return;
     }
 
 }
@@ -160,19 +154,22 @@ RCT_REMAP_METHOD(newLock,newLock:(NSDictionary *)currentInstance WithResolver:(R
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcher::newLock, first argument should be an instance of LGThreadDispatcherImpl", nil);
+        return;
     }
     LGThreadDispatcherImpl *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGThreadDispatcherImpl::newLock, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     id<LGLock> objcResult = [currentInstanceObj newLock];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGLock *rctImpl_objcResult = (RCTCoreLGLock *)[self.bridge moduleForName:@"CoreLGLock"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGLock", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGLock", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -181,17 +178,20 @@ RCT_REMAP_METHOD(newLock,newLock:(NSDictionary *)currentInstance WithResolver:(R
     else
     {
         reject(@"impl_call_error", @"Error while calling LGThreadDispatcherImpl::newLock", nil);
+        return;
     }
 
 }
-RCT_REMAP_METHOD(new, newWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(newInstance, newInstanceWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     LGThreadDispatcherImpl *objcResult = [[LGThreadDispatcherImpl alloc] init];
     NSString *uuid = [[NSUUID UUID] UUIDString];
-    [self.objcImplementations setObject:objcResult forKey:uuid];
+    NSArray *resultArray = [[NSArray alloc] initWithObjects:objcResult, uuid, nil];
+    [self baseSetObject:resultArray];
     NSDictionary *result = @{@"type" : @"CoreLGThreadDispatcherImpl", @"uid" : uuid };
     if (!objcResult || !result)
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGThreadDispatcherImpl::init", nil);
+        return;
     }
     resolve(result);
 }

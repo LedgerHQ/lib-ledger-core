@@ -3,12 +3,12 @@
 
 #import "LGBitcoinLikeNetworkParameters.h"
 #import "LGNetworks.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBitcoinLikeNetworkParameters.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBridgeModule.h>
 
 
-@interface RCTCoreLGNetworks : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGNetworks : RCTCoreBaseModule <RCTBridgeModule>
 @end

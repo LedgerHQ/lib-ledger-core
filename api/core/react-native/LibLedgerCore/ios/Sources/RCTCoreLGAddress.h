@@ -4,6 +4,7 @@
 #import "LGAddress.h"
 #import "LGBitcoinLikeAddress.h"
 #import "LGCurrency.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAddress.h"
 #import "RCTCoreLGBitcoinLikeAddress.h"
 #import "RCTCoreLGCurrency.h"
@@ -12,6 +13,5 @@
 #import <React/RCTBridgeModule.h>
 
 
-@interface RCTCoreLGAddress : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGAddress : RCTCoreBaseModule <RCTBridgeModule>
 @end

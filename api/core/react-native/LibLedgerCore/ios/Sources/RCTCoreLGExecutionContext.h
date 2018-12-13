@@ -3,6 +3,7 @@
 
 #import "LGExecutionContextImpl.h"
 #import "LGRunnable.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGRunnable.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -10,6 +11,5 @@
 
 
 /**Class representing context in which tasks get executed */
-@interface RCTCoreLGExecutionContext : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGExecutionContext : RCTCoreBaseModule <RCTBridgeModule>
 @end

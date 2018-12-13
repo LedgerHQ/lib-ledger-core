@@ -18,16 +18,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSEventBus: public Nan::ObjectWrap {
+class NJSEventBus final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSEventBus() {};
-    NJSEventBus(const std::shared_ptr<ledger::core::api::EventBus> &iEventBus):_EventBus(iEventBus){};
+    NJSEventBus() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::EventBus> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::EventBus> &object);
     static Nan::Persistent<ObjectTemplate> EventBus_prototype;
-    std::shared_ptr<ledger::core::api::EventBus> getCppImpl(){return _EventBus;};
 
 private:
     /**
@@ -46,6 +44,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::EventBus> _EventBus;
 };
 #endif //DJINNI_GENERATED_NJSEVENTBUS_HPP

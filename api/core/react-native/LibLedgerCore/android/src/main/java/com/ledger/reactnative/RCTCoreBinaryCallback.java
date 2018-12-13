@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -28,13 +32,27 @@ import java.util.UUID;
  */
 public class RCTCoreBinaryCallback extends BinaryCallback {
     public Promise promise;
-    public ReactContext reactContext;
-    public static RCTCoreBinaryCallback initWithPromise(Promise promise, ReactContext reactContext)
+    public ReactApplicationContext reactContext;
+    public static RCTCoreBinaryCallback initWithPromise(Promise promise, ReactApplicationContext reactContext)
     {
         RCTCoreBinaryCallback callback = new RCTCoreBinaryCallback();
         callback.promise = promise;
         callback.reactContext = reactContext;
         return callback;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
     }
     /**
      * Method triggered when main task complete
@@ -44,12 +62,13 @@ public class RCTCoreBinaryCallback extends BinaryCallback {
     public void onCallback(byte[] result, Error error) {
         try
         {
-            if (error.getMessage().length() > 0)
+            if (error != null && error.getMessage().length() > 0)
             {
                 this.promise.reject(error.toString(), error.getMessage());
             }
+            String converted_result = byteArrayToHexString(result);
 
-            this.promise.resolve(result);
+            this.promise.resolve(converted_result);
         }
         catch(Exception e)
         {

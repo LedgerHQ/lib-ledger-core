@@ -17,16 +17,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSLogger: public Nan::ObjectWrap {
+class NJSLogger final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSLogger() {};
-    NJSLogger(const std::shared_ptr<ledger::core::api::Logger> &iLogger):_Logger(iLogger){};
+    NJSLogger() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Logger> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Logger> &object);
     static Nan::Persistent<ObjectTemplate> Logger_prototype;
-    std::shared_ptr<ledger::core::api::Logger> getCppImpl(){return _Logger;};
 
 private:
     /**
@@ -67,6 +65,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Logger> _Logger;
 };
 #endif //DJINNI_GENERATED_NJSLOGGER_HPP

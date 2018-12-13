@@ -10,16 +10,6 @@ RCT_EXPORT_MODULE(RCTCoreLGAddress)
 
 @synthesize bridge = _bridge;
 
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,27 +17,19 @@ RCT_EXPORT_MODULE(RCTCoreLGAddress)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::release, first argument should be an instance of LGAddress", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
 }
 
 /**
@@ -58,12 +40,14 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPath:(NSDictionary *)currentInst
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::getDerivationPath, first argument should be an instance of LGAddress", nil);
+        return;
     }
     LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::getDerivationPath, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj getDerivationPath];
     NSDictionary *result = @{@"value" : objcResult};
@@ -74,6 +58,7 @@ RCT_REMAP_METHOD(getDerivationPath,getDerivationPath:(NSDictionary *)currentInst
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::getDerivationPath", nil);
+        return;
     }
 
 }
@@ -86,12 +71,14 @@ RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::toString, first argument should be an instance of LGAddress", nil);
+        return;
     }
     LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::toString, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     NSString * objcResult = [currentInstanceObj toString];
     NSDictionary *result = @{@"value" : objcResult};
@@ -102,6 +89,7 @@ RCT_REMAP_METHOD(toString,toString:(NSDictionary *)currentInstance WithResolver:
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::toString", nil);
+        return;
     }
 
 }
@@ -110,19 +98,25 @@ RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddress:(NSDictionary *)curre
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::asBitcoinLikeAddress, first argument should be an instance of LGAddress", nil);
+        return;
     }
     LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::asBitcoinLikeAddress, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGBitcoinLikeAddress * objcResult = [currentInstanceObj asBitcoinLikeAddress];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGBitcoinLikeAddress *rctImpl_objcResult = (RCTCoreLGBitcoinLikeAddress *)[self.bridge moduleForName:@"CoreLGBitcoinLikeAddress"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAddress", @"uid" : uuid };
+    if (objcResult)
+    {
+        NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+        [rctImpl_objcResult baseSetObject:objcResult_array];
+    }
+    NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeAddress", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -131,6 +125,7 @@ RCT_REMAP_METHOD(asBitcoinLikeAddress,asBitcoinLikeAddress:(NSDictionary *)curre
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::asBitcoinLikeAddress", nil);
+        return;
     }
 
 }
@@ -139,12 +134,14 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeAddress,isInstanceOfBitcoinLikeAddress:(
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::isInstanceOfBitcoinLikeAddress, first argument should be an instance of LGAddress", nil);
+        return;
     }
     LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::isInstanceOfBitcoinLikeAddress, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     BOOL objcResult = [currentInstanceObj isInstanceOfBitcoinLikeAddress];
     NSDictionary *result = @{@"value" : @(objcResult)};
@@ -155,6 +152,7 @@ RCT_REMAP_METHOD(isInstanceOfBitcoinLikeAddress,isInstanceOfBitcoinLikeAddress:(
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::isInstanceOfBitcoinLikeAddress", nil);
+        return;
     }
 
 }
@@ -163,19 +161,22 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
     if (!currentInstance[@"uid"] || !currentInstance[@"type"])
     {
         reject(@"impl_call_error", @"Error while calling RCTCoreLGAddress::getCurrency, first argument should be an instance of LGAddress", nil);
+        return;
     }
     LGAddress *currentInstanceObj = [self.objcImplementations objectForKey:currentInstance[@"uid"]];
     if (!currentInstanceObj)
     {
         NSString *error = [NSString stringWithFormat:@"Error while calling LGAddress::getCurrency, instance of uid %@ not found", currentInstance[@"uid"]];
         reject(@"impl_call_error", error, nil);
+        return;
     }
     LGCurrency * objcResult = [currentInstanceObj getCurrency];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGCurrency *rctImpl_objcResult = (RCTCoreLGCurrency *)[self.bridge moduleForName:@"CoreLGCurrency"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : uuid };
+    NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+    [rctImpl_objcResult baseSetObject:objcResult_array];
+    NSDictionary *result = @{@"type" : @"CoreLGCurrency", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -184,6 +185,7 @@ RCT_REMAP_METHOD(getCurrency,getCurrency:(NSDictionary *)currentInstance WithRes
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::getCurrency", nil);
+        return;
     }
 
 }
@@ -201,10 +203,14 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)address
     LGCurrency *objcParam_1 = (LGCurrency *)[rctParam_currency.objcImplementations objectForKey:currency[@"uid"]];
     LGAddress * objcResult = [LGAddress parse:address currency:objcParam_1];
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *objcResult_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGAddress *rctImpl_objcResult = (RCTCoreLGAddress *)[self.bridge moduleForName:@"CoreLGAddress"];
-    [rctImpl_objcResult.objcImplementations setObject:objcResult forKey:uuid];
-    NSDictionary *result = @{@"type" : @"CoreLGAddress", @"uid" : uuid };
+    if (objcResult)
+    {
+        NSArray *objcResult_array = [[NSArray alloc] initWithObjects:objcResult, objcResult_uuid, nil];
+        [rctImpl_objcResult baseSetObject:objcResult_array];
+    }
+    NSDictionary *result = @{@"type" : @"CoreLGAddress", @"uid" : objcResult_uuid };
 
     if(result)
     {
@@ -213,6 +219,7 @@ RCT_REMAP_METHOD(parse,parsewithParams:(nonnull NSString *)address
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::parse", nil);
+        return;
     }
 
 }
@@ -236,6 +243,7 @@ RCT_REMAP_METHOD(isValid,isValidwithParams:(nonnull NSString *)address
     else
     {
         reject(@"impl_call_error", @"Error while calling LGAddress::isValid", nil);
+        return;
     }
 
 }

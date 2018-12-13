@@ -11,6 +11,7 @@
 #import "LGWalletPoolBuilder.h"
 #import "LGWalletPoolCallback.h"
 #import "LGWebSocketClient.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGDatabaseBackend.h"
 #import "RCTCoreLGDynamicObject.h"
 #import "RCTCoreLGHttpClient.h"
@@ -27,6 +28,5 @@
 
 
 /**Class representing a wallet pool builder (to instanciate a wallet pool) */
-@interface RCTCoreLGWalletPoolBuilder : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGWalletPoolBuilder : RCTCoreBaseModule <RCTBridgeModule>
 @end

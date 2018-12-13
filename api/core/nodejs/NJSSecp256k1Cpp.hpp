@@ -18,16 +18,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSSecp256k1: public Nan::ObjectWrap {
+class NJSSecp256k1 final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSSecp256k1() {};
-    NJSSecp256k1(const std::shared_ptr<ledger::core::api::Secp256k1> &iSecp256k1):_Secp256k1(iSecp256k1){};
+    NJSSecp256k1() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Secp256k1> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Secp256k1> &object);
     static Nan::Persistent<ObjectTemplate> Secp256k1_prototype;
-    std::shared_ptr<ledger::core::api::Secp256k1> getCppImpl(){return _Secp256k1;};
 
 private:
     /**
@@ -66,6 +64,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Secp256k1> _Secp256k1;
 };
 #endif //DJINNI_GENERATED_NJSSECP256K1_HPP

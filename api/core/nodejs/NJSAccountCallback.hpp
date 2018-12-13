@@ -20,13 +20,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSAccountCallback: public Nan::ObjectWrap, public ledger::core::api::AccountCallback {
+class NJSAccountCallback: public ledger::core::api::AccountCallback {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSAccountCallback()
     {
-        persistent().Reset();
         pers_resolver.Reset();
     };
     NJSAccountCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
@@ -48,8 +47,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSACCOUNTCALLBACK_HPP

@@ -26,16 +26,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSWalletPoolBuilder: public Nan::ObjectWrap {
+class NJSWalletPoolBuilder final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSWalletPoolBuilder() {};
-    NJSWalletPoolBuilder(const std::shared_ptr<ledger::core::api::WalletPoolBuilder> &iWalletPoolBuilder):_WalletPoolBuilder(iWalletPoolBuilder){};
+    NJSWalletPoolBuilder() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::WalletPoolBuilder> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::WalletPoolBuilder> &object);
     static Nan::Persistent<ObjectTemplate> WalletPoolBuilder_prototype;
-    std::shared_ptr<ledger::core::api::WalletPoolBuilder> getCppImpl(){return _WalletPoolBuilder;};
 
 private:
     /**
@@ -123,6 +121,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::WalletPoolBuilder> _WalletPoolBuilder;
 };
 #endif //DJINNI_GENERATED_NJSWALLETPOOLBUILDER_HPP

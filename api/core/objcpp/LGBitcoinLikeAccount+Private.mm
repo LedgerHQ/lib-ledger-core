@@ -67,9 +67,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (nullable LGBitcoinLikeTransactionBuilder *)buildTransaction {
+- (nullable LGBitcoinLikeTransactionBuilder *)buildTransaction:(nullable NSNumber *)partial {
     try {
-        auto objcpp_result_ = _cppRefHandle.get()->buildTransaction();
+        auto objcpp_result_ = _cppRefHandle.get()->buildTransaction(::djinni::Optional<std::experimental::optional, ::djinni::Bool>::toCpp(partial));
         return ::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(objcpp_result_);
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }

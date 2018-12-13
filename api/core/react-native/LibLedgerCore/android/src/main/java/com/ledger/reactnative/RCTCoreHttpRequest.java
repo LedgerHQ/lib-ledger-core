@@ -12,6 +12,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, HttpRequest>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -47,9 +52,9 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         return "RCTCoreHttpRequest";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -76,23 +81,66 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /**
      *Get method of request
      *@return HttpMethod enum entry
      */
     @ReactMethod
-    public void getMethod(Map<String, String> currentInstance, Promise promise) {
+    public void getMethod(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             HttpMethod javaResult = currentInstanceObj.getMethod();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = javaResult.toString();
-            result.putString("value", finalJavaResult);
+            int finalJavaResult = javaResult.ordinal();
+            result.putInt("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -106,10 +154,10 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
      *@return Map with key and value of type string
      */
     @ReactMethod
-    public void getHeaders(Map<String, String> currentInstance, Promise promise) {
+    public void getHeaders(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -135,16 +183,16 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
      *@return binary
      */
     @ReactMethod
-    public void getBody(Map<String, String> currentInstance, Promise promise) {
+    public void getBody(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getBody();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -159,10 +207,10 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
      *@return string
      */
     @ReactMethod
-    public void getUrl(Map<String, String> currentInstance, Promise promise) {
+    public void getUrl(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -183,17 +231,19 @@ public class RCTCoreHttpRequest extends ReactContextBaseJavaModule {
      *@param error, optional Error structure, error returned in case of request failure
      */
     @ReactMethod
-    public void complete(Map<String, String> currentInstance, Optional<HashMap <String, String>> response, Optional<HashMap <String, String>> error, Promise promise) {
+    public void complete(ReadableMap currentInstance, Optional<ReadableMap> response, Optional<ReadableMap> error, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             HttpRequest currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreHttpUrlConnection rctParam_response = this.reactContext.getNativeModule(RCTCoreHttpUrlConnection.class);
-            HttpUrlConnection javaParam_0 = rctParam_response.getJavaObjects().get(response.get().get("uid"));
+            HttpUrlConnection javaParam_0 = rctParam_response.getJavaObjects().get(response.get().getString("uid"));
+            HttpUrlConnectionImpl javaParam_0_java = (HttpUrlConnectionImpl)javaParam_0;
+            javaParam_0_java.setPromise(promise);
             RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
-            Error javaParam_1 = rctParam_error.getJavaObjects().get(error.get().get("uid"));
+            Error javaParam_1 = rctParam_error.getJavaObjects().get(error.get().getString("uid"));
             currentInstanceObj.complete(javaParam_0, javaParam_1);
         }
         catch(Exception e)

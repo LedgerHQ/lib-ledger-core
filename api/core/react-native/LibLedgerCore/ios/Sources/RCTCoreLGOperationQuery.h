@@ -5,6 +5,7 @@
 #import "LGOperationOrderKey.h"
 #import "LGOperationQuery.h"
 #import "LGQueryFilter.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGOperationListCallback.h"
 #import "RCTCoreLGOperationQuery.h"
 #import "RCTCoreLGQueryFilter.h"
@@ -14,6 +15,5 @@
 
 
 /**Class respresenting a query for a set of operations */
-@interface RCTCoreLGOperationQuery : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGOperationQuery : RCTCoreBaseModule <RCTBridgeModule>
 @end

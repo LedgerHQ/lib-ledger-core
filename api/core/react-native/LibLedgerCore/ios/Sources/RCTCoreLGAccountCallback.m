@@ -27,12 +27,17 @@
     if (error)
     {
         self.reject(@"RCTCoreLGAccountCallback Error", error.message, nil);
+        return;
     }
 
-    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSString *result_uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGAccount *rctImpl_result = (RCTCoreLGAccount *)[self.bridge moduleForName:@"CoreLGAccount"];
-    [rctImpl_result.objcImplementations setObject:result forKey:uuid];
-    NSDictionary *converted_result = @{@"type" : @"CoreLGAccount", @"uid" : uuid };
+    if (result)
+    {
+        NSArray *result_array = [[NSArray alloc] initWithObjects:result, result_uuid, nil];
+        [rctImpl_result baseSetObject:result_array];
+    }
+    NSDictionary *converted_result = @{@"type" : @"CoreLGAccount", @"uid" : result_uuid };
 
     self.resolve(converted_result);
 

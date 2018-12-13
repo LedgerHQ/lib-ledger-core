@@ -106,7 +106,12 @@
 /** Reset the current instance to its initial state */
 - (void)reset;
 
+/**
+ * Parsing unsigned transaction
+ * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
+ */
 + (nullable LGBitcoinLikeTransaction *)parseRawUnsignedTransaction:(nonnull LGCurrency *)currency
-                                                    rawTransaction:(nonnull NSData *)rawTransaction;
+                                                    rawTransaction:(nonnull NSData *)rawTransaction
+                                                currentBlockHeight:(nullable NSNumber *)currentBlockHeight;
 
 @end

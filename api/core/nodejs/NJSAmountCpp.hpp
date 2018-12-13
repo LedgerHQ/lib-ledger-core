@@ -25,16 +25,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSAmount: public Nan::ObjectWrap {
+class NJSAmount final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSAmount() {};
-    NJSAmount(const std::shared_ptr<ledger::core::api::Amount> &iAmount):_Amount(iAmount){};
+    NJSAmount() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Amount> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Amount> &object);
     static Nan::Persistent<ObjectTemplate> Amount_prototype;
-    std::shared_ptr<ledger::core::api::Amount> getCppImpl(){return _Amount;};
 
 private:
     /**
@@ -93,6 +91,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Amount> _Amount;
 };
 #endif //DJINNI_GENERATED_NJSAMOUNT_HPP

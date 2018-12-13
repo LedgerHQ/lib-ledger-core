@@ -4,6 +4,7 @@
 #import "LGBitcoinLikeNetworkParameters.h"
 #import "LGCurrencyUnit.h"
 #import "LGWalletType.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBitcoinLikeNetworkParameters.h"
 #import "RCTCoreLGCurrencyUnit.h"
 #import <Foundation/Foundation.h>
@@ -11,7 +12,6 @@
 #import <React/RCTBridgeModule.h>
 
 /**Structure of cryptocurrency */
-@interface RCTCoreLGCurrency : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
-@property (nonatomic, strong) NSMutableDictionary *implementationsData;
+@interface RCTCoreLGCurrency : RCTCoreBaseModule <RCTBridgeModule>
+-(void)mapImplementationsData:(NSDictionary *)currentInstance;
 @end

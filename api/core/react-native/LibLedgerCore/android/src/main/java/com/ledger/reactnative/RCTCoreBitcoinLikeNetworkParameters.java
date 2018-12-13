@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -35,6 +39,7 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeNetworkParameters>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -43,9 +48,9 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
         return "RCTCoreBitcoinLikeNetworkParameters";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -72,10 +77,73 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     @ReactMethod
-    public void init(String Identifier, byte[] P2PKHVersion, byte[] P2SHVersion, byte[] XPUBVersion, BitcoinLikeFeePolicy FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, byte[] SigHash, ArrayList<String> AdditionalBIPs, Promise promise) {
-        BitcoinLikeNetworkParameters javaResult = new BitcoinLikeNetworkParameters(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
+    public void init(String Identifier, String P2PKHVersion, String P2SHVersion, String XPUBVersion, int FeePolicy, long DustAmount, String MessagePrefix, boolean UsesTimestampedTransaction, long TimestampDelay, String SigHash, ReadableArray AdditionalBIPs, Promise promise) {
+        byte [] javaParam_1 = hexStringToByteArray(P2PKHVersion);
+
+        byte [] javaParam_2 = hexStringToByteArray(P2SHVersion);
+
+        byte [] javaParam_3 = hexStringToByteArray(XPUBVersion);
+
+        if (FeePolicy < 0 || BitcoinLikeFeePolicy.values().length <= FeePolicy)
+        {
+            promise.reject("Enum error", "Failed to get enum BitcoinLikeFeePolicy");
+            return;
+        }
+        BitcoinLikeFeePolicy javaParam_4 = BitcoinLikeFeePolicy.values()[FeePolicy];
+        byte [] javaParam_9 = hexStringToByteArray(SigHash);
+
+        ArrayList<String> javaParam_10 = new ArrayList<String>();
+        for (int i = 0; i <  AdditionalBIPs.size(); i++)
+        {
+            String AdditionalBIPs_elem = AdditionalBIPs.getString(i);
+            javaParam_10.add(AdditionalBIPs_elem);
+        }
+        BitcoinLikeNetworkParameters javaResult = new BitcoinLikeNetworkParameters(Identifier, javaParam_1, javaParam_2, javaParam_3, javaParam_4, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, javaParam_9, javaParam_10);
 
         String uuid = UUID.randomUUID().toString();
         this.javaObjects.put(uuid, javaResult);
@@ -85,14 +153,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void getIdentifier(Map<String, String> currentInstance, Promise promise)
+    public void getIdentifier(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             String result = javaObj.getIdentifier();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -101,14 +171,17 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getP2PKHVersion(Map<String, String> currentInstance, Promise promise)
+    public void getP2PKHVersion(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             byte[] result = javaObj.getP2PKHVersion();
-            promise.resolve(result);
+            String converted_result = byteArrayToHexString(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", converted_result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -117,14 +190,17 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getP2SHVersion(Map<String, String> currentInstance, Promise promise)
+    public void getP2SHVersion(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             byte[] result = javaObj.getP2SHVersion();
-            promise.resolve(result);
+            String converted_result = byteArrayToHexString(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", converted_result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -133,14 +209,17 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getXPUBVersion(Map<String, String> currentInstance, Promise promise)
+    public void getXPUBVersion(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             byte[] result = javaObj.getXPUBVersion();
-            promise.resolve(result);
+            String converted_result = byteArrayToHexString(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", converted_result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -149,14 +228,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getFeePolicy(Map<String, String> currentInstance, Promise promise)
+    public void getFeePolicy(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             BitcoinLikeFeePolicy result = javaObj.getFeePolicy();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putInt("value", result.ordinal());
+            promise.resolve(resultMap);
         }
         else
         {
@@ -165,14 +246,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getDustAmount(Map<String, String> currentInstance, Promise promise)
+    public void getDustAmount(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
-            long result = javaObj.getDustAmount();
-            promise.resolve(result);
+            double result = javaObj.getDustAmount();
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putDouble("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -181,14 +264,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getMessagePrefix(Map<String, String> currentInstance, Promise promise)
+    public void getMessagePrefix(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             String result = javaObj.getMessagePrefix();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -197,14 +282,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getUsesTimestampedTransaction(Map<String, String> currentInstance, Promise promise)
+    public void getUsesTimestampedTransaction(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             boolean result = javaObj.getUsesTimestampedTransaction();
-            promise.resolve(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putBoolean("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -213,14 +300,16 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getTimestampDelay(Map<String, String> currentInstance, Promise promise)
+    public void getTimestampDelay(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
-            long result = javaObj.getTimestampDelay();
-            promise.resolve(result);
+            double result = javaObj.getTimestampDelay();
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putDouble("value", result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -229,14 +318,17 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getSigHash(Map<String, String> currentInstance, Promise promise)
+    public void getSigHash(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             byte[] result = javaObj.getSigHash();
-            promise.resolve(result);
+            String converted_result = byteArrayToHexString(result);
+            WritableNativeMap resultMap = new WritableNativeMap();
+            resultMap.putString("value", converted_result);
+            promise.resolve(resultMap);
         }
         else
         {
@@ -245,14 +337,19 @@ public class RCTCoreBitcoinLikeNetworkParameters extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
-    public void getAdditionalBIPs(Map<String, String> currentInstance, Promise promise)
+    public void getAdditionalBIPs(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             BitcoinLikeNetworkParameters javaObj = this.javaObjects.get(uid);
             ArrayList<String> result = javaObj.getAdditionalBIPs();
-            promise.resolve(result);
+            WritableNativeArray converted_result = new WritableNativeArray();
+            for (String result_elem : result)
+            {
+                converted_result.pushString(result_elem);
+            }
+            promise.resolve(converted_result);
         }
         else
         {

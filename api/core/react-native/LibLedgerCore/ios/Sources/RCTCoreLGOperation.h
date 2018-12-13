@@ -9,6 +9,7 @@
 #import "LGPreferences.h"
 #import "LGTrustIndicator.h"
 #import "LGWalletType.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGAmount.h"
 #import "RCTCoreLGBitcoinLikeOperation.h"
 #import "RCTCoreLGCurrency.h"
@@ -20,6 +21,5 @@
 
 
 /**Class representing an operation */
-@interface RCTCoreLGOperation : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGOperation : RCTCoreBaseModule <RCTBridgeModule>
 @end

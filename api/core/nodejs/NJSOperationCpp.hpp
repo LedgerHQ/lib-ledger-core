@@ -30,16 +30,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSOperation: public Nan::ObjectWrap {
+class NJSOperation final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSOperation() {};
-    NJSOperation(const std::shared_ptr<ledger::core::api::Operation> &iOperation):_Operation(iOperation){};
+    NJSOperation() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Operation> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Operation> &object);
     static Nan::Persistent<ObjectTemplate> Operation_prototype;
-    std::shared_ptr<ledger::core::api::Operation> getCppImpl(){return _Operation;};
 
 private:
     /**
@@ -147,6 +145,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Operation> _Operation;
 };
 #endif //DJINNI_GENERATED_NJSOPERATION_HPP

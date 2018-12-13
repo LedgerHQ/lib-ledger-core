@@ -37,16 +37,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSWallet: public Nan::ObjectWrap {
+class NJSWallet final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSWallet() {};
-    NJSWallet(const std::shared_ptr<ledger::core::api::Wallet> &iWallet):_Wallet(iWallet){};
+    NJSWallet() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Wallet> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Wallet> &object);
     static Nan::Persistent<ObjectTemplate> Wallet_prototype;
-    std::shared_ptr<ledger::core::api::Wallet> getCppImpl(){return _Wallet;};
 
 private:
     /**
@@ -202,6 +200,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Wallet> _Wallet;
 };
 #endif //DJINNI_GENERATED_NJSWALLET_HPP

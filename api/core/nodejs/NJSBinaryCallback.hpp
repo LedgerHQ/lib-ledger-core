@@ -19,13 +19,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSBinaryCallback: public Nan::ObjectWrap, public ledger::core::api::BinaryCallback {
+class NJSBinaryCallback: public ledger::core::api::BinaryCallback {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSBinaryCallback()
     {
-        persistent().Reset();
         pers_resolver.Reset();
     };
     NJSBinaryCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
@@ -47,8 +46,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSBINARYCALLBACK_HPP

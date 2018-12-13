@@ -18,13 +18,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSStringCallback: public Nan::ObjectWrap, public ledger::core::api::StringCallback {
+class NJSStringCallback: public ledger::core::api::StringCallback {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSStringCallback()
     {
-        persistent().Reset();
         pers_resolver.Reset();
     };
     NJSStringCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
@@ -46,8 +45,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSSTRINGCALLBACK_HPP

@@ -20,16 +20,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSOperationQuery: public Nan::ObjectWrap {
+class NJSOperationQuery final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSOperationQuery() {};
-    NJSOperationQuery(const std::shared_ptr<ledger::core::api::OperationQuery> &iOperationQuery):_OperationQuery(iOperationQuery){};
+    NJSOperationQuery() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::OperationQuery> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::OperationQuery> &object);
     static Nan::Persistent<ObjectTemplate> OperationQuery_prototype;
-    std::shared_ptr<ledger::core::api::OperationQuery> getCppImpl(){return _OperationQuery;};
 
 private:
     /**
@@ -76,6 +74,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::OperationQuery> _OperationQuery;
 };
 #endif //DJINNI_GENERATED_NJSOPERATIONQUERY_HPP

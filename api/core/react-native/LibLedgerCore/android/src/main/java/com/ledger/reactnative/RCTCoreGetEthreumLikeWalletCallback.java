@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -37,6 +41,7 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, GetEthreumLikeWalletCallbackImpl>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -56,9 +61,9 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         promise.resolve(finalResult);
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -85,17 +90,36 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     @ReactMethod
-    public void onSuccess(Map<String, String> currentInstance, HashMap <String, String> wallet, boolean isCreated, Promise promise) {
+    public void onSuccess(ReadableMap currentInstance, ReadableMap wallet, boolean isCreated, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreEthereumLikeWallet rctParam_wallet = this.reactContext.getNativeModule(RCTCoreEthereumLikeWallet.class);
-            EthereumLikeWallet javaParam_0 = rctParam_wallet.getJavaObjects().get(wallet.get("uid"));
+            EthereumLikeWallet javaParam_0 = rctParam_wallet.getJavaObjects().get(wallet.getString("uid"));
             currentInstanceObj.onSuccess(javaParam_0, isCreated);
         }
         catch(Exception e)
@@ -104,15 +128,15 @@ public class RCTCoreGetEthreumLikeWalletCallback extends ReactContextBaseJavaMod
         }
     }
     @ReactMethod
-    public void onError(Map<String, String> currentInstance, HashMap <String, String> error, Promise promise) {
+    public void onError(ReadableMap currentInstance, ReadableMap error, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             GetEthreumLikeWalletCallbackImpl currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreError rctParam_error = this.reactContext.getNativeModule(RCTCoreError.class);
-            Error javaParam_0 = rctParam_error.getJavaObjects().get(error.get("uid"));
+            Error javaParam_0 = rctParam_error.getJavaObjects().get(error.getString("uid"));
             currentInstanceObj.onError(javaParam_0);
         }
         catch(Exception e)

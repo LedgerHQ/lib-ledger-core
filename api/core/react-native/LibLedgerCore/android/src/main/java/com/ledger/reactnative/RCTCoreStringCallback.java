@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -28,8 +32,8 @@ import java.util.UUID;
  */
 public class RCTCoreStringCallback extends StringCallback {
     public Promise promise;
-    public ReactContext reactContext;
-    public static RCTCoreStringCallback initWithPromise(Promise promise, ReactContext reactContext)
+    public ReactApplicationContext reactContext;
+    public static RCTCoreStringCallback initWithPromise(Promise promise, ReactApplicationContext reactContext)
     {
         RCTCoreStringCallback callback = new RCTCoreStringCallback();
         callback.promise = promise;
@@ -44,7 +48,7 @@ public class RCTCoreStringCallback extends StringCallback {
     public void onCallback(String result, Error error) {
         try
         {
-            if (error.getMessage().length() > 0)
+            if (error != null && error.getMessage().length() > 0)
             {
                 this.promise.reject(error.toString(), error.getMessage());
             }

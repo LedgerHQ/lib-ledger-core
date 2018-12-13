@@ -10,16 +10,6 @@
 RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeNetworkParameters)
 
 @synthesize bridge = _bridge;
--(instancetype)init
-{
-    self = [super init];
-    //Init Objc implementation
-    if(self)
-    {
-        self.objcImplementations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -27,45 +17,60 @@ RCT_EXPORT_MODULE(RCTCoreLGBitcoinLikeNetworkParameters)
 }
 RCT_REMAP_METHOD(release, release:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (!currentInstance[@"uid"] || !currentInstance[@"type"])
-    {
-        reject(@"impl_call_error", @"Error while calling RCTCoreLGBitcoinLikeNetworkParameters::release, first argument should be an instance of LGBitcoinLikeNetworkParameters", nil);
-    }
-    [self.objcImplementations removeObjectForKey:currentInstance[@"uid"]];
-    resolve(@(YES));
+    [self baseRelease:currentInstance withResolver: resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(log, logWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSMutableArray *uuids = [[NSMutableArray alloc] init];
-    for (id key in self.objcImplementations)
-    {
-        [uuids addObject:key];
-    }
-    NSDictionary *result = @{@"value" : uuids};
-    resolve(result);
+    [self baseLogWithResolver:resolve rejecter:reject];
 }
 RCT_REMAP_METHOD(flush, flushWithResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self.objcImplementations removeAllObjects];
-    resolve(@(YES));
+    [self baseFlushWithResolver:resolve rejecter:reject];
+}
+RCT_REMAP_METHOD(isNull, isNull:(NSDictionary *)currentInstance withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self baseIsNull:currentInstance withResolver:resolve rejecter:reject];
+}
+-(NSData *) hexStringToData: (NSString *)hexString 
+{
+    NSMutableData *data= [[NSMutableData alloc] init];
+    unsigned char byte;
+    char byteChars[3] = {'\0','\0','\0'};
+    for (int i = 0; i < ([hexString length] / 2); i++)
+    {
+        byteChars[0] = [hexString characterAtIndex: i*2];
+        byteChars[1] = [hexString characterAtIndex: i*2 + 1];
+        byte = strtol(byteChars, NULL, 16);
+        [data appendBytes:&byte length:1];
+    }
+    return data;
 }
 RCT_REMAP_METHOD(init, initWithIdentifier:(nonnull NSString *)Identifier
-                             P2PKHVersion:(nonnull NSData *)P2PKHVersion
-                              P2SHVersion:(nonnull NSData *)P2SHVersion
-                              XPUBVersion:(nonnull NSData *)XPUBVersion
-                                FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy
+                             P2PKHVersion:(NSString *)P2PKHVersion
+                              P2SHVersion:(NSString *)P2SHVersion
+                              XPUBVersion:(NSString *)XPUBVersion
+                                FeePolicy:(int)FeePolicy
                                DustAmount:(int)DustAmount
                             MessagePrefix:(nonnull NSString *)MessagePrefix
                UsesTimestampedTransaction:(BOOL)UsesTimestampedTransaction
                            TimestampDelay:(int)TimestampDelay
-                                  SigHash:(nonnull NSData *)SigHash
+                                  SigHash:(NSString *)SigHash
                            AdditionalBIPs:(nonnull NSArray<NSString *> *)AdditionalBIPs withResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSData *field_1 = [self hexStringToData:P2PKHVersion];
+
+    NSData *field_2 = [self hexStringToData:P2SHVersion];
+
+    NSData *field_3 = [self hexStringToData:XPUBVersion];
+
+    NSData *field_9 = [self hexStringToData:SigHash];
 
 
-    LGBitcoinLikeNetworkParameters * finalResult = [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:Identifier P2PKHVersion:P2PKHVersion P2SHVersion:P2SHVersion XPUBVersion:XPUBVersion FeePolicy:FeePolicy DustAmount:DustAmount MessagePrefix:MessagePrefix UsesTimestampedTransaction:UsesTimestampedTransaction TimestampDelay:TimestampDelay SigHash:SigHash AdditionalBIPs:AdditionalBIPs];
+
+    LGBitcoinLikeNetworkParameters * finalResult = [[LGBitcoinLikeNetworkParameters alloc] initWithIdentifier:Identifier P2PKHVersion:field_1 P2SHVersion:field_2 XPUBVersion:field_3 FeePolicy:(LGBitcoinLikeFeePolicy)FeePolicy DustAmount:DustAmount MessagePrefix:MessagePrefix UsesTimestampedTransaction:UsesTimestampedTransaction TimestampDelay:TimestampDelay SigHash:field_9 AdditionalBIPs:AdditionalBIPs];
     NSString *uuid = [[NSUUID UUID] UUIDString];
     RCTCoreLGBitcoinLikeNetworkParameters *rctImpl = (RCTCoreLGBitcoinLikeNetworkParameters *)[self.bridge moduleForName:@"CoreLGBitcoinLikeNetworkParameters"];
-    [rctImpl.objcImplementations setObject:finalResult forKey:uuid];
+    NSArray *finalResultArray = [[NSArray alloc] initWithObjects:finalResult, uuid, nil];
+    [rctImpl baseSetObject:finalResultArray];
     NSDictionary *result = @{@"type" : @"CoreLGBitcoinLikeNetworkParameters", @"uid" : uuid };
     if (result)
     {

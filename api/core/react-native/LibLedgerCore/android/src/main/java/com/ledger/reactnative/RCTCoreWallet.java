@@ -24,6 +24,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -51,6 +55,7 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, Wallet>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -59,9 +64,9 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
         return "RCTCoreWallet";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -88,16 +93,35 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      *Get name of wallet
      *@return string
      */
     @ReactMethod
-    public void getName(Map<String, String> currentInstance, Promise promise) {
+    public void getName(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -118,10 +142,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning, if getAccount succeed, an Account object with given index
      */
     @ReactMethod
-    public void getAccount(Map<String, String> currentInstance, int index, Promise promise) {
+    public void getAccount(ReadableMap currentInstance, int index, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -138,10 +162,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning, if getAccountCount succeed, a 32 bits integer representing number of accounts
      */
     @ReactMethod
-    public void getAccountCount(Map<String, String> currentInstance, Promise promise) {
+    public void getAccountCount(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -160,10 +184,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
      */
     @ReactMethod
-    public void getAccounts(Map<String, String> currentInstance, int offset, int count, Promise promise) {
+    public void getAccounts(ReadableMap currentInstance, int offset, int count, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -180,10 +204,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return callback, Callback returning a 32 bits integer
      */
     @ReactMethod
-    public void getNextAccountIndex(Map<String, String> currentInstance, Promise promise) {
+    public void getNextAccountIndex(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -200,21 +224,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return EventBus object
      */
     @ReactMethod
-    public void getEventBus(Map<String, String> currentInstance, Promise promise) {
+    public void getEventBus(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             EventBus javaResult = currentInstanceObj.getEventBus();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventBus");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -228,10 +252,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isSynchronizing(Map<String, String> currentInstance, Promise promise) {
+    public void isSynchronizing(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -251,21 +275,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return EventBus object through which wallet get notified of account's synchronization status
      */
     @ReactMethod
-    public void synchronize(Map<String, String> currentInstance, Promise promise) {
+    public void synchronize(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             EventBus javaResult = currentInstanceObj.synchronize();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEventBus rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEventBus.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEventBus");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -279,21 +303,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return Preferences object
      */
     @ReactMethod
-    public void getPreferences(Map<String, String> currentInstance, Promise promise) {
+    public void getPreferences(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             Preferences javaResult = currentInstanceObj.getPreferences();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferences");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -307,21 +331,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return Logger Object
      */
     @ReactMethod
-    public void getLogger(Map<String, String> currentInstance, Promise promise) {
+    public void getLogger(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             Logger javaResult = currentInstanceObj.getLogger();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreLogger rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreLogger.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreLogger");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -336,21 +360,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return Preferences object
      */
     @ReactMethod
-    public void getAccountPreferences(Map<String, String> currentInstance, int index, Promise promise) {
+    public void getAccountPreferences(ReadableMap currentInstance, int index, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             Preferences javaResult = currentInstanceObj.getAccountPreferences(index);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCorePreferences rctImpl_javaResult = this.reactContext.getNativeModule(RCTCorePreferences.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCorePreferences");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -367,21 +391,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return BitcoinWallet object
      */
     @ReactMethod
-    public void asBitcoinLikeWallet(Map<String, String> currentInstance, Promise promise) {
+    public void asBitcoinLikeWallet(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeWallet javaResult = currentInstanceObj.asBitcoinLikeWallet();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeWallet rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeWallet.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeWallet");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -395,21 +419,21 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return Currency object
      */
     @ReactMethod
-    public void getCurrency(Map<String, String> currentInstance, Promise promise) {
+    public void getCurrency(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             Currency javaResult = currentInstanceObj.getCurrency();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreCurrency rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreCurrency.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreCurrency");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -423,10 +447,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfBitcoinLikeWallet(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfBitcoinLikeWallet(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -446,10 +470,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfEthereumLikeWallet(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfEthereumLikeWallet(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -469,10 +493,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return bool
      */
     @ReactMethod
-    public void isInstanceOfRippleLikeWallet(Map<String, String> currentInstance, Promise promise) {
+    public void isInstanceOfRippleLikeWallet(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -492,17 +516,17 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@return WalletType object
      */
     @ReactMethod
-    public void getWalletType(Map<String, String> currentInstance, Promise promise) {
+    public void getWalletType(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             WalletType javaResult = currentInstanceObj.getWalletType();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = javaResult.toString();
-            result.putString("value", finalJavaResult);
+            int finalJavaResult = javaResult.ordinal();
+            result.putInt("value", finalJavaResult);
 
             promise.resolve(result);
         }
@@ -516,10 +540,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning a Block object
      */
     @ReactMethod
-    public void getLastBlock(Map<String, String> currentInstance, Promise promise) {
+    public void getLastBlock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -537,10 +561,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning an AccountCreationInfo
      */
     @ReactMethod
-    public void getAccountCreationInfo(Map<String, String> currentInstance, int accountIndex, Promise promise) {
+    public void getAccountCreationInfo(ReadableMap currentInstance, int accountIndex, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -554,10 +578,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void getExtendedKeyAccountCreationInfo(Map<String, String> currentInstance, int accountIndex, Promise promise) {
+    public void getExtendedKeyAccountCreationInfo(ReadableMap currentInstance, int accountIndex, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -574,10 +598,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning an AccountCreationInfo
      */
     @ReactMethod
-    public void getNextAccountCreationInfo(Map<String, String> currentInstance, Promise promise) {
+    public void getNextAccountCreationInfo(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -591,10 +615,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void getNextExtendedKeyAccountCreationInfo(Map<String, String> currentInstance, Promise promise) {
+    public void getNextExtendedKeyAccountCreationInfo(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -612,15 +636,15 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param callback, Callback returning an Account object with given creation infos
      */
     @ReactMethod
-    public void newAccountWithInfo(Map<String, String> currentInstance, HashMap <String, String> accountCreationInfo, Promise promise) {
+    public void newAccountWithInfo(ReadableMap currentInstance, ReadableMap accountCreationInfo, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreAccountCreationInfo rctParam_accountCreationInfo = this.reactContext.getNativeModule(RCTCoreAccountCreationInfo.class);
-            AccountCreationInfo javaParam_0 = rctParam_accountCreationInfo.getJavaObjects().get(accountCreationInfo.get("uid"));
+            AccountCreationInfo javaParam_0 = rctParam_accountCreationInfo.getJavaObjects().get(accountCreationInfo.getString("uid"));
             RCTCoreAccountCallback javaParam_1 = RCTCoreAccountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.newAccountWithInfo(javaParam_0, javaParam_1);
         }
@@ -631,15 +655,15 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
     }
     /**TODO */
     @ReactMethod
-    public void newAccountWithExtendedKeyInfo(Map<String, String> currentInstance, HashMap <String, String> extendedKeyAccountCreationInfo, Promise promise) {
+    public void newAccountWithExtendedKeyInfo(ReadableMap currentInstance, ReadableMap extendedKeyAccountCreationInfo, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreExtendedKeyAccountCreationInfo rctParam_extendedKeyAccountCreationInfo = this.reactContext.getNativeModule(RCTCoreExtendedKeyAccountCreationInfo.class);
-            ExtendedKeyAccountCreationInfo javaParam_0 = rctParam_extendedKeyAccountCreationInfo.getJavaObjects().get(extendedKeyAccountCreationInfo.get("uid"));
+            ExtendedKeyAccountCreationInfo javaParam_0 = rctParam_extendedKeyAccountCreationInfo.getJavaObjects().get(extendedKeyAccountCreationInfo.getString("uid"));
             RCTCoreAccountCallback javaParam_1 = RCTCoreAccountCallback.initWithPromise(promise, this.reactContext);
             currentInstanceObj.newAccountWithExtendedKeyInfo(javaParam_0, javaParam_1);
         }
@@ -653,10 +677,10 @@ public class RCTCoreWallet extends ReactContextBaseJavaModule {
      *@param date, start date of data deletion
      */
     @ReactMethod
-    public void eraseDataSince(Map<String, String> currentInstance, Date date, Promise promise) {
+    public void eraseDataSince(ReadableMap currentInstance, Date date, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             Wallet currentInstanceObj = this.javaObjects.get(sUid);
 

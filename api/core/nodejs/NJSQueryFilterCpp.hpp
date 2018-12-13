@@ -22,16 +22,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSQueryFilter: public Nan::ObjectWrap {
+class NJSQueryFilter final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSQueryFilter() {};
-    NJSQueryFilter(const std::shared_ptr<ledger::core::api::QueryFilter> &iQueryFilter):_QueryFilter(iQueryFilter){};
+    NJSQueryFilter() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::QueryFilter> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::QueryFilter> &object);
     static Nan::Persistent<ObjectTemplate> QueryFilter_prototype;
-    std::shared_ptr<ledger::core::api::QueryFilter> getCppImpl(){return _QueryFilter;};
 
 private:
     static NAN_METHOD(accountEq);
@@ -117,6 +115,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::QueryFilter> _QueryFilter;
 };
 #endif //DJINNI_GENERATED_NJSQUERYFILTER_HPP

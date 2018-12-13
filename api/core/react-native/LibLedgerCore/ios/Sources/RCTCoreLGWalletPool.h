@@ -21,6 +21,7 @@
 #import "LGWalletListCallback.h"
 #import "LGWalletPool.h"
 #import "LGWebSocketClient.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGBlockCallback.h"
 #import "RCTCoreLGCurrency.h"
 #import "RCTCoreLGCurrencyCallback.h"
@@ -47,6 +48,5 @@
 
 
 /**Class respresenting a pool of wallets */
-@interface RCTCoreLGWalletPool : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGWalletPool : RCTCoreBaseModule <RCTBridgeModule>
 @end

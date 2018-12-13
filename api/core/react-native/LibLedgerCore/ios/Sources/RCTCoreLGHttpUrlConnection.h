@@ -3,6 +3,7 @@
 
 #import "LGHttpReadBodyResult.h"
 #import "LGHttpUrlConnectionImpl.h"
+#import "RCTCoreBaseModule.h"
 #import "RCTCoreLGHttpReadBodyResult.h"
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
@@ -10,6 +11,5 @@
 
 
 /**Class representing an Http connection */
-@interface RCTCoreLGHttpUrlConnection : NSObject <RCTBridgeModule>
-@property (nonatomic, strong) NSMutableDictionary *objcImplementations;
+@interface RCTCoreLGHttpUrlConnection : RCTCoreBaseModule <RCTBridgeModule>
 @end

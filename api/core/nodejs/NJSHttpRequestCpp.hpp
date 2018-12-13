@@ -24,16 +24,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSHttpRequest: public Nan::ObjectWrap {
+class NJSHttpRequest final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSHttpRequest() {};
-    NJSHttpRequest(const std::shared_ptr<ledger::core::api::HttpRequest> &iHttpRequest):_HttpRequest(iHttpRequest){};
+    NJSHttpRequest() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::HttpRequest> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::HttpRequest> &object);
     static Nan::Persistent<ObjectTemplate> HttpRequest_prototype;
-    std::shared_ptr<ledger::core::api::HttpRequest> getCppImpl(){return _HttpRequest;};
 
 private:
     /**
@@ -70,6 +68,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::HttpRequest> _HttpRequest;
 };
 #endif //DJINNI_GENERATED_NJSHTTPREQUEST_HPP

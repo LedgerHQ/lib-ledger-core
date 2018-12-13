@@ -21,13 +21,12 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSWalletListCallback: public Nan::ObjectWrap, public ledger::core::api::WalletListCallback {
+class NJSWalletListCallback: public ledger::core::api::WalletListCallback {
 public:
 
     static void Initialize(Local<Object> target);
     ~NJSWalletListCallback()
     {
-        persistent().Reset();
         pers_resolver.Reset();
     };
     NJSWalletListCallback(Local<Promise::Resolver> resolver){pers_resolver.Reset(resolver);};
@@ -49,8 +48,6 @@ private:
 
     static NAN_METHOD(New);
 
-    static NAN_METHOD(addRef);
-    static NAN_METHOD(removeRef);
     Nan::Persistent<Promise::Resolver> pers_resolver;
 };
 #endif //DJINNI_GENERATED_NJSWALLETLISTCALLBACK_HPP

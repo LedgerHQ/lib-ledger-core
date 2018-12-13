@@ -19,16 +19,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSDerivationPath: public Nan::ObjectWrap {
+class NJSDerivationPath final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSDerivationPath() {};
-    NJSDerivationPath(const std::shared_ptr<ledger::core::api::DerivationPath> &iDerivationPath):_DerivationPath(iDerivationPath){};
+    NJSDerivationPath() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::DerivationPath> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::DerivationPath> &object);
     static Nan::Persistent<ObjectTemplate> DerivationPath_prototype;
-    std::shared_ptr<ledger::core::api::DerivationPath> getCppImpl(){return _DerivationPath;};
 
 private:
     /** Get the number of element in this path. */
@@ -63,6 +61,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::DerivationPath> _DerivationPath;
 };
 #endif //DJINNI_GENERATED_NJSDERIVATIONPATH_HPP

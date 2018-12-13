@@ -9,6 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -36,6 +40,7 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BigInt>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -44,9 +49,9 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         return "RCTCoreBigInt";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -73,6 +78,25 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
 
     /**
      * Adds two BigInt and returns a new BigInt with the result.
@@ -80,23 +104,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The result of this + i
      */
     @ReactMethod
-    public void add(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void add(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             BigInt javaResult = currentInstanceObj.add(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -111,23 +135,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The result of this - i
      */
     @ReactMethod
-    public void subtract(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void subtract(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             BigInt javaResult = currentInstanceObj.subtract(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -142,23 +166,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The result of this * i
      */
     @ReactMethod
-    public void multiply(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void multiply(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             BigInt javaResult = currentInstanceObj.multiply(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -173,23 +197,23 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The result of this / i
      */
     @ReactMethod
-    public void divide(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void divide(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             BigInt javaResult = currentInstanceObj.divide(javaParam_0);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -204,26 +228,26 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return A tuple of [this / i, this % i]
      */
     @ReactMethod
-    public void divideAndRemainder(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void divideAndRemainder(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             ArrayList<BigInt> javaResult = currentInstanceObj.divideAndRemainder(javaParam_0);
 
             WritableNativeArray result = new WritableNativeArray();
             for (BigInt javaResult_elem : javaResult)
             {
-                String uuid = UUID.randomUUID().toString();
+                String javaResult_elem_uuid = UUID.randomUUID().toString();
                 RCTCoreBigInt rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                rctImpl_javaResult_elem.getJavaObjects().put(javaResult_elem_uuid, javaResult_elem);
                 WritableNativeMap result_elem = new WritableNativeMap();
                 result_elem.putString("type","RCTCoreBigInt");
-                result_elem.putString("uid",uuid);
+                result_elem.putString("uid",javaResult_elem_uuid);
                 result.pushMap(result_elem);
             }
 
@@ -240,21 +264,21 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The result of this ^ exponent
      */
     @ReactMethod
-    public void pow(Map<String, String> currentInstance, int exponent, Promise promise) {
+    public void pow(ReadableMap currentInstance, int exponent, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             BigInt javaResult = currentInstanceObj.pow(exponent);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -271,10 +295,10 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The BigInt formatted as a decimal string
      */
     @ReactMethod
-    public void toDecimalString(Map<String, String> currentInstance, int precision, String decimalSeparator, String thousandSeparator, Promise promise) {
+    public void toDecimalString(ReadableMap currentInstance, int precision, String decimalSeparator, String thousandSeparator, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -294,10 +318,10 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @params radix The radix of the number representation in which to format (right now 10 or 16)
      */
     @ReactMethod
-    public void toString(Map<String, String> currentInstance, int radix, Promise promise) {
+    public void toString(ReadableMap currentInstance, int radix, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -318,10 +342,10 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return The int representation of this BigInt
      */
     @ReactMethod
-    public void intValue(Map<String, String> currentInstance, Promise promise) {
+    public void intValue(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -342,15 +366,15 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
      * @return a positive value if this > i. A negative value if this < i. 0 if the two BigInts are equal
      */
     @ReactMethod
-    public void compare(Map<String, String> currentInstance, HashMap <String, String> i, Promise promise) {
+    public void compare(ReadableMap currentInstance, ReadableMap i, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BigInt currentInstanceObj = this.javaObjects.get(sUid);
 
             RCTCoreBigInt rctParam_i = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.get("uid"));
+            BigInt javaParam_0 = rctParam_i.getJavaObjects().get(i.getString("uid"));
             int javaResult = currentInstanceObj.compare(javaParam_0);
             WritableNativeMap result = new WritableNativeMap();
             result.putInt("value", javaResult);
@@ -376,12 +400,12 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         {
             BigInt javaResult = BigInt.fromDecimalString(s, precision, decimalSeparator);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -402,12 +426,12 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         {
             BigInt javaResult = BigInt.fromIntegerString(s, radix);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -427,12 +451,12 @@ public class RCTCoreBigInt extends ReactContextBaseJavaModule {
         {
             BigInt javaResult = BigInt.fromLong(l);
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBigInt rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBigInt.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBigInt");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

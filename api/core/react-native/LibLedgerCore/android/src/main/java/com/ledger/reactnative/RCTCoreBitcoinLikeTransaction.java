@@ -14,6 +14,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.text.DateFormat;
@@ -41,6 +45,7 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.javaObjects = new HashMap<String, BitcoinLikeTransaction>();
+        WritableNativeMap.setUseNativeAccessor(true);
     }
 
     @Override
@@ -49,9 +54,9 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         return "RCTCoreBitcoinLikeTransaction";
     }
     @ReactMethod
-    public void release(Map<String, String> currentInstance, Promise promise)
+    public void release(ReadableMap currentInstance, Promise promise)
     {
-        String uid = currentInstance.get("uid");
+        String uid = currentInstance.getString("uid");
         if (uid.length() > 0)
         {
             this.javaObjects.remove(uid);
@@ -78,13 +83,56 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
         this.javaObjects.clear();
         promise.resolve(0);
     }
+    @ReactMethod
+    public void isNull(ReadableMap currentInstance, Promise promise)
+    {
+        String uid = currentInstance.getString("uid");
+        if (uid.length() > 0)
+        {
+            if (this.javaObjects.get(uid) == null)
+            {
+                promise.resolve(true);
+                return;
+            }
+            else
+            {
+                promise.resolve(false);
+                return;
+            }
+        }
+        promise.resolve(true);
+    }
+    public static byte[] hexStringToByteArray(String hexString)
+    {
+        int hexStringLength = hexString.length();
+        byte[] data = new byte[hexStringLength / 2];
+        for (int i = 0; i < hexStringLength; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return data;
+    }
+    static final String HEXES = "0123456789ABCDEF";
+    public static String byteArrayToHexString( byte [] data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+        final StringBuilder hexStringBuilder = new StringBuilder( 2 * data.length );
+        for ( final byte b : data )
+        {
+            hexStringBuilder.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+        }
+        return hexStringBuilder.toString();
+    }
 
     /** Get the hash of the transaction. */
     @ReactMethod
-    public void getHash(Map<String, String> currentInstance, Promise promise) {
+    public void getHash(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -101,10 +149,10 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the input of the transaction */
     @ReactMethod
-    public void getInputs(Map<String, String> currentInstance, Promise promise) {
+    public void getInputs(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -113,12 +161,12 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
             WritableNativeArray result = new WritableNativeArray();
             for (BitcoinLikeInput javaResult_elem : javaResult)
             {
-                String uuid = UUID.randomUUID().toString();
+                String javaResult_elem_uuid = UUID.randomUUID().toString();
                 RCTCoreBitcoinLikeInput rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeInput.class);
-                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                rctImpl_javaResult_elem.getJavaObjects().put(javaResult_elem_uuid, javaResult_elem);
                 WritableNativeMap result_elem = new WritableNativeMap();
                 result_elem.putString("type","RCTCoreBitcoinLikeInput");
-                result_elem.putString("uid",uuid);
+                result_elem.putString("uid",javaResult_elem_uuid);
                 result.pushMap(result_elem);
             }
 
@@ -131,10 +179,10 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the output of the transaction */
     @ReactMethod
-    public void getOutputs(Map<String, String> currentInstance, Promise promise) {
+    public void getOutputs(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -143,12 +191,12 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
             WritableNativeArray result = new WritableNativeArray();
             for (BitcoinLikeOutput javaResult_elem : javaResult)
             {
-                String uuid = UUID.randomUUID().toString();
+                String javaResult_elem_uuid = UUID.randomUUID().toString();
                 RCTCoreBitcoinLikeOutput rctImpl_javaResult_elem = this.reactContext.getNativeModule(RCTCoreBitcoinLikeOutput.class);
-                rctImpl_javaResult_elem.getJavaObjects().put(uuid, javaResult_elem);
+                rctImpl_javaResult_elem.getJavaObjects().put(javaResult_elem_uuid, javaResult_elem);
                 WritableNativeMap result_elem = new WritableNativeMap();
                 result_elem.putString("type","RCTCoreBitcoinLikeOutput");
-                result_elem.putString("uid",uuid);
+                result_elem.putString("uid",javaResult_elem_uuid);
                 result.pushMap(result_elem);
             }
 
@@ -161,21 +209,21 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the block in which the transaction is inserted if the transaction is confirmed. */
     @ReactMethod
-    public void getBlock(Map<String, String> currentInstance, Promise promise) {
+    public void getBlock(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             BitcoinLikeBlock javaResult = currentInstanceObj.getBlock();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreBitcoinLikeBlock rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreBitcoinLikeBlock.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreBitcoinLikeBlock");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -186,10 +234,10 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the lock time of the transaction. */
     @ReactMethod
-    public void getLockTime(Map<String, String> currentInstance, Promise promise) {
+    public void getLockTime(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -206,21 +254,21 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the amount of fees of the transaction. */
     @ReactMethod
-    public void getFees(Map<String, String> currentInstance, Promise promise) {
+    public void getFees(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Amount javaResult = currentInstanceObj.getFees();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreAmount rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreAmount.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreAmount");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }
@@ -234,16 +282,16 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
      * this transaction
      */
     @ReactMethod
-    public void getTime(Map<String, String> currentInstance, Promise promise) {
+    public void getTime(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Date javaResult = currentInstanceObj.getTime();
             WritableNativeMap result = new WritableNativeMap();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             String finalJavaResult = dateFormat.format(javaResult);
             result.putString("value", finalJavaResult);
 
@@ -256,15 +304,20 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     @ReactMethod
-    public void getTimestamp(Map<String, String> currentInstance, Promise promise) {
+    public void getTimestamp(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             Integer javaResult = currentInstanceObj.getTimestamp();
             WritableNativeMap result = new WritableNativeMap();
+            if (javaResult == null)
+            {
+                promise.resolve(javaResult);
+                return;
+            }
             result.putInt("value", javaResult);
 
             promise.resolve(result);
@@ -276,10 +329,10 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get Transaction version */
     @ReactMethod
-    public void getVersion(Map<String, String> currentInstance, Promise promise) {
+    public void getVersion(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
@@ -296,16 +349,16 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Serialize the transaction to its raw format. */
     @ReactMethod
-    public void serialize(Map<String, String> currentInstance, Promise promise) {
+    public void serialize(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.serialize();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -317,16 +370,16 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Serialize outputs of the raw transaction into a byte array using the bitcoin transaction format. */
     @ReactMethod
-    public void serializeOutputs(Map<String, String> currentInstance, Promise promise) {
+    public void serializeOutputs(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.serializeOutputs();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -338,16 +391,16 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
     }
     /** Get the witness if the underlying transaction is a segwit transaction. */
     @ReactMethod
-    public void getWitness(Map<String, String> currentInstance, Promise promise) {
+    public void getWitness(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             byte[] javaResult = currentInstanceObj.getWitness();
             WritableNativeMap result = new WritableNativeMap();
-            String finalJavaResult = new String(javaResult);
+            String finalJavaResult = byteArrayToHexString(javaResult);
             result.putString("value", finalJavaResult);
 
             promise.resolve(result);
@@ -362,21 +415,21 @@ public class RCTCoreBitcoinLikeTransaction extends ReactContextBaseJavaModule {
      * size.
      */
     @ReactMethod
-    public void getEstimatedSize(Map<String, String> currentInstance, Promise promise) {
+    public void getEstimatedSize(ReadableMap currentInstance, Promise promise) {
         try
         {
-            String sUid = currentInstance.get("uid");
+            String sUid = currentInstance.getString("uid");
 
             BitcoinLikeTransaction currentInstanceObj = this.javaObjects.get(sUid);
 
             EstimatedSize javaResult = currentInstanceObj.getEstimatedSize();
 
-            String uuid = UUID.randomUUID().toString();
+            String javaResult_uuid = UUID.randomUUID().toString();
             RCTCoreEstimatedSize rctImpl_javaResult = this.reactContext.getNativeModule(RCTCoreEstimatedSize.class);
-            rctImpl_javaResult.getJavaObjects().put(uuid, javaResult);
+            rctImpl_javaResult.getJavaObjects().put(javaResult_uuid, javaResult);
             WritableNativeMap result = new WritableNativeMap();
             result.putString("type","RCTCoreEstimatedSize");
-            result.putString("uid",uuid);
+            result.putString("uid",javaResult_uuid);
 
             promise.resolve(result);
         }

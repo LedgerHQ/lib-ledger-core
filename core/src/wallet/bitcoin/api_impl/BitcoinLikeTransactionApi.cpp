@@ -510,6 +510,7 @@ namespace ledger {
                             if (parsedAddress.hasValue()) {
                                 address = parsedAddress.getValue().toBase58();
                             }
+                            output.script = hex::toString(parsedScript.getValue().serialize());
                         }
                     }
                 }

@@ -19,16 +19,14 @@ using namespace node;
 using namespace std;
 using namespace ledger::core::api;
 
-class NJSEvent: public Nan::ObjectWrap {
+class NJSEvent final {
 public:
 
     static void Initialize(Local<Object> target);
-    virtual ~NJSEvent() {};
-    NJSEvent(const std::shared_ptr<ledger::core::api::Event> &iEvent):_Event(iEvent){};
+    NJSEvent() = delete;
 
-    static Handle<Object> wrap(const std::shared_ptr<ledger::core::api::Event> &object);
+    static Local<Object> wrap(const std::shared_ptr<ledger::core::api::Event> &object);
     static Nan::Persistent<ObjectTemplate> Event_prototype;
-    std::shared_ptr<ledger::core::api::Event> getCppImpl(){return _Event;};
 
 private:
     /**
@@ -66,6 +64,5 @@ private:
     static NAN_METHOD(New);
 
     static NAN_METHOD(isNull);
-    std::shared_ptr<ledger::core::api::Event> _Event;
 };
 #endif //DJINNI_GENERATED_NJSEVENT_HPP
