@@ -144,7 +144,11 @@ build_script:
 #- echo " >> Get Libcore version %LIB_VERSION%"
 
 after_build:
-  - if %APPVEYOR_REPO_BRANCH%==develop aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%LIB_VERSION%/win/%TOOL_CONFIG%" --acl public-read
+  - set should_deploy=false
+  - if %APPVEYOR_REPO_BRANCH%==develop set should_deploy=true
+  - if %APPVEYOR_REPO_BRANCH%==master set should_deploy=true
+  - if %APPVEYOR_REPO_TAG%==true set should_deploy=true  #for tests
+  - if %should_deploy%==true aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%LIB_VERSION%/win/%TOOL_CONFIG%" --acl public-read
 
 artifacts:
   - path: .\%LIB_VERSION%\win\%TOOL_CONFIG%\*

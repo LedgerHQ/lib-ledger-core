@@ -2,6 +2,9 @@
 
 BUILD_CONFIG=$1
 
+echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
+echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
+
 echo "========> Install basic config"
 brew update
 brew install wget
