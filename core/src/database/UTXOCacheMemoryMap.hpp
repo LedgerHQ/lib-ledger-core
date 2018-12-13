@@ -1,9 +1,9 @@
 /*
  *
- * BitcoinLikeCache
+ * UTXOCacheMemoryMap
  * ledger-core
  *
- * Created by Dimitri Sabadie on 10/12/2018.
+ * Created by Dimitri Sabadie on 13/12/2018.
  *
  * The MIT License (MIT)
  *
@@ -31,60 +31,47 @@
 
 #pragma once
 
-#include <api/BitcoinLikeOutput.hpp>
+#include <database/UTXOCache.hpp>
 #include <api/ExecutionContext.hpp>
 #include <map>
+#include <utility>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeAccount;
-
-        struct UTXOKey {
-            std::string hashTX;
-            uint32_t index;
-
-            UTXOKey(std::string hashTX, uint32_t index);
-            ~UTXOKey() = default;
-        };
-
-        /// A database cache for Bitcoin-like currencies.
-        ///
-        /// This type exposes very simple and straight-forward caching for:
-        ///
-        ///   - Getting cached UTXO for a given account.
-        ///   - Getting cached balance for a given account.
-        class BitcoinLikeCache: public std::enable_shared_from_this<BitcoinLikeCache> {
-            /// Height of the last block in which we can find our UTXOs.
-            uint32_t _lastHeight;
+        /// An in-memory (map) implementation of database::UTXOCache.
+        class UTXOCacheMemoryMap: public UTXOCache<UTXOCacheMemoryMap> {
             /// UTXOs.
-            std::map<UTXOKey, BigInt> utxos;
+            UTXOMemoryMap utxos;
             /// Blockchain database used to retreive UTXO.
             std::shared_ptr<ReadOnlyBlockchainDatabase> _blockDB;
 
         public:
-            /// Build a BitcoinLikeCache.
-            BitcoinLikeCache(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
-            /// Build a BitcoinLikeCache by optimizing the number of blocks needed to recover the
+            typedef std::map<UTXOKey, BigInt> UTXOMemoryMap;
+            typedef const UTXOMemoryMap& UTXOIterable;
+
+            /// Build an in-memory cache.
+            UTXOCacheMemoryMap(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
+            /// Build an in-memory cache by optimizing the number of blocks needed to recover the
             /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
             /// prior to the block height you pass.
-            BitcoinLikeCache(
+            UTXOCacheMemoryMap(
                 std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
-                uint32_t startHeight
+                uint32_t lowestHeight
             );
 
             // we forbid copying cache
-            BitcoinLikeCache(const BitcoinLikeCache&) = delete;
-            BitcoinLikeCache(const BitcoinLikeCache&&) = delete;
-            BitcoinLikeCache operator=(const BitcoinLikeCache&) = delete;
-            BitcoinLikeCache operator=(const BitcoinLikeCache&&) = delete;
+            UTXOCacheMemoryMap(const UTXOCacheMemoryMap&) = delete;
+            UTXOCacheMemoryMap(UTXOCacheMemoryMap&&) = delete;
+            UTXOCacheMemoryMap operator=(const UTXOCacheMemoryMap&) = delete;
+            UTXOCacheMemoryMap operator=(UTXOCacheMemoryMap&&) = delete;
 
-            ~BitcoinLikeCache() = default;
+            ~UTXOCacheMemoryMap() = default;
 
             /// Get the cached UTXO.
-            std::vector<std::pair<UTXOKey, BigValue>>
-            getUTXOs(
+            void getUTXOs(
                 std::shared_ptr<api::ExcutionContext> ctx,
-                const std::vector<std::string>& addresses
+                const std::vector<std::string>& addresses;
+                std::function<void (UTXOIterable)> onUTXOs
             );
 
             /// Invalidate the UTXO cache.

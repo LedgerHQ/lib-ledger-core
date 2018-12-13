@@ -1,23 +1,22 @@
-#include <database/BitcoinLikeCache.hpp>
+#include <database/UTXOCacheMemoryMap.hpp>
 #include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
-        BitcoinLikeCache::BitcoinLikeCache(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB):
-            _lowerHeight(0, _lastHeight(0), _blockDB(blockDB) {
+        UTXOCacheMemoryMap::UTXOCacheMemoryMap(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB)
+            : UTXOCacheMemoryMap(blockDB, 0) {
         }
 
-        BitcoinLikeCache::BitcoinLikeCache(
+        UTXOCacheMemoryMap::UTXOCacheMemoryMap(
             std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
-            uint32_t startHeight):
-            _lowerHeight(std::max(1, startHeight) - 1), _lastHeight(_lowerHeight), _blockDB(blockDB) {
+            uint32_t lowestHeight)
+            : UTXOCache(lowestHeight), _blockDB(blockDB) {
         }
 
-        void
-        BitcoinLikeCache::getUTXOs(
-            std::shared_ptr<api::ExcutionContext> ctx,
+        void UTXOCacheMemory::getUTXOs(
+            std::shared_ptr<api::ExecutionContext> ctx,
             const std::vector<std::string>& addresses,
-            std::function<void (const std::map<UTXOKey, BigInt>&)> onUTXOs
+            std::function<void (UTXOIterable)> onUTXOs
         ) {
             auto self = shared_from_this();
 
@@ -26,7 +25,7 @@ namespace ledger {
                 // compute the list of blocks we need to retreive
                 auto currentHeight = block.heightTo;
 
-                if (currentHeight > self->_lastHeight) {
+                if (currentHeight > self->getLastHeight()) {
                     // there are blocks we don’t know about
                     return self->_db->getBlocks(0, block.heightTo).flatMap(ctx, [=](std::vector<FilledBlock>& blocks) {
                         for (auto block : blocks) {
@@ -67,8 +66,7 @@ namespace ledger {
                             }
                         }
 
-                        // update the height
-                        self->_lastHeight = currentHeight;
+                        self->updateLastHeight(currentHeight);
                     });
                 }
                 
@@ -78,9 +76,10 @@ namespace ledger {
             return future;
         }
 
-        void BitcoinLikeCache::invalidateUTXO() {
+        void UTXOCacheMemoryMap::invalidate() {
+            // remove all entries in the cache and reset the last known block height
             _cache.clear();
-            _lastHeight = _lowerHeight;
+            _lastHeight = _lowestHeight;
         }
     }
 }
