@@ -31,7 +31,13 @@
 
 #pragma once
 
-#include <utility>
+#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <api/ExecutionContext.hpp>
+#include <math/BigInt.h>
 
 namespace ledger {
     namespace core {
@@ -40,36 +46,39 @@ namespace ledger {
         /// The Backend type template parameter must provide:
         ///
         ///   - A typename to represent iterators over UTXO in the implementation.
-        template <class Backend>
-        struct UTXOCache {
-            typedef Backend::UTXOIterable UTXOIterable;
+        class UTXOCache {
+            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
+            uint32_t _lowestHeight;
 
+            /// Height of the last block in which we can find our UTXOs.
+            uint32_t _lastHeight;
+
+        public:
             /// A UTXO key, indexing a certain amount of satoshis (bitcoin fraction) in the blockchain.
             ///
-            /// You typically find a UTXOKey attached (std::pair) with a BigValue representing the
-            /// number of satoshis.
+            /// You typically find a UTXOKey attached (std::pair) with a UTXOValue.
             struct Key {
                 /// Hash of the transaction that output that UTXO.
                 std::string hashTX;
                 /// Index in the linked transaction of the UTXO in the output array.
                 uint32_t index;
 
-                Key(std::string hashTX, uint32_t index);
+                Key(std::string htx, uint32_t i);
                 ~Key() = default;
+            };
 
-                // we forbid copying, cloning, and changing UTXO key
-                Key(const Key&) = delete;
-                Key operator=(const Key&) = delete;
+            /// A UTXO value, giving the amount of satoshis received on a given address.
+            struct Value {
+                /// Amount of satoshis.
+                BigInt satoshis;
+                /// Address that was used.
+                std::string address;
+
+                Value(BigInt satoshis, const std::string& address);
             };
 
             UTXOCache(uint32_t lowestHeight);
             virtual ~UTXOCache();
-
-            // we forbid copying cache
-            UTXOCache(const UTXOCache&) = delete;
-            UTXOCache(UTXOCache&&) = delete;
-            UTXOCache operator=(const UTXOCache&) = delete;
-            UTXOCache operator=(UTXOCache&&) = delete;
 
             /// Get the list of cached UTXOs.
             ///
@@ -78,11 +87,11 @@ namespace ledger {
             virtual void getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
                 const std::vector<std::string>& addresses,
-                std::function<void (UTXOIterable)> onUTXOs
+                std::function<void (std::vector<std::pair<Key, Value>>)> onUTXOs
             ) = 0;
 
             /// Invalidate the whole UTXO cache.
-            void invalidate() = 0;
+            virtual void invalidate() = 0;
 
             /// Get the last block we synchronized with.
             uint32_t getLastHeight();
@@ -90,13 +99,6 @@ namespace ledger {
             /// Get the lowest block we synchronize with. This asserts that no UTXO could be found
             /// in any previous blocks.
             uint32_t getLowestHeight();
-
-        private:
-            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
-            uint32_t _lowestHeight;
-
-            /// Height of the last block in which we can find our UTXOs.
-            uint32_t _lastHeight;
 
         protected:
             /// Update the last known block height.
@@ -108,6 +110,6 @@ namespace ledger {
             /// If you provide a height that is less than the one already known, the height won’t be
             /// updated. If you intended to reset the cache, use the invalidate() function.
             void updateLastHeight(uint32_t lastHeight);
-        }
+        };
     }
 }

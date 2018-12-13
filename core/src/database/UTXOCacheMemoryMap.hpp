@@ -31,26 +31,32 @@
 
 #pragma once
 
-#include <database/UTXOCache.hpp>
-#include <api/ExecutionContext.hpp>
 #include <map>
-#include <utility>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <api/ExecutionContext.hpp>
+#include <database/UTXOCache.hpp>
+#include <wallet/BlockchainDatabase.hpp>
+#include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
+
         /// An in-memory (map) implementation of database::UTXOCache.
-        class UTXOCacheMemoryMap: public UTXOCache<UTXOCacheMemoryMap> {
+        class UTXOCacheMemoryMap: public UTXOCache, public std::enable_shared_from_this<UTXOCacheMemoryMap> {
+            typedef std::map<UTXOCache::Key, UTXOCache::Value> UTXOMemoryMap;
+
             /// UTXOs.
-            UTXOMemoryMap utxos;
+            UTXOMemoryMap _cache;
             /// Blockchain database used to retreive UTXO.
-            std::shared_ptr<ReadOnlyBlockchainDatabase> _blockDB;
+            std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
 
         public:
-            typedef std::map<UTXOKey, BigInt> UTXOMemoryMap;
-            typedef const UTXOMemoryMap& UTXOIterable;
-
             /// Build an in-memory cache.
             UTXOCacheMemoryMap(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
+
             /// Build an in-memory cache by optimizing the number of blocks needed to recover the
             /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
             /// prior to the block height you pass.
@@ -59,19 +65,13 @@ namespace ledger {
                 uint32_t lowestHeight
             );
 
-            // we forbid copying cache
-            UTXOCacheMemoryMap(const UTXOCacheMemoryMap&) = delete;
-            UTXOCacheMemoryMap(UTXOCacheMemoryMap&&) = delete;
-            UTXOCacheMemoryMap operator=(const UTXOCacheMemoryMap&) = delete;
-            UTXOCacheMemoryMap operator=(UTXOCacheMemoryMap&&) = delete;
-
             ~UTXOCacheMemoryMap() = default;
 
             /// Get the cached UTXO.
             void getUTXOs(
-                std::shared_ptr<api::ExcutionContext> ctx,
-                const std::vector<std::string>& addresses;
-                std::function<void (UTXOIterable)> onUTXOs
+                std::shared_ptr<api::ExecutionContext> ctx,
+                const std::vector<std::string>& addresses,
+                std::function<void (std::vector<std::pair<UTXOCache::Key, UTXOCache::Value>>)> onUTXOs
             );
 
             /// Invalidate the UTXO cache.
