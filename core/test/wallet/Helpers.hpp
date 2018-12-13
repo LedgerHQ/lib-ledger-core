@@ -67,6 +67,7 @@ namespace ledger {
                 void setTruncationLevel(uint32_t numberOfTransactionsAllowed);
 
                 Future<TransactionBulk> getTransactions(const std::vector<std::string>& addresses, Option<std::string> fromBlockHash, Option<void*> session); 
+                Future<Block> getCurrentBlock();
             private:
                 std::vector<Tran> _transactions;
                 std::map<std::string, uint32_t> _blockHashes;
@@ -87,6 +88,9 @@ namespace ledger {
                 uint32_t _alreadyUsed;
                 uint32_t _seed;
             };
+
+            bool TransEqual(const BitcoinLikeNetwork::Transaction& tran, const TR& tr);
+            std::function<bool(const BitcoinLikeNetwork::FilledBlock&)> Same(const BL& left);
         }
     }
 }

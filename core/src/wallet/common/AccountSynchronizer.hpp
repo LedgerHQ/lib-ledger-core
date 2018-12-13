@@ -61,6 +61,7 @@ namespace ledger {
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                     const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
                     const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
+                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& pendingTransactions,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,
@@ -81,13 +82,14 @@ namespace ledger {
                 std::shared_ptr<BlockchainDatabase<NetworkType>> _stableBlocksDb;
                 // blocks that may be reverted
                 std::shared_ptr<BlockchainDatabase<NetworkType>> _unstableBlocksDb;
+                std::shared_ptr<BlockchainDatabase<NetworkType>> _pendingTransactionsDb;
                 std::shared_ptr<Keychain> _receiveKeychain;
                 std::shared_ptr<Keychain> _changeKeychain;
                 std::shared_ptr<spdlog::logger> _logger;
                 std::shared_ptr<ProgressNotifier<Unit>> _notifier;
                 std::shared_ptr<BlocksSynchronizer<NetworkType>> _stableBlocksSynchronizer;
                 std::shared_ptr<BlocksSynchronizer<NetworkType>> _unstableBlocksSynchronizer;
-
+                
                 const SynchronizerConfiguration _config;
 
                 mutable std::recursive_mutex _lock; // recursive in case somebody will use ImmediateExecutionContext 

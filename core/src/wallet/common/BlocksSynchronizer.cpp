@@ -176,9 +176,6 @@ namespace ledger {
                         static std::function<bool(const Transaction& l, const Transaction& r)> blockLess = [](const Transaction& l, const Transaction& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
                         Block highestBlock = std::max_element(bulk.first.begin(), bulk.first.end(), blockLess)->block.getValue();
                         Block lowestBlock = std::min_element(bulk.first.begin(), bulk.first.end(), blockLess)->block.getValue();
-                        if (lowestBlock.height < from) {
-                            return Future<Unit>::failure(Exception(api::ErrorCode::API_ERROR, "Explorer return transaction with block height less then requested"));
-                        }
                         uint32_t lastFullBlockHeight = to;
                         if (bulk.second) { //response truncated
                             if (bulk.first.size() < self->_maxTransactionPerResponse) {

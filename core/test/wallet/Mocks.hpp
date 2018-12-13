@@ -30,7 +30,6 @@ namespace ledger {
 
             class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork> {
             public:
-                MOCK_METHOD1(addBlocks, void(const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks));
                 MOCK_METHOD1(addBlock, void(const BitcoinLikeNetwork::FilledBlock& blocks));
                 MOCK_METHOD2(removeBlocks, void(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(removeBlocksUpTo, void(uint32_t heightTo));
@@ -38,9 +37,6 @@ namespace ledger {
                 MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(getBlock, Future<Option<FilledBlock>>(uint32_t height));
                 MOCK_METHOD0(getLastBlockHeader, Future<Option<Block>>());
-                void linkWithFake(const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& fake) {
-                    //ON_CALL(*this, );
-                }
             };
 
             class BlockchainDBMock : public db::BlockchainDB {

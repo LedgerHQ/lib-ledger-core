@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/utils/DateUtils.hpp>
+#include <utils/DateUtils.hpp>
 
 using namespace ledger::core;
 

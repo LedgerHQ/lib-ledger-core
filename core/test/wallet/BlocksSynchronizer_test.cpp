@@ -54,34 +54,6 @@ namespace ledger {
                     ON_CALL(*explorerMock, getTransactions(_, _, _)).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getTransactions));
                 }
 
-                bool equal(const BitcoinLikeNetwork::Transaction& tran, const TR& tr) {
-                    if ((tran.inputs.size() != tr.inputs.size()) ||
-                        (tran.outputs.size() != tr.outputs.size()))
-                        return false;
-                    for (int j = 0; j < tran.inputs.size(); ++j) {
-                        if (tran.inputs[j].address != tr.inputs[j])
-                            return false;
-                    }
-                    for (int j = 0; j < tran.outputs.size(); ++j) {
-                        if (tran.outputs[j].address != tr.outputs[j].first)
-                            return false;
-                    }
-                    return true;
-                }
-
-                std::function<bool(const BitcoinLikeNetwork::FilledBlock& )> Same(const BL& left) {
-                     return [left](const BitcoinLikeNetwork::FilledBlock& right) 
-                     { 
-                         if ((left.hash != right.header.hash) ||
-                             (left.height != right.header.height) ||
-                             (left.transactions.size() != right.transactions.size()))
-                             return false;
-                         for (int i = 0; i < left.transactions.size(); ++i) {
-                             
-                         }
-                         return true;
-                     };
-                };
             public:
                 std::shared_ptr<common::BlocksSynchronizer<BitcoinLikeNetwork>> synchronizer;
                 std::shared_ptr<NiceMock<ExplorerMock>> explorerMock;
@@ -316,7 +288,7 @@ namespace ledger {
                 bch.push_back(BL{ 2, "block 2",{ TR{ { "X" },{ { "0", 10000 } } } } });
                 setBlockchain(bch);
 
-                EXPECT_CALL(*blocksDBMock, addBlocks(_)).Times(0);
+                EXPECT_CALL(*blocksDBMock, addBlock(_)).Times(0);
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(0); // not discovered
                 auto f = synchronizer->synchronize("block 1", 1, LAST_BLOCK);
                 context->wait();

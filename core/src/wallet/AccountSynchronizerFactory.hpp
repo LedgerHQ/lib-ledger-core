@@ -23,6 +23,7 @@ namespace ledger {
                 const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
+                const std::shared_ptr<BlockchainDatabase<NetworkType>>& pendingTransactionsDb,
                 const std::shared_ptr<Keychain>& receiveKeychain,
                 const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,

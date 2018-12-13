@@ -20,6 +20,7 @@ namespace ledger {
                 const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
                 const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
+                const std::shared_ptr<BlockchainDatabase<NetworkType>>& pendingTransactionsDb,
                 const std::shared_ptr<Keychain>& receiveKeychain,
                 const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,
@@ -29,6 +30,7 @@ namespace ledger {
                 , _explorer(explorer)
                 , _stableBlocksDb(stableBlocksDb)
                 , _unstableBlocksDb(unstableBlocksDb)
+                , _pendingTransactionsDb(pendingTransactionsDb)
                 , _receiveKeychain(receiveKeychain)
                 , _changeKeychain(changeKeychain)
                 , _logger(logger)
@@ -87,32 +89,36 @@ namespace ledger {
                 auto self = shared_from_this();
                 // try to do explorer and DB request simulteniously
                 Future<HashHeight> explorerRequest = _explorer->getCurrentBlock().map<HashHeight>(_executionContext, [](const Block& block) { return HashHeight{ block.hash, block.height }; });
-                Future<HashHeight> lastStableHashHeight = _stableBlocksDb->getLastBlockHeader()
-                    .map<HashHeight>(
-                        _executionContext,
-                        [startHash = _config.genesisBlockHash](const Option<Block>& block) {
-                            HashHeight hh{ startHash, 0};
-                            if (block.hasValue()) {
-                                hh.height = block.getValue().height;
-                                hh.hash = block.getValue().hash;
-                            }
-                            return hh;});
+                auto createLastHHFuture = [blockDB = _stableBlocksDb, executionContext = this->_executionContext, startHash = _config.genesisBlockHash]() {
+                    return blockDB->getLastBlockHeader()
+                        .map<HashHeight>(
+                            executionContext,
+                            [startHash](const Option<Block>& block) {
+                                HashHeight hh{ startHash, 0 };
+                                if (block.hasValue()) {
+                                    hh.height = block.getValue().height;
+                                    hh.hash = block.getValue().hash;
+                                }
+                                return hh; });
+                };
                 return
-                    executeAll(_executionContext, std::vector<Future<HashHeight>>{explorerRequest, lastStableHashHeight})
-                    .flatMap<Unit>(_executionContext, [self, lastStableHashHeight](const std::vector<HashHeight>& hhs) {
+                    executeAll(_executionContext, std::vector<Future<HashHeight>>{explorerRequest, createLastHHFuture()})
+                    .flatMap<Unit>(_executionContext, [self, createLastHHFuture](const std::vector<HashHeight>& hhs) {
                         return self->_stableBlocksSynchronizer->synchronize(
                             hhs[1].hash,
                             hhs[1].height,
                             hhs[0].height - self->_config.maxPossibleUnstableBlocks)
-                            .flatMap<HashHeight>(self->_executionContext, [lastStableHashHeight](const Unit& dummy) {return lastStableHashHeight; })
+                            .flatMap<HashHeight>(self->_executionContext, [createLastHHFuture](const Unit& dummy) {return createLastHHFuture(); })
                             .flatMap<Unit>(self->_executionContext, [self, currentBlockHeight=hhs[0].height](const HashHeight& stableHH) {
-                            return self->_unstableBlocksSynchronizer->synchronize(stableHH.hash, stableHH.height, currentBlockHeight);
+                            self->_unstableBlocksDb->CleanAll();
+                            return self->_unstableBlocksSynchronizer->synchronize(stableHH.hash, currentBlockHeight - self->_config.maxPossibleUnstableBlocks + 1, currentBlockHeight);
                         });
                         });
             }
 
             template <typename NetworkType> Future<Unit> AccountSynchronizer<NetworkType>::synchronizePendingTransactions() {
-                return Future<Unit>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me"));
+                //TODO: Implement this function for ExplorerV3
+                return Future<Unit>::successful(unit);
             }
         }
     }

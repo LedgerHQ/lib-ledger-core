@@ -143,7 +143,7 @@ int main() {
             200
             );
        
-    block_sync->synchronize(firstBlock, lastBlock)
+    block_sync->synchronize(firstBlock.hash, firstBlock.height, lastBlock.height)
         .onComplete(mainContext, [mainContext, blockDB](const Try<Unit>& t) {
         if (t.isSuccess()) {
             std::cout << "success" << std::endl;

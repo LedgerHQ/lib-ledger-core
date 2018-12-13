@@ -122,6 +122,9 @@ namespace ledger {
                 return Future<TransactionBulk>::successful(result);
             };
 
+            Future<FakeExplorer::Block> FakeExplorer::getCurrentBlock() {
+                return Future<FakeExplorer::Block>::successful(_transactions[_transactions.size() - 1].block.getValue());
+            }
 
             FakeKeyChain::FakeKeyChain(uint32_t alreadyUsed, uint32_t seed)
                 : _alreadyUsed(alreadyUsed)
@@ -147,6 +150,37 @@ namespace ledger {
                 }
                 catch (const boost::bad_lexical_cast &) {}; // ignore
             }
+
+            bool TransEqual(const BitcoinLikeNetwork::Transaction& tran, const TR& tr) {
+                if ((tran.inputs.size() != tr.inputs.size()) ||
+                    (tran.outputs.size() != tr.outputs.size()))
+                    return false;
+                for (int j = 0; j < tran.inputs.size(); ++j) {
+                    if (tran.inputs[j].address != tr.inputs[j])
+                        return false;
+                }
+                for (int j = 0; j < tran.outputs.size(); ++j) {
+                    if (tran.outputs[j].address != tr.outputs[j].first)
+                        return false;
+                }
+                return true;
+            }
+
+            std::function<bool(const BitcoinLikeNetwork::FilledBlock&)> Same(const BL& left) {
+                return [left](const BitcoinLikeNetwork::FilledBlock& right)
+                {
+                    if ((left.hash != right.header.hash) ||
+                        (left.height != right.header.height) ||
+                        (left.transactions.size() != right.transactions.size()))
+                        return false;
+                    for (int i = 0; i < left.transactions.size(); ++i) {
+                        if (!TransEqual(right.transactions[i], left.transactions[i]))
+                            return false;
+                    }
+                    return true;
+                };
+            };
+
         }
     }
 }
