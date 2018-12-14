@@ -16,6 +16,7 @@ Helpers.cpp
 ChangeKeychain_test.cpp
 PersistentBlockchainDatabase_test.cpp
 AccountSynchronizer_test.cpp
+InMemoryBlockchainDatabase_test.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)
