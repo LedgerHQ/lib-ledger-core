@@ -34,11 +34,11 @@
 #include "BitcoinLikeExtendedPublicKey.hpp"
 #include "../utils/djinni_helpers.hpp"
 #include "../crypto/HASH160.hpp"
+#include <crypto/BLAKE.h>
 #include "../math/Base58.hpp"
 #include "../bytes/BytesReader.h"
 #include "BitcoinLikeAddress.hpp"
 #include <crypto/SECP256k1Point.hpp>
-
 namespace ledger {
     namespace core {
 
@@ -70,7 +70,7 @@ namespace ledger {
         }
 
         std::string BitcoinLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithChecksum(_key.toByteArray(params().XPUBVersion));
+            return Base58::encodeWithChecksum(_key.toByteArray(params().XPUBVersion), params().Identifier);
         }
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey>
@@ -80,11 +80,12 @@ namespace ledger {
                                               const std::vector<uint8_t> &chainCode,
                                               const std::string &path) {
             uint32_t parentFingerprint = 0;
-
+            auto& params = currency.bitcoinLikeNetworkParameters.value();
             SECP256k1Point pk(publicKey);
             if (parentPublicKey) {
                 SECP256k1Point ppp(parentPublicKey.value());
-                auto hash = SHA256::bytesToBytesHash(ppp.toByteArray(true));
+                HashAlgorithm hashAlgorithm(params.Identifier);
+                auto hash = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
                 hash = RIPEMD160::hash(hash);
                 parentFingerprint = ((hash[0] & 0xFFU) << 24) |
                                     ((hash[1] & 0xFFU) << 16) |
@@ -92,9 +93,8 @@ namespace ledger {
                                      (hash[3] & 0xFFU);
             }
             DerivationPath p(path);
-
             DeterministicPublicKey k(
-                    pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint
+                    pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, params.Identifier
             );
             return std::make_shared<BitcoinLikeExtendedPublicKey>(currency, k, p);
         }
@@ -107,7 +107,7 @@ namespace ledger {
         BitcoinLikeExtendedPublicKey::fromBase58(const api::Currency &currency,
                                                  const std::string &xpubBase58, const Option<std::string> &path) {
             auto& params = currency.bitcoinLikeNetworkParameters.value();
-            auto decodeResult = Base58::checkAndDecode(xpubBase58);
+            auto decodeResult = Base58::checkAndDecode(xpubBase58, params.Identifier);
             if (decodeResult.isFailure())
                 throw decodeResult.getFailure();
             BytesReader reader(decodeResult.getValue());
@@ -121,7 +121,7 @@ namespace ledger {
             auto chainCode = reader.read(32);
             auto publicKey = reader.readUntilEnd();
             DeterministicPublicKey k(
-                publicKey, chainCode, childNum, depth, fingerprint
+                publicKey, chainCode, childNum, depth, fingerprint, params.Identifier
             );
             return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
         }

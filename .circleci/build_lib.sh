@@ -107,8 +107,11 @@ if [ "$1" == "ios" -o "$1" == "android" ]; then
 	rm -rf ../lib-ledger-core-build
 fi
 
+echo "=====>Create which will contain artifacts"
+cd .. && (mkdir lib-ledger-core-artifacts || echo "lib-ledger-core-artifacts directory already exists")
+
 echo "=====>Create build directory"
-cd .. && (mkdir lib-ledger-core-build || echo "lib-ledger-core-build directory already exists") && cd lib-ledger-core-build
+(mkdir lib-ledger-core-build || echo "lib-ledger-core-build directory already exists") && cd lib-ledger-core-build
 
 echo "=====>Start build"
 unamestr=`uname`
@@ -153,7 +156,7 @@ if [ "$1" == "ios" ]; then
 	#install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
 	#install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
 
-	echo "======> Store artifacts to build fat framework"
-	mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
+	#echo "======> Store artifacts to build fat framework"
+	#mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
 fi
 

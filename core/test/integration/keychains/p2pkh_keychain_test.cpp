@@ -34,8 +34,8 @@
 
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
-
-
+#include <iostream>
+using namespace std;
 
 class BitcoinKeychains : public BaseFixture {
 public:
@@ -198,6 +198,13 @@ TEST_F(BitcoinKeychains, ClubcoinKeychainDerivation) {
     testP2PKHKeychain(CLUBCOIN_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "CGnEJw3yCK5MgmA6ivbLBuk8KsWpgtFRXu");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "CSQuTH3kDbnGAG6LmVaLje7kySj6pueego");
+    });
+}
+
+TEST_F(BitcoinKeychains, DecredKeychainDerivation) {
+    testP2PKHKeychain(DECRED_DATA, [] (P2PKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBase58(), "Dso5BhFYjnymYwAzsCDEUENmmh7Y9TA4FM7");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBase58(), "DsSFcrefQbbo8i7u9dQZrtzc6EW6nvVMKZR");
     });
 }
 

@@ -271,7 +271,7 @@ BitcoinLikeAccount = interface +c {
     getUTXOCount(callback: Callback<i32>);
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     broadcastTransaction(transaction: BitcoinLikeTransaction, callback: Callback<string>);
-    buildTransaction(): BitcoinLikeTransactionBuilder;
+    buildTransaction(partial: optional<bool>): BitcoinLikeTransactionBuilder;
 }
 
 BitcoinLikeWallet = interface +c {

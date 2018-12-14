@@ -174,15 +174,16 @@ namespace ledger {
         Option<BitcoinLikeAddress>
         BitcoinLikeScript::parseAddress(const api::Currency &currency) const {
             const auto &params = currency.bitcoinLikeNetworkParameters.value();
+            HashAlgorithm hashAlgorithm(params.Identifier);
             if (isP2SH()) {
                 //Signed : <ScriptSig> <PubKey>
                 if (_configuration.isSigned) {
                     std::vector<uint8_t> script = {0x00, 0x14};
                     //Hash160 of public key
-                    auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes());
+                    auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
-                            BitcoinLikeAddress(currency, HASH160::hash(script), params.P2SHVersion));
+                            BitcoinLikeAddress(currency, HASH160::hash(script, hashAlgorithm), params.P2SHVersion));
                 }
                 //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(

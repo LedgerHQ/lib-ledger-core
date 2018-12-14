@@ -1,13 +1,12 @@
 /*
  *
- * HASH160
- * ledger-core
+ * BLAKE
  *
- * Created by Pierre Pollastri on 16/12/2016.
+ * Created by El Khalil Bellakrid on 18/09/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2018 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,23 +27,26 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HASH160_HPP
-#define LEDGER_CORE_HASH160_HPP
 
-#include "RIPEMD160.hpp"
-#include "SHA256.hpp"
-#include "HashAlgorithm.h"
+
+#ifndef LEDGER_CORE_BLAKE_H
+#define LEDGER_CORE_BLAKE_H
+
+
+#include <vector>
+#include <string>
 
 namespace ledger {
     namespace core {
-        class HASH160 {
+        class BLAKE {
         public:
-            HASH160() = delete;
-            ~HASH160() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data, const HashAlgorithm &hashAlgorithm);
+            static std::vector<uint8_t> blake256(const std::vector<uint8_t>& data);
+            static std::vector<uint8_t> blake224(const std::vector<uint8_t>& data);
+            static std::vector<uint8_t> stringToBytesHash(const std::string& input);
+            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
         };
     }
 }
 
 
-#endif //LEDGER_CORE_HASH160_HPP
+#endif //LEDGER_CORE_BLAKE_H

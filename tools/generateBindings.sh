@@ -7,7 +7,7 @@ CORE_BUILD=../lib-ledger-core-build
 CORE_CPP_API=core/src/api
 CORE_CPP_JNI=core/src/jni
 
-if [ ! -e $DEST/src ]; then
+
   ./djinni/src/run \
     --idl ./core/core.djinni \
     --cpp-out $CORE_CPP_API \
@@ -20,7 +20,7 @@ if [ ! -e $DEST/src ]; then
     --node-type-prefix NJS \
     --node-include-cpp ../include \
     --node-package $PACKAGE_NAME
-fi
+
 
 # copy include files
 rm -rf $DEST/include

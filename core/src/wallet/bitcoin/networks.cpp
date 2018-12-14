@@ -379,6 +379,22 @@ namespace ledger {
                             {}
                     );
                     return CLUBCOIN;
+                } else if (networkName == "decred") {
+                    //02fda926
+                    static const api::BitcoinLikeNetworkParameters DECRED(
+                            "dcr",
+                            {0x07, 0x3F},
+                            {0x07, 0x1A},
+                            {0x02, 0xFD, 0xA9, 0x26},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "Decred Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return DECRED;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -406,7 +422,8 @@ namespace ledger {
                 getNetworkParameters("komodo"),
                 getNetworkParameters("poswallet"),
                 getNetworkParameters("pivx"),
-                getNetworkParameters("clubcoin")
+                getNetworkParameters("clubcoin"),
+                getNetworkParameters("decred")
             });
         }
     }

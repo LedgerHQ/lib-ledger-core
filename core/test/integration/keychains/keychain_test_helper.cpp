@@ -156,3 +156,8 @@ KeychainTestData CLUBCOIN_DATA(ledger::core::networks::getNetworkParameters("clu
                            ledger::core::currencies::CLUBCOIN,
                            "xpub6DP5DgaoV75F7oGi3UjSo5EDTGKH3aBVLX18AJFdBEZG6fHwcqQ324n4oRf1MaPpK8UjXok4hcxvtxCRVWEeaKkyvuY8y9E4Xn3uGDs6Z3X",
                            "44'/79'/0'");
+
+KeychainTestData DECRED_DATA(ledger::core::networks::getNetworkParameters("decred"),
+                               ledger::core::currencies::DECRED,
+                               "dpubZFUiMExUREbqJQVJkfXSs4wjUb1jwVkoofnPK8Mt95j3PanCyq9Mc4aFnWtRZkhci9ZYPVLZybVLMMkS6g1nKBTN4899KJwGeVBvyumvcjW",
+                               "44'/42'/0'");
