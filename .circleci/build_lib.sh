@@ -149,22 +149,3 @@ if [ "$1" == "ios" ]; then
 else
     make -j4
 fi
-
-if [ "$1" == "ios" ]; then
-    if [ "$ARCH" == "armv7" -o "$ARCH" == "arm64" ]; then
-        PATH_TO_LIB=core/src/Release-iphoneos
-    else
-        PATH_TO_LIB=core/src/Release-iphonesimulator
-        # Remove signature
-        rm -rf $PATH_TO_LIB/ledger-core.framework/_CodeSignature
-        codesign --remove-signature $PATH_TO_LIB/ledger-core.framework/ledger-core
-    fi
-
-    #echo "======> Set rpath"
-    #install_name_tool -id "@rpath/libledger-core.dylib" $PATH_TO_LIB/libledger-core.dylib
-    #install_name_tool -add_rpath "@executable_path/Frameworks" $PATH_TO_LIB/libledger-core.dylib
-
-    #echo "======> Store artifacts to build fat framework"
-    #mkdir -p /Users/distiller/ios/$ARCH && cp -r $PATH_TO_LIB/ledger-core.framework /Users/distiller/ios/$ARCH
-fi
-
