@@ -29,7 +29,7 @@
  *
  */
 
-#include <database/ProxyBackend.h>
+#include <database/ProxyBackend.hpp>
 #include <gtest/gtest.h>
 #include <soci.h>
 #include "MemoryDatabaseProxy.h"
@@ -280,10 +280,6 @@ TEST_F(SociProxyTest, SelectNullField) {
     EXPECT_EQ(ind_picture, soci::i_null);
     EXPECT_EQ(ind_name, soci::i_ok);
     EXPECT_EQ(name, people.front().name);
-}
-
-TEST_F(SociProxyTest, GetEntryRowId) {
-
 }
 
 TEST_F(SociProxyTest, InsertAndGetBlobs) {

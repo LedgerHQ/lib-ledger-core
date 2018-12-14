@@ -31,7 +31,7 @@
 #include "DatabaseBackend.hpp"
 #include "SQLite3Backend.hpp"
 #include <api/DatabaseEngine.hpp>
-#include "ProxyBackend.h"
+#include "ProxyBackend.hpp"
 
 namespace ledger {
     namespace core {

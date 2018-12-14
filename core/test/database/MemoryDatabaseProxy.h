@@ -32,7 +32,7 @@
 #ifndef LEDGER_CORE_MEMORYDATABASEPROXY_H
 #define LEDGER_CORE_MEMORYDATABASEPROXY_H
 
-#include <database/ProxyBackend.h>
+#include <database/ProxyBackend.hpp>
 
 class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
 public:
