@@ -1,9 +1,7 @@
+#include <asio.hpp>
 #include <iostream>
 #include <memory>
 #include <wallet/common/BlocksSynchronizer.hpp>
-#include <async/QtThreadPoolExecutionContext.hpp>
-#include <async/QtMainExecutionContext.hpp>
-#include <net/QtHttpClient.hpp>
 #include <crypto/DeterministicPublicKey.hpp>
 #include <math/Base58.hpp>
 #include <crypto/HASH160.hpp>
@@ -19,9 +17,12 @@
 #include <ledger/core/api/BitcoinLikeAddress.hpp>
 #include <database/BlockchainLevelDB.hpp>
 #include <wallet/common/PersistentBlockchainDatabase.hpp>
+#include <C:/Users/akorol/Programming/asio-core/core-asio/include/AsioExecutionContext.hpp>
+#include <C:/Users/akorol/Programming/asio-core/core-asio/include/AsioHttpClient.hpp>
+
+#include <C:/Users/akorol/Programming/asio-core/core-asio/include/RequestResponce.hpp>
 
 using namespace std;
-using namespace ledger::qt;
 using namespace ledger::core;
 
 class DummyKeysDB : public KeysDB {
@@ -119,14 +120,14 @@ int main() {
     firstBlock.hash = "9249c198d4b1ca38bb92a740d6557df80e746108384552509225e7825556ebdf";
     bitcoin::Block lastBlock;
     lastBlock.height = 1045723;
+    dbname = "vtc";
     */
     
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto mainContext = dispatcher->getMainExecutionContext();
+    auto mainContext = std::make_shared<AsioExecutionContext>();
 
     std::shared_ptr<db::BlockchainDB> persistentLayer = std::make_shared<db::BlockchainLevelDB>(dbname);
     auto blockDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork>>(mainContext, persistentLayer);
-    auto httpClient = std::make_shared<QtHttpClient>(mainContext);
+    auto httpClient = std::make_shared<AsioHttpClient>(mainContext);
     auto coreHttpClient = std::make_shared<HttpClient>("http://api.ledgerwallet.com", httpClient, mainContext);
     auto config = std::make_shared<DynamicObject>();
 
@@ -142,8 +143,8 @@ int main() {
             20,
             200
             );
-       
-    block_sync->synchronize(firstBlock.hash, firstBlock.height, lastBlock.height)
+    auto syncFuture = block_sync->synchronize(firstBlock.hash, firstBlock.height, lastBlock.height);
+    syncFuture
         .onComplete(mainContext, [mainContext, blockDB](const Try<Unit>& t) {
         if (t.isSuccess()) {
             std::cout << "success" << std::endl;
@@ -165,6 +166,6 @@ int main() {
             std::cout << t.getFailure().getMessage() << std::endl;
         }
     });
-    dispatcher->waitUntilStopped();
+    mainContext->run();
     return 0;
 }
