@@ -41,10 +41,7 @@ std::size_t proxy_blob_backend::get_len() {
 
 std::size_t proxy_blob_backend::read(std::size_t offset, char *buf, std::size_t toRead) {
     std::vector<uint8_t> buffer = _backend->read(static_cast<int64_t>(offset), static_cast<int64_t>(toRead));
-    auto it = buffer.begin();
-    for (auto i = 0; i < toRead && it != buffer.end(); i += 1, it++) {
-        buf[i] = *it;
-    }
+    std::copy(std::begin(buffer), std::end(buffer), buf);
     return buffer.size();
 }
 
