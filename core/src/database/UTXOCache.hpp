@@ -34,6 +34,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <api/ExecutionContext.hpp>
@@ -46,14 +47,7 @@ namespace ledger {
         /// The Backend type template parameter must provide:
         ///
         ///   - A typename to represent iterators over UTXO in the implementation.
-        class UTXOCache {
-            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
-            uint32_t _lowestHeight;
-
-            /// Height of the last block in which we can find our UTXOs.
-            uint32_t _lastHeight;
-
-        public:
+        struct UTXOCache {
             /// A UTXO key, indexing a certain amount of satoshis (bitcoin fraction) in the blockchain.
             ///
             /// You typically find a UTXOKey attached (std::pair) with a UTXOValue.
@@ -65,6 +59,20 @@ namespace ledger {
 
                 Key(std::string htx, uint32_t i);
                 ~Key() = default;
+
+                // it’s very likely this will be required by a lot of implementations, so we provide
+                // it as-is
+                std::size_t operator()(const Key& rhs) const noexcept {
+                    auto h1 = std::hash<std::string>{}(rhs.hashTX);
+                    auto h2 = std::hash<uint32_t>{}(rhs.index);
+
+                    return h1 ^ (h2 << 1);
+                }
+
+                // for indexing in maps, sorting, etc.
+                friend bool operator<(const Key& lhs, const Key& rhs) noexcept {
+                    return std::tie(lhs.hashTX, lhs.index) < std::tie(rhs.hashTX, rhs.index);
+                }
             };
 
             /// A UTXO value, giving the amount of satoshis received on a given address.
@@ -101,6 +109,12 @@ namespace ledger {
             uint32_t getLowestHeight();
 
         protected:
+            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
+            uint32_t _lowestHeight;
+
+            /// Height of the last block in which we can find our UTXOs.
+            uint32_t _lastHeight;
+
             /// Update the last known block height.
             ///
             /// Call this function in derived implementations whenever you’re done synchronizing

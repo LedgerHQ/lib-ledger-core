@@ -3,6 +3,7 @@
 
 namespace ledger {
     namespace core {
+        
         UTXOCacheMemoryMap::UTXOCacheMemoryMap(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB)
             : UTXOCacheMemoryMap(blockDB, 0) {
         }
@@ -21,7 +22,7 @@ namespace ledger {
             auto self = shared_from_this();
 
             // get the last block height
-            auto future = _blockDB->getLastBlockHeader().foreach(ctx, [=](Option<BitcoinLikeNetwork::Block>& lastBlock) {
+            _blockDB->getLastBlockHeader().foreach(ctx, [=](Option<BitcoinLikeNetwork::Block>& lastBlock) {
                 // compute the list of blocks we need to retreive
                 if (lastBlock) {
                     auto currentHeight = lastBlock->height;
@@ -84,7 +85,7 @@ namespace ledger {
         void UTXOCacheMemoryMap::invalidate() {
             // remove all entries in the cache and reset the last known block height
             _cache.clear();
-            _lastHeight = _lowestHeight;
+            updateLastHeight(_lowestHeight);
         }
     }
 }

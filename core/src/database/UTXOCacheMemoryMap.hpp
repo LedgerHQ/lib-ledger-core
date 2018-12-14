@@ -72,10 +72,10 @@ namespace ledger {
                 std::shared_ptr<api::ExecutionContext> ctx,
                 const std::vector<std::string>& addresses,
                 std::function<void (std::vector<std::pair<UTXOCache::Key, UTXOCache::Value>>)> onUTXOs
-            );
+            ) override;
 
             /// Invalidate the UTXO cache.
-            void invalidateUTXO();
+            void invalidate() override;
         };
     }
 }
