@@ -186,8 +186,8 @@ namespace ledger {
                             .paymentUri("unobtanium")
                             .unit("unoshi", 0, "unoshi")
                             .unit("unobtanium", 8, "UNO")
-							.unit("milli-unobtanium", 5, "mUNO")
-							.unit("micro-unobtanium", 2, "μUNO");
+                            .unit("milli-unobtanium", 5, "mUNO")
+                            .unit("micro-unobtanium", 2, "μUNO");
 
             const api::Currency STRATIS =
                     Currency("stratis")
@@ -247,7 +247,7 @@ namespace ledger {
                 VIACOIN,
                 DASH,
                 DOGECOIN,
-				UNOBTANIUM,
+		UNOBTANIUM,
                 STRATIS,
                 KOMODO,
                 POSWALLET,
