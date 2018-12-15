@@ -417,7 +417,7 @@ namespace ledger {
                 getNetworkParameters("viacoin"),
                 getNetworkParameters("dash"),
                 getNetworkParameters("dogecoin"),
-				getNetworkParameters("unobtanium"),
+                getNetworkParameters("unobtanium"),
                 getNetworkParameters("stratis"),
                 getNetworkParameters("komodo"),
                 getNetworkParameters("poswallet"),
