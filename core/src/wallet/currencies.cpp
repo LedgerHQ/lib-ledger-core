@@ -247,7 +247,7 @@ namespace ledger {
                 VIACOIN,
                 DASH,
                 DOGECOIN,
-		UNOBTANIUM,
+                UNOBTANIUM,
                 STRATIS,
                 KOMODO,
                 POSWALLET,
