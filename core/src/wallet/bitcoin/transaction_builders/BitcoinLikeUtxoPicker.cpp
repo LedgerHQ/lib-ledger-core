@@ -189,13 +189,13 @@ namespace ledger {
         Future<Unit> BitcoinLikeUtxoPicker::fillInput(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                       const BitcoinLikeUtxoPicker::UTXODescriptor &desc) {
             const std::string& hash = std::get<0>(desc);
-            auto txGetter = [=] (const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> {
+            auto txGetter = [=] (const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
                 if (buddy->isPartial) {
                     return buddy->getTransaction(hash);
                 }
                 return buddy->explorer->getTransactionByHash(hash);
             };
-            return txGetter(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) {
+            return txGetter(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) {
                 buddy->logger->debug("Get output {} on {}", std::get<1>(desc), tx->outputs.size());
                 auto output = tx->outputs[std::get<1>(desc)];
                 std::vector<std::vector<uint8_t>> pub_keys;

@@ -79,7 +79,7 @@ namespace ledger {
                         const auto& i = *it;
                         const auto outputIndex = std::get<1>(i);
                         buddy->logger->info("GET TX 1");
-                        return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>& tx) -> Future<BigInt> {
+                        return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) -> Future<BigInt> {
                             buddy->logger->info("GOT TX 1");
                             auto newIt = it;
                             return go(newIt++, v + tx->outputs[outputIndex].value, buddy);

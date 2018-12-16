@@ -119,21 +119,21 @@ namespace ledger {
             });
         }
 
-        void OperationQuery::performExecute(std::vector<std::shared_ptr<api::Operation>> &operations) {
-            soci::session sql(_pool->getPool());
-            soci::rowset<soci::row> rows =
-                    _builder.select(
-                      "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
-                      "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time"
+        soci::rowset<soci::row> OperationQuery::performExecute(soci::session &sql) {
+            return _builder.select(
+                            "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
+                                    "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time"
                     )
                     .from("operations").to("o")
                     .outerJoin("blocks AS b", "o.block_uid = b.uid")
                     .execute(sql);
+        }
+
+        void OperationQuery::performExecute(std::vector<std::shared_ptr<api::Operation>> &operations) {
+            soci::session sql(_pool->getPool());
+            soci::rowset<soci::row> rows = performExecute(sql);
+
             for (auto& row : rows) {
-                //Filter results
-                if (_resultFilter && !_resultFilter(sql, row)) {
-                    continue;
-                }
                 auto accountUid = row.get<std::string>(0);
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())
