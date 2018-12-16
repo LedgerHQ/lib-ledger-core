@@ -64,10 +64,7 @@ namespace ledger {
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
 
             std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);
-            using ResultFilter = std::function<bool (soci::session &sql, const soci::row &row)>;
-            void setResultFilter(const ResultFilter &filter) {
-                _resultFilter = filter;
-            };
+
         private:
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
             void inflateCompleteTransaction(soci::session& sql, OperationApi& operation);
@@ -76,14 +73,14 @@ namespace ledger {
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
 
-        private:
+        protected:
+            virtual soci::rowset<soci::row> performExecute(soci::session &sql);
             QueryBuilder _builder;
             std::shared_ptr<api::QueryFilter> _headFilter;
             bool _fetchCompleteOperation;
             std::shared_ptr<api::ExecutionContext> _mainContext;
             std::shared_ptr<DatabaseSessionPool> _pool;
             std::unordered_map<std::string, std::shared_ptr<AbstractAccount>> _accounts;
-            ResultFilter _resultFilter;
         };
     }
 }

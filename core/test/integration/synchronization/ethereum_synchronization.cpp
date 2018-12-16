@@ -81,14 +81,19 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = wait(account->getBalance());
-                cout<<" SECOND ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+
                 auto erc20Accounts = account->getERC20Accounts();
-                EXPECT_EQ(erc20Accounts.size(), 1);
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
-                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 1000);
+                EXPECT_NE(erc20Accounts.size(), 0);
+                std::cout << "ERC20 Accounts: " << erc20Accounts.size() << std::endl;
+
                 auto transferData = erc20Accounts[0]->getTransferToAddressData(api::BigInt::fromLong(1), "0xA26FC743509C9f6A6969aD3FE6123327a4b78069");
                 std::cout<<" Transfer Data : "<<hex::toString(transferData)<<std::endl;
+
+                auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                std::cout << "ERC20 Operations: " << operations.size() << std::endl;
+                EXPECT_NE(operations.size(), 0);
+
                 dispatcher->stop();
             });
 

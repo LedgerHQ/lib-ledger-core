@@ -42,6 +42,7 @@
 #include <wallet/common/OperationQuery.h>
 #include <soci.h>
 #include <database/soci-date.h>
+#include <database/query/ConditionQueryFilter.h>
 using namespace soci;
 
 namespace ledger {
@@ -90,8 +91,8 @@ namespace ledger {
             if (! api::Address::isValid(address, _parentCurrency)) {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
-
-            if (getBalance() < amount) {
+            auto balance = getBalance();
+            if ( amount->compare(balance) > 0) {
                 throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
@@ -141,17 +142,16 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
             auto localAccount = _account.lock();
-            auto query = std::dynamic_pointer_cast<AbstractAccount>(localAccount)->queryOperations();
-            auto queryImpl = std::dynamic_pointer_cast<OperationQuery>(query);
-            if (queryImpl) {
-                auto resultFilter = [] (soci::session &sql, const soci::row &row) -> bool {
-                    auto count = 0;
-                    auto opUid = row.get<std::string>(1);
-                    sql << "SELECT COUNT(*) FROM erc20_operations WHERE ethereum_operation_uid = :uid", use(opUid), into(count);
-                    return count > 0;
-                };
-                queryImpl->setResultFilter(resultFilter);
-            }
+            auto accountUid = localAccount->getAccountUid();
+            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("uid", "IS NOT NULL", "", "e");
+            filter->op_and(std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid, "o"));
+            auto query = std::make_shared<ERC20OperationQuery>(
+                    filter,
+                    localAccount->getWallet()->getDatabase(),
+                    localAccount->getWallet()->getContext(),
+                    localAccount->getWallet()->getMainExecutionContext()
+            );
+            query->registerAccount(localAccount);
             return query;
         }
 

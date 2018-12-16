@@ -53,7 +53,11 @@ namespace ledger {
             };
 
             void toString(std::stringstream &ss) const override {
-                ss << _prefixedName << " " << _symbol << " :" << _fieldName;
+                if (_symbol.find("NULL") != std::string::npos) {
+                    ss << _prefixedName << " " << _symbol;
+                } else {
+                    ss << _prefixedName << " " << _symbol << " :" << _fieldName;
+                }
                 if (!isTail()) {
                     switch (getOperatorForNextFilter()) {
                         case QueryFilterOperator::OP_AND :
@@ -74,7 +78,9 @@ namespace ledger {
             }
 
             void bindValue(soci::details::prepare_temp_type &statement) const override {
-                statement, soci::use(_value);
+                if (_symbol.find("NULL") == std::string::npos) {
+                    statement, soci::use(_value);
+                }
                 if (!isTail()) {
                     getNext()->bindValue(statement);
                 }
