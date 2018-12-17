@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
+#include <chrono>
 #include <wallet/common/InMemoryBlockchainDatabase.hpp>
 
 #include <Helpers.hpp>
 
 using namespace ledger::core;
+
+typedef std::vector<BitcoinLikeNetwork::FilledBlock> VFB;
 
 template<typename T>
 static T getFutureResult(const Future<T>& f) {
@@ -43,6 +46,7 @@ static BitcoinLikeNetwork::FilledBlock FB(uint32_t height) {
     BitcoinLikeNetwork::FilledBlock filledBlock;
     filledBlock.header.height = height;
     filledBlock.header.hash = "block hash";
+    filledBlock.header.createdAt = std::chrono::system_clock::time_point(std::chrono::hours(height));
     return filledBlock;
 }
 
@@ -54,79 +58,72 @@ TEST_F(InMemoryBlockchainDatabaseTest, SimpleGet) {
     auto tr = future.getValue();
     EXPECT_TRUE(tr.hasValue());
     auto opt = tr.getValue();
-    //EXPECT_EQ(block.header, opt.getValue().getValue().header);
+    EXPECT_EQ(block, opt.getValue().getValue());
 }
 
-/*
-TEST(InMemoryBlockchainDatabaseTest, GetBlocks) {
-    db::BlockchainDBInMemory db;
-    db.AddBlock(1, { 0x01 });
-    db.AddBlock(3, { 0x03 });
-    db.AddBlock(5, { 0x05 });
-    db.AddBlock(7, { 0x07 });
-    db.AddBlock(9, { 0x09 });
-    db.AddBlock(11, { 0x11 });
-    EXPECT_EQ(Blocks(), getFutureResult(db.GetBlocks(0, 1)));
-    EXPECT_EQ(Blocks({ {0x01} }), getFutureResult(db.GetBlocks(0, 2)));
-    EXPECT_EQ(Blocks({ { 0x01 } }), getFutureResult(db.GetBlocks(0, 3)));
-    EXPECT_EQ(Blocks({ { 0x01 }, { 0x03 } }), getFutureResult(db.GetBlocks(0, 4)));
-    EXPECT_EQ(Blocks({ { 0x01 }, { 0x03 } }), getFutureResult(db.GetBlocks(1, 4)));
-    EXPECT_EQ(Blocks({ { 0x03 } }), getFutureResult(db.GetBlocks(2, 4)));
-    EXPECT_EQ(Blocks({ { 0x03 } }), getFutureResult(db.GetBlocks(3, 4)));
-    EXPECT_EQ(Blocks(), getFutureResult(db.GetBlocks(4, 4)));
-    EXPECT_EQ(Blocks({ { 0x09 }, { 0x11 } }), getFutureResult(db.GetBlocks(9, 20)));
-    EXPECT_EQ(Blocks({ { 0x11 } }), getFutureResult(db.GetBlocks(11, 20)));
-    EXPECT_EQ(Blocks(), getFutureResult(db.GetBlocks(12, 20)));
+TEST_F(InMemoryBlockchainDatabaseTest, GetBlocks) {
+    db.addBlock(FB(1));
+    db.addBlock(FB(3));
+    db.addBlock(FB(5));
+    db.addBlock(FB(7));
+    db.addBlock(FB(9));
+    db.addBlock(FB(11));
+    EXPECT_EQ(VFB{}, getFutureResult(db.getBlocks(0, 1)));
+    EXPECT_EQ(VFB{ FB(1) }, getFutureResult(db.getBlocks(0, 2)));
+    EXPECT_EQ(VFB{ FB(1) }, getFutureResult(db.getBlocks(0, 3)));
+    EXPECT_EQ(VFB({ FB(1), FB(3) }), getFutureResult(db.getBlocks(0, 4)));
+    EXPECT_EQ(VFB({ FB(1), FB(3) }), getFutureResult(db.getBlocks(1, 4)));
+    EXPECT_EQ(VFB({ FB(3) }), getFutureResult(db.getBlocks(2, 4)));
+    EXPECT_EQ(VFB{ FB(3) }, getFutureResult(db.getBlocks(3, 4)));
+    EXPECT_EQ(VFB{}, getFutureResult(db.getBlocks(4, 4)));
+    EXPECT_EQ(VFB({ FB(9), FB(11) }), getFutureResult(db.getBlocks(9, 20)));
+    EXPECT_EQ(VFB{ FB(11) }, getFutureResult(db.getBlocks(11, 20)));
+    EXPECT_EQ(VFB{}, getFutureResult(db.getBlocks(12, 20)));
 }
 
-TEST(InMemoryBlockchainDatabaseTest, GetLastBlock) {
-    db::BlockchainDBInMemory db;
-    db.AddBlock(1, { 0x01 });
-    db.AddBlock(3, { 0x03 });
-    db.AddBlock(5, { 0x05 });
-    db.AddBlock(7, { 0x07 });
-    db.AddBlock(11, { 0x11 });
-    db.AddBlock(9, { 0x09 });
-    EXPECT_EQ(B{0x11}, getOptionFutureResult(db.GetLastBlock()));
-    db.AddBlock(8, { 0x08 });
-    EXPECT_EQ(B{ 0x11 }, getOptionFutureResult(db.GetLastBlock()));
-    db.AddBlock(12, { 0x12 });
-    EXPECT_EQ(B{ 0x12 }, getOptionFutureResult(db.GetLastBlock()));
+TEST_F(InMemoryBlockchainDatabaseTest, GetLastBlock) {
+    db.addBlock(FB(1));
+    db.addBlock(FB(3));
+    db.addBlock(FB(5));
+    db.addBlock(FB(7));
+    db.addBlock(FB(11));
+    db.addBlock(FB(9));
+    EXPECT_EQ(FB(11).header, getOptionFutureResult(db.getLastBlockHeader()));
+    db.addBlock(FB(8));
+    EXPECT_EQ(FB(11).header, getOptionFutureResult(db.getLastBlockHeader()));
+    db.addBlock(FB(12));
+    EXPECT_EQ(FB(12).header, getOptionFutureResult(db.getLastBlockHeader()));
 }
 
-TEST(InMemoryBlockchainDatabaseTest, CleanAll) {
-    db::BlockchainDBInMemory db;
-    db.AddBlock(1, { 0x01 });
-    db.AddBlock(3, { 0x03 });
-    db.AddBlock(5, { 0x05 });
-    db.AddBlock(7, { 0x07 });
-    db.AddBlock(9, { 0x09 });
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x03 }, {0x05}, { 0x07 }, { 0x09 } }), getFutureResult(db.GetBlocks(0, 100)));
+TEST_F(InMemoryBlockchainDatabaseTest, CleanAll) {
+    db.addBlock(FB(1));
+    db.addBlock(FB(3));
+    db.addBlock(FB(5));
+    db.addBlock(FB(7));
+    db.addBlock(FB(9));
+    EXPECT_EQ(VFB({ FB(1), FB(3), FB(5), FB(7), FB(9)}), getFutureResult(db.getBlocks(0, 100)));
     db.CleanAll();
-    EXPECT_EQ(Blocks(), getFutureResult(db.GetBlocks(0, 100)));
+    EXPECT_EQ(VFB{}, getFutureResult(db.getBlocks(0, 100)));
 }
 
-TEST(InMemoryBlockchainDatabaseTest, RemoveBlocks) {
-    db::BlockchainDBInMemory db;
-    db.AddBlock(1, { 0x01 });
-    db.AddBlock(3, { 0x03 });
-    db.AddBlock(5, { 0x05 });
-    db.AddBlock(7, { 0x07 });
-    db.AddBlock(9, { 0x09 });
-    db.AddBlock(11, { 0x11 });
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x03 },{ 0x05 },{ 0x07 },{ 0x09 }, {0x11} }), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(2, 3); // delete nothing
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x03 },{ 0x05 },{ 0x07 },{ 0x09 },{ 0x11 } }), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(2, 5); // delete just 3
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x05 },{ 0x07 },{ 0x09 },{ 0x11 } }), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(2, 5); // delete nothing
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x05 },{ 0x07 },{ 0x09 },{ 0x11 } }), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(11, 100);
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x05 },{ 0x07 },{ 0x09 }}), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(2, 8);
-    EXPECT_EQ(Blocks({ { 0x01 },{ 0x09 } }), getFutureResult(db.GetBlocks(0, 100)));
-    db.RemoveBlocks(1, 10);
-    EXPECT_EQ(Blocks(), getFutureResult(db.GetBlocks(0, 100)));
+TEST_F(InMemoryBlockchainDatabaseTest, RemoveBlocks) {
+    db.addBlock(FB(1));
+    db.addBlock(FB(3));
+    db.addBlock(FB(5));
+    db.addBlock(FB(7));
+    db.addBlock(FB(9));
+    db.addBlock(FB(11));
+    EXPECT_EQ(VFB({ FB(1), FB(3), FB(5), FB(7), FB(9), FB(11) }), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(2, 3); // delete nothing
+    EXPECT_EQ(VFB({ FB(1), FB(3), FB(5), FB(7), FB(9), FB(11) }), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(2, 5); // delete just 3
+    EXPECT_EQ(VFB({ FB(1), FB(5), FB(7), FB(9), FB(11) }), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(2, 5); // delete nothing
+    EXPECT_EQ(VFB({ FB(1), FB(5), FB(7), FB(9), FB(11) }), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(11, 100);
+    EXPECT_EQ(VFB({ FB(1), FB(5), FB(7), FB(9)}), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(2, 8);
+    EXPECT_EQ(VFB({ FB(1), FB(9) }), getFutureResult(db.getBlocks(0, 100)));
+    db.removeBlocks(1, 10);
+    EXPECT_EQ(VFB(), getFutureResult(db.getBlocks(0, 100)));
 }
-
-*/

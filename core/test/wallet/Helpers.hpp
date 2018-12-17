@@ -8,6 +8,15 @@
 
 namespace ledger {
     namespace core {
+        namespace bitcoin {
+            bool operator==(const Block& lhs, const Block& rhs);
+            bool operator==(const Transaction& lhs, const Transaction& rhs);
+            bool operator==(const Input& lhs, const Input& rhs);
+            bool operator==(const Output& lhs, const Output& rhs);
+        }
+
+        bool operator==(const BitcoinLikeNetwork::FilledBlock& lhs, const BitcoinLikeNetwork::FilledBlock& rhs);
+
         namespace tests {
             class SimpleExecutionContext : public api::ExecutionContext {
             public:

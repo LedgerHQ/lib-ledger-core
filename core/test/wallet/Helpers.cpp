@@ -2,6 +2,50 @@
 
 namespace ledger {
     namespace core {
+        namespace bitcoin {
+            bool operator==(const Block& lhs, const Block& rhs) {
+                return (lhs.height == rhs.height)
+                    && (lhs.hash == rhs.hash)
+                    && (lhs.createdAt == rhs.createdAt);
+            };
+            
+            bool operator==(const Input& lhs, const Input& rhs) {
+                return (lhs.address == rhs.address)
+                    && (lhs.coinbase == rhs.coinbase)
+                    && (lhs.index == rhs.index)
+                    && (lhs.previousTxHash == rhs.previousTxHash)
+                    && (lhs.previousTxOutputIndex == rhs.previousTxOutputIndex)
+                    && (lhs.sequence == rhs.sequence)
+                    && (lhs.signatureScript == rhs.signatureScript)
+                    && (lhs.value == rhs.value);
+            };
+
+            bool operator==(const Output& lhs, const Output& rhs) {
+                return (lhs.address == rhs.address)
+                    && (lhs.index == rhs.index)
+                    && (lhs.script == rhs.script)
+                    && (lhs.time == lhs.time)
+                    && (lhs.transactionHash == rhs.transactionHash)
+                    && (lhs.value == rhs.value);
+                
+            };
+
+            bool operator==(const Transaction& lhs, const Transaction& rhs) {
+                return (lhs.hash == rhs.hash)
+                    && (lhs.fees == rhs.fees)
+                    && (lhs.receivedAt == rhs.receivedAt)
+                    && (lhs.confirmations == rhs.confirmations)
+                    && (lhs.lockTime == rhs.lockTime)
+                    && (lhs.inputs == rhs.inputs)
+                    && (lhs.outputs == rhs.outputs);
+            };
+        }
+
+        bool operator==(const BitcoinLikeNetwork::FilledBlock& lhs, const BitcoinLikeNetwork::FilledBlock& rhs) {
+            return (lhs.header == rhs.header)
+                && (lhs.transactions == rhs.transactions);
+        }
+
         namespace tests {
             BitcoinLikeNetwork::Block toBlock(const BL& b) {
                 BitcoinLikeNetwork::Block block;
