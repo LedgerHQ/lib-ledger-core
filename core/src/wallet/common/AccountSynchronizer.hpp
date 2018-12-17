@@ -98,5 +98,5 @@ namespace ledger {
     }
 }
 
-extern template ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>;
-extern template std::shared_ptr<ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>>;
+extern template class ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>;
+extern template class std::shared_ptr<ledger::core::common::AccountSynchronizer<ledger::core::BitcoinLikeNetwork>>;

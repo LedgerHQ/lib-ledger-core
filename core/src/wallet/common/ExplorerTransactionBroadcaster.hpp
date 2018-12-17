@@ -31,7 +31,7 @@ namespace ledger {
                     throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me");
                 }
 
-                void broadcastTransaction(const std::shared_ptr<TransactionToBroadcast> & transaction, const std::shared_ptr<api::StringCallback> & callback) override {
+                void broadcastTransaction(const std::shared_ptr<typename NetworkType::TransactionToBroadcast> & transaction, const std::shared_ptr<api::StringCallback> & callback) override {
                     throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "implement me");
                 }
             };

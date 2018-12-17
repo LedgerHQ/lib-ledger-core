@@ -1,5 +1,3 @@
-#pragma once
-
 #include <wallet/common/InMemoryBlockchainDatabase.hpp>
 #include <async/Future.hpp>
 #include <vector>
@@ -19,7 +17,7 @@ namespace ledger {
             template <typename NetworkType>
             Future<std::vector<typename NetworkType::FilledBlock>> InMemoryBlockchainDatabase<NetworkType>::getBlocks(uint32_t heightFrom, uint32_t heightTo) {
                 std::vector<typename NetworkType::FilledBlock> res;
-                std::transform(_blocks.lower_bound(heightFrom), _blocks.lower_bound(heightTo), std::back_inserter(res), [](const decltype(_blocks)::value_type& it) {return it.second; });
+                std::transform(_blocks.lower_bound(heightFrom), _blocks.lower_bound(heightTo), std::back_inserter(res), [](const typename decltype(_blocks)::value_type& it) {return it.second; });
                 return Future<std::vector<typename NetworkType::FilledBlock>>::successful(res);
             }
 

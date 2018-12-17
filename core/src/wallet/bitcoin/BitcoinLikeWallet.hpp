@@ -50,7 +50,7 @@ namespace ledger {
             class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
             public:
                 static const api::WalletType type;
-                typedef typename TransactionBroadcaster<BitcoinLikeNetwork> TransactionBroadcaster;
+                typedef TransactionBroadcaster<BitcoinLikeNetwork> TransactionBroadcaster;
                 
                 BitcoinLikeWallet(
                     const std::string& name,
