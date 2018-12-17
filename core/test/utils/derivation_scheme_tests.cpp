@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/utils/DerivationScheme.hpp>
+#include <utils/DerivationScheme.hpp>
 
 using namespace ledger::core;
 

@@ -62,7 +62,7 @@ std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> 
     return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes)));
 }
 
-std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(ledger::core::Exception) {
+std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) {
     BigInt intData(0);
     std::vector<uint8_t> prefix;
 

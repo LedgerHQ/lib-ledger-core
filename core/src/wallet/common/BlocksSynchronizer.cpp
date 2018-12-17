@@ -1,5 +1,3 @@
-#pragma once
-
 #include <mutex>
 #include <memory>
 #include <vector>
@@ -90,7 +88,7 @@ namespace ledger {
                     auto state = std::make_shared<BlocksSyncState>(firstBlockHeightToInclude, lastBlockHeightToInclude);
                     bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
                     bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
-                    return executeAll(_executionContext, tasks).map<Unit>(_executionContext, [](const std::vector<Unit>& vu) { return unit; });
+                    return executeAll(_executionContext, tasks).template map<Unit>(_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                 }
 
                 template<typename NetworkType> Future<Unit> BlocksSynchronizer<NetworkType>::createBatchSyncTask(
@@ -165,10 +163,10 @@ namespace ledger {
                     uint32_t to,
                     const std::string& hashToStartRequestFrom,
                     bool isGap) {
-                    auto self = shared_from_this();
+                    auto self = this->shared_from_this();
                     return
                         _explorer->getTransactions(batch->addresses, hashToStartRequestFrom)
-                        .flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const TransactionBulk<NetworkType>& bulk) {
+                        .template flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const TransactionBulk<NetworkType>& bulk) {
                         if (bulk.first.size() == 0) {
                             self->finilizeBatch(state, partialDB, from, to);
                             return Future<Unit>::successful(unit);
@@ -207,7 +205,7 @@ namespace ledger {
                         }
                         tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
                         self->finilizeBatch(state, partialDB, from, to);
-                        return executeAll(self->_executionContext, tasksToContinueWith).map<Unit>(self->_executionContext, [](const std::vector<Unit>& vu) { return unit; });
+                        return executeAll(self->_executionContext, tasksToContinueWith).template map<Unit>(self->_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                     });
                 }
         }

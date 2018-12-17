@@ -8,7 +8,6 @@
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
 #include <wallet/NetworkTypes.hpp>
-#include <wallet/AccountSynchronizer.hpp>
 #include <wallet/common/BlocksSynchronizer.hpp>
 #include <async/FutureUtils.hpp>
 
@@ -63,9 +62,9 @@ namespace ledger {
                     return _notifier;
                 }
                 _notifier = std::make_shared<ProgressNotifier<Unit>>();
-                auto self = shared_from_this();
+                auto self = this->shared_from_this();
                 self->synchronizeBlocks()
-                    .flatMap<Unit>(_executionContext, [self](const Unit& dummy) { return self->synchronizePendingTransactions(); })
+                    .template flatMap<Unit>(_executionContext, [self](const Unit& dummy) { return self->synchronizePendingTransactions(); })
                     .onComplete(_executionContext, [self](const Try<Unit> &result) {
                         std::lock_guard<std::recursive_mutex> l(self->_lock);
                         if (result.isFailure()) {
@@ -86,12 +85,12 @@ namespace ledger {
             }
 
             template <typename NetworkType> Future<Unit> AccountSynchronizer<NetworkType>::synchronizeBlocks() {
-                auto self = shared_from_this();
+                auto self = this->shared_from_this();
                 // try to do explorer and DB request simulteniously
-                Future<HashHeight> explorerRequest = _explorer->getCurrentBlock().map<HashHeight>(_executionContext, [](const Block& block) { return HashHeight{ block.hash, block.height }; });
+                Future<HashHeight> explorerRequest = _explorer->getCurrentBlock().template map<HashHeight>(_executionContext, [](const Block& block) { return HashHeight{ block.hash, block.height }; });
                 auto createLastHHFuture = [blockDB = _stableBlocksDb, executionContext = this->_executionContext, startHash = _config.genesisBlockHash]() {
                     return blockDB->getLastBlockHeader()
-                        .map<HashHeight>(
+                        .template map<HashHeight>(
                             executionContext,
                             [startHash](const Option<Block>& block) {
                                 HashHeight hh{ startHash, 0 };
@@ -101,15 +100,16 @@ namespace ledger {
                                 }
                                 return hh; });
                 };
+                auto futures = std::vector<Future<HashHeight>>{explorerRequest, createLastHHFuture()};
                 return
-                    executeAll(_executionContext, std::vector<Future<HashHeight>>{explorerRequest, createLastHHFuture()})
-                    .flatMap<Unit>(_executionContext, [self, createLastHHFuture](const std::vector<HashHeight>& hhs) {
+                    executeAll(_executionContext, futures)
+                    .template flatMap<Unit>(_executionContext, [self, createLastHHFuture](const std::vector<HashHeight>& hhs) {
                         return self->_stableBlocksSynchronizer->synchronize(
                             hhs[1].hash,
                             hhs[1].height,
                             hhs[0].height - self->_config.maxPossibleUnstableBlocks)
-                            .flatMap<HashHeight>(self->_executionContext, [createLastHHFuture](const Unit& dummy) {return createLastHHFuture(); })
-                            .flatMap<Unit>(self->_executionContext, [self, currentBlockHeight=hhs[0].height](const HashHeight& stableHH) {
+                            .template flatMap<HashHeight>(self->_executionContext, [createLastHHFuture](const Unit& dummy) {return createLastHHFuture(); })
+                            .template flatMap<Unit>(self->_executionContext, [self, currentBlockHeight=hhs[0].height](const HashHeight& stableHH) {
                             self->_unstableBlocksDb->CleanAll();
                             return self->_unstableBlocksSynchronizer->synchronize(stableHH.hash, currentBlockHeight - self->_config.maxPossibleUnstableBlocks + 1, currentBlockHeight);
                         });

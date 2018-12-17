@@ -1,5 +1,3 @@
-#pragma once
-
 #include <wallet/common/PersistentBlockchainDatabase.hpp>
 #include <async/Future.hpp>
 #include <vector>

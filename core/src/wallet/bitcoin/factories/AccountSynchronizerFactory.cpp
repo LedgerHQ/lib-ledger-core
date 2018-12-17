@@ -1,5 +1,3 @@
-#pragma once
-
 #include <memory>
 #include <wallet/bitcoin/factories/AccountSynchronizerFactory.hpp>
 #include <wallet/common/AccountSynchronizer.hpp>
