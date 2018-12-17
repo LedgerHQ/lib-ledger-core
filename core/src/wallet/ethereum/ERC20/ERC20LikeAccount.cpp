@@ -65,12 +65,14 @@ namespace ledger {
         }
 
         std::string ERC20LikeAccount::getAddress() {
+
             return _accountAddress;
         }
 
         std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
             auto result = BigInt::ZERO;
-            for (auto &op : _operations) {
+            auto operations = getOperations();
+            for (auto &op : operations) {
                 if (op->getOperationType() == api::OperationType::RECEIVE) {
                     result = result + BigInt(op->getValue()->toString(10));
                 } else if (op->getOperationType() == api::OperationType::SEND){
@@ -83,7 +85,40 @@ namespace ledger {
 
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getOperations() {
-            return _operations;
+            auto localAccount = _account.lock();
+            soci::session sql (localAccount->getWallet()->getDatabase()->getPool());
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                    " op.type, op.hash, op.nonce, op.value,"
+                    " op.date, op.sender, op.receiver, op.input_data,"
+                    " op.gas_price, op.gas_limit, op.gas_used, op.status"
+                    " FROM erc20_operations AS op"
+                    " WHERE op.account_uid = :account_uid", soci::use(_accountUid));
+            std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
+            for (auto& row : rows) {
+                auto op = std::make_shared<ERC20LikeOperation>();
+                op->setOperationUid(row.get<std::string>(0));
+                op->setETHOperationUid(row.get<std::string>(1));
+                op->setOperationType(api::from_string<api::OperationType>(row.get<std::string>(3)));
+                op->setHash(row.get<std::string>(4));
+                op->setNonce(BigInt::fromHex(row.get<std::string>(5)));
+                op->setValue(BigInt::fromHex(row.get<std::string>(6)));
+                op->setTime(DateUtils::fromJSON(row.get<std::string>(7)));
+                op->setSender(row.get<std::string>(8));
+                op->setReceiver(row.get<std::string>(9));
+                if (row.get_indicator(10) != soci::i_null) {
+                    auto data = row.get<std::string>(10);
+                    auto dataArray = hex::toByteArray(data);
+                    op->setData(dataArray);
+                }
+
+                op->setGasPrice(BigInt::fromHex(row.get<std::string>(11)));
+                op->setGasLimit(BigInt::fromHex(row.get<std::string>(12)));
+                op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
+                auto status = row.get<int32_t>(14);
+                op->setStatus(status);
+                result.emplace_back(op);
+            }
+            return result;
         }
 
         std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
@@ -120,12 +155,14 @@ namespace ledger {
         }
 
         void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
-            auto erc20OpUid = operation->getOperationUid();
-            auto ethOpUid = operation->getETHOperationUid();
-            auto hash = operation->getHash();
-            auto receiver = operation->getReceiver();
-            auto sender = operation->getSender();
             if (newOperation) {
+                auto erc20OpUid = operation->getOperationUid();
+                auto ethOpUid = operation->getETHOperationUid();
+                auto hash = operation->getHash();
+                auto receiver = operation->getReceiver();
+                auto sender = operation->getSender();
+                auto data = hex::toString(operation->getData());
+                auto status = operation->getStatus();
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
                         ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
@@ -133,11 +170,10 @@ namespace ledger {
                         , use(erc20OpUid), use(ethOpUid)
                         , use(_accountUid), use(api::to_string(operation->getOperationType())), use(hash)
                         , use(operation->getNonce()->toString(16)), use(operation->getValue()->toString(16)), use(operation->getTime())
-                        , use(sender), use(receiver), use(hex::toString(operation->getData()))
+                        , use(sender), use(receiver), use(data)
                         , use(operation->getGasPrice()->toString(16)), use(operation->getGasLimit()->toString(16)), use(operation->getUsedGas()->toString(16))
-                        , use(operation->getStatus());
+                        , use(status);
             }
-            _operations.push_back(operation);
         }
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
