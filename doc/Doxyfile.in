@@ -11,9 +11,8 @@ EXCLUDE_PATTERNS       = */build/* \
 FILE_PATTERNS          = *.h \
                          *.cpp
 RECURSIVE              = YES
-#USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
 
-HTML_HEADER = @CMAKE_CURRENT_SOURCE_DIR@/header.html
-HTML_FOOTER = @CMAKE_CURRENT_SOURCE_DIR@/footer.html
-HTML_EXTRA_STYLESHEET = @CMAKE_CURRENT_SOURCE_DIR@/customdoxygen.css
-HTML_EXTRA_FILES = @CMAKE_CURRENT_SOURCE_DIR@/doxy-boot.js
+GENERATE_HTML          = YES
+HTML_COLORSTYLE_SAT    = 50
+HTML_DYNAMIC_SECTIONS  = YES
+IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@
