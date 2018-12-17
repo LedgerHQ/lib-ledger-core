@@ -40,11 +40,9 @@ namespace ledger {
             ERC20LikeOperation::ERC20LikeOperation(const std::string &accountAddress,
                                                    const std::string &operationUid,
                                                    const Operation &operation,
-                                                   const api::ERC20Token &token,
                                                    const api::Currency &currency) {
 
                 auto& tx = operation.ethereumTransaction.getValue();
-                _token = token;
                 _uid = operationUid;
                 _ethUidOperation = operation.uid;
                 _hash = tx.hash;

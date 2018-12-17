@@ -36,6 +36,7 @@
 #include <api/ERC20Token.hpp>
 #include <api/OperationType.hpp>
 #include <wallet/common/Operation.h>
+#include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
@@ -44,7 +45,6 @@ namespace ledger {
             ERC20LikeOperation(const std::string &accountAddress,
                                const std::string &operationUid,
                                const Operation &operation,
-                               const api::ERC20Token &token,
                                const api::Currency &currency);
 
             ERC20LikeOperation() {};
@@ -63,8 +63,64 @@ namespace ledger {
             std::string getOperationUid();
             std::string getETHOperationUid();
             int32_t getStatus() override ;
+
+            void setHash(const std::string &hash) {
+                _hash = hash;
+            };
+
+            void setNonce(const BigInt &nonce) {
+                _nonce = std::make_shared<api::BigIntImpl>(nonce);
+            };
+
+            void setGasPrice(const BigInt &gasPrice) {
+                _gasPrice = std::make_shared<api::BigIntImpl>(gasPrice);
+            };
+
+            void setGasLimit(const BigInt &gasLimit) {
+                _gasLimit = std::make_shared<api::BigIntImpl>(gasLimit);
+            };
+
+            void setUsedGas(const BigInt &usedGas) {
+                _gasUsed = std::make_shared<api::BigIntImpl>(usedGas);
+            };
+
+            void setSender(const std::string &sender) {
+                _sender = sender;
+            };
+
+            void setReceiver(const std::string &receiver) {
+                _receiver = receiver;
+            };
+
+            void setValue(const BigInt &value) {
+                _value = std::make_shared<api::BigIntImpl>(value);
+            };
+
+            void setData(const std::vector<uint8_t> &data) {
+                _data = data;
+            };
+
+            void setTime(const std::chrono::system_clock::time_point& time) {
+                _time = time;
+            };
+
+            void setOperationType(api::OperationType type) {
+                _operationType = type;
+            };
+
+            void setOperationUid(const std::string &operationUid) {
+                _uid = operationUid;
+            };
+
+            void setETHOperationUid(const std::string &ethOperationUid) {
+                _ethUidOperation = ethOperationUid;
+            };
+
+            void setStatus(int32_t status) {
+                _status = status;
+            };
+            
         private:
-            api::ERC20Token _token;
             std::string _uid;
             std::string _ethUidOperation;
             std::string _hash;

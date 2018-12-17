@@ -163,7 +163,7 @@ namespace ledger {
                 }
 
                 auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20Token.contractAddress, operation.type);
-                auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, erc20OperationUid, operation, erc20Token, getWallet()->getCurrency());
+                auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, erc20OperationUid, operation, getWallet()->getCurrency());
                 auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20Token.contractAddress);
 
                 auto erc20OpCount = 0;

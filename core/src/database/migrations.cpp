@@ -268,7 +268,7 @@ namespace ledger {
                     "gas_price VARCHAR(255) NOT NULL,"
                     "gas_limit VARCHAR(255) NOT NULL,"
                     "gas_used VARCHAR(255) NOT NULL,"
-                    "status BIGINT NOT NULL"
+                    "status INTEGER NOT NULL"
                     ")";
 
             sql << "CREATE TABLE erc20_tokens("

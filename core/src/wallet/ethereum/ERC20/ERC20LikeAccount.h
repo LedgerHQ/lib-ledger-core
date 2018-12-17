@@ -81,7 +81,6 @@ namespace ledger {
         private:
             api::ERC20Token _token;
             std::string _accountAddress;
-            std::vector<std::shared_ptr<api::ERC20LikeOperation>> _operations;
             api::Currency _parentCurrency;
             std::string _accountUid;
             std::weak_ptr<EthereumLikeAccount> _account;
