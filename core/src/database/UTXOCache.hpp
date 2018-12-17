@@ -86,7 +86,7 @@ namespace ledger {
             };
 
             UTXOCache(uint32_t lowestHeight);
-            virtual ~UTXOCache();
+            virtual ~UTXOCache() = default;
 
             /// Get the list of cached UTXOs.
             ///
