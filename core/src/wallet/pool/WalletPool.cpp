@@ -57,7 +57,7 @@ namespace ledger {
 
             // Preferences encryption
             auto prefEncryption = _password.map<PreferencesEncryption>([=](const std::string& p) {
-                return PreferencesEncryption(rng, p);
+                return PreferencesEncryption(rng, p, name);
             });
 
             // File system management

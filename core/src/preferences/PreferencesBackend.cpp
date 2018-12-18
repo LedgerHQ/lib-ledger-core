@@ -34,17 +34,38 @@
 #include <leveldb/write_batch.h>
 #include <cstring>
 #include <leveldb/env.h>
-#include "../crypto/AESCipher.hpp"
 #include <iterator>
 
 namespace ledger {
     namespace core {
+        namespace {
+            // number of iteration to perform for PBKDF2
+            const auto PBKDF2_ITERS = 10000; // see https://pages.nist.gov/800-63-3/sp800-63b.html#sec5
+        }
 
-        // number of iteration to perform for PBKDF2
-        const auto PBKDF2_ITERS = 10000; // see https://pages.nist.gov/800-63-3/sp800-63b.html#sec5
+        PreferencesChange::PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v)
+            : type(t), key(k), value(v) {
+        }
+
+        PreferencesEncryption::PreferencesEncryption(std::shared_ptr<api::RandomNumberGenerator> rng, const std::string& password, const std::string& salt)
+            : rng(rng), password(password), salt(salt) {
+        }
 
         std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
         std::mutex PreferencesBackend::LEVELDB_INSTANCE_POOL_MUTEX;
+
+        PreferencesBackend::PreferencesBackend(const std::string &path,
+                                               const std::shared_ptr<api::ExecutionContext>& writingContext,
+                                               const std::shared_ptr<api::PathResolver> &resolver,
+                                               Option<PreferencesEncryption> encryption) {
+            _context = writingContext;
+            _db = obtainInstance(resolver->resolvePreferencesPath(path));
+
+            // if an encryption setup was passed, initialize the AES cipher for future use
+            if (encryption.hasValue()) {
+                _cipher = AESCipher(encryption->rng, encryption->password, encryption->salt, PBKDF2_ITERS);
+            }
+        }
 
         std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
             std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
@@ -67,15 +88,6 @@ namespace ledger {
             return instance;
         }
 
-        PreferencesBackend::PreferencesBackend(const std::string &path,
-                                               const std::shared_ptr<api::ExecutionContext>& writingContext,
-                                               const std::shared_ptr<api::PathResolver> &resolver,
-                                               Option<PreferencesEncryption> encryption) {
-            _context = writingContext;
-            _db = obtainInstance(resolver->resolvePreferencesPath(path));
-            _encryption = encryption;
-        }
-
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
             auto db = _db;
             leveldb::WriteBatch batch;
@@ -84,8 +96,8 @@ namespace ledger {
             for (auto& item : changes) {
                 leveldb::Slice k((const char *)item.key.data(), item.key.size());
                 if (item.type == PreferencesChangeType::PUT_TYPE) {
-                    if (_encryption.hasValue()) {
-                        auto encrypted = encrypt_preferences_change(_encryption->rng, _encryption->password, item);
+                    if (_cipher.hasValue()) {
+                        auto encrypted = encrypt_preferences_change(item);
                         leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
                         batch.Put(k, v);
                     } else {
@@ -99,15 +111,15 @@ namespace ledger {
             db->Write(options, &batch);
         }
 
-        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
+        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) {
             leveldb::Slice k((const char *)key.data(), key.size());
             std::string value;
 
             auto status = _db->Get(leveldb::ReadOptions(), k, &value);
             if (status.ok()) {
-                if (_encryption.hasValue()) {
+                if (_cipher.hasValue()) {
                     auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
-                    auto plaindata = decrypt_preferences_change(_encryption->rng, _encryption->password, key, ciphertext);
+                    auto plaindata = decrypt_preferences_change(ciphertext);
                     auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
 
                     return optional<std::string>(plaintext);
@@ -138,39 +150,18 @@ namespace ledger {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
 
-        // Encrypt a preference change.
-        std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
-            const std::shared_ptr<api::RandomNumberGenerator>& rng,
-            const std::string& password,
-            const PreferencesChange& change
-        ) {
-          // Create an AES256 cipher
-          const auto salt = std::string(std::begin(change.key), std::end(change.key));
-          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
-
-          // encrypt
+        std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {
           auto input = BytesReader(change.value);
           auto output = BytesWriter();
-          cipher.encrypt(input, output);
+          _cipher->encrypt(input, output);
 
           return output.toByteArray();
         }
 
-        // Decrypt a preference change value.
-        std::vector<uint8_t> PreferencesBackend::decrypt_preferences_change(
-            const std::shared_ptr<api::RandomNumberGenerator>& rng,
-            const std::string& password,
-            const std::vector<uint8_t>& key,
-            const std::vector<uint8_t>& data
-        ) {
-          // Create an AES256 cipher
-          const auto salt = std::string(std::begin(key), std::end(key));
-          auto cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
-
-          // decrypt
+        std::vector<uint8_t> PreferencesBackend::decrypt_preferences_change(const std::vector<uint8_t>& data) {
           auto input = BytesReader(data);
           auto output = BytesWriter();
-          cipher.decrypt(input, output);
+          _cipher->decrypt(input, output);
 
           return output.toByteArray();
         }

@@ -47,6 +47,7 @@
 #include <mutex>
 #include <api/RandomNumberGenerator.hpp>
 #include <utils/Option.hpp>
+#include <crypto/AESCipher.hpp>
 
 namespace ledger {
     namespace core {
@@ -62,20 +63,15 @@ namespace ledger {
             std::vector<uint8_t> value;
 
             PreferencesChange() = default;
-
-            PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v)
-                : type(t), key(k), value(v) {
-            }
+            PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v);
         };
 
         struct PreferencesEncryption {
             std::shared_ptr<api::RandomNumberGenerator> rng;
             std::string password;
+            std::string salt;
 
-            PreferencesEncryption(std::shared_ptr<api::RandomNumberGenerator> rng, const std::string& password):
-                rng(rng), password(password) {
-            }
-
+            PreferencesEncryption(std::shared_ptr<api::RandomNumberGenerator> rng, const std::string& password, const std::string& salt);
             ~PreferencesEncryption() = default;
         };
 
@@ -92,28 +88,19 @@ namespace ledger {
 
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
-            optional<std::string> get(const std::vector<uint8_t>& key) const;
+            optional<std::string> get(const std::vector<uint8_t>& key);
             void commit(const std::vector<PreferencesChange>& changes);
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
-            Option<PreferencesEncryption> _encryption;
+            Option<AESCipher> _cipher;
 
             // helper method used to encrypt things we want to put in leveldb
-            static std::vector<uint8_t> encrypt_preferences_change(
-                const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::string& password,
-                const PreferencesChange& change
-            );
+            std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
 
             // helper method used to decrypt things we want to retrieve from leveldb
-            static std::vector<uint8_t> decrypt_preferences_change(
-                const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::string& password,
-                const std::vector<uint8_t>& key,
-                const std::vector<uint8_t>& data
-            );
+            std::vector<uint8_t> decrypt_preferences_change(const std::vector<uint8_t>& data);
 
             static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;
