@@ -60,6 +60,11 @@ cmake -DTARGET_JNI=ON
 
 This will add JNI files to the library compilation and remove tests. You need at least a JDK 7 to build for JNI (OpenJDK or Oracle JDK)
 
+## Documentation
+
+You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`
+with makefiles).
+
 ## Binding to node JS
 
 Generate binding (under `build/Release/ledgerapp_nodejs.node`):
