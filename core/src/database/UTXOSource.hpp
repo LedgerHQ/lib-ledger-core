@@ -1,6 +1,6 @@
 /*
  *
- * UTXOCache
+ * UTXOSource
  * ledger-core
  *
  * Created by Dimitri Sabadie on 13/12/2018.
@@ -32,6 +32,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -42,13 +43,13 @@
 
 namespace ledger {
     namespace core {
-        /// An UTXO cache (Bitcoin-like currencies only).
+        /// An UTXO source (Bitcoin-like currencies only).
         ///
-        /// The Backend type template parameter must provide:
-        ///
-        ///   - A typename to represent iterators over UTXO in the implementation.
-        struct UTXOCache {
-            /// A UTXO key, indexing a certain amount of satoshis (bitcoin fraction) in the blockchain.
+        /// Such a type represents a *source* of UTXO. That is, an abstracted way to get a set of
+        /// UTXOs. It might take the set from a database, from a cache, invent them on the fly, etc.
+        struct UTXOSource {
+            /// An UTXO key, indexing a certain amount of satoshis (bitcoin fraction) in the
+            /// blockchain.
             ///
             /// You typically find a UTXOKey attached (std::pair) with a UTXOValue.
             struct Key {
@@ -75,7 +76,7 @@ namespace ledger {
                 }
             };
 
-            /// A UTXO value, giving the amount of satoshis received on a given address.
+            /// An UTXO value, giving the amount of satoshis received on a given address.
             struct Value {
                 /// Amount of satoshis.
                 BigInt satoshis;
@@ -85,45 +86,36 @@ namespace ledger {
                 Value(BigInt satoshis, const std::string& address);
             };
 
-            UTXOCache(uint32_t lowestHeight);
-            virtual ~UTXOCache() = default;
+            /// An UTXO source list.
+            ///
+            /// Such a set will contain a list of UTXO that are available for use in this source and
+            /// a list of UTXOs that have been sent in the source but are unknown (they might come
+            /// from other sources).
+            struct SourceList {
+                std::map<Key, Value> available; ///< Available UTXOs.
+                std::vector<Key> spent; ///< Spent UTXOs we don’t know / can’t resolve (yet).
 
-            /// Get the list of cached UTXOs.
+                SourceList(std::map<Key, Value>&& available, std::vector<Key>&& spent);
+            };
+
+            virtual ~UTXOSource() = default;
+
+            /// Get the list of UTXOs from this source.
             ///
             /// The vector of string is a list of all known addresses (both input and outputs) that
             /// were used in past transactions.
             virtual void getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
                 const std::vector<std::string>& addresses,
-                std::function<void (std::vector<std::pair<Key, Value>>)> onUTXOs
+                std::function<void (SourceList&&)> onUTXOs
             ) = 0;
 
-            /// Invalidate the whole UTXO cache.
-            virtual void invalidate() = 0;
-
-            /// Get the last block we synchronized with.
-            uint32_t getLastHeight();
-
-            /// Get the lowest block we synchronize with. This asserts that no UTXO could be found
-            /// in any previous blocks.
-            uint32_t getLowestHeight();
-
-        protected:
-            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
-            uint32_t _lowestHeight;
-
-            /// Height of the last block in which we can find our UTXOs.
-            uint32_t _lastHeight;
-
-            /// Update the last known block height.
+            /// Invalidate the UTXO source.
             ///
-            /// Call this function in derived implementations whenever you’re done synchronizing
-            /// with blocks. This will help to create smarter blocks difference the next time a
-            /// get is performed and is the key concept to implementing such a caching mechanism.
-            ///
-            /// If you provide a height that is less than the one already known, the height won’t be
-            /// updated. If you intended to reset the cache, use the invalidate() function.
-            void updateLastHeight(uint32_t lastHeight);
+            /// This method is provided for convenience and you don’t have to implement it. By
+            /// default, it does nothing. You might implement it to “reset” your source if your
+            /// source supports such a mechanism (e.g. a cache invalidation).
+            virtual void invalidate();
         };
     }
 }

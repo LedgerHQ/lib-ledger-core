@@ -1,6 +1,6 @@
 /*
  *
- * UTXOCacheMemoryMap
+ * UTXOSourceInMemory
  * ledger-core
  *
  * Created by Dimitri Sabadie on 13/12/2018.
@@ -37,41 +37,47 @@
 #include <vector>
 
 #include <api/ExecutionContext.hpp>
-#include <database/UTXOCache.hpp>
+#include <database/UTXOSource.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
-
-        /// An in-memory (map) implementation of database::UTXOCache.
-        class UTXOCacheMemoryMap: public UTXOCache, public std::enable_shared_from_this<UTXOCacheMemoryMap> {
-            typedef std::map<UTXOCache::Key, UTXOCache::Value> UTXOMemoryMap;
+        /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
+        class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
+            typedef std::map<UTXOSource::Key, UTXOSource::Value> UTXOMap;
 
             /// UTXOs.
-            UTXOMemoryMap _cache;
+            UTXOMap _cache;
+
             /// Blockchain database used to retreive UTXO.
             std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
 
+            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
+            uint32_t _lowestHeight;
+
+            /// Height of the last block in which we can find our UTXOs.
+            uint32_t _lastHeight;
+
         public:
             /// Build an in-memory cache.
-            UTXOCacheMemoryMap(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
+            explicit UTXOSourceInMemory(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
 
             /// Build an in-memory cache by optimizing the number of blocks needed to recover the
             /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
             /// prior to the block height you pass.
-            UTXOCacheMemoryMap(
+            UTXOSourceInMemory(
                 std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
                 uint32_t lowestHeight
             );
 
-            ~UTXOCacheMemoryMap() = default;
+            ~UTXOSourceInMemory() = default;
 
             /// Get the cached UTXO.
             void getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
                 const std::vector<std::string>& addresses,
-                std::function<void (std::vector<std::pair<UTXOCache::Key, UTXOCache::Value>>)> onUTXOs
+                std::function<void (UTXOSource::SourceList&&)> onUTXOs
             ) override;
 
             /// Invalidate the UTXO cache.
