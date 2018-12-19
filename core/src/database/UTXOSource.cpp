@@ -8,11 +8,8 @@ namespace ledger {
             : amount(amount), address(address) {
         }
 
-        UTXOSource::SourceList::SourceList(std::map<Key, Value>&& available, std::vector<Key>&& spent)
+        UTXOSource::SourceList::SourceList(std::map<Key, Value>&& available, std::set<Key>&& spent)
             : available(available), spent(spent) {
-        }
-
-        void UTXOSource::invalidate() {
         }
     }
 }

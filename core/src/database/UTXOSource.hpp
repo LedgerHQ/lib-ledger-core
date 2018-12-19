@@ -34,11 +34,12 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include <api/ExecutionContext.hpp>
+#include <async/Future.hpp>
 #include <math/BigInt.h>
 
 namespace ledger {
@@ -71,29 +72,21 @@ namespace ledger {
             /// from other sources).
             struct SourceList {
                 std::map<Key, Value> available; ///< Available UTXOs.
-                std::vector<Key> spent; ///< Spent UTXOs we don’t know / can’t resolve (yet).
+                std::set<Key> spent; ///< Spent UTXOs we don’t know / can’t resolve (yet).
 
-                SourceList(std::map<Key, Value>&& available, std::vector<Key>&& spent);
+                SourceList(std::map<Key, Value>&& available, std::set<Key>&& spent);
             };
 
             virtual ~UTXOSource() = default;
 
             /// Get the list of UTXOs from this source.
             ///
-            /// The vector of string is a list of all known addresses (both input and outputs) that
+            /// The set of string is a list of all known addresses (both input and outputs) that
             /// were used in past transactions.
-            virtual void getUTXOs(
+            virtual Future<SourceList> getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
-                const std::vector<std::string>& addresses,
-                std::function<void (SourceList&&)> onUTXOs
+                const std::set<std::string>& addresses
             ) = 0;
-
-            /// Invalidate the UTXO source.
-            ///
-            /// This method is provided for convenience and you don’t have to implement it. By
-            /// default, it does nothing. You might implement it to “reset” your source if your
-            /// source supports such a mechanism (e.g. a cache invalidation).
-            virtual void invalidate();
         };
     }
 }

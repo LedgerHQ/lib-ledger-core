@@ -13,19 +13,18 @@ namespace ledger {
         ): _lowestHeight(lowestHeight), _lastHeight(std::max(1u, lowestHeight) - 1), _blockDB(blockDB) {
         }
 
-        void UTXOSourceInMemory::getUTXOs(
+        Future<UTXOSource::SourceList> UTXOSourceInMemory::getUTXOs(
             std::shared_ptr<api::ExecutionContext> ctx,
-            const std::vector<std::string>& addresses,
-            std::function<void (UTXOSource::SourceList&&)> onUTXOs
+            const std::set<std::string>& addresses
         ) {
             auto self = shared_from_this();
 
             // get the last block height
-            _blockDB->getLastBlockHeader().foreach(ctx, [&](Option<BitcoinLikeNetwork::Block>& lastBlock) {
+            return _blockDB->getLastBlockHeader().map<UTXOSource::SourceList>(ctx, [&](const Option<BitcoinLikeNetwork::Block>& lastBlock) {
                 // compute the list of blocks we need to retreive
                 if (lastBlock) {
                     auto currentHeight = lastBlock->height;
-                    auto spent = std::vector<UTXOSource::Key>();
+                    auto spent = std::set<UTXOSource::Key>();
 
                     if (currentHeight > self->_lastHeight) {
                         // there are blocks we don’t know about
@@ -47,7 +46,7 @@ namespace ledger {
                                                 self->_cache.erase(it);
                                             } else {
                                                 // unused key, store it
-                                                spent.push_back(std::move(key));
+                                                spent.insert(std::move(key));
                                             }
                                         }
                                     }
@@ -82,7 +81,10 @@ namespace ledger {
 
                     // create the resulting UTXO source list
                     auto sourceList = SourceList(std::move(utxos), std::move(spent));
-                    onUTXOs(std::move(sourceList));
+                    return sourceList;
+                } else {
+                    // no data, just return nothing
+                    return SourceList({}, {});
                 }
             });
         }

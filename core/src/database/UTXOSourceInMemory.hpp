@@ -33,8 +33,8 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
-#include <vector>
 
 #include <api/ExecutionContext.hpp>
 #include <database/UTXOSource.hpp>
@@ -74,14 +74,13 @@ namespace ledger {
             ~UTXOSourceInMemory() = default;
 
             /// Get the cached UTXO.
-            void getUTXOs(
+            Future<UTXOSource::SourceList> getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
-                const std::vector<std::string>& addresses,
-                std::function<void (UTXOSource::SourceList&&)> onUTXOs
+                const std::set<std::string>& addresses
             ) override;
 
             /// Invalidate the UTXO cache.
-            void invalidate() override;
+            void invalidate();
         };
     }
 }
