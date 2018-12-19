@@ -1,6 +1,7 @@
 #include <wallet/common/InMemoryBlockchainDatabase.hpp>
 #include <async/Future.hpp>
 #include <vector>
+#include <iterator>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 
