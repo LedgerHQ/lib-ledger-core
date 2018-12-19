@@ -43,12 +43,18 @@
 
 namespace ledger {
     namespace core {
+        // forward declaration
+        struct KeychainRegistry;
+
         /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
         class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
             typedef std::map<UTXOSource::Key, UTXOSource::Value> UTXOMap;
 
             /// UTXOs.
             UTXOMap _cache;
+
+            /// The keychain registry to check addresses against.
+            std::shared_ptr<KeychainRegistry> _keychainRegistry;
 
             /// Blockchain database used to retreive UTXO.
             std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
@@ -61,23 +67,24 @@ namespace ledger {
 
         public:
             /// Build an in-memory cache.
-            explicit UTXOSourceInMemory(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
+            UTXOSourceInMemory(
+                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                std::shared_ptr<KeychainRegistry> keychainRegistry
+            );
 
             /// Build an in-memory cache by optimizing the number of blocks needed to recover the
             /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
             /// prior to the block height you pass.
             UTXOSourceInMemory(
                 std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                std::shared_ptr<KeychainRegistry> keychainRegistry,
                 uint32_t lowestHeight
             );
 
             ~UTXOSourceInMemory() = default;
 
             /// Get the cached UTXO.
-            Future<UTXOSource::SourceList> getUTXOs(
-                std::shared_ptr<api::ExecutionContext> ctx,
-                const std::set<std::string>& addresses
-            ) override;
+            Future<UTXOSource::SourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) override;
 
             /// Invalidate the UTXO cache.
             void invalidate();
