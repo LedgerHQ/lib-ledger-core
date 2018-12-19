@@ -1,22 +1,24 @@
 #include <database/UTXOSourceInMemory.hpp>
 #include <wallet/NetworkTypes.hpp>
+#include <wallet/Keychain.hpp>
 
 namespace ledger {
     namespace core {
-        UTXOSourceInMemory::UTXOSourceInMemory(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB)
-            : UTXOSourceInMemory(blockDB, 0) {
+        UTXOSourceInMemory::UTXOSourceInMemory(
+            std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+            std::shared_ptr<KeychainRegistry> keychainRegistry
+        ): UTXOSourceInMemory(blockDB, keychainRegistry, 0) {
         }
 
         UTXOSourceInMemory::UTXOSourceInMemory(
             std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+            std::shared_ptr<KeychainRegistry> keychainRegistry,
             uint32_t lowestHeight
-        ): _lowestHeight(lowestHeight), _lastHeight(std::max(1u, lowestHeight) - 1), _blockDB(blockDB) {
+        ): _keychainRegistry(keychainRegistry), _lowestHeight(lowestHeight),
+           _lastHeight(std::max(1u, lowestHeight) - 1), _blockDB(blockDB) {
         }
 
-        Future<UTXOSource::SourceList> UTXOSourceInMemory::getUTXOs(
-            std::shared_ptr<api::ExecutionContext> ctx,
-            const std::set<std::string>& addresses
-        ) {
+        Future<UTXOSource::SourceList> UTXOSourceInMemory::getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) {
             auto self = shared_from_this();
 
             // get the last block height
@@ -55,8 +57,7 @@ namespace ledger {
                                     for (auto output : tr.outputs) {
                                         if (output.address.hasValue()) {
                                             // check whether this is about one of our public keys
-                                            auto address = std::find(std::begin(addresses), std::end(addresses), *output.address);
-                                            if (address != std::end(addresses)) {
+                                            if (_keychainRegistry->containsAddress(output.address.getValue())) {
                                                 auto hashTX = output.transactionHash;
                                                 auto index = output.index;
                                                 auto key = std::make_pair(hashTX, index);
