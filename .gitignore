@@ -22,3 +22,5 @@ node_modules
 api/djinni/support-lib/*.mk
 api/djinni/support-lib/*.Makefile
 .vscode/
+
+Testing/
