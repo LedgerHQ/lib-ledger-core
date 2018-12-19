@@ -11,8 +11,6 @@ if (APPLE)
 endif (APPLE)
 
 
-add_compile_definitions(LIBCORE_EXPORT=)
-
 add_executable(ledger-networktype-serialization-test
 main.cpp 
 bitcoin_test.cpp
