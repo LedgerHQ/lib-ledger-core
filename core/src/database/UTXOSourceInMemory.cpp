@@ -37,7 +37,7 @@ namespace ledger {
                                         if (input.previousTxHash.hasValue()) {
                                             auto hashTX = *input.previousTxHash;
                                             auto index = *input.previousTxOutputIndex;
-                                            auto key = UTXOSource::Key(hashTX, index);
+                                            auto key = std::make_pair(hashTX, index);
                                             auto it = self->_cache.find(key);
 
                                             if (it != std::end(self->_cache)) {
@@ -60,7 +60,7 @@ namespace ledger {
                                             if (address != std::end(addresses)) {
                                                 auto hashTX = output.transactionHash;
                                                 auto index = output.index;
-                                                auto key = UTXOSource::Key(hashTX, index);
+                                                auto key = std::make_pair(hashTX, index);
                                                 auto value = UTXOSource::Value(output.value, *output.address);
 
                                                 // in theory, we don’t have to check whether this UTXO
