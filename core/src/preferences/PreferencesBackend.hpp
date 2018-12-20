@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_PREFERENCESBACKEND_HPP
 #define LEDGER_CORE_PREFERENCESBACKEND_HPP
 
@@ -66,22 +67,12 @@ namespace ledger {
             PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v);
         };
 
-        struct PreferencesEncryption {
-            std::shared_ptr<api::RandomNumberGenerator> rng;
-            std::string password;
-            std::string salt;
-
-            PreferencesEncryption(std::shared_ptr<api::RandomNumberGenerator> rng, const std::string& password, const std::string& salt);
-            ~PreferencesEncryption() = default;
-        };
-
         class PreferencesBackend {
         public:
             PreferencesBackend(
                 const std::string& path,
                 const std::shared_ptr<api::ExecutionContext>& writingContext,
-                const std::shared_ptr<api::PathResolver>& resolver,
-                Option<PreferencesEncryption> encryption 
+                const std::shared_ptr<api::PathResolver>& resolver
             );
 
             ~PreferencesBackend() = default;
@@ -90,6 +81,12 @@ namespace ledger {
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
             optional<std::string> get(const std::vector<uint8_t>& key);
             void commit(const std::vector<PreferencesChange>& changes);
+
+            // Turn encryption on for all future uses.
+            void setEncryption(
+                const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                const std::string& password 
+            );
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;
@@ -109,6 +106,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_PREFERENCESBACKEND_HPP

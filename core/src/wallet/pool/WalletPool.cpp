@@ -55,11 +55,6 @@ namespace ledger {
             _password = password;
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
-            // Preferences encryption
-            auto prefEncryption = _password.map<PreferencesEncryption>([=](const std::string& p) {
-                return PreferencesEncryption(rng, p, name);
-            });
-
             // File system management
             _pathResolver = pathResolver;
 
@@ -73,18 +68,22 @@ namespace ledger {
             _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
                 fmt::format("/{}/preferences.db", _poolName),
                 getContext(),
-                _pathResolver,
-                prefEncryption
+                _pathResolver
             );
             _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
                 fmt::format("/{}/__preferences__.db", _poolName),
                 getContext(),
-                _pathResolver,
-                prefEncryption
+                _pathResolver
             );
 
-            _logPrinter = logPrinter;
+            // Encrypt the preferences, if needed
+            if (password.hasValue()) {
+                _externalPreferencesBackend->setEncryption(rng, *password);
+                _internalPreferencesBackend->setEncryption(rng, *password);
+            }
+
             // Logger management
+            _logPrinter = logPrinter;
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),

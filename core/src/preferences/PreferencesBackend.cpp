@@ -47,24 +47,14 @@ namespace ledger {
             : type(t), key(k), value(v) {
         }
 
-        PreferencesEncryption::PreferencesEncryption(std::shared_ptr<api::RandomNumberGenerator> rng, const std::string& password, const std::string& salt)
-            : rng(rng), password(password), salt(salt) {
-        }
-
         std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
         std::mutex PreferencesBackend::LEVELDB_INSTANCE_POOL_MUTEX;
 
         PreferencesBackend::PreferencesBackend(const std::string &path,
                                                const std::shared_ptr<api::ExecutionContext>& writingContext,
-                                               const std::shared_ptr<api::PathResolver> &resolver,
-                                               Option<PreferencesEncryption> encryption) {
+                                               const std::shared_ptr<api::PathResolver> &resolver) {
             _context = writingContext;
             _db = obtainInstance(resolver->resolvePreferencesPath(path));
-
-            // if an encryption setup was passed, initialize the AES cipher for future use
-            if (encryption.hasValue()) {
-                _cipher = AESCipher(encryption->rng, encryption->password, encryption->salt, PBKDF2_ITERS);
-            }
         }
 
         std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
@@ -166,6 +156,29 @@ namespace ledger {
 
         std::shared_ptr<Preferences> PreferencesBackend::getPreferences(const std::string &name) {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
+        }
+
+        void PreferencesBackend::setEncryption(
+            const std::shared_ptr<api::RandomNumberGenerator>& rng,
+            const std::string& password
+        ) {
+            // disable encryption to check whether we have a salt already persisted
+            _cipher = Option<AESCipher>::NONE;
+
+            auto emptySalt = std::string("");
+            auto pref = getPreferences("__core");
+            auto salt = pref->getString("preferences.backend.salt", emptySalt);
+
+            if (salt == emptySalt) {
+                // we don’t have a proper salt; create one and persist it for future use
+                auto bytes = rng->getRandomBytes(128);
+                
+                salt = std::string(std::begin(bytes), std::end(bytes));
+                pref->editor()->putString("preferences.backend.salt", salt);
+            }
+
+            // create the AES cipher
+            _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {
