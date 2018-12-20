@@ -37,15 +37,16 @@
 #include <string>
 
 #include <api/ExecutionContext.hpp>
-#include <database/UTXOSource.hpp>
+#include <wallet/bitcoin/UTXOSource.hpp>
 #include <wallet/BlockchainDatabase.hpp>
 #include <wallet/NetworkTypes.hpp>
 
 namespace ledger {
     namespace core {
+    namespace bitcoin {
         /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
         class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
-            typedef std::map<UTXOSource::Key, UTXOSource::Value> UTXOMap;
+            typedef std::map<UTXOKey, UTXOValue> UTXOMap;
 
             /// UTXOs.
             UTXOMap _cache;
@@ -74,7 +75,7 @@ namespace ledger {
             ~UTXOSourceInMemory() = default;
 
             /// Get the cached UTXO.
-            Future<UTXOSource::SourceList> getUTXOs(
+            Future<UTXOSourceList> getUTXOs(
                 std::shared_ptr<api::ExecutionContext> ctx,
                 const std::set<std::string>& addresses
             ) override;
@@ -82,5 +83,6 @@ namespace ledger {
             /// Invalidate the UTXO cache.
             void invalidate();
         };
+    }
     }
 }
