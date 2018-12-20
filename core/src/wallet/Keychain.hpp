@@ -19,5 +19,14 @@ namespace ledger {
             virtual std::vector<std::string> getAddresses(uint32_t startIndex, uint32_t count) = 0;
             virtual void markAsUsed(const std::string& address) = 0;
         };
+
+        /// A keychain registry, aggregating information about keychains and giving access to
+        /// all addresses.
+        struct KeychainRegistry {
+            virtual ~KeychainRegistry() {}
+
+            /// Check that this registry contains the 
+            virtual bool containsAddress(const std::string& address) = 0;
+        };
     }
 }

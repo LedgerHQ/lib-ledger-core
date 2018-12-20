@@ -1,5 +1,6 @@
 #pragma once
 
+#include <async/Future.hpp>
 #include <map>
 #include <wallet/bitcoin/UTXO.hpp>
 
@@ -9,7 +10,7 @@ namespace ledger {
             class UTXOService {
             public:
                 virtual ~UTXOService() = default;
-                virtual std::map<UTXOKey, UTXOValue> getUTXOs() = 0;
+                virtual Future<std::map<UTXOKey, UTXOValue>> getUTXOs() = 0;
             };
         }
     }

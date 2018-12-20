@@ -32,7 +32,7 @@ namespace ledger {
             struct UTXOSourceList {
                 std::map<UTXOKey, UTXOValue> available; ///< Available UTXOs.
                 std::set<UTXOKey> spent; ///< Spent UTXOs we don’t know / can’t resolve (yet).
-
+                UTXOSourceList() = default;
                 UTXOSourceList(std::map<UTXOKey, UTXOValue>&& available, std::set<UTXOKey>&& spent);
             };
         }

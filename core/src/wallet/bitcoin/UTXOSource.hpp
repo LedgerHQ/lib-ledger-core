@@ -57,10 +57,7 @@ namespace ledger {
                 ///
                 /// The set of string is a list of all known addresses (both input and outputs) that
                 /// were used in past transactions.
-                virtual Future<UTXOSourceList> getUTXOs(
-                    std::shared_ptr<api::ExecutionContext> ctx,
-                    const std::set<std::string>& addresses
-                ) = 0;
+                virtual Future<UTXOSourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) = 0;
             };
         }
     }

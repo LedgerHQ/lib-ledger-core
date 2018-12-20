@@ -43,46 +43,54 @@
 
 namespace ledger {
     namespace core {
-    namespace bitcoin {
-        /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
-        class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
-            typedef std::map<UTXOKey, UTXOValue> UTXOMap;
+        // forward declaration
+        struct KeychainRegistry;
 
-            /// UTXOs.
-            UTXOMap _cache;
+        namespace bitcoin {
+            
+            /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
+            class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
+                typedef std::map<UTXOKey, UTXOValue> UTXOMap;
 
-            /// Blockchain database used to retreive UTXO.
-            std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
+                /// UTXOs.
+                UTXOMap _cache;
 
-            /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
-            uint32_t _lowestHeight;
+                /// The keychain registry to check addresses against.
+                std::shared_ptr<KeychainRegistry> _keychainRegistry;
 
-            /// Height of the last block in which we can find our UTXOs.
-            uint32_t _lastHeight;
+                /// Blockchain database used to retreive UTXO.
+                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
 
-        public:
-            /// Build an in-memory cache.
-            explicit UTXOSourceInMemory(std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB);
+                /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
+                uint32_t _lowestHeight;
 
-            /// Build an in-memory cache by optimizing the number of blocks needed to recover the
-            /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
-            /// prior to the block height you pass.
-            UTXOSourceInMemory(
-                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
-                uint32_t lowestHeight
-            );
+                /// Height of the last block in which we can find our UTXOs.
+                uint32_t _lastHeight;
 
-            ~UTXOSourceInMemory() = default;
+            public:
+                /// Build an in-memory cache.
+                UTXOSourceInMemory(
+                    std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                    std::shared_ptr<KeychainRegistry> keychainRegistry
+                );
 
-            /// Get the cached UTXO.
-            Future<UTXOSourceList> getUTXOs(
-                std::shared_ptr<api::ExecutionContext> ctx,
-                const std::set<std::string>& addresses
-            ) override;
+                /// Build an in-memory cache by optimizing the number of blocks needed to recover the
+                /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
+                /// prior to the block height you pass.
+                UTXOSourceInMemory(
+                    std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                    std::shared_ptr<KeychainRegistry> keychainRegistry,
+                    uint32_t lowestHeight
+                );
 
-            /// Invalidate the UTXO cache.
-            void invalidate();
-        };
-    }
+                ~UTXOSourceInMemory() = default;
+
+                /// Get the cached UTXO.
+                Future<UTXOSourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) override;
+
+                /// Invalidate the UTXO cache.
+                void invalidate();
+            };
+        }
     }
 }

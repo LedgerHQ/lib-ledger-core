@@ -1,6 +1,7 @@
 #pragma once
 
 #include <api/ExecutionContext.hpp>
+#include <async/FutureUtils.hpp>
 #include <memory>
 #include <wallet/bitcoin/UTXOServiceSourceBased.hpp>
 #include <wallet/bitcoin/UTXOService.hpp>
@@ -26,14 +27,21 @@ namespace ledger {
                     _pendingTransactionsSource->getUTXOs(_executionContext),
                     _unstableBlocksSource->getUTXOs(_executionContext),
                     _stableBlocksSource->getUTXOs(_executionContext) };
-                return _pendingTransactionsSource->getUTXOs(_executionContext)
-                      .flatMap<UTXOSourceList>(
-                          _executionContext,
-                          [self](const UTXOSourceList& utxos) {
-                              return                                       
-                          }
-                        )
-                    .map<std::map<UTXOKey, UTXOValue>>(_executionContext, [](const UTXOSourceList& utxos) {return utxos.available; });
+                return
+                    executeAll(_executionContext, sourcesFuture)
+                    .map<std::map<UTXOKey, UTXOValue>>(_executionContext, [](const std::vector<UTXOSourceList>& lists){
+                        const UTXOSourceList& pending = lists[0];
+                        const UTXOSourceList& unstable = lists[1];
+                        const UTXOSourceList& stable = lists[2];
+                        std::map<UTXOKey, UTXOValue> res(stable.available.begin(), stable.available.end());
+                        res.insert(unstable.available.begin(), unstable.available.end());
+                        for (auto&key : unstable.spent)
+                            res.erase(key);
+                        res.insert(pending.available.begin(), pending.available.end());
+                        for (auto&key : pending.spent)
+                            res.erase(key);
+                        return stable.available;
+                    });
             }
         }
     }

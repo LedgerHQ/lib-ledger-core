@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <async/Future.hpp>
 #include <wallet/bitcoin/UTXOService.hpp>
 
 namespace ledger {
