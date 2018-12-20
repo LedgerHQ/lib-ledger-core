@@ -136,12 +136,30 @@ namespace ledger {
             std::unique_ptr<leveldb::Iterator> it(_db->NewIterator(leveldb::ReadOptions()));
             leveldb::Slice start((const char *) keyPrefix.data(), keyPrefix.size());
             std::vector<uint8_t> limitRaw(keyPrefix.begin(), keyPrefix.end());
+
             limitRaw[limitRaw.size() - 1] += 1;
             leveldb::Slice limit((const char *) limitRaw.data(), limitRaw.size());
+
             for (it->Seek(start); it->Valid(); it->Next()) {
-                // TODO: decrypt here
-                if (it->key().compare(limit) > 0 || !f(it->key(), it->value())) {
+                if (it->key().compare(limit) > 0) {
                     break;
+                }
+
+                if (_cipher.hasValue()) {
+                    // decrypt the value on the fly
+                    auto value = it->value().ToString();
+                    auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                    auto plaindata = decrypt_preferences_change(ciphertext);
+                    auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
+                    leveldb::Slice slice(plaintext);
+
+                    if (!f(it->key(), std::move(slice))) {
+                        break;
+                    }
+                } else {
+                    if (!f(it->key(), it->value())) {
+                        break;
+                    }
                 }
             }
         }
