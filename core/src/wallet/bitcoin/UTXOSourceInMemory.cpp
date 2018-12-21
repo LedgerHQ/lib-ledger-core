@@ -1,9 +1,10 @@
-#include <database/UTXOSourceInMemory.hpp>
+#include <wallet/bitcoin/UTXOSourceInMemory.hpp>
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/Keychain.hpp>
 
 namespace ledger {
     namespace core {
+    namespace bitcoin {
         UTXOSourceInMemory::UTXOSourceInMemory(
             std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
             std::shared_ptr<KeychainRegistry> keychainRegistry
@@ -18,15 +19,15 @@ namespace ledger {
            _lastHeight(std::max(1u, lowestHeight) - 1), _blockDB(blockDB) {
         }
 
-        Future<UTXOSource::SourceList> UTXOSourceInMemory::getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) {
+        Future<UTXOSourceList> UTXOSourceInMemory::getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) {
             auto self = shared_from_this();
 
             // get the last block height
-            return _blockDB->getLastBlockHeader().map<UTXOSource::SourceList>(ctx, [&](const Option<BitcoinLikeNetwork::Block>& lastBlock) {
+            return _blockDB->getLastBlockHeader().map<UTXOSourceList>(ctx, [&](const Option<BitcoinLikeNetwork::Block>& lastBlock) {
                 // compute the list of blocks we need to retreive
                 if (lastBlock) {
                     auto currentHeight = lastBlock->height;
-                    auto spent = std::set<UTXOSource::Key>();
+                    auto spent = std::set<UTXOKey>();
 
                     if (currentHeight > self->_lastHeight) {
                         // there are blocks we don’t know about
@@ -61,7 +62,7 @@ namespace ledger {
                                                 auto hashTX = output.transactionHash;
                                                 auto index = output.index;
                                                 auto key = std::make_pair(hashTX, index);
-                                                auto value = UTXOSource::Value(output.value, *output.address);
+                                                auto value = UTXOValue(output.value, *output.address);
 
                                                 // in theory, we don’t have to check whether this UTXO
                                                 // already exists in our map because otherwise it would
@@ -81,11 +82,11 @@ namespace ledger {
                     auto utxos = self->_cache;
 
                     // create the resulting UTXO source list
-                    auto sourceList = SourceList(std::move(utxos), std::move(spent));
+                    auto sourceList = UTXOSourceList(std::move(utxos), std::move(spent));
                     return sourceList;
                 } else {
                     // no data, just return nothing
-                    return SourceList({}, {});
+                    return UTXOSourceList({}, {});
                 }
             });
         }
@@ -95,5 +96,6 @@ namespace ledger {
             _cache.clear();
             _lastHeight = _lowestHeight;
         }
+    }
     }
 }
