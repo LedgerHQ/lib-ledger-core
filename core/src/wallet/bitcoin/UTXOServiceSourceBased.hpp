@@ -10,7 +10,7 @@ namespace ledger {
             class ExecutionContext;
         };
         namespace bitcoin {
-            class UTXOSource;
+            struct UTXOSource;
             /// Implementation of UTXOService interface based on UTXOSources
             class UTXOServiceSourceBased : public UTXOService, public std::enable_shared_from_this<UTXOServiceSourceBased> {
             public:

@@ -5,40 +5,20 @@
 #include <Helpers.hpp>
 
 using namespace ledger::core;
+using namespace ledger::core::tests;
 
 typedef std::vector<BitcoinLikeNetwork::FilledBlock> VFB;
-
-template<typename T>
-static T getFutureResult(const Future<T>& f) {
-    EXPECT_TRUE(f.isCompleted());
-    EXPECT_TRUE(f.getValue().hasValue());
-    EXPECT_TRUE(f.getValue().getValue().isSuccess());
-    return f.getValue().getValue().getValue();
-}
-
-template<typename T>
-static T getOptionFutureResult(const Future<Option<T>>& f) {
-    Option<T> o = getFutureResult(f);
-    EXPECT_TRUE(o.hasValue());
-    return o.getValue();
-}
-
-template<typename T>
-static bool checkOptionFutureHasNoValue(const Future<Option<T>>& f) {
-    Option<T> o = getFutureResult(f);
-    EXPECT_TRUE(o.isEmpty());
-}
 
 class InMemoryBlockchainDatabaseTest : public ::testing::Test {
 public:
     typedef std::vector<BitcoinLikeNetwork::FilledBlock> Blocks;
     InMemoryBlockchainDatabaseTest()
-        : simpleContext(new tests::SimpleExecutionContext())
+        : simpleContext(new SimpleExecutionContext())
         , db(simpleContext){
 
     }
 public:
-    std::shared_ptr<tests::SimpleExecutionContext> simpleContext;
+    std::shared_ptr<SimpleExecutionContext> simpleContext;
     common::InMemoryBlockchainDatabase<BitcoinLikeNetwork> db;
 };
 

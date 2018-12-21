@@ -40,7 +40,7 @@ namespace ledger {
                         res.insert(pending.available.begin(), pending.available.end());
                         for (auto&key : pending.spent)
                             res.erase(key);
-                        return stable.available;
+                        return res;
                     });
             }
         }

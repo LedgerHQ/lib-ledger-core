@@ -5,6 +5,8 @@
 #include <queue>
 #include <boost/lexical_cast.hpp>
 #include <wallet/NetworkTypes.hpp>
+#include <wallet/bitcoin/UTXO.hpp>
+#include <gtest/gtest.h>
 
 namespace ledger {
     namespace core {
@@ -13,11 +15,33 @@ namespace ledger {
             bool operator==(const Transaction& lhs, const Transaction& rhs);
             bool operator==(const Input& lhs, const Input& rhs);
             bool operator==(const Output& lhs, const Output& rhs);
+            bool operator==(const UTXOValue& lhs, const UTXOValue& rhs);
         }
 
         bool operator==(const BitcoinLikeNetwork::FilledBlock& lhs, const BitcoinLikeNetwork::FilledBlock& rhs);
 
         namespace tests {
+            template<typename T>
+            T getFutureResult(const Future<T>& f) {
+                EXPECT_TRUE(f.isCompleted());
+                EXPECT_TRUE(f.getValue().hasValue());
+                EXPECT_TRUE(f.getValue().getValue().isSuccess());
+                return f.getValue().getValue().getValue();
+            }
+
+            template<typename T>
+            T getOptionFutureResult(const Future<Option<T>>& f) {
+                Option<T> o = getFutureResult(f);
+                EXPECT_TRUE(o.hasValue());
+                return o.getValue();
+            }
+
+            template<typename T>
+            bool checkOptionFutureHasNoValue(const Future<Option<T>>& f) {
+                Option<T> o = getFutureResult(f);
+                EXPECT_TRUE(o.isEmpty());
+            }
+
             class SimpleExecutionContext : public api::ExecutionContext {
             public:
                 virtual void execute(const std::shared_ptr<api::Runnable> & runnable) {
