@@ -4,6 +4,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 add_subdirectory(lib/gtest-1.8.0)
 add_subdirectory(lib/libledger-test)
+
+#setup parameters for URI lib
+set(Uri_BUILD_TESTS OFF CACHE BOOL "")
+set(Uri_BUILD_DOCS OFF CACHE BOOL "")
+set(Uri_FULL_WARNINGS OFF CACHE BOOL "")
+set(Uri_WARNINGS_AS_ERRORS OFF CACHE BOOL "")
+set(Uri_USE_STATIC_CRT OFF CACHE BOOL "")
+add_subdirectory(lib/uri)
+
+add_subdirectory(lib/asio-host)
 add_subdirectory(bytes)
 add_subdirectory(math)
 add_subdirectory(utils)
@@ -19,5 +29,5 @@ add_subdirectory(database)
 add_subdirectory(events)
 add_subdirectory(parsers)
 add_subdirectory(wallet)
-#add_subdirectory(syncbanch)
+add_subdirectory(syncbanch)
 #add_subdirectory(networktype_serialization)

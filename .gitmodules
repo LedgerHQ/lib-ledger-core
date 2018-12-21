@@ -13,3 +13,6 @@
 [submodule "core/lib/spdlog"]
 	path = core/lib/spdlog
 	url = git@github.com:LedgerHQ/spdlog.git
+[submodule "core/test/lib/uri"]
+	path = core/test/lib/uri
+	url = git@github.com:cpp-netlib/uri.git
