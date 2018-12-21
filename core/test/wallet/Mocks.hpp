@@ -1,11 +1,13 @@
 #pragma once
+#include <database/BlockchainDB.hpp>
 #include <gmock/gmock.h>
+#include <spdlog/sinks/sink.h>
+#include <wallet/BalanceService.hpp>
+#include <wallet/BlockchainDatabase.hpp>
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
-#include <wallet/BlockchainDatabase.hpp>
 #include <wallet/bitcoin/UTXOSource.hpp>
-#include <database/BlockchainDB.hpp>
-#include <spdlog/sinks/sink.h>
+#include <wallet/bitcoin/UTXOService.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,6 +62,11 @@ namespace ledger {
             class UTXOSourceMock : public bitcoin::UTXOSource {
             public:
                 MOCK_METHOD1(getUTXOs, Future<bitcoin::UTXOSourceList> (std::shared_ptr<api::ExecutionContext> ctx));
+            };
+
+            class UTXOServiceMock : public bitcoin::UTXOService {
+            public:
+                MOCK_METHOD0(getUTXOs, Future<std::map<bitcoin::UTXOKey, bitcoin::UTXOValue>>());
             };
         }
     }

@@ -18,6 +18,7 @@ PersistentBlockchainDatabase_test.cpp
 AccountSynchronizer_test.cpp
 InMemoryBlockchainDatabase_test.cpp
 UTXOServiceSourceBased_test.cpp
+BalanceServiceUTXOBased_test.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)
