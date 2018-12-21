@@ -67,13 +67,14 @@ namespace ledger {
                 typedef typename NetworkType::Block Block;
                 typedef typename NetworkType::Transaction Transaction;
                 typedef typename NetworkType::FilledBlock FilledBlock;
+                typedef BlockchainDatabase<FilledBlock> BlocksDatabase;
 
                 BlocksSynchronizer(
                     const std::shared_ptr<api::ExecutionContext> executionContext,
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
-                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& blocksDB,
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     uint32_t gapSize,
                     uint32_t batchSize,
                     uint32_t maxTransactionPerResponse);
@@ -122,7 +123,7 @@ namespace ledger {
                 std::shared_ptr<ExplorerV2<NetworkType>> _explorer;
                 std::shared_ptr<Keychain> _receiveKeychain;
                 std::shared_ptr<Keychain> _changeKeychain;
-                std::shared_ptr<BlockchainDatabase<NetworkType>> _blocksDB;
+                std::shared_ptr<BlocksDatabase> _blocksDB;
                 const uint32_t _gapSize;
                 const uint32_t _batchSize;
                 const uint32_t _maxTransactionPerResponse;

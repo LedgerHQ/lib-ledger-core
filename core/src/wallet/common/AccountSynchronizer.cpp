@@ -17,9 +17,9 @@ namespace ledger {
             template <typename NetworkType> AccountSynchronizer<NetworkType>::AccountSynchronizer(
                 const std::shared_ptr<api::ExecutionContext>& executionContext,
                 const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
-                const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
-                const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
-                const std::shared_ptr<BlockchainDatabase<NetworkType>>& pendingTransactionsDb,
+                const std::shared_ptr<BlocksDatabase>& stableBlocksDb,
+                const std::shared_ptr<BlocksDatabase>& unstableBlocksDb,
+                const std::shared_ptr<BlocksDatabase>& pendingTransactionsDb,
                 const std::shared_ptr<Keychain>& receiveKeychain,
                 const std::shared_ptr<Keychain>& changeKeychain,
                 const std::shared_ptr<spdlog::logger>& logger,
@@ -89,14 +89,14 @@ namespace ledger {
                 // try to do explorer and DB request simulteniously
                 Future<HashHeight> explorerRequest = _explorer->getCurrentBlock().template map<HashHeight>(_executionContext, [](const Block& block) { return HashHeight{ block.hash, block.height }; });
                 auto createLastHHFuture = [blockDB = _stableBlocksDb, executionContext = this->_executionContext, startHash = _config.genesisBlockHash]() {
-                    return blockDB->getLastBlockHeader()
+                    return blockDB->getLastBlock()
                         .template map<HashHeight>(
                             executionContext,
-                            [startHash](const Option<Block>& block) {
+                            [startHash](const Option<std::pair<uint32_t, FilledBlock>>& block) {
                                 HashHeight hh{ startHash, 0 };
                                 if (block.hasValue()) {
-                                    hh.height = block.getValue().height;
-                                    hh.hash = block.getValue().hash;
+                                    hh.height = block.getValue().first;
+                                    hh.hash = block.getValue().second.header.hash;
                                 }
                                 return hh; });
                 };

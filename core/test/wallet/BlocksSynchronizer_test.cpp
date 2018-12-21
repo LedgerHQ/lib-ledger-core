@@ -77,7 +77,7 @@ namespace ledger {
                     }}
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
                 auto f = synchronizer->synchronize("block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -96,7 +96,7 @@ namespace ledger {
                     } }
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
                 auto f = synchronizer->synchronize("block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
@@ -120,8 +120,8 @@ namespace ledger {
                 setBlockchain(bch);
                 {
                     ::testing::Sequence s;
-                    EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
-                    EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1]))));
+                    EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
+                    EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1]))));
                 }
                 auto f = synchronizer->synchronize("block 1", 1, 10);
                 context->wait();
@@ -144,8 +144,8 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(0);
                 
                 auto f = synchronizer->synchronize("block 1", 1, 10);
                 context->wait();
@@ -168,8 +168,8 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[1])))).Times(0);
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(0);
                 
                 auto f = synchronizer->synchronize("block 1", 1, 1); // limiting the max block heigh
                 context->wait();
@@ -192,7 +192,7 @@ namespace ledger {
                     } },
                 };
                 setBlockchain(bch);
-                EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[0]))));
+                EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
@@ -232,7 +232,7 @@ namespace ledger {
                 {
                     ::testing::Sequence s;
                     for (int i = 0; i < 4; ++i)
-                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(bch[i]))));
+                        EXPECT_CALL(*blocksDBMock, addBlock(bch[i].height, Truly(Same(bch[i]))));
                 }
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1")));
@@ -257,7 +257,7 @@ namespace ledger {
                     for (uint32_t i = 1; i <= 300; ++i) {
                         auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
                         bch.push_back(b);
-                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(b))));
+                        EXPECT_CALL(*blocksDBMock, addBlock(b.height, Truly(Same(b))));
                     }
                 }
                 setBlockchain(bch);
@@ -288,7 +288,7 @@ namespace ledger {
                 bch.push_back(BL{ 2, "block 2",{ TR{ { "X" },{ { "0", 10000 } } } } });
                 setBlockchain(bch);
 
-                EXPECT_CALL(*blocksDBMock, addBlock(_)).Times(0);
+                EXPECT_CALL(*blocksDBMock, addBlock(_, _)).Times(0);
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(0); // not discovered
                 auto f = synchronizer->synchronize("block 1", 1, LAST_BLOCK);
                 context->wait();
@@ -307,7 +307,7 @@ namespace ledger {
                     for (uint32_t i = 1; i <= LAST_BLOCK; i += 500) {
                         auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { boost::lexical_cast<std::string>((i / 500) % 500), 10000 } } } } };
                         bch.push_back(b);
-                        EXPECT_CALL(*blocksDBMock, addBlock(Truly(Same(b)))).Times(1);
+                        EXPECT_CALL(*blocksDBMock, addBlock(b.height, Truly(Same(b)))).Times(1);
                     }
                 }
                 setBlockchain(bch);

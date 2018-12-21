@@ -12,7 +12,7 @@ namespace ledger {
             public:
                 Future<std::vector<RawBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) override;
                 Future<Option<RawBlock>> GetBlock(uint32_t height) override;
-                Future<Option<RawBlock>> GetLastBlock() override;
+                Future<Option<std::pair<uint32_t, RawBlock>>> GetLastBlock() override;
                 void AddBlock(uint32_t height, const RawBlock& block) override;
                 void RemoveBlocks(uint32_t heightFrom, uint32_t heightTo) override;
                 void RemoveBlocksUpTo(uint32_t heightTo) override;

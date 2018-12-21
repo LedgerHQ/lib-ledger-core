@@ -17,9 +17,9 @@ namespace ledger {
                 std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> createAccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
                     const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
-                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& stableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& unstableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork>>& pendingTransactionsDb,
+                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& stableBlocksDb,
+                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& unstableBlocksDb,
+                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& pendingTransactionsDb,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,

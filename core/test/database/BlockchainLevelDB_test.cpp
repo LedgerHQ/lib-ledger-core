@@ -56,7 +56,8 @@ TEST_F(BlockchainLevelDB, GetLastBlock) {
     db.AddBlock(9, block);
 
     auto future = db.GetLastBlock();
-    EXPECT_EQ(lastblock, getFutureResult(future).getValue());
+    EXPECT_EQ(lastblock, getFutureResult(future).getValue().second);
+    EXPECT_EQ(1000, getFutureResult(future).getValue().first);
 }
 
 TEST_F(BlockchainLevelDB, GetLastBlockOnEmptyDB) {

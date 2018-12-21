@@ -65,7 +65,7 @@ namespace ledger {
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
-                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& blocksDB,
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     uint32_t gapSize,
                     uint32_t batchSize,
                     uint32_t maxTransactionPerResponse)
@@ -147,7 +147,7 @@ namespace ledger {
                             block.header.hash = trans[0].block.getValue().hash;
                             block.header.createdAt = trans[0].block.getValue().createdAt;
                             block.transactions = trans;
-                            _blocksDB->addBlock(block); // write to disk by default is async
+                            _blocksDB->addBlock(block.header.height, block); // write to disk by default is async
                             // try to not consume to much memory
                             partialDB->removeBlock(i);
                         }

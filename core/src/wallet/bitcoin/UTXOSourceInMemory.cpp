@@ -6,13 +6,13 @@ namespace ledger {
     namespace core {
     namespace bitcoin {
         UTXOSourceInMemory::UTXOSourceInMemory(
-            std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+            std::shared_ptr<BlocksDB> blockDB,
             std::shared_ptr<KeychainRegistry> keychainRegistry
         ): UTXOSourceInMemory(blockDB, keychainRegistry, 0) {
         }
 
         UTXOSourceInMemory::UTXOSourceInMemory(
-            std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+            std::shared_ptr<BlocksDB> blockDB,
             std::shared_ptr<KeychainRegistry> keychainRegistry,
             uint32_t lowestHeight
         ): _keychainRegistry(keychainRegistry), _lowestHeight(lowestHeight),
@@ -23,15 +23,15 @@ namespace ledger {
             auto self = shared_from_this();
 
             // get the last block height
-            return _blockDB->getLastBlockHeader().map<UTXOSourceList>(ctx, [&](const Option<BitcoinLikeNetwork::Block>& lastBlock) {
+            return _blockDB->getLastBlock().map<UTXOSourceList>(ctx, [&](const Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>& lastBlockPair) {
                 // compute the list of blocks we need to retreive
-                if (lastBlock) {
-                    auto currentHeight = lastBlock->height;
+                if (lastBlockPair) {
+                    auto currentHeight = lastBlockPair->first;
                     auto spent = std::set<UTXOKey>();
 
                     if (currentHeight > self->_lastHeight) {
                         // there are blocks we don’t know about
-                        self->_blockDB->getBlocks(0, lastBlock->height).foreach(ctx, [&](std::vector<BitcoinLikeNetwork::FilledBlock>& blocks) {
+                        self->_blockDB->getBlocks(0, currentHeight).foreach(ctx, [&](std::vector<BitcoinLikeNetwork::FilledBlock>& blocks) {
                             for (auto block : blocks) {
                                 for (auto tr : block.transactions) {
                                     // treat inputs

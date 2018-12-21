@@ -20,6 +20,8 @@ using namespace testing;
 
 class AccountSyncTest : public Test {
 public:
+    typedef common::InMemoryBlockchainDatabase<BitcoinLikeNetwork::FilledBlock> BlocksDatabase;
+public:
     AccountSyncTest()
         : receivedFake(0, 0) // receive addresses are 0,1,2... change are 1000, 1001...
         , changeFake(0, 1000)
@@ -77,19 +79,19 @@ public:
         ON_CALL(*explorerMock, getCurrentBlock()).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getCurrentBlock));
     }
 private:
-    void linkMockDbToFake(std::shared_ptr<NiceMock<BlocksDBMock>>& mock, common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>& fake) {
-        ON_CALL(*mock, addBlock(_)).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::addBlock));
-        ON_CALL(*mock, removeBlocks(_, _)).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::removeBlocks));
-        ON_CALL(*mock, removeBlocksUpTo(_)).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::removeBlocksUpTo));
-        ON_CALL(*mock, CleanAll()).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::CleanAll));
-        ON_CALL(*mock, getBlocks(_, _)).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::getBlocks));
-        ON_CALL(*mock, getBlock(_)).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::getBlock));
-        ON_CALL(*mock, getLastBlockHeader()).WillByDefault(Invoke(&fake, &common::InMemoryBlockchainDatabase<BitcoinLikeNetwork>::getLastBlockHeader));
+    void linkMockDbToFake(std::shared_ptr<NiceMock<BlocksDBMock>>& mock, BlocksDatabase& fake) {
+        ON_CALL(*mock, addBlock(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::addBlock));
+        ON_CALL(*mock, removeBlocks(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::removeBlocks));
+        ON_CALL(*mock, removeBlocksUpTo(_)).WillByDefault(Invoke(&fake, &BlocksDatabase::removeBlocksUpTo));
+        ON_CALL(*mock, CleanAll()).WillByDefault(Invoke(&fake, &BlocksDatabase::CleanAll));
+        ON_CALL(*mock, getBlocks(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlocks));
+        ON_CALL(*mock, getBlock(_)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlock));
+        ON_CALL(*mock, getLastBlock()).WillByDefault(Invoke(&fake, &BlocksDatabase::getLastBlock));
     }
 public:
     std::shared_ptr<SimpleExecutionContext> context;
-    common::InMemoryBlockchainDatabase<BitcoinLikeNetwork> fakeStableDB;
-    common::InMemoryBlockchainDatabase<BitcoinLikeNetwork> fakeUnstableDB;
+    BlocksDatabase fakeStableDB;
+    BlocksDatabase fakeUnstableDB;
     std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> synchronizer;
     std::shared_ptr<NiceMock<ExplorerMock>> explorerMock;
     std::shared_ptr<NiceMock<KeychainMock>> keychainReceiveMock;
@@ -118,9 +120,9 @@ TEST_F(AccountSyncTest, NoStableBlocksInBlockchain) {
         } }
     };
     setBlockchain(bch);
-    EXPECT_CALL(*stableBlocksDBMock, addBlock(_)).Times(0); // no stable blocks
+    EXPECT_CALL(*stableBlocksDBMock, addBlock(_, _)).Times(0); // no stable blocks
     EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-    EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1); // add new block to unstable db
+    EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1); // add new block to unstable db
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();
     ASSERT_TRUE(f.isCompleted());
@@ -140,13 +142,13 @@ TEST_F(AccountSyncTest, HappyPath) {
     {
         testing::Sequence s;
         // two blocks goes to stable
-        EXPECT_CALL(*stableBlocksDBMock, addBlock(Truly(Same(bch[0])))).Times(1);
-        EXPECT_CALL(*stableBlocksDBMock, addBlock(Truly(Same(bch[1])))).Times(1);
+        EXPECT_CALL(*stableBlocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
+        EXPECT_CALL(*stableBlocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(1);
         // and three goes to unstable
         EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[2])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[3])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[4])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[2].height, Truly(Same(bch[2])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[3].height, Truly(Same(bch[3])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[4].height, Truly(Same(bch[4])))).Times(1);
     }
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();
@@ -160,19 +162,19 @@ TEST_F(AccountSyncTest, NoUpdatesNeeded) {
     SetUp(3, "block 1");
     setupFakeKeychains();
     setupFakeDatabases();
-    fakeStableDB.addBlock(toFilledBlock(BL{ 2, "block 2", {} }));
+    fakeStableDB.addBlock(2, toFilledBlock(BL{ 2, "block 2", {} }));
     std::vector<BL> bch;
     for (uint32_t i = 1; i <= 5; ++i)
         bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } });
-    EXPECT_CALL(*stableBlocksDBMock, addBlock(_)).Times(1);
+    EXPECT_CALL(*stableBlocksDBMock, addBlock(_, _)).Times(1);
     setBlockchain(bch);
     {
         testing::Sequence s;
         // and three goes to unstable
         EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[2])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[3])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(Truly(Same(bch[4])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[2].height, Truly(Same(bch[2])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[3].height, Truly(Same(bch[3])))).Times(1);
+        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[4].height, Truly(Same(bch[4])))).Times(1);
     }
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();

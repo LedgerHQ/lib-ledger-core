@@ -31,15 +31,15 @@ namespace ledger {
                 MOCK_METHOD1(markAsUsed, void(const std::string& address));
             };
 
-            class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork> {
+            class BlocksDBMock : public BlockchainDatabase<BitcoinLikeNetwork::FilledBlock> {
             public:
-                MOCK_METHOD1(addBlock, void(const BitcoinLikeNetwork::FilledBlock& blocks));
+                MOCK_METHOD2(addBlock, void(uint32_t height, const BitcoinLikeNetwork::FilledBlock& blocks));
                 MOCK_METHOD2(removeBlocks, void(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(removeBlocksUpTo, void(uint32_t heightTo));
                 MOCK_METHOD0(CleanAll, void());
-                MOCK_METHOD2(getBlocks, Future<std::vector<FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
-                MOCK_METHOD1(getBlock, Future<Option<FilledBlock>>(uint32_t height));
-                MOCK_METHOD0(getLastBlockHeader, Future<Option<Block>>());
+                MOCK_METHOD2(getBlocks, Future<std::vector<BitcoinLikeNetwork::FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
+                MOCK_METHOD1(getBlock, Future<Option<BitcoinLikeNetwork::FilledBlock>>(uint32_t height));
+                MOCK_METHOD0(getLastBlock, Future<Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>>());
             };
 
             class BlockchainDBMock : public db::BlockchainDB {
@@ -50,7 +50,7 @@ namespace ledger {
                 MOCK_METHOD0(CleanAll, void());
                 MOCK_METHOD2(GetBlocks, Future<std::vector<RawBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(GetBlock, Future<Option<RawBlock>>(uint32_t height));
-                MOCK_METHOD0(GetLastBlock, Future<Option<RawBlock>>());
+                MOCK_METHOD0(GetLastBlock, Future<Option<std::pair<uint32_t, RawBlock>>>());
             };
 
             class LoggerSinkMock : public spdlog::sinks::sink {

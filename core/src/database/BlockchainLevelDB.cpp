@@ -78,12 +78,12 @@ namespace ledger {
                 return Future<Option<RawBlock>>::failure(Exception(api::ErrorCode::UNKNOWN, fmt::format("Error during getting block {}: {}", height, status.ToString())));
             }
 
-            Future<Option<BlockchainDB::RawBlock>> BlockchainLevelDB::GetLastBlock() {
+            Future<Option<std::pair<uint32_t, BlockchainDB::RawBlock>>> BlockchainLevelDB::GetLastBlock() {
                 auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
-                auto res = Future<Option<RawBlock>>::successful(Option<RawBlock>());
+                auto res = Future<Option<std::pair<uint32_t, RawBlock>>>::successful(Option<std::pair<uint32_t, RawBlock>>());
                 it->SeekToLast();
                 if (it->Valid())
-                    res = Future<Option<RawBlock>>::successful(sliceToBlock(it->value()));
+                    res = Future<Option<std::pair<uint32_t, RawBlock>>>::successful(std::make_pair(deserializeKey(it->key()), sliceToBlock(it->value())));
                 return res;
             }
 
