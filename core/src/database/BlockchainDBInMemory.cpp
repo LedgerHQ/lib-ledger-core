@@ -21,14 +21,14 @@ namespace ledger {
                 return Future<Option<RawBlock>>::successful(Option<RawBlock>(it->second));
             }
 
-            Future<Option<BlockchainDB::RawBlock>> BlockchainDBInMemory::GetLastBlock() {
+            Future<Option<std::pair<uint32_t, BlockchainDB::RawBlock>>> BlockchainDBInMemory::GetLastBlock() {
                 std::lock_guard<std::mutex> lock(_lock);
                 if (_db.empty()) {
-                    return Future<Option<RawBlock>>::successful(Option<RawBlock>());
+                    return Future<Option<std::pair<uint32_t, RawBlock>>>::successful(Option<std::pair<uint32_t, RawBlock>>());
                 }
                 auto lastIt = _db.end();
                 lastIt--;
-                return Future<Option<RawBlock>>::successful(Option<RawBlock>(lastIt->second));
+                return Future<Option<std::pair<uint32_t, RawBlock>>>::successful(Option<std::pair<uint32_t, RawBlock>>(std::make_pair(lastIt->first, lastIt->second)));
             }
 
             void BlockchainDBInMemory::AddBlock(uint32_t height, const RawBlock& block) {

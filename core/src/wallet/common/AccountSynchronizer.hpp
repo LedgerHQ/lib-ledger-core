@@ -55,13 +55,15 @@ namespace ledger {
                 public std::enable_shared_from_this<AccountSynchronizer<NetworkType>> {
             public:
                 typedef typename NetworkType::Block Block;
+                typedef typename NetworkType::FilledBlock FilledBlock;
+                typedef BlockchainDatabase<FilledBlock> BlocksDatabase;
 
                 AccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
-                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& stableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& unstableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<NetworkType>>& pendingTransactions,
+                    const std::shared_ptr<BlocksDatabase>& stableBlocksDb,
+                    const std::shared_ptr<BlocksDatabase>& unstableBlocksDb,
+                    const std::shared_ptr<BlocksDatabase>& pendingTransactions,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,
@@ -79,10 +81,10 @@ namespace ledger {
                 std::shared_ptr<api::ExecutionContext> _executionContext;
                 std::shared_ptr<ExplorerV2<NetworkType>> _explorer;
                 // blocks that would not be reverted
-                std::shared_ptr<BlockchainDatabase<NetworkType>> _stableBlocksDb;
+                std::shared_ptr<BlocksDatabase> _stableBlocksDb;
                 // blocks that may be reverted
-                std::shared_ptr<BlockchainDatabase<NetworkType>> _unstableBlocksDb;
-                std::shared_ptr<BlockchainDatabase<NetworkType>> _pendingTransactionsDb;
+                std::shared_ptr<BlocksDatabase> _unstableBlocksDb;
+                std::shared_ptr<BlocksDatabase> _pendingTransactionsDb;
                 std::shared_ptr<Keychain> _receiveKeychain;
                 std::shared_ptr<Keychain> _changeKeychain;
                 std::shared_ptr<spdlog::logger> _logger;

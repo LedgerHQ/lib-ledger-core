@@ -16,7 +16,7 @@ namespace ledger {
 				// Get all blocks with height in [heightFrom, heightTo)
 				virtual Future<std::vector<RawBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
                 virtual Future<Option<RawBlock>> GetBlock(uint32_t height) = 0;
-				virtual Future<Option<RawBlock>> GetLastBlock() = 0;
+				virtual Future<Option<std::pair<uint32_t, RawBlock>>> GetLastBlock() = 0;
 			};
 
 			class BlockchainDB: public ReadOnlyBlockchainDB {

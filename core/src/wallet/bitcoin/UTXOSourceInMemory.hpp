@@ -47,6 +47,8 @@ namespace ledger {
         struct KeychainRegistry;
 
         namespace bitcoin {
+
+            typedef ReadOnlyBlockchainDatabase<BitcoinLikeNetwork::FilledBlock> BlocksDB;
             
             /// An in-memory (map) implementation of [database::UTXOSource](@UTXOSource).
             class UTXOSourceInMemory: public UTXOSource, public std::enable_shared_from_this<UTXOSourceInMemory> {
@@ -59,7 +61,7 @@ namespace ledger {
                 std::shared_ptr<KeychainRegistry> _keychainRegistry;
 
                 /// Blockchain database used to retreive UTXO.
-                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> _blockDB;
+                std::shared_ptr<BlocksDB> _blockDB;
 
                 /// Lowest height block in which we can find our UTXOs. Lower means no UTXO for us.
                 uint32_t _lowestHeight;
@@ -70,7 +72,7 @@ namespace ledger {
             public:
                 /// Build an in-memory cache.
                 UTXOSourceInMemory(
-                    std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                    std::shared_ptr<BlocksDB> blockDB,
                     std::shared_ptr<KeychainRegistry> keychainRegistry
                 );
 
@@ -78,7 +80,7 @@ namespace ledger {
                 /// UTXO cache. You have to be sure that no transaction contains UTXO for your addresses
                 /// prior to the block height you pass.
                 UTXOSourceInMemory(
-                    std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork>> blockDB,
+                    std::shared_ptr<BlocksDB> blockDB,
                     std::shared_ptr<KeychainRegistry> keychainRegistry,
                     uint32_t lowestHeight
                 );
