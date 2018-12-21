@@ -3,6 +3,7 @@
 #include <wallet/Explorer.hpp>
 #include <wallet/Keychain.hpp>
 #include <wallet/BlockchainDatabase.hpp>
+#include <wallet/bitcoin/UTXOSource.hpp>
 #include <database/BlockchainDB.hpp>
 #include <spdlog/sinks/sink.h>
 
@@ -54,6 +55,11 @@ namespace ledger {
             public:
                 MOCK_METHOD1(log, void(const spdlog::details::log_msg &msg));
                 MOCK_METHOD0(flush, void());
+            };
+
+            class UTXOSourceMock : public bitcoin::UTXOSource {
+            public:
+                MOCK_METHOD1(getUTXOs, Future<bitcoin::UTXOSourceList> (std::shared_ptr<api::ExecutionContext> ctx));
             };
         }
     }

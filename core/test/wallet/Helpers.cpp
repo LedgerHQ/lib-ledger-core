@@ -39,6 +39,11 @@ namespace ledger {
                     && (lhs.inputs == rhs.inputs)
                     && (lhs.outputs == rhs.outputs);
             };
+
+            bool operator==(const UTXOValue& lhs, const UTXOValue& rhs) {
+                return (lhs.address == rhs.address)
+                    && (lhs.amount == rhs.amount);
+            };
         }
 
         bool operator==(const BitcoinLikeNetwork::FilledBlock& lhs, const BitcoinLikeNetwork::FilledBlock& rhs) {
