@@ -17,7 +17,7 @@ namespace ledger {
             using RawBlock = db::BlockchainDB::RawBlock;
 
             template<typename BlockType>
-            std::vector<uint8_t> serialize(const typename BlockType& block) {
+            std::vector<uint8_t> serialize(const BlockType& block) {
                 std::ostringstream  ss;
                 {
                     cereal::BinaryOutputArchive oarchive(ss);
@@ -28,7 +28,7 @@ namespace ledger {
             }
 
             template <typename BlockType>
-            void deserialize(const std::vector<uint8_t>& buf, typename BlockType& block) {
+            void deserialize(const std::vector<uint8_t>& buf, BlockType& block) {
                 std::istringstream  ss(std::string(buf.begin(), buf.end()));
                 {
                     cereal::BinaryInputArchive iarchive(ss);
