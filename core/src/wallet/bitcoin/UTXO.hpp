@@ -27,6 +27,11 @@ namespace ledger {
                 std::string address;
 
                 UTXOValue(const BigInt& satoshis, const std::string& address);
+
+                template <class Archive>
+                void serialize(Archive& ar) {
+                    ar(amount, address);
+                }
             };
 
             /// An UTXO source list.
@@ -36,10 +41,18 @@ namespace ledger {
             /// from other sources).
             struct UTXOSourceList {
                 std::map<UTXOKey, UTXOValue> available; ///< Available UTXOs.
-                std::set<UTXOKey> spent; ///< Spent UTXOs we don’t know / can’t resolve (yet).
+                std::set<UTXOKey> spent; ///< Spent UTXOs we donâ€™t know / canâ€™t resolve (yet).
+
                 UTXOSourceList() = default;
+
                 UTXOSourceList(std::map<UTXOKey, UTXOValue>&& available, std::set<UTXOKey>&& spent);
+
                 UTXOSourceList(const std::map<UTXOKey, UTXOValue>& available, const std::set<UTXOKey>& spent);
+
+                template <class Archive>
+                void serialize(Archive& ar) {
+                    ar(available, spent);
+                }
             };
         }
     }

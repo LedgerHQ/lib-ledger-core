@@ -96,6 +96,10 @@ namespace ledger {
             _cache.clear();
             _lastHeight = _lowestHeight;
         }
+
+        uint32_t UTXOSourceInMemory::currentSynchronizedHeight() {
+            return _lastHeight;
+        }
     }
     }
 }
