@@ -238,6 +238,7 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            //Reference for ETH coinTypes: https://github.com/LedgerHQ/ledger-live-common/blob/b0196ae9031447f41f8e641f0ec5d3e2b72be83c/src/data/cryptocurrencies.js
             const api::Currency ETHEREUM =
                     Currency("ethereum")
                             .bip44(60)
@@ -253,6 +254,17 @@ namespace ledger {
                     Currency("ethereum_ropsten")
                             .bip44(1)
                             .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_ropsten"))
+                            .paymentUri("ethereum")
+                            .unit("wei", 0, "wei")
+                            .unit("ether", 18, "ETH")
+                            .unit("kwei", 3, "kwei")
+                            .unit("mwei", 6, "mwei")
+                            .unit("gwei", 9, "gwei");
+
+            const api::Currency ETHEREUM_CLASSIC =
+                    Currency("ethereum_classic")
+                            .bip44(61)
+                            .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_classic"))
                             .paymentUri("ethereum")
                             .unit("wei", 0, "wei")
                             .unit("ether", 18, "ETH")
@@ -285,7 +297,8 @@ namespace ledger {
                 DECRED,
                 STAKENET,
                 ETHEREUM,
-                ETHEREUM_ROPSTEN
+                ETHEREUM_ROPSTEN,
+                ETHEREUM_CLASSIC
             });
         }
     }

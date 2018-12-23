@@ -54,7 +54,6 @@ namespace ledger {
                     std::pair<std::string, std::string>("approve", "095ea7b3")
                                                                     });
 
-            //const std::vector<api::ERC20Token> ALL_ERC20({getERC20Token("0x9549e8a940062615cee20c0420c98c25ffa2b214")});
             const std::map<std::string, api::ERC20Token> ALL_ERC20({
                                                                            std::pair<std::string, api::ERC20Token>("0x9549e8a940062615cee20c0420c98c25ffa2b214", getERC20Token("ledger_coin"))
                                                                    });
