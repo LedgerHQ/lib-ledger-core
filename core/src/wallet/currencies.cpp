@@ -251,6 +251,17 @@ namespace ledger {
                             .unit("mwei", 6, "mwei")
                             .unit("gwei", 9, "gwei");
 
+            const api::Currency ETHEREUM_CLASSIC =
+                    Currency("ethereum_classic")
+                            .bip44(1)
+                            .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_classic"))
+                            .paymentUri("ethereum")
+                            .unit("wei", 0, "wei")
+                            .unit("ether", 18, "ETH")
+                            .unit("kwei", 3, "kwei")
+                            .unit("mwei", 6, "mwei")
+                            .unit("gwei", 9, "gwei");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -275,7 +286,8 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 ETHEREUM,
-                ETHEREUM_ROPSTEN
+                ETHEREUM_ROPSTEN,
+                ETHEREUM_CLASSIC
             });
         }
     }

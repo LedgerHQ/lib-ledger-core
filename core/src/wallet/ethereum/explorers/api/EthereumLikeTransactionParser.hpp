@@ -31,7 +31,6 @@
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
 
 #include "EthereumLikeBlockParser.hpp"
-//#include "../EthereumLikeBlockchainExplorer.h"
 #include <collections/collections.hpp>
 #include <cstdio>
 #include <cstdint>
@@ -45,7 +44,6 @@ namespace ledger {
         class EthereumLikeBlockchainExplorer;
         class EthereumLikeTransactionParser {
         public:
-            //typedef std::vector<EthereumLikeBlockchainExplorerTransaction> Result;
             typedef EthereumLikeBlockchainExplorerTransaction Result;
             EthereumLikeTransactionParser(std::string& lastKey);
             void init(EthereumLikeBlockchainExplorerTransaction* transaction);
