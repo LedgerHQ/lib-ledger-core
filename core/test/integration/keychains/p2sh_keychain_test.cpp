@@ -45,8 +45,7 @@ public:
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getMainExecutionContext(),
-            resolver,
-            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
+            resolver
         );
         auto xPubBtc = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
                                                                      data.xpub,

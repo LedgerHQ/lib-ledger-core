@@ -45,8 +45,7 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
     auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getSerialExecutionContext("worker"),
-            resolver,
-            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
+            resolver
     );
     auto preferences = backend->getPreferences("my_test_preferences");
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
@@ -97,8 +96,7 @@ TEST(Preferences, IterateThroughMembers) {
     auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getSerialExecutionContext("worker"),
-            resolver,
-            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
+            resolver
     );
     auto preferences = backend->getPreferences("my_test_preferences");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
@@ -170,8 +168,7 @@ TEST(Preferences, IterateThroughObjectMembers) {
     auto backend = std::make_shared<ledger::core::PreferencesBackend>(
         "/preferences/tests.db",
         dispatcher->getSerialExecutionContext("worker"),
-        resolver,
-        ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
+        resolver
     );
     auto preferences = backend->getPreferences("my_test_preferences_array");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");

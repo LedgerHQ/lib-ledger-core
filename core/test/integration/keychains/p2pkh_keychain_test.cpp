@@ -41,8 +41,7 @@ public:
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
             dispatcher->getMainExecutionContext(),
-            resolver,
-            ledger::core::Option<ledger::core::PreferencesEncryption>::NONE
+            resolver
         );
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
