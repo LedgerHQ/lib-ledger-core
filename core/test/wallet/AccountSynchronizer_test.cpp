@@ -10,6 +10,7 @@
 #include <vector>
 #include <spdlog/spdlog.h>
 
+#include "CommonFixtureFunctions.hpp"
 #include "Helpers.hpp"
 #include "Mocks.hpp"
 
@@ -18,7 +19,7 @@ using namespace ledger::core;
 using namespace ledger::core::tests;
 using namespace testing;
 
-class AccountSyncTest : public Test {
+class AccountSyncTest : public virtual Test, public tests::CommonFixtureFunctions {
 public:
     typedef common::InMemoryBlockchainDatabase<BitcoinLikeNetwork::FilledBlock> BlocksDatabase;
 public:
@@ -79,15 +80,7 @@ public:
         ON_CALL(*explorerMock, getCurrentBlock()).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getCurrentBlock));
     }
 private:
-    void linkMockDbToFake(std::shared_ptr<NiceMock<BlocksDBMock>>& mock, BlocksDatabase& fake) {
-        ON_CALL(*mock, addBlock(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::addBlock));
-        ON_CALL(*mock, removeBlocks(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::removeBlocks));
-        ON_CALL(*mock, removeBlocksUpTo(_)).WillByDefault(Invoke(&fake, &BlocksDatabase::removeBlocksUpTo));
-        ON_CALL(*mock, CleanAll()).WillByDefault(Invoke(&fake, &BlocksDatabase::CleanAll));
-        ON_CALL(*mock, getBlocks(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlocks));
-        ON_CALL(*mock, getBlock(_)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlock));
-        ON_CALL(*mock, getLastBlock()).WillByDefault(Invoke(&fake, &BlocksDatabase::getLastBlock));
-    }
+    
 public:
     std::shared_ptr<SimpleExecutionContext> context;
     BlocksDatabase fakeStableDB;

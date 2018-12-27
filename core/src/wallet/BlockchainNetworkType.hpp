@@ -9,8 +9,11 @@ namespace ledger {
         template<typename Block_, typename Transaction_>
         class FilledBlock {
         public:
-            Block_ header;
-            std::vector<Transaction_> transactions;
+            typedef Transaction_ Transaction;
+            typedef Block_ Block;
+        public:
+            Block header;
+            std::vector<Transaction> transactions;
             template <class Archive>
             void serialize(Archive & ar) {
                 ar(header, transactions);

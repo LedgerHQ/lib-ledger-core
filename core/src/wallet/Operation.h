@@ -34,10 +34,10 @@
 #include <string>
 #include <api/WalletType.hpp>
 #include <chrono>
-#include <vector>
+#include <vector>   
 #include <math/BigInt.h>
 #include <utils/Option.hpp>
-#include "TrustIndicator.h"
+#include "wallet/common/TrustIndicator.h"
 #include <memory>
 #include <wallet/NetworkTypes.hpp>
 #include <api/OperationType.hpp>
@@ -46,6 +46,7 @@
 
 namespace ledger {
     namespace core {
+
         struct Operation {
             std::string uid;
             std::string accountUid;
@@ -67,6 +68,8 @@ namespace ledger {
         private:
 
         };
+        
+        struct KeychainRegistry;
+        Operation createOperation(const BitcoinLikeNetwork::Transaction& transaction, const std::shared_ptr<KeychainRegistry>& addressRegistry);
     }
-
 }

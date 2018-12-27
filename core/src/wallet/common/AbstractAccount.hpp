@@ -34,7 +34,7 @@
 #include "AbstractWallet.hpp"
 #include <async/Future.hpp>
 #include <wallet/common/Amount.h>
-#include <wallet/common/Operation.h>
+#include <wallet/Operation.h>
 #include <events/EventPublisher.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
@@ -96,7 +96,6 @@ namespace ledger {
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
-            void emitNewOperationEvent(const Operation& operation);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
         private:

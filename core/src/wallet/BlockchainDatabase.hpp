@@ -9,6 +9,7 @@ namespace ledger {
         template<typename Block>
         class ReadOnlyBlockchainDatabase {
         public:
+
             virtual ~ReadOnlyBlockchainDatabase() {};
             // Get all blocks with height in [heightFrom, heightTo)
             virtual Future<std::vector<Block>> getBlocks(uint32_t heightFrom, uint32_t heightTo) = 0;
