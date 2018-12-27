@@ -1,4 +1,3 @@
-#pragma once
 #include <iterator> 
 #include <database/BlockchainDBInMemory.hpp>
 
