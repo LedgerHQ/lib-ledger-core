@@ -30,17 +30,15 @@
  */
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include <src/wallet/bitcoin/keychains/P2SHBitcoinLikeKeychain.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
-#include <iostream>
+
 using namespace std;
-
-
 
 class BitcoinP2SHKeychains : public BaseFixture {
 public:
-
     void testP2SHKeychain(const KeychainTestData &data, std::function<void (P2SHBitcoinLikeKeychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
             "/preferences/tests.db",
