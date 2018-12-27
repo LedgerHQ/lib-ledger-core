@@ -1,5 +1,6 @@
 #include "AsioHttpClient.hpp"
 #include "AsioExecutionContext.hpp"
+#include "AsioExecutionContextImpl.hpp"
 #include "RequestResponce.hpp"
 #include <api/ExecutionContext.hpp>
 #include <api/HttpUrlConnection.hpp>
@@ -11,6 +12,6 @@ AsioHttpClient::AsioHttpClient(const std::shared_ptr<AsioExecutionContext> &cont
 }
 
 void AsioHttpClient::execute(const std::shared_ptr<api::HttpRequest> &request) {
-    auto r = std::make_shared<RequestResponse>(_context->_io_service, request);
+    auto r = std::make_shared<RequestResponse>(_context->getPimpl()->_io_service, request);
     r->execute();
 }

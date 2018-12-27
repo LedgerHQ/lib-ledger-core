@@ -1,4 +1,3 @@
-#include <asio.hpp>
 #include <iostream>
 #include <memory>
 #include <wallet/common/BlocksSynchronizer.hpp>
@@ -17,10 +16,8 @@
 #include <ledger/core/api/BitcoinLikeAddress.hpp>
 #include <database/BlockchainLevelDB.hpp>
 #include <wallet/common/PersistentBlockchainDatabase.hpp>
-#include <C:/Users/akorol/Programming/asio-core/core-asio/include/AsioExecutionContext.hpp>
-#include <C:/Users/akorol/Programming/asio-core/core-asio/include/AsioHttpClient.hpp>
-
-#include <C:/Users/akorol/Programming/asio-core/core-asio/include/RequestResponce.hpp>
+#include <asio-host/AsioHttpClient.hpp>
+#include <asio-host/AsioExecutionContext.hpp>
 
 using namespace std;
 using namespace ledger::core;
@@ -126,7 +123,7 @@ int main() {
     auto mainContext = std::make_shared<AsioExecutionContext>();
 
     std::shared_ptr<db::BlockchainDB> persistentLayer = std::make_shared<db::BlockchainLevelDB>(dbname);
-    auto blockDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork>>(mainContext, persistentLayer);
+    auto blockDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>(mainContext, persistentLayer);
     auto httpClient = std::make_shared<AsioHttpClient>(mainContext);
     auto coreHttpClient = std::make_shared<HttpClient>("http://api.ledgerwallet.com", httpClient, mainContext);
     auto config = std::make_shared<DynamicObject>();
@@ -148,10 +145,10 @@ int main() {
         .onComplete(mainContext, [mainContext, blockDB](const Try<Unit>& t) {
         if (t.isSuccess()) {
             std::cout << "success" << std::endl;
-            blockDB->getLastBlockHeader().onComplete(mainContext, [](const Try<Option<BitcoinLikeNetwork::Block>>& block) {
+            blockDB->getLastBlock().onComplete(mainContext, [](const Try<Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>>& block) {
                 if (block.isSuccess()) {
                     if (block.getValue().hasValue())
-                        std::cout << block.getValue().getValue().hash << " " << block.getValue().getValue().hash << std::endl;
+                        std::cout << block.getValue().getValue().first << " " << block.getValue().getValue().second.header.hash << std::endl;
                     else
                         std::cout << "not found" << std::endl;
                 }
