@@ -1,9 +1,14 @@
 #pragma once
 
-#include <map>
-#include <set>
 #include <algorithm>
+#include <cereal/types/common.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/string.hpp>
+#include <map>
 #include <math/BigInt.h>
+#include <set>
 
 namespace ledger {
     namespace core {
