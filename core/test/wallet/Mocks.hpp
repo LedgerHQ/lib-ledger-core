@@ -68,6 +68,11 @@ namespace ledger {
             public:
                 MOCK_METHOD0(getUTXOs, Future<std::map<bitcoin::UTXOKey, bitcoin::UTXOValue>>());
             };
+
+            class KeychainRegistryMock : public KeychainRegistry {
+            public:
+                MOCK_METHOD1(containsAddress, bool(const std::string&));
+            };
         }
     }
 }

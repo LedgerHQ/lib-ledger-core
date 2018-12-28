@@ -119,7 +119,7 @@ namespace ledger {
         public:
             BigInt();
             BigInt(const BigInt& cpy);
-            BigInt(BigInt&& mov);
+            BigInt(BigInt&& mov) noexcept;
 
             /**
              * Initializes a new BigInt with the given big endian data.

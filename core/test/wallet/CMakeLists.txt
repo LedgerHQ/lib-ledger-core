@@ -13,12 +13,15 @@ main.cpp
 InMemoryPartialBlocksDB_test.cpp 
 BlocksSynchronizer_test.cpp
 Helpers.cpp
+CommonFixtureFunctions.cpp
 ChangeKeychain_test.cpp
 PersistentBlockchainDatabase_test.cpp
 AccountSynchronizer_test.cpp
 InMemoryBlockchainDatabase_test.cpp
 UTXOServiceSourceBased_test.cpp
 BalanceServiceUTXOBased_test.cpp
+OperationServiceOnDB_test.cpp
+OperationFromBitcoinTransaction_test.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)

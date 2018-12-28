@@ -121,12 +121,6 @@ namespace ledger {
 
             private:
                 std::shared_ptr<BitcoinLikeAccount> getSelf();
-                inline void inflateOperation(core::Operation& out,
-                    const std::shared_ptr<const AbstractWallet>& wallet,
-                    const BitcoinLikeNetwork::Transaction& tx);
-                inline void computeOperationTrust(core::Operation& operation,
-                    const std::shared_ptr<const AbstractWallet>& wallet,
-                    const BitcoinLikeNetwork::Transaction& tx);
 
             private:
                 std::shared_ptr<TransactionBroadcaster<BitcoinLikeNetwork>> _broadcaster;

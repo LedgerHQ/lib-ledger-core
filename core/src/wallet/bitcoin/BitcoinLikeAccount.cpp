@@ -46,7 +46,7 @@
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <wallet/common/Operation.h>
+#include <wallet/Operation.h>
 #include <utils/DateUtils.hpp>
 
 
@@ -63,41 +63,6 @@ namespace ledger {
                 , _observer(observer)
                 , _synchronizer(synchronizer) {
                 _currentBlockHeight = 0;
-            }
-
-            void
-                BitcoinLikeAccount::inflateOperation(core::Operation &out,
-                    const std::shared_ptr<const AbstractWallet>& wallet,
-                    const BitcoinLikeNetwork::Transaction &tx) {
-                out.accountUid = getAccountUid();
-                out.block = tx.block;
-                out.bitcoinTransaction = Option<BitcoinLikeNetwork::Transaction>(tx);
-                out.currencyName = getWallet()->getCurrency().name;
-                out.walletType = getWalletType();
-                out.walletUid = wallet->getWalletUid();
-                out.date = tx.receivedAt;
-                out.bitcoinTransaction.getValue().block = out.block;
-            }
-
-            void
-                BitcoinLikeAccount::computeOperationTrust(core::Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
-                    const BitcoinLikeNetwork::Transaction &tx) {
-                if (tx.block.nonEmpty()) {
-                    auto txBlockHeight = tx.block.getValue().height;
-                    if (_currentBlockHeight > txBlockHeight + 5) {
-                        operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
-                    }
-                    else if (_currentBlockHeight > txBlockHeight) {
-                        operation.trust->setTrustLevel(api::TrustLevel::UNTRUSTED);
-                    }
-                    else if (_currentBlockHeight == txBlockHeight) {
-                        operation.trust->setTrustLevel(api::TrustLevel::PENDING);
-                    }
-
-                }
-                else {
-                    operation.trust->setTrustLevel(api::TrustLevel::DROPPED);
-                }
             }
 
             bool BitcoinLikeAccount::isSynchronizing() {
@@ -185,6 +150,7 @@ namespace ledger {
             }
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction() {
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "BitcoinLikeAccount::buildTransaction is not implemented");
                 return nullptr;
             }
 

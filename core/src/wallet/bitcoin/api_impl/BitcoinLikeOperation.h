@@ -31,7 +31,7 @@
 #pragma once
 
 #include <api/BitcoinLikeOperation.hpp>
-#include <wallet/common/Operation.h>
+#include <wallet/Operation.h>
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 

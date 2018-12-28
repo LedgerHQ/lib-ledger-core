@@ -3,6 +3,7 @@
 #include <async/Future.hpp>
 #include <vector>
 #include <wallet/PartialBlockStorage.hpp>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
@@ -37,7 +38,7 @@ namespace ledger {
                 }
 
             private:
-                std::map<uint32_t, std::map<std::string, Transaction>> _transactions;
+                std::unordered_map<uint32_t, std::map<std::string, Transaction>> _transactions;
                 std::mutex _lock;
             };
         }

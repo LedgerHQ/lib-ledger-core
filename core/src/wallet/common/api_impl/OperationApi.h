@@ -31,7 +31,7 @@
 #pragma once
 
 #include <api/Operation.hpp>
-#include "../Operation.h"
+#include "wallet/Operation.h"
 #include <api/Currency.hpp>
 
 namespace ledger {
@@ -57,13 +57,13 @@ namespace ledger {
             bool isInstanceOfRippleLikeOperation() override;
             bool isComplete() override;
             api::WalletType getWalletType() override;
-            ledger::core::Operation& getBackend();
+            core::Operation& getBackend();
             const std::shared_ptr<AbstractAccount>& getAccount() const;
 
             api::Currency getCurrency() override;
 
         private:
-            ledger::core::Operation _backend;
+            core::Operation _backend;
             std::shared_ptr<AbstractAccount> _account;
             std::shared_ptr<api::Amount> _fees;
             std::shared_ptr<api::Amount> _amount;

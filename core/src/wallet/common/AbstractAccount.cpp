@@ -148,15 +148,6 @@ namespace ledger {
             return _publisher->getEventBus();
         }
 
-        void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
-            auto payload = DynamicObject::newInstance();
-            payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
-            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
-            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
-            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
-            pushEvent(event);
-        }
-
         void AbstractAccount::emitEventsNow() {
             auto self = shared_from_this();
             run([self] () {

@@ -362,7 +362,7 @@ namespace ledger {
             }
         }
 
-        BigInt::BigInt(BigInt &&mov) {
+        BigInt::BigInt(BigInt &&mov) noexcept {
             _bigd = mov._bigd;
             _negative = mov._negative;
             mov._bigd = nullptr;
