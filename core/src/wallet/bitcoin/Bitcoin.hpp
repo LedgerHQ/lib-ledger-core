@@ -45,10 +45,7 @@ namespace ledger {
                 Option<std::string> address;
                 Option<std::string> signatureScript;
                 Option<std::string> coinbase;
-                uint32_t sequence;
-                Input() {
-                    sequence = 0xFFFFFFFF;
-                };
+                uint32_t sequence { 0xFFFFFFFF };
 
                 template <class Archive>
                 void load(Archive & archive) {
@@ -85,7 +82,6 @@ namespace ledger {
                 BigInt value;
                 Option<std::string> address;
                 std::string script;
-                Output() = default;
                 std::string time;
 
                 template <class Archive>
@@ -114,7 +110,7 @@ namespace ledger {
             };
 
             struct Transaction {
-                uint32_t  version;
+                uint32_t  version{1};
                 std::string hash;
                 std::chrono::system_clock::time_point receivedAt;
                 uint64_t lockTime;
@@ -122,11 +118,7 @@ namespace ledger {
                 std::vector<Input> inputs;
                 std::vector<Output> outputs;
                 Option<BigInt> fees;
-                uint64_t confirmations;
-                Transaction() {
-                    version = 1;
-                    confirmations = -1;
-                }
+                uint64_t confirmations{1};
 
                 template<class Archive>
                 void save(Archive & archive) const {
