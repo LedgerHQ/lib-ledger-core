@@ -19,7 +19,7 @@ namespace ledger {
             template<typename FilledBlock>
             class OperationServiceOnDB : public OperationService, public std::enable_shared_from_this<OperationServiceOnDB<FilledBlock>> {
             public:
-                typedef typename ReadOnlyBlockchainDatabase<FilledBlock> BlocksDB;
+                typedef ReadOnlyBlockchainDatabase<FilledBlock> BlocksDB;
             public:
                 OperationServiceOnDB(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
