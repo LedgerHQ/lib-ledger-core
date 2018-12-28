@@ -44,7 +44,7 @@ namespace ledger {
 
             class SimpleExecutionContext : public api::ExecutionContext {
             public:
-                virtual void execute(const std::shared_ptr<api::Runnable> & runnable) {
+                virtual void execute(const std::shared_ptr<api::Runnable> & runnable) override {
                     q.push(runnable);
                 }
 

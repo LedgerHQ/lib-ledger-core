@@ -10,6 +10,7 @@ endif (APPLE)
 
 add_executable(ledger-core-wallet-tests
     main.cpp
+    CommonFixtureFunctions.cpp
     InMemoryPartialBlocksDB_test.cpp
     BlocksSynchronizer_test.cpp
     Helpers.cpp

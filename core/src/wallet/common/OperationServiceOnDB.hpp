@@ -39,9 +39,9 @@ namespace ledger {
                         _unstableBlocksDB->getBlocks(fromBlock, toBlock),
                         _stableBlocksDB->getBlocks(fromBlock, toBlock)
                     };
-                    auto self = shared_from_this();
+                    auto self = this->shared_from_this();
                     return executeAll(_executionContext, futures)
-                        .map<std::vector<Operation>>(_executionContext, [self](const std::vector<std::vector<FilledBlock>>& vectorBlocks) {
+                        .template map<std::vector<Operation>>(_executionContext, [self](const std::vector<std::vector<FilledBlock>>& vectorBlocks) {
                             std::vector<Operation> res;
                             self->addOperations(vectorBlocks[0], api::TrustLevel::UNTRUSTED, res);
                             self->addOperations(vectorBlocks[1], api::TrustLevel::TRUSTED, res);
@@ -50,9 +50,9 @@ namespace ledger {
                 }
 
                 Future<std::vector<Operation>> getPendingOperations() override {
-                    auto self = shared_from_this();
+                    auto self = this->shared_from_this();
                     return _pendingTransactions->getLastBlock()
-                        .map<std::vector<Operation>>(_executionContext, [self](const Option<std::pair<uint32_t, FilledBlock>>& lastBlock) {
+                        .template map<std::vector<Operation>>(_executionContext, [self](const Option<std::pair<uint32_t, FilledBlock>>& lastBlock) {
                             std::vector<Operation> res;
                             if (!lastBlock.hasValue())
                                 return res;
