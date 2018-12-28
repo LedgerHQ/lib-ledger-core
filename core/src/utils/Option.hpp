@@ -58,10 +58,11 @@ namespace ledger {
             Option() {};
             Option(const T& value) : _optional(value) {};
             Option(T&& value) : _optional(std::move(value)) {};
-            Option(Option<T>&& other) noexcept = default;
+            Option(Option<T>&& other) noexcept : _optional(std::move(other._optional)) {}
 
             Option(const Option<T>& option) : _optional(option._optional) {};
             Option(const std::experimental::optional<T>& optional) : _optional(optional) {};
+
             Option<T>& operator=(const Option<T>& option) {
                 if (this != &option) {
                     _optional = option._optional;
