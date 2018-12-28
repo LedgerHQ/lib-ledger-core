@@ -17,9 +17,12 @@ core/lib/secp256k1/include/
 core/lib/secp256k1/lib/
 core/lib/secp256k1/src/
 core/lib/secp256k1/tmp/
+core/lib/sqlcipher
 
 node_modules
 api/djinni/support-lib/*.mk
 api/djinni/support-lib/*.Makefile
 api/
 .vscode/
+
+sqlcipher-*/

@@ -13,6 +13,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(soci_sqlite3 STATIC
         blob.cpp common.cpp common.h error.cpp factory.cpp row-id.cpp session.cpp soci-sqlite3.h standard-into-type.cpp
         standard-use-type.cpp statement.cpp vector-into-type.cpp vector-use-type.cpp)
-target_include_directories(soci_sqlite3 PUBLIC ../soci/core ../sqlite3)
 
-#add_subdirectory(test)
+if (SQLCIPHER)
+    add_dependencies(soci_sqlite3 SQLCipher)
+    target_link_libraries(soci_sqlite3 "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    include_directories(soci_sqlite3 ../sqlcipher/include)
+    target_include_directories(soci_sqlite3 PUBLIC ../sqlcipher/include)
+else()
+    target_include_directories(soci_sqlite3 PUBLIC ../sqlite3 )
+endif()
+target_include_directories(soci_sqlite3 PUBLIC ../soci/core)

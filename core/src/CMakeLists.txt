@@ -113,7 +113,9 @@ else()
 endif(MINGW OR MSVC)
 
 target_link_libraries(ledger-core crypto)
-target_link_libraries(ledger-core sqlite3)
+if (NOT SQLCIPHER)
+    target_link_libraries(ledger-core sqlite3)
+endif()
 target_link_libraries(ledger-core soci_sqlite3)
 target_link_libraries(ledger-core soci_core_static)
 target_link_libraries(ledger-core leveldb)
@@ -126,9 +128,16 @@ add_dependencies(ledger-core secp256k1)
 
 target_link_libraries(ledger-core ethash)
 
-#Sqlite
-target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
-link_directories($<TARGET_FILE_DIR:sqlite3>)
+if (SQLCIPHER)
+    #Sqlcipher
+    add_dependencies(ledger-core SQLCipher)
+    target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    link_directories("${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib")
+else()
+    #Sqlite
+    target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
+    link_directories($<TARGET_FILE_DIR:sqlite3>)
+endif()
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
@@ -158,7 +167,11 @@ target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
 target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
 target_include_directories(ledger-core PUBLIC ../lib/soci/core)
 target_include_directories(ledger-core PUBLIC ../lib/soci_sqlite3)
-target_include_directories(ledger-core PUBLIC ../lib/sqlite3)
+if (SQLCIPHER)
+    target_include_directories(ledger-core PUBLIC ../lib/sqlcipher/include)
+else()
+    target_include_directories(ledger-core PUBLIC ../lib/sqlite3)
+endif()
 target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
 target_include_directories(ledger-core PUBLIC ../lib/openssl/crypto/blake)
