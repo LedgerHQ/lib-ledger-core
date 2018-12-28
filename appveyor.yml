@@ -162,10 +162,3 @@ artifacts:
 
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
-notifications:
-- provider: Slack
-  incoming_webhook: https://hooks.slack.com/services/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
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: false
