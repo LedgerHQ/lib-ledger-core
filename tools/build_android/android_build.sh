@@ -22,5 +22,5 @@ else
 fi
 
 cmake -DCMAKE_BUILD_TYPE:STRING=Release -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake ../lib-ledger-core
-cmake --build . --config Release
+cmake --build . --config Release -- -j8
 
