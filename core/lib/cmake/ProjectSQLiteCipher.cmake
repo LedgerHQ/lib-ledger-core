@@ -35,14 +35,13 @@ if(IS_IOS GREATER_EQUAL 0)
     else()
         set(OS_COMPILER "iPhoneOS")
         set(_host_ "arm-apple-darwin")
+        set(SKIP_BUIL_SQLCIPHER ON)
     endif()
 
     set(CROSS_TOP "${XCODE_DEVELOPER_DIR}/Platforms/${OS_COMPILER}.platform/Developer")
     set(CROSS_SDK "${OS_COMPILER}.sdk")
-    #set(_c_flags_ "-arch ${CMAKE_OSX_ARCHITECTURES} -isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK} ${_c_flags_}")
 
-    set(_configure_options_ ${_configure_options_} --host ${_host_})
-    #set(_c_flags_ "${_c_flags_} -arch ${CMAKE_OSX_ARCHITECTURES} -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk")
+    set(_configure_options_ ${_configure_options_} --host=${_host_})
     set(_c_flags_ "${_c_flags_} -arch ${CMAKE_OSX_ARCHITECTURES} -isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK}")
     set(_build_command_ bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sqlcipher_ios.sh)
     set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher_ios.sh)
@@ -70,26 +69,43 @@ if (CMAKE_BUILD_TYPE)
 endif()
 
 set(SQLCIPHER_LIB "${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
+if (NOT DEFINED SKIP_BUIL_SQLCIPHER)
+    ExternalProject_Add(
+            SQLCipher
+            DEPENDS crypto
+            PREFIX "${prefix}"
+            DOWNLOAD_NO_PROGRESS 1
+            GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
+            UPDATE_COMMAND ""
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+            ${_toolchain_file_}
+            ${_only_release_configuration}
+            LOG_CONFIGURE 1
+            LOG_INSTALL 1
+            LOG_BUILD 1
+            CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=-lcrypto --prefix=${prefix}
+            BUILD_IN_SOURCE 1
+            BUILD_COMMAND ${_build_command_}
+            BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
+            ${_overwrite_install_command}
+    )
+else()
+    #WARNING: for iOS arm64 and armv7, sqlcipher should be built before running
+    #project build (launch build_sqlcipher_ios_arm64_armv7.sh)
+    ExternalProject_Add(
+            SQLCipher
+            DEPENDS crypto
+            PREFIX "${prefix}"
+            DOWNLOAD_NO_PROGRESS 1
+            GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
+            UPDATE_COMMAND ""
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            INSTALL_COMMAND ""
+            COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch_sqlcipher_ios.sh ${CMAKE_OSX_ARCHITECTURES} ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif()
 
-ExternalProject_Add(
-        SQLCipher
-        DEPENDS crypto
-        PREFIX "${prefix}"
-        DOWNLOAD_NO_PROGRESS 1
-        GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
-        UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-        ${_toolchain_file_}
-        ${_only_release_configuration}
-        LOG_CONFIGURE 1
-        LOG_INSTALL 1
-        LOG_BUILD 1
-        CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=-lcrypto --prefix=${prefix}
-        BUILD_IN_SOURCE 1
-        BUILD_COMMAND ${_build_command_}
-        BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
-        ${_overwrite_install_command}
-)
 
 set(SQLCIPHER_INCLUDE_DIR "${prefix}/include")
 
