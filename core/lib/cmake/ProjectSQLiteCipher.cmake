@@ -17,8 +17,6 @@ set(_build_command_ ${CMAKE_MAKE_PROGRAM})
 set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/sqlcipher")
 
 if(IS_IOS GREATER_EQUAL 0)
-    file(MAKE_DIRECTORY "${prefix}/lib")  # Must exist.
-
     find_program(XCODE-SELECT xcode-select)
     if ("${XCODE-SELECT}" MATCHES "-NOTFOUND")
         message(FATAL_ERROR "The xcode-select program could not be found.")
@@ -44,7 +42,18 @@ if(IS_IOS GREATER_EQUAL 0)
     set(_configure_options_ ${_configure_options_} --host=${_host_})
     set(_c_flags_ "${_c_flags_} -arch ${CMAKE_OSX_ARCHITECTURES} -isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK}")
     set(_build_command_ bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sqlcipher_ios.sh)
-    set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher_ios.sh)
+    set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
+elseif(ANDROID)
+    string(FIND ${CMAKE_TOOLCHAIN_FILE} "armeabi" IS_ARM)
+    string(FIND ${CMAKE_TOOLCHAIN_FILE} "arm64" IS_ARCH)
+    if (IS_ARM GREATER_EQUAL 0)
+        set(_toolchain_ arm-linux-androideabi)
+    elseif(IS_ARCH GREATER_EQUAL 0)
+        set(_toolchain_ aarch64-linux-android)
+    else()
+        set(_toolchain_ i686-linux-android)
+    endif()
+    set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
 endif()
 
 if (MSVC OR MINGW)
@@ -70,25 +79,48 @@ endif()
 
 set(SQLCIPHER_LIB "${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
 if (NOT DEFINED SKIP_BUIL_SQLCIPHER)
-    ExternalProject_Add(
-            SQLCipher
-            DEPENDS crypto
-            PREFIX "${prefix}"
-            DOWNLOAD_NO_PROGRESS 1
-            GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
-            UPDATE_COMMAND ""
-            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-            ${_toolchain_file_}
-            ${_only_release_configuration}
-            LOG_CONFIGURE 1
-            LOG_INSTALL 1
-            LOG_BUILD 1
-            CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=-lcrypto --prefix=${prefix}
-            BUILD_IN_SOURCE 1
-            BUILD_COMMAND ${_build_command_}
-            BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
-            ${_overwrite_install_command}
-    )
+    if(ANDROID)
+        ExternalProject_Add(
+                SQLCipher
+                DEPENDS crypto
+                PREFIX "${prefix}"
+                DOWNLOAD_NO_PROGRESS 1
+                GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
+                UPDATE_COMMAND ""
+                CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+                ${_toolchain_file_}
+                ${_only_release_configuration}
+                LOG_CONFIGURE 1
+                LOG_INSTALL 1
+                LOG_BUILD 1
+                CONFIGURE_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/configure_sqlcipher_android.sh ${CMAKE_CURRENT_SOURCE_DIR} ${_toolchain_} $ENV{ANDROID_NDK_r16b} ${OPENSSL_DIR} ${CMAKE_BINARY_DIR}/core/lib/openssl/crypto
+                BUILD_IN_SOURCE 1
+                BUILD_COMMAND ${_build_command_}
+                BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
+                ${_overwrite_install_command}
+        )
+    else()
+        ExternalProject_Add(
+                SQLCipher
+                DEPENDS crypto
+                PREFIX "${prefix}"
+                DOWNLOAD_NO_PROGRESS 1
+                GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
+                UPDATE_COMMAND ""
+                CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+                ${_toolchain_file_}
+                ${_only_release_configuration}
+                LOG_CONFIGURE 1
+                LOG_INSTALL 1
+                LOG_BUILD 1
+                CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=-lcrypto --prefix=${prefix}
+                BUILD_IN_SOURCE 1
+                BUILD_COMMAND ${_build_command_}
+                BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
+                ${_overwrite_install_command}
+        )
+    endif()
+
 else()
     #WARNING: for iOS arm64 and armv7, sqlcipher should be built before running
     #project build (launch build_sqlcipher_ios_arm64_armv7.sh)
