@@ -41,3 +41,14 @@ TEST_F(UTXOSourceInMemoryFixture, NoInitialUTXO) {
     EXPECT_TRUE(sourceList.available.empty());
     EXPECT_TRUE(sourceList.spent.empty());
 }
+
+TEST_F(UTXOSourceInMemoryFixture, PruneUsedUTXO) {
+    auto future = _source->getUTXOs(_ctx);
+    auto filledBlock = toFilledBlock(
+        BL{ 10, "block 10",
+            {
+                TR{ { "X" }, { { "0", 10000 } } }
+            }
+        }
+    );
+}
