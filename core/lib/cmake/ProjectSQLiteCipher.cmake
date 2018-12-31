@@ -13,7 +13,7 @@ set(_ld_flags_ -L${OPENSSL_LIB})
 set(_c_flags_ "-DSQLITE_HAS_CODEC -I${OPENSSL_DIR}/include -L${OPENSSL_LIB}")
 set(_configure_options_ --with-pic --disable-shared --with-crypto-lib=none --disable-tcl --enable-tempstore=yes )
 set(_build_command_ ${CMAKE_MAKE_PROGRAM})
-
+set(_libs_ -lcrypto)
 set(prefix "${CMAKE_CURRENT_SOURCE_DIR}/sqlcipher")
 
 if(IS_IOS GREATER_EQUAL 0)
@@ -33,7 +33,7 @@ if(IS_IOS GREATER_EQUAL 0)
     else()
         set(OS_COMPILER "iPhoneOS")
         set(_host_ "arm-apple-darwin")
-        set(SKIP_BUIL_SQLCIPHER ON)
+        set(SKIP_BUILD_SQLCIPHER ON)
     endif()
 
     set(CROSS_TOP "${XCODE_DEVELOPER_DIR}/Platforms/${OS_COMPILER}.platform/Developer")
@@ -53,6 +53,10 @@ elseif(ANDROID)
     else()
         set(_toolchain_ i686-linux-android)
     endif()
+    set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(_libs_ "-lcrypto -ldl -lm -lpthread")
+    set(_build_command_ bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sqlcipher.sh)
     set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
 endif()
 
@@ -78,7 +82,7 @@ if (CMAKE_BUILD_TYPE)
 endif()
 
 set(SQLCIPHER_LIB "${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
-if (NOT DEFINED SKIP_BUIL_SQLCIPHER)
+if (NOT DEFINED SKIP_BUILD_SQLCIPHER)
     if(ANDROID)
         ExternalProject_Add(
                 SQLCipher
@@ -113,7 +117,7 @@ if (NOT DEFINED SKIP_BUIL_SQLCIPHER)
                 LOG_CONFIGURE 1
                 LOG_INSTALL 1
                 LOG_BUILD 1
-                CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=-lcrypto --prefix=${prefix}
+                CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=${_libs_} --prefix=${prefix}
                 BUILD_IN_SOURCE 1
                 BUILD_COMMAND ${_build_command_}
                 BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"

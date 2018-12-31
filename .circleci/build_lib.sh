@@ -68,6 +68,8 @@ function command_android {
   else
     export TOOLCHAIN_NAME='android-ndk-r16b-api-21-x86-clang-libcxx'
   fi
+  #This is useful for SQLCipher/config.guess
+  export LIBC=gnu
   BUILD_CONFIG="Release"
   add_to_cmake_params -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 }
@@ -151,5 +153,5 @@ if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j4
+    make -j8
 fi

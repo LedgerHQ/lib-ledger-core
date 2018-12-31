@@ -19,6 +19,8 @@ fi
 unamestr=`uname`
 if [ "$unamestr" == "Darwin" ]; then
 	TOOLCHAIN_PATH=$TOOLCHAIN_PATH/prebuilt/darwin-x86_64
+elif [ "$unamestr" == "Linux" ]; then
+	TOOLCHAIN_PATH=$TOOLCHAIN_PATH/prebuilt/linux-x86_64
 fi
 
 ANDROID_NDK_API_VERSION="21"
