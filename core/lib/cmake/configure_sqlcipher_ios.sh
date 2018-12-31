@@ -4,6 +4,7 @@
 #but works when executed from terminal,
 #only possible reason is that the environment set by cmake
 #is 'polluting' somehow the env and makes it fail
+#(we should try 'unset' variables to see which one is causing this issue)
 #Workaround: use prebuilt sqlcipher library for iOS (armv7 and arm64)
 ARCH=$1
 DIST_DIR=build_ios_$ARCH

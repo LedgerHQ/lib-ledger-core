@@ -64,9 +64,9 @@ function command_android {
   if [ "$ARCH" == "armeabi-v7a" ]; then
     export TOOLCHAIN_NAME='android-ndk-r16b-api-21-armeabi-v7a-clang-libcxx14'
   elif [ "$ARCH" == "arm64-v8a" ]; then
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-24-arm64-v8a-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-arm64-v8a-neon-clang-libcxx14'
   else
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-16-x86-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-x86-clang-libcxx'
   fi
   BUILD_CONFIG="Release"
   add_to_cmake_params -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
