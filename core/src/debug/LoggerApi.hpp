@@ -57,5 +57,4 @@ namespace ledger {
     }
 }
 
-
 #endif //LEDGER_CORE_LOGGERAPI_HPP

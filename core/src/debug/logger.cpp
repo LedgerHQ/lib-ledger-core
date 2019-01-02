@@ -31,26 +31,42 @@
 
 #include "logger.hpp"
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/null_sink.h>
 #include "LogPrinterSink.hpp"
 #include "RotatingEncryptableSink.hpp"
 
 namespace ledger {
     namespace core {
 
-        std::shared_ptr<spdlog::logger> logger::create(const std::string &name,
-                                 std::experimental::optional<std::string> password,
-                                 const std::shared_ptr<api::ExecutionContext> &context,
-                                 const std::shared_ptr<api::PathResolver> &resolver,
-                                 const std::shared_ptr<api::LogPrinter> &printer,
-                                 size_t maxSize) {
+        std::shared_ptr<spdlog::logger> logger::create(
+            const std::string &name,
+            std::experimental::optional<std::string> password,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<api::PathResolver> &resolver,
+            const std::shared_ptr<api::LogPrinter> &printer,
+            size_t maxSize,
+            bool disabled
+        ) {
             auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
-            auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
-            auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
-            spdlog::drop(name);
-            logger->set_level(spdlog::level::trace);
-            logger->flush_on(spdlog::level::trace);
-            logger->set_pattern("%Y-%m-%dT%XZ%z %L: %v");
-            return logger;
+
+            if (disabled) {
+                auto logger = spdlog::create<spdlog::sinks::null_sink_st>(name);
+                spdlog::drop(name);
+
+                logger->set_level(spdlog::level::off);
+
+                return logger;
+            } else {
+                auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
+                auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
+                spdlog::drop(name);
+
+                logger->set_level(spdlog::level::trace);
+                logger->flush_on(spdlog::level::trace);
+                logger->set_pattern("%Y-%m-%dT%XZ%z %L: %v");
+
+                return logger;
+            }
         }
     }
 }
