@@ -42,13 +42,39 @@ TEST_F(UTXOSourceInMemoryFixture, NoInitialUTXO) {
     EXPECT_TRUE(sourceList.spent.empty());
 }
 
+// Test that the algorithm that prunes UTXO is working properly.
 TEST_F(UTXOSourceInMemoryFixture, PruneUsedUTXO) {
-    auto future = _source->getUTXOs(_ctx);
-    auto filledBlock = toFilledBlock(
-        BL{ 10, "block 10",
+    // create a block that contains a single transaction
+    _blocksDB->addBlock(17, toFilledBlock(
+        BL{ 17, "block 17",
             {
                 TR{ { "X" }, { { "0", 10000 } } }
             }
         }
-    );
+    ));
+
+    auto future = _source->getUTXOs(_ctx);
+    _ctx->wait();
+
+    auto sourceList = getFutureResult(future);
+    std::map<UTXOKey, UTXOValue> available = { { std::make_pair("17", 0), UTXOValue(BigInt(1000), "0") } };
+    EXPECT_EQ(sourceList.available, available);
+    EXPECT_EQ(sourceList.spent, std::set<UTXOKey>());
+
+    // create a transaction that consumes the previous output
+    _blocksDB->addBlock(18, toFilledBlock(
+        BL{ 18, "block 2",
+            {
+                TR{ { "0" }, { { "1", 3141592 } } }
+            }
+        }
+    ));
+
+    auto future2 = _source->getUTXOs(_ctx);
+    _ctx->wait();
+
+    auto sourceList2 = getFutureResult(future);
+    std::map<UTXOKey, UTXOValue> available2 = { { std::make_pair("18", 0), UTXOValue(BigInt(3141592), "1") } };
+    EXPECT_EQ(sourceList2.available, available2); // UTXO consumed
+    EXPECT_EQ(sourceList2.spent, std::set<UTXOKey>());
 }
