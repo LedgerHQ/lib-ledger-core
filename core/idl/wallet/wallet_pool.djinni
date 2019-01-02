@@ -32,13 +32,12 @@ WalletPool = interface +c {
     #@param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
     #@param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
     #@param configuration, DynamicObject object, desired configuration for this wallet pool
-    #@param disableLogging Should logging be disabled in subsequent calls?
     #@return WalletPool object, instance of WalletPool
     static newInstance(name: string, password: optional<string>, httpClient: HttpClient,
                         webSocketClient: WebSocketClient, pathResolver: PathResolver,
                         logPrinter: LogPrinter, dispatcher: ThreadDispatcher,
                         rng: RandomNumberGenerator, backend: DatabaseBackend,
-                        configuration: DynamicObject, disableLogging: bool): WalletPool;
+                        configuration: DynamicObject): WalletPool;
 
     #Return used logger to dump logs in defined log path by PathResolver
     #@return Logger object
@@ -128,8 +127,6 @@ WalletPoolBuilder = interface +c {
     #@param configuration, DynamicObject object
     #@return WalletPoolBuilder object, with wallet pool configuration set
     setConfiguration(configuration: DynamicObject): WalletPoolBuilder;
-    #Set whether internal logging should be disabled. Pass true to disable logging and false to leave it enabled.
-    setLoggingDisabled(disabled: bool): WalletPoolBuilder;
     #Create wallet pool
     #@param callback, Callback object returning a WalletPool instance
     build(listener: Callback<WalletPool>);
