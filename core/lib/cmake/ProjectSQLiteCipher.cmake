@@ -58,11 +58,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(_libs_ "-lcrypto -ldl -lm -lpthread")
     set(_build_command_ bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sqlcipher.sh)
     set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
-endif()
-
-if (MSVC OR MINGW)
+elseif (MSVC OR MINGW)
+    set(_configure_options_ ${_configure_options_} --build=x86_64 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32)
     set(_only_release_configuration -DCMAKE_CONFIGURATION_TYPES=Release)
-    set(_overwrite_install_command INSTALL_COMMAND cmake --build <BINARY_DIR> --config Release --target install)
 endif()
 
 if (CMAKE_TOOLCHAIN_FILE)
@@ -110,6 +108,7 @@ if (NOT DEFINED SKIP_BUILD_SQLCIPHER)
                 PREFIX "${prefix}"
                 DOWNLOAD_NO_PROGRESS 1
                 GIT_REPOSITORY https://github.com/SQLCipher/SQLCipher.git
+                GIT_SUBMODULES ""
                 UPDATE_COMMAND ""
                 CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
                 ${_toolchain_file_}
