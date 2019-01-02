@@ -83,7 +83,7 @@ install:
 - cd core\lib\leveldb
 - git checkout bitcoin-fork || echo 'Checkout of bitcoin-fork branch on leveldb submodule failed'
 #Remove sh from path otherwise mingw fail to launch
-- ps: Get-Command sh.exe -All | Remove-Item
+- ps: if ($env:TOOL_CONFIG -match 'mingw32') { Get-Command sh.exe -All | Remove-Item }
 
 build_script:
 
