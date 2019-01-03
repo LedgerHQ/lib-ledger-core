@@ -236,6 +236,14 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            const api::Currency STAKENET =
+                    Currency("stakenet")
+                            .forkOfBitcoin(networks::getNetworkParameters("stakenet"))
+                            .bip44(384)
+                            .paymentUri("stakenet")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("decred", 8, "XSN");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
