@@ -331,7 +331,7 @@ namespace ledger {
                             false,
                             0,
                             {sigHashType::SIGHASH_ALL},
-                            {}
+                            {"ZIP"}
                     );
                     return KOMODO;
                 } else if (networkName == "poswallet") {
