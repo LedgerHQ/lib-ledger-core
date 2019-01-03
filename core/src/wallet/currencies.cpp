@@ -229,6 +229,14 @@ namespace ledger {
                             .unit("decred", 8, "DCR")
                             .unit("milli-decred", 5, "mDCR");
 
+            const api::Currency STAKENET =
+                    Currency("stakenet")
+                            .forkOfBitcoin(networks::getNetworkParameters("stakenet"))
+                            .bip44(384)
+                            .paymentUri("stakenet")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("decred", 8, "XSN");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -251,7 +259,8 @@ namespace ledger {
                 POSWALLET,
                 PIVX,
                 CLUBCOIN,
-                DECRED
+                DECRED,
+                STAKENET
             });
         }
     }
