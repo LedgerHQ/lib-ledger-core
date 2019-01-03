@@ -397,17 +397,17 @@ namespace ledger {
                     return DECRED;
                 } else if (networkName == "stakenet") {
                     static const api::BitcoinLikeNetworkParameters STAKENET(
-                        "xsn",
-                        {0x4C},
-                        {0x10},
-                        {0x04, 0x88, 0xB2, 0x1E},
-                        api::BitcoinLikeFeePolicy::PER_BYTE,
-                        10000,
-                        "Stakenet Signed Message:\n",
-                        false,
-                        0,
-                        {sigHashType::SIGHASH_ALL},
-                        {}
+                            "xsn",
+                            {0x4C},
+                            {0x10},
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "Stakenet Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
                     );
                     return STAKENET;
                 }
