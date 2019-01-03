@@ -71,15 +71,15 @@ namespace ledger {
                             Option<std::string> fromBlockHash = Option<std::string>(),
                             Option<void *> session = Option<void *>()) override;
 
-            FuturePtr<Block> getCurrentBlock() override;
+            FuturePtr<Block> getCurrentBlock() const override;
 
-            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) override;
+            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) const override;
 
-            Future<int64_t > getTimestamp() override;
+            Future<int64_t > getTimestamp() const override;
 
-            std::shared_ptr<api::ExecutionContext> getExplorerContext() override;
-            api::BitcoinLikeNetworkParameters getNetworkParameters() override;
-            std::string getExplorerVersion() override;
+            std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
+            api::BitcoinLikeNetworkParameters getNetworkParameters() const override;
+            std::string getExplorerVersion() const override;
         private:
             api::BitcoinLikeNetworkParameters _parameters;
             std::string _explorerVersion;

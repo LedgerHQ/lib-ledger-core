@@ -63,14 +63,14 @@ namespace ledger {
             getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
                             Option<void *> session = Option<void *>()) override;
 
-            FuturePtr<Block> getCurrentBlock() override;
-            FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) override;
+            FuturePtr<Block> getCurrentBlock() const override;
+            FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) const override;
 
-            Future<int64_t > getTimestamp() override;
+            Future<int64_t > getTimestamp() const override;
 
-            std::shared_ptr<api::ExecutionContext> getExplorerContext() override;
-            api::EthereumLikeNetworkParameters getNetworkParameters() override;
-            std::string getExplorerVersion() override;
+            std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
+            api::EthereumLikeNetworkParameters getNetworkParameters() const override;
+            std::string getExplorerVersion() const override;
 
         private:
             api::EthereumLikeNetworkParameters _parameters;

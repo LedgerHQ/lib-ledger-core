@@ -36,21 +36,6 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
 		    		--export-header-name libcore_export \
                     --trace $trace
 
-#--swift-out api/core/swift \
-#--swift-umbrella-header ledger-core.h \
-#--objc-type-prefix LG \
-#--objc-out api/core/objc \
-#--objcpp-out api/core/objcpp \
-#--node-out api/core/nodejs \
-#--node-type-prefix NJS \
-#--node-include-cpp ../../../$CORE_CPP_API_DIRECTORY \
-#--node-package ledgerapp_nodejs \
-#--react-native-objc-out api/core/react-native/LibLedgerCore/ios/Sources \
-#--react-native-type-prefix RCTCore \
-#--react-include-objc-impl  ../../../../src/objc \
-#--react-native-objc-impl-suffix Impl \
-#--react-native-java-package com.ledger.reactnative \
-#--react-native-java-out api/core/react-native/LibLedgerCore/android/src/main/java/com/ledger/reactnative/ \
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
 cp ./djinni/support-lib/*.hpp $CORE_CPP_JNI_DIRECTORY
 

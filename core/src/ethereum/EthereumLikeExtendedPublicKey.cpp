@@ -52,28 +52,15 @@ namespace ledger {
                                                                      const DeterministicPublicKey& key,
                                                                      const DerivationPath& path):
             _currency(params), _key(key), _path(path)
-        {
-
-        }
-
-        static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
-            //No derivation in actual model
-            //if (index >= childNums.size()) {
-            //    return key;
-            //}
-            //return _derive(index + 1, childNums, key.derive(childNums[index]));
-            return key;
-        }
+        {}
 
         std::shared_ptr<api::EthereumLikeAddress> EthereumLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
-            return std::make_shared<EthereumLikeAddress>(_currency, key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
+            return std::make_shared<EthereumLikeAddress>(_currency, _key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey> EthereumLikeExtendedPublicKey::derive(const DerivationPath &path) {
-            auto dpk = _derive(0, path.toVector(), _key);
-            return std::make_shared<EthereumLikeExtendedPublicKey>(_currency, dpk, _path + path);
+            return std::make_shared<EthereumLikeExtendedPublicKey>(_currency, _key, _path + path);
         }
 
         std::vector<uint8_t> EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {

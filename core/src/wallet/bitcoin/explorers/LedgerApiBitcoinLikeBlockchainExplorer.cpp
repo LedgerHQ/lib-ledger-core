@@ -80,28 +80,28 @@ namespace ledger {
             return getLedgerApiTransactions(addresses, fromBlockHash, session);
         }
 
-        FuturePtr<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() {
+        FuturePtr<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() const {
             return getLedgerApiCurrentBlock();
         }
 
         FuturePtr<BitcoinLikeBlockchainExplorerTransaction>
-        LedgerApiBitcoinLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) {
+        LedgerApiBitcoinLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) const {
             return getLedgerApiTransactionByHash(transactionHash);
         }
 
-        Future<int64_t > LedgerApiBitcoinLikeBlockchainExplorer::getTimestamp() {
+        Future<int64_t > LedgerApiBitcoinLikeBlockchainExplorer::getTimestamp() const {
             return getLedgerApiTimestamp();
         }
 
-        std::shared_ptr<api::ExecutionContext> LedgerApiBitcoinLikeBlockchainExplorer::getExplorerContext() {
+        std::shared_ptr<api::ExecutionContext> LedgerApiBitcoinLikeBlockchainExplorer::getExplorerContext() const {
             return _executionContext;
         }
 
-        api::BitcoinLikeNetworkParameters LedgerApiBitcoinLikeBlockchainExplorer::getNetworkParameters() {
+        api::BitcoinLikeNetworkParameters LedgerApiBitcoinLikeBlockchainExplorer::getNetworkParameters() const {
             return _parameters;
         }
 
-        std::string LedgerApiBitcoinLikeBlockchainExplorer::getExplorerVersion() {
+        std::string LedgerApiBitcoinLikeBlockchainExplorer::getExplorerVersion() const {
             return _explorerVersion;
         }
 

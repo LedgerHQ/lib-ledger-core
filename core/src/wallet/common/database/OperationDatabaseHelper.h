@@ -33,7 +33,6 @@
 
 #include <api/OperationType.hpp>
 #include <wallet/common/Operation.h>
-#include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 #include <soci.h>
 #include <string>
 
@@ -42,10 +41,6 @@ namespace ledger {
         class OperationDatabaseHelper {
         public:
             static bool putOperation(soci::session& sql, const Operation& operation);
-            static bool putERC20Operation(soci::session& sql,
-                                          const std::shared_ptr<ERC20LikeOperation>& operation,
-                                          const std::string &erc20AccountUid,
-                                          const std::string &ethOperationUid);
             static std::string createUid(const std::string& accountUid,
                                          const std::string& txId,
                                          const api::OperationType type);

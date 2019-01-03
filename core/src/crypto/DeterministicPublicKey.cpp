@@ -85,8 +85,7 @@ namespace ledger {
             if (keccak.size() <= 20) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key :  Keccak hash of uncompressed public key with wrong size");
             }
-            std::vector<uint8_t> result(keccak.end() - 20, keccak.end());
-            return result;
+            return  std::vector<uint8_t>(keccak.end() - 20, keccak.end());
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {

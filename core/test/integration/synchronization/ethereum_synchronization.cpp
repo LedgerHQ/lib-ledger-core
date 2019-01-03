@@ -47,7 +47,6 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         //http://eth01.explorer.theory.rbx.ledger.fr:8104
         //http://eth01.explorer.theory.rbx.ledger.fr:21000
@@ -115,7 +114,6 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
         //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
