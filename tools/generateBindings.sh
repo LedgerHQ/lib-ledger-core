@@ -19,7 +19,7 @@ fi
 
 ./djinni/src/run \
   --idl ./core/core.djinni \
-  --cpp-out $CORE_CPP_API \
+  --cpp-out $DEST/include \
   --cpp-namespace ledger::core::api \
   --cpp-optional-template std::experimental::optional \
   --cpp-optional-header "\"../utils/optional.hpp\"" \
@@ -29,10 +29,6 @@ fi
   --node-type-prefix NJS \
   --node-include-cpp ../include \
   --node-package $PACKAGE_NAME
-
-# copy include files
-rm -rf $DEST/include
-cp -r $CORE_CPP_API $DEST/include
 
 # copy util files
 rm -rf $DEST/utils
