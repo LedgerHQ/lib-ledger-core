@@ -51,8 +51,10 @@ namespace ledger {
                                      const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                                      const std::shared_ptr<api::RandomNumberGenerator> &rng,
                                      const std::shared_ptr<api::DatabaseBackend> &backend,
-                                     const std::shared_ptr<api::DynamicObject> &configuration) {
-            auto pool = ledger::core::WalletPool::newInstance(name, Option<std::string>(password), httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration);
+                                     const std::shared_ptr<api::DynamicObject> &configuration,
+                                     bool disableLogging) {
+            std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nfrom static newInstance " << disableLogging << std::endl;
+            auto pool = ledger::core::WalletPool::newInstance(name, Option<std::string>(password), httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration, disableLogging);
             return std::make_shared<WalletPoolApi>(pool);
         }
 
@@ -65,6 +67,7 @@ namespace ledger {
                                  const std::shared_ptr<api::RandomNumberGenerator> &rng,
                                  const std::shared_ptr<api::DatabaseBackend> &backend,
                                  const std::shared_ptr<api::DynamicObject>& configuration,
+                                 bool disableLogging,
                                  const std::shared_ptr<api::WalletPoolCallback> &listener) {
             auto context = dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name));
             FuturePtr<WalletPoolApi>::async(context, [=] () {
@@ -78,7 +81,8 @@ namespace ledger {
                     dispatcher,
                     rng,
                     backend,
-                    configuration
+                    configuration,
+                    disableLogging
                 );
                 return std::make_shared<WalletPoolApi>(pool);
             }).callback(dispatcher->getMainExecutionContext(), listener);

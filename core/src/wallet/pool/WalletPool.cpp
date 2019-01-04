@@ -85,6 +85,7 @@ namespace ledger {
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
                     logPrinter,
+                    logger::DEFAULT_MAX_SIZE,
                     disableLogging
             );
 

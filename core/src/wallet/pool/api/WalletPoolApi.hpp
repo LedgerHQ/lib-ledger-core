@@ -89,6 +89,7 @@ namespace ledger {
                               const std::shared_ptr<api::RandomNumberGenerator>& rng,
                               const std::shared_ptr<api::DatabaseBackend> &backend,
                               const std::shared_ptr<api::DynamicObject>& configuration,
+                              bool disableLogging,
                               const std::shared_ptr<api::WalletPoolCallback>& listener);
         };
     }

@@ -47,8 +47,6 @@ namespace ledger {
             size_t maxSize,
             bool disabled
         ) {
-            auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
-
             if (disabled) {
                 auto logger = spdlog::create<spdlog::sinks::null_sink_st>(name);
                 spdlog::drop(name);
@@ -57,6 +55,7 @@ namespace ledger {
 
                 return logger;
             } else {
+                auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
                 auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
                 auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
                 spdlog::drop(name);
