@@ -38,16 +38,18 @@
 namespace ledger {
     namespace core {
 
-        WalletPool::WalletPool(const std::string &name, const Option<std::string> &password,
-                               const std::shared_ptr<api::HttpClient> &httpClient,
-                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                               const std::shared_ptr<api::PathResolver> &pathResolver,
-                               const std::shared_ptr<api::LogPrinter> &logPrinter,
-                               const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                               const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                               const std::shared_ptr<api::DatabaseBackend> &backend,
-                               const std::shared_ptr<api::DynamicObject> &configuration)
-        : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        WalletPool::WalletPool(
+            const std::string &name, const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration,
+            bool disableLogging
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
             _password = password;
@@ -75,13 +77,15 @@ namespace ledger {
             );
 
             _logPrinter = logPrinter;
+
             // Logger management
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
-                    logPrinter
+                    logPrinter,
+                    disableLogging
             );
 
             // Database management
@@ -99,23 +103,29 @@ namespace ledger {
         }
 
         std::shared_ptr<WalletPool>
-        WalletPool::newInstance(const std::string &name, const Option<std::string> &password,
-                                const std::shared_ptr<api::HttpClient> &httpClient,
-                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                const std::shared_ptr<api::PathResolver> &pathResolver,
-                                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                                const std::shared_ptr<api::DatabaseBackend> &backend,
-                                const std::shared_ptr<api::DynamicObject> &configuration) {
+        WalletPool::newInstance(
+            const std::string &name, const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration,
+            bool disableLogging
+        ) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
-                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
+                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration, disableLogging
             ));
+
             // Initialization
             //  Load currencies
             pool->initializeCurrencies();
+
             //  Create factories
             pool->initializeFactories();
+
             return pool;
         }
 
