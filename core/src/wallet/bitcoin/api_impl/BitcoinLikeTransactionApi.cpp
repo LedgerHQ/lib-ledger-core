@@ -467,7 +467,10 @@ namespace ledger {
             std::vector<BitcoinLikePreparedInput> preparedInputs;
             auto inputsCount = reader.readNextVarInt();
             for (auto index = 0; index < inputsCount; index++) {
-                auto previousTxHash = hex::toString(reader.readNextLeBigInt(32).toByteArray());
+                //Previous Tx Hash in LE
+                auto prevTxHashBytes = reader.read(32);
+                std::reverse(prevTxHashBytes.begin(), prevTxHashBytes.end());
+                auto previousTxHash = hex::toString(prevTxHashBytes);
                 auto outputIndex = reader.readNextLeUint();
 
                 ledger::core::BitcoinLikeBlockchainExplorer::Output output;
