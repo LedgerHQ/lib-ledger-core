@@ -41,19 +41,21 @@ namespace ledger {
     namespace core {
         class DatabaseSessionPool {
         public:
-            DatabaseSessionPool(const std::shared_ptr<DatabaseBackend>& backend,
-                                const std::shared_ptr<api::PathResolver>& resolver,
-                                const std::shared_ptr<spdlog::logger>& logger,
-                                const std::string& dbName);
+            DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
+                                const std::shared_ptr<api::PathResolver> &resolver,
+                                const std::shared_ptr<spdlog::logger> &logger,
+                                const std::string &dbName,
+                                const std::string &password);
             soci::connection_pool& getPool();
             ~DatabaseSessionPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
-                const std::shared_ptr<api::ExecutionContext>& context,
-                const std::shared_ptr<DatabaseBackend>& backend,
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::shared_ptr<spdlog::logger>& logger,
-                const std::string& dbName
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<DatabaseBackend> &backend,
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::shared_ptr<spdlog::logger> &logger,
+                const std::string &dbName,
+                const std::string &password = ""
             );
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 5;

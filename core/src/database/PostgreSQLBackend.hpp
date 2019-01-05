@@ -73,7 +73,9 @@ namespace ledger {
 
             bool isLoggingEnabled() override;
 
-            void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+            void init(const std::shared_ptr<api::PathResolver> &resolver,
+                      const std::string &dbName,
+                      const std::string &password,
                       soci::session &session) override;
         };
     }

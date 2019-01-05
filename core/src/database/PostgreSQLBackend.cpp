@@ -74,7 +74,9 @@ ledger::core::PostgreSQLBackend::setService(const std::string &service) {
 }
 
 void ledger::core::PostgreSQLBackend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
-                                           const std::string &dbName, soci::session &session) {
+                                           const std::string &dbName,
+                                           const std::string &password,
+                                           soci::session &session) {
 
 }
 

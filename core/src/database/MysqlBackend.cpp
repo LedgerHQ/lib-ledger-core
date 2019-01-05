@@ -129,7 +129,9 @@ namespace ledger {
 
         }
 
-        void MysqlBackend::init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+        void MysqlBackend::init(const std::shared_ptr<api::PathResolver> &resolver,
+                                const std::string &dbName,
+                                const std::string &password,
                                 soci::session &session) {
 
         }
