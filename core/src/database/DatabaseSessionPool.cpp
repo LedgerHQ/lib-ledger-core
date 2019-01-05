@@ -38,7 +38,8 @@ namespace ledger {
             const std::shared_ptr<DatabaseBackend> &backend,
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<spdlog::logger>& logger,
-            const std::string &dbName
+            const std::string &dbName,
+            const std::string &password
         ) : _pool((size_t) backend->getConnectionPoolSize()), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
@@ -49,7 +50,7 @@ namespace ledger {
             auto poolSize = backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
-                backend->init(resolver, dbName, session);
+                backend->init(resolver, dbName, password, session);
                 if (_logger != nullptr)
                     session.set_log_stream(_logger);
             }
@@ -63,16 +64,15 @@ namespace ledger {
         }
 
         FuturePtr<DatabaseSessionPool>
-        DatabaseSessionPool::getSessionPool(
-            const std::shared_ptr<api::ExecutionContext> &context,
-            const std::shared_ptr<DatabaseBackend>& backend,
-            const std::shared_ptr<api::PathResolver>& resolver,
-            const std::shared_ptr<spdlog::logger>& logger,
-            const std::string& dbName
-        ) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger] () {
+        DatabaseSessionPool::getSessionPool(const std::shared_ptr<api::ExecutionContext> &context,
+                                            const std::shared_ptr<DatabaseBackend> &backend,
+                                            const std::shared_ptr<api::PathResolver> &resolver,
+                                            const std::shared_ptr<spdlog::logger> &logger,
+                                            const std::string &dbName,
+                                            const std::string &password) {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password] () {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName
+                    backend, resolver, logger, dbName, password
                 ));
 
                 return pool;

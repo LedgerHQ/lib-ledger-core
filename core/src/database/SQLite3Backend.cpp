@@ -35,10 +35,10 @@
 using namespace soci;
 
 void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
-                                        const std::string &dbName, soci::session &session) {
-    auto paramaters = fmt::format("dbname=\"{}\" ", resolver->resolveDatabasePath(dbName));
-    //TODO: pass real password
-    paramaters += fmt::format("key=\"{}\" ", "testKey");
+                                        const std::string &dbName,
+                                        const std::string &password,
+                                        soci::session &session) {
+    auto paramaters = fmt::format("dbname=\"{}\" ", resolver->resolveDatabasePath(dbName)) + fmt::format("key=\"{}\" ", password);
     session.open(*soci::factory_sqlite3(), paramaters);
     session << "PRAGMA foreign_keys = ON";
 }

@@ -43,8 +43,9 @@ namespace ledger {
         public:
             DatabaseBackend() : _enableLogging(false) {}
             virtual void init(
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::string& dbName,
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::string &dbName,
+                const std::string &password,
                 soci::session& session
             ) = 0;
 
