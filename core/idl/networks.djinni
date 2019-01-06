@@ -1,5 +1,6 @@
 @import "bitcoin/addresses.djinni"
 @import "ethereum/addresses.djinni"
+@import "ripple/addresses.djinni"
 
 # All available blockchain networks parameters.
 Networks = interface +c {
@@ -7,4 +8,6 @@ Networks = interface +c {
     static bitcoin(): BitcoinLikeNetworkParameters;
     # The Ethereum network parameters.
     static ethereum(): EthereumLikeNetworkParameters;
+    # The Ripple network parameters.
+    static ripple(): RippleLikeNetworkParameters;
 }
