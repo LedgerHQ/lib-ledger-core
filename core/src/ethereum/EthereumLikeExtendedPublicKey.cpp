@@ -104,21 +104,9 @@ namespace ledger {
                 const std::vector<uint8_t>& publicKey,
                 const std::vector<uint8_t> &chainCode,
                 const std::string& path) {
-            uint32_t parentFingerprint = 0;
             auto& params = currency.ethereumLikeNetworkParameters.value();
-            SECP256k1Point pk(publicKey);
-            if (parentPublicKey) {
-                SECP256k1Point ppp(parentPublicKey.value());
-                HashAlgorithm hashAlgorithm(params.Identifier);
-                auto hash = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
-                hash = RIPEMD160::hash(hash);
-                parentFingerprint = ((hash[0] & 0xFFU) << 24) |
-                                    ((hash[1] & 0xFFU) << 16) |
-                                    ((hash[2] & 0xFFU) << 8) |
-                                    (hash[3] & 0xFFU);
-            }
+            DeterministicPublicKey k = EthereumExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
             DerivationPath p(path);
-            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, params.Identifier);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
         }
 
@@ -126,7 +114,6 @@ namespace ledger {
         EthereumLikeExtendedPublicKey::fromBase58(const api::Currency& currency,
                                                   const std::string& xpubBase58,
                                                   const Option<std::string>& path) {
-            //xpubBase58 should be composed of version(4) || depth(1) || fingerprint(4) || index(4) || chain(32) || key(33)
             auto& params = currency.ethereumLikeNetworkParameters.value();
             auto decodeResult = Base58::checkAndDecode(xpubBase58);
             if (decodeResult.isFailure())

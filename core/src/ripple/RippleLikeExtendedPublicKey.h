@@ -32,23 +32,25 @@
 #ifndef LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
 
+#include <memory>
+#include "RippleLikeAddress.h"
+#include <common/AbstractExtendedPublicKey.h>
 #include <api/RippleLikeExtendedPublicKey.hpp>
 #include <crypto/DeterministicPublicKey.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include <api/RippleLikeAddress.hpp>
-#include <memory>
 #include <utils/Option.hpp>
 #include <utils/DerivationPath.hpp>
 #include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeExtendedPublicKey : public api::RippleLikeExtendedPublicKey {
+        using RippleExtendedPublicKey = AbstractExtendedPublicKey<api::RippleLikeNetworkParameters>;
+        class RippleLikeExtendedPublicKey : public RippleExtendedPublicKey, public api::RippleLikeExtendedPublicKey {
         public:
 
             RippleLikeExtendedPublicKey(const api::Currency& params,
-                                          const DeterministicPublicKey& key,
-                                          const DerivationPath& path = DerivationPath("m/"));
+                                        const DeterministicPublicKey& key,
+                                        const DerivationPath& path = DerivationPath("m/"));
 
             std::shared_ptr<api::RippleLikeAddress> derive(const std::string & path) override ;
             std::shared_ptr<RippleLikeExtendedPublicKey> derive(const DerivationPath &path);
@@ -70,6 +72,19 @@ namespace ledger {
                                                                              const std::string& xpubBase58,
                                                                              const Option<std::string>& path);
 
+        protected:
+            const api::RippleLikeNetworkParameters &params() const override {
+                return _currency.rippleLikeNetworkParameters.value();
+            };
+            const DeterministicPublicKey &getKey() const override {
+                return _key;
+            };
+            const DerivationPath &getPath() const override {
+                return _path;
+            };
+            const api::Currency &getCurrency() const override {
+                return _currency;
+            };
         private:
             const api::Currency _currency;
             const DerivationPath _path;
