@@ -48,7 +48,7 @@ boost_report_value(SOCI_SHARED)
 option(SOCI_STATIC "Enable build of static libraries" ON)
 boost_report_value(SOCI_STATIC)
 
-option(SOCI_TESTS "Enable build of collection of SOCI tests" ON)
+option(SOCI_TESTS "Enable build of collection of SOCI tests" OFF)
 boost_report_value(SOCI_TESTS)
 
 # Put the libaries and binaries that get built into directories at the

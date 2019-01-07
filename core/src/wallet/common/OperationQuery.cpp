@@ -35,6 +35,7 @@
 #include <database/soci-option.h>
 #include <database/soci-number.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -118,16 +119,20 @@ namespace ledger {
             });
         }
 
-        void OperationQuery::performExecute(std::vector<std::shared_ptr<api::Operation>> &operations) {
-            soci::session sql(_pool->getPool());
-            soci::rowset<soci::row> rows =
-                    _builder.select(
-                      "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
-                      "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time"
+        soci::rowset<soci::row> OperationQuery::performExecute(soci::session &sql) {
+            return _builder.select(
+                            "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
+                                    "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time"
                     )
                     .from("operations").to("o")
                     .outerJoin("blocks AS b", "o.block_uid = b.uid")
                     .execute(sql);
+        }
+
+        void OperationQuery::performExecute(std::vector<std::shared_ptr<api::Operation>> &operations) {
+            soci::session sql(_pool->getPool());
+            soci::rowset<soci::row> rows = performExecute(sql);
+
             for (auto& row : rows) {
                 auto accountUid = row.get<std::string>(0);
                 auto account = _accounts.find(accountUid);
@@ -144,8 +149,8 @@ namespace ledger {
                 operation.date = row.get<std::chrono::system_clock::time_point>(4);
                 operation.senders = strings::split(row.get<std::string>(5), ",");
                 operation.recipients = strings::split(row.get<std::string>(6), ",");
-                operation.amount = row.get<BigInt>(7);
-                operation.fees = row.get<Option<BigInt>>(8);
+                operation.amount = BigInt::fromHex(row.get<std::string>(7));
+                operation.fees = BigInt::fromHex(row.get<std::string>(8));
                 operation.currencyName = row.get<std::string>(9);
                 operation.trust = nullptr;
                 operation.walletType = account->second->getWalletType();
@@ -184,8 +189,8 @@ namespace ledger {
         }
 
         void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, OperationApi &operation) {
-            BitcoinLikeBlockchainExplorer::Transaction tx;
-            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
+            BitcoinLikeBlockchainExplorerTransaction tx;
+            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorerTransaction>(tx);
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
             BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().bitcoinTransaction.getValue());
@@ -196,7 +201,11 @@ namespace ledger {
         }
 
         void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation)");
+            EthereumLikeBlockchainExplorerTransaction tx;
+            operation.getBackend().ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(tx);
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM ethereum_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            EthereumLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().ethereumTransaction.getValue());
         }
 
         void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation) {

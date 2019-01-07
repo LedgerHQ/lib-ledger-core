@@ -35,10 +35,11 @@
 #include "BitcoinLikeBlockchainObserver.hpp"
 #include <net/WebSocketClient.h>
 #include <net/WebSocketConnection.h>
-
+#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
 namespace ledger {
     namespace core {
-        class LedgerApiBitcoinLikeBlockchainObserver : public BitcoinLikeBlockchainObserver,
+        class LedgerApiBitcoinLikeBlockchainObserver : public AbstractLedgerApiBlockchainObserver,
+                                                       public BitcoinLikeBlockchainObserver,
                                                        public std::enable_shared_from_this<LedgerApiBitcoinLikeBlockchainObserver> {
         public:
             LedgerApiBitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
@@ -48,23 +49,25 @@ namespace ledger {
                                                    const api::Currency &currency);
 
         protected:
-            void onStart() override;
             void onStop() override;
 
+            void onStart() override;
+
+
         private:
-            void connect();
-            void reconnect();
-            void onSocketEvent(WebSocketEventType event,
-                               const std::shared_ptr<WebSocketConnection>& connection,
-                               const Option<std::string>& message, Option<api::ErrorCode> code);
-            void onMessage(const std::string& message);
+            std::shared_ptr<spdlog::logger> logger() const override {
+                return BitcoinLikeBlockchainObserver::logger();
+            };
+            void connect() override ;
+            void reconnect() override ;
+            void onMessage(const std::string& message) override ;
 
         private:
             std::shared_ptr<WebSocketClient> _client;
-            std::shared_ptr<WebSocketConnection> _socket;
+            //std::shared_ptr<WebSocketConnection> _socket;
             WebSocketEventHandler _handler;
-            int32_t _attempt;
-            std::string _url;
+            //int32_t _attempt;
+            //std::string _url;
         };
     }
 }

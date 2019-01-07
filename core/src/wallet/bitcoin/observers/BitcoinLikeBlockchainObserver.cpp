@@ -44,65 +44,10 @@ namespace ledger {
             _currency = currency;
             _configuration = configuration;
             setConfiguration(configuration);
-            _logger = logger;
+            setLogger(logger);
         }
 
-        bool BitcoinLikeBlockchainObserver::registerAccount(const std::shared_ptr<BitcoinLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            if (!_isRegistered(lock, account)) {
-                bool needsStart = _accounts.empty();
-                _accounts.push_front(account);
-                if (needsStart)
-                    onStart();
-                return true;
-            }
-            return false;
-        }
-
-        bool BitcoinLikeBlockchainObserver::unregisterAccount(const std::shared_ptr<BitcoinLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            if (_isRegistered(lock, account)) {
-                bool needsStop = _accounts.size() == 1;
-                _accounts.remove(account);
-                if (needsStop)
-                    onStop();
-                return true;
-            }
-            return false;
-        }
-
-        bool BitcoinLikeBlockchainObserver::isRegistered(const std::shared_ptr<BitcoinLikeAccount> &account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            return _isRegistered(lock, account);
-        }
-
-        bool BitcoinLikeBlockchainObserver::_isRegistered(std::lock_guard<std::mutex> &lock,
-                                                          const std::shared_ptr<BitcoinLikeAccount> &account) {
-            for (auto& acc : _accounts) {
-                if (acc.get() == account.get())
-                    return true;
-            }
-            return false;
-        }
-
-        const api::Currency &BitcoinLikeBlockchainObserver::getCurrency() const {
-            return _currency;
-        }
-
-        bool BitcoinLikeBlockchainObserver::isObserving() const {
-            std::lock_guard<std::mutex> lock(_lock);
-            return _accounts.size() > 0;
-        }
-
-        std::shared_ptr<api::DynamicObject> BitcoinLikeBlockchainObserver::getConfiguration() const {
-            return _configuration;
-        }
-
-        std::shared_ptr<spdlog::logger> BitcoinLikeBlockchainObserver::logger() const {
-            return _logger;
-        }
-
-        void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+        void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorerTransaction &tx) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, tx] () {
@@ -113,7 +58,7 @@ namespace ledger {
             }
         }
 
-        void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block &block) {
+        void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block& block) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, block] () {
@@ -127,5 +72,6 @@ namespace ledger {
                 });
             }
         }
+
     }
 }

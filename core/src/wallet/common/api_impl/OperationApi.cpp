@@ -33,6 +33,8 @@
 #include "../AbstractAccount.hpp"
 #include <wallet/common/Amount.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
+#include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
+
 
 namespace ledger {
     namespace core {
@@ -86,7 +88,12 @@ namespace ledger {
         }
 
         bool OperationApi::isComplete() {
-            return _backend.bitcoinTransaction.nonEmpty();
+            if (_backend.walletType == api::WalletType::BITCOIN) {
+                return _backend.bitcoinTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::ETHEREUM) {
+                return _backend.ethereumTransaction.nonEmpty();
+            }
+            return false;
         }
 
         std::shared_ptr<api::TrustIndicator> OperationApi::getTrust() {
@@ -119,6 +126,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Bitcoin type.");
             }
             return std::make_shared<BitcoinLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::EthereumLikeOperation> OperationApi::asEthereumLikeOperation() {
+            if (getWalletType() != api::WalletType::ETHEREUM) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
+            }
+            return std::make_shared<EthereumLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

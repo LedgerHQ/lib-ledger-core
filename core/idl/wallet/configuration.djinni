@@ -48,6 +48,9 @@ Configuration = interface +c {
     # Sets the API endpoint for API based engine (Ledger's API)
     const BLOCKCHAIN_EXPLORER_API_ENDPOINT: string = "BLOCKCHAIN_EXPLORER_API_ENDPOINT";
 
+    # Sets the API version
+    const BLOCKCHAIN_EXPLORER_VERSION: string = "BLOCKCHAIN_EXPLORER_VERSION";
+
     # Selects the blockchain observer engine (Ledger's API)
     const BLOCKCHAIN_OBSERVER_ENGINE: string = "BLOCKCHAIN_OBSERVER_ENGINE";
     const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "BLOCKCHAIN_OBSERVER_WS_ENDPOINT";

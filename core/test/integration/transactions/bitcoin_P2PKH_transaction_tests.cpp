@@ -49,7 +49,7 @@ struct BitcoinMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration = DynamicObject::newInstance();
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin";
-        testData.inflate = ledger::testing::medium_xpub::inflate;
+        testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }
 };
 
@@ -144,7 +144,7 @@ struct BCHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration = DynamicObject::newInstance();
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_cash";
-        testData.inflate = ledger::testing::bch_xpub::inflate;
+        testData.inflate_btc = ledger::testing::bch_xpub::inflate;
     }
 };
 
@@ -165,7 +165,7 @@ struct ZCASHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration = DynamicObject::newInstance();
         testData.walletName = "my_wallet";
         testData.currencyName = "zcash";
-        testData.inflate = ledger::testing::zec_xpub::inflate;
+        testData.inflate_btc = ledger::testing::zec_xpub::inflate;
     }
 };
 

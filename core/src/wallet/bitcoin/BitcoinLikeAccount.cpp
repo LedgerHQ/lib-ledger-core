@@ -29,31 +29,39 @@
  *
  */
 #include "BitcoinLikeAccount.hpp"
-#include <wallet/common/Operation.h>
-#include <wallet/common/database/OperationDatabaseHelper.h>
+
 #include <database/query/QueryBuilder.h>
-#include <api/EventCode.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
-#include <api/I32Callback.hpp>
+
 #include <collections/functional.hpp>
+
+#include <utils/DateUtils.hpp>
+
+#include <wallet/common/Operation.h>
+#include <wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <api/BitcoinLikeOutputListCallback.hpp>
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/bitcoin/database/BitcoinLikeBlockDatabaseHelper.h>
-#include <events/EventPublisher.hpp>
-#include <events/Event.hpp>
-#include <api/StringCallback.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+
+#include<wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+
+#include <api/I32Callback.hpp>
+#include <api/BitcoinLikeOutputListCallback.hpp>
+#include <api/StringCallback.hpp>
+#include <api/EventCode.hpp>
+
+#include <events/EventPublisher.hpp>
+#include <events/Event.hpp>
+
 #include <spdlog/logger.h>
-#include <utils/DateUtils.hpp>
+
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
@@ -80,10 +88,10 @@ namespace ledger {
         void
         BitcoinLikeAccount::inflateOperation(Operation &out,
                                              const std::shared_ptr<const AbstractWallet>& wallet,
-                                             const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+                                             const BitcoinLikeBlockchainExplorerTransaction &tx) {
             out.accountUid = getAccountUid();
             out.block = tx.block;
-            out.bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
+            out.bitcoinTransaction = Option<BitcoinLikeBlockchainExplorerTransaction>(tx);
             out.currencyName = getWallet()->getCurrency().name;
             out.walletType = getWalletType();
             out.walletUid = wallet->getWalletUid();
@@ -94,7 +102,7 @@ namespace ledger {
         }
 
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
-                                               const BitcoinLikeBlockchainExplorer::Transaction &transaction) {
+                                               const BitcoinLikeBlockchainExplorerTransaction &transaction) {
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -102,8 +110,8 @@ namespace ledger {
             if (transaction.block.nonEmpty())
                 putBlock(sql, transaction.block.getValue());
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
-            std::list<std::pair<BitcoinLikeBlockchainExplorer::Input *, DerivationPath>> accountInputs;
-            std::list<std::pair<BitcoinLikeBlockchainExplorer::Output *, DerivationPath>> accountOutputs;
+            std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
+            std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
             uint64_t fees = 0L;
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
@@ -126,7 +134,7 @@ namespace ledger {
                     if (path.nonEmpty()) {
                         // This address is part of the account.
                         sentAmount += input.value.getValue().toUint64();
-                        accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Input *>(&input), DerivationPath(path.getValue())));
+                        accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorerInput *>(&input), DerivationPath(path.getValue())));
                         if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
@@ -148,7 +156,7 @@ namespace ledger {
                     auto path = _keychain->getAddressDerivationPath(output.address.getValue());
                     if (path.nonEmpty()) {
                         DerivationPath p(path.getValue());
-                        accountOutputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorer::Output *>(&output), p));
+                        accountOutputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorerOutput *>(&output), p));
                         if (p.getNonHardenedChildNum(nodeIndex) == 1) {
                             if (hasSpentNothing) {
                                 receivedAmount +=  output.value.toUint64();
@@ -256,7 +264,7 @@ namespace ledger {
 
         void
         BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
-                                                  const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+                                                  const BitcoinLikeBlockchainExplorerTransaction &tx) {
             if (tx.block.nonEmpty()) {
                 auto txBlockHeight = tx.block.getValue().height;
                 if (_currentBlockHeight > txBlockHeight + 5 ) {
@@ -335,12 +343,12 @@ namespace ledger {
             return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=] () -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                std::vector<BitcoinLikeBlockchainExplorer::Output> utxo;
+                std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [&keychain] (const std::string& addr) {
                     return keychain->contains(addr);
                 });
                 auto currency = self->getWallet()->getCurrency();
-                return functional::map<BitcoinLikeBlockchainExplorer::Output, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency] (const BitcoinLikeBlockchainExplorer::Output& output) -> std::shared_ptr<api::BitcoinLikeOutput> {
+                return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency] (const BitcoinLikeBlockchainExplorerOutput& output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                     return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                 });
             });
@@ -418,7 +426,7 @@ namespace ledger {
                 const int32_t BATCH_SIZE = 100;
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                std::vector<BitcoinLikeBlockchainExplorer::Output> utxos;
+                std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 auto offset = 0;
                 std::size_t count = 0;
                 BigInt sum(0);
@@ -532,8 +540,8 @@ namespace ledger {
                 auto txHash = seq.str();
                 auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
 
-                //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
-                BitcoinLikeBlockchainExplorer::Transaction txExplorer;
+                //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
+                BitcoinLikeBlockchainExplorerTransaction txExplorer;
                 txExplorer.hash = txHash;
                 txExplorer.lockTime = tx->getLockTime();
                 txExplorer.receivedAt = std::chrono::system_clock::now();
@@ -546,11 +554,11 @@ namespace ledger {
                 auto inputCount = tx->getInputs().size();
                 for (auto index = 0; index < inputCount; index++) {
                     auto input = tx->getInputs()[index];
-                    BitcoinLikeBlockchainExplorer::Input in;
+                    BitcoinLikeBlockchainExplorerInput in;
                     in.index = index;
                     auto prevTxHash = input->getPreviousTxHash().value_or("");
                     auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
-                    BitcoinLikeBlockchainExplorer::Transaction prevTx;
+                    BitcoinLikeBlockchainExplorerTransaction prevTx;
                     if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
                         throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
                     }
@@ -569,7 +577,7 @@ namespace ledger {
                 auto outputCount = tx->getOutputs().size();
                 for (auto index = 0; index < outputCount; index++) {
                     auto output = tx->getOutputs()[index];
-                    BitcoinLikeBlockchainExplorer::Output out;
+                    BitcoinLikeBlockchainExplorerOutput out;
                     out.value = BigInt(output->getValue()->toString());
                     out.time = DateUtils::toJSON(std::chrono::system_clock::now());
                     out.transactionHash = output->getTransactionHash();
@@ -596,7 +604,7 @@ namespace ledger {
             auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
                 return self->getUTXO();
             };
-            auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> {
+            auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
                 return self->getTransaction(hash);
             };
             return std::make_shared<BitcoinLikeTransactionBuilder>(
@@ -617,10 +625,10 @@ namespace ledger {
             return _explorer;
         }
 
-        FuturePtr<ledger::core::BitcoinLikeBlockchainExplorer::Transaction> BitcoinLikeAccount::getTransaction(const std::string& hash) {
+        FuturePtr<ledger::core::BitcoinLikeBlockchainExplorerTransaction> BitcoinLikeAccount::getTransaction(const std::string& hash) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>>([=] () -> std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction> {
-                auto tx = std::make_shared<BitcoinLikeBlockchainExplorer::Transaction>();
+            return async<std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>>([=] () -> std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction> {
+                auto tx = std::make_shared<BitcoinLikeBlockchainExplorerTransaction>();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
                     throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);

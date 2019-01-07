@@ -28,6 +28,8 @@
  * SOFTWARE.
  *
  */
+#include <api/Wallet.hpp>
+#include <api/WalletType.hpp>
 #include "CurrencyBuilder.hpp"
 
 namespace ledger {
@@ -48,8 +50,14 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder &CurrencyBuilder::forkOfEthereum(api::EthereumLikeNetworkParameters params) {
+            _type = api::WalletType::ETHEREUM;
+            _ethereum = params;
+            return *this;
+        }
+
         CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional());
+            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional());
         }
 
         CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {

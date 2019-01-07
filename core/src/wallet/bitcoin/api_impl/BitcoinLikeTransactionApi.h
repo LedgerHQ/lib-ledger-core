@@ -50,7 +50,7 @@ namespace ledger {
             std::string previousTxHash;
             int32_t outputIndex;
             std::vector<std::vector<uint8_t>> pubKeys;
-            BitcoinLikeBlockchainExplorer::Output output;
+            BitcoinLikeBlockchainExplorerOutput output;
 
             BitcoinLikePreparedInput() = default;
 
@@ -59,7 +59,7 @@ namespace ledger {
                                      const std::string &previousTxHash_,
                                      int32_t outputIndex_,
                                      std::vector<std::vector<uint8_t>> pubKeys_,
-                                     BitcoinLikeBlockchainExplorer::Output output_) : sequence(sequence_),
+                                     BitcoinLikeBlockchainExplorerOutput output_) : sequence(sequence_),
                                                                                       address(address_),
                                                                                       previousTxHash(previousTxHash_),
                                                                                       outputIndex(outputIndex_),

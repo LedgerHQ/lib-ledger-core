@@ -46,6 +46,7 @@ namespace ledger {
 
             static std::string encode(const std::vector<uint8_t>& bytes);
             static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes, const std::string &networkIdentifier = "");
+            static std::string encodeWithEIP55(const std::vector<uint8_t>& bytes);
 
             static std::vector<uint8_t> decode(const std::string& str) throw(Exception);
             static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str, const std::string &networkIdentifier = "");

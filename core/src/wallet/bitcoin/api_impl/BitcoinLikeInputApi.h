@@ -70,7 +70,7 @@ namespace ledger {
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
         private:
-            inline BitcoinLikeBlockchainExplorer::Input& getInput();
+            inline BitcoinLikeBlockchainExplorerInput& getInput();
 
         private:
             std::shared_ptr<OperationApi> _operation;

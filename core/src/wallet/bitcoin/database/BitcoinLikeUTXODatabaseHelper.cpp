@@ -56,7 +56,7 @@ namespace ledger {
 
         std::size_t
         BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset,
-                                                 int32_t count, std::vector<BitcoinLikeBlockchainExplorer::Output> &out,
+                                                 int32_t count, std::vector<BitcoinLikeBlockchainExplorerOutput> &out,
                                                  std::function<bool(const std::string &address)> filter) {
             rowset<row> rows = (sql.prepare <<
                                             "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script"

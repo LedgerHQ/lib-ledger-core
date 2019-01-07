@@ -89,30 +89,7 @@ namespace ledger {
             }), delay);
         }
 
-        void LedgerApiBitcoinLikeBlockchainObserver::onSocketEvent(WebSocketEventType event,
-                                                                   const std::shared_ptr<WebSocketConnection> &connection,
-                                                                   const Option<std::string> &message,
-                                                                   Option<api::ErrorCode> code) {
-            switch (event) {
-                case WebSocketEventType::CONNECT:
-                    _socket = connection;
-                    _attempt = 0;
-                    logger()->info("Connected to websocket {}", _url);
-                    break;
-                case WebSocketEventType::RECEIVE:
-                    onMessage(message.getValue());
-                    break;
-                case WebSocketEventType::CLOSE:
-                    _attempt += 1;
-                    _socket = nullptr;
-                    if (code.hasValue())
-                        logger()->error("An error occured to the connection with {}: {}", _url, message.getValue());
-                    else
-                        logger()->info("Close connection to {}", _url);
-                    reconnect();
-                    break;
-            }
-        }
+
 
         void LedgerApiBitcoinLikeBlockchainObserver::onMessage(const std::string &message) {
             auto self = shared_from_this();

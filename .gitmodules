@@ -13,3 +13,6 @@
 [submodule "core/lib/leveldb"]
 	path = core/lib/leveldb
 	url = https://github.com/LedgerHQ/leveldb.git
+[submodule "core/lib/ethash"]
+	path = core/lib/ethash
+	url = git@github.com:LedgerHQ/ethash.git

@@ -25,6 +25,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::CURRENCY_NOT_FOUND: return "CURRENCY_NOT_FOUND";
         case ErrorCode::CURRENCY_UNIT_NOT_FOUND: return "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT: return "INVALID_BASE58_FORMAT";
+        case ErrorCode::INVALID_EIP55_FORMAT: return "INVALID_EIP55_FORMAT";
         case ErrorCode::INVALID_CHECKSUM: return "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION: return "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED: return "PRIVATE_DERIVATION_NOT_SUPPORTED";
@@ -84,6 +85,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "CURRENCY_NOT_FOUND") return ErrorCode::CURRENCY_NOT_FOUND;
     else if (errorCode == "CURRENCY_UNIT_NOT_FOUND") return ErrorCode::CURRENCY_UNIT_NOT_FOUND;
     else if (errorCode == "INVALID_BASE58_FORMAT") return ErrorCode::INVALID_BASE58_FORMAT;
+    else if (errorCode == "INVALID_EIP55_FORMAT") return ErrorCode::INVALID_EIP55_FORMAT;
     else if (errorCode == "INVALID_CHECKSUM") return ErrorCode::INVALID_CHECKSUM;
     else if (errorCode == "INVALID_VERSION") return ErrorCode::INVALID_VERSION;
     else if (errorCode == "PRIVATE_DERIVATION_NOT_SUPPORTED") return ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED;
@@ -144,6 +146,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::CURRENCY_NOT_FOUND:  return os << "CURRENCY_NOT_FOUND";
         case ErrorCode::CURRENCY_UNIT_NOT_FOUND:  return os << "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT:  return os << "INVALID_BASE58_FORMAT";
+        case ErrorCode::INVALID_EIP55_FORMAT:  return os << "INVALID_EIP55_FORMAT";
         case ErrorCode::INVALID_CHECKSUM:  return os << "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION:  return os << "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED:  return os << "PRIVATE_DERIVATION_NOT_SUPPORTED";

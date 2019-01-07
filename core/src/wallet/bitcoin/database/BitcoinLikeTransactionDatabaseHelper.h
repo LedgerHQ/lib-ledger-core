@@ -39,23 +39,23 @@ namespace ledger {
         class BitcoinLikeTransactionDatabaseHelper {
         public:
             static bool transactionExists(soci::session& sql, const std::string& btcTxUid);
-            static std::string putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorer::Transaction& tx);
+            static std::string putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorerTransaction& tx);
             static inline void insertOutput(soci::session& sql,
                                             const std::string& btcTxUid,
                                             const std::string& transactionHash,
-                                            const BitcoinLikeBlockchainExplorer::Output& output);
+                                            const BitcoinLikeBlockchainExplorerOutput& output);
             static inline void insertInput(soci::session& sql,
                                            const std::string& btcTxUid,
                                            const std::string& accountUid,
                                            const std::string& transactionHash,
-                                           const BitcoinLikeBlockchainExplorer::Input& input);
+                                           const BitcoinLikeBlockchainExplorerInput& input);
 
             static std::string createInputUid(const std::string& accountUid, int32_t previousOutputIndex, const std::string& previousTxHash, const std::string& coinbase);
             static std::string createBitcoinTransactionUid(const std::string& accountUid, const std::string& txHash);
             static bool getTransactionByHash(soci::session &sql, const std::string &hash,
-                                             BitcoinLikeBlockchainExplorer::Transaction &out);
+                                             BitcoinLikeBlockchainExplorerTransaction &out);
 
-            static inline bool inflateTransaction(soci::session& sql, const soci::row& row, BitcoinLikeBlockchainExplorer::Transaction& out);
+            static inline bool inflateTransaction(soci::session& sql, const soci::row& row, BitcoinLikeBlockchainExplorerTransaction& out);
         };
     }
 }

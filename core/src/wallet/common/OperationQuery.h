@@ -73,7 +73,8 @@ namespace ledger {
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
 
-        private:
+        protected:
+            virtual soci::rowset<soci::row> performExecute(soci::session &sql);
             QueryBuilder _builder;
             std::shared_ptr<api::QueryFilter> _headFilter;
             bool _fetchCompleteOperation;

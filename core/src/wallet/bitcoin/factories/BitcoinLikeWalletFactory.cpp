@@ -38,12 +38,12 @@
 #include <api/ConfigurationDefaults.hpp>
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 #include <api/SynchronizationEngines.hpp>
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h>
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeP2SHKeychainFactory.h>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
+#include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -71,6 +71,7 @@ namespace ledger {
             if (observer == nullptr)
                 pool->logger()->warn("Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",  STRING(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE, "undefined"), entry.name);
             // Configure synchronizer
+            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
             Option<BitcoinLikeAccountSynchronizerFactory> synchronizerFactory;
             {
                 auto engine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)

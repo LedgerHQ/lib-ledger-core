@@ -47,7 +47,7 @@ namespace ledger {
         class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
         public:
             static const api::WalletType type;
-
+            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
             BitcoinLikeWallet(
                 const std::string& name,
                 const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,

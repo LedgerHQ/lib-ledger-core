@@ -31,17 +31,27 @@
 #ifndef LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 #define LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 
-#include "BitcoinLikeBlockchainExplorer.hpp"
 
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <collections/collections.hpp>
 #include <async/Future.hpp>
 #include <net/HttpClient.hpp>
 #include <async/DedicatedContext.hpp>
+#include "api/TransactionParser.hpp"
+#include "api/TransactionsBulkParser.hpp"
+#include "api/BlockParser.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
 
 namespace ledger {
     namespace core {
-        class LedgerApiBitcoinLikeBlockchainExplorer : public BitcoinLikeBlockchainExplorer, DedicatedContext, public std::enable_shared_from_this<LedgerApiBitcoinLikeBlockchainExplorer> {
+
+        using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<BitcoinLikeBlockchainExplorerTransaction, BitcoinLikeBlockchainExplorer::TransactionsBulk, TransactionsParser, TransactionsBulkParser, BlockParser, api::BitcoinLikeNetworkParameters>;
+        class LedgerApiBitcoinLikeBlockchainExplorer : public BitcoinLikeBlockchainExplorer,
+                                                       public LedgerApiBlockchainExplorer,
+                                                       public DedicatedContext,
+                                                       public std::enable_shared_from_this<LedgerApiBitcoinLikeBlockchainExplorer> {
         public:
             LedgerApiBitcoinLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext>& context,
@@ -49,24 +59,30 @@ namespace ledger {
                 const api::BitcoinLikeNetworkParameters& parameters,
                 const std::shared_ptr<api::DynamicObject>& configuration
             );
+
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
             Future<Bytes> getRawTransaction(const String& transactionHash) override;
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
 
             FuturePtr<TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
+            getTransactions(const std::vector<std::string> &addresses,
+                            Option<std::string> fromBlockHash = Option<std::string>(),
                             Option<void *> session = Option<void *>()) override;
 
-            FuturePtr<Block> getCurrentBlock() override;
+            FuturePtr<Block> getCurrentBlock() const override;
 
-            FuturePtr<Transaction> getTransactionByHash(const String &transactionHash) override;
+            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) const override;
 
-            Future<int64_t > getTimestamp() override;
+            Future<int64_t > getTimestamp() const override;
 
+            std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
+            api::BitcoinLikeNetworkParameters getNetworkParameters() const override;
+            std::string getExplorerVersion() const override;
         private:
-            std::shared_ptr<HttpClient> _http;
             api::BitcoinLikeNetworkParameters _parameters;
+            std::string _explorerVersion;
         };
     }
 }

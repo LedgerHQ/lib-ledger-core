@@ -37,6 +37,8 @@
 #include <ledger/core/crypto/HASH160.hpp>
 #include <ledger/core/crypto/BLAKE.h>
 #include <ledger/core/crypto/HashAlgorithm.h>
+#include <ledger/core/crypto/Keccak.h>
+
 using namespace ledger::core;
 
 
@@ -105,4 +107,17 @@ TEST(Digest, BLAKE256) {
     std::vector<uint8_t> vInput4(input4.begin(), input4.end());
     auto output4 = BLAKE::blake256(vInput4);
     EXPECT_EQ(hex::toString(output4), "9d8ee513f4c43a73c3dd7c6e7d389e62cca017358d880d16e4fae547ebac5717");
+}
+TEST(Digest, Keccak256) {
+
+    auto empty = hex::toByteArray("");
+    auto check = Keccak::keccak256(empty);
+    EXPECT_EQ(hex::toString(check), "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470");
+
+    auto pk = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
+    auto keccak = Keccak::keccak256(pk);
+    EXPECT_EQ(hex::toString(keccak), "2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086ba0f9");
+
+    EXPECT_EQ(hex::toString(Keccak::keccak256("Vires in numeris")), "d3f77a567fdf21bd226ddcebd5eb8df5f470c1bb77e307b6ffc1c80a24cf6495");
+
 }

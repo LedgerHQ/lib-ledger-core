@@ -45,6 +45,10 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", walletUid, accountIndex));
         }
 
+        std::string AccountDatabaseHelper::createERC20AccountUid(const std::string &ethAccountUid, const std::string &contractAddress) {
+            return SHA256::stringToHexHash(fmt::format("uid:{}+{}", ethAccountUid, contractAddress));
+        }
+
         void AccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid, int32_t index) {
             auto uid = createAccountUid(walletUid, index);
             sql << "INSERT INTO accounts VALUES(:uid, :idx, :wallet_uid, :now)", use(uid), use(index), use(walletUid),

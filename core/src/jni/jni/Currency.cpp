@@ -4,6 +4,7 @@
 #include "Currency.hpp"  // my header
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "CurrencyUnit.hpp"
+#include "EthereumLikeNetworkParameters.hpp"
 #include "Marshal.hpp"
 #include "WalletType.hpp"
 
@@ -21,13 +22,14 @@ auto Currency::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<J
                                                            ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.bip44CoinType)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.paymentUriScheme)),
                                                            ::djinni::get(::djinni::List<::djinni_generated::CurrencyUnit>::fromCpp(jniEnv, c.units)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::fromCpp(jniEnv, c.bitcoinLikeNetworkParameters)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::fromCpp(jniEnv, c.bitcoinLikeNetworkParameters)),
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::fromCpp(jniEnv, c.ethereumLikeNetworkParameters)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 7);
+    ::djinni::JniLocalScope jscope(jniEnv, 8);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<Currency>::get();
     return {::djinni_generated::WalletType::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_walletType)),
@@ -35,7 +37,8 @@ auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_bip44CoinType)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_paymentUriScheme)),
             ::djinni::List<::djinni_generated::CurrencyUnit>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_units)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_bitcoinLikeNetworkParameters))};
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_bitcoinLikeNetworkParameters)),
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_ethereumLikeNetworkParameters))};
 }
 
 }  // namespace djinni_generated

@@ -102,7 +102,7 @@ namespace ledger {
             return true;
         }
 
-        void OutputParser::init(BitcoinLikeBlockchainExplorer::Output *output) {
+        void OutputParser::init(BitcoinLikeBlockchainExplorerOutput *output) {
             _output = output;
         }
 

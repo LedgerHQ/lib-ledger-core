@@ -42,7 +42,7 @@ struct CoinSelectionP2PKH : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_testnet";
-        testData.inflate = ledger::testing::coin_selection_xpub::inflate;
+        testData.inflate_btc = ledger::testing::coin_selection_xpub::inflate;
     }
 };
 

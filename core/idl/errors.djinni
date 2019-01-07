@@ -34,6 +34,7 @@ ErrorCode = enum {
 
     # Others
     invalid_base58_format;
+    invalid_EIP55_format;
     invalid_checksum;
     invalid_version;
 

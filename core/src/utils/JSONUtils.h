@@ -33,7 +33,7 @@
 
 #include <rapidjson/reader.h>
 #include <string>
-#include <wallet/bitcoin/explorers/api/LedgerApiParser.hpp>
+#include <wallet/common/explorers/LedgerApiParser.hpp>
 
 namespace ledger {
     namespace core {

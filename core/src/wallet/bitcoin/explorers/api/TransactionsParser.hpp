@@ -31,39 +31,25 @@
 #ifndef LEDGER_CORE_TRANSACTIONSPARSER_HPP
 #define LEDGER_CORE_TRANSACTIONSPARSER_HPP
 
-#include <rapidjson/reader.h>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
-#include "../../../../net/HttpClient.hpp"
-#include <vector>
+#include <wallet/common/explorers/api/AbstractTransactionsParser.h>
 #include "TransactionParser.hpp"
+#include "../BitcoinLikeBlockchainExplorer.hpp"
 
 namespace ledger {
     namespace core {
-        class TransactionsParser {
+        class TransactionsParser : public AbstractTransactionsParser<BitcoinLikeBlockchainExplorerTransaction, TransactionParser>{
         public:
-            typedef std::vector<BitcoinLikeBlockchainExplorer::Transaction> Result;
-            TransactionsParser(std::string& lastKey);
-            void init(std::vector<BitcoinLikeBlockchainExplorer::Transaction>* transactions);
-            bool Null();
-            bool Bool(bool b);
-            bool Int(int i);
-            bool Uint(unsigned i);
-            bool Int64(int64_t i);
-            bool Uint64(uint64_t i);
-            bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool StartObject();
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
-            bool EndObject(rapidjson::SizeType memberCount);
-            bool StartArray();
-            bool EndArray(rapidjson::SizeType elementCount);
+            TransactionsParser(std::string& lastKey) : _transactionParser(lastKey) {
+                _arrayDepth = 0;
+                _objectDepth = 0;
+            }
+
+        protected:
+            TransactionParser &getTransactionParser() override {
+                return _transactionParser;
+            }
 
         private:
-            std::string& _lastKey;
-            std::vector<BitcoinLikeBlockchainExplorer::Transaction>* _transactions;
-            uint32_t _arrayDepth;
-            uint32_t _objectDepth;
             TransactionParser _transactionParser;
         };
     }

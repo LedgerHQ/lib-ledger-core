@@ -41,6 +41,7 @@
 #include "TrustIndicator.h"
 #include <memory>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
 #include "Block.h"
@@ -61,8 +62,8 @@ namespace ledger {
             std::string currencyName;
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
-            Option<BitcoinLikeBlockchainExplorer::Transaction> bitcoinTransaction;
-
+            Option<BitcoinLikeBlockchainExplorerTransaction> bitcoinTransaction;
+            Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Operation() {};
             void refreshUid();
         private:

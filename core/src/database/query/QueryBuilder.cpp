@@ -37,8 +37,12 @@ namespace ledger {
         soci::details::prepare_temp_type QueryBuilder::execute(soci::session &sql) {
             std::stringstream query;
             query << "SELECT " << _keys << " FROM " << _table<< " AS " << _output;
-            if (_outerJoin.nonEmpty()) {
-                query << " LEFT OUTER JOIN " << std::get<0>(_outerJoin.getValue()) << " ON " << std::get<1>(_outerJoin.getValue());
+            if (!_outerJoins.empty()) {
+                for (auto &outerJoin : _outerJoins) {
+                    if (outerJoin.nonEmpty()) {
+                        query << " LEFT OUTER JOIN " << std::get<0>(outerJoin.getValue()) << " ON " << std::get<1>(outerJoin.getValue());
+                    }
+                }
             }
 
             if (_filter) {
@@ -125,7 +129,7 @@ namespace ledger {
         }
 
         QueryBuilder& QueryBuilder::outerJoin(const std::string &table, const std::string &condition) {
-            _outerJoin = Option<LeftOuterJoin>(std::make_tuple(table, condition));
+            _outerJoins.emplace_back(Option<LeftOuterJoin>(std::make_tuple(table, condition)));
             return *this;
         }
 
