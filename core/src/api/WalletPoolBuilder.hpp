@@ -94,9 +94,6 @@ public:
      */
     virtual std::shared_ptr<WalletPoolBuilder> setConfiguration(const std::shared_ptr<DynamicObject> & configuration) = 0;
 
-    /**Set whether internal logging should be disabled. Pass true to disable logging and false to leave it enabled. */
-    virtual std::shared_ptr<WalletPoolBuilder> setLoggingDisabled(bool disabled) = 0;
-
     /**
      *Create wallet pool
      *@param callback, Callback object returning a WalletPool instance

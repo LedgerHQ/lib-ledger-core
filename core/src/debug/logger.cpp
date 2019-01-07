@@ -37,7 +37,6 @@
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<spdlog::logger> logger::create(
             const std::string &name,
             std::experimental::optional<std::string> password,
@@ -45,16 +44,9 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<api::LogPrinter> &printer,
             size_t maxSize,
-            bool disabled
+            bool enabled
         ) {
-            if (disabled) {
-                auto logger = spdlog::create<spdlog::sinks::null_sink_st>(name);
-                spdlog::drop(name);
-
-                logger->set_level(spdlog::level::off);
-
-                return logger;
-            } else {
+            if (enabled) {
                 auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
                 auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
                 auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
@@ -63,6 +55,13 @@ namespace ledger {
                 logger->set_level(spdlog::level::trace);
                 logger->flush_on(spdlog::level::trace);
                 logger->set_pattern("%Y-%m-%dT%XZ%z %L: %v");
+
+                return logger;
+            } else {
+                auto logger = spdlog::create<spdlog::sinks::null_sink_st>(name);
+                spdlog::drop(name);
+
+                logger->set_level(spdlog::level::off);
 
                 return logger;
             }

@@ -35,6 +35,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+
 namespace ledger {
     namespace core {
 
@@ -47,8 +48,7 @@ namespace ledger {
             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
-            const std::shared_ptr<api::DynamicObject> &configuration,
-            bool disableLogging
+            const std::shared_ptr<api::DynamicObject> &configuration
         ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
@@ -79,6 +79,7 @@ namespace ledger {
             _logPrinter = logPrinter;
 
             // Logger management
+            auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),
@@ -86,7 +87,7 @@ namespace ledger {
                     pathResolver,
                     logPrinter,
                     logger::DEFAULT_MAX_SIZE,
-                    disableLogging
+                    enableLogger
             );
 
             // Database management
@@ -113,11 +114,10 @@ namespace ledger {
             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
-            const std::shared_ptr<api::DynamicObject> &configuration,
-            bool disableLogging
+            const std::shared_ptr<api::DynamicObject> &configuration
         ) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
-                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration, disableLogging
+                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
             ));
 
             // Initialization

@@ -49,10 +49,9 @@ public:
      *@param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
      *@param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
      *@param configuration, DynamicObject object, desired configuration for this wallet pool
-     *@param disableLogging Should logging be disabled in subsequent calls?
      *@return WalletPool object, instance of WalletPool
      */
-    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::experimental::optional<std::string> & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration, bool disableLogging);
+    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::experimental::optional<std::string> & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
 
     /**
      *Return used logger to dump logs in defined log path by PathResolver

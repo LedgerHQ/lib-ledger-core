@@ -21,6 +21,9 @@ public:
     virtual ~PoolConfiguration() {}
 
     static LIBCORE_EXPORT std::string const DATABASE_NAME;
+
+    /** Enable internal logging. */
+    static LIBCORE_EXPORT std::string const ENABLE_INTERNAL_LOGGING;
 };
 
 } } }  // namespace ledger::core::api

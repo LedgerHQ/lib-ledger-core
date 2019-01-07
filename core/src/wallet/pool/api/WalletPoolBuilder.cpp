@@ -36,7 +36,6 @@ namespace ledger { namespace core {
         WalletPoolBuilder::WalletPoolBuilder() {
             _backend = api::DatabaseBackend::getSqlite3Backend();
             _configuration = nullptr;
-            _disableLogging = false;
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
@@ -103,7 +102,6 @@ namespace ledger { namespace core {
                 _rng,
                 _backend,
                 _configuration,
-                _disableLogging,
                 listener
             );
         }
@@ -111,12 +109,6 @@ namespace ledger { namespace core {
         std::shared_ptr <api::WalletPoolBuilder>
         WalletPoolBuilder::setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration)  {
             _configuration = configuration;
-            return shared_from_this();
-        }
-
-        std::shared_ptr <api::WalletPoolBuilder>
-        WalletPoolBuilder::setLoggingDisabled(bool disabled)  {
-            _disableLogging = disabled;
             return shared_from_this();
         }
 

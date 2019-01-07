@@ -38,7 +38,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_nativeDestr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_newInstance(JNIEnv* jniEnv, jobject /*this*/, jstring j_name, jstring j_password, jobject j_httpClient, jobject j_webSocketClient, jobject j_pathResolver, jobject j_logPrinter, jobject j_dispatcher, jobject j_rng, jobject j_backend, jobject j_configuration, jboolean j_disableLogging)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_newInstance(JNIEnv* jniEnv, jobject /*this*/, jstring j_name, jstring j_password, jobject j_httpClient, jobject j_webSocketClient, jobject j_pathResolver, jobject j_logPrinter, jobject j_dispatcher, jobject j_rng, jobject j_backend, jobject j_configuration)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -51,8 +51,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_newInstance(JNIEnv* jn
                                                               ::djinni_generated::ThreadDispatcher::toCpp(jniEnv, j_dispatcher),
                                                               ::djinni_generated::RandomNumberGenerator::toCpp(jniEnv, j_rng),
                                                               ::djinni_generated::DatabaseBackend::toCpp(jniEnv, j_backend),
-                                                              ::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration),
-                                                              ::djinni::Bool::toCpp(jniEnv, j_disableLogging));
+                                                              ::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration));
         return ::djinni::release(::djinni_generated::WalletPool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

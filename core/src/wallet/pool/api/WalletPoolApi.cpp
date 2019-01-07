@@ -43,18 +43,18 @@ namespace ledger {
     namespace core {
 
         std::shared_ptr<api::WalletPool>
-        api::WalletPool::newInstance(const std::string &name, const optional<std::string> &password,
-                                     const std::shared_ptr<api::HttpClient> &httpClient,
-                                     const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                     const std::shared_ptr<api::PathResolver> &pathResolver,
-                                     const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                     const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                     const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                                     const std::shared_ptr<api::DatabaseBackend> &backend,
-                                     const std::shared_ptr<api::DynamicObject> &configuration,
-                                     bool disableLogging) {
-            std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nfrom static newInstance " << disableLogging << std::endl;
-            auto pool = ledger::core::WalletPool::newInstance(name, Option<std::string>(password), httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration, disableLogging);
+        api::WalletPool::newInstance(
+            const std::string &name, const optional<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ) {
+            auto pool = ledger::core::WalletPool::newInstance(name, Option<std::string>(password), httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration);
             return std::make_shared<WalletPoolApi>(pool);
         }
 
@@ -67,7 +67,6 @@ namespace ledger {
                                  const std::shared_ptr<api::RandomNumberGenerator> &rng,
                                  const std::shared_ptr<api::DatabaseBackend> &backend,
                                  const std::shared_ptr<api::DynamicObject>& configuration,
-                                 bool disableLogging,
                                  const std::shared_ptr<api::WalletPoolCallback> &listener) {
             auto context = dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name));
             FuturePtr<WalletPoolApi>::async(context, [=] () {
@@ -81,8 +80,7 @@ namespace ledger {
                     dispatcher,
                     rng,
                     backend,
-                    configuration,
-                    disableLogging
+                    configuration
                 );
                 return std::make_shared<WalletPoolApi>(pool);
             }).callback(dispatcher->getMainExecutionContext(), listener);

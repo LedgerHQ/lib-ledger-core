@@ -64,4 +64,9 @@ Configuration = interface +c {
 #TODO
 PoolConfiguration = interface +c {
     const DATABASE_NAME: string = "DATABASE_NAME";
+
+    # Enable internal logging.
+    #
+    # Set to true by default.
+    const ENABLE_INTERNAL_LOGGING: string = "ENABLE_INTERNAL_LOGGING";
 }

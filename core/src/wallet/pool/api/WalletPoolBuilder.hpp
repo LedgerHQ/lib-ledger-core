@@ -73,9 +73,6 @@ namespace ledger {
             virtual std::shared_ptr <api::WalletPoolBuilder>
             setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration) override;
 
-            virtual std::shared_ptr <api::WalletPoolBuilder>
-            setLoggingDisabled(bool disabled) override;
-
             virtual void build(const std::shared_ptr<api::WalletPoolCallback> &listener) override;
 
         private:
@@ -89,7 +86,6 @@ namespace ledger {
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::DatabaseBackend> _backend;
             std::shared_ptr<api::DynamicObject> _configuration;
-            bool _disableLogging;
         };
     }
 }

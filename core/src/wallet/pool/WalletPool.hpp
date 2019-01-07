@@ -110,8 +110,7 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration,
-                bool disableLogging = false
+                const std::shared_ptr<api::DynamicObject>& configuration
             );
 
             ~WalletPool();
@@ -127,8 +126,7 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration,
-                bool disableLogging = false
+                const std::shared_ptr<api::DynamicObject>& configuration
             );
 
             void initializeCurrencies();

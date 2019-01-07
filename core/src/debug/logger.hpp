@@ -51,7 +51,7 @@ namespace ledger {
                     const std::shared_ptr<api::PathResolver>& resolver,
                     const std::shared_ptr<api::LogPrinter>& printer,
                     std::size_t maxSize = DEFAULT_MAX_SIZE,
-                    bool disabled = false
+                    bool enabled = true
             );
         private:
             logger() = delete;
