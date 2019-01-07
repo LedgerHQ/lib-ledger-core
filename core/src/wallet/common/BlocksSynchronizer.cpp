@@ -60,12 +60,12 @@ namespace ledger {
 
             }
 
-            template<typename NetworkType> BlocksSynchronizer<NetworkType>::BlocksSynchronizer(
+            template<typename NetworkType>
+            BlocksSynchronizer<NetworkType>::BlocksSynchronizer(
                     const std::shared_ptr<api::ExecutionContext> executionContext,
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
-                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     uint32_t gapSize,
                     uint32_t batchSize,
                     uint32_t maxTransactionPerResponse)
@@ -73,27 +73,31 @@ namespace ledger {
                 , _explorer(explorer)
                 , _receiveKeychain(receiveKeychain)
                 , _changeKeychain(changeKeychain)
-                , _blocksDB(blocksDB)
                 , _gapSize(gapSize)
                 , _batchSize(batchSize)
                 , _maxTransactionPerResponse(maxTransactionPerResponse) {
                 }
 
-                template<typename NetworkType> Future<Unit> BlocksSynchronizer<NetworkType>::synchronize(
+                template<typename NetworkType>
+                Future<Unit> BlocksSynchronizer<NetworkType>::synchronize(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::string& blockHashToStart,
                     uint32_t firstBlockHeightToInclude,
                     uint32_t lastBlockHeightToInclude) {
+
                     std::vector<Future<Unit>> tasks; 
-                    auto partialBlockDB = std::make_shared<InMemoryPartialBlocksDB<NetworkType>>();
+                    auto partialBlockDB = std::make_shared<InMemoryPartialBlocksDB<Transaction>>();
                     auto state = std::make_shared<BlocksSyncState>(firstBlockHeightToInclude, lastBlockHeightToInclude);
-                    bootstrapBatchesTasks(state, partialBlockDB, _receiveKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
-                    bootstrapBatchesTasks(state, partialBlockDB, _changeKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
+                    bootstrapBatchesTasks(blocksDB, state, partialBlockDB, _receiveKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
+                    bootstrapBatchesTasks(blocksDB, state, partialBlockDB, _changeKeychain, tasks, blockHashToStart, firstBlockHeightToInclude, lastBlockHeightToInclude);
                     return executeAll(_executionContext, tasks).template map<Unit>(_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                 }
 
-                template<typename NetworkType> Future<Unit> BlocksSynchronizer<NetworkType>::createBatchSyncTask(
+                template<typename NetworkType>
+                Future<Unit> BlocksSynchronizer<NetworkType>::createBatchSyncTask(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& db,
                     const std::shared_ptr<Batch>& batch,
                     const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
@@ -104,12 +108,14 @@ namespace ledger {
                         return Future<Unit>::successful(unit);
                     }
                     state->addBatch(from, to);
-                    return synchronizeBatch(state, db, batch, keychain, from, to, firstBlockHash, isGap);
+                    return synchronizeBatch(blocksDB, state, db, batch, keychain, from, to, firstBlockHash, isGap);
                 }
 
-                template<typename NetworkType> void BlocksSynchronizer<NetworkType>::bootstrapBatchesTasks(
+                template<typename NetworkType>
+                void BlocksSynchronizer<NetworkType>::bootstrapBatchesTasks(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& db,
                     const std::shared_ptr<Keychain>& keychain,
                     std::vector<Future<Unit>>& tasks,
                     std::string firstBlockHash,
@@ -121,17 +127,19 @@ namespace ledger {
                         auto count = std::min(_batchSize, numberOfAddresses - i);
                         batch->lastAddressIndex = i + count - 1;
                         batch->addresses = keychain->getAddresses(i, count);
-                        tasks.push_back(createBatchSyncTask(state, db, batch, keychain, from, to, firstBlockHash, false));
+                        tasks.push_back(createBatchSyncTask(blocksDB, state, db, batch, keychain, from, to, firstBlockHash, false));
                     }
                     // add gapped addresses
                     auto batch = std::make_shared<Batch>();
                     batch->addresses = keychain->getAddresses(numberOfAddresses, _gapSize);
-                    tasks.push_back(createBatchSyncTask(state, db, batch, keychain, from, to, firstBlockHash, true));
+                    tasks.push_back(createBatchSyncTask(blocksDB, state, db, batch, keychain, from, to, firstBlockHash, true));
                 }
 
-                template<typename NetworkType> void BlocksSynchronizer<NetworkType>::finilizeBatch(
+                template<typename NetworkType>
+                void BlocksSynchronizer<NetworkType>::finilizeBatch(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& partialDB,
                     int from,
                     int to) {
                     if (to < from)
@@ -147,16 +155,18 @@ namespace ledger {
                             block.header.hash = trans[0].block.getValue().hash;
                             block.header.createdAt = trans[0].block.getValue().createdAt;
                             block.transactions = trans;
-                            _blocksDB->addBlock(block.header.height, block); // write to disk by default is async
+                            blocksDB->addBlock(block.header.height, block); // write to disk by default is async
                             // try to not consume to much memory
                             partialDB->removeBlock(i);
                         }
                     }
                 }
 
-                template<typename NetworkType> Future<Unit> BlocksSynchronizer<NetworkType>::synchronizeBatch(
+                template<typename NetworkType>
+                Future<Unit> BlocksSynchronizer<NetworkType>::synchronizeBatch(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& partialDB,
                     const std::shared_ptr<Batch>& batch,
                     const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
@@ -166,9 +176,9 @@ namespace ledger {
                     auto self = this->shared_from_this();
                     return
                         _explorer->getTransactions(batch->addresses, hashToStartRequestFrom)
-                        .template flatMap<Unit>(_executionContext, [self, batch, partialDB, state, keychain, from, to, isGap](const TransactionBulk<NetworkType>& bulk) {
+                        .template flatMap<Unit>(_executionContext, [self, blocksDB, batch, partialDB, state, keychain, from, to, isGap](const TransactionBulk<NetworkType>& bulk) {
                         if (bulk.first.size() == 0) {
-                            self->finilizeBatch(state, partialDB, from, to);
+                            self->finilizeBatch(blocksDB, state, partialDB, from, to);
                             return Future<Unit>::successful(unit);
                         }
                         static std::function<bool(const Transaction& l, const Transaction& r)> blockLess = [](const Transaction& l, const Transaction& r)->bool {return l.block.getValue().height < r.block.getValue().height; };
@@ -201,10 +211,10 @@ namespace ledger {
                             auto newBatch = std::make_shared<Batch>();
                             newBatch->addresses = keychain->getAddresses(batch->lastAddressIndex + 1, self->_batchSize);
                             newBatch->lastAddressIndex = batch->lastAddressIndex + self->_batchSize;
-                            tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, newBatch, keychain, lowestBlock.height, to, lowestBlock.hash, true));
+                            tasksToContinueWith.push_back(self->createBatchSyncTask(blocksDB, state, partialDB, newBatch, keychain, lowestBlock.height, to, lowestBlock.hash, true));
                         }
-                        tasksToContinueWith.push_back(self->createBatchSyncTask(state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
-                        self->finilizeBatch(state, partialDB, from, to);
+                        tasksToContinueWith.push_back(self->createBatchSyncTask(blocksDB, state, partialDB, batch, keychain, lastFullBlockHeight + 1, to, highestBlock.hash, false));
+                        self->finilizeBatch(blocksDB, state, partialDB, from, to);
                         return executeAll(self->_executionContext, tasksToContinueWith).template map<Unit>(self->_executionContext, [](const std::vector<Unit>& vu) { return unit; });
                     });
                 }

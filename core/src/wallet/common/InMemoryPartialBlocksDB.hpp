@@ -8,12 +8,9 @@
 namespace ledger {
     namespace core {
         namespace common {
-            template<typename NetworkType>
-            class InMemoryPartialBlocksDB : public PartialBlockStorage<NetworkType> {
+            template<typename Transaction>
+            class InMemoryPartialBlocksDB : public PartialBlockStorage<Transaction> {
             public:
-                typedef typename NetworkType::Block Block;
-                typedef typename NetworkType::Transaction Transaction;
-
                 void addTransaction(const Transaction& transaction) override {
                     if (!transaction.block.hasValue()) {
                         return;

@@ -40,6 +40,7 @@
 
 #include <wallet/currencies.hpp>
 
+#include <database/BlockchainLevelDB.hpp>
 #include <wallet/common/ExplorerTransactionBroadcaster.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeExplorer.hpp>
@@ -48,6 +49,9 @@
 #include <wallet/bitcoin/factories/AccountSynchronizerFactory.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/StateManager.hpp>
+#include <wallet/common/PersistentBlockchainDatabase.hpp>
+#include <wallet/common/InMemoryBlockchainDatabase.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -80,13 +84,18 @@ namespace ledger {
                 if (engine != api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     throw make_exception(api::ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE, "Engine '{}' is not a supported synchronization engine.", STRING(api::Configuration::SYNCHRONIZATION_ENGINE, "undefined"));
                 }
-
+                auto backendDB = std::make_shared<db::BlockchainLevelDB>("hohoho");
+                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork::FilledBlock>> stableDB = std::make_shared<common::PersistentBlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>(pool->getDispatcher()->getMainExecutionContext(), backendDB);
+                std::shared_ptr<ReadOnlyBlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>  unstableDB = std::make_shared<common::InMemoryBlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>(pool->getDispatcher()->getMainExecutionContext());
+                BlockchainState<BitcoinLikeNetwork::FilledBlock> state(stableDB, unstableDB, std::vector<BitcoinLikeNetwork::Transaction>());
+                auto stateManager = std::make_shared<StateManager<BitcoinLikeNetwork::FilledBlock>>(state);
                 // TODO: put genesis block to network parameters
                 BitcoinLikeNetwork::Block genesisBlock;
                 genesisBlock.height = 0;
                 genesisBlock.hash = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
                 auto synchronizerFactory = std::make_shared<AccountSynchronizerFactory>(
                     pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers"),
+                    stateManager,
                     explorer,
                     genesisBlock);
                 // Sets the derivation scheme

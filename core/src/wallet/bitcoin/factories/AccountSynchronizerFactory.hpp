@@ -7,19 +7,21 @@
 
 namespace ledger {
     namespace core {
+        template<typename T>
+        class StateManager;
+
         namespace bitcoin {
             class AccountSynchronizerFactory : public core::AccountSynchronizerFactory<BitcoinLikeNetwork> {
             public:
                 AccountSynchronizerFactory(
                     std::shared_ptr<api::ExecutionContext> executionContext,
+                    const std::shared_ptr<StateManager<BitcoinLikeNetwork::FilledBlock>>& stateManager,
                     std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> explorer,
                     const BitcoinLikeNetwork::Block& genesisBlock);
                 std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> createAccountSynchronizer(
                     const std::shared_ptr<api::ExecutionContext>& executionContext,
                     const std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>>& explorer,
                     const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& stableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& unstableBlocksDb,
-                    const std::shared_ptr<BlockchainDatabase<BitcoinLikeNetwork::FilledBlock>>& pendingTransactionsDb,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
                     const std::shared_ptr<spdlog::logger>& logger,
@@ -28,6 +30,7 @@ namespace ledger {
                     uint32_t discoveryGapSize) override;
             private:
                 std::shared_ptr<api::ExecutionContext> _executionContext;
+                std::shared_ptr<StateManager<BitcoinLikeNetwork::FilledBlock>> _stateManager;
                 std::shared_ptr<ExplorerV2<BitcoinLikeNetwork>> _explorer;
                 const BitcoinLikeNetwork::Block _genesisBlock;
             };

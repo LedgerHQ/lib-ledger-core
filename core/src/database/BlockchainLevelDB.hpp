@@ -24,6 +24,7 @@ namespace ledger {
                 Future<std::vector<RawBlock>> GetBlocks(uint32_t heightFrom, uint32_t heightTo) override;
                 Future<Option<RawBlock>> GetBlock(uint32_t height) override;
                 Future<Option<std::pair<uint32_t, RawBlock>>> GetLastBlock() override;
+                Future<Option<std::pair<uint32_t, RawBlock>>> GetLastBlockBefore(uint32_t height) override;
             private:
                 void handleError(const leveldb::Status& status);
                 std::string serializeKey(uint32_t height);

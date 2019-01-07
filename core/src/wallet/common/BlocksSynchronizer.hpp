@@ -62,8 +62,6 @@ namespace ledger {
             template<typename NetworkType>
             class BlocksSynchronizer : public std::enable_shared_from_this<BlocksSynchronizer<NetworkType>>{
             public:
-                //typedef ExplorerV2<NetworkType> Explorer;
-                //typedef typename ExplorerV2<NetworkType>::TransactionBulk TransactionBulk;
                 typedef typename NetworkType::Block Block;
                 typedef typename NetworkType::Transaction Transaction;
                 typedef typename NetworkType::FilledBlock FilledBlock;
@@ -74,19 +72,20 @@ namespace ledger {
                     const std::shared_ptr<ExplorerV2<NetworkType>>& explorer,
                     const std::shared_ptr<Keychain>& receiveKeychain,
                     const std::shared_ptr<Keychain>& changeKeychain,
-                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     uint32_t gapSize,
                     uint32_t batchSize,
                     uint32_t maxTransactionPerResponse);
                 Future<Unit> synchronize(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::string& blockHashToStart,
                     uint32_t firstBlockHeightToInclude,
                     uint32_t lastBlockHeightToInclude);
                private:
 
                 Future<Unit> createBatchSyncTask(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& db,
                     const std::shared_ptr<Batch>& batch,
                     const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
@@ -95,8 +94,9 @@ namespace ledger {
                     bool isGap);
 
                 void bootstrapBatchesTasks(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& db,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& db,
                     const std::shared_ptr<Keychain>& keychain,
                     std::vector<Future<Unit>>& tasks,
                     std::string firstBlockHash,
@@ -104,14 +104,16 @@ namespace ledger {
                     uint32_t to);
 
                 void finilizeBatch(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& partialDB,
                     int from,
                     int to);
 
                 Future<Unit> synchronizeBatch(
+                    const std::shared_ptr<BlocksDatabase>& blocksDB,
                     const std::shared_ptr<BlocksSyncState>& state,
-                    const std::shared_ptr<PartialBlockStorage<NetworkType>>& partialDB,
+                    const std::shared_ptr<PartialBlockStorage<Transaction>>& partialDB,
                     const std::shared_ptr<Batch>& batch,
                     const std::shared_ptr<Keychain>& keychain,
                     uint32_t from,
@@ -123,7 +125,6 @@ namespace ledger {
                 std::shared_ptr<ExplorerV2<NetworkType>> _explorer;
                 std::shared_ptr<Keychain> _receiveKeychain;
                 std::shared_ptr<Keychain> _changeKeychain;
-                std::shared_ptr<BlocksDatabase> _blocksDB;
                 const uint32_t _gapSize;
                 const uint32_t _batchSize;
                 const uint32_t _maxTransactionPerResponse;

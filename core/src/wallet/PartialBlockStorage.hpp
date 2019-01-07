@@ -5,12 +5,9 @@
 
 namespace ledger {
     namespace core {
-        template<typename NetworkType>
+        template<typename Transaction>
         class PartialBlockStorage {
         public:
-            typedef typename NetworkType::Block Block;
-            typedef typename NetworkType::Transaction Transaction;
-
             virtual ~PartialBlockStorage() {};
             virtual void addTransaction(const Transaction& transactions) = 0;
             virtual std::vector<Transaction> getTransactions(uint32_t blockHeight) = 0;
