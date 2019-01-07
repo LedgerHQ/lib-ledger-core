@@ -1,73 +1,83 @@
+
+DatabaseError = interface +j +n +o {
+    getMessage(): string;
+}
+
+DatabaseBlob = interface +j +n +o {
+    read(): binary;
+}
+
+DatabaseResultSet = interface +j +n +o {
+    getShortByName(name: string): i16;
+    getIntByName(name: string): i32;
+    getFloatByName(name: string): f32;
+    getDoubleByName(name: string): f64;
+    getLongByName(name: string): i64;
+    getStringByName(name: string): string;
+
+    isNullAtPos(pos: i32): bool;
+    isNullForName(name: string): bool;
+
+    getColumnName(pos: i32): string;
+
+    getShortByPos(pos: i32): i16;
+    getIntByPos(pos: i32): i32;
+    getFloatByPos(pos: i32): f32;
+    getDoubleByPos(pos: i32): f64;
+    getLongByPos(pos: i32): i64;
+    getStringByPos(pos: i32): string;
+    getBlobByPos(pos: i32): DatabaseBlob;
+
+    getRowNumber(): i32;
+    available(): i32;
+    hasNext(): bool;
+    next(): DatabaseResultSet;
+    close();
+    getError(): DatabaseError;
+}
+
+DatabaseStatement = interface +j +n +o {
+    bindShort(pos: i32, value: i16);
+    bindInt(pos: i32, value: i32);
+    bindLong(pos: i32, value: i64);
+    bindFloat(pos: i32, value: f32);
+    bindDouble(pos: i32, value: f64);
+    bindString(pos: i32, value: string);
+    bindBinary(pos: i32, value: binary);
+    execute(): DatabaseResultSet;
+}
+
+DatabaseTransaction = interface +j +n +o {
+    prepareStatement(query: string);
+    commit();
+    rollback();
+}
+
+DatabaseConnection = interface +j +n +o {
+    prepareStatement(query: string);
+    newTransaction(): DatabaseTransaction;
+    commit();
+    close();
+}
+
+DatabaseConnectionPool = interface +j +n +o {
+    getConnection(): DatabaseConnection;
+    getPoolSize(): i32;
+}
+
+# An interface to implement a custom SQL backend
+DatabaseEngine = interface +j +n +o {
+    connect(connectUrl: string): DatabaseConnectionPool;
+}
+
 #Class representing a database
 DatabaseBackend = interface +c {
-    #Set database's user name
-    #@param username, string
-    #@return DatabaseBackend object, databse with user name set
-    setUsername(username: string): DatabaseBackend;
-    #Set database's password
-    #@param password, string
-    #@return DatabaseBackend object, database with password set
-    setPassword(pwd: string): DatabaseBackend;
-    #Set database's host which storing database
-    #@param host, string
-    #@return DatabaseBackend object, database with host set
-    setHost(host: string): DatabaseBackend;
-    #Set database's host's address
-    #@param hostAddr, string, host's address
-    #@return DatabaseBackend object, database with host's address set
-    setHostAddr(hostAddr: string): DatabaseBackend;
-    #Set database's port on which it connects to host
-    #@param port, string
-    #@return DatabaseBackend object, database with port set
-    setPort(port: string): DatabaseBackend;
-    #Set database's specific options
-    #@param opts, string
-    #@return DatabaseBackend object, database with options set
-    setOptions(opts: string): DatabaseBackend;
-    #Set database's mode (SSL) of security interaction of type databse/server
-    #@param mode, string
-    #@return DatabaseBackend object, database with mode set
-    setSslMode(mode: string): DatabaseBackend;
-    #Set database's Kerberos name used to secure (authentication) user/databse interaction
-    #@param name, string
-    #@return DatabaseBackend object, database with Kerberos name set
-    setKerberosName(name: string): DatabaseBackend;
-    #TODO
-    setService(service: string): DatabaseBackend;
-    setConnectionPoolSize(size: i32): DatabaseBackend;
-    enableQueryLogging(enable: bool): DatabaseBackend;
-    #Return database's name
-    #@return string
-    getUsername(): string;
-    #Return database's password
-    #@return string
-    getPassword(): string;
-    #Return database's host
-    #@return string
-    getHost(): string;
-    #Return database's host's address
-    #@return string
-    getHostAddr(): string;
-    #Return database's port
-    #@return string
-    getPort(): string;
-    #Return database's options
-    #@return string
-    getOptions(): string;
-    #Return database's SSL mode
-    #@return string
-    getSslMode(): string;
-    #Return database's Kerberos name
-    #@return string
-    getKerberosName(): string;
-    #TODO
-    getService(): string;
     getConnectionPoolSize(): i32;
+    enableQueryLogging(enable: bool): DatabaseBackend;
     isLoggingEnabled(): bool;
     #Create an instance of SQLite3 database
     #@return DatabaseBackend object
     static getSqlite3Backend(): DatabaseBackend;
     #Create an instance of PostgreSQL database
-    #@return DatabaseBackend object
-    static getPostgreSQLBackend(): DatabaseBackend;
+    static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;
 }
