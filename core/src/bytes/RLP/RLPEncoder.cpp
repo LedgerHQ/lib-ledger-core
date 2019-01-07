@@ -31,6 +31,11 @@
 
 #include "RLPEncoder.h"
 
+/*
+ * Reursive Length Prefix Encoder
+ * Reference: https://github.com/ethereum/wiki/wiki/RLP
+ */
+
 namespace ledger {
     namespace core {
 

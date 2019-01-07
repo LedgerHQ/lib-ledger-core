@@ -30,8 +30,13 @@
 
 
 #include "RLPStringEncoder.h"
-#include "../../utils/Exception.hpp"
 #include <utils/hex.h>
+
+/*
+ * Reursive Length Prefix String Encoder
+ * Reference: https://github.com/ethereum/wiki/wiki/RLP
+ */
+
 namespace ledger {
     namespace core {
         //TODO : other constructors (operators)

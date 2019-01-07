@@ -64,60 +64,74 @@ namespace ledger {
             std::string getETHOperationUid();
             int32_t getStatus() override ;
 
-            void setHash(const std::string &hash) {
+            ERC20LikeOperation &setHash(const std::string &hash) {
                 _hash = hash;
+                return *this;
             };
 
-            void setNonce(const BigInt &nonce) {
+            ERC20LikeOperation &setNonce(const BigInt &nonce) {
                 _nonce = std::make_shared<api::BigIntImpl>(nonce);
+                return *this;
             };
 
-            void setGasPrice(const BigInt &gasPrice) {
+            ERC20LikeOperation &setGasPrice(const BigInt &gasPrice) {
                 _gasPrice = std::make_shared<api::BigIntImpl>(gasPrice);
+                return *this;
             };
 
-            void setGasLimit(const BigInt &gasLimit) {
+            ERC20LikeOperation &setGasLimit(const BigInt &gasLimit) {
                 _gasLimit = std::make_shared<api::BigIntImpl>(gasLimit);
+                return *this;
             };
 
-            void setUsedGas(const BigInt &usedGas) {
+            ERC20LikeOperation &setUsedGas(const BigInt &usedGas) {
                 _gasUsed = std::make_shared<api::BigIntImpl>(usedGas);
+                return *this;
             };
 
-            void setSender(const std::string &sender) {
+            ERC20LikeOperation &setSender(const std::string &sender) {
                 _sender = sender;
+                return *this;
             };
 
-            void setReceiver(const std::string &receiver) {
+            ERC20LikeOperation &setReceiver(const std::string &receiver) {
                 _receiver = receiver;
+                return *this;
             };
 
-            void setValue(const BigInt &value) {
+            ERC20LikeOperation &setValue(const BigInt &value) {
                 _value = std::make_shared<api::BigIntImpl>(value);
+                return *this;
             };
 
-            void setData(const std::vector<uint8_t> &data) {
+            ERC20LikeOperation &setData(const std::vector<uint8_t> &data) {
                 _data = data;
+                return *this;
             };
 
-            void setTime(const std::chrono::system_clock::time_point& time) {
+            ERC20LikeOperation &setTime(const std::chrono::system_clock::time_point& time) {
                 _time = time;
+                return *this;
             };
 
-            void setOperationType(api::OperationType type) {
+            ERC20LikeOperation &setOperationType(api::OperationType type) {
                 _operationType = type;
+                return *this;
             };
 
-            void setOperationUid(const std::string &operationUid) {
+            ERC20LikeOperation &setOperationUid(const std::string &operationUid) {
                 _uid = operationUid;
+                return *this;
             };
 
-            void setETHOperationUid(const std::string &ethOperationUid) {
+            ERC20LikeOperation &setETHOperationUid(const std::string &ethOperationUid) {
                 _ethUidOperation = ethOperationUid;
+                return *this;
             };
 
-            void setStatus(int32_t status) {
+            ERC20LikeOperation &setStatus(int32_t status) {
                 _status = status;
+                return *this;
             };
             
         private:
