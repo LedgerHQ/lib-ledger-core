@@ -88,7 +88,8 @@ namespace ledger {
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
             auto& params = currency.rippleLikeNetworkParameters.value();
-            auto decoded = Base58::checkAndDecode(address, params.Identifier);
+            bool useNetworkDictionary = true;
+            auto decoded = Base58::checkAndDecode(address, params.Identifier, useNetworkDictionary);
             if (decoded.isFailure()) {
                 throw decoded.getFailure();
             }
@@ -101,9 +102,6 @@ namespace ledger {
 
             std::vector<uint8_t> hash160(value.end() - 20, value.end());
             std::vector<uint8_t> version(value.begin(), value.end() - 20);
-            //if (version != params.P2PKHVersion && version != params.P2SHVersion) {
-            //    throw Exception(api::ErrorCode::INVALID_VERSION, "Address version doesn't belong to the given network parameters");
-            //}
             return std::make_shared<ledger::core::RippleLikeAddress>(currency, hash160, version, derivationPath);
         }
     }

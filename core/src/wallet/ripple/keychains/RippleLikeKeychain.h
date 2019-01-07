@@ -54,48 +54,61 @@ namespace ledger {
         public:
             using Address = std::shared_ptr<RippleLikeAddress>;
 
-            RippleLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                 const api::Currency& params,
-                                 int account,
-                                 const std::shared_ptr<Preferences>& preferences);
+            RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                               const api::Currency &params,
+                               int account,
+                               const std::shared_ptr<Preferences> &preferences);
 
 
             RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                 const api::Currency &params,
-                                 int account,
-                                 const std::shared_ptr<api::RippleLikeExtendedPublicKey> &xpub,
-                                 const std::shared_ptr<Preferences> &preferences);
+                               const api::Currency &params,
+                               int account,
+                               const std::shared_ptr<api::RippleLikeExtendedPublicKey> &xpub,
+                               const std::shared_ptr<Preferences> &preferences);
 
             RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                 const api::Currency &params,
-                                 int account,
-                                 const std::string &accountAddress,
-                                 const std::shared_ptr<Preferences>& preferences);
+                               const api::Currency &params,
+                               int account,
+                               const std::string &accountAddress,
+                               const std::shared_ptr<Preferences> &preferences);
+
             std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
+
             Address getAddress() const;
-            Option<std::string> getAddressDerivationPath(const std::string &address) const ;
+
+            Option<std::string> getAddressDerivationPath(const std::string &address) const;
+
             std::shared_ptr<api::RippleLikeExtendedPublicKey> getExtendedPublicKey() const;
 
             int getAccountIndex() const;
-            const api::RippleLikeNetworkParameters& getNetworkParameters() const;
-            const api::Currency& getCurrency() const;
 
-            Option<std::vector<uint8_t>> getPublicKey(const std::string& address) const ;
+            const api::RippleLikeNetworkParameters &getNetworkParameters() const;
+
+            const api::Currency &getCurrency() const;
+
+            Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const;
 
 
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
-            const DerivationScheme& getDerivationScheme() const;
-            const DerivationScheme& getFullDerivationScheme() const;
 
-            std::string getRestoreKey() const ;
-            bool contains(const std::string& address) const ;
-            int32_t getOutputSizeAsSignedTxInput() const ;
+            const DerivationScheme &getDerivationScheme() const;
+
+            const DerivationScheme &getFullDerivationScheme() const;
+
+            std::string getRestoreKey() const;
+
+            bool contains(const std::string &address) const;
+
+            int32_t getOutputSizeAsSignedTxInput() const;
+
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
-            DerivationScheme& getDerivationScheme();
+
+            DerivationScheme &getDerivationScheme();
 
         private:
             RippleLikeKeychain::Address derive();
+
             const api::Currency _currency;
             DerivationScheme _scheme;
             DerivationScheme _fullScheme;

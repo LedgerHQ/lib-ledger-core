@@ -38,7 +38,7 @@
 
 namespace ledger {
     namespace core {
-
+        //TODO: support addresses resulting from Ed25519
         RippleLikeExtendedPublicKey::RippleLikeExtendedPublicKey(const api::Currency& params,
                                                                  const DeterministicPublicKey& key,
                                                                  const DerivationPath& path):
@@ -47,7 +47,7 @@ namespace ledger {
         std::shared_ptr<api::RippleLikeAddress> RippleLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
             auto key = _derive(0, p.toVector(), _key);
-            return std::make_shared<RippleLikeAddress>(_currency, key.getPublicKeyHash160(), _currency.rippleLikeNetworkParameters.value().XPUBVersion, optional<std::string>((_path + p).toString()));
+            return std::make_shared<RippleLikeAddress>(_currency, key.getPublicKeyHash160(), std::vector<uint8_t>({0x00}), optional<std::string>((_path + p).toString()));
         }
 
         std::shared_ptr<RippleLikeExtendedPublicKey> RippleLikeExtendedPublicKey::derive(const DerivationPath &path) {

@@ -125,6 +125,12 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
             }
         }
     }
+
+    //For XRP, hash160 is preceeded by a null byte prefix
+    if (prefix.empty() && networkIdentifier == "xrp") {
+        prefix.push_back(0);
+    }
+
     return vector::concat(prefix, intData.toByteArray());
 }
 
@@ -137,9 +143,10 @@ std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uin
 }
 
 ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str,
-                                                                             const std::string &networkIdentifier) {
+                                                                             const std::string &networkIdentifier,
+                                                                             bool useNetworkDictionary) {
     return Try<std::vector<uint8_t>>::from([&] () {
-        auto decoded = decode(str, networkIdentifier);
+        auto decoded = useNetworkDictionary ? decode(str, networkIdentifier) : decode(str);
         //Check decoded address size
         if (decoded.size() <= 4) {
             throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");

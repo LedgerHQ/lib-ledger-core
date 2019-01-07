@@ -29,8 +29,9 @@
  *
  */
 #include "AbstractWalletFactory.hpp"
-#include "../bitcoin/factories/BitcoinLikeWalletFactory.hpp"
-#include "../ethereum/factories/EthereumLikeWalletFactory.h"
+#include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
+#include <wallet/ethereum/factories/EthereumLikeWalletFactory.h>
+#include <wallet/ripple/factories/RippleLikeWalletFactory.h>
 
 namespace ledger {
     namespace core {
@@ -67,8 +68,7 @@ namespace ledger {
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::RIPPLE>(const api::Currency& currency,
                                                                                       const std::shared_ptr<WalletPool>& pool) {
-            //TODO IMPLEMENT RIPPLE FACTORY
-            return nullptr;
+            return std::make_shared<RippleLikeWalletFactory>(currency, pool);
         }
 
         template <>

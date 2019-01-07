@@ -38,7 +38,8 @@ namespace ledger {
                     static const api::RippleLikeNetworkParameters RIPPLE(
                             "xrp",
                             "XRP signed message:\n",
-                            {0x00},
+                            //{0x00},
+                            {0x04, 0x88, 0xB2, 0x1E},
                             {},
                             0
                     );

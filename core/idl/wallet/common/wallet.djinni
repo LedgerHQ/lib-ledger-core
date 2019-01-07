@@ -124,7 +124,9 @@ Operation = interface +c {
     # Convert operation as Ethereum operation.
     # @return EthereumLikeOperation object
     asEthereumLikeOperation(): EthereumLikeOperation;
-    # Is this an instance of a Bitcoin-like operation?
+    #Convert operation as Ripple operation
+    #@return RippleLikeOperation object
+    asRippleLikeOperation(): RippleLikeOperation;
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfBitcoinLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;

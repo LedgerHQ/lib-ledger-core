@@ -62,7 +62,7 @@ namespace ledger {
             }
 
             std::string toBase58() {
-                return Base58::encodeWithChecksum(getKey().toByteArray(params().XPUBVersion), params().Identifier);
+                return Base58::encodeWithChecksum(getKey().toByteArray(params().XPUBVersion));
             }
 
             static DeterministicPublicKey

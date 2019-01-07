@@ -40,37 +40,37 @@
 namespace ledger {
     namespace core {
 
-        RippleLikeKeychain::RippleLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                                   const api::Currency &params, int account,
-                                                   const std::shared_ptr<Preferences>& preferences) :
+        RippleLikeKeychain::RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                               const api::Currency &params, int account,
+                                               const std::shared_ptr<Preferences> &preferences) :
                 _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
                 _fullScheme(DerivationScheme(configuration
                                                      ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
                                                      .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
                 _scheme(DerivationScheme(configuration
                                                  ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                 .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())
-        {
+                                                 .value_or(
+                                                         "44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(
+                        DerivationSchemeLevel::ACCOUNT_INDEX).shift()) {
         }
 
         RippleLikeKeychain::RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                   const api::Currency &params,
-                                                   int account,
-                                                   const std::shared_ptr<api::RippleLikeExtendedPublicKey> &xpub,
-                                                   const std::shared_ptr<Preferences> &preferences)
+                                               const api::Currency &params,
+                                               int account,
+                                               const std::shared_ptr<api::RippleLikeExtendedPublicKey> &xpub,
+                                               const std::shared_ptr<Preferences> &preferences)
                 : RippleLikeKeychain(configuration, params, account, preferences) {
 
             _xpub = xpub;
-            getAllObservableAddresses(0,0);
+            getAllObservableAddresses(0, 0);
         }
 
         RippleLikeKeychain::RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                   const api::Currency &params,
-                                                   int account,
-                                                   const std::string &accountAddress,
-                                                   const std::shared_ptr<Preferences>& preferences)
-                : RippleLikeKeychain(configuration, params, account, preferences)
-        {}
+                                               const api::Currency &params,
+                                               int account,
+                                               const std::string &accountAddress,
+                                               const std::shared_ptr<Preferences> &preferences)
+                : RippleLikeKeychain(configuration, params, account, preferences) {}
 
         int RippleLikeKeychain::getAccountIndex() const {
             return _account;
@@ -89,7 +89,7 @@ namespace ledger {
             return _configuration;
         }
 
-        const api::Currency& RippleLikeKeychain::getCurrency() const {
+        const api::Currency &RippleLikeKeychain::getCurrency() const {
             return _currency;
         }
 
@@ -110,7 +110,8 @@ namespace ledger {
             if (_address.empty()) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Address not derived yet from keychain"));
             }
-            return std::dynamic_pointer_cast<RippleLikeAddress>(RippleLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath)));
+            return std::dynamic_pointer_cast<RippleLikeAddress>(
+                    RippleLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath)));
         }
 
         Option<std::string> RippleLikeKeychain::getAddressDerivationPath(const std::string &address) const {
@@ -145,7 +146,8 @@ namespace ledger {
         }
 
         int32_t RippleLikeKeychain::getOutputSizeAsSignedTxInput() const {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "RippleLikeKeychain::getOutputSizeAsSignedTxInput is not implemented yet");
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
+                                 "RippleLikeKeychain::getOutputSizeAsSignedTxInput is not implemented yet");
         }
 
         Option<std::vector<uint8_t>> RippleLikeKeychain::getPublicKey(const std::string &address) const {
@@ -185,11 +187,11 @@ namespace ledger {
                 }
             }
 
-            auto ethAddress = RippleLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath));
-            if (!ethAddress) {
+            auto rippleAddress = RippleLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath));
+            if (!rippleAddress) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Could not derive address");
             }
-            return std::dynamic_pointer_cast<RippleLikeAddress>(ethAddress);
+            return std::dynamic_pointer_cast<RippleLikeAddress>(rippleAddress);
         }
 
 

@@ -34,6 +34,7 @@
 #include <wallet/common/Amount.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
+#include <wallet/ripple/api_impl/RippleLikeOperation.h>
 
 
 namespace ledger {
@@ -133,6 +134,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
             }
             return std::make_shared<EthereumLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::RippleLikeOperation> OperationApi::asRippleLikeOperation() {
+            if (getWalletType() != api::WalletType::RIPPLE) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
+            }
+            return std::make_shared<RippleLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

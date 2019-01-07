@@ -359,6 +359,41 @@ namespace ledger {
 
         }
 
+        template <> void migrate<6>(soci::session& sql) {
+
+            sql << "CREATE TABLE ripple_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "xpub_version VARACHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_RIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE ripple_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ripple_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "fees VARCHAR(255) NOT NULL,"
+                    "confirmations BIGINT NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ripple_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+        }
+        
         template <> void rollback<5>(soci::session& sql) {
             // ERC20 tokens
             sql << "DROP TABLE erc20_tokens";

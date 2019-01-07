@@ -1,0 +1,85 @@
+@import "../../errors.djinni"
+@import "../amount.djinni"
+@import "../../ripple/addresses.djinni"
+
+#Class representing a Ripple transaction
+RippleLikeTransaction = interface +c {
+	# Get the hash of the transaction.
+	getHash(): string;
+	# Get Fees (in drop)
+	getFees(): Amount;
+	# Get destination XRP address
+	getReceiver(): RippleLikeAddress;
+	# Get XRP sender address
+	getSender(): RippleLikeAddress;
+	# Get amount of XRP to send
+	getValue(): Amount;
+	# Serialize the transaction to its raw format.
+	serialize(): binary;
+	# Set signature of transaction, when a signature is set serialize method gives back serialized Tx
+	setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
+	setDERSignature(signature: binary);
+	# Get the time when the transaction was issued or the time of the block including
+	# this transaction
+	getDate(): date;
+	# Get block to which transaction belongs (was mined in)
+	getBlock(): optional<RippleLikeBlock>;
+}
+
+#Class representing a Ripple Operation
+RippleLikeOperation = interface +c {
+	#Get operation's transaction
+	#@return RippleLikeTransaction object
+	getTransaction(): RippleLikeTransaction;
+}
+
+#Class representing Bitcoin block
+RippleLikeBlock = interface +c {
+	#Hash of block
+	#@return string representing hash of this block
+	getHash(): string;
+	#Height of block in blockchain
+	#@return 64 bits integer, height of block
+	getHeight(): i64;
+	#Timestamp when block was mined
+	#@return Date object, date when block was appended to blockchain
+	getTime(): date;
+}
+
+RippleLikeTransactionBuilder = interface +c {
+
+	# Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+	# @param amount The value to send
+	# @param address Address of the recipient
+	# @return A reference on the same builder in order to chain calls.
+	sendToAddress(amount: Amount, address: string): RippleLikeTransactionBuilder;
+
+	# Send all available funds to the given address.
+	# @param address Address of the recipient
+	# @return A reference on the same builder in order to chain calls.
+	wipeToAddress(address: string): RippleLikeTransactionBuilder;
+
+	# Set fees (in drop) the originator is willing to pay
+	# @return A reference on the same builder in order to chain calls.
+	setFees(fees: Amount): RippleLikeTransactionBuilder;
+
+	# Build a transaction from the given builder parameters.
+	build(callback: Callback<RippleLikeTransaction>);
+
+	# Creates a clone of this builder.
+	# @return A copy of the current builder instance.
+	clone(): RippleLikeTransactionBuilder;
+
+	# Reset the current instance to its initial state
+	reset();
+
+	static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): RippleLikeTransaction;
+	static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): RippleLikeTransaction;
+}
+
+#Class representing a Ripple account
+RippleLikeAccount = interface +c {
+	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
+	broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
+	buildTransaction(): RippleLikeTransactionBuilder;
+}
