@@ -295,48 +295,6 @@ public:
         sqlite3_bind_null(_stmt, pos);
     }
 
-    void bindBlobByName(const std::string &name, const std::shared_ptr<api::DatabaseBlob> &value) override {
-        BIND(Blob);
-    }
-
-    void bindRowIdByName(const std::string &name, const std::shared_ptr<api::DatabaseRowId> &value) override {
-        BIND(RowId);
-    }
-
-    void bindShortByName(const std::string &name, int16_t value) override {
-        BIND(Short);
-    }
-
-    void bindIntByName(const std::string &name, int32_t value) override {
-        BIND(Int);
-    }
-
-    void bindLongByName(const std::string &name, int64_t value) override {
-        BIND(Long);
-    }
-
-    void bindFloatByName(const std::string &name, float value) override {
-        BIND(Float);
-    }
-
-    void bindDoubleByName(const std::string &name, double value) override {
-        BIND(Double);
-    }
-
-    void bindStringByName(const std::string &name, const std::string &value) override {
-        BIND(String);
-    }
-
-    void bindNullByName(const std::string &name) override {
-        auto pos = sqlite3_bind_parameter_index(_stmt, name.c_str());
-        if (pos == 0) {
-            std::ostringstream ss;
-            ss << "Cannot bind to (by name) " << name;
-            throw soci::soci_error(ss.str());
-        }
-        bindNull(pos);
-    }
-
     void reset() override {
         sqlite3_reset(_stmt);
     }
@@ -376,11 +334,7 @@ private:
 class Connection : public api::DatabaseConnection {
 public:
     Connection(sqlite3* db) : _db(db) {};
-
-    std::shared_ptr<api::DatabaseRowId> newRowId() override {
-        return nullptr;
-    }
-
+    
     std::shared_ptr<api::DatabaseStatement> prepareStatement(const std::string &query, bool repeatable) override {
         return std::make_shared<Statement>(_db, query);
     };

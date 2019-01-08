@@ -38,8 +38,6 @@ using namespace soci;
 #define BIND(T, value) \
     if (_position.isLeft()) { \
         statement_._stmt->bind##T(_position.getLeft(), (value)); \
-    } else { \
-        statement_._stmt->bind##T##ByName(_position.getRight(), (value)); \
     }
 
 void
@@ -64,8 +62,6 @@ void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
         if (ind && *ind == i_null) {
             if (_position.isLeft()) {
                 statement_._stmt->bindNull(_position.getLeft());
-            } else {
-                statement_._stmt->bindNullByName(_position.getRight());
             }
             return unit;
         }
