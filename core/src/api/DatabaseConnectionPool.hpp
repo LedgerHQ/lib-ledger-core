@@ -10,10 +10,16 @@ namespace ledger { namespace core { namespace api {
 
 class DatabaseConnection;
 
+/** A pool of connections to a single database. */
 class DatabaseConnectionPool {
 public:
     virtual ~DatabaseConnectionPool() {}
 
+    /**
+     * Get a connection to the database. This method won't be called more than the engine pool size return
+     * by DatabaseEngine::getPoolSize.
+     * @return A connection to the database
+     */
     virtual std::shared_ptr<DatabaseConnection> getConnection() = 0;
 };
 

@@ -34,7 +34,7 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        std::shared_ptr<::ledger::core::api::DatabaseConnectionPool> connect(const std::string & connectUrl) override;
+        std::shared_ptr<::ledger::core::api::DatabaseConnectionPool> connect(const std::string & databaseName) override;
         int32_t getPoolSize() override;
 
     private:

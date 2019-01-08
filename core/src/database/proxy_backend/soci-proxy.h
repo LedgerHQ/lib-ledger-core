@@ -67,6 +67,11 @@
 #define SP_PRINT(p)
 #endif
 
+/***
+ * \file soci-proxy.h
+ * A soci backend to use with the ledger::core::api::DatabaseEngine
+ * \link http://soci.sourceforge.net/doc/3.2/backends.html
+ */
 namespace soci
 {
 

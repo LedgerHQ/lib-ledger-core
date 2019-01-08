@@ -3,7 +3,6 @@
 
 #include "DatabaseConnection.hpp"  // my header
 #include "DatabaseBlob.hpp"
-#include "DatabaseRowId.hpp"
 #include "DatabaseStatement.hpp"
 #include "Marshal.hpp"
 
@@ -62,14 +61,6 @@ std::shared_ptr<::ledger::core::api::DatabaseBlob> DatabaseConnection::JavaProxy
     auto jret = jniEnv->CallObjectMethod(Handle::get().get(), data.method_newBlob);
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni_generated::DatabaseBlob::toCpp(jniEnv, jret);
-}
-std::shared_ptr<::ledger::core::api::DatabaseRowId> DatabaseConnection::JavaProxy::newRowId() {
-    auto jniEnv = ::djinni::jniGetThreadEnv();
-    ::djinni::JniLocalScope jscope(jniEnv, 10);
-    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseConnection>::get();
-    auto jret = jniEnv->CallObjectMethod(Handle::get().get(), data.method_newRowId);
-    ::djinni::jniExceptionCheck(jniEnv);
-    return ::djinni_generated::DatabaseRowId::toCpp(jniEnv, jret);
 }
 
 }  // namespace djinni_generated

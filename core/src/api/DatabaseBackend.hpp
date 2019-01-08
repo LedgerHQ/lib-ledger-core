@@ -11,24 +11,36 @@ namespace ledger { namespace core { namespace api {
 
 class DatabaseEngine;
 
-/**Class representing a database */
+/**Class representing a database backend. */
 class DatabaseBackend {
 public:
     virtual ~DatabaseBackend() {}
 
+    /**
+     * Get the maximum number of concurrent connection that the backend is able to open on a single database.
+     * @return the size of the connection pool.
+     */
     virtual int32_t getConnectionPoolSize() = 0;
 
+    /**
+     * Enable or disable query logging. By default logging is disabled. Query logging will record every SQL query in log streams.
+     * @return this database backend (to chain configuration calls)
+     */
     virtual std::shared_ptr<DatabaseBackend> enableQueryLogging(bool enable) = 0;
 
+    /**
+     * Return true if query logging is enabled.
+     * @return trye if query logging is enabled, false otherwise.
+     */
     virtual bool isLoggingEnabled() = 0;
 
     /**
-     *Create an instance of SQLite3 database
-     *@return DatabaseBackend object
+     * Create an instance of SQLite3 database
+     * @return DatabaseBackend object
      */
     static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
 
-    /**Create an instance of PostgreSQL database */
+    /** Create an instance of PostgreSQL database */
     static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);
 };
 

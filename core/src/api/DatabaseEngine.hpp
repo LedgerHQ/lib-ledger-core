@@ -12,13 +12,22 @@ namespace ledger { namespace core { namespace api {
 
 class DatabaseConnectionPool;
 
-/** An interface to implement a custom SQL backend */
+/** An interface to implement a custom SQL backend on host side instead of using a native backend. */
 class DatabaseEngine {
 public:
     virtual ~DatabaseEngine() {}
 
-    virtual std::shared_ptr<DatabaseConnectionPool> connect(const std::string & connectUrl) = 0;
+    /**
+     * Open a connection to a database using the given database name
+     * @params databaseName The name of the database to open
+     * @return A connection pool to the given database
+     */
+    virtual std::shared_ptr<DatabaseConnectionPool> connect(const std::string & databaseName) = 0;
 
+    /**
+     * Get the maximum number of concurrent connection on a single database.
+     * @return the maximum number of concurrent connection that the engine is able to open on a single database.
+     */
     virtual int32_t getPoolSize() = 0;
 };
 

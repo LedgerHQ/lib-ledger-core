@@ -6,6 +6,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** A object representing a datbase row identifier. */
 class DatabaseRowId {
 public:
     virtual ~DatabaseRowId() {}

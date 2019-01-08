@@ -8,10 +8,15 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** Wrapper class around errors. */
 class DatabaseError {
 public:
     virtual ~DatabaseError() {}
 
+    /**
+     * Get a human readable error message.
+     * @return The error message.
+     */
     virtual std::string getMessage() = 0;
 };
 
