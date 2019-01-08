@@ -124,7 +124,6 @@ namespace ledger {
             virtual TxsParser &getTransactionsParser() = 0;
             virtual std::string &getLastKey() = 0;
             int _depth;
-        private:
             BlockchainExplorerTransactionsBulk* _bulk;
         };
 

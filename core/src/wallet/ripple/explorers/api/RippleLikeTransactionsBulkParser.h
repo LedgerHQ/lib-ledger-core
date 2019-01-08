@@ -48,6 +48,31 @@ namespace ledger {
                 _depth = 0;
             };
 
+            bool StartArray() {
+                if (_depth >= 1 || getLastKey() == "transactions") {
+                    _depth += 1;
+                }
+
+                if (_depth == 1) {
+                    getTransactionsParser().init(&_bulk->transactions);
+                }
+
+                PROXY_PARSE_TXS(StartArray)
+            };
+
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                std::string value = std::string(str, length);
+                if (_depth == 0 && getLastKey() == "marker") {
+                    _bulk->marker = value;
+                }
+                PROXY_PARSE_TXS(String, str, length, copy)
+            }
+
+            bool Bool(bool b) {
+                PROXY_PARSE_TXS(Bool, b)
+            }
+
+
         protected:
             RippleLikeTransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;

@@ -82,6 +82,9 @@ namespace ledger {
 
             bool EndArray(rapidjson::SizeType elementCount);
 
+            std::string &getLastKey() {
+                return _lastKey;
+            };
         private:
             std::string &_lastKey;
             RippleLikeBlockchainExplorerTransaction *_transaction;

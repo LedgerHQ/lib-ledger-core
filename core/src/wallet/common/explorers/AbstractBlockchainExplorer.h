@@ -50,6 +50,7 @@ namespace ledger {
             struct TransactionsBulk {
                 std::vector<Transaction> transactions;
                 bool hasNext;
+                std::string marker;
             };
 
             virtual Future<void *> startSession() = 0;

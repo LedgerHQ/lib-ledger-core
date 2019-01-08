@@ -131,7 +131,7 @@ namespace ledger {
                 auto http = pool->getHttpClient(
                         configuration->getString(
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                        ).value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT)
+                        ).value_or("https://data.ripple.com")
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();

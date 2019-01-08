@@ -40,6 +40,26 @@ namespace ledger {
         class RippleLikeBlockParser : public AbstractBlockParser<RippleLikeBlockchainExplorer::Block> {
         public:
             RippleLikeBlockParser(std::string &lastKey) : _lastKey(lastKey) {};
+
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                if (getLastKey() == "ledger_index") {
+                    std::string number(str, length);
+                    BigInt value = BigInt::fromString(number);
+                    _block->height = value.toUint64();
+                }
+                return true;
+            }
+
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                std::string value = std::string(str, length);
+                if (getLastKey() == "ledger_hash") {
+                    _block->hash = value;
+                } else if (getLastKey() == "close_time_human") {
+                    _block->time = DateUtils::fromJSON(value);
+                }
+                return true;
+            }
+
         protected:
             std::string &getLastKey() override {
                 return _lastKey;

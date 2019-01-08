@@ -47,7 +47,6 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://xrp-ropsten.explorers.dev.aws.ledger.fr");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -76,6 +75,7 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                       api::EventCode::SYNCHRONIZATION_SUCCEED);
 
             auto balance = wait(account->getBalance());
+            std::cout << "Balance: " << balance->toString() << std::endl;
             auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
             dispatcher->stop();
         });

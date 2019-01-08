@@ -30,8 +30,6 @@
 
 
 #include "RippleLikeTransactionParser.h"
-#include "utils/DateUtils.hpp"
-#include <math/Base58.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -45,7 +43,7 @@ namespace ledger {
         bool RippleLikeTransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             _lastKey = std::string(str, length);
 
-            if (_lastKey == "block" && _arrayDepth == 0) {
+            if (_lastKey == "meta" && _arrayDepth == 0) {
                 auto &top = _hierarchy.top();
             }
             PROXY_PARSE(Key, str, length, copy) {
@@ -57,22 +55,14 @@ namespace ledger {
             if (_arrayDepth == 0) {
                 _hierarchy.push(_lastKey);
             }
-
             auto &currentObject = _hierarchy.top();
-
-            if (currentObject == "block") {
-                RippleLikeBlockchainExplorer::Block block;
-                _transaction->block = Option<RippleLikeBlockchainExplorer::Block>(block);
-                _blockParser.init(&_transaction->block.getValue());
-            }
-
             return true;
         }
 
         bool RippleLikeTransactionParser::EndObject(rapidjson::SizeType memberCount) {
             auto &currentObject = _hierarchy.top();
-            if (_lastKey == "block") {
-                return false;
+            if (_lastKey == "tx") {
+                return true;
             }
             if (_arrayDepth == 0) {
                 _hierarchy.pop();
@@ -138,12 +128,8 @@ namespace ledger {
 
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
-                if (_lastKey == "fees") {
-                    _transaction->fees = value;
-                } else if (_lastKey == "confirmations") {
+                if (_lastKey == "confirmations") {
                     _transaction->confirmations = value.toUint64();
-                } else if (_lastKey == "value") {
-                    _transaction->value = value;
                 }
                 return true;
             }
@@ -153,14 +139,29 @@ namespace ledger {
         RippleLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
+
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "received_at") {
+                } else if (_lastKey == "date") {
+                    auto pos = value.find('+');
+                    if ( pos != std::string::npos && pos > 0) {
+                        value = value.substr(0, pos);
+                    }
+                    auto posZ = value.find('Z');
+                    if ( posZ == std::string::npos ) {
+                        value = value + "Z";
+                    }
                     _transaction->receivedAt = DateUtils::fromJSON(value);
-                } else if (_lastKey == "to") {
-                    _transaction->receiver = value;
-                } else if (_lastKey == "from") {
+                } else if (_lastKey == "Account") {
                     _transaction->sender = value;
+                } else if (_lastKey == "Destination") {
+                    _transaction->receiver = value;
+                } else if (_lastKey == "Amount") {
+                    BigInt valueBigInt = BigInt::fromString(value);
+                    _transaction->value = valueBigInt;
+                } else if (_lastKey == "Fee") {
+                    BigInt valueBigInt = BigInt::fromString(value);
+                    _transaction->fees = value;
                 }
                 return true;
             }

@@ -43,39 +43,38 @@ namespace ledger {
                 RippleLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
-            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
+            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
         Future<std::shared_ptr<BigInt>>
         LedgerApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
 
-            std::string addressesStr;
-            auto size = addresses.size();
-            for (auto i = 0; i < size; i++) {
-                auto address = addresses[i];
-                addressesStr += address->toBase58();
-                if (i < addresses.size() - 1) {
-                    addressesStr += ",";
-                }
+            //TODO: multiple accounts balances ?
+            if (addresses.size() != 1) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "LedgerApiRippleLikeBlockchainExplorer::getBalance can called only with one address");
             }
-            return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/balance", _explorerVersion,
-                                          _parameters.Identifier, addressesStr))
+
+            std::string addressesStr = addresses[0]->toBase58();
+            auto size = addresses.size();
+
+            return _http->GET(fmt::format("/{}/accounts/{}/balances", _explorerVersion, addressesStr))
                     .json().mapPtr<BigInt>(getContext(), [addressesStr, size](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
-                        if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") ||
-                            !json[0]["balance"].IsUint64()) {
+                        if (!json.IsObject() || !json.HasMember("balances") ||
+                            !json["balances"].IsArray()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}",
                                                  addressesStr);
                         }
-
-                        auto balance = json[0]["balance"].GetUint64();
-                        for (auto i = 1; i < size; i++) {
-                            if (json[i].HasMember("balance") || json[i]["balance"].IsUint64()) {
-                                balance += json[i]["balance"].GetUint64();
+                        std::string strBalance;
+                        auto size = json["balances"].Size();
+                        //Find XRP balance
+                        for (int i = 0; i < size; i++) {
+                            if (json["balances"][i]["currency"] == "XRP") {
+                                strBalance = json["balances"][i]["value"].GetString();
+                                break;
                             }
                         }
-
-                        return std::make_shared<BigInt>((int64_t) balance);
+                        return std::make_shared<BigInt>(strBalance);
                     });
         }
 
@@ -94,11 +93,11 @@ namespace ledger {
         }
 
         Future<void *> LedgerApiRippleLikeBlockchainExplorer::startSession() {
-            return startLedgerApiSession();
+            return Future<void *>::successful(new std::string("", 0));
         }
 
         Future<Unit> LedgerApiRippleLikeBlockchainExplorer::killSession(void *session) {
-            return killLedgerApiSession(session);
+            return Future<Unit>::successful(unit);
         }
 
         Future<Bytes> LedgerApiRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
@@ -113,11 +112,43 @@ namespace ledger {
         LedgerApiRippleLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                                Option<std::string> fromBlockHash,
                                                                Option<void *> session) {
-            return getLedgerApiTransactions(addresses, fromBlockHash, session);
+            auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
+            std::string params;
+            std::unordered_map<std::string, std::string> headers;
+
+            if (!fromBlockHash.isEmpty()) {
+                if (params.size() > 0) {
+                    params = params + "&";
+                } else {
+                    params = params + "?";
+                }
+                params = params + "blockHash=" + fromBlockHash.getValue();
+            }
+            return _http->GET(fmt::format("/{}/accounts/{}/transactions{}", getExplorerVersion(), joinedAddresses, params), headers)
+                    .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
+                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
+                        if (result.isLeft()) {
+                            if (fromBlockHash.isEmpty()) {
+                                throw result.getLeft();
+                            } else {
+                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
+                            }
+                        } else {
+                            return result.getRight();
+                        }
+                    });
         }
 
         FuturePtr<Block> LedgerApiRippleLikeBlockchainExplorer::getCurrentBlock() const {
-            return getLedgerApiCurrentBlock();
+            return _http->GET(fmt::format("/{}/ledgers", getExplorerVersion()))
+                    .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
+                    .template mapPtr<Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<Block>>& result) {
+                        if (result.isLeft()) {
+                            throw result.getLeft();
+                        } else {
+                            return result.getRight();
+                        }
+                    });
         }
 
         FuturePtr<RippleLikeBlockchainExplorerTransaction>
