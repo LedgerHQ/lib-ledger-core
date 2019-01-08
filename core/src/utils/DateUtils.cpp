@@ -102,12 +102,11 @@ std::string ledger::core::DateUtils::formatDateFromJSON(const std::string &str) 
         auto hours = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
         auto minutes = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
         auto seconds = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
-        auto localTime = std::string(what[7].first, what[7].second);
         auto numMonth = MONTHS.at(month);
         if (numMonth.empty()) {
             throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Failed to get month {} from date {}", month, str);
         }
-        return fmt::format("{}-{}-{}T{}:{}:{}{}", year, numMonth, day, hours, minutes, seconds, localTime);
+        return fmt::format("{}-{}-{}T{}:{}:{}Z", year, numMonth, day, hours, minutes, seconds);
     } else {
         throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot format {} to date YYYY-MM-DDTHH:MM:SSZ", str);
     }

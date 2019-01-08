@@ -29,6 +29,7 @@
  */
 
 
+#include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
 
 #define PROXY_PARSE(method, ...)                                    \
@@ -41,11 +42,6 @@ namespace ledger {
     namespace core {
 
         bool RippleLikeTransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            _lastKey = std::string(str, length);
-
-            if (_lastKey == "meta" && _arrayDepth == 0) {
-                auto &top = _hierarchy.top();
-            }
             PROXY_PARSE(Key, str, length, copy) {
                 return true;
             }
@@ -55,15 +51,11 @@ namespace ledger {
             if (_arrayDepth == 0) {
                 _hierarchy.push(_lastKey);
             }
-            auto &currentObject = _hierarchy.top();
             return true;
         }
 
         bool RippleLikeTransactionParser::EndObject(rapidjson::SizeType memberCount) {
             auto &currentObject = _hierarchy.top();
-            if (_lastKey == "tx") {
-                return true;
-            }
             if (_arrayDepth == 0) {
                 _hierarchy.pop();
             }
@@ -130,7 +122,14 @@ namespace ledger {
                 BigInt value = BigInt::fromString(number);
                 if (_lastKey == "confirmations") {
                     _transaction->confirmations = value.toUint64();
+                } else if (_lastKey == "ledger_index") {
+                    RippleLikeBlockchainExplorer::Block block;
+                    BigInt valueBigInt = BigInt::fromString(number);
+                    block.height = valueBigInt.toUint64();
+                    block.currencyName = currencies::RIPPLE.name;
+                    _transaction->block = block;
                 }
+
                 return true;
             }
         }
@@ -151,8 +150,12 @@ namespace ledger {
                     if ( posZ == std::string::npos ) {
                         value = value + "Z";
                     }
-                    _transaction->receivedAt = DateUtils::fromJSON(value);
-                } else if (_lastKey == "Account") {
+                    auto date = DateUtils::fromJSON(value);
+                    _transaction->receivedAt = date;
+                    if (_transaction->block.hasValue()) {
+                        _transaction->block.getValue().time = date;
+                    }
+                } else if (_lastKey == "Account" && currentObject == "tx") {
                     _transaction->sender = value;
                 } else if (_lastKey == "Destination") {
                     _transaction->receiver = value;

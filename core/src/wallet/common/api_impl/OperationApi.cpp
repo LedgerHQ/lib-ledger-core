@@ -93,6 +93,8 @@ namespace ledger {
                 return _backend.bitcoinTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::ETHEREUM) {
                 return _backend.ethereumTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::RIPPLE) {
+                return _backend.rippleTransaction.nonEmpty();
             }
             return false;
         }

@@ -83,3 +83,9 @@ RippleLikeAccount = interface +c {
 	broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
 	buildTransaction(): RippleLikeTransactionBuilder;
 }
+
+RippleConfigurationDefaults = interface +c {
+	const RIPPLE_DEFAULT_API_ENDPOINT: string = "https://data.ripple.com";
+	const RIPPLE_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.ripple.com";
+	const RIPPLE_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.ripple.com";
+}

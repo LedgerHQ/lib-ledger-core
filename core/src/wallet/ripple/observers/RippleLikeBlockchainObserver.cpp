@@ -31,6 +31,8 @@
 
 #include "RippleLikeBlockchainObserver.h"
 #include <api/ConfigurationDefaults.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
+
 #include <wallet/ripple/RippleLikeAccount.h>
 #include <math/Fibonacci.h>
 #include <utils/JSONUtils.h>
@@ -61,10 +63,10 @@ namespace ledger {
                 const std::shared_ptr<spdlog::logger> &logger,
                 const api::Currency &currency) :
                 RippleLikeBlockchainObserver(context, configuration, logger, currency,
-                                             {api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT}) {
+                                             {api::RippleConfigurationDefaults::RIPPLE_OBSERVER_WS_ENDPOINT_S2}) {
             _client = client;
             auto baseUrl = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
-                    .value_or(api::ConfigurationDefaults::BLOCKCHAIN_OBSERVER_WS_ENDPOINT);
+                    .value_or(api::RippleConfigurationDefaults::RIPPLE_OBSERVER_WS_ENDPOINT_S2);
             _url = fmt::format(baseUrl, getCurrency().rippleLikeNetworkParameters.value().Identifier);
         }
 

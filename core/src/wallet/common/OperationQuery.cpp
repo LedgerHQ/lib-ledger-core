@@ -36,6 +36,7 @@
 #include <database/soci-number.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
+#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -197,7 +198,11 @@ namespace ledger {
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation)");
+            RippleLikeBlockchainExplorerTransaction tx;
+            operation.getBackend().rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM ripple_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            RippleLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().rippleTransaction.getValue());
         }
 
         void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {

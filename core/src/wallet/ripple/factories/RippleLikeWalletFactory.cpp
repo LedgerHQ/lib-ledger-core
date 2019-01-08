@@ -43,6 +43,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/ripple/synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
+#include <api/RippleConfigurationDefaults.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -131,7 +132,7 @@ namespace ledger {
                 auto http = pool->getHttpClient(
                         configuration->getString(
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                        ).value_or("https://data.ripple.com")
+                        ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_API_ENDPOINT)
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();

@@ -160,3 +160,5 @@ add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.XpubSyn
 
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateStandardWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateStandardWithOneOutput")
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.ParseUnsignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.ParseUnsignedRawTransaction")
+
+add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.MediumXpubSynchronization")

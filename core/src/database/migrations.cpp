@@ -379,6 +379,7 @@ namespace ledger {
             sql << "CREATE TABLE ripple_transactions("
                     "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "hash VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
                     "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                     "time VARCHAR(255) NOT NULL,"
                     "sender VARCHAR(255) NOT NULL,"

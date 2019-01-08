@@ -46,8 +46,8 @@ namespace ledger {
                                                                        RippleLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
-                    " tx.sender, tx.receiver, tx.confirmations, "
-                    "block.hash, block.height, block.time, block.currency_name "
+                    " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
+                    "block.height, block.hash, block.time, block.currency_name "
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "WHERE tx.hash = :hash", use(hash));
@@ -65,17 +65,17 @@ namespace ledger {
                                                                      RippleLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
             tx.value = BigInt::fromHex(row.get<std::string>(1));
-            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
+            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
+            tx.sender = row.get<std::string>(3);
+            tx.receiver = row.get<std::string>(4);
             tx.fees = BigInt::fromHex(row.get<std::string>(5));
-            tx.receiver = row.get<std::string>(8);
-            tx.sender = row.get<std::string>(9);
-            tx.confirmations = get_number<uint64_t>(row, 10);
-            if (row.get_indicator(12) != i_null) {
+            tx.confirmations = get_number<uint64_t>(row, 6);
+            if (row.get_indicator(7) != i_null) {
                 RippleLikeBlockchainExplorer::Block block;
-                block.hash = row.get<std::string>(12);
-                block.height = get_number<uint64_t>(row, 13);
-                block.time = row.get<std::chrono::system_clock::time_point>(14);
-                block.currencyName = row.get<std::string>(15);
+                block.height = get_number<uint64_t>(row, 7);
+                block.hash = row.get<std::string>(8);
+                block.time = row.get<std::chrono::system_clock::time_point>(9);
+                block.currencyName = row.get<std::string>(10);
                 tx.block = block;
             }
 

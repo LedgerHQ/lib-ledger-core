@@ -36,6 +36,7 @@
 #include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
 #include <iostream>
+
 using namespace std;
 
 class RippleLikeWalletSynchronization : public BaseFixture {
@@ -46,7 +47,8 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+                                 "44'/<coin_type>'/<account>'/<node>/<address>");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -55,41 +57,42 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
-        auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-            if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                auto uid = event->getPayload()->getString(
-                        api::Account::EV_NEW_OP_UID).value();
-                EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-            }
-        });
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                    auto uid = event->getPayload()->getString(
+                            api::Account::EV_NEW_OP_UID).value();
+                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                }
+            });
 
-        pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
-        receiver.reset();
-        receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-            fmt::print("Received event {}\n", api::to_string(event->getCode()));
-            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-                return;
-            EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-            EXPECT_EQ(event->getCode(),
-                      api::EventCode::SYNCHRONIZATION_SUCCEED);
+            receiver.reset();
+            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_EQ(event->getCode(),
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-            auto balance = wait(account->getBalance());
-            std::cout << "Balance: " << balance->toString() << std::endl;
-            auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
-            dispatcher->stop();
-        });
+                auto balance = wait(account->getBalance());
+                std::cout << "Balance: " << balance->toString() << std::endl;
+                auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+                dispatcher->stop();
+            });
 
-        auto restoreKey = account->getRestoreKey();
-        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto restoreKey = account->getRestoreKey();
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
-        dispatcher->waitUntilStopped();
+            dispatcher->waitUntilStopped();
 
-        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-        std::cout << "Ops: " << ops.size() << std::endl;
+            auto ops = wait(
+                    std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            std::cout << "Ops: " << ops.size() << std::endl;
 
-        auto block = wait(account->getLastBlock());
-        auto blockHash = block.blockHash;
+            auto block = wait(account->getLastBlock());
+            auto blockHash = block.blockHash;
 
         }
     }
