@@ -53,9 +53,6 @@ namespace ledger {
                 virtual ~UTXOSource() = default;
 
                 /// Get the list of UTXOs from this source.
-                ///
-                /// The set of string is a list of all known addresses (both input and outputs) that
-                /// were used in past transactions.
                 virtual Future<UTXOSourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) = 0;
             };
         }

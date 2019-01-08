@@ -77,16 +77,16 @@ namespace ledger {
                             self->_lastHeight = currentHeight;
                         });
                     }
-                    
+
                     // copy the UTXO map and move it in our list
                     auto utxos = self->_cache;
 
                     // create the resulting UTXO source list
-                    auto sourceList = UTXOSourceList(std::move(utxos), std::move(spent));
+                    auto sourceList = UTXOSourceList(std::move(utxos), std::move(spent), currentHeight);
                     return sourceList;
                 } else {
                     // no data, just return nothing
-                    return UTXOSourceList({}, {});
+                    return UTXOSourceList({}, {}, 0);
                 }
             });
         }
