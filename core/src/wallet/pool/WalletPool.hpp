@@ -100,39 +100,31 @@ namespace ledger {
             const std::vector<api::Currency>& getCurrencies() const;
             Future<Unit> addCurrency(const api::Currency& currency);
             Future<Unit> removeCurrency(const std::string& currencyName);
-            static std::shared_ptr<WalletPool> newInstance(
-                const std::string &name,
-                const Option<std::string> &password,
-                const std::shared_ptr<api::HttpClient> &httpClient,
-                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                const std::shared_ptr<api::PathResolver> &pathResolver,
-                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration,
-                bool disableLogging = false
-            );
+            static std::shared_ptr<WalletPool> newInstance(const std::string &name,
+                                                           const Option<std::string> &password,
+                                                           const std::shared_ptr<api::HttpClient> &httpClient,
+                                                           const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                                                           const std::shared_ptr<api::PathResolver> &pathResolver,
+                                                           const std::shared_ptr<api::LogPrinter> &logPrinter,
+                                                           const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                                                           const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                                                           const std::shared_ptr<api::DatabaseBackend> &backend,
+                                                           const std::shared_ptr<api::DynamicObject>& configuration);
 
             ~WalletPool();
 
         private:
-            WalletPool(
-                const std::string &name,
-                const Option<std::string> &password,
-                const std::shared_ptr<api::HttpClient> &httpClient,
-                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                const std::shared_ptr<api::PathResolver> &pathResolver,
-                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration,
-                bool disableLogging = false
-            );
-
+            WalletPool(const std::string &name,
+                       const Option<std::string> &password,
+                       const std::shared_ptr<api::HttpClient> &httpClient,
+                       const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                       const std::shared_ptr<api::PathResolver> &pathResolver,
+                       const std::shared_ptr<api::LogPrinter> &logPrinter,
+                       const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                       const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                       const std::shared_ptr<api::DatabaseBackend> &backend,
+                       const std::shared_ptr<api::DynamicObject>& configuration);
             void initializeCurrencies();
-
             void createFactory(const api::Currency& currency);
 
             void initializeFactories();
