@@ -146,7 +146,8 @@ namespace ledger {
                     throw spdlog::spdlog_ex("rotating_file_sink: failed renaming " + spdlog::details::os::filename_to_str(src) + " to " + spdlog::details::os::filename_to_str(target), errno);
                 }
             }
-            _file_helper.reopen(true);
+
+            _file_helper.reopen(false);
         }
     }
 }
