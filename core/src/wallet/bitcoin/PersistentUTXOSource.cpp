@@ -16,9 +16,10 @@ namespace ledger {
 
                 return _inMemorySource->getUTXOs(ctx).template flatMap<UTXOSourceList>(ctx, [=](const UTXOSourceList& sourceList) {
                     return _db->GetLastBlock().template map<UTXOSourceList>(ctx, [=](const Option<std::pair<uint32_t, db::ReadOnlyBlockchainDB::RawBlock>>& lastBlock) {
+                        auto inMemHeight = sourceList.height;
+
                         if (lastBlock.hasValue()) {
                             auto dbHeight = std::get<0>(*lastBlock);
-                            auto inMemHeight = sourceList.height;
 
                             if (dbHeight < inMemHeight) {
                                 // the in-memory source has advanced; we must persist the new state
