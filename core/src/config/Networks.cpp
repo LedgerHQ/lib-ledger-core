@@ -60,6 +60,16 @@ namespace ledger {
                 );
             }
 
+            RippleLikeNetworkParameters Networks::ripple() {
+                return RippleLikeNetworkParameters(
+                        "xrp",
+                        "XRP signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {},
+                        0
+                );
+            }
+
         }
     }
 }

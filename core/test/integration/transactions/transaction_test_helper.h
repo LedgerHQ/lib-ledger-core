@@ -40,6 +40,9 @@
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
+#include <wallet/ripple/RippleLikeWallet.h>
+#include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
 
 
@@ -53,6 +56,9 @@ struct TransactionTestData {
                                                        const std::shared_ptr<AbstractWallet>& )> inflate_btc;
     std::function<std::shared_ptr<EthereumLikeAccount> (const std::shared_ptr<WalletPool>&,
                                                        const std::shared_ptr<AbstractWallet>& )> inflate_eth;
+
+    std::function<std::shared_ptr<RippleLikeAccount> (const std::shared_ptr<WalletPool>&,
+                                                        const std::shared_ptr<AbstractWallet>& )> inflate_xrp;
 };
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
@@ -118,6 +124,41 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
     std::shared_ptr<EthereumLikeAccount> account;
+    api::Currency currency;
+    TransactionTestData testData;
+
+protected:
+    virtual void SetUpConfig() = 0;
+};
+
+struct RippleMakeBaseTransaction : public BaseFixture {
+
+    void SetUp() override {
+        BaseFixture::SetUp();
+        SetUpConfig();
+        recreate();
+    }
+
+    void recreate() {
+        pool = newDefaultPool();
+        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account = testData.inflate_xrp(pool, wallet);
+        currency = wallet->getCurrency();
+    }
+
+    void TearDown() override {
+        BaseFixture::TearDown();
+        pool = nullptr;
+        wallet = nullptr;
+        account = nullptr;
+    }
+
+    std::shared_ptr<RippleLikeTransactionBuilder> tx_builder() {
+        return std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+    }
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<RippleLikeAccount> account;
     api::Currency currency;
     TransactionTestData testData;
 

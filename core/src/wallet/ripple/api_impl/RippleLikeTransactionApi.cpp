@@ -146,7 +146,7 @@ namespace ledger {
 
         RippleLikeTransactionApi & RippleLikeTransactionApi::setValue(const std::shared_ptr<BigInt>& value) {
             if (!value) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "RippleLikeTransactionApi::setValuet: Invalid Value");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "RippleLikeTransactionApi::setValue: Invalid Value");
             }
 
             _value = std::make_shared<Amount>(_currency, 0, *value);

@@ -359,6 +359,29 @@ namespace ledger {
 
         }
 
+        template <> void rollback<5>(soci::session& sql) {
+            // ERC20 tokens
+            sql << "DROP TABLE erc20_tokens";
+
+            // ERC20 operations
+            sql << "DROP TABLE erc20_operations";
+
+            // ERC20 accounts
+            sql << "DROP TABLE erc20_accounts";
+
+            // ETH operations
+            sql << "DROP TABLE ethereum_operations";
+
+            // ETH transactions
+            sql << "DROP TABLE ethereum_transactions";
+
+            // ETH accounts
+            sql << "DROP TABLE ethereum_accounts";
+
+            // ETH currencies
+            sql << "DROP TABLE ethereum_currencies";
+        }
+
         template <> void migrate<6>(soci::session& sql) {
 
             sql << "CREATE TABLE ripple_currencies("
@@ -395,27 +418,14 @@ namespace ledger {
                     ")";
         }
         
-        template <> void rollback<5>(soci::session& sql) {
-            // ERC20 tokens
-            sql << "DROP TABLE erc20_tokens";
+        template <> void rollback<6>(soci::session& sql) {
+            sql << "DROP TABLE ripple_currencies";
 
-            // ERC20 operations
-            sql << "DROP TABLE erc20_operations";
+            sql << "DROP TABLE ripple_accounts";
 
-            // ERC20 accounts
-            sql << "DROP TABLE erc20_accounts";
+            sql << "DROP TABLE ripple_transactions";
 
-            // ETH operations
-            sql << "DROP TABLE ethereum_operations";
-
-            // ETH transactions
-            sql << "DROP TABLE ethereum_transactions";
-
-            // ETH accounts
-            sql << "DROP TABLE ethereum_accounts";
-
-            // ETH currencies
-            sql << "DROP TABLE ethereum_currencies";
+            sql << "DROP TABLE ripple_operations";
         }
     }
 }

@@ -158,7 +158,10 @@ add_test (NAME ledger-core-integration-WalletTests.CreateAccountBug COMMAND ledg
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.MediumXpubSynchronization")
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.XpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.XpubSynchronization")
 
-add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateStandardWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateStandardWithOneOutput")
+add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateTx")
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.ParseUnsignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.ParseUnsignedRawTransaction")
 
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.MediumXpubSynchronization")
+
+add_test (NAME ledger-core-integration-RippleMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.CreateTx")
+add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseUnsignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseUnsignedRawTransaction")

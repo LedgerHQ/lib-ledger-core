@@ -127,7 +127,6 @@ namespace ledger {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
-            bodyRequest.pushParameter("ledger_index", std::string("validated"));
             auto requestBody = bodyRequest.getString();
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
                     .template json<TransactionsBulk, Exception>(
