@@ -30,7 +30,7 @@ namespace ledger {
                             // no block in the DB so far; persist the source list
                             auto block = std::vector<uint8_t>();
                             serialization::save(sourceList, block);
-                            self->_db->AddBlock(self->_inMemorySource->currentSynchronizedHeight(), block);
+                            self->_db->AddBlock(inMemHeight, block);
                         }
 
                         return sourceList;
