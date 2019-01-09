@@ -78,8 +78,8 @@ void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api:
                                         const std::string &dbName,
                                         const std::string &password,
                                         soci::session &session) {
-    auto paramaters = fmt::format("dbname=\"{}\" ", resolver->resolveDatabasePath(dbName)) + fmt::format("key=\"{}\" ", password);
-    session.open(*soci::factory_sqlite3(), paramaters);
+    auto parameters = fmt::format("dbname=\"{}\" ", resolver->resolveDatabasePath(dbName)) + fmt::format("key=\"{}\" ", password);
+    session.open(*soci::factory_sqlite3(), parameters);
     session << "PRAGMA foreign_keys = ON";
 }
 
