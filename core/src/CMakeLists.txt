@@ -141,7 +141,7 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 if (SQLCIPHER)
     #Sqlcipher
     add_dependencies(ledger-core-interface SQLCipher)
-    target_link_libraries(ledger-core-interface "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
     link_directories("${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib")
     if (UNIX AND NOT APPLE AND NOT ANDROID)
         target_link_libraries(ledger-core ${CMAKE_DL_LIBS})
