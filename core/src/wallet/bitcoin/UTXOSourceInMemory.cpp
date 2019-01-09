@@ -23,10 +23,10 @@ namespace ledger {
             auto self = shared_from_this();
 
             // get the last block height
-            return _blockDB->getLastBlock().map<UTXOSourceList>(ctx, [&](const Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>& lastBlockPair) {
+            return _blockDB->getLastBlockHeight().map<UTXOSourceList>(ctx, [&](const Option<uint32_t>& lastBlockHeight) {
                 // compute the list of blocks we need to retreive
-                if (lastBlockPair) {
-                    auto currentHeight = lastBlockPair->first;
+                if (lastBlockHeight) {
+                    auto currentHeight = lastBlockHeight;
                     auto spent = std::set<UTXOKey>();
 
                     if (currentHeight > self->_lastHeight) {
