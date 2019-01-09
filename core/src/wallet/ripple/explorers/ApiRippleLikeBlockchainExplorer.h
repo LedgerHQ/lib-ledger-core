@@ -1,6 +1,6 @@
 /*
  *
- * LedgerApiRippleLikeBlockchainExplorer
+ * ApiRippleLikeBlockchainExplorer
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef LEDGER_CORE_LEDGERAPIRIPPLELIKEBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_LEDGERAPIRIPPLELIKEBLOCKCHAINEXPLORER_H
+#ifndef LEDGER_CORE_APIRIPPLELIKEBLOCKCHAINEXPLORER_H
+#define LEDGER_CORE_APIRIPPLELIKEBLOCKCHAINEXPLORER_H
 
 
 #include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
@@ -44,12 +44,12 @@ namespace ledger {
     namespace core {
         using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<RippleLikeBlockchainExplorerTransaction, RippleLikeBlockchainExplorer::TransactionsBulk, RippleLikeTransactionsParser, RippleLikeTransactionsBulkParser, RippleLikeBlockParser, api::RippleLikeNetworkParameters>;
 
-        class LedgerApiRippleLikeBlockchainExplorer : public RippleLikeBlockchainExplorer,
+        class ApiRippleLikeBlockchainExplorer : public RippleLikeBlockchainExplorer,
                                                       public LedgerApiBlockchainExplorer,
                                                       public DedicatedContext,
-                                                      public std::enable_shared_from_this<LedgerApiRippleLikeBlockchainExplorer> {
+                                                      public std::enable_shared_from_this<ApiRippleLikeBlockchainExplorer> {
         public:
-            LedgerApiRippleLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+            ApiRippleLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                                   const std::shared_ptr<HttpClient> &http,
                                                   const api::RippleLikeNetworkParameters &parameters,
                                                   const std::shared_ptr<api::DynamicObject> &configuration);
@@ -93,4 +93,4 @@ namespace ledger {
 }
 
 
-#endif //LEDGER_CORE_LEDGERAPIRIPPLELIKEBLOCKCHAINEXPLORER_H
+#endif //LEDGER_CORE_APIRIPPLELIKEBLOCKCHAINEXPLORER_H

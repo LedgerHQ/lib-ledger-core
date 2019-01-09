@@ -21,9 +21,15 @@ public:
 
     static LIBCORE_EXPORT std::string const RIPPLE_DEFAULT_API_ENDPOINT;
 
+    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S2;
+
+    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S3;
+
     static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S2;
 
     static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S3;
+
+    static LIBCORE_EXPORT std::string const RIPPLE_DEFAULT_PORT;
 };
 
 } } }  // namespace ledger::core::api

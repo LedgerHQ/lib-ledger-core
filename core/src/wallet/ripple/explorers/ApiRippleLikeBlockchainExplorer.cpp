@@ -1,6 +1,6 @@
 /*
  *
- * LedgerApiRippleLikeBlockchainExplorer
+ * ApiRippleLikeBlockchainExplorer
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -29,12 +29,12 @@
  */
 
 
-#include "LedgerApiRippleLikeBlockchainExplorer.h"
+#include "ApiRippleLikeBlockchainExplorer.h"
 
 namespace ledger {
     namespace core {
 
-        LedgerApiRippleLikeBlockchainExplorer::LedgerApiRippleLikeBlockchainExplorer(
+        ApiRippleLikeBlockchainExplorer::ApiRippleLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http,
                 const api::RippleLikeNetworkParameters &parameters,
@@ -47,11 +47,11 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
-        LedgerApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
+        ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
 
             //TODO: multiple accounts balances ?
             if (addresses.size() != 1) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "LedgerApiRippleLikeBlockchainExplorer::getBalance can called only with one address");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can called only with one address");
             }
 
             std::string addressesStr = addresses[0]->toBase58();
@@ -79,7 +79,7 @@ namespace ledger {
         }
 
         Future<String>
-        LedgerApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
             std::stringstream body;
             body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
             auto bodyString = body.str();
@@ -92,24 +92,24 @@ namespace ledger {
             });
         }
 
-        Future<void *> LedgerApiRippleLikeBlockchainExplorer::startSession() {
+        Future<void *> ApiRippleLikeBlockchainExplorer::startSession() {
             return Future<void *>::successful(new std::string("", 0));
         }
 
-        Future<Unit> LedgerApiRippleLikeBlockchainExplorer::killSession(void *session) {
+        Future<Unit> ApiRippleLikeBlockchainExplorer::killSession(void *session) {
             return Future<Unit>::successful(unit);
         }
 
-        Future<Bytes> LedgerApiRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
+        Future<Bytes> ApiRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             return getLedgerApiRawTransaction(transactionHash);
         }
 
-        Future<String> LedgerApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+        Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
             return pushLedgerApiTransaction(transaction);
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
-        LedgerApiRippleLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
+        ApiRippleLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                                Option<std::string> fromBlockHash,
                                                                Option<void *> session) {
             auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
@@ -139,7 +139,7 @@ namespace ledger {
                     });
         }
 
-        FuturePtr<Block> LedgerApiRippleLikeBlockchainExplorer::getCurrentBlock() const {
+        FuturePtr<Block> ApiRippleLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET(fmt::format("/{}/ledgers", getExplorerVersion()))
                     .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
                     .template mapPtr<Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<Block>>& result) {
@@ -152,23 +152,23 @@ namespace ledger {
         }
 
         FuturePtr<RippleLikeBlockchainExplorerTransaction>
-        LedgerApiRippleLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) const {
+        ApiRippleLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) const {
             return getLedgerApiTransactionByHash(transactionHash);
         }
 
-        Future<int64_t> LedgerApiRippleLikeBlockchainExplorer::getTimestamp() const {
+        Future<int64_t> ApiRippleLikeBlockchainExplorer::getTimestamp() const {
             return getLedgerApiTimestamp();
         }
 
-        std::shared_ptr<api::ExecutionContext> LedgerApiRippleLikeBlockchainExplorer::getExplorerContext() const {
+        std::shared_ptr<api::ExecutionContext> ApiRippleLikeBlockchainExplorer::getExplorerContext() const {
             return _executionContext;
         }
 
-        api::RippleLikeNetworkParameters LedgerApiRippleLikeBlockchainExplorer::getNetworkParameters() const {
+        api::RippleLikeNetworkParameters ApiRippleLikeBlockchainExplorer::getNetworkParameters() const {
             return _parameters;
         }
 
-        std::string LedgerApiRippleLikeBlockchainExplorer::getExplorerVersion() const {
+        std::string ApiRippleLikeBlockchainExplorer::getExplorerVersion() const {
             return _explorerVersion;
         }
     }
