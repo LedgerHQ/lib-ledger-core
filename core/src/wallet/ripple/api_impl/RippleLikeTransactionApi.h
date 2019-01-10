@@ -54,12 +54,16 @@ namespace ledger {
             std::shared_ptr<api::Amount> getValue() override;
             std::vector<uint8_t> serialize() override;
             std::chrono::system_clock::time_point getDate() override;
-            std::shared_ptr<api::RippleLikeBlock> getBlock() override;
-            void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
+            std::shared_ptr<api::BigInt> getSequence() override;
+            std::shared_ptr<api::BigInt> getLedgerSequence() override;
+            void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
             void setDERSignature(const std::vector<uint8_t> & signature) override;
             RippleLikeTransactionApi & setFees(const std::shared_ptr<BigInt>& fees);
             RippleLikeTransactionApi & setValue(const std::shared_ptr<BigInt>& value);
-            RippleLikeTransactionApi & setReceiver(const std::string &receiver);
+            RippleLikeTransactionApi & setSequence(const BigInt& sequence);
+            RippleLikeTransactionApi & setLedgerSequence(const BigInt& ledgerSequence);
+            RippleLikeTransactionApi & setSender(const std::shared_ptr<api::RippleLikeAddress> &sender);
+            RippleLikeTransactionApi & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<RippleLikeBlockApi> _block;
@@ -67,9 +71,10 @@ namespace ledger {
             api::Currency _currency;
             std::shared_ptr<api::Amount> _fees;
             std::shared_ptr<api::Amount> _value;
+            std::shared_ptr<api::BigInt> _sequence;
+            std::shared_ptr<api::BigInt> _ledgerSequence;
             std::shared_ptr<api::RippleLikeAddress> _receiver;
             std::shared_ptr<api::RippleLikeAddress> _sender;
-            std::vector<uint8_t> _vSignature;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
         };

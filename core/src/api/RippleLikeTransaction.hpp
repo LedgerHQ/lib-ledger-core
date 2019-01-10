@@ -4,7 +4,6 @@
 #ifndef DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 #define DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 
-#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -14,10 +13,14 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BigInt;
 class RippleLikeAddress;
-class RippleLikeBlock;
 
-/**Class representing a Ripple transaction */
+/**
+ * TODO: to be more accurate, all RippleLikeBlock classes should be renamed as RippleLikeLedger,
+ * since there is an analogy between block and ledger concepts it's ok for the moment ...
+ *Class representing a Ripple transaction
+ */
 class RippleLikeTransaction {
 public:
     virtual ~RippleLikeTransaction() {}
@@ -41,7 +44,7 @@ public:
     virtual std::vector<uint8_t> serialize() = 0;
 
     /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx */
-    virtual void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
+    virtual void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
 
     virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
 
@@ -51,8 +54,15 @@ public:
      */
     virtual std::chrono::system_clock::time_point getDate() = 0;
 
-    /** Get block to which transaction belongs (was mined in) */
-    virtual std::shared_ptr<RippleLikeBlock> getBlock() = 0;
+    /**
+     * Get block to which transaction belongs (was mined in)
+     *getBlock(): optional<RippleLikeBlock>;
+     * Get sequence of an account when tx was built (number of sent transactions from an account)
+     */
+    virtual std::shared_ptr<BigInt> getSequence() = 0;
+
+    /** Get Ledger's sequence in which the tx was included */
+    virtual std::shared_ptr<BigInt> getLedgerSequence() = 0;
 };
 
 } } }  // namespace ledger::core::api

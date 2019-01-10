@@ -3,9 +3,9 @@
 
 #include "RippleLikeTransaction.hpp"  // my header
 #include "Amount.hpp"
+#include "BigInt.hpp"
 #include "Marshal.hpp"
 #include "RippleLikeAddress.hpp"
-#include "RippleLikeBlock.hpp"
 
 namespace djinni_generated {
 
@@ -82,13 +82,12 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeTransaction_00024Cpp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_vSignature, jbyteArray j_rSignature, jbyteArray j_sSignature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_rSignature, jbyteArray j_sSignature)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
-        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_vSignature),
-                          ::djinni::Binary::toCpp(jniEnv, j_rSignature),
+        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_rSignature),
                           ::djinni::Binary::toCpp(jniEnv, j_sSignature));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
@@ -112,13 +111,23 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppPro
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1getBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
-        auto r = ref->getBlock();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeBlock>::fromCpp(jniEnv, r));
+        auto r = ref->getSequence();
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1getLedgerSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
+        auto r = ref->getLedgerSequence();
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

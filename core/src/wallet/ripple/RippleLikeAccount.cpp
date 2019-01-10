@@ -303,7 +303,7 @@ namespace ledger {
             _explorer->getCurrentBlock().onComplete(getContext(),
                                                     [self](const TryPtr<RippleLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
-                                                            self->_currentBlockHeight = block.getValue()->height;
+                                                            self->_currentLedgerSequence = block.getValue()->height;
                                                         }
                                                     });
 
@@ -379,10 +379,16 @@ namespace ledger {
 
             auto buildFunction = [self](const RippleLikeTransactionBuildRequest &request,
                                         const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::RippleLikeTransaction>> {
+                auto currency = self->getWallet()->getCurrency();
                 auto tx = std::make_shared<RippleLikeTransactionApi>(self->getWallet()->getCurrency());
                 tx->setValue(request.value);
                 tx->setFees(request.fees);
-                tx->setReceiver(request.toAddress);
+                auto address = self->getKeychain()->getAddress();
+                auto accountAddress = std::dynamic_pointer_cast<RippleLikeAddress>(address);
+                tx->setSender(accountAddress);
+                tx->setReceiver(RippleLikeAddress::fromBase58(request.toAddress, currency));
+                tx->setSequence(request.sequence);
+                tx->setLedgerSequence(request.ledgerSequence);
                 return Future<std::shared_ptr<api::RippleLikeTransaction>>::successful(tx);
             };
 

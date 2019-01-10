@@ -53,8 +53,11 @@ namespace ledger {
                 wipe = false;
             };
             std::string toAddress;
+            std::string fromAddress;
             std::shared_ptr<BigInt> value;
             std::shared_ptr<BigInt> fees;
+            BigInt sequence;
+            BigInt ledgerSequence;
             bool wipe;
         };
 
