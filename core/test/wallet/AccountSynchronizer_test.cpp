@@ -109,7 +109,7 @@ TEST_F(AccountSyncTest, NoStableBlocksInBlockchain) {
     {
         BL{ 1, "block 1",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } }
     };
     setBlockchain(bch);

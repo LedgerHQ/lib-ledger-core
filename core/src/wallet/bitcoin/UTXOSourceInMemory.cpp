@@ -26,7 +26,7 @@ namespace ledger {
             return _blockDB->getLastBlockHeight().flatMap<UTXOSourceList>(ctx, [=](const Option<uint32_t>& lastBlockHeight) {
                 // compute the list of blocks we need to retreive
                 if (lastBlockHeight) {
-                    auto currentHeight = lastBlockHeight.getValue();
+                    auto currentHeight = lastBlockHeight.getValue() + 1;
 
                     if (currentHeight > self->_lastHeight) {
                         // there are blocks we don’t know about
