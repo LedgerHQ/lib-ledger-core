@@ -47,12 +47,12 @@ TEST_F(UTXOSourceInMemoryFixture, NoInitialUTXO) {
 // Test that the algorithm that prunes UTXO is working properly.
 TEST_F(UTXOSourceInMemoryFixture, PruneUsedUTXO) {
     // create a block that contains a single transaction
-    EXPECT_CALL(*_keychainRegistry, containsAddress(_)).WillOnce(Return(true));
+    EXPECT_CALL(*_keychainRegistry, containsAddress(_)).WillRepeatedly(Return(true));
 
     _fakeDB->addBlock(17, toFilledBlock(
         BL{ 17, "block 17",
             {
-                TR{ { "X" }, { { "0", 10000 } } }
+                TR{ { { "X", 0 } }, { { "0", 10000 } } }
             }
         }
     ));
@@ -60,25 +60,28 @@ TEST_F(UTXOSourceInMemoryFixture, PruneUsedUTXO) {
     auto future = _source->getUTXOs(_ctx);
     _ctx->wait();
 
-    //auto sourceList = getFutureResult(future);
-    //std::map<UTXOKey, UTXOValue> available = { { std::make_pair("17", 0), UTXOValue(BigInt(1000), "0") } };
-    //EXPECT_EQ(sourceList.available, available);
-    //EXPECT_EQ(sourceList.spent, std::set<UTXOKey>());
+    auto sourceList = getFutureResult(future);
+    std::map<UTXOKey, UTXOValue> available = { { std::make_pair("block 17TR{X,}->{0,}", 0), UTXOValue(BigInt(10000), "0") } };
+    std::set<UTXOKey> spent = { { "X", 0 } };
+    EXPECT_EQ(sourceList.available, available);
+    EXPECT_EQ(sourceList.spent, spent);
 
-    //// create a transaction that consumes the previous output
-    //_blocksDB->addBlock(18, toFilledBlock(
-    //    BL{ 18, "block 2",
-    //        {
-    //            TR{ { "0" }, { { "1", 3141592 } } }
-    //        }
-    //    }
-    //));
+    // create a transaction that consumes the previous output
+    _blocksDB->addBlock(18, toFilledBlock(
+        BL{ 18, "block 2",
+            {
+                TR{ { { "block 17TR{X,}->{0,}", 0 } }, { { "1", 3141592 } } }
+            }
+        }
+    ));
 
-    //auto future2 = _source->getUTXOs(_ctx);
-    //_ctx->wait();
+    auto future2 = _source->getUTXOs(_ctx);
+    _ctx->wait();
 
-    //auto sourceList2 = getFutureResult(future);
-    //std::map<UTXOKey, UTXOValue> available2 = { { std::make_pair("18", 0), UTXOValue(BigInt(3141592), "1") } };
-    //EXPECT_EQ(sourceList2.available, available2); // UTXO consumed
-    //EXPECT_EQ(sourceList2.spent, std::set<UTXOKey>());
+    auto sourceList2 = getFutureResult(future2);
+    std::map<UTXOKey, UTXOValue> available2 = { { std::make_pair("block 2TR{block 17TR{X,}->{0,},}->{1,}", 0), UTXOValue(BigInt(3141592), "1") } };
+    std::set<UTXOKey> spent2 = { { "X", 0 } };
+
+    EXPECT_EQ(sourceList2.available, available2); // UTXO consumed
+    EXPECT_EQ(sourceList2.spent, spent2);
 }

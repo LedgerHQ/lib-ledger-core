@@ -61,22 +61,43 @@ namespace ledger {
 
             BitcoinLikeNetwork::Transaction toTran(const std::string& blockHash, const TR& tr) {
                 BitcoinLikeNetwork::Transaction tran;
+
                 tran.hash = blockHash + "TR{";
+
                 for (auto& in : tr.inputs) {
                     BitcoinLikeNetwork::Input input;
-                    input.address = in;
+                    input.address = in.first;
+                    input.index = in.second;
+                    input.previousTxHash = in.first;
+                    input.previousTxOutputIndex = in.second;
+
                     tran.inputs.push_back(input);
-                    tran.hash += in + ",";
+                    tran.hash += in.first + ",";
                 }
+
                 tran.hash += "}->{";
+
+                uint32_t output_index = 0;
                 for (auto& out : tr.outputs) {
                     BitcoinLikeNetwork::Output output;
+
                     output.address = out.first;
                     output.value = BigInt(out.second);
+                    output.index = output_index;
+
                     tran.outputs.push_back(output);
                     tran.hash += out.first + ",";
+
+                    output_index++;
                 }
+
                 tran.hash += "}";
+
+                // set the transaction hash for all outputs
+                for (auto& out : tran.outputs) {
+                    out.transactionHash = tran.hash;
+                }
+
                 return tran;
             }
 
@@ -205,7 +226,7 @@ namespace ledger {
                     (tran.outputs.size() != tr.outputs.size()))
                     return false;
                 for (int j = 0; j < tran.inputs.size(); ++j) {
-                    if (tran.inputs[j].address != tr.inputs[j])
+                    if (tran.inputs[j].address != tr.inputs[j].first)
                         return false;
                 }
                 for (int j = 0; j < tran.outputs.size(); ++j) {
