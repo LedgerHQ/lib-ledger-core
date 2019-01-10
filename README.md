@@ -78,3 +78,10 @@ npm i
 ```
 node ledger-core-samples/nodejs/tests/wallet-pool-test.js
 ```
+
+## Build library on docker
+
+You can build the core library or debug it from a docker image:
+
+1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
+2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`

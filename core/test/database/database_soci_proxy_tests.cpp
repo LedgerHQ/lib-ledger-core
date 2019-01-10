@@ -53,7 +53,7 @@ struct Item {
 struct People {
     int id;
     std::string name;
-    int64_t age;
+    long long age;
     double grade;
     std::vector<uint8_t> picture;
     std::list<Item> items;
@@ -256,7 +256,7 @@ TEST_F(SociProxyTest, SelectWithRows) {
         People retrieved;
         retrieved.id = row.get<int>(0);
         retrieved.name = row.get<std::string>(1);
-        retrieved.age = row.get<int64_t>(2);
+        retrieved.age = row.get<long long>(2);
         retrieved.grade = row.get<double>(3);
         EXPECT_EQ(expected.name, retrieved.name);
         EXPECT_EQ(expected.age, retrieved.age);
