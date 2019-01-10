@@ -83,6 +83,10 @@ namespace ledger {
                     });
         }
 
+        Future<std::shared_ptr<BigInt>>
+        ApiRippleLikeBlockchainExplorer::getSequence(const std::string &address) {
+            throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getSequence method for Ripple API");
+        }
 
         Future<void *> ApiRippleLikeBlockchainExplorer::startSession() {
             return Future<void *>::successful(new std::string("", 0));
@@ -161,7 +165,7 @@ namespace ledger {
         }
 
         std::string ApiRippleLikeBlockchainExplorer::getExplorerVersion() const {
-            return _explorerVersion;
+            return "";
         }
     }
 }

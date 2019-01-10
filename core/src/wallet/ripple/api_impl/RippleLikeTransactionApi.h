@@ -58,12 +58,14 @@ namespace ledger {
             std::shared_ptr<api::BigInt> getLedgerSequence() override;
             void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
             void setDERSignature(const std::vector<uint8_t> & signature) override;
+            std::vector<uint8_t> getSigningPubKey() override;
             RippleLikeTransactionApi & setFees(const std::shared_ptr<BigInt>& fees);
             RippleLikeTransactionApi & setValue(const std::shared_ptr<BigInt>& value);
             RippleLikeTransactionApi & setSequence(const BigInt& sequence);
             RippleLikeTransactionApi & setLedgerSequence(const BigInt& ledgerSequence);
             RippleLikeTransactionApi & setSender(const std::shared_ptr<api::RippleLikeAddress> &sender);
             RippleLikeTransactionApi & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
+            RippleLikeTransactionApi & setSigningPubKey(const std::vector<uint8_t> &pubKey);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<RippleLikeBlockApi> _block;
@@ -77,6 +79,7 @@ namespace ledger {
             std::shared_ptr<api::RippleLikeAddress> _sender;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
+            std::vector<uint8_t> _signingPubKey;
         };
     }
 }

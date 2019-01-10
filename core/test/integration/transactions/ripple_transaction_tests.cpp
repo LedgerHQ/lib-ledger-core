@@ -52,6 +52,25 @@ struct RippleMakeTransaction : public RippleMakeBaseTransaction {
 
 TEST_F(RippleMakeTransaction, CreateTx) {
     auto builder = tx_builder();
+
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+        auto balance = wait(account->getBalance());
+        std::cout << "Balance: " << balance->toString() << std::endl;
+        auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+        dispatcher->stop();
+    });
+
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+
+    dispatcher->waitUntilStopped();
+
     auto balance = wait(account->getBalance());
     auto fromDate = "2018-01-01T13:38:23Z";
     auto toDate = DateUtils::toJSON(DateUtils::now());
@@ -59,8 +78,8 @@ TEST_F(RippleMakeTransaction, CreateTx) {
 
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
-    builder->setFees(api::Amount::fromLong(currency, 200000));
-    builder->sendToAddress(api::Amount::fromLong(currency, 200000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
+    builder->setFees(api::Amount::fromLong(currency, 10));
+    builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
     auto f = builder->build();
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
@@ -95,9 +114,11 @@ TEST_F(RippleMakeTransaction, CreateTx) {
 
 }
 
-TEST_F(RippleMakeTransaction, ParseUnsignedRawTransaction) {
-    //Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
-    auto strTx = "E800850165A0BC0083030D4094A49386FFF4E0DD767B145E75D92F7FBA8854553E8301E0F380018080";
-    auto tx = api::RippleLikeTransactionBuilder::parseRawUnsignedTransaction(ledger::core::currencies::ETHEREUM, hex::toByteArray(strTx));
+
+TEST_F(RippleMakeTransaction, ParseSignedRawTransaction) {
+    //Tx hash AF4BB95DE86A640B90B2AF3C696EF26EFE7DD71864CC959D8030B448DD48E756
+    auto strTx = "12000022800000002400000001201B02A2618F6140000000014FB18068400000000000000A73210215A9EE08A4B4747E27F348365F93BEB5897FA7E8776BEDAE2CB56917DCDBBF2F74473045022100F2AB61EC941462D692514BFDDB00BC0D31BA7DA66981193E67A04E90578C18B1022064A2375ECB5A68C22EE3038B783BE6A9E1F2C882A8E8BBEE43C4CFA93B536926811420237754A1727016188A1B7E52F2060F94339D128314DBC4AD4F38B60FA5624D0DDEDDAC209BABBAA9D7";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 }

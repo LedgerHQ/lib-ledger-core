@@ -57,6 +57,9 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) override;
 
+            Future<std::shared_ptr<BigInt>>
+            getSequence(const std::string &address) override;
+
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
             Future<void *> startSession() override;

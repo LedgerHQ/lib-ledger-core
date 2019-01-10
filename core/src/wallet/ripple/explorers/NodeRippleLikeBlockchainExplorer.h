@@ -44,6 +44,12 @@ namespace ledger {
     namespace core {
         using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<RippleLikeBlockchainExplorerTransaction, RippleLikeBlockchainExplorer::TransactionsBulk, RippleLikeTransactionsParser, RippleLikeTransactionsBulkParser, RippleLikeBlockParser, api::RippleLikeNetworkParameters>;
 
+        // Fields we are interested into are numbers or strings
+        enum FieldTypes {
+            NumberType,
+            StringType
+        };
+
         class NodeRippleLikeBodyRequest {
 
         public:
@@ -117,6 +123,9 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) override;
 
+            Future<std::shared_ptr<BigInt>>
+            getSequence(const std::string &address) override;
+
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
             Future<void *> startSession() override;
@@ -146,6 +155,11 @@ namespace ledger {
             std::string getExplorerVersion() const override;
 
         private:
+            Future<std::shared_ptr<BigInt>>
+            getAccountInfo(const std::string &address,
+                           const std::string &key,
+                           FieldTypes);
+
             api::RippleLikeNetworkParameters _parameters;
         };
     }

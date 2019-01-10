@@ -88,6 +88,9 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getSequence(const std::string &address) = 0;
         };
     }
 }

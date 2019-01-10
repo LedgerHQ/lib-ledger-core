@@ -113,8 +113,6 @@ namespace ledger {
 
             std::shared_ptr<RippleLikeKeychain> _keychain;
             std::string _accountAddress;
-            std::shared_ptr<Preferences> _internalPreferences;
-            std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             std::shared_ptr<RippleLikeAccountSynchronizer> _synchronizer;
             std::shared_ptr<RippleLikeBlockchainObserver> _observer;

@@ -63,6 +63,9 @@ public:
 
     /** Get Ledger's sequence in which the tx was included */
     virtual std::shared_ptr<BigInt> getLedgerSequence() = 0;
+
+    /** Get Signing public Key */
+    virtual std::vector<uint8_t> getSigningPubKey() = 0;
 };
 
 } } }  // namespace ledger::core::api

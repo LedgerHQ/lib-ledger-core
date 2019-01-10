@@ -155,8 +155,8 @@ namespace ledger {
             reader.readNextByte();
             //8 bytes Fees (with bitwise OR with 0x4000000000000000)
             auto feesOR = reader.read(8);
-            auto bigIntFeesOR = BigInt::fromHex(hex::toString(amountOR));
-            tx->setValue(std::make_shared<BigInt>(bigIntFeesOR - bigIntMax));
+            auto bigIntFeesOR = BigInt::fromHex(hex::toString(feesOR));
+            tx->setFees(std::make_shared<BigInt>(bigIntFeesOR - bigIntMax));
 
             //TODO: !!!find out if this is included in raw unsigned tx or not
             //1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
@@ -164,6 +164,7 @@ namespace ledger {
             //Var bytes Signing pubKey (prefix length)
             auto pubKeyLength = reader.readNextVarInt();
             auto signingPubKey = reader.read(pubKeyLength);
+            tx->setSigningPubKey(signingPubKey);
 
             if (isSigned) {
                 //1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
@@ -171,31 +172,26 @@ namespace ledger {
                 auto sigLength = reader.readNextVarInt();
                 auto sig = reader.read(sigLength);
 
+                //Set signature in Tx
+                BytesReader sigReader(sig);
                 //DER prefix
-                reader.readNextByte();
+                sigReader.readNextByte();
                 //Total length
-                reader.readNextVarInt();
+                sigReader.readNextVarInt();
+
                 //Nb of elements for R
-                reader.readNextByte();
-                std::vector<uint8_t> rSignature, sSignature;
+                sigReader.readNextByte();
                 //R length
-                auto rSize = reader.readNextVarInt();
-                if (rSize > 0 && reader.peek() == 0x00) {
-                    reader.readNextByte();
-                    rSignature = reader.read(rSize - 1);
-                } else {
-                    rSignature = reader.read(rSize);
-                }
+                auto rSize = sigReader.readNextVarInt();
+                //TODO: verify that we don't truncate leading null byte
+                auto rSignature = sigReader.read(rSize);
+
                 //Nb of elements for S
-                reader.readNextByte();
+                sigReader.readNextByte();
                 //S length
-                auto sSize = reader.readNextVarInt();
-                if (sSize > 0 && reader.peek() == 0x00) {
-                    reader.readNextByte();
-                    sSignature = reader.read(sSize - 1);
-                } else {
-                    sSignature = reader.read(sSize);
-                }
+                auto sSize = sigReader.readNextVarInt();
+                //TODO: verify that we don't truncate leading null byte
+                auto sSignature = sigReader.read(sSize);
                 tx->setSignature(rSignature, sSignature);
             }
 

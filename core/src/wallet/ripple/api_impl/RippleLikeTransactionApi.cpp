@@ -102,6 +102,10 @@ namespace ledger {
             return _sequence;
         }
 
+        std::vector<uint8_t> RippleLikeTransactionApi::getSigningPubKey() {
+            return _signingPubKey;
+        }
+
         void RippleLikeTransactionApi::setSignature(const std::vector<uint8_t> &rSignature,
                                                     const std::vector<uint8_t> &sSignature) {
             _rSignature = rSignature;
@@ -150,67 +154,86 @@ namespace ledger {
             //1 byte Flags Field ID:   Type Code = 2, Field Code = 2
             writer.writeByte(0x22);
             //4 bytes Flags (tfFullyCanonicalSig ?)
-            writer.writeByteArray({0x00, 0x00, 0x00, 0x00});
+            writer.writeByteArray({0x80, 0x00, 0x00, 0x00});
 
             //1 byte Sequence Field ID:   Type Code = 2, Field Code = 4
             writer.writeByte(0x24);
             //4 bytes Sequence
             auto sequence = _sequence->toString(16);
-            writer.writeByteArray(hex::toByteArray(sequence));
+            writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_sequence->intValue()));
 
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             writer.writeByteArray({0x20, 0x1B});
             //LastLedgerSequence
-            auto ledgerSequence = _ledgerSequence->toString(16);
-            writer.writeByteArray(hex::toByteArray(ledgerSequence));
+            writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_ledgerSequence->intValue()));
+
+
+            auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
+            auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
 
             //1 byte Amount Field ID:   Type Code = 6, Field Code = 1
             writer.writeByte(0x61);
             //8 bytes Amount (with bitwise OR with 0x4000000000000000)
-            auto amount = _value->toBigInt()->toString(16);
-            writer.writeByteArray(hex::toByteArray(amount));
+            auto finalValue = BigInt::fromHex(_value->toBigInt()->toString(16)) + bigIntMax;
+            writer.writeBeValue<uint64_t>(static_cast<const uint64_t>(finalValue.toUint64()));
 
             //1 byte Fee Field ID:   Type Code = 6, Field Code = 8
             writer.writeByte(0x68);
             //8 bytes Fees (with bitwise OR with 0x4000000000000000)
-            auto fees = _fees->toBigInt()->toString(16);
-            writer.writeByteArray(hex::toByteArray(fees));
+            auto finalFees = BigInt::fromHex(_fees->toBigInt()->toString(16)) + bigIntMax;
+            writer.writeBeValue<uint64_t>(static_cast<const uint64_t>(finalFees.toUint64()));
 
             //TODO: !!!find out if this is included in raw unsigned tx or not
             //1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
-            writer.writeByte(0x68);
+            writer.writeByte(0x73);
             //Var bytes Signing pubKey (prefix length)
-            auto accountAddress = _sender->getHash160();
-            writer.writeByteArray(accountAddress);
+            writer.writeVarInt(_signingPubKey.size());
+            writer.writeByteArray(_signingPubKey);
 
             if (!_rSignature.empty() && !_sSignature.empty()) {
                 //1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
                 writer.writeByte(0x74);
                 //Var bytes Signature (prefix length)
+                //Get length of VarInt representing length of R
+                BytesWriter rLength;
+                rLength.writeVarInt(_rSignature.size());
+                //Get length of VarInt representing length of R
+                BytesWriter sLength;
+                sLength.writeVarInt(_sSignature.size());
+                //Get length of VarInt representing length of R and S (plus their stack sizes)
+                auto sAndRLengthInt = 1 + rLength.toByteArray().size() + _rSignature.size() + 1 + sLength.toByteArray().size() + _sSignature.size();
+                BytesWriter sAndRLength;
+                sAndRLength.writeVarInt(sAndRLengthInt);
+                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
+                auto totalSigLength = 1 + sAndRLength.toByteArray().size() + sAndRLengthInt;
+                writer.writeVarInt(totalSigLength);
                 //DER prefix
                 BytesWriter sigWriter;
-                sigWriter.writeByte(0x30);
+                writer.writeByte(0x30);
+                //Size of DER signature minus DER prefix | Size(S+R)
+                writer.writeVarInt(sAndRLengthInt);
                 //R field
-                sigWriter.writeByte(0x02); //Nb of stack elements
-                sigWriter.writeVarInt(_rSignature.size());
-                sigWriter.writeByteArray(_rSignature);
+                writer.writeByte(0x02); //Nb of stack elements
+                writer.writeVarInt(_rSignature.size());
+                writer.writeByteArray(_rSignature);
                 //S field
-                sigWriter.writeByte(0x02); //Nb of stack elements
-                sigWriter.writeVarInt(_sSignature.size());
-                sigWriter.writeByteArray(_sSignature);
-                auto sigBytes = sigWriter.toByteArray();
-                writer.writeVarInt(sigBytes.size());
-                writer.writeByteArray(sigBytes);
+                writer.writeByte(0x02); //Nb of stack elements
+                writer.writeVarInt(_sSignature.size());
+                writer.writeByteArray(_sSignature);
             }
 
             //1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
             writer.writeByte(0x81);
             //20 bytes Acount (hash160 of pubKey without 0x00 prefix)
-            writer.writeByteArray(_sender->getHash160());
+            auto senderHash = _sender->getHash160();
+            writer.writeVarInt(senderHash.size());
+            writer.writeByteArray(senderHash);
             //1 byte Destination Field ID: Type Code = 8, Field Code = 3 (STI_ACCOUNT = 8 type, and Destination = 3)
             writer.writeByte(0x83);
             //20 bytes Destination (hash160 of pubKey without 0x00 prefix)
-            writer.writeByteArray(_receiver->getHash160());
+            auto receiverHash = _receiver->getHash160();
+            writer.writeVarInt(receiverHash.size());
+            writer.writeByteArray(receiverHash);
             return writer.toByteArray();
         }
 
@@ -252,6 +275,10 @@ namespace ledger {
             return *this;
         }
 
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
+            _signingPubKey = pubKey;
+            return *this;
+        }
 
     }
 }

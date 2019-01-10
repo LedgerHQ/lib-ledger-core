@@ -46,6 +46,7 @@ namespace ledger {
             _parameters = parameters;
         }
 
+
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
             //TODO: multiple accounts balances ?
@@ -55,35 +56,12 @@ namespace ledger {
                                      "Can only get balance of 1 address from Ripple Node, but got {} addresses", addresses.size());
             }
             std::string addressesStr = addresses[0]->toBase58();
-            NodeRippleLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("account_info");
-            bodyRequest.pushParameter("account", addressesStr);
-            bodyRequest.pushParameter("ledger_index", std::string("validated"));
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
-                    .json().mapPtr<BigInt>(getContext(), [addressesStr, size](const HttpRequest::JsonResult &result) {
-                        auto &json = *std::get<1>(result);
-                        //Is there a result field ?
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}, no (or malformed) field \"result\" in response",
-                                                 addressesStr);
-                        }
-                        //Is there an account_data field ?
-                        auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("account_data") || !resultObj["account_data"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}, no (or malformed) field \"account_data\" in response",
-                                                 addressesStr);
-                        }
-                        //Is there an Balance field ?
-                        auto accountObj = resultObj["account_data"].GetObject();
-                        if (!accountObj.HasMember("Balance") || !accountObj["Balance"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}, no (or malformed) field \"Balance\" in response",
-                                                 addressesStr);
-                        }
-                        auto balance = accountObj["Balance"].GetString();
-                        return std::make_shared<BigInt>(balance);
-                    });
+            return getAccountInfo(addressesStr, "Balance", FieldTypes::StringType);
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getSequence(const std::string &address) {
+            return getAccountInfo(address, "Sequence", FieldTypes::NumberType);
         }
 
         Future<String>
@@ -192,6 +170,63 @@ namespace ledger {
 
         std::string NodeRippleLikeBlockchainExplorer::getExplorerVersion() const {
             return "";
+        }
+
+
+        Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getAccountInfo(const std::string &address,
+                                                         const std::string &key,
+                                                         FieldTypes type) {
+            NodeRippleLikeBodyRequest bodyRequest;
+            bodyRequest.setMethod("account_info");
+            bodyRequest.pushParameter("account", address);
+            bodyRequest.pushParameter("ledger_index", std::string("validated"));
+            auto requestBody = bodyRequest.getString();
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+                    .json().mapPtr<BigInt>(getContext(), [address, key, type](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        //Is there a result field ?
+                        if (!json.IsObject() || !json.HasMember("result") ||
+                            !json["result"].IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"result\" in response",
+                                                 key, address);
+                        }
+
+                        auto resultObj = json["result"].GetObject();
+                        if (!resultObj.HasMember("account_data") || !resultObj["account_data"].IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"account_data\" in response",
+                                                 key, address);
+                        }
+
+                        //Is there an account_data field ?
+                        switch(type) {
+                            case FieldTypes::NumberType : {
+                                //Is there an field with key name ?
+                                auto accountObj = resultObj["account_data"].GetObject();
+                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsUint64()) {
+                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
+                                                         key, address, key);
+                                }
+
+                                auto balance = accountObj[key.c_str()].GetUint64();
+                                return std::make_shared<BigInt>((int64_t)balance);
+                            }
+                            case FieldTypes::StringType : {
+                                //Is there an field with key name ?
+                                auto accountObj = resultObj["account_data"].GetObject();
+                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsString()) {
+                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
+                                                         key, address, key);
+                                }
+
+                                auto balance = accountObj[key.c_str()].GetString();
+                                return std::make_shared<BigInt>(balance);
+                            }
+                        }
+
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Failed to get {} which has an unkown field type",
+                                             key);
+                    });
         }
     }
 }

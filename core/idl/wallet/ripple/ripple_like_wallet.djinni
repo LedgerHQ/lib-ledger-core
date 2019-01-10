@@ -31,6 +31,8 @@ RippleLikeTransaction = interface +c {
 	getSequence(): BigInt;
 	# Get Ledger's sequence in which the tx was included
 	getLedgerSequence(): BigInt;
+	# Get Signing public Key
+	getSigningPubKey(): binary;
 }
 
 #Class representing a Ripple Operation

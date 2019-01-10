@@ -65,6 +65,7 @@ namespace ledger {
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
+            _currentLedgerSequence = 0;
         }
 
 
@@ -387,9 +388,13 @@ namespace ledger {
                 auto accountAddress = std::dynamic_pointer_cast<RippleLikeAddress>(address);
                 tx->setSender(accountAddress);
                 tx->setReceiver(RippleLikeAddress::fromBase58(request.toAddress, currency));
-                tx->setSequence(request.sequence);
-                tx->setLedgerSequence(request.ledgerSequence);
-                return Future<std::shared_ptr<api::RippleLikeTransaction>>::successful(tx);
+                BigInt ledgerSequence((int64_t)self->_currentLedgerSequence);
+                tx->setLedgerSequence(ledgerSequence);
+                tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
+                return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
+                    tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
+                    return tx;
+                });
             };
 
             return std::make_shared<RippleLikeTransactionBuilder>(getContext(),
