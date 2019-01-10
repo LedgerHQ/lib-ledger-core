@@ -46,6 +46,11 @@ namespace ledger {
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
+        Future<String>
+        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+            throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of pushTransaction method for Ripple API");
+        }
+
         Future<std::shared_ptr<BigInt>>
         ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
 
@@ -78,19 +83,6 @@ namespace ledger {
                     });
         }
 
-        Future<String>
-        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
-            std::stringstream body;
-            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
-            auto bodyString = body.str();
-            return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(),
-                                           getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
-            ).json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
-                auto &json = *std::get<1>(result);
-                return json["result"].GetString();
-            });
-        }
 
         Future<void *> ApiRippleLikeBlockchainExplorer::startSession() {
             return Future<void *>::successful(new std::string("", 0));

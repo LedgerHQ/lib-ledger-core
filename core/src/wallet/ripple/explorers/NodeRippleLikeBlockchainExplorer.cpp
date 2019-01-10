@@ -88,16 +88,24 @@ namespace ledger {
 
         Future<String>
         NodeRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
-            std::stringstream body;
-            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
-            auto bodyString = body.str();
-            return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send",
-                                           getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
-            ).json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
-                auto &json = *std::get<1>(result);
-                return json["result"].GetString();
-            });
+            NodeRippleLikeBodyRequest bodyRequest;
+            bodyRequest.setMethod("submit");
+            bodyRequest.pushParameter("tx_blob", hex::toString(transaction));
+            auto requestBody = bodyRequest.getString();
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+                    .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsObject() || !json.HasMember("result") ||
+                            !json["result"].IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
+                        }
+                        //Is there an account_data field ?
+                        auto resultObj = json["result"].GetObject();
+                        if (!resultObj.HasMember("hash") || !resultObj["hash"].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
+                        }
+                        return resultObj["hash"].GetString();
+                    });
         }
 
         Future<void *> NodeRippleLikeBlockchainExplorer::startSession() {
