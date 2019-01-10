@@ -74,6 +74,7 @@ namespace ledger {
                 /// The first part of the pair is the address and the second part is the amount.
                 std::vector<std::pair<std::string, uint32_t>> outputs;
             };
+
             //Block
             struct BL {
                 uint32_t height;

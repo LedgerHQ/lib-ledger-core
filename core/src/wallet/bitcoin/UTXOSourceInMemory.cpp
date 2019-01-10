@@ -23,15 +23,16 @@ namespace ledger {
             auto self = shared_from_this();
 
             // get the last block height
-            return _blockDB->getLastBlockHeight().map<UTXOSourceList>(ctx, [&](const Option<uint32_t>& lastBlockHeight) {
+            return _blockDB->getLastBlockHeight().flatMap<UTXOSourceList>(ctx, [=](const Option<uint32_t>& lastBlockHeight) {
                 // compute the list of blocks we need to retreive
                 if (lastBlockHeight) {
-                    auto currentHeight = lastBlockHeight;
-                    auto spent = std::set<UTXOKey>();
+                    auto currentHeight = lastBlockHeight.getValue();
 
                     if (currentHeight > self->_lastHeight) {
                         // there are blocks we don’t know about
-                        self->_blockDB->getBlocks(0, currentHeight).foreach(ctx, [&](std::vector<BitcoinLikeNetwork::FilledBlock>& blocks) {
+                        return self->_blockDB->getBlocks(0, currentHeight).map<UTXOSourceList>(ctx, [=](const std::vector<BitcoinLikeNetwork::FilledBlock>& blocks) {
+                            auto spent = std::set<UTXOKey>();
+
                             for (auto block : blocks) {
                                 for (auto tr : block.transactions) {
                                     // treat inputs
@@ -75,18 +76,25 @@ namespace ledger {
                             }
 
                             self->_lastHeight = currentHeight;
+
+                            // copy the UTXO map and move it in our list
+                            auto utxos = self->_cache;
+
+                            // create the resulting UTXO source list
+                            auto sourceList = UTXOSourceList(std::move(utxos), std::move(spent), currentHeight);
+                            return sourceList;
                         });
+                    } else {
+                        // copy the UTXO map and move it in our list
+                        auto utxos = self->_cache;
+
+                        // create the resulting UTXO source list
+                        auto sourceList = UTXOSourceList(std::move(utxos), {}, currentHeight);
+                        return Future<UTXOSourceList>::successful(sourceList);
                     }
-
-                    // copy the UTXO map and move it in our list
-                    auto utxos = self->_cache;
-
-                    // create the resulting UTXO source list
-                    auto sourceList = UTXOSourceList(std::move(utxos), std::move(spent), currentHeight);
-                    return sourceList;
                 } else {
                     // no data, just return nothing
-                    return UTXOSourceList({}, {}, 0);
+                    return Future<UTXOSourceList>::successful(UTXOSourceList({}, {}, 0));
                 }
             });
         }
