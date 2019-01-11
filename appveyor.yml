@@ -143,12 +143,18 @@ build_script:
 #- set LIB_VERSION=$(node sample/lib-version.js)
 #- echo " >> Get Libcore version %LIB_VERSION%"
 
+- if %APPVEYOR_REPO_TAG%==true (
+      set DEPLOY_VERSION=%LIB_VERSION%
+  ) else (
+      set DEPLOY_VERSION=%LIB_VERSION%-rc
+  )
+
 after_build:
   - set should_deploy=false
   - if %APPVEYOR_REPO_BRANCH%==develop set should_deploy=true
   - if %APPVEYOR_REPO_BRANCH%==master set should_deploy=true
   - if %APPVEYOR_REPO_TAG%==true set should_deploy=true  #for tests
-  - if %should_deploy%==true aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%LIB_VERSION%/win/%TOOL_CONFIG%" --acl public-read
+  - if %should_deploy%==true aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%DEPLOY_VERSION%/win/%TOOL_CONFIG%" --acl public-read
 
 artifacts:
   - path: .\%LIB_VERSION%\win\%TOOL_CONFIG%\*
