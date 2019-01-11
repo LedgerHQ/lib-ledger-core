@@ -13,7 +13,6 @@ namespace ledger { namespace core { namespace api {
 class DatabaseBlob;
 class DatabaseColumn;
 class DatabaseResultSet;
-class DatabaseRowId;
 
 /**
  * A wrapper object around prepared SQL statements. lib-ledger-core will use placeholders when it needs to pass
@@ -72,13 +71,6 @@ public:
      * @param value The value to bind
      */
     virtual void bindBlob(int32_t pos, const std::shared_ptr<DatabaseBlob> & value) = 0;
-
-    /**
-     * Bind the designated parameter to the given native row identifier.
-     * @param pos The position of the parameter in the query
-     * @param value The value to bind
-     */
-    virtual void bindRowId(int32_t pos, const std::shared_ptr<DatabaseRowId> & value) = 0;
 
     /**
      * Bind the designated parameter to the NULL value in SQL.

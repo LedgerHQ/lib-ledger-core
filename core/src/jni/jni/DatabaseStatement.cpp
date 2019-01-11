@@ -5,7 +5,6 @@
 #include "DatabaseBlob.hpp"
 #include "DatabaseColumn.hpp"
 #include "DatabaseResultSet.hpp"
-#include "DatabaseRowId.hpp"
 #include "Marshal.hpp"
 
 namespace djinni_generated {
@@ -79,15 +78,6 @@ void DatabaseStatement::JavaProxy::bindBlob(int32_t c_pos, const std::shared_ptr
     jniEnv->CallVoidMethod(Handle::get().get(), data.method_bindBlob,
                            ::djinni::get(::djinni::I32::fromCpp(jniEnv, c_pos)),
                            ::djinni::get(::djinni_generated::DatabaseBlob::fromCpp(jniEnv, c_value)));
-    ::djinni::jniExceptionCheck(jniEnv);
-}
-void DatabaseStatement::JavaProxy::bindRowId(int32_t c_pos, const std::shared_ptr<::ledger::core::api::DatabaseRowId> & c_value) {
-    auto jniEnv = ::djinni::jniGetThreadEnv();
-    ::djinni::JniLocalScope jscope(jniEnv, 10);
-    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseStatement>::get();
-    jniEnv->CallVoidMethod(Handle::get().get(), data.method_bindRowId,
-                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c_pos)),
-                           ::djinni::get(::djinni_generated::DatabaseRowId::fromCpp(jniEnv, c_value)));
     ::djinni::jniExceptionCheck(jniEnv);
 }
 void DatabaseStatement::JavaProxy::bindNull(int32_t c_pos) {

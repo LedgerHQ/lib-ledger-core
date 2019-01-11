@@ -1,6 +1,6 @@
 # An enum representing a SQL type.
 DatabaseValueType = enum {
-      string; date; double; integer; long_long; unsigned_long_long;
+      string; date; double; integer; long_long; unsigned_long_long; blob;
 }
 
 # Wrapper class around errors.
@@ -114,11 +114,6 @@ DatabaseResultSet = interface +j +n +o {
 
 }
 
-# A object representing a datbase row identifier.
-DatabaseRowId = interface +j +n +o {
-
-}
-
 # A wrapper object around prepared SQL statements. lib-ledger-core will use placeholders when it needs to pass
 # parameters to a query. It will then  bind each parameter at a given position to a given value.
 #
@@ -158,11 +153,6 @@ DatabaseStatement = interface +j +n +o {
     # @param pos The position of the parameter in the query
     # @param value The value to bind
     bindBlob(pos: i32, value: DatabaseBlob);
-
-    # Bind the designated parameter to the given native row identifier.
-    # @param pos The position of the parameter in the query
-    # @param value The value to bind
-    bindRowId(pos: i32, value: DatabaseRowId);
 
     # Bind the designated parameter to the NULL value in SQL.
     # @param pos The position of the parameter in the query

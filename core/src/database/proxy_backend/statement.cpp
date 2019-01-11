@@ -166,6 +166,9 @@ void proxy_statement_backend::describe_column(int colNum, data_type &dtype, std:
             case api::DatabaseValueType::UNSIGNED_LONG_LONG:
                 dtype = data_type::dt_unsigned_long_long;
                 break;
+            case api::DatabaseValueType::BLOB:
+                dtype = data_type::dt_string;
+                break;
         }
         columnName = col->getName();
         return unit;

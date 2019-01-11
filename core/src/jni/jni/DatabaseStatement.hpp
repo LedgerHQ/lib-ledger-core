@@ -41,7 +41,6 @@ private:
         void bindDouble(int32_t pos, double value) override;
         void bindString(int32_t pos, const std::string & value) override;
         void bindBlob(int32_t pos, const std::shared_ptr<::ledger::core::api::DatabaseBlob> & value) override;
-        void bindRowId(int32_t pos, const std::shared_ptr<::ledger::core::api::DatabaseRowId> & value) override;
         void bindNull(int32_t pos) override;
         std::shared_ptr<::ledger::core::api::DatabaseColumn> describeColumn(int32_t colNum) override;
         int32_t getColumnCount() override;
@@ -61,7 +60,6 @@ private:
     const jmethodID method_bindDouble { ::djinni::jniGetMethodID(clazz.get(), "bindDouble", "(ID)V") };
     const jmethodID method_bindString { ::djinni::jniGetMethodID(clazz.get(), "bindString", "(ILjava/lang/String;)V") };
     const jmethodID method_bindBlob { ::djinni::jniGetMethodID(clazz.get(), "bindBlob", "(ILco/ledger/core/DatabaseBlob;)V") };
-    const jmethodID method_bindRowId { ::djinni::jniGetMethodID(clazz.get(), "bindRowId", "(ILco/ledger/core/DatabaseRowId;)V") };
     const jmethodID method_bindNull { ::djinni::jniGetMethodID(clazz.get(), "bindNull", "(I)V") };
     const jmethodID method_describeColumn { ::djinni::jniGetMethodID(clazz.get(), "describeColumn", "(I)Lco/ledger/core/DatabaseColumn;") };
     const jmethodID method_getColumnCount { ::djinni::jniGetMethodID(clazz.get(), "getColumnCount", "()I") };

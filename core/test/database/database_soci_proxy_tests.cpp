@@ -295,3 +295,39 @@ TEST_F(SociProxyTest, InsertAndGetBlobs) {
     EXPECT_EQ(name, people.front().name);
     EXPECT_EQ(blob_to_vector(picture), people.front().picture);
 }
+
+TEST_F(SociProxyTest, SelectAllFields) {
+    createTables(sql);
+    auto people = generateData(1, true);
+    insertPeople(sql, people);
+    auto& witness = people[0];
+    witness.items.clear();
+
+    soci::rowset<soci::row> rows = (sql.prepare << "SELECT * FROM people WHERE age = :age AND name = :name AND grade = :grade AND id = :id",
+            soci::use(witness.age), soci::use(witness.name), soci::use(witness.grade), soci::use(witness.id));
+    auto& row = *rows.begin();
+    People retrieved;
+    bool hasPicture = false;
+    for (size_t i = 0; i < row.size(); i++) {
+        auto prop_name = row.get_properties(i).get_name();
+        if (prop_name == "name")
+            retrieved.name = row.get<std::string>(i);
+        else if (prop_name == "age")
+            retrieved.age = row.get<long long>(i);
+        else if (prop_name == "grade")
+            retrieved.grade = row.get<double>(i);
+        else if (prop_name == "id")
+            retrieved.id = row.get<int>(i);
+        else if (prop_name == "picture") {
+            // Weird behaviour of SOCI regarding BLOB in dynamic queries. Backends reference BLOB type to STRING type.
+            // Furthermore there
+            hasPicture = true;
+            witness.picture.clear();
+        }
+    }
+    EXPECT_EQ(witness.name, retrieved.name);
+    EXPECT_EQ(witness.age, retrieved.age);
+    EXPECT_EQ(witness.grade, retrieved.grade);
+    EXPECT_EQ(witness.id, retrieved.id);
+    EXPECT_TRUE(hasPicture);
+}

@@ -14,6 +14,7 @@ std::string to_string(const DatabaseValueType& databaseValueType) {
         case DatabaseValueType::INTEGER: return "INTEGER";
         case DatabaseValueType::LONG_LONG: return "LONG_LONG";
         case DatabaseValueType::UNSIGNED_LONG_LONG: return "UNSIGNED_LONG_LONG";
+        case DatabaseValueType::BLOB: return "BLOB";
     };
 };
 template <>
@@ -23,7 +24,8 @@ DatabaseValueType from_string(const std::string& databaseValueType) {
     else if (databaseValueType == "DOUBLE") return DatabaseValueType::DOUBLE;
     else if (databaseValueType == "INTEGER") return DatabaseValueType::INTEGER;
     else if (databaseValueType == "LONG_LONG") return DatabaseValueType::LONG_LONG;
-    else return DatabaseValueType::UNSIGNED_LONG_LONG;
+    else if (databaseValueType == "UNSIGNED_LONG_LONG") return DatabaseValueType::UNSIGNED_LONG_LONG;
+    else return DatabaseValueType::BLOB;
 };
 
 std::ostream &operator<<(std::ostream &os, const DatabaseValueType &o)
@@ -35,6 +37,7 @@ std::ostream &operator<<(std::ostream &os, const DatabaseValueType &o)
         case DatabaseValueType::INTEGER:  return os << "INTEGER";
         case DatabaseValueType::LONG_LONG:  return os << "LONG_LONG";
         case DatabaseValueType::UNSIGNED_LONG_LONG:  return os << "UNSIGNED_LONG_LONG";
+        case DatabaseValueType::BLOB:  return os << "BLOB";
     }
 }
 

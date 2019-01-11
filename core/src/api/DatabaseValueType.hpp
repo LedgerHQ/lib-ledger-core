@@ -17,6 +17,7 @@ enum class DatabaseValueType : int {
     INTEGER,
     LONG_LONG,
     UNSIGNED_LONG_LONG,
+    BLOB,
 };
 std::string to_string(const DatabaseValueType& databaseValueType);
 std::ostream &operator<<(std::ostream &os, const DatabaseValueType &o);

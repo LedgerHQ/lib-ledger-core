@@ -34,7 +34,6 @@
 #include <api/DatabaseConnection.hpp>
 #include <api/DatabaseStatement.hpp>
 #include <api/DatabaseBlob.hpp>
-#include <api/DatabaseRowId.hpp>
 #include <api/DatabaseResultSet.hpp>
 #include <sqlite3.h>
 #include <database/proxy_backend/soci-proxy.h>
@@ -66,7 +65,8 @@ const std::vector<std::tuple<std::string, api::DatabaseValueType >> SQLITE3_TYPE
         {"int", api::DatabaseValueType::INTEGER},
         {"float", api::DatabaseValueType::DOUBLE},
         {"double", api::DatabaseValueType::DOUBLE},
-        {"text", api::DatabaseValueType::STRING}
+        {"text", api::DatabaseValueType::STRING},
+        {"blob", api::DatabaseValueType::BLOB}
 };
 
 class Blob : public api::DatabaseBlob {
@@ -287,10 +287,6 @@ public:
         );
     }
 
-    void bindRowId(int32_t pos, const std::shared_ptr<api::DatabaseRowId> &value) override {
-
-    }
-
     void bindNull(int32_t pos) override {
         sqlite3_bind_null(_stmt, pos);
     }
@@ -305,7 +301,7 @@ public:
 
         for (auto& match : SQLITE3_TYPES) {
             if (boost::iequals(type, std::get<0>(match))) {
-                return std::make_shared<Column>(std::get<1>(match), std::get<0>(match));
+                return std::make_shared<Column>(std::get<1>(match),   std::string(sqlite3_column_name(_stmt, colNum - 1)));
             }
         }
 

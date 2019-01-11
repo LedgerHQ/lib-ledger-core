@@ -54,13 +54,11 @@
 #include <unordered_map>
 #include <utils/Either.hpp>
 #include <soci.h>
-#include <api/DatabaseRowId.hpp>
 
 #ifndef SOCI_OVERRIDE
 #   define SOCI_OVERRIDE override
 #endif
 
-// #define SOCI_PROXY_DEBUG
 #ifdef SOCI_PROXY_DEBUG
 #define SP_PRINT(p) std::cout << p << std::endl;
 #else
@@ -191,11 +189,10 @@ namespace soci
 
     struct proxy_rowid_backend : details::rowid_backend
     {
-        proxy_rowid_backend(proxy_session_backend &session);
+        proxy_rowid_backend(proxy_session_backend &session) {throw  soci::soci_error("row id not supported for DatabaseEngine");};
 
         ~proxy_rowid_backend() SOCI_OVERRIDE;
 
-        std::shared_ptr<ledger::core::api::DatabaseRowId> rowid;
     };
 
     struct proxy_blob_backend : details::blob_backend

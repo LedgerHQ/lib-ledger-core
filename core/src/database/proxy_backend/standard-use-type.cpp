@@ -99,18 +99,13 @@ void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
             }
             case details::x_stdtm: throw soci_error("Unsupported type timestamp.");
             case details::x_statement: throw soci_error("Unsupported type statement in SQL query.");
-            case details::x_rowid: {
-                auto rowid = static_cast<soci::rowid *>(_data);
-                auto backend = static_cast<proxy_rowid_backend *>(rowid->get_backend())->rowid;
-                BIND(RowId, backend);
-                break;
-            }
             case details::x_blob: {
                 auto blob = static_cast<soci::blob *>(_data);
-                auto backend = static_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
+                auto backend = dynamic_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
                 BIND(Blob, backend);
                 break;
             }
+            case details::x_rowid: throw soci_error("Unsupported type row id in SQL query");
         }
         return unit;
     });
