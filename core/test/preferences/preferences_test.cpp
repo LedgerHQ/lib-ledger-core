@@ -38,16 +38,29 @@
 #include <NativePathResolver.hpp>
 #include <fstream>
 
-TEST(Preferences, StoreAndGetWithPreferencesAPI) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
-            resolver
-    );
+class PreferencesTest : public ::testing::Test {
+protected:
+    std::shared_ptr<NativePathResolver> resolver;
+    std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    std::shared_ptr<ledger::core::api::Lock> preferencesLock;
+    std::shared_ptr<ledger::core::PreferencesBackend> backend;
+
+public:
+    PreferencesTest()
+        : resolver(std::make_shared<NativePathResolver>())
+        , dispatcher(std::make_shared<NativeThreadDispatcher>())
+        , preferencesLock(dispatcher->newLock())
+        , backend(std::make_shared<ledger::core::PreferencesBackend>(
+                    "/preferences/tests.db",
+                    dispatcher->getSerialExecutionContext("worker"),
+                    resolver
+          )) {
+    }
+};
+
+TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     auto preferences = backend->getPreferences("my_test_preferences");
+
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
         preferences->edit()
                 ->putString("my_string", "Hello World!")
@@ -57,6 +70,7 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
                 ->putStringArray("my_string_array", std::vector<std::string>({"Hello", "world", "!"}))
                 ->commit();
     }));
+
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
         preferences
                 ->edit()
@@ -64,6 +78,7 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
                 ->putString("my_string_to_remove", "Remove this please!")
                 ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
         EXPECT_EQ(preferences->getString("my_string", ""), "Hello World!");
@@ -80,7 +95,8 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
             dispatcher->stop();
         }), 50);
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
@@ -89,17 +105,10 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
     resolver->clean();
 }
 
-TEST(Preferences, IterateThroughMembers) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
-            resolver
-    );
+TEST_F(PreferencesTest, IterateThroughMembers) {
     auto preferences = backend->getPreferences("my_test_preferences");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
+
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
         preferences->edit()
                 ->putString("address:0", "Hello World!")
@@ -122,6 +131,7 @@ TEST(Preferences, IterateThroughMembers) {
                 ->putString("address:1", "Hello World!")
                 ->commit();
     }));
+
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
         preferences
                 ->edit()
@@ -132,6 +142,7 @@ TEST(Preferences, IterateThroughMembers) {
                 ->putString("address:15", "Hello World!")
                 ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
         std::set<std::string> addresses({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -142,7 +153,8 @@ TEST(Preferences, IterateThroughMembers) {
         }, ledger::core::Option<std::string>("address:"));
         dispatcher->stop();
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
@@ -161,15 +173,8 @@ struct MyClass
         archive( x, y, z );
     }
 };
-TEST(Preferences, IterateThroughObjectMembers) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-        "/preferences/tests.db",
-        dispatcher->getSerialExecutionContext("worker"),
-        resolver
-    );
+
+TEST_F(PreferencesTest, IterateThroughObjectMembers) {
     auto preferences = backend->getPreferences("my_test_preferences_array");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
 
@@ -190,6 +195,7 @@ TEST(Preferences, IterateThroughObjectMembers) {
         ->putObject<MyClass>("1", obj2)
         ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([&] () {
         preferences->iterate<MyClass>([=] (leveldb::Slice&& key, const MyClass& value) {
@@ -202,13 +208,14 @@ TEST(Preferences, IterateThroughObjectMembers) {
                 EXPECT_EQ(obj2.y, value.y);
                 EXPECT_EQ(obj2.z, value.z);
             } else {
-               EXPECT_TRUE(false);
+                EXPECT_TRUE(false);
             }
             return true;
         });
         dispatcher->stop();
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
