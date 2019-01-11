@@ -42,16 +42,23 @@ namespace ledger {
     namespace core {
         struct PreferencesChange;
         class Preferences;
+
         class PreferencesEditor : public api::PreferencesEditor, public std::enable_shared_from_this<PreferencesEditor> {
         public:
             PreferencesEditor(Preferences& preferences);
+
             std::shared_ptr<api::PreferencesEditor>
             putString(const std::string &key, const std::string &value) override;
+
             std::shared_ptr<api::PreferencesEditor> putInt(const std::string &key, int32_t value) override;
+
             std::shared_ptr<api::PreferencesEditor> putLong(const std::string &key, int64_t value) override;
+
             std::shared_ptr<api::PreferencesEditor> putBoolean(const std::string &key, bool value) override;
+
             std::shared_ptr<api::PreferencesEditor>
             putStringArray(const std::string &key, const std::vector<std::string> &value) override;
+
             std::shared_ptr<api::PreferencesEditor> remove(const std::string &key) override;
 
             template <typename T>

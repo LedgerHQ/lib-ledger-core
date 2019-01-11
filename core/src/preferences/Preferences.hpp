@@ -46,16 +46,24 @@ namespace ledger {
     namespace core {
         class PreferencesBackend;
         class PreferencesEditor;
+
         class Preferences : public api::Preferences {
         public:
             Preferences(PreferencesBackend& backend, const std::vector<uint8_t>& keyPrefix);
+
             std::string getString(const std::string &key, const std::string &fallbackValue) override;
+
             int32_t getInt(const std::string &key, int32_t fallbackValue) override;
+
             int64_t getLong(const std::string &key, int64_t fallbackValue) override;
+
             bool getBoolean(const std::string &key, bool fallbackValue) override;
+
             std::vector<std::string>
             getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) override;
+
             bool contains(const std::string &key) override;
+
             std::shared_ptr<api::PreferencesEditor> edit() override;
             std::shared_ptr<PreferencesEditor> editor();
 

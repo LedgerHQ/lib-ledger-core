@@ -83,10 +83,17 @@ namespace ledger {
             void commit(const std::vector<PreferencesChange>& changes);
 
             // Turn encryption on for all future uses.
+            //
+            // Data already present in the preferences are not affected.
             void setEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::string& password 
             );
+
+            // Turn off encryption.
+            //
+            // Data already present in the preferences are not affected.
+            void unsetEncryption();
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;

@@ -37,6 +37,7 @@
 #include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
 #include <fstream>
+#include <OpenSSLRandomNumberGenerator.hpp>
 
 class PreferencesTest : public ::testing::Test {
 protected:
@@ -190,10 +191,10 @@ TEST_F(PreferencesTest, IterateThroughObjectMembers) {
 
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([&] () {
         preferences
-        ->editor()
-        ->putObject<MyClass>("0", obj1)
-        ->putObject<MyClass>("1", obj2)
-        ->commit();
+            ->editor()
+            ->putObject<MyClass>("0", obj1)
+            ->putObject<MyClass>("1", obj2)
+            ->commit();
     }));
 
     // Assume that 100ms should be enough to persist data
@@ -222,4 +223,53 @@ TEST_F(PreferencesTest, IterateThroughObjectMembers) {
 
     dispatcher->waitUntilStopped();
     resolver->clean();
+}
+
+TEST_F(PreferencesTest, EncryptDecrypt) {
+    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    backend->setEncryption(rng, password);
+
+    // persist a few stuff, that should be encrypted
+    preferences
+        ->editor()
+        ->putString("string", "dawg")
+        ->putInt("int", 9246)
+        ->putLong("long", 89356493564)
+        ->putBoolean("bool", true)
+        ->putStringArray("string_array", { "foo", "bar", "zoo" })
+        ->commit();
+
+    // two things to test:
+    //   1. disabling encryption should give us back unreadable data
+    //   2. re-enabling encryption; the data should now be correctly read
+
+    // (1.)
+    backend->unsetEncryption();
+
+    auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
+
+    // boolean is not tested because its entropy is way too low
+    ASSERT_NE(preferences->getString("string", ""), "dawg");
+    ASSERT_NE(preferences->getInt("int", 0), 9246);
+    ASSERT_NE(preferences->getLong("long", 0), 89356493564);
+
+    // encoding is fucked up, so we need to manually check bytes and that the strings are not there
+    auto garbage = preferences->getData("string_array", {});
+    auto foo = std::string("foo");
+    auto bar = std::string("bar");
+    auto zoo = std::string("zoo");
+    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), foo.cbegin(), foo.cend()) == garbage.cend());
+    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), bar.cbegin(), bar.cend()) == garbage.cend());
+    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), zoo.cbegin(), zoo.cend()) == garbage.cend());
+
+    // (2.)
+    backend->setEncryption(rng, password);
+
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+    ASSERT_EQ(preferences->getStringArray("string_array", std::vector<std::string>()), string_array);
 }

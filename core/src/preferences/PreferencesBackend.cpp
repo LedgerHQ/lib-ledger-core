@@ -83,11 +83,14 @@ namespace ledger {
             leveldb::WriteBatch batch;
             leveldb::WriteOptions options;
             options.sync = true;
+
             for (auto& item : changes) {
                 leveldb::Slice k((const char *)item.key.data(), item.key.size());
+
                 if (item.type == PreferencesChangeType::PUT_TYPE) {
                     if (_cipher.hasValue()) {
                         auto encrypted = encrypt_preferences_change(item);
+
                         leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
                         batch.Put(k, v);
                     } else {
@@ -98,6 +101,7 @@ namespace ledger {
                     batch.Delete(k);
                 }
             }
+
             db->Write(options, &batch);
         }
 
@@ -163,7 +167,7 @@ namespace ledger {
             const std::string& password
         ) {
             // disable encryption to check whether we have a salt already persisted
-            _cipher = Option<AESCipher>::NONE;
+            unsetEncryption();
 
             auto emptySalt = std::string("");
             auto pref = getPreferences("__core");
@@ -174,11 +178,15 @@ namespace ledger {
                 auto bytes = rng->getRandomBytes(128);
                 
                 salt = std::string(std::begin(bytes), std::end(bytes));
-                pref->editor()->putString("preferences.backend.salt", salt);
+                pref->editor()->putString("preferences.backend.salt", salt)->commit();
             }
 
             // create the AES cipher
             _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+        }
+
+        void PreferencesBackend::unsetEncryption() {
+            _cipher = Option<AESCipher>::NONE;
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {
