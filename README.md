@@ -85,3 +85,9 @@ You can build the core library or debug it from a docker image:
 
 1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
 2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`
+3. Notice that stopping a container will wipe it. If you need multiple instance over the same container one way is to start the container as a daemon and then get a shell on it.
+    1. Start the container as daemon `docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -d ledger-core-env`
+    2. Get the container ID with `docker ps`
+    3. Open shells `docker exec -ti :container_id zsh` where :container_id has to be replaced by the container you got from `docker ps`
+    
+Note: If you feel on fire you could use docker volumes to persist data.
