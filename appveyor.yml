@@ -144,9 +144,9 @@ build_script:
 #- echo " >> Get Libcore version %LIB_VERSION%"
 
 - if %APPVEYOR_REPO_TAG%==true (
-      set DEPLOY_VERSION=%LIB_VERSION%
+      set "DEPLOY_VERSION=%LIB_VERSION%"
   ) else (
-      set DEPLOY_VERSION=%LIB_VERSION%-rc
+      set "DEPLOY_VERSION=%LIB_VERSION%-rc"
   )
 
 after_build:
