@@ -272,4 +272,19 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
     ASSERT_EQ(preferences->getInt("int", 0), 9246);
     ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
     ASSERT_EQ(preferences->getStringArray("string_array", std::vector<std::string>()), string_array);
+
+    // finally, we want to test that setting the same key to the same value twice gets two different
+    // ciphered values
+    preferences->editor()->putString("same", "ledger_and_biscuits")->commit();
+
+    backend->unsetEncryption();
+    auto cipherText1 = preferences->getString("same", "");
+
+    backend->setEncryption(rng, password);
+    preferences->editor()->putString("same", "ledger_and_biscuits")->commit();
+
+    backend->unsetEncryption();
+    auto cipherText2 = preferences->getString("same", "");
+
+    ASSERT_NE(cipherText1, cipherText2);
 }
