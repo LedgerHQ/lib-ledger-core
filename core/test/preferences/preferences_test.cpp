@@ -258,12 +258,9 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
 
     // encoding is fucked up, so we need to manually check bytes and that the strings are not there
     auto garbage = preferences->getData("string_array", {});
-    auto foo = std::string("foo");
-    auto bar = std::string("bar");
-    auto zoo = std::string("zoo");
-    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), foo.cbegin(), foo.cend()) == garbage.cend());
-    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), bar.cbegin(), bar.cend()) == garbage.cend());
-    ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), zoo.cbegin(), zoo.cend()) == garbage.cend());
+    for (auto& s : string_array) {
+        ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), s.cbegin(), s.cend()) == garbage.cend());
+    }
 
     // (2.)
     backend->setEncryption(rng, password);
