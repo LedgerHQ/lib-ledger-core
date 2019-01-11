@@ -118,6 +118,13 @@ namespace ledger {
         extern LIBCORE_EXPORT const int VERSION_PATCH;
         extern LIBCORE_EXPORT const std::string LIB_STRING_VERSION;
 
+        /**
+         * Namespace containing the API of the core library
+         */
+        namespace api {
+
+        }
+
     }
 
 }

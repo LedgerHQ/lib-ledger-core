@@ -94,25 +94,6 @@ namespace soci
         details::exchange_type  _type;
     };
 
-    struct SOCI_PROXY_DECL proxy_vector_into_type_backend : details::vector_into_type_backend
-    {
-        proxy_vector_into_type_backend(proxy_statement_backend &st)
-                : statement_(st)
-        {}
-
-        void define_by_pos(int& position, void* data, details::exchange_type type) SOCI_OVERRIDE;
-
-        void pre_fetch() SOCI_OVERRIDE;
-        void post_fetch(bool gotData, indicator* ind) SOCI_OVERRIDE;
-
-        void resize(std::size_t sz) SOCI_OVERRIDE;
-        std::size_t size() SOCI_OVERRIDE;
-
-        void clean_up() SOCI_OVERRIDE;
-
-        proxy_statement_backend& statement_;
-    };
-
     struct SOCI_PROXY_DECL proxy_standard_use_type_backend : details::standard_use_type_backend
     {
         proxy_standard_use_type_backend(proxy_statement_backend &st)
@@ -131,23 +112,6 @@ namespace soci
         ledger::core::Either<int, std::string> _position;
         void* _data;
         details::exchange_type _type;
-    };
-
-    struct SOCI_PROXY_DECL proxy_vector_use_type_backend : details::vector_use_type_backend
-    {
-        proxy_vector_use_type_backend(proxy_statement_backend &st)
-                : statement_(st) {}
-
-        void bind_by_pos(int& position, void* data, details::exchange_type type) SOCI_OVERRIDE;
-        void bind_by_name(std::string const& name, void* data, details::exchange_type type) SOCI_OVERRIDE;
-
-        void pre_use(indicator const* ind) SOCI_OVERRIDE;
-
-        std::size_t size() SOCI_OVERRIDE;
-
-        void clean_up() SOCI_OVERRIDE;
-
-        proxy_statement_backend& statement_;
     };
 
     struct proxy_session_backend;
@@ -176,8 +140,8 @@ namespace soci
 
         proxy_standard_into_type_backend* make_into_type_backend() SOCI_OVERRIDE;
         proxy_standard_use_type_backend* make_use_type_backend() SOCI_OVERRIDE;
-        proxy_vector_into_type_backend* make_vector_into_type_backend() SOCI_OVERRIDE;
-        proxy_vector_use_type_backend* make_vector_use_type_backend() SOCI_OVERRIDE;
+        details::vector_into_type_backend* make_vector_into_type_backend() SOCI_OVERRIDE;
+        details::vector_use_type_backend* make_vector_use_type_backend() SOCI_OVERRIDE;
 
         bool reset_if_necessary();
 

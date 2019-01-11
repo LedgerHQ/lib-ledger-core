@@ -185,14 +185,14 @@ proxy_standard_use_type_backend *proxy_statement_backend::make_use_type_backend(
     return new proxy_standard_use_type_backend(*this);
 }
 
-proxy_vector_into_type_backend *proxy_statement_backend::make_vector_into_type_backend() {
+details::vector_into_type_backend *proxy_statement_backend::make_vector_into_type_backend() {
     SP_PRINT("MAKE VECTOR INTO TYPE BACKEND")
-    return nullptr; new proxy_vector_into_type_backend(*this);
+    throw soci_error("Unsupported feature used, bulk operation on SOCI");
 }
 
-proxy_vector_use_type_backend *proxy_statement_backend::make_vector_use_type_backend() {
+details::vector_use_type_backend *proxy_statement_backend::make_vector_use_type_backend() {
     SP_PRINT("MAKE VECTOR USE TYPE BACKEND")
-    return nullptr; new proxy_vector_use_type_backend(*this);
+    throw soci_error("Unsupported feature used, bulk operation on SOCI");
 }
 
 
