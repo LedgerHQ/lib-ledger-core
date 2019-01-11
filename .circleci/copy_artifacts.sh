@@ -5,8 +5,6 @@ TARGET=$1
 ARCH=$2
 branchstr=$(git branch | grep '*' | sed 's/^..//')
 
-#echo "======> Deploy from $branchstr branch, version : $LIB_VERSION"
-
 echo "======> Start deploy for $unamestr"
 if [ "$unamestr" == "Linux" ]; then
 	if [ "$TARGET" == "target_jni" ]; then
