@@ -54,7 +54,6 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
 
-            //TODO: multiple accounts balances ?
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can called only with one address");
             }
@@ -165,7 +164,7 @@ namespace ledger {
         }
 
         std::string ApiRippleLikeBlockchainExplorer::getExplorerVersion() const {
-            return "";
+            return _explorerVersion;
         }
     }
 }

@@ -108,7 +108,7 @@ namespace ledger {
             if (transaction.block.nonEmpty())
                 putBlock(sql, transaction.block.getValue());
 
-            int result = 0x00;
+            int result = FLAG_TRANSACTION_UPDATED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -125,14 +125,20 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                    emitNewOperationEvent(operation);
+                }
+                result = FLAG_NEW_TRANSACTION;
             }
 
             if (_accountAddress == transaction.receiver) {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                    emitNewOperationEvent(operation);
+                }
+                result = FLAG_NEW_TRANSACTION;
             }
 
             return result;

@@ -141,7 +141,7 @@ namespace ledger {
 
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "date") {
+                } else if (_lastKey == "date" && currentObject != "transaction") {
                     auto pos = value.find('+');
                     if ( pos != std::string::npos && pos > 0) {
                         value = value.substr(0, pos);
@@ -155,7 +155,7 @@ namespace ledger {
                     if (_transaction->block.hasValue()) {
                         _transaction->block.getValue().time = date;
                     }
-                } else if (_lastKey == "Account" && currentObject == "tx") {
+                } else if (_lastKey == "Account" && (currentObject == "tx" || currentObject == "transaction")){
                     _transaction->sender = value;
                 } else if (_lastKey == "Destination") {
                     _transaction->receiver = value;

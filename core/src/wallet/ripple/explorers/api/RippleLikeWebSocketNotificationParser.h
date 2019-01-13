@@ -43,6 +43,13 @@
 #include "RippleLikeTransactionParser.h"
 #include <wallet/common/explorers/api/AbstractWebSocketNotificationParser.h>
 
+
+#define PROXY_PARSE_RIPPLE_WS(method, ...)                                         \
+ auto& currentObject = _currentObject;                                   \
+ if (currentObject == "transaction") {                            \
+    return getTransactionParser().method(__VA_ARGS__);                       \
+ } else                                                                  \
+
 namespace ledger {
     namespace core {
         class RippleLikeWebSocketNotificationParser
@@ -63,6 +70,57 @@ namespace ledger {
                         RippleLikeTransactionParser,
                         RippleLikeBlockParser>::Key(str, length, copy);
             }
+
+            bool StartObject() {
+                {
+                    _depth += 1;
+                    auto lastKey = getLastKey();
+                    if (lastKey == "transaction") {
+                        _currentObject = lastKey;
+                        getTransactionParser().init(&_result->transaction);
+                    }
+                }
+                PROXY_PARSE_RIPPLE_WS(StartObject) {
+                    return true;
+                }
+            };
+
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
+                           bool copy) {
+                PROXY_PARSE_RIPPLE_WS(String, str, length, copy) {
+                    auto value = std::string(str, length);
+                    if (getLastKey() == "ledger_index") {
+                        BigInt bigIntValue = BigInt::fromString(value);
+                        _result->block.height = bigIntValue.toUint64();
+                    }
+                }
+                return true;
+            };
+
+            bool
+            String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+
+                auto value = std::string(str, length);
+                if (getLastKey() == "type") {
+                    _result->type = value;
+                }
+
+                PROXY_PARSE_RIPPLE_WS(String, str, length, copy) {
+                    if (getLastKey() == "ledger_hash") {
+                        _result->block.hash = value;
+                    }
+                    return true;
+                }
+            };
+
+            bool EndObject(rapidjson::SizeType memberCount) {
+                _depth -= 1;
+                if (_depth == 1)
+                    _currentObject = "";
+                PROXY_PARSE_WS(EndObject, memberCount) {
+                    return true;
+                }
+            };
 
         protected:
 

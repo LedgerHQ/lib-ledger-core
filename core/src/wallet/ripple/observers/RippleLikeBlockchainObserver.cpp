@@ -65,9 +65,8 @@ namespace ledger {
                 RippleLikeBlockchainObserver(context, configuration, logger, currency,
                                              {api::RippleConfigurationDefaults::RIPPLE_OBSERVER_WS_ENDPOINT_S2}) {
             _client = client;
-            auto baseUrl = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
+            _url = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
                     .value_or(api::RippleConfigurationDefaults::RIPPLE_OBSERVER_WS_ENDPOINT_S2);
-            _url = fmt::format(baseUrl, getCurrency().rippleLikeNetworkParameters.value().Identifier);
         }
 
         void RippleLikeBlockchainObserver::putTransaction(const RippleLikeBlockchainExplorerTransaction &tx) {
@@ -141,9 +140,9 @@ namespace ledger {
             run([message, self]() {
                 auto result = JSONUtils::parse<RippleLikeWebSocketNotificationParser>(message);
                 result->block.currencyName = self->getCurrency().name;
-                if (result->type == "new-transaction") {
+                if (result->type == "transaction") {
                     self->putTransaction(result->transaction);
-                } else if (result->type == "new-block") {
+                } else if (result->type == "ledgerClosed") {
                     self->putBlock(result->block);
                 }
             });
