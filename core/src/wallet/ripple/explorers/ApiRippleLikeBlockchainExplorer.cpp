@@ -87,6 +87,11 @@ namespace ledger {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getSequence method for Ripple API");
         }
 
+        Future<std::shared_ptr<BigInt>>
+        ApiRippleLikeBlockchainExplorer::getFees() {
+            throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getFees method for Ripple API");
+        }
+
         Future<void *> ApiRippleLikeBlockchainExplorer::startSession() {
             return Future<void *>::successful(new std::string("", 0));
         }
@@ -96,7 +101,7 @@ namespace ledger {
         }
 
         Future<Bytes> ApiRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
-            return getLedgerApiRawTransaction(transactionHash);
+            throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getRawTransaction method for Ripple API");
         }
 
         Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {

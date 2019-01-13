@@ -91,6 +91,9 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getSequence(const std::string &address) = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getFees() = 0;
         };
     }
 }

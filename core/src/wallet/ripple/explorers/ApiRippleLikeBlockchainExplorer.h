@@ -60,6 +60,9 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getSequence(const std::string &address) override;
 
+            Future<std::shared_ptr<BigInt>>
+            getFees() override;
+
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
             Future<void *> startSession() override;
