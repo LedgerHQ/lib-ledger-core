@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_DATABASEBACKEND_HPP
 #define LEDGER_CORE_DATABASEBACKEND_HPP
 
@@ -45,7 +46,6 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver>& resolver,
                 const std::string& dbName,
                 soci::session& session
-
             ) = 0;
 
             std::shared_ptr<api::DatabaseBackend> enableQueryLogging(bool enable) override;

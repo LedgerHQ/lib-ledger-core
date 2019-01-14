@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_MIGRATIONS_HPP
 #define LEDGER_CORE_MIGRATIONS_HPP
 
@@ -55,17 +56,48 @@ namespace ledger {
             return previousResult;
         };
 
+        template <unsigned int migrationNumber>
+        void rollback(soci::session& sql) {
+            std::cerr << "No specified migration to rollback for version " << migrationNumber << std::endl;
+            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration to rollback for version {}", migrationNumber);
+        }
+
+        template <unsigned int version, unsigned int lowestVersion>
+        bool rollback(soci::session& sql) {
+            rollback<version>(sql);
+
+            // after rolling back this migration, we won’t have anything left, so we only update
+            // the version for > 0
+            if (version > 0) {
+                sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
+            }
+
+            if (version >= lowestVersion) {
+                rollback<version - 1, lowestVersion>(sql);
+            }
+        }
+
         template <> bool migrate<-1>(soci::session& sql, int currentVersion);
 
         // Migrations
         template <> void migrate<0>(soci::session& sql);
+        template <> void rollback<0>(soci::session& sql);
+
         template <> void migrate<1>(soci::session& sql);
+        template <> void rollback<1>(soci::session& sql);
+
         template <> void migrate<2>(soci::session& sql);
+        template <> void rollback<2>(soci::session& sql);
+
         template <> void migrate<3>(soci::session& sql);
+        template <> void rollback<3>(soci::session& sql);
+
         template <> void migrate<4>(soci::session& sql);
+        template <> void rollback<4>(soci::session& sql);
+
         template <> void migrate<5>(soci::session& sql);
+        template <> void rollback<5>(soci::session& sql);
     }
 }
-
 
 #endif //LEDGER_CORE_MIGRATIONS_HPP

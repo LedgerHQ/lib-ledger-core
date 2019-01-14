@@ -32,7 +32,6 @@
 
 namespace ledger {
     namespace core {
-
         template <> bool migrate<-1>(soci::session& sql, int currentVersion) {
             return false;
         }
@@ -42,11 +41,15 @@ namespace ledger {
                 "id INT PRIMARY KEY NOT NULL,"
                 "version INT NOT NULL"
             ")";
+
             sql << "INSERT INTO __database_meta__(id, version) VALUES(0, 0)";
         }
 
-        template <> void migrate<1>(soci::session& sql) {
+        template <> void rollback<0>(soci::session& sql) {
+            sql << "DROP TABLE __database_meta__";
+        }
 
+        template <> void migrate<1>(soci::session& sql) {
             // Pool table
             sql << "CREATE TABLE pools("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -81,7 +84,6 @@ namespace ledger {
             ")";
 
             // Abstract account table
-
             sql << "CREATE TABLE accounts("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "idx INTEGER NOT NULL,"
@@ -99,7 +101,6 @@ namespace ledger {
             ")";
 
             // Abstract operation table
-
             sql << "CREATE TABLE operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "account_uid VARCHAR(255) NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE,"
@@ -116,7 +117,6 @@ namespace ledger {
             ")";
 
             // Bitcoin currency table
-
             sql << "CREATE TABLE bitcoin_currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "identifier VARCHAR(255) NOT NULL,"
@@ -181,7 +181,6 @@ namespace ledger {
             ")";
 
             // Bitcoin operation table
-
             sql << "CREATE TABLE bitcoin_operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                 "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid),"
@@ -189,13 +188,65 @@ namespace ledger {
                 ")";
         }
 
+        template <> void rollback<1>(soci::session& sql) {
+            // Bitcoin operation table
+            sql << "DROP TABLE bitcoin_operations";
+
+            // Bitcoin account
+            sql << "DROP TABLE bitcoin_accounts";
+
+            // Bitcoin transaction <-> input table
+            sql << "DROP TABLE bitcoin_transaction_inputs";
+
+            // Bitcoin output table
+            sql << "DROP TABLE bitcoin_outputs";
+
+            // Bitcoin input table
+            sql << "DROP TABLE bitcoin_inputs";
+
+            // Bitcoin transaction table
+            sql << "DROP TABLE bitcoin_transactions";
+
+            // Bitcoin currency table
+            sql << "DROP TABLE bitcoin_currencies";
+
+            // Abstract operation table
+            sql << "DROP TABLE operations";
+
+            // Abstract block table
+            sql << "DROP TABLE blocks";
+
+            // Abstract account table
+            sql << "DROP TABLE accounts";
+
+            // Abstract wallet table
+            sql << "DROP TABLE wallets";
+
+            // Abstract units table
+            sql << "DROP TABLE units";
+
+            // Abstract currency table
+            sql << "DROP TABLE currencies";
+
+            // Pool table
+            sql << "DROP TABLE pools";
+        }
+
         template <> void migrate<2>(soci::session& sql) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
+        template <> void rollback<2>(soci::session& sql) {
+            // not supported in standard ways by SQLite :(
+        }
+
         template <> void migrate<3>(soci::session& sql) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
+        }
+
+        template <> void rollback<3>(soci::session& sql) {
+            // not supported in standard ways by SQLite :(
         }
 
         template <> void migrate<4>(soci::session& sql) {
@@ -206,8 +257,12 @@ namespace ledger {
             }
         }
 
-        template <> void migrate<5>(soci::session& sql) {
+        template <> void rollback<4>(soci::session& sql) {
+            // cannot rollback
+        }
 
+        template <> void migrate<5>(soci::session& sql) {
+            // ETH currencies
             sql << "CREATE TABLE ethereum_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -217,6 +272,7 @@ namespace ledger {
                     "additional_EIPs TEXT"
                     ")";
 
+            // ETH accounts
             sql << "CREATE TABLE ethereum_accounts("
                     "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -224,6 +280,7 @@ namespace ledger {
                     "address VARCHAR(255) NOT NULL"
                     ")";
 
+            // ETH transactions
             sql << "CREATE TABLE ethereum_transactions("
                     "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "hash VARCHAR(255) NOT NULL,"
@@ -241,18 +298,21 @@ namespace ledger {
                     "status BIGINT NOT NULL"
                     ")";
 
+            // ETH operations
             sql << "CREATE TABLE ethereum_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                     "transaction_uid VARCHAR(255) NOT NULL REFERENCES ethereum_transactions(transaction_uid),"
                     "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
 
+            // ERC20 accounts
             sql << "CREATE TABLE erc20_accounts("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
                     "ethereum_account_uid VARCHAR(255) NOT NULL REFERENCES ethereum_accounts(uid) ON DELETE CASCADE,"
                     "contract_address VARCHAR(255) NOT NULL"
                     ")";
 
+            // ERC20 operations
             sql << "CREATE TABLE erc20_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
                     "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -271,6 +331,7 @@ namespace ledger {
                     "status INTEGER NOT NULL"
                     ")";
 
+            // ERC20 tokens
             sql << "CREATE TABLE erc20_tokens("
                     "contract_address VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "name VARCHAR(255) NOT NULL,"
@@ -280,5 +341,27 @@ namespace ledger {
 
         }
 
+        template <> void rollback<5>(soci::session& sql) {
+            // ERC20 tokens
+            sql << "DROP TABLE erc20_tokens";
+
+            // ERC20 operations
+            sql << "DROP TABLE erc20_operations";
+
+            // ERC20 accounts
+            sql << "DROP TABLE erc20_accounts";
+
+            // ETH operations
+            sql << "DROP TABLE ethereum_operations";
+
+            // ETH transactions
+            sql << "DROP TABLE ethereum_operations";
+
+            // ETH accounts
+            sql << "DROP TABLE ethereum_accounts";
+
+            // ETH currencies
+            sql << "DROP TABLE ethereum_currencies";
+        }
     }
 }
