@@ -551,7 +551,7 @@ namespace ledger {
                     auto prevTxHash = input->getPreviousTxHash().value_or("");
                     auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
                     BitcoinLikeBlockchainExplorer::Transaction prevTx;
-                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
+                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, self->getAccountUid(), prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
                         throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
                     }
                     in.value = prevTx.outputs[prevTxOutputIndex].value;
@@ -622,7 +622,7 @@ namespace ledger {
             return async<std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction>>([=] () -> std::shared_ptr<BitcoinLikeBlockchainExplorer::Transaction> {
                 auto tx = std::make_shared<BitcoinLikeBlockchainExplorer::Transaction>();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
+                if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, self->getAccountUid(), *tx)) {
                     throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);
                 }
                 return tx;

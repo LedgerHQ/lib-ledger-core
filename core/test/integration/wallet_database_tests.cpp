@@ -109,7 +109,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", *transaction);
 
     BitcoinLikeBlockchainExplorer::Transaction dbTransaction;
-    if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, dbTransaction)) {
+    if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, acc.getAccountUid(), dbTransaction)) {
         EXPECT_EQ(transaction->hash, dbTransaction.hash);
         EXPECT_EQ(transaction->lockTime, dbTransaction.lockTime);
         EXPECT_EQ(transaction->receivedAt, dbTransaction.receivedAt);
@@ -144,7 +144,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
 
     for (auto& transaction : transactions) {
         BitcoinLikeBlockchainExplorer::Transaction dbTx;
-        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, dbTx)) {
+        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, acc.getAccountUid(), dbTx)) {
             EXPECT_EQ(transaction.hash, dbTx.hash);
             EXPECT_EQ(transaction.lockTime, dbTx.lockTime);
             EXPECT_EQ(transaction.receivedAt.time_since_epoch().count(), dbTx.receivedAt.time_since_epoch().count());

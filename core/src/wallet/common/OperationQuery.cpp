@@ -162,7 +162,7 @@ namespace ledger {
 
                 // End of inflate
                 if (_fetchCompleteOperation) {
-                    inflateCompleteTransaction(sql, *operationApi);
+                    inflateCompleteTransaction(sql, accountUid, *operationApi);
                 }
                 operations.push_back(operationApi);
             }
@@ -174,21 +174,21 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void OperationQuery::inflateCompleteTransaction(soci::session &sql, OperationApi &operation) {
+        void OperationQuery::inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
             switch (operation.getAccount()->getWalletType()) {
-                case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, operation);
+                case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, accountUid, operation);
                 case (api::WalletType::ETHEREUM): return inflateEthereumLikeTransaction(sql, operation);
                 case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
             }
         }
 
-        void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, OperationApi &operation) {
+        void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
             BitcoinLikeBlockchainExplorer::Transaction tx;
             operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorer::Transaction>(tx);
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().bitcoinTransaction.getValue());
+            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, operation.getBackend().bitcoinTransaction.getValue());
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {

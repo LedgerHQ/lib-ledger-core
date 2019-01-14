@@ -154,7 +154,9 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}+{}", accountUid, previousOutputIndex, previousTxHash, coinbase));
         }
 
-        bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql, const std::string &hash,
+        bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
+                                                                        const std::string &hash,
+                                                                        const std::string &accountUid,
                                                                         BitcoinLikeBlockchainExplorer::Transaction &out) {
             rowset<row> rows = (sql.prepare <<
                     "SELECT  tx.hash, tx.version, tx.time, tx.locktime, "
@@ -164,13 +166,15 @@ namespace ledger {
                             "WHERE tx.hash = :hash", use(hash)
             );
             for (auto& row : rows) {
-                inflateTransaction(sql, row, out);
+                inflateTransaction(sql, row, accountUid, out);
                 return true;
             }
             return false;
         }
 
-        bool BitcoinLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql, const soci::row &row,
+        bool BitcoinLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
+                                                                      const soci::row &row,
+                                                                      const std::string &accountUid,
                                                                       BitcoinLikeBlockchainExplorer::Transaction &out) {
             out.hash = row.get<std::string>(0);
             out.version = (uint32_t) row.get<int32_t>(1);
@@ -210,7 +214,7 @@ namespace ledger {
 
             // Fetch outputs
             rowset<soci::row> outputRows = (sql.prepare <<
-                    "SELECT idx, amount, script, address FROM bitcoin_outputs WHERE transaction_hash = :hash "
+                    "SELECT idx, amount, script, address, transaction_uid FROM bitcoin_outputs WHERE transaction_hash = :hash "
                     "ORDER BY idx", use(out.hash)
             );
             for (auto& outputRow : outputRows) {
@@ -220,6 +224,18 @@ namespace ledger {
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 out.outputs.push_back(std::move(output));
+                //Check if the output belongs to this account
+                //solve case of 2 accounts in DB one as sender and one as receiver
+                //of same transaction (filter on account_uid won't solve the issue because
+                //bitcoin_outputs going to external accounts have NULL account_uid)
+                if (outputRow.get<std::string>(4) == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash)) {
+                    BitcoinLikeBlockchainExplorer::Output output;
+                    output.index = (uint64_t) outputRow.get<int>(0);
+                    output.value.assignScalar(outputRow.get<long long>(1));
+                    output.script = outputRow.get<std::string>(2);
+                    output.address = outputRow.get<Option<std::string>>(3);
+                    out.outputs.push_back(std::move(output));
+                }
             }
 
             // Enjoy the silence.
