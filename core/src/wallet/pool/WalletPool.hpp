@@ -136,7 +136,6 @@ namespace ledger {
             void initializeFactories();
             std::shared_ptr<AbstractWallet> buildWallet(const WalletDatabaseEntry& entry);
 
-        private:
             // General
             std::string _poolName;
             Option<std::string> _password;
@@ -187,6 +186,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_WALLETPOOL_HPP

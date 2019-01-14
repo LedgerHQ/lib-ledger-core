@@ -51,6 +51,7 @@ namespace ledger {
                 sql << "UPDATE __database_meta__ SET version = :version", soci::use(version);
                 return true;
             }
+
             return previousResult;
         };
 

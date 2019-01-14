@@ -39,7 +39,6 @@
 
 namespace ledger {
     namespace core {
-
         WalletPool::WalletPool(
             const std::string &name, const Option<std::string> &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
@@ -472,6 +471,5 @@ namespace ledger {
 
         WalletPool::~WalletPool() {
         }
-
     }
 }
