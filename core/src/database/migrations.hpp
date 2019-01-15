@@ -62,18 +62,18 @@ namespace ledger {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration to rollback for version {}", migrationNumber);
         }
 
-        template <unsigned int version, unsigned int lowestVersion>
+        template <unsigned int version>
         bool rollback(soci::session& sql) {
             rollback<version>(sql);
 
-            // after rolling back this migration, we won’t have anything left, so we only update
-            // the version for > 0
-            if (version > 0) {
-                sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
-            }
+            if (version >= 0) {
+                // after rolling back this migration, we won’t have anything left, so we only update
+                // the version for > 0
+                if (version != 0) {
+                    sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
+                }
 
-            if (version >= lowestVersion) {
-                rollback<version - 1, lowestVersion>(sql);
+                rollback<version - 1>(sql);
             }
         }
 
