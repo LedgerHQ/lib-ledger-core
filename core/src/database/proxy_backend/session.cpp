@@ -1,13 +1,13 @@
 /*
  *
- * DatabaseBackend
+ * session.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 14/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,30 +28,45 @@
  * SOFTWARE.
  *
  */
-#include "DatabaseBackend.hpp"
-#include "SQLite3Backend.hpp"
-#include <api/DatabaseEngine.hpp>
-#include "ProxyBackend.hpp"
 
-namespace ledger {
-    namespace core {
+#include "soci-proxy.h"
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getSqlite3Backend() {
-            return std::make_shared<SQLite3Backend>();
-        }
+using namespace soci;
+using namespace ledger::core;
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::createBackendFromEngine(
-                const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) {
-            return std::make_shared<ProxyBackend>(engine);
-        }
+proxy_session_backend::proxy_session_backend(const std::shared_ptr<ledger::core::api::DatabaseConnection> &connection) {
+    _conn = connection;
+}
 
-        std::shared_ptr<api::DatabaseBackend> DatabaseBackend::enableQueryLogging(bool enable) {
-            _enableLogging = enable;
-            return shared_from_this();
-        }
+proxy_session_backend::~proxy_session_backend() {
 
-        bool DatabaseBackend::isLoggingEnabled() {
-            return _enableLogging;
-        }
-    }
+}
+
+void proxy_session_backend::begin() {
+    _conn->begin();
+}
+
+void proxy_session_backend::commit() {
+    _conn->commit();
+}
+
+void proxy_session_backend::rollback() {
+    _conn->rollback();
+}
+
+void proxy_session_backend::clean_up() {
+    _conn->close();
+}
+
+proxy_statement_backend *proxy_session_backend::make_statement_backend() {
+   return new proxy_statement_backend(*this);
+}
+
+proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
+    // TODO: Create ROWID interface
+    return nullptr;
+}
+
+proxy_blob_backend *proxy_session_backend::make_blob_backend() {
+    return new proxy_blob_backend(_conn->newBlob());
 }

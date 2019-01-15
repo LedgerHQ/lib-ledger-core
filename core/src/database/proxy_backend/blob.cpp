@@ -1,13 +1,13 @@
 /*
  *
- * SQLite3Backend
+ * blob.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 03/12/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,33 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
-#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#include "DatabaseBackend.hpp"
-#include <memory>
+#include "soci-proxy.h"
 
-namespace ledger {
- namespace core {
-     class SQLite3Backend : public DatabaseBackend {
-     public:
-         SQLite3Backend();
-         int32_t getConnectionPoolSize() override;
+using namespace ledger::core;
+using namespace soci;
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
-                   soci::session &session) override;
 
-     private:
-        bool _logging;
-     };
- }
+std::size_t proxy_blob_backend::get_len() {
+    return static_cast<size_t>(_backend->size());
 }
 
+std::size_t proxy_blob_backend::read(std::size_t offset, char *buf, std::size_t toRead) {
+    std::vector<uint8_t> buffer = _backend->read(static_cast<int64_t>(offset), static_cast<int64_t>(toRead));
+    std::copy(std::begin(buffer), std::end(buffer), buf);
+    return buffer.size();
+}
 
-#endif //LEDGER_CORE_SQLITE3BACKEND_HPP
+std::size_t proxy_blob_backend::write(std::size_t offset, char const *buf, std::size_t toWrite) {
+    const std::vector<uint8_t> data((uint8_t *)buf, (uint8_t *)(buf + toWrite));
+    return static_cast<size_t>(_backend->write(static_cast<int64_t>(offset), data));
+}
+
+std::size_t proxy_blob_backend::append(char const *buf, std::size_t toWrite) {
+    const std::vector<uint8_t> data((uint8_t *)buf, (uint8_t *)(buf + toWrite));
+    return static_cast<size_t>(_backend->append(data));
+}
+
+void proxy_blob_backend::trim(std::size_t newLen) {
+    _backend->trim(static_cast<int64_t>(newLen));
+}

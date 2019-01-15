@@ -1,13 +1,13 @@
 /*
  *
- * DatabaseBackend
+ * ProxyBackend.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by Pierre Pollastri on 13/11/2018.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2017 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,30 +28,31 @@
  * SOFTWARE.
  *
  */
-#include "DatabaseBackend.hpp"
-#include "SQLite3Backend.hpp"
+
+#ifndef LEDGER_CORE_PROXYBACKEND_H
+#define LEDGER_CORE_PROXYBACKEND_H
+
 #include <api/DatabaseEngine.hpp>
-#include "ProxyBackend.hpp"
+#include <database/DatabaseBackend.hpp>
 
 namespace ledger {
     namespace core {
+    class ProxyBackend : public DatabaseBackend {
+        public:
+        explicit ProxyBackend(const std::shared_ptr<api::DatabaseEngine>& engine);
+        int32_t getConnectionPoolSize() override;
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getSqlite3Backend() {
-            return std::make_shared<SQLite3Backend>();
-        }
+        void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+                  soci::session &session) override;
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::createBackendFromEngine(
-                const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) {
-            return std::make_shared<ProxyBackend>(engine);
-        }
+        ~ProxyBackend();
 
-        std::shared_ptr<api::DatabaseBackend> DatabaseBackend::enableQueryLogging(bool enable) {
-            _enableLogging = enable;
-            return shared_from_this();
-        }
-
-        bool DatabaseBackend::isLoggingEnabled() {
-            return _enableLogging;
-        }
+    private:
+            std::shared_ptr<api::DatabaseEngine> _engine;
+            const soci::backend_factory* _factory;
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_PROXYBACKEND_H
