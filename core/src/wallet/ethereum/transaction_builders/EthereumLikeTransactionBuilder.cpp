@@ -34,6 +34,8 @@
 #include <api/EthereumLikeTransactionCallback.hpp>
 #include <bytes/RLP/RLPDecoder.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <math/Base58.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -62,13 +64,13 @@ namespace ledger {
         EthereumLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> & amount,
                                                       const std::string & address) {
             _request.value = std::make_shared<BigInt>(amount->toString());
-            _request.toAddress = address;
+            _request.toAddress = Base58::encodeWithEIP55(address);
             return shared_from_this();
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder>
         EthereumLikeTransactionBuilder::wipeToAddress(const std::string & address) {
-            _request.toAddress = address;
+            _request.toAddress = Base58::encodeWithEIP55(address);
             _request.wipe = true;
             return shared_from_this();
         }
@@ -148,7 +150,7 @@ namespace ledger {
                         break;
                     case 3: {
                         auto ethAddress = "0x" + childHexString;
-                        tx->setReceiver(ethAddress);
+                        tx->setReceiver(Base58::encodeWithEIP55(ethAddress));
                         break;
                     }
                     case 4:

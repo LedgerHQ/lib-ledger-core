@@ -119,14 +119,13 @@ namespace ledger {
                 operation.trust = std::make_shared<TrustIndicator>();
                 operation.date = transaction.receivedAt;
 
-
-
                 if (_accountAddress == transaction.sender) {
                     operation.amount = transaction.value;
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
                     OperationDatabaseHelper::putOperation(sql, operation);
                     updateERC20Accounts(sql, operation);
+                    result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
                 }
 
                 if (_accountAddress == transaction.receiver) {
@@ -135,6 +134,7 @@ namespace ledger {
                     operation.refreshUid();
                     OperationDatabaseHelper::putOperation(sql, operation);
                     updateERC20Accounts(sql, operation);
+                    result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
                 }
 
                 return result;

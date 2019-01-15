@@ -88,6 +88,16 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &by
     return "0x" + addressEIP55;
 }
 
+std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
+    if (address.size() == 42) {
+        //Address with 0x prefix
+        return Base58::encodeWithEIP55(hex::toByteArray(address.substr(2, address.size() - 2)));
+    } else if (address.size() == 40) {
+        return Base58::encodeWithEIP55(hex::toByteArray(address));
+    }
+    throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format");
+}
+
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str) throw(ledger::core::Exception) {
     BigInt intData(0);
     std::vector<uint8_t> prefix;

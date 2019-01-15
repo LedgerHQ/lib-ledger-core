@@ -62,7 +62,7 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
 
     builder->setGasPrice(api::Amount::fromLong(currency, 200000));
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
-    builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfB98Bdd04d82648f25E67041D6E27a866BEC0B47");
+    builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
     auto f = builder->build();
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
