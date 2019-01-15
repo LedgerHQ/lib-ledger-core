@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_PREFERENCESBACKEND_HPP
 #define LEDGER_CORE_PREFERENCESBACKEND_HPP
 
@@ -45,10 +46,14 @@
 #include "Preferences.hpp"
 #include <unordered_map>
 #include <mutex>
+#include <api/RandomNumberGenerator.hpp>
+#include <utils/Option.hpp>
+#include <crypto/AESCipher.hpp>
 
 namespace ledger {
     namespace core {
         class Preferences;
+
         enum PreferencesChangeType {
             PUT_TYPE, DELETE_TYPE
         };
@@ -57,30 +62,56 @@ namespace ledger {
             PreferencesChangeType type;
             std::vector<uint8_t> key;
             std::vector<uint8_t> value;
+
+            PreferencesChange() = default;
+            PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v);
         };
 
         class PreferencesBackend {
         public:
             PreferencesBackend(
-                    const std::string& path,
-                    const std::shared_ptr<api::ExecutionContext>& writingContext,
-                    const std::shared_ptr<api::PathResolver>& resolver
+                const std::string& path,
+                const std::shared_ptr<api::ExecutionContext>& writingContext,
+                const std::shared_ptr<api::PathResolver>& resolver
             );
+
+            ~PreferencesBackend() = default;
+
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
-            optional<std::string> get(const std::vector<uint8_t>& key) const;
+            optional<std::string> get(const std::vector<uint8_t>& key);
             void commit(const std::vector<PreferencesChange>& changes);
-            ~PreferencesBackend();
+
+            // Turn encryption on for all future uses.
+            //
+            // Data already present in the preferences are not affected.
+            void setEncryption(
+                const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                const std::string& password 
+            );
+
+            // Turn off encryption.
+            //
+            // Data already present in the preferences are not affected.
+            void unsetEncryption();
+
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
+            Option<AESCipher> _cipher;
 
-            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
+            // helper method used to encrypt things we want to put in leveldb
+            std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
+
+            // helper method used to decrypt things we want to retrieve from leveldb
+            std::vector<uint8_t> decrypt_preferences_change(const std::vector<uint8_t>& data);
+
             static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;
+
+            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
         };
     }
 }
-
 
 #endif //LEDGER_CORE_PREFERENCESBACKEND_HPP

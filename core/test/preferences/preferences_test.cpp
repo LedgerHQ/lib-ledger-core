@@ -34,19 +34,34 @@
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <ledger/core/preferences/PreferencesBackend.hpp>
+#include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
 #include <fstream>
+#include <OpenSSLRandomNumberGenerator.hpp>
 
-TEST(Preferences, StoreAndGetWithPreferencesAPI) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
-            resolver
-    );
+class PreferencesTest : public ::testing::Test {
+protected:
+    std::shared_ptr<NativePathResolver> resolver;
+    std::shared_ptr<NativeThreadDispatcher> dispatcher;
+    std::shared_ptr<ledger::core::api::Lock> preferencesLock;
+    std::shared_ptr<ledger::core::PreferencesBackend> backend;
+
+public:
+    PreferencesTest()
+        : resolver(std::make_shared<NativePathResolver>())
+        , dispatcher(std::make_shared<NativeThreadDispatcher>())
+        , preferencesLock(dispatcher->newLock())
+        , backend(std::make_shared<ledger::core::PreferencesBackend>(
+                    "/preferences/tests.db",
+                    dispatcher->getSerialExecutionContext("worker"),
+                    resolver
+          )) {
+    }
+};
+
+TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     auto preferences = backend->getPreferences("my_test_preferences");
+
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
         preferences->edit()
                 ->putString("my_string", "Hello World!")
@@ -56,6 +71,7 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
                 ->putStringArray("my_string_array", std::vector<std::string>({"Hello", "world", "!"}))
                 ->commit();
     }));
+
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
         preferences
                 ->edit()
@@ -63,6 +79,7 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
                 ->putString("my_string_to_remove", "Remove this please!")
                 ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
         EXPECT_EQ(preferences->getString("my_string", ""), "Hello World!");
@@ -79,7 +96,8 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
             dispatcher->stop();
         }), 50);
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
@@ -88,17 +106,10 @@ TEST(Preferences, StoreAndGetWithPreferencesAPI) {
     resolver->clean();
 }
 
-TEST(Preferences, IterateThroughMembers) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getSerialExecutionContext("worker"),
-            resolver
-    );
+TEST_F(PreferencesTest, IterateThroughMembers) {
     auto preferences = backend->getPreferences("my_test_preferences");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
+
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
         preferences->edit()
                 ->putString("address:0", "Hello World!")
@@ -121,6 +132,7 @@ TEST(Preferences, IterateThroughMembers) {
                 ->putString("address:1", "Hello World!")
                 ->commit();
     }));
+
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
         preferences
                 ->edit()
@@ -131,6 +143,7 @@ TEST(Preferences, IterateThroughMembers) {
                 ->putString("address:15", "Hello World!")
                 ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
         std::set<std::string> addresses({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -141,7 +154,8 @@ TEST(Preferences, IterateThroughMembers) {
         }, ledger::core::Option<std::string>("address:"));
         dispatcher->stop();
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
@@ -160,15 +174,8 @@ struct MyClass
         archive( x, y, z );
     }
 };
-TEST(Preferences, IterateThroughObjectMembers) {
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto preferencesLock = dispatcher->newLock();
-    auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-    "/preferences/tests.db",
-    dispatcher->getSerialExecutionContext("worker"),
-    resolver
-    );
+
+TEST_F(PreferencesTest, IterateThroughObjectMembers) {
     auto preferences = backend->getPreferences("my_test_preferences_array");
     auto otherPreferences = backend->getPreferences("my_other_test_preferences");
 
@@ -184,11 +191,12 @@ TEST(Preferences, IterateThroughObjectMembers) {
 
     dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([&] () {
         preferences
-        ->editor()
-        ->putObject<MyClass>("0", obj1)
-        ->putObject<MyClass>("1", obj2)
-        ->commit();
+            ->editor()
+            ->putObject<MyClass>("0", obj1)
+            ->putObject<MyClass>("1", obj2)
+            ->commit();
     }));
+
     // Assume that 100ms should be enough to persist data
     dispatcher->getMainExecutionContext()->delay(make_runnable([&] () {
         preferences->iterate<MyClass>([=] (leveldb::Slice&& key, const MyClass& value) {
@@ -201,17 +209,79 @@ TEST(Preferences, IterateThroughObjectMembers) {
                 EXPECT_EQ(obj2.y, value.y);
                 EXPECT_EQ(obj2.z, value.z);
             } else {
-               EXPECT_TRUE(false);
+                EXPECT_TRUE(false);
             }
             return true;
         });
         dispatcher->stop();
     }), 100);
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([dispatcher]() {
+
+    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
         dispatcher->stop();
         FAIL() << "Timeout";
     }), 5000);
 
     dispatcher->waitUntilStopped();
     resolver->clean();
+}
+
+TEST_F(PreferencesTest, EncryptDecrypt) {
+    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    backend->setEncryption(rng, password);
+
+    // persist a few stuff, that should be encrypted
+    preferences
+        ->editor()
+        ->putString("string", "dawg")
+        ->putInt("int", 9246)
+        ->putLong("long", 89356493564)
+        ->putBoolean("bool", true)
+        ->putStringArray("string_array", { "foo", "bar", "zoo" })
+        ->commit();
+
+    // two things to test:
+    //   1. disabling encryption should give us back unreadable data
+    //   2. re-enabling encryption; the data should now be correctly read
+
+    // (1.)
+    backend->unsetEncryption();
+
+    auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
+
+    // boolean is not tested because its entropy is way too low
+    ASSERT_NE(preferences->getString("string", ""), "dawg");
+    ASSERT_NE(preferences->getInt("int", 0), 9246);
+    ASSERT_NE(preferences->getLong("long", 0), 89356493564);
+
+    // encoding is fucked up, so we need to manually check bytes and that the strings are not there
+    auto garbage = preferences->getData("string_array", {});
+    for (auto& s : string_array) {
+        ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), s.cbegin(), s.cend()) == garbage.cend());
+    }
+
+    // (2.)
+    backend->setEncryption(rng, password);
+
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+    ASSERT_EQ(preferences->getStringArray("string_array", std::vector<std::string>()), string_array);
+
+    // finally, we want to test that setting the same key to the same value twice gets two different
+    // ciphered values
+    preferences->editor()->putString("same", "ledger_and_biscuits")->commit();
+
+    backend->unsetEncryption();
+    auto cipherText1 = preferences->getString("same", "");
+
+    backend->setEncryption(rng, password);
+    preferences->editor()->putString("same", "ledger_and_biscuits")->commit();
+
+    backend->unsetEncryption();
+    auto cipherText2 = preferences->getString("same", "");
+
+    ASSERT_NE(cipherText1, cipherText2);
 }

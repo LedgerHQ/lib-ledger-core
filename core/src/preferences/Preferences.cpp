@@ -72,13 +72,17 @@ namespace ledger {
         std::vector<std::string>
         Preferences::getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) {
             auto value = _backend.get(wrapKey(key));
+
             if (!value)
                 return fallbackValue;
+
             BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
             std::vector<std::string> result;
+
             while (reader.hasNext()) {
                 result.push_back(reader.readNextVarString());
             }
+
             return result;
         }
 
