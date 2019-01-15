@@ -52,10 +52,15 @@ namespace ledger {
 
             static std::string createInputUid(const std::string& accountUid, int32_t previousOutputIndex, const std::string& previousTxHash, const std::string& coinbase);
             static std::string createBitcoinTransactionUid(const std::string& accountUid, const std::string& txHash);
-            static bool getTransactionByHash(soci::session &sql, const std::string &hash,
+            static bool getTransactionByHash(soci::session &sql,
+                                             const std::string &hash,
+                                             const std::string &accountUid,
                                              BitcoinLikeBlockchainExplorerTransaction &out);
 
-            static inline bool inflateTransaction(soci::session& sql, const soci::row& row, BitcoinLikeBlockchainExplorerTransaction& out);
+            static inline bool inflateTransaction(soci::session& sql,
+                                                  const soci::row& row,
+                                                  const std::string &accountUid,
+                                                  BitcoinLikeBlockchainExplorerTransaction& out);
         };
     }
 }

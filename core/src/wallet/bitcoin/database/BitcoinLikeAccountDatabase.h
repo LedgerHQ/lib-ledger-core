@@ -40,7 +40,9 @@ namespace ledger {
         class BitcoinLikeAccountDatabase {
         public:
             BitcoinLikeAccountDatabase(const std::string& walletUid, int32_t index);
-
+            std::string getAccountUid() {
+                return _accountUid;
+            };
 
         private:
             std::string _accountUid;

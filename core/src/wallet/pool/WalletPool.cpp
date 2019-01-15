@@ -36,6 +36,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+
 namespace ledger {
     namespace core {
 
@@ -75,8 +76,14 @@ namespace ledger {
                 _pathResolver
             );
 
-            _logPrinter = logPrinter;
+            // Encrypt the preferences, if needed
+            if (password.hasValue()) {
+                _externalPreferencesBackend->setEncryption(rng, *password);
+                _internalPreferencesBackend->setEncryption(rng, *password);
+            }
+
             // Logger management
+            _logPrinter = logPrinter;
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),

@@ -34,8 +34,6 @@
 
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
-#include <iostream>
-using namespace std;
 
 class BitcoinKeychains : public BaseFixture {
 public:
