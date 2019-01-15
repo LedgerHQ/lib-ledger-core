@@ -7,6 +7,10 @@
 BUILD_CONFIG="Debug"
 cmake_params="" # All params passed to cmake to generate build files
 export ARCH=$2
+export CMAKE=cmake
+if [ "$unamestr" == "Linux" ]; then
+    export CMAKE=~/cmake-3.13.3-Linux-x86_64/bin/cmake
+fi
 
 ###
 # Commands of the script. Put them in command line parameters to trigger
@@ -143,7 +147,7 @@ if [ "$1" == "ios" ]; then
 fi
 
 echo $cmake_params
-$HOME/cmake-3.13.3-Linux-x86_64/bin/cmake $cmake_params ../lib-ledger-core
+$CMAKE $cmake_params ../lib-ledger-core
 echo "======> Build for $unamestr in $BUILD_CONFIG mode"
 if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
