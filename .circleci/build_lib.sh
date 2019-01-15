@@ -143,7 +143,7 @@ if [ "$1" == "ios" ]; then
 fi
 
 echo $cmake_params
-cmake $cmake_params ../lib-ledger-core
+$HOME/cmake-3.13.3-Linux-x86_64/bin/cmake $cmake_params ../lib-ledger-core
 echo "======> Build for $unamestr in $BUILD_CONFIG mode"
 if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
