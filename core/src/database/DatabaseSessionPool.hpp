@@ -59,9 +59,10 @@ namespace ledger {
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 5;
 
-        private:
             void performDatabaseMigration();
+            void performDatabaseRollback();
 
+        private:
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;

@@ -109,6 +109,9 @@ namespace ledger {
             _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
+        WalletPool::~WalletPool() {
+        }
+
         std::shared_ptr<WalletPool>
         WalletPool::newInstance(
             const std::string &name, const Option<std::string> &password,
@@ -469,7 +472,13 @@ namespace ledger {
 
         }
 
-        WalletPool::~WalletPool() {
+        Future<Unit> WalletPool::freshResetAll() {
+            auto self = shared_from_this();
+
+            return Future<Unit>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+                self->getDatabaseSessionPool()->performDatabaseRollback();
+                return unit;
+            });
         }
     }
 }

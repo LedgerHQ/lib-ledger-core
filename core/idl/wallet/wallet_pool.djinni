@@ -20,7 +20,6 @@
 
 #Class respresenting a pool of wallets
 WalletPool = interface +c {
-
     #Create a new instance of WalletPool object
     #@param name, string, name of the wallet pool
     #@param password, optional string, password to lock wallet pool
@@ -42,47 +41,74 @@ WalletPool = interface +c {
     #Return used logger to dump logs in defined log path by PathResolver
     #@return Logger object
     getLogger(): Logger;
+
     #Return name given to wallet pool
     #@return string
     getName(): string;
+
     #Return preferences of wallet pool (deduced from configuration)
     #@return Preferences object
     getPreferences(): Preferences;
+
     #Return number of wallets instanciated under wallet pool
     #@param callback, Callback object returns a 32 bits integer, count of wallets
     getWalletCount(callback: Callback<i32>);
+
     #Get instanciated wallets having index in a given range
     #@param from, 32 bits integer, lower bound of indices to pick
     #@param to, 32 bits integer, upper bound of indices to pick
     #@param callback, ListCallback object returns a list of Wallet objects
     getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);
+
     #Get wallet with a giver name
     #@param name, string, name of wallet to look for
     #@param callback, Callback object returns a Wallet object
     getWallet(name: string, callback: Callback<Wallet>);
+
     #Instanciate a new wallet under wallet pool
     #@param name, string, name of newly created wallet
     #@param currency, Currency object, currency of the wallet
     #@param configuration, DynamicObject object, configuration of wallet (preferences)
     #@param callback, Callback object returning a Wallet object
     createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
+
     #Return all supported currencies by wallet pool, at least one wallet support one of returned currencies
     #@param callback, ListCallback object, returns a list of Currency objects
     getCurrencies(callback: ListCallback<Currency>);
+
     #Return currency of a specific wallet
     #@param name, wallet's name to look for
     #@param callback, Callback object returning a Currency object
     getCurrency(name: string, callback: Callback<Currency>);
+
     #Return last block of blockchain of a given currency (if it is supported by the wallet pool)
     #@param name, string, name of currency we are interested into getting it's blockchain's last block
     #@param callback, Callback object returns a Block object
     getLastBlock(currencyName: string, callback: Callback<Block>);
+
     #Get event bus (handler) through which wallet pool observe and gets notified (explorers, DBs ...)
     #@param EventBus object
     getEventBus(): EventBus;
+
     #Erase data (in user's DB) relative to wallet since given date
     #@param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
+
+    # Reset wallet pool.
+    #
+    # Resetting the wallet pool is an irreversible fresh reset of the whole wallet pool
+    # and all of its created (sub-)objects (wallets, accounts, transactions, etc.). Please
+    # consider a less destructive option before opting to use this. However, if you’re
+    # looking for a way to end up as if you were in a “fresh install” situation, this is
+    # the function to go to.
+    #
+    # Final warning: this function effectively swipes off everything. You’ve been warned.
+    #
+    # > Note: when calling that function, you must re-create a WalletPool as all objects
+    # > got destroyed. Consider restarting / exiting your application right after calling
+    # > that function. You are also highly advised to run that function on a code path
+    # > that doesn’t include having lots of objects in memory.
+    freshResetAll(callback: Callback<void>);
 }
 
 #Class representing a wallet pool builder (to instanciate a wallet pool)
@@ -91,45 +117,56 @@ WalletPoolBuilder = interface +c {
     #@param client, HttpClient
     #@return WalletPoolBuilder object, instance with wallet pool http client set
     setHttpClient(client: HttpClient): WalletPoolBuilder;
+
     #Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...)
     #@param client, WebSocketClient object
     #@reutnr WalletPoolBuilder object, instance with wallet pool web socket client set
     setWebsocketClient(client: WebSocketClient): WalletPoolBuilder;
+
     #Set path resolver that will be used for wallet pool creation to resolve wallet pool's (DB's, logs, preferences ...) paths
     #@param pathResolver, Pathresolver object
     #@param WalletPoolBuilder object, instance with wallet pool path resolver set
     setPathResolver(pathResolver: PathResolver): WalletPoolBuilder;
+
     #Set log printer that will be used for wallet pool creation to dump wallet pool's logs (for debug purposes)
     #@param printer, LogPrinter object
     #@param WalletPoolBuilder object, instance with wallet pool logger set
     setLogPrinter(printer: LogPrinter): WalletPoolBuilder;
+
     #Set thread dispatcher that will be used for wallet pool creation to dispatch wallet pool's tasks through different threads
     #@param dispatcher, ThreadDispatcher object
     #@param WalletPoolBuilder object, instance with wallet pool thread dispatcher set
     setThreadDispatcher(dispatcher: ThreadDispatcher): WalletPoolBuilder;
+
     #Set name that will be used for wallet pool creation
     #@param name, string
     #@return WalletPoolBuilder object, instance with wallet pool name set
     setName(name: string): WalletPoolBuilder;
+
     #Set password that will be used for wallet pool creation
     #@param password, string
     #@return WalletPoolBuilder object, with wallet pool password set
     setPassword(password: string): WalletPoolBuilder;
+
     #Set random number generator that will be used for wallet pool creation
     #@param rng, RandomNumberGenerator object
     #@return WalletPoolBuilder object, with wallet pool random number generator set
     setRandomNumberGenerator(rng: RandomNumberGenerator): WalletPoolBuilder;
+
     #Set database that will be used for wallet pool creation, it will store all wallet pool's data (created wallets, accounts, preferences ...)
     #@param backend, DatabaseBackend object
     #@return WalletPoolBuilder object, with wallet pool database set
     setDatabaseBackend(backend: DatabaseBackend): WalletPoolBuilder;
+
     #Set configuration that will be used for wallet pool creation
     #@param configuration, DynamicObject object
     #@return WalletPoolBuilder object, with wallet pool configuration set
     setConfiguration(configuration: DynamicObject): WalletPoolBuilder;
+
     #Create wallet pool
     #@param callback, Callback object returning a WalletPool instance
     build(listener: Callback<WalletPool>);
+
     #Create an instance of the wallet pool builder
     #@return WalletPoolBuilder object
     static createInstance(): WalletPoolBuilder;

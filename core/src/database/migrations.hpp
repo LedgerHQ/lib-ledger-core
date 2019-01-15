@@ -38,6 +38,9 @@
 
 namespace ledger {
     namespace core {
+        /// Get the current database migration version.
+        int getDatabaseMigrationVersion(soci::session& sql);
+
         template <int migrationNumber>
         void migrate(soci::session& sql) {
             std::cerr << "No specified migration for version " << migrationNumber << std::endl;
@@ -47,6 +50,7 @@ namespace ledger {
         template <int version>
         bool migrate(soci::session& sql, int currentVersion) {
             bool previousResult = migrate<version - 1>(sql, currentVersion);
+
             if (currentVersion < version) {
                 migrate<version>(sql);
                 sql << "UPDATE __database_meta__ SET version = :version", soci::use(version);
@@ -56,28 +60,45 @@ namespace ledger {
             return previousResult;
         };
 
-        template <unsigned int migrationNumber>
+        template <int version>
         void rollback(soci::session& sql) {
-            std::cerr << "No specified migration to rollback for version " << migrationNumber << std::endl;
-            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration to rollback for version {}", migrationNumber);
+            //std::cerr << "No specified rollback for version " << version << std::endl;
+            //throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified rollback for version {}", version);
         }
 
-        template <unsigned int version>
-        bool rollback(soci::session& sql) {
-            rollback<version>(sql);
+        /// Rollback all migrations down.
+        ///
+        /// This is a bit like dropping the content of the database, but does it in a more correct
+        /// and portable way. Also, it enables possible partial rollbacks, even though the current
+        /// implementation doesn’t.
+        template <int version>
+        void rollback(soci::session& sql, int currentVersion) {
+            if (currentVersion == version) {
+                // we’re in sync with the database; perform the rollback normally
+                rollback<version>(sql);
 
-            if (version >= 0) {
-                // after rolling back this migration, we won’t have anything left, so we only update
-                // the version for > 0
-                if (version != 0) {
-                    sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
+                if (version >= 0) {
+                    // after rolling back this migration, we won’t have anything left, so we only
+                    // update the version for > 0
+                    if (version != 0) {
+                        sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
+                    }
+
+                    rollback<version - 1>(sql, currentVersion - 1);
                 }
-
-                rollback<version - 1>(sql);
+            } else if (currentVersion < version) {
+                // we’re trying to rollback a migration that hasn’t been applied; try the previous
+                // rollback
+                rollback<version - 1>(sql, currentVersion);
+            } else {
+                // we’re trying to rollback a migration but we have missed some others; apply the
+                // next ones first
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Missing rollback migrations: {} to {}", version + 1, currentVersion);
             }
         }
 
         template <> bool migrate<-1>(soci::session& sql, int currentVersion);
+        template <> void rollback<-1>(soci::session& sql, int currentVersion);
 
         // Migrations
         template <> void migrate<0>(soci::session& sql);

@@ -32,8 +32,25 @@
 
 namespace ledger {
     namespace core {
+        int getDatabaseMigrationVersion(soci::session& sql) {
+            int version = -1;
+
+            try {
+                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id == 0", soci::into(version));
+                st.execute();
+                st.fetch();
+            } catch (...) {
+                // if we cannot find the version, it stays set to -1
+            }
+
+            return version;
+        }
+
         template <> bool migrate<-1>(soci::session& sql, int currentVersion) {
             return false;
+        }
+
+        template <> void rollback<-1>(soci::session& sql, int currentVersion) {
         }
 
         template <> void migrate<0>(soci::session& sql) {
