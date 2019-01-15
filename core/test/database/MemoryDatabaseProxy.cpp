@@ -58,21 +58,23 @@
 
 using namespace ledger::core;
 
-const std::vector<std::tuple<std::string, api::DatabaseValueType >> SQLITE3_TYPES {
-        {"int8", api::DatabaseValueType::LONG_LONG},
-        {"bigint", api::DatabaseValueType::LONG_LONG},
-        {"unsigned big int", api::DatabaseValueType::LONG_LONG},
-        {"int", api::DatabaseValueType::INTEGER},
-        {"float", api::DatabaseValueType::DOUBLE},
-        {"double", api::DatabaseValueType::DOUBLE},
-        {"text", api::DatabaseValueType::STRING},
-        {"blob", api::DatabaseValueType::BLOB}
+typedef std::tuple<std::string, api::DatabaseValueType> type_tuple;
+
+const std::vector<type_tuple> SQLITE3_TYPES {
+        type_tuple("int8", api::DatabaseValueType::LONG_LONG),
+        type_tuple("bigint", api::DatabaseValueType::LONG_LONG),
+        type_tuple("unsigned big int", api::DatabaseValueType::LONG_LONG),
+        type_tuple("int", api::DatabaseValueType::INTEGER),
+        type_tuple("float", api::DatabaseValueType::DOUBLE),
+        type_tuple("double", api::DatabaseValueType::DOUBLE),
+        type_tuple("text", api::DatabaseValueType::STRING),
+        type_tuple("blob", api::DatabaseValueType::BLOB)
 };
 
 class Blob : public api::DatabaseBlob {
 public:
-    Blob(const std::vector<uint8_t>& buffer) : _buffer(buffer) {}
-    Blob() {}
+    explicit Blob(const std::vector<uint8_t>& buffer) : _buffer(buffer) {}
+    Blob() = default;
 
     std::vector<uint8_t> read(int64_t offset, int64_t length) override {
         if (_buffer.size() <= offset)
