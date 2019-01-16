@@ -22,7 +22,11 @@ public:
 
     static std::string const DATABASE_NAME;
 
-    /** Enable internal logging. */
+    /**
+     * Enable internal logging.
+     *
+     * Set to true by default.
+     */
     static std::string const ENABLE_INTERNAL_LOGGING;
 };
 
