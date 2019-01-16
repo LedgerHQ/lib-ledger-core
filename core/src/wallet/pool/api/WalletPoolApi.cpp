@@ -41,7 +41,6 @@
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::WalletPool>
         api::WalletPool::newInstance(
             const std::string &name, const optional<std::string> &password,
@@ -169,5 +168,8 @@ namespace ledger {
             _pool->eraseDataSince(date).callback(_mainContext, callback);
         }
 
+        void WalletPoolApi::freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) {
+            _pool->freshResetAll().callback(_mainContext, callback);
+        }
     }
 }

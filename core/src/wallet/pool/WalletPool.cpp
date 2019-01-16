@@ -472,12 +472,12 @@ namespace ledger {
 
         }
 
-        Future<Unit> WalletPool::freshResetAll() {
+        Future<api::ErrorCode> WalletPool::freshResetAll() {
             auto self = shared_from_this();
 
-            return Future<Unit>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+            return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
                 self->getDatabaseSessionPool()->performDatabaseRollback();
-                return unit;
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
         }
     }

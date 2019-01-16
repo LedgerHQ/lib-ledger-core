@@ -139,6 +139,26 @@ public:
      *@param date, start date of data deletion
      */
     virtual void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
+    /**
+     * Reset wallet pool.
+     *
+     * Resetting the wallet pool is an irreversible fresh reset of the whole wallet pool
+     * and all of its created (sub-)objects (wallets, accounts, transactions, etc.). Please
+     * consider a less destructive option before opting to use this. However, if you’re
+     * looking for a way to end up as if you were in a “fresh install” situation, this is
+     * the function to go to.
+     *
+     * Final warning: this function effectively swipes off everything. You’ve been warned.
+     *
+     * > Note: when calling that function, you must re-create a WalletPool as all objects
+     * > got destroyed. Consider restarting / exiting your application right after calling
+     * > that function. You are also highly advised to run that function on a code path
+     * > that doesn’t include having lots of objects in memory.
+     *
+     * The return value is always true and doesn’t convey any useful information for now.
+     */
+    virtual void freshResetAll(const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -130,7 +130,7 @@ namespace ledger {
             /// > got destroyed. Consider restarting / exiting your application right after calling
             /// > that function. You are also highly advised to run that function on a code path
             /// > that doesn’t include having lots of objects in memory.
-            Future<Unit> freshResetAll();
+            Future<api::ErrorCode> freshResetAll();
 
         private:
             WalletPool(
