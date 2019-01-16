@@ -6,12 +6,14 @@
     * [External dependencies:](#external-dependencies)
 * [Build of C++ library](#build-of-c-library)
     * [Building for JNI](#building-for-jni)
+    * [Build library on docker](#build-library-on-docker)
 * [Documentation](#documentation)
 * [Binding to node.js](#binding-to-nodejs)
     * [Using the node module](#using-the-node-module)
     * [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
 * [Test NodeJs](#test-nodejs)
-* [Build library on docker](#build-library-on-docker)
+* [Developement guidelines](#developement-guidelines)
+    * [CI](#ci)
 
 Core library which will be used by Ledger applications.
 
@@ -73,6 +75,19 @@ cmake -DTARGET_JNI=ON
 
 This will add JNI files to the library compilation and remove tests. You need at least a JDK 7 to build for JNI (OpenJDK or Oracle JDK)
 
+### Build library on docker
+
+You can build the core library or debug it from a docker image:
+
+1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
+2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`
+3. Notice that stopping a container will wipe it. If you need multiple instance over the same container one way is to start the container as a daemon and then get a shell on it.
+    1. Start the container as daemon `docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -d ledger-core-env`
+    2. Get the container ID with `docker ps`
+    3. Open shells `docker exec -ti :container_id zsh` where :container_id has to be replaced by the container you got from `docker ps`
+
+Note: If you feel on fire you could use docker volumes to persist data.
+
 ## Documentation
 
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`
@@ -122,17 +137,40 @@ Generating bindings is a several steps process:
 node ledger-core-samples/nodejs/tests/wallet-pool-test.js
 ```
 
-## Build library on docker
+## Developement guidelines
 
-You can build the core library or debug it from a docker image:
+### CI
 
-1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
-2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`
-3. Notice that stopping a container will wipe it. If you need multiple instance over the same container one way is to start the container as a daemon and then get a shell on it.
-    1. Start the container as daemon `docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -d ledger-core-env`
-    2. Get the container ID with `docker ps`
-    3. Open shells `docker exec -ti :container_id zsh` where :container_id has to be replaced by the container you got from `docker ps`
+You are advised to link your GitHub account to both [CircleCI] and [Appveyor] by signing-in. Because
+we are using shared runners and resources, we have to share CI power with other teams. It’s
+important to note that we don’t always need to run the CI. Example of situations when we do not need
+it:
 
-Note: If you feel on fire you could use docker volumes to persist data.
+  - When we are updating documentation.
+  - When we are changing a tooling script that is not part of any testing suite (yet).
+  - When we are making a *WIP* PR that doesn’t require running the CI until everyone has agreed on
+    the code (this is a tricky workflow but why not).
+
+In those cases, please include the `[skip ci]` or `[ci skip]` text **in your commit message’s
+title**. You could tempted to put it in the body of your message but that will not work with
+[Appveyor].
+
+Finally, it’s advised to put it on every commit and rebase at the end to remove the `[skip ci]` tag
+from your commits’ messags to have the CI re-enabled, but some runners might be smart enough to do
+it for all commits in the PR.
+
+Rebasing is done easily. If your PR wants to merge `feature/stuff -> develop`, you can do something
+like this — assuming you have cloned the repository with a correctly set `origin` remote:
+
+```
+git checkout feature/stuff
+git rebase -i origin/develop
+```
+
+Change the `pick` to `r` or `reword` at the beginning of each lines **without changing the text of
+the commits** — this has no effect. Save the file and quit. You will be prompted to change the
+commits’ messages one by one, allowing you to remove the `[skip ci]` tag from all commits.
 
 [lib-ledger-core-node-bindings]: https://github.com/LedgerHQ/lib-ledger-core-node-bindings
+[CircleCI]: https://circleci.com
+[Appveyor]: https://www.appveyor.com
