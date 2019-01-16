@@ -523,6 +523,21 @@ namespace ledger {
             });
         }
 
+        // This method is used to get a block height only used to know which
+        // update/fork (activated at certain block height) is used.
+        // This explains why we take LLONG_MAX is we have no block in DB for
+        // certain currency
+        // WARNING: please don't use this method if you need an accurate value
+        // of last block
+        static uint64_t getLastBlockFromDB(soci::session &sql, const std::string &currencyName) {
+            //Get last block from DB
+            auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, currencyName);
+            // If we can not retrieve a last block for currency,
+            // we set the returned block height to LLONG_MAX in order to
+            // activate/apply last BIP/update/fork for this currency.
+            return lastBlock.hasValue() ? static_cast<uint64_t >(lastBlock->height) : LLONG_MAX;
+        }
+
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
             auto self = getSelf();
@@ -530,7 +545,12 @@ namespace ledger {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
-                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, self->_currentBlockHeight);
+
+                //Get last block from DB
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+
+                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
                 //Get a BitcoinLikeBlockchainExplorer::Transaction from a BitcoinLikeTransaction
                 BitcoinLikeBlockchainExplorer::Transaction txExplorer;
@@ -539,8 +559,6 @@ namespace ledger {
                 txExplorer.receivedAt = std::chrono::system_clock::now();
                 txExplorer.version = tx->getVersion();
                 txExplorer.confirmations = 0;
-
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
 
                 //Inputs
                 auto inputCount = tx->getInputs().size();
@@ -599,6 +617,10 @@ namespace ledger {
             auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorer::Transaction> {
                 return self->getTransaction(hash);
             };
+
+            soci::session sql(self->getWallet()->getDatabase()->getPool());
+            auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getContext(),
                     getWallet()->getCurrency(),
@@ -607,7 +629,7 @@ namespace ledger {
                                               getTransaction,
                                               _explorer,
                                               _keychain,
-                                              _currentBlockHeight,
+                                              lastBlockHeight,
                                               logger(),
                                               partial.value_or(false))
             );
