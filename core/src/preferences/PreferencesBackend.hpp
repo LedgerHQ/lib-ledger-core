@@ -95,9 +95,13 @@ namespace ledger {
             /// Data already present in the preferences are not affected.
             void unsetEncryption();
 
+            /// Clear all preferences.
+            void clear();
+
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
+            std::string _dbName;
             Option<AESCipher> _cipher;
 
             // helper method used to encrypt things we want to put in leveldb
