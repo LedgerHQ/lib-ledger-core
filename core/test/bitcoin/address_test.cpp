@@ -53,24 +53,26 @@ std::vector<std::vector<std::string>> fixtures = {
 using namespace ledger::core::api;
 using namespace ledger::core;
 
-const Currency currency = currencies::BITCOIN;
 
 TEST(Address, AddressFromBase58String) {
-     for (auto& item : fixtures) {
-         EXPECT_TRUE(Address::isValid(item[1], currency));
-         auto address = Address::parse(item[1], currency)->asBitcoinLikeAddress();
-         EXPECT_EQ(address->getHash160(), hex::toByteArray(item[0]));
-         EXPECT_EQ(address->getVersion(), hex::toByteArray(item[2]));
-         if (item[2] == "05") {
-             EXPECT_TRUE(address->isP2SH());
-         } else {
-             EXPECT_TRUE(address->isP2PKH());
-         }
-     }
+    const Currency currency = currencies::BITCOIN;
+    auto x = currency.bitcoinLikeNetworkParameters.value();
+    for (auto& item : fixtures) {
+        EXPECT_TRUE(Address::isValid(item[1], currency));
+        auto address = Address::parse(item[1], currency)->asBitcoinLikeAddress();
+        EXPECT_EQ(address->getHash160(), hex::toByteArray(item[0]));
+        EXPECT_EQ(address->getVersion(), hex::toByteArray(item[2]));
+        if (item[2] == "05") {
+            EXPECT_TRUE(address->isP2SH());
+        } else {
+            EXPECT_TRUE(address->isP2PKH());
+        }
+    }
 }
 
 
 TEST(Address, XpubFromBase58String) {
+    const Currency currency = currencies::BITCOIN;
     auto addr = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"));
     EXPECT_EQ(xpub->toBase58(), addr);
