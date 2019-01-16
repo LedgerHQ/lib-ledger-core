@@ -192,8 +192,7 @@ namespace ledger {
         }
 
         Future<api::Block> AbstractAccount::getLastBlock() {
-            auto self = shared_from_this();
-            return  getWallet()->getLastBlock();
+            return getWallet()->getLastBlock();
         }
 
         void AbstractAccount::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
