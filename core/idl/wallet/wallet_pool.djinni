@@ -108,7 +108,9 @@ WalletPool = interface +c {
     # > got destroyed. Consider restarting / exiting your application right after calling
     # > that function. You are also highly advised to run that function on a code path
     # > that doesn’t include having lots of objects in memory.
-    freshResetAll(callback: Callback<void>);
+    #
+    # The return value is always true and doesn’t convey any useful information for now.
+    freshResetAll(callback: Callback<ErrorCode>);
 }
 
 #Class representing a wallet pool builder (to instanciate a wallet pool)
