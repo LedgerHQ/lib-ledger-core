@@ -1,5 +1,20 @@
 # Ledger Core Library
 
+* [Clone project](#clone-project)
+* [Dependencies](#dependencies)
+    * [Build](#build)
+    * [External dependencies:](#external-dependencies)
+* [Build of C++ library](#build-of-c-library)
+    * [Building for JNI](#building-for-jni)
+    * [Build library on docker](#build-library-on-docker)
+* [Documentation](#documentation)
+* [Binding to node.js](#binding-to-nodejs)
+    * [Using the node module](#using-the-node-module)
+    * [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
+* [Test NodeJs](#test-nodejs)
+* [Developement guidelines](#developement-guidelines)
+    * [CI](#ci)
+
 Core library which will be used by Ledger applications.
 
 ## Clone project
@@ -56,25 +71,106 @@ Building with JNI (Java Native Interface), allows you to use the library with Ja
 
 ```
 cmake -DTARGET_JNI=ON
-``` 
+```
 
 This will add JNI files to the library compilation and remove tests. You need at least a JDK 7 to build for JNI (OpenJDK or Oracle JDK)
+
+### Build library on docker
+
+You can build the core library or debug it from a docker image:
+
+1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
+2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`
+3. Notice that stopping a container will wipe it. If you need multiple instance over the same container one way is to start the container as a daemon and then get a shell on it.
+    1. Start the container as daemon `docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -d ledger-core-env`
+    2. Get the container ID with `docker ps`
+    3. Open shells `docker exec -ti :container_id zsh` where :container_id has to be replaced by the container you got from `docker ps`
+
+Note: If you feel on fire you could use docker volumes to persist data.
 
 ## Documentation
 
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`
 with makefiles).
 
-## Binding to node JS
+## Binding to node.js
 
-Generate binding (under `build/Release/ledgerapp_nodejs.node`):
+The library can be compiled and integrated as an node module in a pretty straightforward way. You
+will be interested in either using it, or making a new version of the node module.
+
+### Using the node module
+
+The [lib-ledger-core-node-bindings] repository contains the node.js bindings you will need to
+interface with `lib-ledger-core`. You can either clone the git repository or simply install from
+`npm` directly:
 
 ```
-npm i
+npm i @ledgerhq/ledger-core
 ```
+
+### Generating a new node module for your system
+
+Generating bindings is a several steps process:
+
+  1. First, you need to make some changes to `lib-ledger-core` and generate a fresh version of
+     `lib-ledger-core`.
+  2. Clone [lib-ledger-core-node-bindings] and edit the `package.json` file in order to remove or
+     comment the `"preinstall"` line in `"scripts"`.
+  3. In the folder of `lib-ledger-core`, run the `tools/generateBindings.sh` script by giving it the
+     path to the bindings (i.e. where you cloned [lib-ledger-core-node-bindings]) and as second
+     argument the path to the directory where you built the `lib-ledger-core` — it should be
+     something like `$(your-lib-ledger-core-dir)/../lib-ledger-core-build` or
+     `$(your-lib-ledger-core-dir)/build`.
+       - This script requires an up-to-date **djinni**. To ensure it’s correctly up to date, go
+         into `lib-ledger-core/djinni` and run
+         `get fetch origin --prune && git rebase origin/master`.
+       - You will need `sbt` and `java8` for a complete, working install.
+       - The script will generate files in both projects. You’re advised to remove the ones created
+         in `lib-ledger-core` — if any — with a `git checkout .` and/or `git reset .`.
+  4. `cd` into `lib-ledger-core-bindings` and run `yarn` to generate the bindings.
+  5. You will have the module in `build/Release/ledgerapp_nodejs.node` in the bindings project.
+  6. `npm i` should install your own version.
 
 ## Test NodeJs
 
 ```
 node ledger-core-samples/nodejs/tests/wallet-pool-test.js
 ```
+
+## Developement guidelines
+
+### CI
+
+You are advised to link your GitHub account to both [CircleCI] and [Appveyor] by signing-in. Because
+we are using shared runners and resources, we have to share CI power with other teams. It’s
+important to note that we don’t always need to run the CI. Example of situations when we do not need
+it:
+
+  - When we are updating documentation.
+  - When we are changing a tooling script that is not part of any testing suite (yet).
+  - When we are making a *WIP* PR that doesn’t require running the CI until everyone has agreed on
+    the code (this is a tricky workflow but why not).
+
+In those cases, please include the `[skip ci]` or `[ci skip]` text **in your commit message’s
+title**. You could tempted to put it in the body of your message but that will not work with
+[Appveyor].
+
+Finally, it’s advised to put it on every commit and rebase at the end to remove the `[skip ci]` tag
+from your commits’ messags to have the CI re-enabled, but some runners might be smart enough to do
+it for all commits in the PR.
+
+Rebasing is done easily. If your PR wants to merge `feature/stuff -> develop`, you can do something
+like this — assuming you have cloned the repository with a correctly set `origin` remote:
+
+```
+git checkout feature/stuff
+git rebase -i origin/develop
+```
+
+Change the `pick` to `r` or `reword` at the beginning of each lines **without changing the text of
+the commits** — this has no effect. Save the file and quit. You will be prompted to change the
+commits’ messages one by one, allowing you to remove the `[skip ci]` tag from all commits.
+
+[lib-ledger-core-node-bindings]: https://github.com/LedgerHQ/lib-ledger-core-node-bindings
+[CircleCI]: https://circleci.com
+[Appveyor]: https://www.appveyor.com

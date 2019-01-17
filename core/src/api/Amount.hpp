@@ -58,7 +58,7 @@ public:
 
     /**
      *Get amount as long
-     *@reutrn 64 bits integer
+     *@return 64 bits integer
      */
     virtual int64_t toLong() = 0;
 

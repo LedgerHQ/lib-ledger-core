@@ -115,7 +115,7 @@ jobs:
             name: Run_Tests
             command: |
                 cd ../lib-ledger-core-build
-                ctest
+                ~/cmake-3.13.3-Linux-x86_64/bin/ctest
   build_macos_release:
     macos:
       xcode: "10.0.0"
@@ -221,13 +221,13 @@ jobs:
             sudo apt-get install -qy doxygen libqt5websockets5 libqt5websockets5-dev qt5-default rsync software-properties-common
             sudo add-apt-repository --update "deb http://httpredir.debian.org/debian stretch-backports main"
             sudo apt-get install -qy -t stretch-backports cmake
-      - run: cmake -H. -Bbuild 
+      - run: cmake -H. -Bbuild
       - run:
           command: make doc
           working_directory: ~/project/build
       - run:
           name: Check that the index file is present
-          command: test -f build/doc/html/index.html 
+          command: test -f build/doc/html/index.html
       - run:
           name: Setup the SSH private key
           command: |
@@ -252,8 +252,11 @@ workflows:
               only: /.*/
       - build_linux_debug
       - build_macos_debug
+  documentation:
+    jobs:
       - generate_doc:
           filters:
+            tags:
+              only: /.+/
             branches:
-              only:
-                - develop
+              ignore: /.*/

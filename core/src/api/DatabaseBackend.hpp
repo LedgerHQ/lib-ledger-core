@@ -6,144 +6,42 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
 
 namespace ledger { namespace core { namespace api {
 
-/**Class representing a database */
+class DatabaseEngine;
+
+/**Class representing a database backend. */
 class DatabaseBackend {
 public:
     virtual ~DatabaseBackend() {}
 
     /**
-     *Set database's user name
-     *@param username, string
-     *@return DatabaseBackend object, databse with user name set
+     * Get the maximum number of concurrent connection that the backend is able to open on a single database.
+     * @return the size of the connection pool.
      */
-    virtual std::shared_ptr<DatabaseBackend> setUsername(const std::string & username) = 0;
+    virtual int32_t getConnectionPoolSize() = 0;
 
     /**
-     *Set database's password
-     *@param password, string
-     *@return DatabaseBackend object, database with password set
+     * Enable or disable query logging. By default logging is disabled. Query logging will record every SQL query in log streams.
+     * @return this database backend (to chain configuration calls)
      */
-    virtual std::shared_ptr<DatabaseBackend> setPassword(const std::string & pwd) = 0;
-
-    /**
-     *Set database's host which storing database
-     *@param host, string
-     *@return DatabaseBackend object, database with host set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setHost(const std::string & host) = 0;
-
-    /**
-     *Set database's host's address
-     *@param hostAddr, string, host's address
-     *@return DatabaseBackend object, database with host's address set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setHostAddr(const std::string & hostAddr) = 0;
-
-    /**
-     *Set database's port on which it connects to host
-     *@param port, string
-     *@return DatabaseBackend object, database with port set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setPort(const std::string & port) = 0;
-
-    /**
-     *Set database's specific options
-     *@param opts, string
-     *@return DatabaseBackend object, database with options set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setOptions(const std::string & opts) = 0;
-
-    /**
-     *Set database's mode (SSL) of security interaction of type databse/server
-     *@param mode, string
-     *@return DatabaseBackend object, database with mode set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setSslMode(const std::string & mode) = 0;
-
-    /**
-     *Set database's Kerberos name used to secure (authentication) user/databse interaction
-     *@param name, string
-     *@return DatabaseBackend object, database with Kerberos name set
-     */
-    virtual std::shared_ptr<DatabaseBackend> setKerberosName(const std::string & name) = 0;
-
-    /**TODO */
-    virtual std::shared_ptr<DatabaseBackend> setService(const std::string & service) = 0;
-
-    virtual std::shared_ptr<DatabaseBackend> setConnectionPoolSize(int32_t size) = 0;
-
     virtual std::shared_ptr<DatabaseBackend> enableQueryLogging(bool enable) = 0;
 
     /**
-     *Return database's name
-     *@return string
+     * Return true if query logging is enabled.
+     * @return trye if query logging is enabled, false otherwise.
      */
-    virtual std::string getUsername() = 0;
-
-    /**
-     *Return database's password
-     *@return string
-     */
-    virtual std::string getPassword() = 0;
-
-    /**
-     *Return database's host
-     *@return string
-     */
-    virtual std::string getHost() = 0;
-
-    /**
-     *Return database's host's address
-     *@return string
-     */
-    virtual std::string getHostAddr() = 0;
-
-    /**
-     *Return database's port
-     *@return string
-     */
-    virtual std::string getPort() = 0;
-
-    /**
-     *Return database's options
-     *@return string
-     */
-    virtual std::string getOptions() = 0;
-
-    /**
-     *Return database's SSL mode
-     *@return string
-     */
-    virtual std::string getSslMode() = 0;
-
-    /**
-     *Return database's Kerberos name
-     *@return string
-     */
-    virtual std::string getKerberosName() = 0;
-
-    /**TODO */
-    virtual std::string getService() = 0;
-
-    virtual int32_t getConnectionPoolSize() = 0;
-
     virtual bool isLoggingEnabled() = 0;
 
     /**
-     *Create an instance of SQLite3 database
-     *@return DatabaseBackend object
+     * Create an instance of SQLite3 database
+     * @return DatabaseBackend object
      */
     static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
 
-    /**
-     *Create an instance of PostgreSQL database
-     *@return DatabaseBackend object
-     */
-    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend();
+    /** Create an instance of PostgreSQL database */
+    static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);
 };
 
 } } }  // namespace ledger::core::api

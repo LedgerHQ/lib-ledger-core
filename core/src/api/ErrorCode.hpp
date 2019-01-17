@@ -85,6 +85,8 @@ enum class ErrorCode : int {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Database error */
+    DATABASE_EXCEPTION,
     /** Wallet transaction */
     NOT_ENOUGH_FUNDS,
     /** Bad cast */

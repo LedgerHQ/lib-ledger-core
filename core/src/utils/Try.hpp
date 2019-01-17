@@ -52,6 +52,10 @@ namespace ledger {
                 _value = optional<T>(v);
             }
 
+            Try(api::ErrorCode code, const std::string& message) {
+                fail(code, message);
+            }
+
             void fail(api::ErrorCode code, const std::string& message) {
                 _exception = Exception(code, message);
             }
@@ -92,6 +96,25 @@ namespace ledger {
                 if (isFailure())
                     return Option<Exception>(getFailure());
                 return Option<Exception>();
+            }
+
+            const T& getOrThrow() const {
+                if (isFailure())
+                    throw getFailure();
+                return getValue();
+            }
+
+            template <class U>
+            const T& getOrThrowException() const {
+                if (isFailure())
+                    throw U(getFailure().getMessage());
+                return getValue();
+            }
+
+            Try<T> mapException(api::ErrorCode code) {
+                if (isFailure())
+                    return Try<T>(code, getFailure().getMessage());
+                return *this;
             }
 
 //            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
