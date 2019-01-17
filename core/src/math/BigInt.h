@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_BIGINT_H
 #define LEDGER_CORE_BIGINT_H
 
@@ -39,6 +40,7 @@
     #endif
 #endif
 
+#include <cereal/types/common.hpp>
 #include <string>
 #include <vector>
 #include <bigd.h>
@@ -46,29 +48,30 @@
 #include "../utils/endian.h"
 
 namespace ledger {
-
     namespace core {
-
         /**
          * Helper class used to deal with really big integers.
          * @headerfile BigInt.h <ledger/core/math/BigInt.h>
          */
         class BigInt {
-
         public:
             static LIBCORE_EXPORT const BigInt ZERO;
             static LIBCORE_EXPORT const BigInt ONE;
             static LIBCORE_EXPORT const BigInt TEN;
+
             typedef unsigned int SimpleInt;
             typedef unsigned long DoubleInt;
+
             /**
              * Available digits for conversion to and from strings.
              */
             static LIBCORE_EXPORT const std::string DIGITS;
+
             /**
              * The maximum radix available for conversion to and from strings.
              */
             static LIBCORE_EXPORT const int MIN_RADIX;
+
             /**
              * The minimum radix available for conversion to and from strings.
              */
@@ -80,17 +83,20 @@ namespace ledger {
              * @return An instance of BigInt
              */
             static LIBCORE_EXPORT BigInt* from_hex(const std::string& str);
+
             /**
             * Creates a new BigInt from the given hexadecimal encoded string.
             * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
             */
             static LIBCORE_EXPORT BigInt fromHex(const std::string& str);
+
             /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
             static LIBCORE_EXPORT BigInt* from_dec(const std::string& str);
+
             /**
             * Creates a new BigInt from the given decimal encoded string.
             * @param str The number encoded in decimal (e.g. "125")
@@ -134,12 +140,15 @@ namespace ledger {
             explicit BigInt(unsigned int value);
             explicit BigInt(unsigned long long value);
             explicit BigInt(int64_t value);
+
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str
              * @return
              */
             BigInt(const std::string& str);
+
+            virtual ~BigInt();
 
             /**
              * Converts the BigInt to int
@@ -218,13 +227,24 @@ namespace ledger {
                 return *this;
             }
 
-            virtual ~BigInt();
+            template <class Archive>
+            void save(Archive& ar) const {
+                auto i = toInt64();
+                ar(i);
+            }
+
+            template <class Archive>
+            void load(Archive& ar) {
+                int64_t i;
+                ar(i);
+                assignI64(i);
+            }
 
         private:
             BIGD _bigd;
             bool _negative;
         };
     }
-
 }
+
 #endif //LEDGER_CORE_BIGINT_H

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <api/ExecutionContext.hpp>
 #include <async/FutureUtils.hpp>
 #include <memory>
