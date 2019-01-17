@@ -285,3 +285,13 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
 
     ASSERT_NE(cipherText1, cipherText2);
 }
+
+TEST_F(PreferencesTest, Clear) {
+    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+
+    preferences->editor()->putString("string", "dawg")->commit();
+    EXPECT_EQ(preferences->getString("string", ""), "dawg");
+
+    preferences->editor()->clear();
+    EXPECT_EQ(preferences->getString("string", "none"), "none");
+}
