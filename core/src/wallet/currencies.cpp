@@ -220,6 +220,14 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("clubcoin", 8, "CLUB");
 
+            const api::Currency NIX =
+                    Currency("nix")
+                            .forkOfBitcoin(networks::getNetworkParameters("nix"))
+                            .bip44(400)
+                            .paymentUri("nix")
+                            .unit("nixtoshi", 0, "nixtoshi")
+                            .unit("nix", 8, "NIX");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -241,7 +249,8 @@ namespace ledger {
                 KOMODO,
                 POSWALLET,
                 PIVX,
-                CLUBCOIN
+                CLUBCOIN,
+                NIX
             });
         }
     }

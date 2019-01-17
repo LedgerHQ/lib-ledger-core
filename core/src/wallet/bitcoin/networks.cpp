@@ -379,6 +379,21 @@ namespace ledger {
                             {}
                     );
                     return CLUBCOIN;
+                } else if (networkName == "nix") {
+                    static const api::BitcoinLikeNetworkParameters NIX(
+                            "nix",
+                            {0x26},
+                            {0x35},
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "NIX Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return NIX;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -406,7 +421,8 @@ namespace ledger {
                 getNetworkParameters("komodo"),
                 getNetworkParameters("poswallet"),
                 getNetworkParameters("pivx"),
-                getNetworkParameters("clubcoin")
+                getNetworkParameters("clubcoin"),
+                getNetworkParameters("nix")
             });
         }
     }
