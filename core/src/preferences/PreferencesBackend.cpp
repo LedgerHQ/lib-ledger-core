@@ -55,8 +55,8 @@ namespace ledger {
                                                const std::shared_ptr<api::ExecutionContext>& writingContext,
                                                const std::shared_ptr<api::PathResolver> &resolver) {
             _context = writingContext;
-            _db = obtainInstance(resolver->resolvePreferencesPath(path));
-            _dbName = path;
+            _dbName = resolver->resolvePreferencesPath(path);
+            _db = obtainInstance(_dbName);
         }
 
         std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
@@ -200,7 +200,8 @@ namespace ledger {
             // unset encryption_tests because it’s disabled by default
             unsetEncryption();
 
-            // drop and recreate the DB
+            // drop and recreate the DB; we need to scope that because the lock must be released
+            // in order for obtainInstance to work correctly
             {
                 std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
                 auto it = LEVELDB_INSTANCE_POOL.find(_dbName);
@@ -214,8 +215,9 @@ namespace ledger {
                 leveldb::Options options;
                 leveldb::DestroyDB(_dbName, options);
 
-                _db = obtainInstance(_dbName);
             }
+
+            _db = obtainInstance(_dbName);
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {
