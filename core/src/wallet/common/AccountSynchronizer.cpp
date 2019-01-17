@@ -58,7 +58,7 @@ namespace ledger {
                     // we are currently in synchronization
                     return _notifier;
                 }
-                _notifier = std::make_shared<ProgressNotifier<Unit>>(_executionContext);
+                _notifier = std::make_shared<ProgressNotifier<Unit>>();
                 auto self = this->shared_from_this();
                 synchronizeBlocks()
                     .template flatMap<BlockchainState<FilledBlock>>(_executionContext, [self](const DBPair<FilledBlock>& dbs) {

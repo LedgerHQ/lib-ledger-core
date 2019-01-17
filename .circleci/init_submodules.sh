@@ -17,6 +17,7 @@ git submodule update -- toolchains/polly || echo "===========Polly submodule alr
 #git submodule update -- tools/gyp || echo "===========gyp submodule already updated"
 git submodule update -- core/lib/spdlog || echo "===========spdlog submodule already updated"
 git submodule update -- core/lib/leveldb || echo "===========leveldb submodule already updated"
+git submodule update -- core/test/lib/uri || echo "===========leveldb submodule already updated"
 
 #should checkout leveldb bitcoin-fork branch on leveldb submodule
 cd $HOME/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork

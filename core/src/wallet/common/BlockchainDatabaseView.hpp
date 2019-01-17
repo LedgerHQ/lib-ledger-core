@@ -10,7 +10,7 @@ namespace ledger {
             public:
                 BlockchainDatabaseView(
                     uint32_t limitingHeight,
-                    ReadOnlyBlockchainDatabase<Block>& db)
+                    const std::shared_ptr<ReadOnlyBlockchainDatabase<Block>>& db)
                     : _db(db) {
                 }
 
