@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set +xe
+
+IMAGE_NAME=ledger/playground
+IMAGE_VERSION=0.1
+
+ARGS=$*
+
+function build {
+    echo "Building $IMAGE_NAME:$IMAGE_VERSION, please wait…"
+    docker build --rm -t $IMAGE_NAME:$IMAGE_VERSION .
+    docker tag $IMAGE_NAME:$IMAGE_VERSION $IMAGE_NAME:latest
+}
+
+function rebuild {
+    echo "Rebuilding $IMAGE_NAME:$IMAGE_VERSION, please wait…"
+    docker build --no-cache --rm -t $IMAGE_NAME:$IMAGE_VERSION .
+    docker tag $IMAGE_NAME:$IMAGE_VERSION $IMAGE_NAME:latest
+}
+
+function usage {
+    echo "usage:"
+}
+
+case "$ARGS" in
+    "build")
+        build
+        ;;
+
+    "rebuild")
+        rebuild
+        ;;
+
+    *)
+        usage
+        ;;
+esac
+
