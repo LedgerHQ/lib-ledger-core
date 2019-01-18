@@ -2,6 +2,7 @@
 #include <wallet/NetworkTypes.hpp>
 #include <wallet/AccountSynchronizer.hpp>
 #include <async/FutureUtils.hpp>
+#include <wallet/BlockchainDatabase.hpp>
 
 namespace spdlog {
     class logger;

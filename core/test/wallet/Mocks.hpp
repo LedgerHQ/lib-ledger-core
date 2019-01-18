@@ -41,6 +41,7 @@ namespace ledger {
                 MOCK_METHOD1(getBlock, Future<Option<BitcoinLikeNetwork::FilledBlock>>(uint32_t height));
                 MOCK_METHOD0(getLastBlock, Future<Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>>());
                 MOCK_METHOD0(getLastBlockHeight, Future<Option<uint32_t>>());
+                MOCK_METHOD1(getLastBlockBefore, Future<Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>> (uint32_t height));
             };
 
             class BlockchainDBMock : public db::BlockchainDB {
@@ -52,6 +53,7 @@ namespace ledger {
                 MOCK_METHOD2(GetBlocks, Future<std::vector<RawBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(GetBlock, Future<Option<RawBlock>>(uint32_t height));
                 MOCK_METHOD0(GetLastBlock, Future<Option<std::pair<uint32_t, RawBlock>>>());
+                MOCK_METHOD1(GetLastBlockBefore, Future<Option<std::pair<uint32_t, RawBlock>>>(uint32_t height));
             };
 
             class LoggerSinkMock : public spdlog::sinks::sink {

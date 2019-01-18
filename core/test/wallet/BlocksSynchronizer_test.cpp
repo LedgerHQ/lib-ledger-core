@@ -34,7 +34,6 @@ namespace ledger {
                         explorerMock,
                         keychainReceiveMock,
                         keychainChangeMock,
-                        blocksDBMock,
                         gapSize,
                         batchSize,
                         maxTransactionsPerResponse);
@@ -78,7 +77,7 @@ namespace ledger {
                 };
                 setBlockchain(bch);
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -97,7 +96,7 @@ namespace ledger {
                 };
                 setBlockchain(bch);
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -123,7 +122,7 @@ namespace ledger {
                     EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0]))));
                     EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1]))));
                 }
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -147,7 +146,7 @@ namespace ledger {
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(0);
                 
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -171,7 +170,7 @@ namespace ledger {
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
                 EXPECT_CALL(*blocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(0);
                 
-                auto f = synchronizer->synchronize("block 1", 1, 1); // limiting the max block heigh
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 1); // limiting the max block heigh
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -199,7 +198,7 @@ namespace ledger {
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("5"))).Times(0); // not discovered
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -239,7 +238,7 @@ namespace ledger {
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("2")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("3")));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("4"))).Times(0); // not discovered
-                auto f = synchronizer->synchronize("block 1", 1, 10);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, 10);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -264,7 +263,7 @@ namespace ledger {
                 
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("0"))).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("1"))).Times(0); // not discovered
-                auto f = synchronizer->synchronize("block 1", 1, LAST_BLOCK);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, LAST_BLOCK);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
@@ -290,7 +289,7 @@ namespace ledger {
 
                 EXPECT_CALL(*blocksDBMock, addBlock(_, _)).Times(0);
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(0); // not discovered
-                auto f = synchronizer->synchronize("block 1", 1, LAST_BLOCK);
+                auto f = synchronizer->synchronize(blocksDBMock, "block 1", 1, LAST_BLOCK);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isFailure());
@@ -314,7 +313,7 @@ namespace ledger {
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(_)).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("499"))).Times(AtLeast(1));
                 EXPECT_CALL(*keychainReceiveMock, markAsUsed(Eq("500"))).Times(0); // not discovered
-                auto f = synchronizer->synchronize(bch[0].hash, bch[0].height, LAST_BLOCK);
+                auto f = synchronizer->synchronize(blocksDBMock, bch[0].hash, bch[0].height, LAST_BLOCK);
                 context->wait();
                 ASSERT_TRUE(f.isCompleted());
                 EXPECT_TRUE(f.getValue().getValue().isSuccess());
