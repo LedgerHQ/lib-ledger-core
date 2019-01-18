@@ -40,6 +40,7 @@ namespace ledger {
                 MOCK_METHOD2(getBlocks, Future<std::vector<BitcoinLikeNetwork::FilledBlock>>(uint32_t heightFrom, uint32_t heightTo));
                 MOCK_METHOD1(getBlock, Future<Option<BitcoinLikeNetwork::FilledBlock>>(uint32_t height));
                 MOCK_METHOD0(getLastBlock, Future<Option<std::pair<uint32_t, BitcoinLikeNetwork::FilledBlock>>>());
+                MOCK_METHOD0(getLastBlockHeight, Future<Option<uint32_t>>());
             };
 
             class BlockchainDBMock : public db::BlockchainDB {

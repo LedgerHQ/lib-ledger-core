@@ -1,9 +1,9 @@
 /*
  *
- * UTXOSource
+ * PersistentUTXOSource
  * ledger-core
  *
- * Created by Dimitri Sabadie on 13/12/2018.
+ * Created by Dimitri Sabadie on 21/12/2018.
  *
  * The MIT License (MIT)
  *
@@ -31,29 +31,28 @@
 
 #pragma once
 
-#include <functional>
-#include <map>
-#include <memory>
-#include <set>
-#include <string>
-#include <utility>
-
-#include <wallet/bitcoin/UTXO.hpp>
 #include <api/ExecutionContext.hpp>
 #include <async/Future.hpp>
+#include <database/BlockchainDB.hpp>
+#include <wallet/bitcoin/UTXOSource.hpp>
+#include <wallet/bitcoin/UTXOSourceInMemory.hpp>
 
 namespace ledger {
     namespace core {
         namespace bitcoin {
-            /// An UTXO source (Bitcoin-like currencies only).
-            ///
-            /// Such a type represents a *source* of UTXO. That is, an abstracted way to get a set of
-            /// UTXOs. It might take the set from a database, from a cache, invent them on the fly, etc.
-            struct UTXOSource {
-                virtual ~UTXOSource() = default;
+            class PersistentUTXOSource: public UTXOSource, public std::enable_shared_from_this<PersistentUTXOSource> {
+                std::shared_ptr<db::BlockchainDB> _db; ///< Database used for UTXOs persistence.
+                std::shared_ptr<UTXOSourceInMemory> _inMemorySource; ///< Memory cache.
 
-                /// Get the list of UTXOs from this source.
-                virtual Future<UTXOSourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) = 0;
+            public:
+                PersistentUTXOSource(
+                    const std::shared_ptr<db::BlockchainDB>& blockchainDB,
+                    const std::shared_ptr<UTXOSourceInMemory>& inMemorySource
+                );
+
+                ~PersistentUTXOSource() = default;
+
+                Future<UTXOSourceList> getUTXOs(std::shared_ptr<api::ExecutionContext> ctx) override;
             };
         }
     }

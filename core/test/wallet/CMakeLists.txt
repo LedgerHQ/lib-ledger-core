@@ -8,20 +8,21 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-wallet-tests 
-main.cpp 
-InMemoryPartialBlocksDB_test.cpp 
-BlocksSynchronizer_test.cpp
-Helpers.cpp
-CommonFixtureFunctions.cpp
-ChangeKeychain_test.cpp
-PersistentBlockchainDatabase_test.cpp
-AccountSynchronizer_test.cpp
-InMemoryBlockchainDatabase_test.cpp
-UTXOServiceSourceBased_test.cpp
-BalanceServiceUTXOBased_test.cpp
-OperationServiceOnDB_test.cpp
-OperationFromBitcoinTransaction_test.cpp
+add_executable(ledger-core-wallet-tests
+    main.cpp
+    CommonFixtureFunctions.cpp
+    InMemoryPartialBlocksDB_test.cpp
+    BlocksSynchronizer_test.cpp
+    Helpers.cpp
+    ChangeKeychain_test.cpp
+    PersistentBlockchainDatabase_test.cpp
+    AccountSynchronizer_test.cpp
+    InMemoryBlockchainDatabase_test.cpp
+    UTXOServiceSourceBased_test.cpp
+    BalanceServiceUTXOBased_test.cpp
+    OperationServiceOnDB_test.cpp
+    OperationFromBitcoinTransaction_test.cpp
+    UTXOSourceInMemory_test.cpp
 )
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)

@@ -92,6 +92,9 @@ namespace ledger {
 
                 /// Invalidate the UTXO cache.
                 void invalidate();
+
+                /// Get the height we’re currently synchronized to.
+                uint32_t currentSynchronizedHeight();
             };
         }
     }

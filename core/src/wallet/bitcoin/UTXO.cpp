@@ -7,12 +7,12 @@ namespace ledger {
                 : amount(amount), address(address) {
             }
 
-            UTXOSourceList::UTXOSourceList(std::map<UTXOKey, UTXOValue>&& available, std::set<UTXOKey>&& spent)
-                : available(std::move(available)), spent(std::move(spent)) {
+            UTXOSourceList::UTXOSourceList(std::map<UTXOKey, UTXOValue>&& available, std::set<UTXOKey>&& spent, uint32_t height)
+                : available(std::move(available)), spent(std::move(spent)), height(height) {
             }
 
-            UTXOSourceList::UTXOSourceList(const std::map<UTXOKey, UTXOValue>& available, const std::set<UTXOKey>& spent)
-                : available(available), spent(spent) {
+            UTXOSourceList::UTXOSourceList(const std::map<UTXOKey, UTXOValue>& available, const std::set<UTXOKey>& spent, uint32_t height)
+                : available(available), spent(spent), height(height) {
             }
 
         }
