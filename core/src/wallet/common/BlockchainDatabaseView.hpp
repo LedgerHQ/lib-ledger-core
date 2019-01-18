@@ -28,6 +28,11 @@ namespace ledger {
                 Future<Option<std::pair<uint32_t, Block>>> getLastBlock() override {
                     return _db->getLastBlockBefore(_limitingHeight);
                 }
+
+                Future<Option<uint32_t>> getLastBlockHeight() override {
+                    return Future<Option<uint32_t>>::successful(_limitingHeight);
+                }
+
                 Future<Option<std::pair<uint32_t, Block>>> getLastBlockBefore(uint32_t height) override {
                     return _db->getLastBlockBefore(std::min(height, _limitingHeight));
                 }

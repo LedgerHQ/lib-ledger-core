@@ -30,7 +30,7 @@ namespace ledger {
             public:
                 typedef Block_ Block;
                 typedef Transaction_ Transaction;
-                typedef FilledBlock<Block_, Transaction_> FilledBlock;
+                typedef ledger::core::FilledBlock<Block_, Transaction_> FilledBlock;
                 typedef Input_ Input;
                 typedef Output_ Output;
                 typedef TransactionToBroadcast_ TransactionToBroadcast;

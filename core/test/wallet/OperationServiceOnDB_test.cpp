@@ -64,7 +64,7 @@ TEST_F(OperationServiceOnDBTest, TransactionInStableOnly) {
     auto filledBlock = toFilledBlock(
         BL{ 10, "block 10",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } });
     fakeStableDB.addBlock(10, filledBlock);
     EXPECT_CALL(*stableDBMock, getBlocks(0, 1000000)).Times(1);
@@ -85,7 +85,7 @@ TEST_F(OperationServiceOnDBTest, TransactionInUnStableOnly) {
     auto filledBlock = toFilledBlock(
         BL{ 10, "block 10",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } });
     fakeUnstableDB.addBlock(10, filledBlock);
     EXPECT_CALL(*stableDBMock, getBlocks(0, 1000000)).Times(1);
@@ -106,7 +106,7 @@ TEST_F(OperationServiceOnDBTest, TransactionInPendingOnly) {
     auto filledBlock = toFilledBlock(
         BL{ 10, "block 10",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } });
     fakePendingDB.addBlock(0, filledBlock);
     EXPECT_CALL(*stableDBMock, getBlocks(0, 1000000)).Times(1);
@@ -127,18 +127,18 @@ TEST_F(OperationServiceOnDBTest, TransactionInAllDB) {
     auto filledBlock = toFilledBlock(
         BL{ 10, "block 10",
         {
-            TR{ { "Z" },{ { "0", 10000 } } }
+            TR{ { { "Z", 0 } }, { { "0", 10000 } } }
         } });
     fakePendingDB.addBlock(0, filledBlock);
     fakeStableDB.addBlock(10, toFilledBlock(
         BL{ 10, "block 10",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } }));
     fakeUnstableDB.addBlock(10, toFilledBlock(
         BL{ 11, "block 11",
         {
-            TR{ { "Y" },{ { "0", 10000 } } }
+            TR{ { { "Y", 0 } }, { { "0", 10000 } } }
         } }));
     EXPECT_CALL(*stableDBMock, getBlocks(0, 1000000)).Times(1);
     EXPECT_CALL(*unstableDBMock, getBlocks(0, 1000000)).Times(1);

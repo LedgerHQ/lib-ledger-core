@@ -44,7 +44,7 @@ namespace ledger {
 
             class SimpleExecutionContext : public api::ExecutionContext {
             public:
-                virtual void execute(const std::shared_ptr<api::Runnable> & runnable) {
+                virtual void execute(const std::shared_ptr<api::Runnable> & runnable) override {
                     q.push(runnable);
                 }
 
@@ -70,9 +70,11 @@ namespace ledger {
 
             //Transaction
             struct TR {
-                std::vector<std::string> inputs;
+                std::vector<std::pair<std::string, uint32_t>> inputs;
+                /// The first part of the pair is the address and the second part is the amount.
                 std::vector<std::pair<std::string, uint32_t>> outputs;
             };
+
             //Block
             struct BL {
                 uint32_t height;

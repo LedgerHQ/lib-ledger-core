@@ -15,6 +15,7 @@ namespace ledger {
                 ON_CALL(*mock, getBlocks(_, _)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlocks));
                 ON_CALL(*mock, getBlock(_)).WillByDefault(Invoke(&fake, &BlocksDatabase::getBlock));
                 ON_CALL(*mock, getLastBlock()).WillByDefault(Invoke(&fake, &BlocksDatabase::getLastBlock));
+                ON_CALL(*mock, getLastBlockHeight()).WillByDefault(Invoke(&fake, &BlocksDatabase::getLastBlockHeight));
             }
 
         }

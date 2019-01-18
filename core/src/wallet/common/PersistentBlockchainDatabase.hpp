@@ -91,6 +91,15 @@ namespace ledger {
                     });
                 }
 
+                Future<Option<uint32_t>> getLastBlockHeight() override {
+                    return _persistentDB->GetLastBlock()
+                        .map<Option<uint32_t>>(_context, [](const Option<std::pair<uint32_t, RawBlock>>& rawBlock) {
+                        return rawBlock.map<uint32_t>([](const std::pair<uint32_t, RawBlock>& rawBlock) {
+                            return rawBlock.first;
+                        });
+                    });
+                }
+
                 void addBlock(uint32_t height, const Block& block) override {
                     RawBlock rawBlock = serialize<Block>(block);
                     _persistentDB->AddBlock(height, rawBlock);

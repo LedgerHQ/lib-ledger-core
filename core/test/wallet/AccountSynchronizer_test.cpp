@@ -109,7 +109,7 @@ TEST_F(AccountSyncTest, NoStableBlocksInBlockchain) {
     {
         BL{ 1, "block 1",
         {
-            TR{ { "X" },{ { "0", 10000 } } }
+            TR{ { { "X", 0 } }, { { "0", 10000 } } }
         } }
     };
     setBlockchain(bch);
@@ -130,7 +130,7 @@ TEST_F(AccountSyncTest, HappyPath) {
     setupFakeDatabases();
     std::vector<BL> bch;
     for (uint32_t i = 1; i <= 5; ++i)
-        bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } });
+        bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { { "X", 0 } }, { { "0", 10000 } } } } });
     setBlockchain(bch);
     {
         testing::Sequence s;
@@ -158,7 +158,7 @@ TEST_F(AccountSyncTest, NoUpdatesNeeded) {
     fakeStableDB.addBlock(2, toFilledBlock(BL{ 2, "block 2", {} }));
     std::vector<BL> bch;
     for (uint32_t i = 1; i <= 5; ++i)
-        bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } });
+        bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { { "X", 0 } }, { { "0", 10000 } } } } });
     EXPECT_CALL(*stableBlocksDBMock, addBlock(_, _)).Times(1);
     setBlockchain(bch);
     {

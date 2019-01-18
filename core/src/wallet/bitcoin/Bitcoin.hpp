@@ -18,7 +18,7 @@ namespace ledger {
             };
 
             static auto optionUint64ToBigInt = [](const Option<uint64_t>& value) -> Option<BigInt> {
-                return value.map<BigInt>([](const uint64_t& val) { return BigInt(val); });
+                return value.map<BigInt>([](const uint64_t& val) { return BigInt(static_cast<unsigned long long>(val)); });
             };
 
             struct Block {
@@ -94,7 +94,7 @@ namespace ledger {
                         address,
                         script,
                         time);
-                    value = BigInt(val);
+                    value = BigInt(static_cast<unsigned long long>(val));
                 }
 
                 template <class Archive>

@@ -25,7 +25,7 @@ public:
     static void setupSource(std::shared_ptr<UTXOSourceMock>& mock, const bitcoin::UTXOSourceList& list) {
         EXPECT_CALL(*mock, getUTXOs(_)).WillOnce(Return(Future<bitcoin::UTXOSourceList>::successful(list)));
     }
-    
+
 public:
     std::shared_ptr<SimpleExecutionContext> context;
     std::shared_ptr<UTXOSourceMock> stable;
@@ -36,9 +36,9 @@ public:
 };
 
 TEST_F(UTXOServiceSourceBasedTest, EmptySources) {
-    setupSource(stable, { {}, {} });
-    setupSource(unstable, { {}, {} });
-    setupSource(pending, { {}, {} });
+    setupSource(stable, { {}, {}, 0 });
+    setupSource(unstable, { {}, {}, 0 });
+    setupSource(pending, { {}, {}, 0 });
     auto f = utxoService->getUTXOs();
     context->wait();
     std::map<bitcoin::UTXOKey, bitcoin::UTXOValue> empty;
@@ -47,18 +47,18 @@ TEST_F(UTXOServiceSourceBasedTest, EmptySources) {
 
 TEST_F(UTXOServiceSourceBasedTest, OnlyStable) {
     setupSource(stable,
-    { 
+    {
         {
             { {"TX1", 0}, dummy},
             { {"TX1", 1}, dummy},
             { {"TX2", 0}, dummy}
         },
-    {} });
-    setupSource(unstable, { {}, {} });
-    setupSource(pending, { {}, {} });
+    {}, 1 });
+    setupSource(unstable, { {}, {}, 1 });
+    setupSource(pending, { {}, {}, 1 });
     auto f = utxoService->getUTXOs();
     context->wait();
-    KV expected = 
+    KV expected =
     {
         { { "TX1", 0 }, dummy },
         { { "TX1", 1 }, dummy },
@@ -68,7 +68,7 @@ TEST_F(UTXOServiceSourceBasedTest, OnlyStable) {
 }
 
 TEST_F(UTXOServiceSourceBasedTest, OnlyUnStable) {
-    setupSource(stable, { {},{} });
+    setupSource(stable, { {}, {}, 0 });
     setupSource(unstable,
     {
         {
@@ -76,8 +76,8 @@ TEST_F(UTXOServiceSourceBasedTest, OnlyUnStable) {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy }
         },
-        {} });
-    setupSource(pending, { {}, {} });
+        {}, 1 });
+    setupSource(pending, { {}, {}, 0 });
     auto f = utxoService->getUTXOs();
     context->wait();
     KV expected =
@@ -90,8 +90,8 @@ TEST_F(UTXOServiceSourceBasedTest, OnlyUnStable) {
 }
 
 TEST_F(UTXOServiceSourceBasedTest, OnlyPending) {
-    setupSource(stable, { {}, {} });
-    setupSource(unstable, { {}, {} });
+    setupSource(stable, { {}, {}, 0 });
+    setupSource(unstable, { {}, {},0 });
     setupSource(pending,
     {
         {
@@ -99,7 +99,7 @@ TEST_F(UTXOServiceSourceBasedTest, OnlyPending) {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy }
         },
-        {} });
+        {}, 1 });
     auto f = utxoService->getUTXOs();
     context->wait();
     KV expected =
@@ -112,9 +112,9 @@ TEST_F(UTXOServiceSourceBasedTest, OnlyPending) {
 }
 
 TEST_F(UTXOServiceSourceBasedTest, NoIntersection) {
-    setupSource(stable, { { { { "TX1", 1 }, dummy } }, {} });
-    setupSource(unstable, { { { { "TX1", 0 }, dummy } }, {} });
-    setupSource(pending, { { { { "TX2", 0 }, dummy } }, {} });
+    setupSource(stable, { { { { "TX1", 1 }, dummy } }, {}, 1 });
+    setupSource(unstable, { { { { "TX1", 0 }, dummy } }, {}, 1 });
+    setupSource(pending, { { { { "TX2", 0 }, dummy } }, {}, 1 });
     auto f = utxoService->getUTXOs();
     context->wait();
     KV expected =
@@ -127,19 +127,19 @@ TEST_F(UTXOServiceSourceBasedTest, NoIntersection) {
 }
 
 TEST_F(UTXOServiceSourceBasedTest, PendingSpendFromStable) {
-    setupSource(stable, { 
-        { 
+    setupSource(stable, {
+        {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        }, {} });
-    setupSource(unstable, { {}, {} });
-    setupSource(pending, { {}, 
+        }, {}, 1 });
+    setupSource(unstable, { {}, {}, 0 });
+    setupSource(pending, { {},
     {
         { "TX1", 1 },
         { "TX2", 1 },
-    } 
+    }, 0
     });
     auto f = utxoService->getUTXOs();
     context->wait();
@@ -152,19 +152,19 @@ TEST_F(UTXOServiceSourceBasedTest, PendingSpendFromStable) {
 }
 
 TEST_F(UTXOServiceSourceBasedTest, PendingSpendFromUnStable) {
-    setupSource(stable, { {},{} });
+    setupSource(stable, { {}, {}, 0 });
     setupSource(unstable, {
         {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        },{} });
+        }, {}, 0 });
     setupSource(pending, { {},
     {
         { "TX1", 1 },
         { "TX2", 1 },
-    }
+    }, 0
     });
     auto f = utxoService->getUTXOs();
     context->wait();
@@ -183,14 +183,14 @@ TEST_F(UTXOServiceSourceBasedTest, UnStableSpendFromStable) {
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        },{} });
+        }, {},0 });
     setupSource(unstable, { {},
     {
         { "TX1", 1 },
         { "TX2", 1 },
-    }
+    }, 0
     });
-    setupSource(pending, { {},{} });
+    setupSource(pending, { {}, {}, 0 });
     auto f = utxoService->getUTXOs();
     context->wait();
     KV expected =
@@ -208,21 +208,21 @@ TEST_F(UTXOServiceSourceBasedTest, SameUTXOs) {
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        },{} });
+        }, {}, 1 });
     setupSource(unstable, {
         {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        },{} });
+        }, {}, 1 });
     setupSource(pending, {
         {
             { { "TX1", 1 }, dummy },
             { { "TX2", 0 }, dummy },
             { { "TX2", 1 }, dummy },
             { { "TX2", 2 }, dummy }
-        },{} });
+        }, {}, 1 });
     auto f = utxoService->getUTXOs();
     context->wait();
     KV expected =

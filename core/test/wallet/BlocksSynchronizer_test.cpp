@@ -73,7 +73,7 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } }
+                        TR{ { { "X", 0 } },{ { "0", 10000 } } }
                     }}
                 };
                 setBlockchain(bch);
@@ -91,8 +91,8 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
-                        TR{ { "Y" },{ { "0", 10000 } } }
+                        TR{ { { "X", 0 } },{ { "0", 10000 } } },
+                        TR{ { { "Y", 0 } },{ { "0", 10000 } } }
                     } }
                 };
                 setBlockchain(bch);
@@ -110,11 +110,11 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
                     } },
                     BL{ 2, "block 2",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
                     } },
                 };
                 setBlockchain(bch);
@@ -136,11 +136,11 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
                     } },
                     BL{ 2, "block 2",
                     {
-                        TR{ { "X" },{ { "Y", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "Y", 10000 } } },
                     } },
                 };
                 setBlockchain(bch);
@@ -160,11 +160,11 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
                     } },
                     BL{ 2, "block 2",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
                     } },
                 };
                 setBlockchain(bch);
@@ -184,11 +184,11 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } },
-                        TR{ { "X" },{ { "1", 10000 } } },
-                        TR{ { "X" },{ { "2", 10000 } } },
-                        TR{ { "X" },{ { "3", 10000 } } },
-                        TR{ { "X" },{ { "4", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "1", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "2", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "3", 10000 } } },
+                        TR{ { { "X", 0 } }, { { "4", 10000 } } },
                     } },
                 };
                 setBlockchain(bch);
@@ -212,19 +212,19 @@ namespace ledger {
                 {
                     BL{ 1, "block 1",
                     {
-                        TR{ { "X" },{ { "0", 10000 } } }
+                        TR{ { { "X", 0 } }, { { "0", 10000 } } }
                     }},
                     BL{ 2, "block 2",
                     {
-                        TR{ { "X" },{ { "1", 10000 } } }
+                        TR{ { { "X", 0 } }, { { "1", 10000 } } }
                     } },
                     BL{ 3, "block 3",
                     {
-                        TR{ { "X" },{ { "2", 10000 } } }
+                        TR{ { { "X", 0 } }, { { "2", 10000 } } }
                     } },
                     BL{ 4, "block 4",
                     {
-                        TR{ { "X" },{ { "3", 10000 } } }
+                        TR{ { { "X", 0 } }, { { "3", 10000 } } }
                     } }
                 };
                 setBlockchain(bch);
@@ -255,7 +255,7 @@ namespace ledger {
                 {
                     ::testing::Sequence s;
                     for (uint32_t i = 1; i <= 300; ++i) {
-                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { "0", 10000 } } } } };
+                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i), { TR{ { { "X", 0 } }, { { "0", 10000 } } } } };
                         bch.push_back(b);
                         EXPECT_CALL(*blocksDBMock, addBlock(b.height, Truly(Same(b))));
                     }
@@ -282,10 +282,10 @@ namespace ledger {
                 setupFakeKeychains();
                 std::vector<BL> bch;
                 for (uint32_t i = 1; i <= 200; ++i) {
-                    auto b = BL{ 1, "block 1",{ TR{ { "X" + boost::lexical_cast<std::string>(i) },{ { "0", 10000 } } } } };
+                    auto b = BL{ 1, "block 1",{ TR{ { { "X" + boost::lexical_cast<std::string>(i), 0 } }, { { "0", 10000 } } } } };
                     bch.push_back(b);
                 }
-                bch.push_back(BL{ 2, "block 2",{ TR{ { "X" },{ { "0", 10000 } } } } });
+                bch.push_back(BL{ 2, "block 2",{ TR{ { { "X", 0 } },{ { "0", 10000 } } } } });
                 setBlockchain(bch);
 
                 EXPECT_CALL(*blocksDBMock, addBlock(_, _)).Times(0);
@@ -305,7 +305,7 @@ namespace ledger {
                 {
                     ::testing::Sequence s;
                     for (uint32_t i = 1; i <= LAST_BLOCK; i += 500) {
-                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { "X" },{ { boost::lexical_cast<std::string>((i / 500) % 500), 10000 } } } } };
+                        auto b = BL{ i, "block " + boost::lexical_cast<std::string>(i) ,{ TR{ { { "X", 0 } } ,{ { boost::lexical_cast<std::string>((i / 500) % 500), 10000 } } } } };
                         bch.push_back(b);
                         EXPECT_CALL(*blocksDBMock, addBlock(b.height, Truly(Same(b)))).Times(1);
                     }
