@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_DYNAMICVALUE_HPP
 #define LEDGER_CORE_DYNAMICVALUE_HPP
 
@@ -41,6 +42,7 @@ namespace ledger {
     namespace core {
         class DynamicArray;
         class DynamicObject;
+
         struct DynamicValue {
             std::string string;
             std::vector<uint8_t> bytes;
@@ -55,20 +57,17 @@ namespace ledger {
 
             template <class Archive>
             void serialize(Archive& ar) {
-
             }
 
             std::string dump() const;
             std::ostream& dump(std::ostream& ss, int depth) const;
         };
 
-        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>( cereal::PortableBinaryOutputArchive & );
-        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>( cereal::PortableBinaryInputArchive & );
-        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>( cereal::BinaryOutputArchive & );
-        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>( cereal::BinaryInputArchive & );
-
+        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive & );
+        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>(cereal::PortableBinaryInputArchive & );
+        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>(cereal::BinaryOutputArchive & );
+        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>(cereal::BinaryInputArchive & );
     }
 }
-
 
 #endif //LEDGER_CORE_DYNAMICVALUE_HPP

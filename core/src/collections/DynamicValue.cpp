@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "DynamicValue.hpp"
 
 #include "DynamicObject.hpp"
@@ -37,9 +38,9 @@
 
 namespace ledger {
     namespace core {
-
-        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>( cereal::PortableBinaryOutputArchive & ar) {
+        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive & ar) {
             ar(type);
+
             switch (type) {
                 case api::DynamicType::ARRAY:
                     ar(array);
@@ -70,8 +71,9 @@ namespace ledger {
             }
         }
 
-        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>( cereal::PortableBinaryInputArchive & ar) {
+        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>(cereal::PortableBinaryInputArchive & ar) {
             ar(type);
+
             switch (type) {
                 case api::DynamicType::ARRAY:
                     ar(array);
@@ -102,8 +104,9 @@ namespace ledger {
             }
         }
 
-        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>( cereal::BinaryOutputArchive & ar) {
+        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>(cereal::BinaryOutputArchive & ar) {
             ar(type);
+
             switch (type) {
                 case api::DynamicType::ARRAY:
                     ar(array);
@@ -134,8 +137,9 @@ namespace ledger {
             }
         }
 
-        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>( cereal::BinaryInputArchive &ar) {
+        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>(cereal::BinaryInputArchive &ar) {
             ar(type);
+
             switch (type) {
                 case api::DynamicType::ARRAY:
                     ar(array);
