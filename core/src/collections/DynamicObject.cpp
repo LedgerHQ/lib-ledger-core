@@ -41,122 +41,150 @@ namespace ledger {
     namespace core {
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putString(const std::string &key, const std::string &value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::STRING;
-            v.string = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putInt(const std::string &key, int32_t value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::INT32;
-            v.int32 = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putLong(const std::string &key, int64_t value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::INT64;
-            v.int64 = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putDouble(const std::string &key, double value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::DOUBLE;
-            v.doubleFloat = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putData(const std::string &key, const std::vector<uint8_t> &value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::DATA;
-            v.bytes = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putBoolean(const std::string &key, bool value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::BOOLEAN;
-            v.boolean = value;
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(value);
+            }
+
             return shared_from_this();
-        }
-
-        optional<std::string> DynamicObject::getString(const std::string &key) {
-            auto v = _values.lift(key);
-            if (!v.hasValue() || v.getValue().type != api::DynamicType::STRING)
-                return optional<std::string>();
-            return optional<std::string>(v.getValue().string);
-        }
-
-        optional<int32_t> DynamicObject::getInt(const std::string &key) {
-            return getNumber<int32_t>(key);
-        }
-
-        optional<int64_t> DynamicObject::getLong(const std::string &key) {
-            return getNumber<int64_t>(key);
-        }
-
-        optional<double> DynamicObject::getDouble(const std::string &key) {
-            return getNumber<double>(key);
-        }
-
-        optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::DATA)
-                return optional<std::vector<uint8_t >>();
-            return optional<std::vector<uint8_t>>(v.getValue().bytes);
-        }
-
-        optional<bool> DynamicObject::getBoolean(const std::string &key) {
-            return getNumber<bool>(key);
         }
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::OBJECT;
-            v.object = std::static_pointer_cast<DynamicObject>(value);
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(std::static_pointer_cast<DynamicObject>(value));
+            }
+
             return shared_from_this();
         }
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putArray(const std::string &key, const std::shared_ptr<api::DynamicArray> &value) {
-            if (_readOnly) return shared_from_this();
-            DynamicValue v;
-            v.type = api::DynamicType::ARRAY;
-            v.array = std::static_pointer_cast<DynamicArray>(value);
-            _values[key] = v;
+            if (!_readOnly) {
+                _values[key] = DynamicValue(std::static_pointer_cast<DynamicArray>(value));
+            }
+
             return shared_from_this();
         }
 
+        optional<std::string> DynamicObject::getString(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return *v->asStr();
+            } else {
+                return optional<std::string>();
+            }
+        }
+
+        optional<int32_t> DynamicObject::getInt(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return v->asInt32();
+            } else {
+                return optional<int32_t>();
+            }
+        }
+
+        optional<int64_t> DynamicObject::getLong(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return v->asInt64();
+            } else {
+                return optional<int64_t>();
+            }
+        }
+
+        optional<double> DynamicObject::getDouble(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return v->asDouble();
+            } else {
+                return optional<double>();
+            }
+        }
+
+        optional<bool> DynamicObject::getBoolean(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return v->asBool();
+            } else {
+                return optional<bool>();
+            }
+        }
+
+        optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return *v->asData();
+            } else {
+                return optional<std::vector<uint8_t>>();
+            }
+        }
+
         std::shared_ptr<api::DynamicObject> DynamicObject::getObject(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::OBJECT)
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return *v->asObject();
+            } else {
                 return nullptr;
-            return v.getValue().object;
+            }
         }
 
         std::shared_ptr<api::DynamicArray> DynamicObject::getArray(const std::string &key) {
-            auto v = _values.lift(key);
-            if (_values.empty() || !v.hasValue() || v.getValue().type != api::DynamicType::ARRAY)
+            const auto v = optional<DynamicValue>(_values.lift(key));
+
+            if (v) {
+                return *v->asArray();
+            } else {
                 return nullptr;
-            return v.getValue().array;
+            }
         }
 
         bool DynamicObject::contains(const std::string &key) {
@@ -175,7 +203,7 @@ namespace ledger {
             auto v = _values.lift(key);
             if (_values.empty() || !v.hasValue())
                 return optional<api::DynamicType>();
-            return optional<api::DynamicType>(v.getValue().type);
+            return optional<api::DynamicType>(v.getValue().getType());
         }
 
         std::string DynamicObject::dump() {
@@ -224,11 +252,18 @@ namespace ledger {
 
         void DynamicObject::setReadOnly(bool enable) {
             _readOnly = enable;
+
             for (auto& v : _values.getContainer()) {
-                if (v.second.type == api::DynamicType::ARRAY) {
-                    v.second.array->setReadOnly(enable);
-                } else if (v.second.type == api::DynamicType::OBJECT ) {
-                    v.second.object->setReadOnly(enable);
+                // try to set the read-only attribute on the contained value as an array, and if it
+                // fails, try to do the same as if it were an object
+                auto array = v.second.asArray();
+                if (array) {
+                    (*array)->setReadOnly(enable);
+                } else {
+                    auto object = v.second.asObject();
+                    if (object) {
+                        (*object)->setReadOnly(enable);
+                    }
                 }
             }
         }

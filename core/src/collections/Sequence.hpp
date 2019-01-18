@@ -49,6 +49,25 @@ namespace ledger {
 
             }
 
+            /// Type-safe indexed getter.
+            optional<T&> get(size_t index) {
+                if (index < size()) {
+                    return this->operator[](index);
+                } else {
+                    return optional<T&>();
+                }
+            }
+
+            /// Type-safe indexed getter.
+            optional<const T&> get(size_t index) const {
+                if (index < size()) {
+                    return this->operator[](index);
+                } else {
+                    return optional<const T&>();
+                }
+            }
+
+
             T& operator[](size_t index) {
                 return _container[index];
             }
