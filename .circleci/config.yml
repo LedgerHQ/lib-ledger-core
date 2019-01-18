@@ -113,7 +113,7 @@ jobs:
             name: Run_Tests
             command: |
                 cd ../lib-ledger-core-build
-                ctest
+                ~/cmake-3.13.3-Linux-x86_64/bin/ctest
   build_macos_release:
     macos:
       xcode: "10.0.0"
