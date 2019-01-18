@@ -42,7 +42,7 @@ RUN mkdir -p lib-ledger-core/build
 WORKDIR /ledger/lib-ledger-core/build
 RUN pwd
 RUN cmake -DCMAKE_BUILD_TYPE=Debug ..
-RUN make
+RUN make -j8
 
 # Node binding
 WORKDIR /ledger/lib-ledger-core-node-bindings
