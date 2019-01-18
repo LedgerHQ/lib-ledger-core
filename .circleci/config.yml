@@ -2,7 +2,7 @@ version: 2
 general:
 dependencies:
   cache_directories:
-    - ~/cmake-3.10.3
+    - ~/cmake-3.12.3
 jobs:
   build_linux_release:
     docker:

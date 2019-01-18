@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.12)
 
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -44,17 +44,26 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-set(LIB_BUILD_TYPE SHARED)
-
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
-add_library(ledger-core ${LIB_BUILD_TYPE}
+add_library(ledger-core-obj OBJECT
             ${ledger-core-sources}
             ${SRC_FILES}
             ${HEADERS_FILES})
+
+target_compile_definitions(ledger-core-obj PUBLIC ledger_core_EXPORTS)
+# shared libraries need PIC
+set_property(TARGET ledger-core-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+# shared and static libraries built from the same object files
+add_library(ledger-core SHARED)
+target_link_libraries(ledger-core PUBLIC ledger-core-obj)
+
+add_library(ledger-core-static STATIC)
+target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0)
@@ -93,38 +102,36 @@ if(IS_IOS GREATER_EQUAL 0)
 endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core -static-libstdc++)
+    target_link_libraries(ledger-core-obj -static-libstdc++)
 endif()
+
+target_link_libraries(ledger-core-obj bigd)
 
 if(MSVC)
     add_definitions(-DHAVE_C99INCLUDES)
-    include(GenerateExportHeader)
-    generate_export_header(ledger-core EXPORT_MACRO_NAME LIBCORE_EXPORT
-            EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/ledger/core/export/libcore_export.h)
-    target_include_directories(ledger-core PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core/export)
 endif(MSVC)
 
-target_link_libraries(ledger-core bigd)
 if(MINGW OR MSVC)
-    target_link_libraries(ledger-core fmt-header-only)
+    target_link_libraries(ledger-core-obj fmt-header-only)
 else()
-    target_link_libraries(ledger-core fmt)
+    target_link_libraries(ledger-core-obj fmt)
 endif(MINGW OR MSVC)
 
-target_link_libraries(ledger-core crypto)
-target_link_libraries(ledger-core sqlite3)
-target_link_libraries(ledger-core soci_sqlite3)
-target_link_libraries(ledger-core soci_core_static)
-target_link_libraries(ledger-core leveldb)
-target_link_libraries(ledger-core spdlog)
+target_link_libraries(ledger-core-obj crypto)
+target_link_libraries(ledger-core-obj sqlite3)
+target_link_libraries(ledger-core-obj soci_sqlite3)
+target_link_libraries(ledger-core-obj soci_core_static)
+target_link_libraries(ledger-core-obj leveldb)
+target_link_libraries(ledger-core-obj spdlog)
 
 #Secp256k1
-target_link_libraries(ledger-core "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
+target_link_libraries(ledger-core-obj "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
 link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
-add_dependencies(ledger-core secp256k1)
+add_dependencies(ledger-core-obj secp256k1)
+
 
 #Sqlite
-target_link_libraries(ledger-core $<TARGET_FILE:sqlite3>)
+target_link_libraries(ledger-core-obj $<TARGET_FILE:sqlite3>)
 link_directories($<TARGET_FILE_DIR:sqlite3>)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
@@ -136,11 +143,11 @@ file(GLOB LEDGER_CORE_API_HEADERS
         "api/*.hpp"
         )
 
-include_directories(ledger-core ../lib/bigd)
+include_directories(ledger-core-obj ../lib/bigd)
 
 if (TARGET_JNI)
-    include_directories(ledger-core ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core ${JNI_LIBRARIES})
+    include_directories(ledger-core-obj ${JNI_INCLUDE_DIRS})
+    target_link_libraries(ledger-core-obj ${JNI_LIBRARIES})
 endif ()
 
 file(GLOB ledger-core-header
@@ -150,22 +157,23 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
 target_include_directories(ledger-core PUBLIC .)
-target_include_directories(ledger-core PUBLIC ../lib/bigd)
-target_include_directories(ledger-core PUBLIC ../lib/fmt-3.0.0)
-target_include_directories(ledger-core PUBLIC ../lib/rapidjson/include)
-target_include_directories(ledger-core PUBLIC ../lib/soci/core)
-target_include_directories(ledger-core PUBLIC ../lib/soci_sqlite3)
-target_include_directories(ledger-core PUBLIC ../lib/sqlite3)
-target_include_directories(ledger-core PUBLIC ../lib/spdlog/include)
-target_include_directories(ledger-core PUBLIC ../lib/openssl/include)
-target_include_directories(ledger-core PUBLIC ../lib/leveldb/include)
-target_include_directories(ledger-core PUBLIC ../test/lib/boost)
-target_include_directories(ledger-core PUBLIC ../lib/cereal/)
-target_include_directories(ledger-core PUBLIC ../lib/date/)
-target_include_directories(ledger-core PUBLIC ../lib/secp256k1)
+target_include_directories(ledger-core-obj PUBLIC ../lib/bigd)
+target_include_directories(ledger-core-obj PUBLIC ../lib/fmt-3.0.0)
+target_include_directories(ledger-core-obj PUBLIC ../lib/rapidjson/include)
+target_include_directories(ledger-core-obj PUBLIC ../lib/soci/core)
+target_include_directories(ledger-core-obj PUBLIC ../lib/soci_sqlite3)
+target_include_directories(ledger-core-obj PUBLIC ../lib/sqlite3)
+target_include_directories(ledger-core-obj PUBLIC ../lib/spdlog/include)
+target_include_directories(ledger-core-obj PUBLIC ../lib/openssl/include)
+target_include_directories(ledger-core-obj PUBLIC ../lib/leveldb/include)
+target_include_directories(ledger-core-obj PUBLIC ../test/lib/boost)
+target_include_directories(ledger-core-obj PUBLIC ../lib/cereal/)
+target_include_directories(ledger-core-obj PUBLIC ../lib/date/)
+target_include_directories(ledger-core-obj PUBLIC ../lib/secp256k1)
 
-target_compile_definitions(ledger-core PUBLIC LIB_VERSION_MAJOR=${VERSION_MAJOR} LIB_VERSION_MINOR=${VERSION_MINOR}
+target_compile_definitions(ledger-core-obj PUBLIC LIB_VERSION_MAJOR=${VERSION_MAJOR} LIB_VERSION_MINOR=${VERSION_MINOR}
         LIB_VERSION_PATCH=${VERSION_PATCH})
-
+        
 install(TARGETS ledger-core DESTINATION "lib")
+install(TARGETS ledger-core-static DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

@@ -24,13 +24,13 @@ add_executable(ledger-core-integration-tests
         )
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
-target_link_libraries(ledger-core-integration-tests ledger-core)
+target_link_libraries(ledger-core-integration-tests ledger-core-static)
 target_link_libraries(ledger-core-integration-tests ledger-test)
 target_link_libraries(ledger-core-integration-tests ledger-qt-host)
 target_include_directories(ledger-core-integration-tests PUBLIC ../../../core/src)
 target_include_directories(ledger-core-integration-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-integration-tests crypto ledger-core)
+copy_install_imported_targets(ledger-core-integration-tests crypto)
 
 add_test (NAME ledger-core-integration-tests COMMAND ledger-core-integration-tests)
