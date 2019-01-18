@@ -47,6 +47,7 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
+list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
 add_library(ledger-core-obj OBJECT
@@ -59,11 +60,9 @@ target_compile_definitions(ledger-core-obj PUBLIC ledger_core_EXPORTS)
 set_property(TARGET ledger-core-obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 # shared and static libraries built from the same object files
-add_library(ledger-core SHARED)
-target_link_libraries(ledger-core PUBLIC ledger-core-obj)
+add_library(ledger-core SHARED $<TARGET_OBJECTS:ledger-core-obj> dummy.cpp)
 
-add_library(ledger-core-static STATIC)
-target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
+add_library(ledger-core-static STATIC $<TARGET_OBJECTS:ledger-core-obj> dummy.cpp)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0)
