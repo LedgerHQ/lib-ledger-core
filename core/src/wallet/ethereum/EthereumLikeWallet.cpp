@@ -179,9 +179,9 @@ namespace ledger {
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
                     auto owner = info.owners[i];
-                    result.derivations.push_back(path.getParent().toString());
+                    //result.derivations.push_back(path.getParent().toString());
                     result.derivations.push_back(path.toString());
-                    result.owners.push_back(owner);
+                    //result.owners.push_back(owner);
                     result.owners.push_back(owner);
                 }
                 return result;

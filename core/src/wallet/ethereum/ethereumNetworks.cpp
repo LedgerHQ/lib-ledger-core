@@ -59,7 +59,7 @@ namespace ledger {
                     return ETHEREUM_ROPSTEN;
                 } else if (networkName == "ethereum_classic") {
                     static const api::EthereumLikeNetworkParameters ETHEREUM_CLASSIC(
-                            "eth_classic",
+                            "etc",
                             "Ethereum signed message:\n",
                             "61",
                             {0x04, 0x88, 0xB2, 0x1E},

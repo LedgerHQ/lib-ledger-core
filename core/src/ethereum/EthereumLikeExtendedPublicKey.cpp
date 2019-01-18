@@ -37,6 +37,7 @@
 #include <bytes/BytesReader.h>
 #include <bytes/BytesWriter.h>
 
+#include <utils/hex.h>
 #include <utils/Exception.hpp>
 
 #include <crypto/Keccak.h>
@@ -54,25 +55,43 @@ namespace ledger {
             _currency(params), _key(key), _path(path)
         {}
 
-        std::shared_ptr<api::EthereumLikeAddress> EthereumLikeExtendedPublicKey::derive(const std::string & path) {
+        static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
+            if (index >= childNums.size()) {
+                return key;
+            }
+            return _derive(index + 1, childNums, key.derive(childNums[index]));
+        }
+
+        std::shared_ptr<api::EthereumLikeAddress>
+        EthereumLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
-            return std::make_shared<EthereumLikeAddress>(_currency, _key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
+            auto key = _derive(0, p.toVector(), _key);
+            return std::make_shared<EthereumLikeAddress>(_currency, key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
         }
 
-        std::shared_ptr<EthereumLikeExtendedPublicKey> EthereumLikeExtendedPublicKey::derive(const DerivationPath &path) {
-            return std::make_shared<EthereumLikeExtendedPublicKey>(_currency, _key, _path + path);
+        std::shared_ptr<EthereumLikeExtendedPublicKey>
+        EthereumLikeExtendedPublicKey::derive(const DerivationPath &path) {
+            auto key = _derive(0, path.toVector(), _key);
+            return std::make_shared<EthereumLikeExtendedPublicKey>(_currency, key, _path + path);
         }
 
-        std::vector<uint8_t> EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeExtendedPublicKey::derivePublicKey is not implemented yet");
+        std::vector<uint8_t>
+        EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
+            DerivationPath p(path);
+            auto key = _derive(0, p.toVector(), _key);
+            return key.getPublicKey();
         }
 
-        std::vector<uint8_t> EthereumLikeExtendedPublicKey::deriveHash160(const std::string & path) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeExtendedPublicKey::deriveHash160 is not implemented yet");
+        std::vector<uint8_t>
+        EthereumLikeExtendedPublicKey::deriveHash160(const std::string & path) {
+            DerivationPath p(path);
+            auto key = _derive(0, p.toVector(), _key);
+            return key.getPublicKeyHash160();
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithChecksum(_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion),_currency.ethereumLikeNetworkParameters.value().Identifier);
+            return Base58::encodeWithChecksum(_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion),
+                                              _currency.ethereumLikeNetworkParameters.value().Identifier);
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
@@ -128,9 +147,10 @@ namespace ledger {
             auto childNum = reader.readNextBeUint();
             //32 bytes of chaincode
             auto chainCode = reader.read(32);
+            auto chainCodeStr = hex::toString(chainCode);
             //33 bytes of publicKey
             auto publicKey = reader.readUntilEnd();
-
+            auto publicKeyStr = hex::toString(publicKey);
             DeterministicPublicKey k(publicKey, chainCode, childNum, depth, fingerprint, currency.ethereumLikeNetworkParameters.value().Identifier);
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
 

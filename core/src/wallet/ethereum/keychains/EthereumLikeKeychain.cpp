@@ -159,6 +159,7 @@ namespace ledger {
         EthereumLikeKeychain::Address EthereumLikeKeychain::derive() {
 
             if (_address.empty()) {
+
                 _localPath = getDerivationScheme()
                         .setAccountIndex(getAccountIndex())
                         .setCoinType(getCurrency().bip44CoinType)
@@ -173,7 +174,12 @@ namespace ledger {
                             .setCoinType(getCurrency().bip44CoinType)
                             .setNode(0)
                             .setAddressIndex(0).getPath().toString();
-                    auto xpub = _xpub;
+
+                    auto localNodeScheme = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
+                            .setAccountIndex(getAccountIndex())
+                            .setCoinType(getCurrency().bip44CoinType)
+                            .setNode(0);
+                    auto xpub = std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
                     _address = xpub->derive(p)->toEIP55();
                     // Feed path -> address cache
                     // Feed address -> path cache
