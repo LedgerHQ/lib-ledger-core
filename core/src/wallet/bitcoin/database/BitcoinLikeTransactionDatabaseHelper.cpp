@@ -218,12 +218,6 @@ namespace ledger {
                     "ORDER BY idx", use(out.hash)
             );
             for (auto& outputRow : outputRows) {
-                BitcoinLikeBlockchainExplorer::Output output;
-                output.index = (uint64_t) outputRow.get<int>(0);
-                output.value.assignScalar(outputRow.get<long long>(1));
-                output.script = outputRow.get<std::string>(2);
-                output.address = outputRow.get<Option<std::string>>(3);
-                out.outputs.push_back(std::move(output));
                 //Check if the output belongs to this account
                 //solve case of 2 accounts in DB one as sender and one as receiver
                 //of same transaction (filter on account_uid won't solve the issue because
