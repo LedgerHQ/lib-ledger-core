@@ -163,7 +163,7 @@ file(GLOB ledger-core-header
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.h")
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
-target_include_directories(ledger-core INTERFACE .)
+target_include_directories(ledger-core-interface INTERFACE .)
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-interface INTERFACE ../lib/fmt-3.0.0)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
