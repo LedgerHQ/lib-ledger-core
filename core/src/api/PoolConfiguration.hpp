@@ -16,11 +16,11 @@
 namespace ledger { namespace core { namespace api {
 
 /**TODO */
-class PoolConfiguration {
+class LIBCORE_EXPORT PoolConfiguration {
 public:
     virtual ~PoolConfiguration() {}
 
-    static LIBCORE_EXPORT std::string const DATABASE_NAME;
+    static std::string const DATABASE_NAME;
 };
 
 } } }  // namespace ledger::core::api

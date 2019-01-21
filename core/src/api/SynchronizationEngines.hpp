@@ -16,11 +16,11 @@
 namespace ledger { namespace core { namespace api {
 
 /**TODO */
-class SynchronizationEngines {
+class LIBCORE_EXPORT SynchronizationEngines {
 public:
     virtual ~SynchronizationEngines() {}
 
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION;
+    static std::string const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION;
 };
 
 } } }  // namespace ledger::core::api

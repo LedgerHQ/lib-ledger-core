@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -19,8 +26,8 @@ enum class DatabaseValueType : int {
     UNSIGNED_LONG_LONG,
     BLOB,
 };
-std::string to_string(const DatabaseValueType& databaseValueType);
-std::ostream &operator<<(std::ostream &os, const DatabaseValueType &o);
+LIBCORE_EXPORT  std::string to_string(const DatabaseValueType& databaseValueType);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const DatabaseValueType &o);
 
 } } }  // namespace ledger::core::api
 

@@ -7,11 +7,18 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 /**Class implementing secp256k1 used in Bitcoin */
-class Secp256k1 {
+class LIBCORE_EXPORT Secp256k1 {
 public:
     virtual ~Secp256k1() {}
 

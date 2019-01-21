@@ -33,7 +33,7 @@ enum class TimePeriod;
 enum class WalletType;
 
 /**Class representing an account */
-class Account {
+class LIBCORE_EXPORT Account {
 public:
     virtual ~Account() {}
 
@@ -41,29 +41,29 @@ public:
      *Key of the synchronization duration time in the synchronize event payload.
      *The value is stored in a int 64 time expressed in miliseconds.
      */
-    static LIBCORE_EXPORT std::string const EV_SYNC_DURATION_MS;
+    static std::string const EV_SYNC_DURATION_MS;
 
     /**Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
-    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE;
+    static std::string const EV_SYNC_ERROR_CODE;
 
-    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_CODE_INT;
+    static std::string const EV_SYNC_ERROR_CODE_INT;
 
     /**Key of the synchronization error message. The message is stored as a string. */
-    static LIBCORE_EXPORT std::string const EV_SYNC_ERROR_MESSAGE;
+    static std::string const EV_SYNC_ERROR_MESSAGE;
 
     /**TODO */
-    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_CURRENCY_NAME;
+    static std::string const EV_NEW_BLOCK_CURRENCY_NAME;
 
-    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HASH;
+    static std::string const EV_NEW_BLOCK_HASH;
 
-    static LIBCORE_EXPORT std::string const EV_NEW_BLOCK_HEIGHT;
+    static std::string const EV_NEW_BLOCK_HEIGHT;
 
     /**TODO */
-    static LIBCORE_EXPORT std::string const EV_NEW_OP_WALLET_NAME;
+    static std::string const EV_NEW_OP_WALLET_NAME;
 
-    static LIBCORE_EXPORT std::string const EV_NEW_OP_ACCOUNT_INDEX;
+    static std::string const EV_NEW_OP_ACCOUNT_INDEX;
 
-    static LIBCORE_EXPORT std::string const EV_NEW_OP_UID;
+    static std::string const EV_NEW_OP_UID;
 
     /**
      *Get index of account in user's wallet
