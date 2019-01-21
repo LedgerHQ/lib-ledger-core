@@ -47,8 +47,9 @@ namespace ledger {
 
         struct DynamicValue {
             // Mandatory default constructor for it to be default-constructible in (e.g.) maps.
-            DynamicValue();
-            DynamicValue(const DynamicValue& rhs);
+            explicit DynamicValue();
+            explicit DynamicValue(const DynamicValue& rhs);
+            explicit DynamicValue(const char* x);
             explicit DynamicValue(const std::string& x);
             explicit DynamicValue(const std::vector<uint8_t>& x);
             explicit DynamicValue(bool x);

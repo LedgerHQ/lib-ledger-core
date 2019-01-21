@@ -44,6 +44,10 @@ namespace ledger {
         DynamicValue::DynamicValue(const DynamicValue& rhs): type(rhs.type), data(rhs.data) {
         }
 
+        DynamicValue::DynamicValue(const char* x): type(api::DynamicType::STRING) {
+            data = std::string(x);
+        }
+
         DynamicValue::DynamicValue(const std::string& x): type(api::DynamicType::STRING) {
             data = x;
         }
@@ -122,35 +126,67 @@ namespace ledger {
 
             switch (type) {
                 case api::DynamicType::STRING:
-                    ar(boost::get<std::string>(data));
+                    {
+                        std::string x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::DATA:
-                    ar(boost::get<std::vector<uint8_t>>(data));
+                    {
+                        std::vector<uint8_t> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::BOOLEAN:
-                    ar(boost::get<bool>(data));
+                    {
+                        bool x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::INT32:
-                    ar(boost::get<int32_t>(data));
+                    {
+                        int32_t x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::INT64:
-                    ar(boost::get<int64_t>(data));
+                    {
+                        int64_t x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::DOUBLE:
-                    ar(boost::get<double>(data));
+                    {
+                        double x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::ARRAY:
-                    ar(boost::get<std::shared_ptr<DynamicArray>>(data));
+                    {
+                        std::shared_ptr<DynamicArray> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::OBJECT:
-                    ar(boost::get<std::shared_ptr<DynamicObject>>(data));
+                    {
+                        std::shared_ptr<DynamicObject> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::UNDEFINED:
@@ -204,35 +240,67 @@ namespace ledger {
 
             switch (type) {
                 case api::DynamicType::STRING:
-                    ar(boost::get<std::string>(data));
+                    {
+                        std::string x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::DATA:
-                    ar(boost::get<std::vector<uint8_t>>(data));
+                    {
+                        std::vector<uint8_t> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::BOOLEAN:
-                    ar(boost::get<bool>(data));
+                    {
+                        bool x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::INT32:
-                    ar(boost::get<int32_t>(data));
+                    {
+                        int32_t x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::INT64:
-                    ar(boost::get<int64_t>(data));
+                    {
+                        int64_t x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::DOUBLE:
-                    ar(boost::get<double>(data));
+                    {
+                        double x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::ARRAY:
-                    ar(boost::get<std::shared_ptr<DynamicArray>>(data));
+                    {
+                        std::shared_ptr<DynamicArray> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::OBJECT:
-                    ar(boost::get<std::shared_ptr<DynamicObject>>(data));
+                    {
+                        std::shared_ptr<DynamicObject> x;
+                        ar(x);
+                        data = x;
+                    }
                     break;
 
                 case api::DynamicType::UNDEFINED:

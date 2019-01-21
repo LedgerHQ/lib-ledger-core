@@ -32,8 +32,32 @@
 #include <gtest/gtest.h>
 #include <ledger/core/api/DynamicArray.hpp>
 #include <ledger/core/api/DynamicObject.hpp>
+#include <ledger/core/collections/DynamicValue.hpp>
+#include <ledger/core/utils/optional.hpp>
 
 using namespace ledger::core::api;
+
+TEST(Dynamics, Value) {
+    EXPECT_EQ(*ledger::core::DynamicValue(std::string("foo")).asStr(), "foo");
+    EXPECT_EQ(*ledger::core::DynamicValue(3946).asInt32(), 3946);
+    EXPECT_EQ(*ledger::core::DynamicValue(9364936249LL).asInt64(), 9364936249);
+    EXPECT_EQ(*ledger::core::DynamicValue(3.141592F).asDouble(), 3.141592F);
+    EXPECT_EQ(*ledger::core::DynamicValue(true).asBool(), true);
+}
+
+TEST(Dynamics, ValueSerialization) {
+    // serialize
+    std::stringstream is;
+    ::cereal::PortableBinaryOutputArchive oarchive(is);
+    oarchive(ledger::core::DynamicValue(std::string("foobarzoo")));
+
+    // deserialize
+    auto v = ledger::core::DynamicValue();
+    ::cereal::PortableBinaryInputArchive iarchive(is);
+    iarchive(v);
+
+    EXPECT_EQ(*v.asStr(), "foobarzoo");
+}
 
 TEST(Dynamics, Array) {
     auto array = DynamicArray::newInstance();
@@ -44,6 +68,7 @@ TEST(Dynamics, Array) {
     ->pushInt(12)
     ->pushLong(16)
     ->pushData({0x09, 0x03});
+
     EXPECT_EQ(array->size(), 6);
     EXPECT_EQ(array->getBoolean(0).value(), true);
     EXPECT_EQ(array->getDouble(1).value(), 12.6);
