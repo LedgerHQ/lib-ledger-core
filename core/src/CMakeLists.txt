@@ -55,14 +55,18 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 add_library(ledger-core-interface INTERFACE)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
+target_compile_definitions(ledger-core-interface INTERFACE
+    LIB_VERSION_MAJOR=${VERSION_MAJOR}
+    LIB_VERSION_MINOR=${VERSION_MINOR}
+    LIB_VERSION_PATCH=${VERSION_PATCH})
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0)
-	add_library(ledger-core SHARED
+    add_library(ledger-core SHARED
             ${ledger-core-sources}
             ${SRC_FILES}
             ${HEADERS_FILES})
-	target_link_libraries(ledger-core PUBLIC ledger-core-interface)
+    target_link_libraries(ledger-core PUBLIC ledger-core-interface)
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
     set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
     set(DEPLOYMENT_TARGET 9.0)
@@ -96,18 +100,18 @@ if(IS_IOS GREATER_EQUAL 0)
             \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
     )
 else()
-	add_library(ledger-core-obj OBJECT
+    add_library(ledger-core-obj OBJECT
             ${ledger-core-sources}
             ${SRC_FILES}
             ${HEADERS_FILES})
-	target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
-	# shared and static libraries built from the same object files
-	add_library(ledger-core SHARED)
-	target_link_libraries(ledger-core PUBLIC ledger-core-obj)
+    target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
+    # shared and static libraries built from the same object files
+    add_library(ledger-core SHARED)
+    target_link_libraries(ledger-core PUBLIC ledger-core-obj)
 
-	add_library(ledger-core-static STATIC)
-	target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
-	install(TARGETS ledger-core-static DESTINATION "lib")
+    add_library(ledger-core-static STATIC)
+    target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
+    install(TARGETS ledger-core-static DESTINATION "lib")
 endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
@@ -178,10 +182,5 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 
-target_compile_definitions(ledger-core-interface INTERFACE LIB_VERSION_MAJOR=${VERSION_MAJOR} LIB_VERSION_MINOR=${VERSION_MINOR}
-        LIB_VERSION_PATCH=${VERSION_PATCH})
-
-
-        
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
