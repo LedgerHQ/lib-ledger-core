@@ -46,6 +46,27 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
     EXPECT_EQ(info.derivations[1], "44'/0'/0'");
 }
 
+TEST_F(AccountInfoTests, FirstEthAccountInfo) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.index, 0);
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/60'/0'");
+    //api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"
+}
+
+TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
+    auto config = DynamicObject::newInstance();
+    config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.index, 0);
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/60'/0'");
+}
+
 TEST_F(AccountInfoTests, AnotherAccountInfo) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
