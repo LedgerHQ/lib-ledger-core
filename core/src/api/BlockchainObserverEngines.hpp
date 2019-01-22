@@ -15,11 +15,11 @@
 
 namespace ledger { namespace core { namespace api {
 
-class BlockchainObserverEngines {
+class LIBCORE_EXPORT BlockchainObserverEngines {
 public:
     virtual ~BlockchainObserverEngines() {}
 
-    static LIBCORE_EXPORT std::string const LEDGER_API;
+    static std::string const LEDGER_API;
 };
 
 } } }  // namespace ledger::core::api

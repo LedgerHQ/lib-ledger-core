@@ -9,6 +9,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -19,7 +26,7 @@ class BitcoinLikeScript;
 class DerivationPath;
 
 /**Class representing Bitcoin inputs */
-class BitcoinLikeInput {
+class LIBCORE_EXPORT BitcoinLikeInput {
 public:
     virtual ~BitcoinLikeInput() {}
 

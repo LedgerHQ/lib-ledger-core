@@ -6,13 +6,20 @@
 
 #include <cstdint>
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class DatabaseEngine;
 
 /**Class representing a database backend. */
-class DatabaseBackend {
+class LIBCORE_EXPORT DatabaseBackend {
 public:
     virtual ~DatabaseBackend() {}
 
