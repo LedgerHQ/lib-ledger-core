@@ -185,7 +185,7 @@ namespace ledger {
                 };
 
                 //All addresses are lower cased, we get EIP55 format
-                if ((_lastKey == "from" || _lastKey == "to") && value.size() > 2) {
+                if ((_lastKey == "from" || _lastKey == "to" || _lastKey == "contract") && value.size() > 2) {
                     value = Base58::encodeWithEIP55(value);
                 }
 
