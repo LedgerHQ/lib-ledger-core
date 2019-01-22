@@ -34,6 +34,7 @@ ErrorCode = enum {
 
     # Others
     invalid_base58_format;
+    invalid_EIP55_format;
     invalid_checksum;
     invalid_version;
 
@@ -85,6 +86,9 @@ ErrorCode = enum {
     unknown_blockchain_explorer_engine;
     unknown_blockchain_observer_engine;
     unknown_synchronization_engine;
+
+    # Database error
+    database_exception;
 
     # Wallet transaction
     not_enough_funds;

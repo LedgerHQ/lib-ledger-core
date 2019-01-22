@@ -39,6 +39,16 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1computeUncompressedPubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_pubKey)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Secp256k1>(nativeRef);
+        auto r = ref->computeUncompressedPubKey(::djinni::Binary::toCpp(jniEnv, j_pubKey));
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1sign(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jbyteArray j_data)
 {
     try {

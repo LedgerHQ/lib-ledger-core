@@ -31,13 +31,15 @@
 #include "OperationDatabaseHelper.h"
 #include "BlockDatabaseHelper.h"
 #include <crypto/SHA256.hpp>
+#include <api/Amount.hpp>
+#include <api/BigInt.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
-#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include <wallet/common/TrustIndicator.h>
 
 using namespace soci;
@@ -67,7 +69,7 @@ namespace ledger {
                         , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
-                updateBitcoinOperation(sql, operation, newOperation);
+                updateCurrencyOperation(sql, operation, newOperation);
                 return false;
             } else {
                 auto type = api::to_string(operation.type);
@@ -84,23 +86,28 @@ namespace ledger {
                             ":fees, :block_uid, :currency_name, :trust"
                         ")"
                         , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
-                        , use(sndrs), use(rcvrs), use(operation.amount.toInt64())
-                        , use(operation.fees), use(blockUid)
+                        , use(sndrs), use(rcvrs), use(operation.amount.toHexString())
+                        , use(operation.fees.getValueOr(BigInt::ZERO).toHexString()), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
-                updateBitcoinOperation(sql, operation, newOperation);
+
+                updateCurrencyOperation(sql, operation, newOperation);
                 return true;
             }
 
         }
 
-        void
-        OperationDatabaseHelper::updateBitcoinOperation(soci::session &sql, const Operation &operation, bool insert) {
-            if (operation.bitcoinTransaction.nonEmpty()) {
 
-                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction
-                                                                                   .getValue());
+        void
+        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {
+            if (operation.bitcoinTransaction.nonEmpty()) {
+                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction.getValue());
                 if (insert)
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operation.bitcoinTransaction.getValue().hash);
+            } else if (operation.ethereumTransaction.nonEmpty()) {
+                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
+                if (insert) {
+                    sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operation.ethereumTransaction.getValue().hash);
+                }
             }
         }
 
@@ -138,8 +145,8 @@ namespace ledger {
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
                     operations.resize(operations.size() + 1);
                     auto& operation = operations[operations.size() - 1];
-                    operation.amount = row.get<BigInt>(0);
-                    operation.fees = row.get<BigInt>(1);
+                    operation.amount = BigInt::fromHex(row.get<std::string>(0));
+                    operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
                     operation.date = DateUtils::fromJSON(row.get<std::string>(3));
                     c += 1;

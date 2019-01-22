@@ -39,6 +39,9 @@
 #include <utils/hex.h>
 #include <utils/DateUtils.hpp>
 #include <crypto/HASH160.hpp>
+
+#include <iostream>
+using namespace std;
 struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
@@ -46,7 +49,7 @@ struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_testnet";
-        testData.inflate = ledger::testing::testnet_xpub::inflate;
+        testData.inflate_btc = ledger::testing::testnet_xpub::inflate;
     }
 };
 
@@ -75,8 +78,12 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
     EXPECT_EQ(outputs.size(), 1);
     auto maxAmount = outputs[0]->getValue();
     EXPECT_EQ(balance->toLong(), maxAmount->toLong() + fees->toLong());
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+    auto txSerialized = tx->serialize();
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), txSerialized, 0);
+    auto parsedTxSerialized = parsedTx->serialize();
+    cout<<"tx->serialize(): "<<hex::toString(txSerialized)<<endl;
+    cout<<"parsedTx->serialize(): "<<hex::toString(parsedTxSerialized)<<endl;
+    EXPECT_EQ(txSerialized, parsedTxSerialized);
 }
 
 TEST_F(BitcoinMakeP2SHTransaction, ParseSignedRawTransaction) {
@@ -94,7 +101,7 @@ struct BTGMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_gold";
-        testData.inflate = ledger::testing::btg_xpub::inflate;
+        testData.inflate_btc = ledger::testing::btg_xpub::inflate;
     }
 };
 

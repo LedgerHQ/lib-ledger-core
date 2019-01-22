@@ -37,6 +37,9 @@
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include <wallet/ethereum/EthereumLikeWallet.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
 
 
@@ -47,7 +50,9 @@ struct TransactionTestData {
     std::string walletName;
     std::string currencyName;
     std::function<std::shared_ptr<BitcoinLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                       const std::shared_ptr<AbstractWallet>& )> inflate;
+                                                       const std::shared_ptr<AbstractWallet>& )> inflate_btc;
+    std::function<std::shared_ptr<EthereumLikeAccount> (const std::shared_ptr<WalletPool>&,
+                                                       const std::shared_ptr<AbstractWallet>& )> inflate_eth;
 };
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
@@ -61,7 +66,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     void recreate() {
         pool = newDefaultPool();
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate(pool, wallet);
+        account = testData.inflate_btc(pool, wallet);
         currency = wallet->getCurrency();
     }
 
@@ -73,11 +78,46 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     }
 
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
-        return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction());
+        return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
     }
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
     std::shared_ptr<BitcoinLikeAccount> account;
+    api::Currency currency;
+    TransactionTestData testData;
+
+protected:
+    virtual void SetUpConfig() = 0;
+};
+
+struct EthereumMakeBaseTransaction : public BaseFixture {
+
+    void SetUp() override {
+        BaseFixture::SetUp();
+        SetUpConfig();
+        recreate();
+    }
+
+    void recreate() {
+        pool = newDefaultPool();
+        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account = testData.inflate_eth(pool, wallet);
+        currency = wallet->getCurrency();
+    }
+
+    void TearDown() override {
+        BaseFixture::TearDown();
+        pool = nullptr;
+        wallet = nullptr;
+        account = nullptr;
+    }
+
+    std::shared_ptr<EthereumLikeTransactionBuilder> tx_builder() {
+        return std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+    }
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<EthereumLikeAccount> account;
     api::Currency currency;
     TransactionTestData testData;
 

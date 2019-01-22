@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_WAIT_H
-#define LEDGER_CORE_WAIT_H
+#ifndef LEDGER_CORE_ASYNC_WAIT_H
+#define LEDGER_CORE_ASYNC_WAIT_H
 
 #include <async/Future.hpp>
 #include <QEventLoop>
@@ -41,7 +41,7 @@ T wait(ledger::core::Future<T> future) {
     QEventLoop looper;
 
     future.onComplete(signaler, [&] (const ledger::core::Try<T>& result) {
-       looper.quit();
+        looper.quit();
     });
     looper.exec();
     ledger::core::Try<T> result = future.getValue().getValue();
@@ -51,4 +51,4 @@ T wait(ledger::core::Future<T> future) {
     return result.getValue();
 };
 
-#endif //LEDGER_CORE_WAIT_H
+#endif //LEDGER_CORE_ASYNC_WAIT_H

@@ -37,7 +37,7 @@ Amount = interface +c {
     #@return string
     toString(): string;
     #Get amount as long
-    #@reutrn 64 bits integer
+    #@return 64 bits integer
     toLong(): i64;
     #Get amount as double
     #@return double

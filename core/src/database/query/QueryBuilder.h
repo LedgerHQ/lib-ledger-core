@@ -64,7 +64,7 @@ namespace ledger {
             std::string _table;
             std::string _output;
             std::list<std::tuple<std::string, bool>> _order;
-            Option<LeftOuterJoin> _outerJoin;
+            std::vector<Option<LeftOuterJoin>> _outerJoins;
             std::shared_ptr<QueryFilter> _filter;
             Option<int32_t> _limit;
             Option<int32_t> _offset;

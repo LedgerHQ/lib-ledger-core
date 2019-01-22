@@ -2,14 +2,17 @@
 
 BUILD_CONFIG=$1
 
+echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
+echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
+
 echo "========> Install basic config"
 brew update
 brew install wget
 
 echo "========> Install Java"
-brew cask install java
+brew cask install java8
 echo "========> Java Installed"
-brew cask info java
+brew cask info java8
 echo "$(/usr/libexec/java_home -v 1.8)"
 export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 

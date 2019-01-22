@@ -51,7 +51,7 @@ static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
     auto childNum = reader.readNextBeUint();
     auto chainCode = reader.read(32);
     auto publicKey = reader.read(33);
-    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint);
+    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, "btc");
 }
 
 TEST(Derivation, DeriveChildren_1) {
@@ -62,4 +62,11 @@ TEST(Derivation, DeriveChildren_1) {
     EXPECT_EQ(k.derive(3).getPublicKey(), hex::toByteArray("02998d8749dd8ed56dc4a2c746865020d45fa1b2f75766a73da4cb9334adcd4cb9"));
     EXPECT_EQ(k.derive(4).getPublicKey(), hex::toByteArray("03fecae786e6a4542df1ae6b36694357dae2ba036eeb620fed5f6e8f1b445858d3"));
     EXPECT_EQ(k.derive(5).getPublicKey(), hex::toByteArray("03e185d94291ae80671c59ac522347a500d673b1302edd0c4eb6634cc850003034"));
+}
+
+static const std::string XPUB_2 = "xpub6DrvMc6me5H6sV3Wrva6thZyhxMZ7WMyB8nMWLe3T5xr79bBsDJn2zgSQiVWEbU5XfoLMEz7oZT9G49AoCcxYNrz2dVBrySzUw4k9GTNyoW";
+
+TEST(Derivation, UncompressedPublicKey) {
+    auto k = createKeyFromXpub(XPUB_2);
+    EXPECT_EQ(k.derive(0).getUncompressedPublicKey(), hex::toByteArray("04a8c9ce67e978e3d83a6366f15f2304ce21851ae030d8430b178b77280c4ec2be21bb6c082fb47db9d8982d40f6594efa5487f199e07635bcd041b7b7cf9bcad7"));
 }

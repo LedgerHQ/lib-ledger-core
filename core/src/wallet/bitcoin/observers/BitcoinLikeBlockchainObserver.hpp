@@ -37,42 +37,35 @@
 #include <api/DynamicObject.hpp>
 #include <debug/logger.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-
+#include <wallet/common/observers/AbstractBlockchainObserver.h>
 namespace ledger {
     namespace core {
         class BitcoinLikeAccount;
-        class BitcoinLikeBlockchainObserver : public DedicatedContext, public ConfigurationMatchable {
+        using BitcoinBlockchainObserver = AbstractBlockchainObserver<BitcoinLikeAccount, BitcoinLikeBlockchainExplorerTransaction, BitcoinLikeBlockchainExplorer::Block>;
+        class BitcoinLikeBlockchainObserver : public BitcoinBlockchainObserver,
+                                              public DedicatedContext,
+                                              public ConfigurationMatchable {
         public:
-            BitcoinLikeBlockchainObserver(  const std::shared_ptr<api::ExecutionContext>& context,
-                                            const std::shared_ptr<api::DynamicObject>& configuration,
-                                            const std::shared_ptr<spdlog::logger>& logger,
-                                            const api::Currency& currency,
-                                            const std::vector<std::string>& matchableKeys
-            );
-            virtual bool registerAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
-            virtual bool unregisterAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
-            virtual bool isRegistered(const std::shared_ptr<BitcoinLikeAccount>& account);
-            virtual bool isObserving() const;
-            std::shared_ptr<spdlog::logger> logger() const;
-            const api::Currency& getCurrency() const;
-            std::shared_ptr<api::DynamicObject> getConfiguration() const;
+            BitcoinLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext>& context,
+                                          const std::shared_ptr<api::DynamicObject>& configuration,
+                                          const std::shared_ptr<spdlog::logger>& logger,
+                                          const api::Currency& currency,
+                                          const std::vector<std::string>& matchableKeys);
 
         protected:
-            virtual void onStart() = 0;
-            virtual void onStop() = 0;
+            void putTransaction(const BitcoinLikeBlockchainExplorerTransaction& tx) override ;
+            void putBlock(const BitcoinLikeBlockchainExplorer::Block& block) override ;
 
-            void putTransaction(const BitcoinLikeBlockchainExplorer::Transaction& tx);
-            void putBlock(const BitcoinLikeBlockchainExplorer::Block& block);
+            const api::Currency& getCurrency() const {
+                return _currency;
+            };
+            std::shared_ptr<api::DynamicObject> getConfiguration() const {
+                return _configuration;
+            };
 
         private:
-            bool _isRegistered(std::lock_guard<std::mutex>& lock, const std::shared_ptr<BitcoinLikeAccount>& account);
-
-        private:
-            mutable std::mutex _lock;
-            std::list<std::shared_ptr<BitcoinLikeAccount>> _accounts;
             api::Currency _currency;
             std::shared_ptr<api::DynamicObject> _configuration;
-            std::shared_ptr<spdlog::logger> _logger;
         };
     }
 }

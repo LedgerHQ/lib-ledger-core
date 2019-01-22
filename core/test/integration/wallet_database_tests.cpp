@@ -108,8 +108,8 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
     BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", *transaction);
 
-    BitcoinLikeBlockchainExplorer::Transaction dbTransaction;
-    if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, dbTransaction)) {
+    BitcoinLikeBlockchainExplorerTransaction dbTransaction;
+    if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, acc.getAccountUid(), dbTransaction)) {
         EXPECT_EQ(transaction->hash, dbTransaction.hash);
         EXPECT_EQ(transaction->lockTime, dbTransaction.lockTime);
         EXPECT_EQ(transaction->receivedAt, dbTransaction.receivedAt);
@@ -129,7 +129,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     auto configuration = DynamicObject::newInstance();
 
     BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
-    std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
+    std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION),
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_2),
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_3)
@@ -143,8 +143,8 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     sql.commit();
 
     for (auto& transaction : transactions) {
-        BitcoinLikeBlockchainExplorer::Transaction dbTx;
-        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, dbTx)) {
+        BitcoinLikeBlockchainExplorerTransaction dbTx;
+        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, acc.getAccountUid(), dbTx)) {
             EXPECT_EQ(transaction.hash, dbTx.hash);
             EXPECT_EQ(transaction.lockTime, dbTx.lockTime);
             EXPECT_EQ(transaction.receivedAt.time_since_epoch().count(), dbTx.receivedAt.time_since_epoch().count());
@@ -190,7 +190,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
     EXPECT_EQ(nextIndex, 0);
     auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(P2PKH_MEDIUM_XPUB_INFO)));
 
-    std::vector<BitcoinLikeBlockchainExplorer::Transaction> transactions = {
+    std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
             *JSONUtils::parse<TransactionParser>(TX_1),
             *JSONUtils::parse<TransactionParser>(TX_2),
             *JSONUtils::parse<TransactionParser>(TX_3),

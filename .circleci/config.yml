@@ -2,7 +2,7 @@ version: 2
 general:
 dependencies:
   cache_directories:
-    - ~/cmake-3.10.3
+    - ~/cmake-3.12.3
 jobs:
   build_linux_release:
     docker:
@@ -34,20 +34,18 @@ jobs:
           name: Build_Module
           command: |
             . .circleci/build_node_module.sh
-      - deploy:
-          requires:
-            - hold
-          name: Deploy
+      - run:
+          name: Copy_Artifacts
           command: |
-            . .circleci/deploy.sh
+            . .circleci/copy_artifacts.sh
       - run:
           name: Build_Library_jni
           command: |
             . .circleci/build_lib.sh target_jni Release
-      - deploy:
-          name: Deploy_jni
+      - run:
+          name: Copy_Artifacts_jni
           command: |
-            . .circleci/deploy.sh target_jni
+            . .circleci/copy_artifacts.sh target_jni
       - run:
           name: Setup NDK
           command: |
@@ -59,26 +57,30 @@ jobs:
           name: Build_Library_android
           command: |
             . .circleci/build_lib.sh android
-      - deploy:
-          name: Deploy_android
+      - run:
+          name: Copy_Artifacts_Android
           command: |
-            . .circleci/deploy.sh android
+            . .circleci/copy_artifacts.sh android
       - run:
           name: Build_Library_android_armeabi-v7a
           command: |
             . .circleci/build_lib.sh android armeabi-v7a
-      - deploy:
-          name: Deploy_android_armeabi-v7a
+      - run:
+          name: Copy_Artifacts_Android_armeabi-v7a
           command: |
-            . .circleci/deploy.sh android armeabi-v7a
+            . .circleci/copy_artifacts.sh android armeabi-v7a
       - run:
           name: Build_Library_android_arm64-v8a
           command: |
             . .circleci/build_lib.sh android arm64-v8a
-      - deploy:
-          name: Deploy_android_arm64-v8a
+      - run:
+          name: Copy_Artifacts_Android_arm64-v8a
           command: |
-            . .circleci/deploy.sh android arm64-v8a
+            . .circleci/copy_artifacts.sh android arm64-v8a
+      - deploy:
+          name: Deploy_Artifacts
+          command: |
+            . .circleci/deploy.sh
   build_linux_debug:
       docker:
         - image: debian:stretch
@@ -113,7 +115,7 @@ jobs:
             name: Run_Tests
             command: |
                 cd ../lib-ledger-core-build
-                ctest
+                ~/cmake-3.13.3-Linux-x86_64/bin/ctest
   build_macos_release:
     macos:
       xcode: "10.0.0"
@@ -136,45 +138,46 @@ jobs:
           name: Build_Module
           command: |
             . .circleci/build_node_module.sh
-      - deploy:
-          name: Deploy
+      - run:
+          name: Copy_Artifacts
           command: |
-            . .circleci/deploy.sh
+            . .circleci/copy_artifacts.sh
       - run:
           name: Build_Library_jni
           command: |
             . .circleci/build_lib.sh target_jni Release
-      - deploy:
-          name: Deploy_jni
+      - run:
+          name: Copy_Artifacts_jni
           command: |
-            . .circleci/deploy.sh target_jni
+            . .circleci/copy_artifacts.sh target_jni
       - run:
           name: Build_Library_ios_x86
           command: |
             . .circleci/build_lib.sh ios
-      - deploy:
-          name: Deploy_ios_x86
+      - run:
+          name: Copy_Artifacts_ios_x86
           command: |
-            . .circleci/deploy.sh ios
+            . .circleci/copy_artifacts.sh ios
       - run:
           name: Build_Library_ios_armv7
           command: |
             . .circleci/build_lib.sh ios armv7
-      - deploy:
-          name: Deploy_ios_armv7
+      - run:
+          name: Copy_Artifacts_ios_armv7
           command: |
-            . .circleci/deploy.sh ios armv7
+            . .circleci/copy_artifacts.sh ios armv7
       - run:
           name: Build_Library_ios_arm64
           command: |
             . .circleci/build_lib.sh ios arm64
-      - deploy:
-          name: Deploy_ios_arm64
-          command: |
-            . .circleci/deploy.sh ios arm64
       - run:
-          name: Build_Fat_Library_ios
+          name: Copy_Artifacts_ios_arm64
           command: |
+            . .circleci/copy_artifacts.sh ios arm64
+      - deploy:
+          name: Deploy_Artifacts
+          command: |
+            . .circleci/deploy.sh
             . .circleci/deploy_fat_lib.sh
   build_macos_debug:
     macos:
@@ -203,11 +206,57 @@ jobs:
           command: |
               cd ../lib-ledger-core-build
               ctest
+  generate_doc:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - run:
+          command: git clone --depth 1 -b $CIRCLE_BRANCH --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
+          environment:
+            - GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update -q=2
+            sudo apt-get install -qy doxygen libqt5websockets5 libqt5websockets5-dev qt5-default rsync software-properties-common
+            sudo add-apt-repository --update "deb http://httpredir.debian.org/debian stretch-backports main"
+            sudo apt-get install -qy -t stretch-backports cmake
+      - run: cmake -H. -Bbuild
+      - run:
+          command: make doc
+          working_directory: ~/project/build
+      - run:
+          name: Check that the index file is present
+          command: test -f build/doc/html/index.html
+      - run:
+          name: Setup the SSH private key
+          command: |
+            install -d -m 700 ~/.ssh/
+            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
+            chmod 400 ~/.ssh/id_ed25519
+      - run: >
+          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
+          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
+
 workflows:
   version: 2
   build:
     jobs:
+      - build_linux_release:
+          filters:
+            tags:
+              only: /.*/
+      - build_macos_release:
+          filters:
+            tags:
+              only: /.*/
       - build_linux_debug
       - build_macos_debug
-      - build_linux_release
-      - build_macos_release
+  documentation:
+    jobs:
+      - generate_doc:
+          filters:
+            tags:
+              only: /.+/
+            branches:
+              ignore: /.*/

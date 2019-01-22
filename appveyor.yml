@@ -2,7 +2,7 @@ version: 1.0.{build}
 image:
 - Visual Studio 2015
 environment:
-  LIB_VERSION: 1.1.5 #Hardcode the LIB_VERSION : should be retrieved by building libcore node module and run tests/lib_version.js
+  LIB_VERSION: 2.2.0 #Hardcode the LIB_VERSION : should be retrieved by building libcore node module and run tests/lib_version.js
   nodejs_version: "9"
   appveyor_rdp_password:
     secure: jb1LsDmcxCww7tA38S3xSw==
@@ -20,7 +20,7 @@ environment:
       CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
       QT5: C:\Qt\5.10.1\msvc2015_64
       SQLITE3_DIR: C:\Tools\vcpkg\packages\sqlite3_x64-windows
-      CMAKE_DIR: C:\projects\deps\cmake 
+      CMAKE_DIR: C:\projects\deps\cmake
     - TOOL_CONFIG: mingw32
       BUILD_CONFIG: Debug
       CMAKE_GENERATOR: "MinGW Makefiles"
@@ -143,8 +143,18 @@ build_script:
 #- set LIB_VERSION=$(node sample/lib-version.js)
 #- echo " >> Get Libcore version %LIB_VERSION%"
 
+- if %APPVEYOR_REPO_TAG%==true (
+      set "DEPLOY_VERSION=%LIB_VERSION%"
+  ) else (
+      set "DEPLOY_VERSION=%LIB_VERSION%-rc"
+  )
+
 after_build:
-  - if %APPVEYOR_REPO_BRANCH%==develop aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%LIB_VERSION%/win/%TOOL_CONFIG%" --acl public-read
+  - set should_deploy=false
+  - if %APPVEYOR_REPO_BRANCH%==develop set should_deploy=true
+  - if %APPVEYOR_REPO_BRANCH%==master set should_deploy=true
+  - if %APPVEYOR_REPO_TAG%==true set should_deploy=true  #for tests
+  - if %should_deploy%==true aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%DEPLOY_VERSION%/win/%TOOL_CONFIG%" --acl public-read
 
 artifacts:
   - path: .\%LIB_VERSION%\win\%TOOL_CONFIG%\*

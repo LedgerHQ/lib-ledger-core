@@ -41,6 +41,7 @@ enum class ErrorCode : int {
     CURRENCY_UNIT_NOT_FOUND,
     /** Others */
     INVALID_BASE58_FORMAT,
+    INVALID_EIP55_FORMAT,
     INVALID_CHECKSUM,
     INVALID_VERSION,
     /** DeterministicPublicKey */
@@ -84,6 +85,8 @@ enum class ErrorCode : int {
     UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
     UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE,
     UNKNOWN_SYNCHRONIZATION_ENGINE,
+    /** Database error */
+    DATABASE_EXCEPTION,
     /** Wallet transaction */
     NOT_ENOUGH_FUNDS,
     /** Bad cast */

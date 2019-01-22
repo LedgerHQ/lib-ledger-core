@@ -108,8 +108,8 @@ namespace ledger {
                 "date VARCHAR(255) NOT NULL,"
                 "senders TEXT NOT NULL,"
                 "recipients TEXT NOT NULL,"
-                "amount BIGINT NOT NULL,"
-                "fees BIGINT,"
+                "amount VARCHAR(255) NOT NULL,"
+                "fees VARCHAR(255),"
                 "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE,"
                 "trust TEXT"
@@ -204,6 +204,80 @@ namespace ledger {
             if (count > 0) {
                 sql << "UPDATE bitcoin_currencies SET p2sh_version = '3f' WHERE identifier = 'dgb' ";
             }
+        }
+
+        template <> void migrate<5>(soci::session& sql) {
+
+            sql << "CREATE TABLE ethereum_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "chain_id VARACHAR(255) NOT NULL,"
+                    "xpub_version VARACHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_EIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE ethereum_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ethereum_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "nonce VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255),"
+                    "gas_price VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "gas_used VARCHAR(255) NOT NULL,"
+                    "confirmations BIGINT NOT NULL,"
+                    "status BIGINT NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ethereum_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ethereum_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE erc20_accounts("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_account_uid VARCHAR(255) NOT NULL REFERENCES ethereum_accounts(uid) ON DELETE CASCADE,"
+                    "contract_address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE erc20_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "account_uid VARCHAR(255) NOT NULL REFERENCES erc20_accounts(uid) ON DELETE CASCADE,"
+                    "type VARCHAR(255) NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "nonce VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "date VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255),"
+                    "gas_price VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "gas_used VARCHAR(255) NOT NULL,"
+                    "status INTEGER NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE erc20_tokens("
+                    "contract_address VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "name VARCHAR(255) NOT NULL,"
+                    "symbol VARCHAR(255) NOT NULL,"
+                    "number_of_decimal INTEGER NOT NULL"
+                    ")";
+
         }
 
     }

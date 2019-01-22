@@ -38,6 +38,10 @@
 #include "SECP256k1Point.hpp"
 #include "../bytes/BytesWriter.h"
 #include "HASH160.hpp"
+#include "HashAlgorithm.h"
+
+#include "Keccak.h"
+#include <api/Secp256k1.hpp>
 
 namespace ledger {
     namespace core {
@@ -46,8 +50,8 @@ namespace ledger {
 
         DeterministicPublicKey::DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
                                                        const std::vector<uint8_t> &chainCode, uint32_t childNum,
-                                                       uint32_t depth, uint32_t parentFingerprint) :
-            _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint)
+                                                       uint32_t depth, uint32_t parentFingerprint, const std::string &networkIdentifier) :
+            _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint), _networkIdentifier(networkIdentifier)
         {
 
         }
@@ -63,11 +67,25 @@ namespace ledger {
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getUncompressedPublicKey() const {
-            throw Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "ledger::core::DeterministicPublicKey::getUncompressedPublicKey not implemented");
+            auto secp256k1Api = api::Secp256k1::newInstance();
+            return secp256k1Api->computeUncompressedPubKey(_key);
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyHash160() const {
-            return HASH160::hash(_key);
+            HashAlgorithm hashAlgorithm(_networkIdentifier);
+            return HASH160::hash(_key, hashAlgorithm);
+        }
+
+        std::vector<uint8_t> DeterministicPublicKey::getPublicKeyKeccak256() const {
+            auto uncompressedPk = getUncompressedPublicKey();
+            //Remove 0x04
+            uncompressedPk.erase(uncompressedPk.begin());
+            auto keccak = Keccak::keccak256(uncompressedPk);
+            //Check decoded address size
+            if (keccak.size() <= 20) {
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key :  Keccak hash of uncompressed public key with wrong size");
+            }
+            return  std::vector<uint8_t>(keccak.end() - 20, keccak.end());
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {
@@ -96,7 +114,8 @@ namespace ledger {
                     IR,
                     childIndex,
                     _depth + 1,
-                    getFingerprint()
+                    getFingerprint(),
+                    _networkIdentifier
             );
         }
 
@@ -112,7 +131,7 @@ namespace ledger {
         }
 
         DeterministicPublicKey::DeterministicPublicKey(const DeterministicPublicKey &key) : DeterministicPublicKey(
-                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint
+                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint, key._networkIdentifier
         ) {
 
         }

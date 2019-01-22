@@ -30,9 +30,11 @@
  */
 #include "BitcoinLikeBlockchainExplorer.hpp"
 
-
-ledger::core::BitcoinLikeBlockchainExplorer::BitcoinLikeBlockchainExplorer(
-        const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
-        const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
-    setConfiguration(configuration);
+namespace ledger {
+    namespace core {
+        BitcoinLikeBlockchainExplorer::BitcoinLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
+                                                                     const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
+            setConfiguration(configuration);
+        }
+    }
 }

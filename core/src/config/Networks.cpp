@@ -49,6 +49,17 @@ namespace ledger {
                 );
             }
 
+            EthereumLikeNetworkParameters Networks::ethereum() {
+                return EthereumLikeNetworkParameters(
+                        "eth",
+                        "Ethereum signed message:\n",
+                        {0x01},
+                        {0x04, 0x88, 0xb2, 0x1e},
+                        {},
+                        0
+                );
+            }
+
         }
     }
 }

@@ -36,6 +36,7 @@
 #include "../utils/Try.hpp"
 #include "../utils/Exception.hpp"
 #include <memory>
+
 namespace ledger {
     namespace core {
         class Base58 {
@@ -44,13 +45,15 @@ namespace ledger {
             ~Base58() = delete;
 
             static std::string encode(const std::vector<uint8_t>& bytes);
-            static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes);
+            static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes, const std::string &networkIdentifier = "");
+            static std::string encodeWithEIP55(const std::vector<uint8_t>& bytes);
+            static std::string encodeWithEIP55(const std::string &address);
 
             static std::vector<uint8_t> decode(const std::string& str) throw(Exception);
-            static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str);
+            static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str, const std::string &networkIdentifier = "");
 
 
-            static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes);
+            static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes, const std::string &networkIdentifier = "");
         };
 
 

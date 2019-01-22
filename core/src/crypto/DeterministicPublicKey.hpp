@@ -41,7 +41,9 @@ namespace ledger {
                                     const std::vector<uint8_t>& chainCode,
                                     uint32_t childNum,
                                     uint32_t depth,
-                                    uint32_t parentFingerprint);
+                                    uint32_t parentFingerprint,
+                                    const std::string &networkIdentifier
+                                    );
             DeterministicPublicKey(const DeterministicPublicKey& key);
             uint32_t getFingerprint() const;
             DeterministicPublicKey derive(uint32_t childIndex) const;
@@ -49,6 +51,7 @@ namespace ledger {
             const std::vector<uint8_t>& getPublicKey() const;
             std::vector<uint8_t> getUncompressedPublicKey() const;
             std::vector<uint8_t> getPublicKeyHash160() const;
+            std::vector<uint8_t> getPublicKeyKeccak256() const;
             std::vector<uint8_t> toByteArray(const std::vector<uint8_t>& version = {}) const;
         public:
 
@@ -59,6 +62,7 @@ namespace ledger {
             const uint32_t _childNum;
             const uint32_t _depth;
             const uint32_t _parentFingerprint;
+            const std::string _networkIdentifier;
         };
     }
 }

@@ -30,6 +30,7 @@
  */
 #include "AbstractWalletFactory.hpp"
 #include "../bitcoin/factories/BitcoinLikeWalletFactory.hpp"
+#include "../ethereum/factories/EthereumLikeWalletFactory.h"
 
 namespace ledger {
     namespace core {
@@ -60,8 +61,7 @@ namespace ledger {
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::ETHEREUM>(const api::Currency& currency,
                                                                                       const std::shared_ptr<WalletPool>& pool) {
-            //TODO IMPLEMENT ETHEREUM FACTORY
-            return nullptr;
+            return std::make_shared<EthereumLikeWalletFactory>(currency, pool);
         }
 
         template <>

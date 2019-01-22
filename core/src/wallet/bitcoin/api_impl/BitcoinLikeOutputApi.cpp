@@ -45,7 +45,7 @@ namespace ledger {
             _currency = operation->getAccount()->getWallet()->getCurrency();
         }
 
-        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output, const api::Currency& currency) : _backend(output) {
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency& currency) : _backend(output) {
             _outputIndex = static_cast<int32_t>(output.index);
             _currency = currency;
         }
@@ -73,7 +73,7 @@ namespace ledger {
             return getOutput().address.toOptional();
         }
 
-        BitcoinLikeBlockchainExplorer::Output &BitcoinLikeOutputApi::getOutput() {
+        BitcoinLikeBlockchainExplorerOutput &BitcoinLikeOutputApi::getOutput() {
             if (_backend.isLeft())
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
             return _backend.getRight();
@@ -90,7 +90,7 @@ namespace ledger {
             return _path;
         }
 
-        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorer::Output &output,
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output,
                                                    const api::Currency &currency,
                                                    const std::shared_ptr<api::DerivationPath> &path)
                 : BitcoinLikeOutputApi(output, currency) {

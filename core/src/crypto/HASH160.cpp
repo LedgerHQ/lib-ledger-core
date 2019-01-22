@@ -29,7 +29,7 @@
  *
  */
 #include "HASH160.hpp"
-
-std::vector<uint8_t> ledger::core::HASH160::hash(const std::vector<uint8_t> &data) {
-    return RIPEMD160::hash(SHA256::bytesToBytesHash(data));
+#include <crypto/BLAKE.h>
+std::vector<uint8_t> ledger::core::HASH160::hash(const std::vector<uint8_t> &data, const HashAlgorithm &hashAlgorithm) {
+    return RIPEMD160::hash(hashAlgorithm.bytesToBytesHash(data));
 }

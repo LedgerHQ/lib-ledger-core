@@ -38,14 +38,22 @@
 
 namespace ledger {
     namespace core {
-        class DatabaseBackend : public api::DatabaseBackend {
+    class DatabaseBackend : public api::DatabaseBackend, public std::enable_shared_from_this<DatabaseBackend> {
         public:
+            DatabaseBackend() : _enableLogging(false) {}
             virtual void init(
                 const std::shared_ptr<api::PathResolver>& resolver,
                 const std::string& dbName,
                 soci::session& session
 
             ) = 0;
+
+            std::shared_ptr<api::DatabaseBackend> enableQueryLogging(bool enable) override;
+
+            bool isLoggingEnabled() override;
+
+        private:
+            bool _enableLogging;
         };
     }
 }

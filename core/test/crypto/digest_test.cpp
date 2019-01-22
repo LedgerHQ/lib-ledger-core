@@ -35,8 +35,12 @@
 #include <ledger/core/utils/hex.h>
 #include <ledger/core/crypto/HMAC.hpp>
 #include <ledger/core/crypto/HASH160.hpp>
+#include <ledger/core/crypto/BLAKE.h>
+#include <ledger/core/crypto/HashAlgorithm.h>
+#include <ledger/core/crypto/Keccak.h>
 
 using namespace ledger::core;
+
 
 TEST(Digests, SHA256_Strings_to_String) {
     EXPECT_EQ(SHA256::stringToHexHash("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"), "2ff100b36c386c65a1afc462ad53e25479bec9498ed00aa5a04de584bc25301b");
@@ -78,6 +82,42 @@ TEST(Digest, HMACSHA256) {
 
 TEST(Digest, HASH160) {
     auto pk = hex::toByteArray("02e73960f79f6637b773cf50f148cff54004669fd36045f8f9a36ffd669bcce71c");
-    auto hash160 = HASH160::hash(pk);
+    HashAlgorithm hashAlgorithm;
+    auto hash160 = HASH160::hash(pk, hashAlgorithm);
     EXPECT_EQ(hex::toString(hash160), "253f5a6b1dd3f7d971807a5f3f2dcc9158002303");
+}
+
+TEST(Digest, BLAKE256) {
+
+    auto input1 = hex::toByteArray("");
+    auto output256 = BLAKE::blake256(input1);
+    EXPECT_EQ(hex::toString(output256), "716f6e863f744b9ac22c97ec7b76ea5f5908bc5b2f67c61510bfc4751384ea7a");
+
+    std::string input2 = "BLAKE";
+    std::vector<uint8_t> vInput2(input2.begin(), input2.end());
+    auto output2561 = BLAKE::blake256(vInput2);
+    EXPECT_EQ(hex::toString(output2561), "07663e00cf96fbc136cf7b1ee099c95346ba3920893d18cc8851f22ee2e36aa6");
+
+    std::string input3 = "The quick brown fox jumps over the lazy dog";
+    std::vector<uint8_t> vInput3(input3.begin(), input3.end());
+    auto output3 = BLAKE::blake256(vInput3);
+    EXPECT_EQ(hex::toString(output3), "7576698ee9cad30173080678e5965916adbb11cb5245d386bf1ffda1cb26c9d7");
+
+    std::string input4 = "Vires In Numeris";
+    std::vector<uint8_t> vInput4(input4.begin(), input4.end());
+    auto output4 = BLAKE::blake256(vInput4);
+    EXPECT_EQ(hex::toString(output4), "9d8ee513f4c43a73c3dd7c6e7d389e62cca017358d880d16e4fae547ebac5717");
+}
+TEST(Digest, Keccak256) {
+
+    auto empty = hex::toByteArray("");
+    auto check = Keccak::keccak256(empty);
+    EXPECT_EQ(hex::toString(check), "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470");
+
+    auto pk = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
+    auto keccak = Keccak::keccak256(pk);
+    EXPECT_EQ(hex::toString(keccak), "2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086ba0f9");
+
+    EXPECT_EQ(hex::toString(Keccak::keccak256("Vires in numeris")), "d3f77a567fdf21bd226ddcebd5eb8df5f470c1bb77e307b6ffc1c80a24cf6495");
+
 }

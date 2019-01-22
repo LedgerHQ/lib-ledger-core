@@ -4,6 +4,7 @@
 @import "../../preferences/preferences.djinni"
 @import "../../debug/logger.djinni"
 @import "../bitcoin/bitcoin_like_wallet.djinni"
+@import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
 @import "currency.djinni"
 
@@ -108,6 +109,9 @@ Operation = interface +c {
     #Convert operation as Bitcoin operation
     #@return BitcoinLikeOperation object
     asBitcoinLikeOperation(): BitcoinLikeOperation;
+    #Convert operation as Ethereum operation
+    #@return EthereumLikeOperation object
+    asEthereumLikeOperation(): EthereumLikeOperation;
     isInstanceOfBitcoinLikeOperation(): bool;
     #Same as asBitcoinLikeOperation for ethereum
     ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
@@ -305,6 +309,7 @@ Account = interface +c {
     #@param uid, string of operation id
     getOperationPreferences(uid: string): Preferences;
     asBitcoinLikeAccount() : BitcoinLikeAccount;
+    asEthereumLikeAccount() : EthereumLikeAccount;
     # asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
     # asRippleLikeAccount(): Callback<RippleLikeAccount>;
     #Check if account is a Bitcoin one

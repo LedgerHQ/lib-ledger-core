@@ -58,7 +58,7 @@ namespace ledger {
             return getInput().coinbase.toOptional();
         }
 
-        BitcoinLikeBlockchainExplorer::Input &BitcoinLikeInputApi::getInput() {
+        BitcoinLikeBlockchainExplorerInput &BitcoinLikeInputApi::getInput() {
             return _operation->getBackend().bitcoinTransaction.getValue().inputs[_inputIndex];
         }
 

@@ -8,6 +8,8 @@ else
     trace="false";
 fi
 echo "Enable debug compilation " $trace
+PACKAGE_NAME=ledgerapp_nodejs
+DEST=api/core/nodejs
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
 
@@ -27,22 +29,11 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
                     --java-out api/core/java \
                     --java-package co.ledger.core \
-                    --swift-out api/core/swift \
-                    --swift-umbrella-header ledger-core.h \
-                    --objc-type-prefix LG \
-                    --objc-out api/core/objc \
-                    --objcpp-out api/core/objcpp \
-                    --node-out api/core/nodejs \
-		    --node-type-prefix NJS \
-        	    --node-include-cpp ../../../$CORE_CPP_API_DIRECTORY \
-        	    --node-package ledgerapp_nodejs \
-        	    --react-native-objc-out api/core/react-native/LibLedgerCore/ios/Sources \
-		    --react-native-type-prefix RCTCore \
-		    --react-include-objc-impl  ../../../../src/objc \
-		    --react-native-objc-impl-suffix Impl \
-		    --react-native-java-package com.ledger.reactnative \
-		    --react-native-java-out api/core/react-native/LibLedgerCore/android/src/main/java/com/ledger/reactnative/ \
-		    --export-header-name libcore_export \
+                    --node-out $DEST \
+                    --node-type-prefix NJS \
+                    --node-include-cpp ../../../core/src/api \
+                    --node-package $PACKAGE_NAME \
+		    		--export-header-name libcore_export \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni

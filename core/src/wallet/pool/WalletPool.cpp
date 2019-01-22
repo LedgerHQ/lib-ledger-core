@@ -31,10 +31,12 @@
 #include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
 #include <wallet/currencies.hpp>
+#include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+
 namespace ledger {
     namespace core {
 
@@ -74,8 +76,14 @@ namespace ledger {
                 _pathResolver
             );
 
-            _logPrinter = logPrinter;
+            // Encrypt the preferences, if needed
+            if (password.hasValue()) {
+                _externalPreferencesBackend->setEncryption(rng, *password);
+                _internalPreferencesBackend->setEncryption(rng, *password);
+            }
+
             // Logger management
+            _logPrinter = logPrinter;
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),
@@ -125,6 +133,10 @@ namespace ledger {
             PoolDatabaseHelper::insertPool(sql, *this);
             for (auto& currency : currencies::ALL) {
                 CurrenciesDatabaseHelper::insertCurrency(sql, currency);
+            }
+            //Init erc20 tokens
+            for (auto& erc20Token : erc20Tokens::ALL_ERC20) {
+                CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token.second);
             }
             sql.commit();
             CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);

@@ -1,0 +1,34 @@
+@import "../math/big_int.djinni"
+
+EthereumLikeNetworkParameters = record {
+	Identifier: string;
+	MessagePrefix: string;
+	ChainID: string;
+	XPUBVersion: binary;
+	AdditionalEIPs: list<string>;
+	TimestampDelay: i64;
+}
+
+# Helper class for manipulating Ethereum like addresses
+EthereumLikeAddress = interface +c {
+	# Gets the version of the address
+	# @return The version of the address
+	getVersion(): binary;
+	# Gets the raw keccak hash of the public key (truncated to 20 bytes)
+	# @return The 20 bytes of the public key keccak hash
+	getKeccakHash(): binary;
+	# Gets the network parameters used for serializing the address
+	# @return The network parameters of the address
+	getNetworkParameters(): EthereumLikeNetworkParameters;
+	# Encodes keccak with respect to EIP55
+	# @return The EIP55 encoding
+	toEIP55(): string;
+}
+
+EthereumLikeExtendedPublicKey = interface +c {
+	derive(path: string): EthereumLikeAddress;
+	derivePublicKey(path: string): binary;
+	deriveHash160(path: string): binary;
+	toBase58(): string;
+	getRootPath(): string;
+}

@@ -46,10 +46,10 @@ namespace ledger {
     namespace core {
         class TransactionParser {
         public:
-            typedef BitcoinLikeBlockchainExplorer::Transaction Result;
+            typedef BitcoinLikeBlockchainExplorerTransaction Result;
 
             TransactionParser(std::string& lastKey);
-            void init(BitcoinLikeBlockchainExplorer::Transaction* transaction);
+            void init(BitcoinLikeBlockchainExplorerTransaction* transaction);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -67,7 +67,7 @@ namespace ledger {
 
         private:
             std::string& _lastKey;
-            BitcoinLikeBlockchainExplorer::Transaction* _transaction;
+            BitcoinLikeBlockchainExplorerTransaction* _transaction;
             std::stack<std::string> _hierarchy;
             uint32_t _arrayDepth;
             BlockParser _blockParser;

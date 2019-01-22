@@ -39,10 +39,10 @@ namespace ledger {
     namespace core {
         class OutputParser {
         public:
-            typedef BitcoinLikeBlockchainExplorer::Output Result;
+            typedef BitcoinLikeBlockchainExplorerOutput Result;
 
             OutputParser(std::string& lastKey) : _lastKey(lastKey) {};
-            void init(BitcoinLikeBlockchainExplorer::Output* output);
+            void init(BitcoinLikeBlockchainExplorerOutput* output);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -60,7 +60,7 @@ namespace ledger {
 
         private:
             std::string& _lastKey;
-            BitcoinLikeBlockchainExplorer::Output* _output;
+            BitcoinLikeBlockchainExplorerOutput* _output;
 
         };
     }

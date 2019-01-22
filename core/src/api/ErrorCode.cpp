@@ -25,6 +25,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::CURRENCY_NOT_FOUND: return "CURRENCY_NOT_FOUND";
         case ErrorCode::CURRENCY_UNIT_NOT_FOUND: return "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT: return "INVALID_BASE58_FORMAT";
+        case ErrorCode::INVALID_EIP55_FORMAT: return "INVALID_EIP55_FORMAT";
         case ErrorCode::INVALID_CHECKSUM: return "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION: return "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED: return "PRIVATE_DERIVATION_NOT_SUPPORTED";
@@ -60,6 +61,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE: return "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE: return "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE: return "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::DATABASE_EXCEPTION: return "DATABASE_EXCEPTION";
         case ErrorCode::NOT_ENOUGH_FUNDS: return "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST: return "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER: return "LINK_NON_TAIL_FILTER";
@@ -84,6 +86,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "CURRENCY_NOT_FOUND") return ErrorCode::CURRENCY_NOT_FOUND;
     else if (errorCode == "CURRENCY_UNIT_NOT_FOUND") return ErrorCode::CURRENCY_UNIT_NOT_FOUND;
     else if (errorCode == "INVALID_BASE58_FORMAT") return ErrorCode::INVALID_BASE58_FORMAT;
+    else if (errorCode == "INVALID_EIP55_FORMAT") return ErrorCode::INVALID_EIP55_FORMAT;
     else if (errorCode == "INVALID_CHECKSUM") return ErrorCode::INVALID_CHECKSUM;
     else if (errorCode == "INVALID_VERSION") return ErrorCode::INVALID_VERSION;
     else if (errorCode == "PRIVATE_DERIVATION_NOT_SUPPORTED") return ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED;
@@ -119,6 +122,7 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE;
     else if (errorCode == "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE") return ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE;
     else if (errorCode == "UNKNOWN_SYNCHRONIZATION_ENGINE") return ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE;
+    else if (errorCode == "DATABASE_EXCEPTION") return ErrorCode::DATABASE_EXCEPTION;
     else if (errorCode == "NOT_ENOUGH_FUNDS") return ErrorCode::NOT_ENOUGH_FUNDS;
     else if (errorCode == "BAD_CAST") return ErrorCode::BAD_CAST;
     else return ErrorCode::LINK_NON_TAIL_FILTER;
@@ -144,6 +148,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::CURRENCY_NOT_FOUND:  return os << "CURRENCY_NOT_FOUND";
         case ErrorCode::CURRENCY_UNIT_NOT_FOUND:  return os << "CURRENCY_UNIT_NOT_FOUND";
         case ErrorCode::INVALID_BASE58_FORMAT:  return os << "INVALID_BASE58_FORMAT";
+        case ErrorCode::INVALID_EIP55_FORMAT:  return os << "INVALID_EIP55_FORMAT";
         case ErrorCode::INVALID_CHECKSUM:  return os << "INVALID_CHECKSUM";
         case ErrorCode::INVALID_VERSION:  return os << "INVALID_VERSION";
         case ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED:  return os << "PRIVATE_DERIVATION_NOT_SUPPORTED";
@@ -179,6 +184,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE";
         case ErrorCode::UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE:  return os << "UNKNOWN_BLOCKCHAIN_OBSERVER_ENGINE";
         case ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE:  return os << "UNKNOWN_SYNCHRONIZATION_ENGINE";
+        case ErrorCode::DATABASE_EXCEPTION:  return os << "DATABASE_EXCEPTION";
         case ErrorCode::NOT_ENOUGH_FUNDS:  return os << "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST:  return os << "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER:  return os << "LINK_NON_TAIL_FILTER";

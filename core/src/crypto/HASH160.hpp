@@ -33,6 +33,7 @@
 
 #include "RIPEMD160.hpp"
 #include "SHA256.hpp"
+#include "HashAlgorithm.h"
 
 namespace ledger {
     namespace core {
@@ -40,7 +41,7 @@ namespace ledger {
         public:
             HASH160() = delete;
             ~HASH160() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data);
+            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data, const HashAlgorithm &hashAlgorithm);
         };
     }
 }

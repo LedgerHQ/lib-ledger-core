@@ -1,19 +1,22 @@
 PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
 PROJECT_NUMBER         = @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
-STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@ \
+STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@/core \
                          @PROJECT_BINARY_DIR@
-INPUT                  = @doxy_main_page@ \
-                         @PROJECT_SOURCE_DIR@ \
-                         @PROJECT_BINARY_DIR@
-EXCLUDE_PATTERNS       = */build/* \
-                         */lib/* \
-                         */test/*
-FILE_PATTERNS          = *.h \
-                         *.cpp
-RECURSIVE              = YES
-#USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
+INPUT                  = @PROJECT_SOURCE_DIR@/README.md \
+                         @PROJECT_SOURCE_DIR@/core \
+                         @PROJECT_SOURCE_DIR@/doc \
 
-HTML_HEADER = @CMAKE_CURRENT_SOURCE_DIR@/header.html
-HTML_FOOTER = @CMAKE_CURRENT_SOURCE_DIR@/footer.html
-HTML_EXTRA_STYLESHEET = @CMAKE_CURRENT_SOURCE_DIR@/customdoxygen.css
-HTML_EXTRA_FILES = @CMAKE_CURRENT_SOURCE_DIR@/doxy-boot.js
+EXCLUDE_PATTERNS       = */lib/* \
+
+FILE_PATTERNS          = *.h \
+                         *.cpp \
+                         *.hpp \
+                         *.md
+
+RECURSIVE              = YES
+
+GENERATE_HTML          = YES
+HTML_COLORSTYLE_SAT    = 50
+HTML_DYNAMIC_SECTIONS  = YES
+USE_MDFILE_AS_MAINPAGE = README.md
+IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@

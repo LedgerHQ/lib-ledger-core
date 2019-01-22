@@ -24,6 +24,7 @@ class AmountListCallback;
 class BitcoinLikeAccount;
 class BlockCallback;
 class ErrorCodeCallback;
+class EthereumLikeAccount;
 class EventBus;
 class Logger;
 class OperationQuery;
@@ -122,6 +123,8 @@ public:
     virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
 
     virtual std::shared_ptr<BitcoinLikeAccount> asBitcoinLikeAccount() = 0;
+
+    virtual std::shared_ptr<EthereumLikeAccount> asEthereumLikeAccount() = 0;
 
     /**
      * asEthereumLikeAccount(): Callback<EthereumLikeAccount>;

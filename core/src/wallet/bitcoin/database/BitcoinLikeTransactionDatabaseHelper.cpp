@@ -56,7 +56,7 @@ namespace ledger {
 
         std::string BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                   const std::string& accountUid,
-                                                                  const BitcoinLikeBlockchainExplorer::Transaction &tx) {
+                                                                  const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
                                });
@@ -99,7 +99,7 @@ namespace ledger {
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
                                                                 const std::string& btcTxUid,
                                                                 const std::string& transactionHash,
-                                                                const BitcoinLikeBlockchainExplorer::Output &output) {
+                                                                const BitcoinLikeBlockchainExplorerOutput &output) {
             sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL)",
                     use(output.index), use(btcTxUid),
                     use(transactionHash), use(output.value.toUint64()),
@@ -110,7 +110,7 @@ namespace ledger {
                                                                const std::string& btcTxUid,
                                                                const std::string& accountUid,
                                                                const std::string& transactionHash,
-                                                               const BitcoinLikeBlockchainExplorer::Input &input) {
+                                                               const BitcoinLikeBlockchainExplorerInput &input) {
             /*
              * In case transactions are issued with respect to zero knowledge protocol,
              * previousTxHash is empty which causes conflict in bitcoin_inputs table
@@ -154,8 +154,10 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}+{}", accountUid, previousOutputIndex, previousTxHash, coinbase));
         }
 
-        bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql, const std::string &hash,
-                                                                        BitcoinLikeBlockchainExplorer::Transaction &out) {
+        bool BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
+                                                                        const std::string &hash,
+                                                                        const std::string &accountUid,
+                                                                        BitcoinLikeBlockchainExplorerTransaction &out) {
             rowset<row> rows = (sql.prepare <<
                     "SELECT  tx.hash, tx.version, tx.time, tx.locktime, "
                             "block.hash, block.height, block.time, block.currency_name "
@@ -164,14 +166,16 @@ namespace ledger {
                             "WHERE tx.hash = :hash", use(hash)
             );
             for (auto& row : rows) {
-                inflateTransaction(sql, row, out);
+                inflateTransaction(sql, row, accountUid, out);
                 return true;
             }
             return false;
         }
 
-        bool BitcoinLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql, const soci::row &row,
-                                                                      BitcoinLikeBlockchainExplorer::Transaction &out) {
+        bool BitcoinLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
+                                                                      const soci::row &row,
+                                                                      const std::string &accountUid,
+                                                                      BitcoinLikeBlockchainExplorerTransaction &out) {
             out.hash = row.get<std::string>(0);
             out.version = (uint32_t) row.get<int32_t>(1);
             out.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
@@ -193,7 +197,7 @@ namespace ledger {
                 "WHERE ti.transaction_hash = :hash ORDER BY ti.input_idx", use(out.hash)
             );
             for (auto& inputRow : inputRows) {
-                BitcoinLikeBlockchainExplorer::Input input;
+                BitcoinLikeBlockchainExplorerInput input;
                 input.index = get_number<uint64_t>(inputRow, 0);
                 input.previousTxOutputIndex = inputRow.get<Option<int>>(1).map<uint32_t>([] (const int& v) {
                     return (uint32_t) v;
@@ -210,16 +214,22 @@ namespace ledger {
 
             // Fetch outputs
             rowset<soci::row> outputRows = (sql.prepare <<
-                    "SELECT idx, amount, script, address FROM bitcoin_outputs WHERE transaction_hash = :hash "
+                    "SELECT idx, amount, script, address, transaction_uid FROM bitcoin_outputs WHERE transaction_hash = :hash "
                     "ORDER BY idx", use(out.hash)
             );
             for (auto& outputRow : outputRows) {
-                BitcoinLikeBlockchainExplorer::Output output;
-                output.index = (uint64_t) outputRow.get<int>(0);
-                output.value.assignScalar(outputRow.get<long long>(1));
-                output.script = outputRow.get<std::string>(2);
-                output.address = outputRow.get<Option<std::string>>(3);
-                out.outputs.push_back(std::move(output));
+                //Check if the output belongs to this account
+                //solve case of 2 accounts in DB one as sender and one as receiver
+                //of same transaction (filter on account_uid won't solve the issue because
+                //bitcoin_outputs going to external accounts have NULL account_uid)
+                if (outputRow.get<std::string>(4) == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash)) {
+                    BitcoinLikeBlockchainExplorerOutput output;
+                    output.index = (uint64_t) outputRow.get<int>(0);
+                    output.value.assignScalar(outputRow.get<long long>(1));
+                    output.script = outputRow.get<std::string>(2);
+                    output.address = outputRow.get<Option<std::string>>(3);
+                    out.outputs.push_back(std::move(output));
+                }
             }
 
             // Enjoy the silence.

@@ -63,7 +63,7 @@ ledger::core::api::BitcoinLikeNetworkParameters ledger::core::BitcoinLikeAddress
 }
 
 std::string ledger::core::BitcoinLikeAddress::toBase58() {
-    return Base58::encodeWithChecksum(vector::concat(_version, _hash160));
+    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), _params.Identifier);
 }
 
 bool ledger::core::BitcoinLikeAddress::isP2SH() {
@@ -79,7 +79,7 @@ std::experimental::optional<std::string> ledger::core::BitcoinLikeAddress::getDe
 }
 
 std::string ledger::core::BitcoinLikeAddress::toBase58() const {
-    return Base58::encodeWithChecksum(vector::concat(_version, _hash160));
+    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), _params.Identifier);
 }
 
 std::shared_ptr<ledger::core::AbstractAddress>
@@ -98,11 +98,11 @@ std::string ledger::core::BitcoinLikeAddress::toString() {
 std::shared_ptr<BitcoinLikeAddress> ledger::core::BitcoinLikeAddress::fromBase58(const std::string &address,
                                                                               const api::Currency &currency,
                                                                               const Option<std::string>& derivationPath) {
-    auto decoded = Base58::checkAndDecode(address);
+    auto& params = currency.bitcoinLikeNetworkParameters.value();
+    auto decoded = Base58::checkAndDecode(address, params.Identifier);
     if (decoded.isFailure()) {
         throw decoded.getFailure();
     }
-    auto& params = currency.bitcoinLikeNetworkParameters.value();
     auto value = decoded.getValue();
 
     //Check decoded address size

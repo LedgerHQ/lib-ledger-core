@@ -34,15 +34,13 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 #include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
-#include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 #include "BitcoinLikeKeychainFactory.h"
+
+
 
 namespace ledger {
     namespace core {
-
-        using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
         class WalletPool;
 
         class BitcoinLikeWalletFactory : public AbstractWalletFactory {
