@@ -59,9 +59,7 @@ namespace ledger {
         }
 
         DatabaseSessionPool::~DatabaseSessionPool() {
-            if (_logger != nullptr) {
-                delete _logger;
-            }
+            delete _logger;
         }
 
         FuturePtr<DatabaseSessionPool>

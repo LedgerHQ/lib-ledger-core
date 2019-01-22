@@ -114,7 +114,7 @@ namespace ledger {
                 const std::shared_ptr<api::DynamicObject>& configuration
             );
 
-            ~WalletPool();
+            ~WalletPool() = default;
 
             /// Reset wallet pool.
             ///

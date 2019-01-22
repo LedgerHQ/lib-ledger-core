@@ -40,7 +40,8 @@
 namespace ledger {
     namespace core {
         WalletPool::WalletPool(
-            const std::string &name, const Option<std::string> &password,
+            const std::string &name,
+            const Option<std::string> &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
             const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -107,9 +108,6 @@ namespace ledger {
             _threadDispatcher = dispatcher;
 
             _publisher = std::make_shared<EventPublisher>(getContext());
-        }
-
-        WalletPool::~WalletPool() {
         }
 
         std::shared_ptr<WalletPool>
