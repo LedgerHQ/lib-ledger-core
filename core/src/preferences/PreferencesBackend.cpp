@@ -85,7 +85,6 @@ namespace ledger {
             return instance;
         }
 
-        // Drop a database instance.
         void PreferencesBackend::dropInstance(const std::string &path) {
             std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
 
@@ -194,7 +193,6 @@ namespace ledger {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
 
-        // Create a new salt to use with an AESCipher.
         std::string PreferencesBackend::createNewSalt(const std::shared_&tr<api::RandomNumberGenerator>& rng) {
             auto bytes = rng->getRandomBytes(128);
             return std::string(std::begin(bytes), std::end(bytes));

@@ -112,6 +112,19 @@ namespace ledger {
             std::string _dbName;
             Option<AESCipher> _cipher;
 
+            // Drop a database instance.
+            void dropInstance(const std::string &path);
+
+            // Put a single PreferencesChange.
+            void putPreferencesChange(
+                leveldb::WriteBatch& batch,
+                optional<AESCipher>& cipher,
+                const PreferencesChange& change
+            );
+
+            // Create a new salt to use with an AESCipher.
+            std::string PreferencesBackend::createNewSalt(const std::shared_&tr<api::RandomNumberGenerator>& rng);
+
             // helper method used to encrypt things we want to put in leveldb
             std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
 
