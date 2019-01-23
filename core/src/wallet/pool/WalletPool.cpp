@@ -40,16 +40,17 @@
 namespace ledger {
     namespace core {
 
-        WalletPool::WalletPool(const std::string &name, const Option<std::string> &password,
-                               const std::shared_ptr<api::HttpClient> &httpClient,
-                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                               const std::shared_ptr<api::PathResolver> &pathResolver,
-                               const std::shared_ptr<api::LogPrinter> &logPrinter,
-                               const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                               const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                               const std::shared_ptr<api::DatabaseBackend> &backend,
-                               const std::shared_ptr<api::DynamicObject> &configuration)
-        : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        WalletPool::WalletPool(
+            const std::string &name, const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
             _password = password;
@@ -84,12 +85,15 @@ namespace ledger {
 
             // Logger management
             _logPrinter = logPrinter;
+            auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger = logger::create(
                     name + "-l",
                     password.toOptional(),
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
-                    logPrinter
+                    logPrinter,
+                    logger::DEFAULT_MAX_SIZE,
+                    enableLogger
             );
 
             // Database management
@@ -107,23 +111,28 @@ namespace ledger {
         }
 
         std::shared_ptr<WalletPool>
-        WalletPool::newInstance(const std::string &name, const Option<std::string> &password,
-                                const std::shared_ptr<api::HttpClient> &httpClient,
-                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                const std::shared_ptr<api::PathResolver> &pathResolver,
-                                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                                const std::shared_ptr<api::DatabaseBackend> &backend,
-                                const std::shared_ptr<api::DynamicObject> &configuration) {
+        WalletPool::newInstance(
+            const std::string &name, const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
                 name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
             ));
+
             // Initialization
             //  Load currencies
             pool->initializeCurrencies();
+
             //  Create factories
             pool->initializeFactories();
+
             return pool;
         }
 

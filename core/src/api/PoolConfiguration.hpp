@@ -21,6 +21,13 @@ public:
     virtual ~PoolConfiguration() {}
 
     static std::string const DATABASE_NAME;
+
+    /**
+     * Enable internal logging.
+     *
+     * Set to true by default.
+     */
+    static std::string const ENABLE_INTERNAL_LOGGING;
 };
 
 } } }  // namespace ledger::core::api
