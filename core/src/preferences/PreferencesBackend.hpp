@@ -118,18 +118,24 @@ namespace ledger {
             // Put a single PreferencesChange.
             void putPreferencesChange(
                 leveldb::WriteBatch& batch,
-                optional<AESCipher>& cipher,
+                Option<AESCipher>& cipher,
                 const PreferencesChange& change
             );
 
             // Create a new salt to use with an AESCipher.
-            std::string PreferencesBackend::createNewSalt(const std::shared_&tr<api::RandomNumberGenerator>& rng);
+            std::string createNewSalt(const std::shared_ptr<api::RandomNumberGenerator>& rng);
 
             // helper method used to encrypt things we want to put in leveldb
-            std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
+            std::vector<uint8_t> encrypt_preferences_change(
+                const PreferencesChange& change,
+                AESCipher& cipher
+            );
 
             // helper method used to decrypt things we want to retrieve from leveldb
-            std::vector<uint8_t> decrypt_preferences_change(const std::vector<uint8_t>& data);
+            std::vector<uint8_t> decrypt_preferences_change(
+                const std::vector<uint8_t>& data,
+                AESCipher& cipher
+            );
 
             static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;

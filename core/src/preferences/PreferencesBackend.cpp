@@ -116,14 +116,14 @@ namespace ledger {
         // Put a single PreferencesChange.
         void PreferencesBackend::putPreferencesChange(
             leveldb::WriteBatch& batch,
-            optional<AESCipher>& cipher,
+            Option<AESCipher>& cipher,
             const PreferencesChange& change
         ) {
             leveldb::Slice k((const char *)change.key.data(), change.key.size());
 
             if (change.type == PreferencesChangeType::PUT_TYPE) {
                 if (cipher.hasValue()) {
-                    auto encrypted = encrypt_preferences_change(change, cipher);
+                    auto encrypted = encrypt_preferences_change(change, *_cipher);
 
                     leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
                     batch.Put(k, v);
@@ -193,7 +193,7 @@ namespace ledger {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }
 
-        std::string PreferencesBackend::createNewSalt(const std::shared_&tr<api::RandomNumberGenerator>& rng) {
+        std::string PreferencesBackend::createNewSalt(const std::shared_ptr<api::RandomNumberGenerator>& rng) {
             auto bytes = rng->getRandomBytes(128);
             return std::string(std::begin(bytes), std::end(bytes));
         }
@@ -211,13 +211,7 @@ namespace ledger {
 
             if (salt == emptySalt) {
                 // we don’t have a proper salt; create one and persist it for future use
-<<<<<<< HEAD
-                auto bytes = rng->getRandomBytes(128);
-
-                salt = std::string(std::begin(bytes), std::end(bytes));
-=======
                 salt = createNewSalt(rng);
->>>>>>> First version of the re-encryption algorithm for preferences.
                 pref->editor()->putString("preferences.backend.salt", salt)->commit();
             }
 
@@ -229,12 +223,7 @@ namespace ledger {
             _cipher = Option<AESCipher>::NONE;
         }
 
-<<<<<<< HEAD
-        void PreferencesBackend::clear() {
-            // unset encryption_tests because it’s disabled by default
-=======
-        // first one
-        bool PreferencesBackend::resetEncryption(
+        void PreferencesBackend::resetEncryption(
             const std::shared_ptr<api::RandomNumberGenerator>& rng,
             const std::string& newPassword,
             const std::string& oldPassword
@@ -245,7 +234,7 @@ namespace ledger {
             // from now on, reading data will use the old password, but we want to persist with a
             // brand new cipher; create it here
             auto newSalt = createNewSalt(rng);
-            auto newCipher = AESCipher(rng, newPassword, newSalt, PBKDF2_ITERS);
+            auto newCipher = Option<AESCipher>(AESCipher(rng, newPassword, newSalt, PBKDF2_ITERS));
 
             // we will also need a brand new leveldb to implement a somewhat atomic database swap;
             // the idea is to read from the old leveldb and write to this new one; when we’re done,
@@ -258,7 +247,7 @@ namespace ledger {
             // now we can iterate over all data, decrypt with the “old” cipher, encrypt with the
             // “new” cipher and persist to the temporary leveldb
             {
-                auto it = std::unique_ptr(_db->NewIterator(leveldb::ReadOptions()));
+                auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
                 leveldb::WriteBatch batch;
                 leveldb::WriteOptions writeOpts;
                 writeOpts.sync = true;
@@ -269,7 +258,7 @@ namespace ledger {
                     auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
                     auto value = std::vector<uint8_t>(newSalt.cbegin(), newSalt.cend());
                     auto saltChange = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, value);
-                    putPreferencesChange(batch, optional<AESCipher>(newCipher), saltChange);
+                    putPreferencesChange(batch, newCipher, saltChange);
                     tempDB->Write(writeOpts, &batch);
                 }
 
@@ -281,12 +270,12 @@ namespace ledger {
 
                     // the key is not encrypted
                     auto keyStr = it->key().ToString();
-                    auto key = std::vector<uint8_t>(keyStr.data(), keyStr.size());
+                    auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
 
                     // encrypt with the new cipher; in order to do that, we need a PreferencesChange to
                     // add with the new cipher and then put to the new database
                     auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plaindata);
-                    putPreferencesChange(batch, optional<AESCipher>(newCipher), change);
+                    putPreferencesChange(batch, newCipher, change);
                     tempDB->Write(writeOpts, &batch);
                 }
             }
@@ -303,16 +292,16 @@ namespace ledger {
 
             // raw copy
             {
-                auto it = std::unique_ptr(tempDB->NewIterator(leveldb::ReadOptions()));
+                auto it = std::unique_ptr<leveldb::Iterator>(tempDB->NewIterator(leveldb::ReadOptions()));
                 leveldb::WriteBatch batch;
                 leveldb::WriteOptions writeOpts;
                 writeOpts.sync = true;
 
                 for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                    auto key_ = it->key();
-                    auto key = std::vector<uint8_t>(key_.data(), key_.size());
-                    auto value_ = it->value();
-                    auto value = std::vector<uint8_t>(key_.data(), key_.size());
+                    auto key_ = it->key().ToString();
+                    auto key = std::vector<uint8_t>(key_.cbegin(), key_.cend());
+                    auto value_ = it->value().ToString();
+                    auto value = std::vector<uint8_t>(key_.cbegin(), key_.cend());
                     auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, value);
                     _db->Write(writeOpts, &batch);
                 }
@@ -324,7 +313,6 @@ namespace ledger {
 
         void PreferencesBackend::clear() {
             // unset encryption because it’s disabled by default
->>>>>>> First version of the re-encryption algorithm for preferences.
             unsetEncryption();
 
             // drop and recreate the DB; we need to scope that because the lock must be released
@@ -341,26 +329,18 @@ namespace ledger {
 
                 leveldb::Options options;
                 leveldb::DestroyDB(_dbName, options);
-<<<<<<< HEAD
-
-=======
->>>>>>> First version of the re-encryption algorithm for preferences.
             }
 
             _db = obtainInstance(_dbName);
         }
 
-<<<<<<< HEAD
-        std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {
-=======
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
             const PreferencesChange& change,
             AESCipher& cipher
         ) {
->>>>>>> First version of the re-encryption algorithm for preferences.
           auto input = BytesReader(change.value);
           auto output = BytesWriter();
-          cipher->encrypt(input, output);
+          cipher.encrypt(input, output);
 
           return output.toByteArray();
         }
@@ -371,7 +351,7 @@ namespace ledger {
         ) {
           auto input = BytesReader(data);
           auto output = BytesWriter();
-          cipher->decrypt(input, output);
+          cipher.decrypt(input, output);
 
           return output.toByteArray();
         }
