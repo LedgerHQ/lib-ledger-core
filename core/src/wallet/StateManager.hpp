@@ -14,7 +14,7 @@ namespace ledger {
                 const std::shared_ptr<BlocksDb>& stableDB,
                 const std::shared_ptr<BlocksDb>& unStableDB,
                 const std::vector<Transaction>& pending)
-            : stableBlocks(stableBlocks)
+            : stableBlocks(stableDB)
             , unstableBlocks(unStableDB)
             , pendingTransactions(pending) {
             }
