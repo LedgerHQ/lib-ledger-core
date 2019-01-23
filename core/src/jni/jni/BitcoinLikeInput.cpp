@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-BitcoinLikeInput::BitcoinLikeInput() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeInput, BitcoinLikeInput>("co/ledger/core/BitcoinLikeInput$CppProxy") {}
+BitcoinLikeInput::BitcoinLikeInput() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeInput, BitcoinLikeInput>("BitcoinLikeInput$CppProxy") {}
 
 BitcoinLikeInput::~BitcoinLikeInput() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPublicKeys(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getPublicKeys(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getValue(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getValue(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousTxHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getPreviousTxHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1isCoinbase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1isCoinbase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -84,7 +84,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getCoinbase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getCoinbase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -94,7 +94,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousOutputIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getPreviousOutputIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -104,7 +104,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousOuput(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getPreviousOuput(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -114,7 +114,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -124,7 +124,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1parseScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1parseScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -134,7 +134,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1setScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_scriptSig)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1setScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_scriptSig)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -143,7 +143,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1pushToScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1pushToScriptSig(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -152,7 +152,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1setSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_sequence)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1setSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_sequence)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -161,7 +161,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jlong JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jlong JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -171,7 +171,7 @@ CJNIEXPORT jlong JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1getPreviousTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1getPreviousTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -180,7 +180,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_native_1setP2PKHSigScript(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
+CJNIEXPORT void JNICALL Java_BitcoinLikeInput_00024CppProxy_native_1setP2PKHSigScript(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

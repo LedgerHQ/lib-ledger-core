@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -15,8 +22,8 @@ enum class BitcoinLikePickingStrategy : int {
     OPTIMIZE_SIZE,
     MERGE_OUTPUTS,
 };
-std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrategy);
-std::ostream &operator<<(std::ostream &os, const BitcoinLikePickingStrategy &o);
+LIBCORE_EXPORT  std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrategy);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const BitcoinLikePickingStrategy &o);
 
 } } }  // namespace ledger::core::api
 

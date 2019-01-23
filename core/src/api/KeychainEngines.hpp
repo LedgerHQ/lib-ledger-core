@@ -15,13 +15,13 @@
 
 namespace ledger { namespace core { namespace api {
 
-class KeychainEngines {
+class LIBCORE_EXPORT KeychainEngines {
 public:
     virtual ~KeychainEngines() {}
 
-    static LIBCORE_EXPORT std::string const BIP32_P2PKH;
+    static std::string const BIP32_P2PKH;
 
-    static LIBCORE_EXPORT std::string const BIP49_P2SH;
+    static std::string const BIP49_P2SH;
 };
 
 } } }  // namespace ledger::core::api

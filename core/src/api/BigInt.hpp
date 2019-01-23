@@ -8,11 +8,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 /** Immutable class representing a potentially very long number */
-class BigInt {
+class LIBCORE_EXPORT BigInt {
 public:
     virtual ~BigInt() {}
 

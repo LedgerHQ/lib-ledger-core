@@ -16,15 +16,15 @@
 namespace ledger { namespace core { namespace api {
 
 /**Class of synchronization status constants */
-class SynchronizationStatus {
+class LIBCORE_EXPORT SynchronizationStatus {
 public:
     virtual ~SynchronizationStatus() {}
 
-    static LIBCORE_EXPORT int32_t const STATUS_DONE;
+    static int32_t const STATUS_DONE;
 
-    static LIBCORE_EXPORT int32_t const STATUS_ERROR;
+    static int32_t const STATUS_ERROR;
 
-    static LIBCORE_EXPORT int32_t const STATUS_DONE_SYNCHRONIZE_NEXT_ACCOUNT;
+    static int32_t const STATUS_DONE_SYNCHRONIZE_NEXT_ACCOUNT;
 };
 
 } } }  // namespace ledger::core::api

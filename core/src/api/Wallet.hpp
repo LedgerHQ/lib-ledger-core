@@ -8,6 +8,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -28,7 +35,7 @@ struct Currency;
 struct ExtendedKeyAccountCreationInfo;
 
 /**Class representing a wallet */
-class Wallet {
+class LIBCORE_EXPORT Wallet {
 public:
     virtual ~Wallet() {}
 

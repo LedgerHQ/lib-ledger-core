@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,8 +23,8 @@ enum class HttpMethod : int {
     PUT,
     DEL,
 };
-std::string to_string(const HttpMethod& httpMethod);
-std::ostream &operator<<(std::ostream &os, const HttpMethod &o);
+LIBCORE_EXPORT  std::string to_string(const HttpMethod& httpMethod);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const HttpMethod &o);
 
 } } }  // namespace ledger::core::api
 

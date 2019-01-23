@@ -21,12 +21,12 @@
 
 namespace djinni_generated {
 
-Wallet::Wallet() : ::djinni::JniInterface<::ledger::core::api::Wallet, Wallet>("co/ledger/core/Wallet$CppProxy") {}
+Wallet::Wallet() : ::djinni::JniInterface<::ledger::core::api::Wallet, Wallet>("Wallet$CppProxy") {}
 
 Wallet::~Wallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_nativeDestroy(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getName(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_Wallet_00024CppProxy_native_1getName(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccountCount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getAccountCount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -63,7 +63,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_offset, jint j_count, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_offset, jint j_count, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNextAccountIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getNextAccountIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +83,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNext
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -93,7 +93,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isSynchronizing(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Wallet_00024CppProxy_native_1isSynchronizing(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -103,7 +103,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isS
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1synchronize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1synchronize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -113,7 +113,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1sync
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -123,7 +123,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getP
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -133,7 +133,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getL
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccountPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getAccountPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -143,7 +143,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getA
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1asBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1asBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -153,7 +153,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1asBi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -163,7 +163,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getC
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isInstanceOfBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Wallet_00024CppProxy_native_1isInstanceOfBitcoinLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -173,7 +173,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isInstanceOfEthereumLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Wallet_00024CppProxy_native_1isInstanceOfEthereumLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -183,7 +183,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isInstanceOfRippleLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Wallet_00024CppProxy_native_1isInstanceOfRippleLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -193,7 +193,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getWalletType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Wallet_00024CppProxy_native_1getWalletType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -203,7 +203,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getW
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -212,7 +212,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getLast
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -222,7 +222,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_accountIndex, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -232,7 +232,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getExte
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNextAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getNextAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -241,7 +241,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNext
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNextExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1getNextExtendedKeyAccountCreationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -250,7 +250,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getNext
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAccountWithInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_accountCreationInfo, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1newAccountWithInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_accountCreationInfo, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -260,7 +260,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAccountWithExtendedKeyInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_extendedKeyAccountCreationInfo, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1newAccountWithExtendedKeyInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_extendedKeyAccountCreationInfo, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -270,7 +270,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1newAcco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Wallet_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

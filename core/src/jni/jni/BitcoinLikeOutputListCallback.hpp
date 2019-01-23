@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikeOutputListCallback, ::djinni_generated::BitcoinLikeOutputListCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeOutputListCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeOutputListCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;LError;)V") };
 };
 
 }  // namespace djinni_generated

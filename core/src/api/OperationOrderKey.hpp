@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -20,8 +27,8 @@ enum class OperationOrderKey : int {
     FEES,
     BLOCK_HEIGHT,
 };
-std::string to_string(const OperationOrderKey& operationOrderKey);
-std::ostream &operator<<(std::ostream &os, const OperationOrderKey &o);
+LIBCORE_EXPORT  std::string to_string(const OperationOrderKey& operationOrderKey);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const OperationOrderKey &o);
 
 } } }  // namespace ledger::core::api
 

@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<DynamicType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    DynamicType() : JniEnum("co/ledger/core/DynamicType") {}
+    DynamicType() : JniEnum("DynamicType") {}
     friend ::djinni::JniClass<DynamicType>;
 };
 

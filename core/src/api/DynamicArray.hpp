@@ -9,6 +9,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -19,7 +26,7 @@ enum class DynamicType;
  *Class representing an object that holds references to different types of objects,
  *those references are appended dynamically in an array like structure and can be retrieved by their index
  */
-class DynamicArray {
+class LIBCORE_EXPORT DynamicArray {
 public:
     virtual ~DynamicArray() {}
 

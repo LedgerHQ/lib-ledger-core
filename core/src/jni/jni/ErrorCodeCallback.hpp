@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::ErrorCodeCallback, ::djinni_generated::ErrorCodeCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ErrorCodeCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/ErrorCode;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ErrorCodeCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LErrorCode;LError;)V") };
 };
 
 }  // namespace djinni_generated
