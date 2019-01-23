@@ -179,8 +179,7 @@ namespace ledger {
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
             auto localAccount = _account.lock();
             auto accountUid = localAccount->getAccountUid();
-            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("uid", "IS NOT NULL", "", "e");
-            filter->op_and(std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid, "o"));
+            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
             auto query = std::make_shared<ERC20OperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
