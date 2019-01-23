@@ -20,6 +20,10 @@ target_link_libraries(ledger-core-database-tests gtest gtest_main)
 target_link_libraries(ledger-core-database-tests ledger-core-static)
 target_link_libraries(ledger-core-database-tests ledger-test)
 target_link_libraries(ledger-core-database-tests ledger-qt-host)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # For tempdir support
+    target_link_libraries(ledger-core-database-tests stdc++fs)
+endif()
 target_include_directories(ledger-core-database-tests PUBLIC ../../../qt-host)
 target_include_directories(ledger-core-database-tests PUBLIC ../../../core/src/)
 
