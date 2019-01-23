@@ -165,7 +165,9 @@ TEST_F(AccountSyncTest, HappyPath) {
     std::vector<BitcoinLikeNetwork::FilledBlock> unstableBlocks;
     std::vector<BitcoinLikeNetwork::Transaction> transactions;
     std::tie(stableBlocks, unstableBlocks, transactions) = getBlocksFromState(stateManager->getState());
-    EXPECT_TRUE(stableBlocks.empty());
+    EXPECT_EQ(stableBlocks.size(), 2);
+    EXPECT_THAT(stableBlocks[0], Truly(Same(bch[0])));
+    EXPECT_THAT(stableBlocks[1], Truly(Same(bch[1])));
     ASSERT_EQ(unstableBlocks.size(), 3);
 
     EXPECT_THAT(unstableBlocks[0], Truly(Same(bch[2])));
@@ -175,7 +177,7 @@ TEST_F(AccountSyncTest, HappyPath) {
 
 TEST_F(AccountSyncTest, NoUpdatesNeeded) {
     // In this test we check that no new blocks where added to the stable db
-    // and few blocks where added (re-added actually) to unstable
+    // and unstable db was created with few blocks
     SetUp(3, "block 1");
     setupFakeKeychains();
     setupFakeDatabases();
@@ -194,7 +196,7 @@ TEST_F(AccountSyncTest, NoUpdatesNeeded) {
     std::vector<BitcoinLikeNetwork::FilledBlock> unstableBlocks;
     std::vector<BitcoinLikeNetwork::Transaction> transactions;
     std::tie(stableBlocks, unstableBlocks, transactions) = getBlocksFromState(stateManager->getState());
-    EXPECT_TRUE(stableBlocks.empty());
+    EXPECT_EQ(stableBlocks.size(), 1);
     ASSERT_EQ(unstableBlocks.size(), 3);
     
     EXPECT_THAT(unstableBlocks[0], Truly(Same(bch[2])));
