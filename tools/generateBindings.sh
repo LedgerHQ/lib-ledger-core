@@ -19,7 +19,8 @@ if [ ! -e $DEST/src ]; then
     --node-out $DEST/src \
     --node-type-prefix NJS \
     --node-include-cpp ../include \
-    --node-package $PACKAGE_NAME
+    --node-package $PACKAGE_NAME \
+    --export-header-name libcore_export
 fi
 
 # copy include files
@@ -30,6 +31,7 @@ cp -r $CORE_CPP_API $DEST/include
 rm -rf $DEST/utils
 mkdir $DEST/utils
 cp -r core/src/utils/optional.hpp $DEST/utils
+cp -r core/src/libcore_export.h $DEST/include
 
 # copy lib files
 rm -rf $DEST/lib
