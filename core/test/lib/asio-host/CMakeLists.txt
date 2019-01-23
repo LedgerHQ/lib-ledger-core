@@ -21,8 +21,12 @@ RequestResponce.cpp
 
 
 target_compile_definitions(ledger-asio-host PUBLIC ASIO_STANDALONE)
-target_link_libraries(ledger-asio-host ledger-core)
+
+find_package(Threads REQUIRED)
+target_link_libraries(ledger-asio-host Threads::Threads)
+
 target_link_libraries(ledger-asio-host network-uri)
+target_link_libraries(ledger-asio-host ledger-core)
 
 include(CopyAndInstallImportedTargets)
 copy_install_imported_targets(ledger-asio-host crypto ledger-core)
