@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 
-if(MSVC)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-endif(MSVC)
-
 set(ANDROID_CPP_FEATURES exceptions)
 
 # Automaticall ADD djinni api files to the library
