@@ -95,6 +95,14 @@ namespace ledger {
             /// Data already present in the preferences are not affected.
             void unsetEncryption();
 
+            // Reset the encryption with a new password by first decrypting on the
+            // fly with the old password.
+            void resetEncryption(
+                const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                const std::string& newPassword,
+                const std::string& oldPassword
+            );
+
             /// Clear all preferences.
             void clear();
 
