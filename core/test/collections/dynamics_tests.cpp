@@ -38,9 +38,11 @@
 using namespace ledger::core::api;
 
 TEST(Dynamics, Value) {
+    int64_t i64 = 9364936249LL;
+
     EXPECT_EQ(*ledger::core::DynamicValue(std::string("foo")).asStr(), "foo");
     EXPECT_EQ(*ledger::core::DynamicValue(3946).asInt32(), 3946);
-    EXPECT_EQ(*ledger::core::DynamicValue(9364936249LL).asInt64(), 9364936249);
+    EXPECT_EQ(*ledger::core::DynamicValue(i64).asInt64(), i64);
     EXPECT_EQ(*ledger::core::DynamicValue(3.141592F).asDouble(), 3.141592F);
     EXPECT_EQ(*ledger::core::DynamicValue(true).asBool(), true);
 }
@@ -52,7 +54,7 @@ TEST(Dynamics, ValueSerialization) {
     oarchive(ledger::core::DynamicValue(std::string("foobarzoo")));
 
     // deserialize
-    auto v = ledger::core::DynamicValue();
+    ledger::core::DynamicValue v;
     ::cereal::PortableBinaryInputArchive iarchive(is);
     iarchive(v);
 
