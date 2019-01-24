@@ -313,6 +313,5 @@ namespace ledger {
             archive(array);
             return array;
         }
-
     }
 }

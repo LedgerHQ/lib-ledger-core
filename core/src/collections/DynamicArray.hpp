@@ -42,7 +42,6 @@
 
 namespace ledger {
     namespace core {
-
         class DynamicArray : public api::DynamicArray, public std::enable_shared_from_this<DynamicArray> {
         public:
             DynamicArray() : _readOnly(false) {};
@@ -87,6 +86,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_DYNAMICARRAY_HPP

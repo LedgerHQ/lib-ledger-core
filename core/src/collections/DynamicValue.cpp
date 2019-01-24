@@ -38,49 +38,47 @@
 
 namespace ledger {
     namespace core {
-        DynamicValue::DynamicValue(): type(api::DynamicType::UNDEFINED) {
+        DynamicValue::DynamicValue(const DynamicValue& rhs): data(rhs.data) {
         }
 
-        DynamicValue::DynamicValue(const DynamicValue& rhs): type(rhs.type), data(rhs.data) {
-        }
-
-        DynamicValue::DynamicValue(const char* x): type(api::DynamicType::STRING) {
+        DynamicValue::DynamicValue(const char* x) {
             data = std::string(x);
         }
 
-        DynamicValue::DynamicValue(const std::string& x): type(api::DynamicType::STRING) {
+        DynamicValue::DynamicValue(const std::string& x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(const std::vector<uint8_t>& x): type(api::DynamicType::DATA) {
+        DynamicValue::DynamicValue(const std::vector<uint8_t>& x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(bool x): type(api::DynamicType::BOOLEAN) {
+        DynamicValue::DynamicValue(bool x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(int32_t x): type(api::DynamicType::INT32) {
+        DynamicValue::DynamicValue(int32_t x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(int64_t x): type(api::DynamicType::INT64) {
+        DynamicValue::DynamicValue(int64_t x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(double x): type(api::DynamicType::DOUBLE) {
+        DynamicValue::DynamicValue(double x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(const std::shared_ptr<DynamicArray>& x): type(api::DynamicType::ARRAY) {
+        DynamicValue::DynamicValue(const std::shared_ptr<DynamicArray>& x) {
             data = x;
         }
 
-        DynamicValue::DynamicValue(const std::shared_ptr<DynamicObject>& x): type(api::DynamicType::OBJECT) {
+        DynamicValue::DynamicValue(const std::shared_ptr<DynamicObject>& x) {
             data = x;
         }
 
         template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive& ar) {
+            auto type = getType();
             ar(type);
 
             switch (type) {
@@ -122,6 +120,7 @@ namespace ledger {
         }
 
         template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>(cereal::PortableBinaryInputArchive& ar) {
+            auto type = api::DynamicType::UNDEFINED;
             ar(type);
 
             switch (type) {
@@ -195,6 +194,7 @@ namespace ledger {
         }
 
         template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>(cereal::BinaryOutputArchive& ar) {
+            auto type = getType();
             ar(type);
 
             switch (type) {
@@ -236,6 +236,7 @@ namespace ledger {
         }
 
         template<> void DynamicValue::serialize<cereal::BinaryInputArchive>(cereal::BinaryInputArchive& ar) {
+            auto type = api::DynamicType::UNDEFINED;
             ar(type);
 
             switch (type) {
@@ -309,6 +310,8 @@ namespace ledger {
         }
 
         std::string DynamicValue::dump() const {
+            auto type = getType();
+
             switch (type) {
                 case api::DynamicType::STRING:
                     return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<std::string>(data));
@@ -340,6 +343,8 @@ namespace ledger {
         }
 
         std::ostream& DynamicValue::dump(std::ostream &ss, int depth) const {
+            auto type = getType();
+
             switch (type) {
                 case api::DynamicType::STRING:
                     return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<std::string>(data));
@@ -377,194 +382,154 @@ namespace ledger {
         }
 
         api::DynamicType DynamicValue::getType() const {
-            return type;
+            struct ReifyType: boost::static_visitor<api::DynamicType> {
+                api::DynamicType operator()(int32_t) const {
+                    return api::DynamicType::INT32;
+                }
+
+                api::DynamicType operator()(int64_t) const {
+                    return api::DynamicType::INT64;
+                }
+
+                api::DynamicType operator()(double) const {
+                    return api::DynamicType::DOUBLE;
+                }
+
+                api::DynamicType operator()(bool) const {
+                    return api::DynamicType::BOOLEAN;
+                }
+
+                api::DynamicType operator()(const std::string&) const {
+                    return api::DynamicType::STRING;
+                }
+
+                api::DynamicType operator()(const std::vector<uint8_t>&) const {
+                    return api::DynamicType::DATA;
+                }
+
+                api::DynamicType operator()(const std::shared_ptr<DynamicArray>&) const {
+                    return api::DynamicType::ARRAY;
+                }
+
+                api::DynamicType operator()(const std::shared_ptr<DynamicObject>&) const {
+                    return api::DynamicType::OBJECT;
+                }
+            };
+
+            return boost::apply_visitor(ReifyType(), data);
         }
 
         DynamicValue& DynamicValue::operator=(const std::string& rhs) {
             data = rhs;
-            type = api::DynamicType::STRING;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(std::string&& rhs) {
             data = std::move(rhs);
-            type = api::DynamicType::STRING;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(const std::vector<uint8_t>& rhs) {
             data = rhs;
-            type = api::DynamicType::DATA;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(std::vector<uint8_t>&& rhs) {
             data = std::move(rhs);
-            type = api::DynamicType::DATA;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(bool rhs) {
             data = rhs;
-            type = api::DynamicType::BOOLEAN;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(int32_t rhs) {
             data = rhs;
-            type = api::DynamicType::INT32;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(int64_t rhs) {
             data = rhs;
-            type = api::DynamicType::INT64;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(double rhs) {
             data = rhs;
-            type = api::DynamicType::DOUBLE;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(const std::shared_ptr<DynamicArray>& rhs) {
             data = rhs;
-            type = api::DynamicType::ARRAY;
             return *this;
         }
 
         DynamicValue& DynamicValue::operator=(const std::shared_ptr<DynamicObject>& rhs) {
             data = rhs;
-            type = api::DynamicType::OBJECT;
             return *this;
         }
 
-        optional<std::string&> DynamicValue::asStr() {
-            if (type == api::DynamicType::STRING) {
+        optional<std::string> DynamicValue::asStr() const {
+            if (getType() == api::DynamicType::STRING) {
                 return boost::get<std::string>(data);
             } else {
-                return optional<std::string&>();
+                return optional<std::string>();
             }
         }
 
-        optional<const std::string&> DynamicValue::asStr() const {
-            if (type == api::DynamicType::STRING) {
-                return boost::get<std::string>(data);
-            } else {
-                return optional<const std::string&>();
-            }
-        }
-
-        optional<std::vector<uint8_t>&> DynamicValue::asData() {
-            if (type == api::DynamicType::DATA) {
+        optional<std::vector<uint8_t>> DynamicValue::asData() const {
+            if (getType() == api::DynamicType::DATA) {
                 return boost::get<std::vector<uint8_t>>(data);
             } else {
-                return optional<std::vector<uint8_t>&>();
-            }
-        }
-
-        optional<const std::vector<uint8_t>&> DynamicValue::asData() const {
-            if (type == api::DynamicType::DATA) {
-                return boost::get<std::vector<uint8_t>>(data);
-            } else {
-                return optional<const std::vector<uint8_t>&>();
-            }
-        }
-
-        optional<bool&> DynamicValue::asBool() {
-            if (type == api::DynamicType::BOOLEAN) {
-                return boost::get<bool>(data);
-            } else {
-                return optional<bool&>();
+                return optional<std::vector<uint8_t>>();
             }
         }
 
         optional<bool> DynamicValue::asBool() const {
-            if (type == api::DynamicType::BOOLEAN) {
+            if (getType() == api::DynamicType::BOOLEAN) {
                 return boost::get<bool>(data);
             } else {
                 return optional<bool>();
             }
         }
 
-        optional<int32_t&> DynamicValue::asInt32() {
-            if (type == api::DynamicType::INT32) {
-                return boost::get<int32_t>(data);
-            } else {
-                return optional<int32_t&>();
-            }
-        }
-
         optional<int32_t> DynamicValue::asInt32() const {
-            if (type == api::DynamicType::INT32) {
+            if (getType() == api::DynamicType::INT32) {
                 return boost::get<int32_t>(data);
             } else {
                 return optional<int32_t>();
             }
         }
 
-        optional<int64_t&> DynamicValue::asInt64() {
-            if (type == api::DynamicType::INT64) {
-                return boost::get<int64_t>(data);
-            } else {
-                return optional<int64_t&>();
-            }
-        }
-
         optional<int64_t> DynamicValue::asInt64() const {
-            if (type == api::DynamicType::INT64) {
+            if (getType() == api::DynamicType::INT64) {
                 return boost::get<int64_t>(data);
             } else {
                 return optional<int64_t>();
             }
         }
 
-        optional<double&> DynamicValue::asDouble() {
-            if (type == api::DynamicType::DOUBLE) {
-                return boost::get<double>(data);
-            } else {
-                return optional<double&>();
-            }
-        }
-
         optional<double> DynamicValue::asDouble() const {
-            if (type == api::DynamicType::DOUBLE) {
+            if (getType() == api::DynamicType::DOUBLE) {
                 return boost::get<double>(data);
             } else {
                 return optional<double>();
             }
         }
 
-        optional<std::shared_ptr<DynamicArray>&> DynamicValue::asArray() {
-            if (type == api::DynamicType::ARRAY) {
+        optional<std::shared_ptr<DynamicArray>> DynamicValue::asArray() const {
+            if (getType() == api::DynamicType::ARRAY) {
                 return boost::get<std::shared_ptr<DynamicArray>>(data);
             } else {
-                return optional<std::shared_ptr<DynamicArray>&>();
+                return optional<std::shared_ptr<DynamicArray>>();
             }
         }
 
-        optional<const std::shared_ptr<DynamicArray>&> DynamicValue::asArray() const {
-            if (type == api::DynamicType::ARRAY) {
-                return boost::get<std::shared_ptr<DynamicArray>>(data);
-            } else {
-                return optional<const std::shared_ptr<DynamicArray>&>();
-            }
-        }
-
-        optional<std::shared_ptr<DynamicObject>&> DynamicValue::asObject() {
-            if (type == api::DynamicType::OBJECT) {
+        optional<std::shared_ptr<DynamicObject>> DynamicValue::asObject() const {
+            if (getType() == api::DynamicType::OBJECT) {
                 return boost::get<std::shared_ptr<DynamicObject>>(data);
             } else {
-                return optional<std::shared_ptr<DynamicObject>&>();
-            }
-        }
-
-        optional<const std::shared_ptr<DynamicObject>&> DynamicValue::asObject() const {
-            if (type == api::DynamicType::OBJECT) {
-                return boost::get<std::shared_ptr<DynamicObject>>(data);
-            } else {
-                return optional<const std::shared_ptr<DynamicObject>&>();
+                return optional<std::shared_ptr<DynamicObject>>();
             }
         }
     }

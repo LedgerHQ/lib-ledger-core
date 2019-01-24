@@ -47,7 +47,7 @@ namespace ledger {
 
         struct DynamicValue {
             // Mandatory default constructor for it to be default-constructible in (e.g.) maps.
-            explicit DynamicValue();
+            explicit DynamicValue() = default;
             explicit DynamicValue(const DynamicValue& rhs);
             explicit DynamicValue(const char* x);
             explicit DynamicValue(const std::string& x);
@@ -98,49 +98,30 @@ namespace ledger {
             DynamicValue& operator=(const std::shared_ptr<DynamicObject>& rhs);
 
             /// Try to get the value as if it were a std::string.
-            optional<std::string&> asStr();
-            /// Try to get the value as if it were a std::string.
-            optional<const std::string&> asStr() const;
+            optional<std::string> asStr() const;
 
             /// Try to get the value as if it were a std::vector<uint8_t>.
-            optional<std::vector<uint8_t>&> asData();
-            /// Try to get the value as if it were a std::vector<uint8_t>.
-            optional<const std::vector<uint8_t>&> asData() const;
+            optional<std::vector<uint8_t>> asData() const;
 
-            /// Try to get the value as if it were a bool.
-            optional<bool&> asBool();
             /// Try to get the value as if it were a bool.
             optional<bool> asBool() const;
 
             /// Try to get the value as if it were a int32_t.
-            optional<int32_t&> asInt32();
-            /// Try to get the value as if it were a int32_t.
             optional<int32_t> asInt32() const;
 
-            /// Try to get the value as if it were a int64_t.
-            optional<int64_t&> asInt64();
             /// Try to get the value as if it were a int64_t.
             optional<int64_t> asInt64() const;
 
             /// Try to get the value as if it were a double.
-            optional<double&> asDouble();
-            /// Try to get the value as if it were a double.
             optional<double> asDouble() const;
 
             /// Try to get the value as if it were a DynamicArray.
-            optional<std::shared_ptr<DynamicArray>&> asArray();
-            /// Try to get the value as if it were a DynamicArray.
-            optional<const std::shared_ptr<DynamicArray>&> asArray() const;
+            optional<std::shared_ptr<DynamicArray>> asArray() const;
 
             /// Try to get the value as if it were a DynamicObject.
-            optional<std::shared_ptr<DynamicObject>&> asObject();
-            /// Try to get the value as if it were a DynamicObject.
-            optional<const std::shared_ptr<DynamicObject>&> asObject() const;
+            optional<std::shared_ptr<DynamicObject>> asObject() const;
 
         private:
-            // Tag representing the current in-use variant
-            api::DynamicType type;
-
             // Data. We cannot use a union because of C++ restrictions on non-trivial ctors and
             // dtors. SFOL
             boost::variant<int32_t, int64_t, bool, double, std::string, std::vector<uint8_t>,
