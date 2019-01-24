@@ -40,11 +40,11 @@ using namespace ledger::core::api;
 TEST(Dynamics, Value) {
     int64_t i64 = 9364936249LL;
 
-    EXPECT_EQ(*ledger::core::DynamicValue(std::string("foo")).asStr(), "foo");
-    EXPECT_EQ(*ledger::core::DynamicValue(3946).asInt32(), 3946);
-    EXPECT_EQ(*ledger::core::DynamicValue(i64).asInt64(), i64);
-    EXPECT_EQ(*ledger::core::DynamicValue(3.141592F).asDouble(), 3.141592F);
-    EXPECT_EQ(*ledger::core::DynamicValue(true).asBool(), true);
+    EXPECT_EQ(*ledger::core::DynamicValue(std::string("foo")).get<std::string>(), "foo");
+    EXPECT_EQ(*ledger::core::DynamicValue(3946).get<int32_t>(), 3946);
+    EXPECT_EQ(*ledger::core::DynamicValue(i64).get<int64_t>(), i64);
+    EXPECT_EQ(*ledger::core::DynamicValue(3.141592F).get<double>(), 3.141592F);
+    EXPECT_EQ(*ledger::core::DynamicValue(true).get<bool>(), true);
 }
 
 TEST(Dynamics, ValueSerialization) {
@@ -58,7 +58,7 @@ TEST(Dynamics, ValueSerialization) {
     ::cereal::PortableBinaryInputArchive iarchive(is);
     iarchive(v);
 
-    EXPECT_EQ(*v.asStr(), "foobarzoo");
+    EXPECT_EQ(*v.get<std::string>(), "foobarzoo");
 }
 
 TEST(Dynamics, Array) {

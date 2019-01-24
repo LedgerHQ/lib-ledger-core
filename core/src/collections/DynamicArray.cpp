@@ -50,7 +50,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asStr();
+                    return *v->get<std::string>();
                 } else {
                     return optional<std::string>();
                 }
@@ -64,7 +64,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asInt32();
+                    return *v->get<int32_t>();
                 } else {
                     return optional<int32_t>();
                 }
@@ -78,7 +78,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asInt64();
+                    return *v->get<int64_t>();
                 } else {
                     return optional<int64_t>();
                 }
@@ -92,7 +92,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asDouble();
+                    return *v->get<double>();
                 } else {
                     return optional<double>();
                 }
@@ -106,7 +106,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asData();
+                    return *v->get<std::vector<uint8_t>>();
                 } else {
                     return optional<std::vector<uint8_t>>();
                 }
@@ -120,7 +120,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asBool();
+                    return *v->get<bool>();
                 } else {
                     return optional<bool>();
                 }
@@ -134,7 +134,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asObject();
+                    return *v->get<std::shared_ptr<DynamicObject>>();
                 } else {
                     return nullptr;
                 }
@@ -148,7 +148,7 @@ namespace ledger {
                 auto v = _values.get(index);
 
                 if (v) {
-                    return *v->asArray();
+                    return *v->get<std::shared_ptr<DynamicArray>>();
                 } else {
                     return nullptr;
                 }
@@ -293,11 +293,11 @@ namespace ledger {
             for (auto& v : _values.getContainer()) {
                 // try to set the read-only attribute on the contained value as an array, and if it
                 // fails, try to do the same as if it were an object
-                auto array = v.asArray();
+                auto array = v.get<std::shared_ptr<DynamicArray>>();
                 if (array) {
                     (*array)->setReadOnly(enable);
                 } else {
-                    auto object = v.asObject();
+                    auto object = v.get<std::shared_ptr<DynamicObject>>();
                     if (object) {
                         (*object)->setReadOnly(enable);
                     }

@@ -97,35 +97,32 @@ namespace ledger {
             /// Change the value to a DynamicObject by copying.
             DynamicValue& operator=(const std::shared_ptr<DynamicObject>& rhs);
 
-            /// Try to get the value as if it were a std::string.
-            optional<std::string> asStr() const;
-
-            /// Try to get the value as if it were a std::vector<uint8_t>.
-            optional<std::vector<uint8_t>> asData() const;
-
-            /// Try to get the value as if it were a bool.
-            optional<bool> asBool() const;
-
-            /// Try to get the value as if it were a int32_t.
-            optional<int32_t> asInt32() const;
-
-            /// Try to get the value as if it were a int64_t.
-            optional<int64_t> asInt64() const;
-
-            /// Try to get the value as if it were a double.
-            optional<double> asDouble() const;
-
-            /// Try to get the value as if it were a DynamicArray.
-            optional<std::shared_ptr<DynamicArray>> asArray() const;
-
-            /// Try to get the value as if it were a DynamicObject.
-            optional<std::shared_ptr<DynamicObject>> asObject() const;
+            /// Try to get the value as if it were of a given type.
+            template <typename T>
+            optional<T> get() const {
+                static const OptionalVisitor<T> visitor;
+                return boost::apply_visitor(visitor, data);
+            }
 
         private:
             // Data. We cannot use a union because of C++ restrictions on non-trivial ctors and
             // dtors. SFOL
             boost::variant<int32_t, int64_t, bool, double, std::string, std::vector<uint8_t>,
                            std::shared_ptr<DynamicArray>, std::shared_ptr<DynamicObject>> data;
+
+            // A visitor used to cast from DynamicValue to typed optional values.
+            template <typename T>
+            struct OptionalVisitor: boost::static_visitor<optional<T>> {
+                optional<T> operator()(T x) const {
+                    return x;
+                }
+
+                template <typename Q>
+                optional<T> operator()(const Q&) const {
+                    return optional<T>();
+                }
+            };
+
         };
 
         template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive&);
