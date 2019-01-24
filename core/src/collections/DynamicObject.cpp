@@ -39,152 +39,69 @@
 
 namespace ledger {
     namespace core {
+        optional<std::string> DynamicObject::getString(const std::string &key) {
+            return get<std::string>(key);
+        }
+
+        optional<int32_t> DynamicObject::getInt(const std::string &key) {
+            return get<int32_t>(key);
+        }
+
+        optional<int64_t> DynamicObject::getLong(const std::string &key) {
+            return get<int64_t>(key);
+        }
+
+        optional<double> DynamicObject::getDouble(const std::string &key) {
+            return get<double>(key);
+        }
+
+        optional<bool> DynamicObject::getBoolean(const std::string &key) {
+            return get<bool>(key);
+        }
+
+        optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
+            return get<std::vector<uint8_t>>(key);
+        }
+
+        std::shared_ptr<api::DynamicObject> DynamicObject::getObject(const std::string &key) {
+            return get<std::shared_ptr<DynamicObject>>(key).value_or(nullptr);
+        }
+
+        std::shared_ptr<api::DynamicArray> DynamicObject::getArray(const std::string &key) {
+            return get<std::shared_ptr<DynamicArray>>(key).value_or(nullptr);
+        }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putString(const std::string &key, const std::string &value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return put(key, value);
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putInt(const std::string &key, int32_t value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return put(key, value);
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putLong(const std::string &key, int64_t value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return put(key, value);
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putDouble(const std::string &key, double value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return put(key, value);
         }
 
-        std::shared_ptr<api::DynamicObject>
-        DynamicObject::putData(const std::string &key, const std::vector<uint8_t> &value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+        std::shared_ptr<api::DynamicObject> DynamicObject::putData(const std::string &key, const std::vector<uint8_t> &value) {
+            return put(key, value);
         }
 
         std::shared_ptr<api::DynamicObject> DynamicObject::putBoolean(const std::string &key, bool value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return put(key, value);
         }
 
-        std::shared_ptr<api::DynamicObject>
-        DynamicObject::putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(std::static_pointer_cast<DynamicObject>(value));
-            }
-
-            return shared_from_this();
+        std::shared_ptr<api::DynamicObject> DynamicObject::putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) {
+            return put(key, std::static_pointer_cast<DynamicObject>(value));
         }
 
         std::shared_ptr<api::DynamicObject>
         DynamicObject::putArray(const std::string &key, const std::shared_ptr<api::DynamicArray> &value) {
-            if (!_readOnly) {
-                _values[key] = DynamicValue(std::static_pointer_cast<DynamicArray>(value));
-            }
-
-            return shared_from_this();
-        }
-
-        optional<std::string> DynamicObject::getString(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return *v->get<std::string>();
-            } else {
-                return optional<std::string>();
-            }
-        }
-
-        optional<int32_t> DynamicObject::getInt(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return v->get<int32_t>();
-            } else {
-                return optional<int32_t>();
-            }
-        }
-
-        optional<int64_t> DynamicObject::getLong(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return v->get<int64_t>();
-            } else {
-                return optional<int64_t>();
-            }
-        }
-
-        optional<double> DynamicObject::getDouble(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return v->get<double>();
-            } else {
-                return optional<double>();
-            }
-        }
-
-        optional<bool> DynamicObject::getBoolean(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return v->get<bool>();
-            } else {
-                return optional<bool>();
-            }
-        }
-
-        optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return *v->get<std::vector<uint8_t>>();
-            } else {
-                return optional<std::vector<uint8_t>>();
-            }
-        }
-
-        std::shared_ptr<api::DynamicObject> DynamicObject::getObject(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return *v->get<std::shared_ptr<DynamicObject>>();
-            } else {
-                return nullptr;
-            }
-        }
-
-        std::shared_ptr<api::DynamicArray> DynamicObject::getArray(const std::string &key) {
-            const auto v = optional<DynamicValue>(_values.lift(key));
-
-            if (v) {
-                return *v->get<std::shared_ptr<DynamicArray>>();
-            } else {
-                return nullptr;
-            }
+            return put(key, std::static_pointer_cast<DynamicArray>(value));
         }
 
         bool DynamicObject::contains(const std::string &key) {

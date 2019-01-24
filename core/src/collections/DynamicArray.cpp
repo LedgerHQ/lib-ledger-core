@@ -46,179 +46,67 @@ namespace ledger {
         }
 
         optional<std::string> DynamicArray::getString(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<std::string>();
-                } else {
-                    return optional<std::string>();
-                }
-            } else {
-                return optional<std::string>();
-            }
+            return get<std::string>(index);
         }
 
         optional<int32_t> DynamicArray::getInt(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<int32_t>();
-                } else {
-                    return optional<int32_t>();
-                }
-            } else {
-                return optional<int32_t>();
-            }
+            return get<int32_t>(index);
         }
 
         optional<int64_t> DynamicArray::getLong(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<int64_t>();
-                } else {
-                    return optional<int64_t>();
-                }
-            } else {
-                return optional<int64_t>();
-            }
+            return get<int64_t>(index);
         }
 
         optional<double> DynamicArray::getDouble(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<double>();
-                } else {
-                    return optional<double>();
-                }
-            } else {
-                return optional<double>();
-            }
-        }
-
-        optional<std::vector<uint8_t>> DynamicArray::getData(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<std::vector<uint8_t>>();
-                } else {
-                    return optional<std::vector<uint8_t>>();
-                }
-            } else {
-                return optional<std::vector<uint8_t>>();
-            }
+            return get<double>(index);
         }
 
         optional<bool> DynamicArray::getBoolean(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
+            return get<bool>(index);
+        }
 
-                if (v) {
-                    return *v->get<bool>();
-                } else {
-                    return optional<bool>();
-                }
-            } else {
-                return optional<bool>();
-            }
+        optional<std::vector<uint8_t>> DynamicArray::getData(int64_t index) {
+            return get<std::vector<uint8_t>>(index);
         }
 
         std::shared_ptr<api::DynamicObject> DynamicArray::getObject(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<std::shared_ptr<DynamicObject>>();
-                } else {
-                    return nullptr;
-                }
-            } else {
-                return nullptr;
-            }
+            return get<std::shared_ptr<DynamicObject>>(index).value_or(nullptr);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::getArray(int64_t index) {
-            if (index < size()) {
-                auto v = _values.get(index);
-
-                if (v) {
-                    return *v->get<std::shared_ptr<DynamicArray>>();
-                } else {
-                    return nullptr;
-                }
-            } else {
-                return nullptr;
-            }
+            return get<std::shared_ptr<DynamicArray>>(index).value_or(nullptr);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushInt(int32_t value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushLong(int64_t value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushDouble(double value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushBoolean(bool value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushString(const std::string &value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushData(const std::vector<uint8_t> &value) {
-            if (!_readOnly) {
-                _values += DynamicValue(value);
-            }
-
-            return shared_from_this();
+            return push(value);
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushArray(const std::shared_ptr<api::DynamicArray> &value) {
-            if (!_readOnly) {
-                _values += DynamicValue(std::static_pointer_cast<DynamicArray>(value));
-            }
-
-            return shared_from_this();
+            return push(std::static_pointer_cast<DynamicArray>(value));
         }
 
         std::shared_ptr<api::DynamicArray> DynamicArray::pushObject(const std::shared_ptr<api::DynamicObject> &value) {
-            if (!_readOnly) {
-                _values += DynamicValue(std::static_pointer_cast<DynamicObject>(value));
-            }
-
-            return shared_from_this();
+            return push(std::static_pointer_cast<DynamicObject>(value));
         }
 
         optional<api::DynamicType> DynamicArray::getType(int64_t index) {
