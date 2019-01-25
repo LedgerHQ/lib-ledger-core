@@ -373,7 +373,7 @@ namespace ledger {
             sql << "DROP TABLE ethereum_operations";
 
             // ETH transactions
-            sql << "DROP TABLE ethereum_operations";
+            sql << "DROP TABLE ethereum_transactions";
 
             // ETH accounts
             sql << "DROP TABLE ethereum_accounts";
