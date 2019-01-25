@@ -109,6 +109,7 @@ add_test (NAME ledger-core-integration-BitcoinLikeWalletP2SHSynchronization.Eras
 add_test (NAME ledger-core-integration-BitcoinLikeWalletP2SHSynchronization.TestNetSynchronization COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletP2SHSynchronization.TestNetSynchronization")
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletSynchronization.MediumXpubSynchronization")
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeOnceAtATime COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletSynchronization.SynchronizeOnceAtATime")
+add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeAndFreshResetAll COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletSynchronization.SynchronizeAndFreshResetAll")
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeFromLastBlock COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletSynchronization.SynchronizeFromLastBlock")
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.TestNetSynchronization COMMAND ledger-core-integration-tests --gtest_filter="BitcoinLikeWalletSynchronization.TestNetSynchronization")
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter="BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutput")
