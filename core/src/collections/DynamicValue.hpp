@@ -123,6 +123,125 @@ namespace ledger {
                 }
             };
 
+            // A helper function to serialize.
+            template <typename Archive>
+            void out_serialize(Archive& ar) {
+                auto type = getType();
+                ar(type);
+
+                switch (type) {
+                    case api::DynamicType::STRING:
+                        ar(boost::get<std::string>(data));
+                        break;
+
+                    case api::DynamicType::DATA:
+                        ar(boost::get<std::vector<uint8_t>>(data));
+                        break;
+
+                    case api::DynamicType::BOOLEAN:
+                        ar(boost::get<bool>(data));
+                        break;
+
+                    case api::DynamicType::INT32:
+                        ar(boost::get<int32_t>(data));
+                        break;
+
+                    case api::DynamicType::INT64:
+                        ar(boost::get<int64_t>(data));
+                        break;
+
+                    case api::DynamicType::DOUBLE:
+                        ar(boost::get<double>(data));
+                        break;
+
+                    case api::DynamicType::ARRAY:
+                        ar(boost::get<std::shared_ptr<DynamicArray>>(data));
+                        break;
+
+                    case api::DynamicType::OBJECT:
+                        ar(boost::get<std::shared_ptr<DynamicObject>>(data));
+                        break;
+
+                    case api::DynamicType::UNDEFINED:
+                        break;
+                }
+            }
+
+            // A helper function to deserialize.
+            template <typename Archive>
+            void in_serialize(Archive& ar) {
+                auto type = api::DynamicType::UNDEFINED;
+                ar(type);
+
+                switch (type) {
+                    case api::DynamicType::STRING:
+                        {
+                            std::string x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::DATA:
+                        {
+                            std::vector<uint8_t> x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::BOOLEAN:
+                        {
+                            bool x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::INT32:
+                        {
+                            int32_t x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::INT64:
+                        {
+                            int64_t x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::DOUBLE:
+                        {
+                            double x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::ARRAY:
+                        {
+                            std::shared_ptr<DynamicArray> x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::OBJECT:
+                        {
+                            std::shared_ptr<DynamicObject> x;
+                            ar(x);
+                            data = x;
+                        }
+                        break;
+
+                    case api::DynamicType::UNDEFINED:
+                        break;
+                }
+            }
         };
 
         template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive&);
