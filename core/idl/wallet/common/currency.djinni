@@ -1,40 +1,45 @@
 @import "../../bitcoin/addresses.djinni"
 @import "../../ethereum/addresses.djinni"
 
-#Enum listing supported cryptocurrencies' families
+# Enum listing supported cryptocurrencies' families.
 WalletType = enum {
+    # A Bitcoin-like wallet.
     bitcoin;
+    # An Ethereum-like wallet.
     ethereum;
+    # A Ripple-like wallet.
     ripple;
+    # A Monero-like wallet.
     monero;
 }
-#Structure of cryptocurrency unit
+
+# Structure of cryptocurrency unit.
 CurrencyUnit = record {
-    #Currency name, e.g. milli-bitcoin
+    # Currency name, e.g. milli-bitcoin.
     name: string;
-    #UTF-8 (hex) currency symbol, e.g. hex code for m₿
+    # UTF-8 (hex) currency symbol, e.g. hex code for m₿.
     symbol: string;
-    #Currency code, e.g. mBTC
+    # Currency code, e.g. mBTC.
     code: string;
-    #Number of decimal to display
+    # Number of decimal to display.
     numberOfDecimal: i32;
 }
-#Structure of cryptocurrency
+# Structure of cryptocurrency.
 Currency = record {
-    #WalletType object defining the type of wallet the currency belongs to
+    # WalletType object defining the type of wallet the currency belongs to.
     walletType: WalletType;
-    #String which represents currency name
+    # String which represents currency name.
     name: string;
-    #Integer cointype, part of BIP32 path
-    #One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+    # Integer cointype, part of BIP32 path.
+    # One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md.
     bip44CoinType: i32;
-    #String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin)
+    # String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin).
     paymentUriScheme: string;
-    #List of CurrencyUnit objects (e.g. BTC, mBTC ...)
+    # List of CurrencyUnit objects (e.g. BTC, mBTC ...).
     units: list<CurrencyUnit>;
     #TODO: find a better solution to have only a networkParameters
-    #Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
+    # Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
     bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
-    #Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
+    # Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
     ethereumLikeNetworkParameters: optional<EthereumLikeNetworkParameters>;
 }
