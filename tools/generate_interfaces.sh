@@ -33,7 +33,7 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --node-type-prefix NJS \
                     --node-include-cpp ../../../core/src/api \
                     --node-package $PACKAGE_NAME \
-		    		--export-header-name libcore_export \
+                    --export-header-name libcore_export \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
