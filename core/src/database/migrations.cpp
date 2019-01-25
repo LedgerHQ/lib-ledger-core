@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "migrations.hpp"
 
 namespace ledger {
@@ -36,7 +37,7 @@ namespace ledger {
             int version = -1;
 
             try {
-                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id == 0", soci::into(version));
+                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = 0", soci::into(version));
                 st.execute();
                 st.fetch();
             } catch (...) {
