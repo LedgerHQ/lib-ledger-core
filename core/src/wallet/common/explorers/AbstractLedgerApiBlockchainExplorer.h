@@ -50,7 +50,6 @@ namespace ledger {
         template <typename BlockchainExplorerTransaction, typename TransactionsBulk, typename TransactionsParser, typename TransactionsBulkParser, typename BlockParser, typename NetworkParameters>
         class AbstractLedgerApiBlockchainExplorer {
         public:
-
             FuturePtr<TransactionsBulk>
             getLedgerApiTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash,
