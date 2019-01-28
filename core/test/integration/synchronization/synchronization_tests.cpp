@@ -107,6 +107,44 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
     }
 }
 
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFreshResetAll) {
+    {
+        auto pool = newDefaultPool();
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+                                              api::DynamicObject::newInstance()));
+        {
+            auto nextIndex = wait(wallet->getNextAccountIndex());
+            EXPECT_EQ(nextIndex, 0);
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),
+                                           make_receiver([](const std::shared_ptr<api::Event> &event) {
+                                               fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                                           }));
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),
+                                              make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                                                  fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                                                  if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                                                      return;
+                                                  EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                                                  EXPECT_EQ(event->getCode(),
+                                                            api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                                                  dispatcher->stop();
+                                              }));
+            EXPECT_EQ(bus, account->synchronize());
+            dispatcher->waitUntilStopped();
+
+            // reset everything
+            EXPECT_EQ(wait(pool->getWalletCount()), 1);
+            pool->freshResetAll();
+        }
+    }
+    {
+        auto pool = newDefaultPool();
+        EXPECT_EQ(wait(pool->getWalletCount()), 0);
+    }
+}
+
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeFromLastBlock) {
     auto pool = newDefaultPool();
     {

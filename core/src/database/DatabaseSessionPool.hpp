@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_DATABASESESSIONPOOL_HPP
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
@@ -57,8 +58,10 @@ namespace ledger {
             );
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 5;
-        private:
+
             void performDatabaseMigration();
+            void performDatabaseRollback();
+
         private:
             soci::connection_pool _pool;
             std::ostream* _logger;
@@ -66,6 +69,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_DATABASESESSIONPOOL_HPP

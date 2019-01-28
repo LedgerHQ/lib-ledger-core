@@ -39,9 +39,9 @@
 
 namespace ledger {
     namespace core {
-
         WalletPool::WalletPool(
-            const std::string &name, const Option<std::string> &password,
+            const std::string &name,
+            const Option<std::string> &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
             const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -470,8 +470,20 @@ namespace ledger {
 
         }
 
-        WalletPool::~WalletPool() {
-        }
+        Future<api::ErrorCode> WalletPool::freshResetAll() {
+            auto self = shared_from_this();
 
+            return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+                // drop the main database first
+                self->getDatabaseSessionPool()->performDatabaseRollback();
+
+                // then reset preferences
+                _externalPreferencesBackend->clear();
+                _internalPreferencesBackend->clear();
+
+                // and we’re done
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+        }
     }
 }

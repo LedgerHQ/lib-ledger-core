@@ -76,6 +76,9 @@ namespace ledger {
 
             void commit() override;
 
+            /// Clear all preferences.
+            void clear() override;
+
         private:
             std::vector<PreferencesChange> _changes;
             Preferences& _preferences;

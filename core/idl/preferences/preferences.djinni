@@ -71,4 +71,7 @@ PreferencesEditor = interface +c {
 
     # Persists the changes to the Preferences.
     commit();
+
+    # Clear all preferences.
+    clear();
 }

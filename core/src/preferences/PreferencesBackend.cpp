@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "PreferencesBackend.hpp"
 #include "../utils/Exception.hpp"
 #include "../utils/LambdaRunnable.hpp"
@@ -54,7 +55,8 @@ namespace ledger {
                                                const std::shared_ptr<api::ExecutionContext>& writingContext,
                                                const std::shared_ptr<api::PathResolver> &resolver) {
             _context = writingContext;
-            _db = obtainInstance(resolver->resolvePreferencesPath(path));
+            _dbName = resolver->resolvePreferencesPath(path);
+            _db = obtainInstance(_dbName);
         }
 
         std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
@@ -65,16 +67,21 @@ namespace ledger {
                 if (db != nullptr)
                     return db;
             }
+
             leveldb::DB *db;
             leveldb::Options options;
             options.create_if_missing = true;
+
             auto status = leveldb::DB::Open(options, path, &db);
             if (!status.ok()) {
                 throw Exception(api::ErrorCode::UNABLE_TO_OPEN_LEVELDB, status.ToString());
             }
+
             auto instance = std::shared_ptr<leveldb::DB>(db);
             std::weak_ptr<leveldb::DB> weakInstance = instance;
+
             LEVELDB_INSTANCE_POOL[path] = weakInstance;
+
             return instance;
         }
 
@@ -176,7 +183,7 @@ namespace ledger {
             if (salt == emptySalt) {
                 // we don’t have a proper salt; create one and persist it for future use
                 auto bytes = rng->getRandomBytes(128);
-                
+
                 salt = std::string(std::begin(bytes), std::end(bytes));
                 pref->editor()->putString("preferences.backend.salt", salt)->commit();
             }
@@ -187,6 +194,30 @@ namespace ledger {
 
         void PreferencesBackend::unsetEncryption() {
             _cipher = Option<AESCipher>::NONE;
+        }
+
+        void PreferencesBackend::clear() {
+            // unset encryption_tests because it’s disabled by default
+            unsetEncryption();
+
+            // drop and recreate the DB; we need to scope that because the lock must be released
+            // in order for obtainInstance to work correctly
+            {
+                std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
+                auto it = LEVELDB_INSTANCE_POOL.find(_dbName);
+                if (it != LEVELDB_INSTANCE_POOL.end()) {
+                    // drop the cached DB first
+                    LEVELDB_INSTANCE_POOL.erase(it);
+                }
+
+                _db.reset(); // this should completely drop
+
+                leveldb::Options options;
+                leveldb::DestroyDB(_dbName, options);
+
+            }
+
+            _db = obtainInstance(_dbName);
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(const PreferencesChange& change) {

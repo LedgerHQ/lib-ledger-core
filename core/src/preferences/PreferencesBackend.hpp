@@ -82,22 +82,26 @@ namespace ledger {
             optional<std::string> get(const std::vector<uint8_t>& key);
             void commit(const std::vector<PreferencesChange>& changes);
 
-            // Turn encryption on for all future uses.
-            //
-            // Data already present in the preferences are not affected.
+            /// Turn encryption on for all future uses.
+            ///
+            /// Data already present in the preferences are not affected.
             void setEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::string& password 
+                const std::string& password
             );
 
-            // Turn off encryption.
-            //
-            // Data already present in the preferences are not affected.
+            /// Turn off encryption.
+            ///
+            /// Data already present in the preferences are not affected.
             void unsetEncryption();
+
+            /// Clear all preferences.
+            void clear();
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<leveldb::DB> _db;
+            std::string _dbName;
             Option<AESCipher> _cipher;
 
             // helper method used to encrypt things we want to put in leveldb

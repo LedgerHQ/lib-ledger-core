@@ -80,6 +80,9 @@ public:
 
     /** Persists the changes to the Preferences. */
     virtual void commit() = 0;
+
+    /** Clear all preferences. */
+    virtual void clear() = 0;
 };
 
 } } }  // namespace ledger::core::api
