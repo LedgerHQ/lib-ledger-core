@@ -42,19 +42,48 @@
 
 namespace ledger {
     namespace core {
-
         class DynamicArray : public api::DynamicArray, public std::enable_shared_from_this<DynamicArray> {
         public:
             DynamicArray() : _readOnly(false) {};
+
             int64_t size() override;
+
+            /// A generic indexed and type-safe getter.
+            template <typename T>
+            optional<T> get(int64_t index) {
+                if (index < size()) {
+                    auto v = _values.get(index);
+
+                    if (v) {
+                        return v->get<T>();
+                    } else {
+                        return optional<T>();
+                    }
+                } else {
+                    return optional<T>();
+                }
+            }
+
             optional<std::string> getString(int64_t index) override;
             optional<int32_t> getInt(int64_t index) override;
             optional<int64_t> getLong(int64_t index) override;
             optional<double> getDouble(int64_t index) override;
             optional<std::vector<uint8_t>> getData(int64_t index) override;
             optional<bool> getBoolean(int64_t index) override;
-            std::shared_ptr<api::DynamicArray> pushInt(int32_t value) override;
             std::shared_ptr<api::DynamicObject> getObject(int64_t index) override;
+            std::shared_ptr<api::DynamicArray> getArray(int64_t index) override;
+
+            /// A generic and type-safe push.
+            template <typename T>
+            std::shared_ptr<DynamicArray> push(T value) {
+                if (!_readOnly) {
+                    _values += DynamicValue(value);
+                }
+
+                return shared_from_this();
+            }
+
+            std::shared_ptr<api::DynamicArray> pushInt(int32_t value) override;
             std::shared_ptr<api::DynamicArray> pushLong(int64_t value) override;
             std::shared_ptr<api::DynamicArray> pushString(const std::string &value) override;
             std::shared_ptr<api::DynamicArray> pushDouble(double value) override;
@@ -64,7 +93,6 @@ namespace ledger {
             std::shared_ptr<api::DynamicArray> pushArray(const std::shared_ptr<api::DynamicArray> &value) override;
             std::shared_ptr<api::DynamicArray> concat(const std::shared_ptr<api::DynamicArray> &array) override;
 
-            std::shared_ptr <api::DynamicArray> getArray(int64_t index) override;
 
             bool isReadOnly() override;
             void setReadOnly(bool enable);
@@ -87,6 +115,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_DYNAMICARRAY_HPP

@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "DynamicValue.hpp"
 
 #include "DynamicObject.hpp"
@@ -37,185 +38,220 @@
 
 namespace ledger {
     namespace core {
-
-        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>( cereal::PortableBinaryOutputArchive & ar) {
-            ar(type);
-            switch (type) {
-                case api::DynamicType::ARRAY:
-                    ar(array);
-                    break;
-                case api::DynamicType::OBJECT:
-                    ar(object);
-                    break;
-                case api::DynamicType::BOOLEAN:
-                    ar(boolean);
-                    break;
-                case api::DynamicType::DATA:
-                    ar(bytes);
-                    break;
-                case api::DynamicType::DOUBLE:
-                    ar(doubleFloat);
-                    break;
-                case api::DynamicType::INT32:
-                    ar(int32);
-                    break;
-                case api::DynamicType::INT64:
-                    ar(int64);
-                    break;
-                case api::DynamicType::STRING:
-                    ar(string);
-                    break;
-                case api::DynamicType::UNDEFINED:
-                    break;
-            }
+        DynamicValue::DynamicValue(const DynamicValue& rhs): data(rhs.data) {
         }
 
-        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>( cereal::PortableBinaryInputArchive & ar) {
-            ar(type);
-            switch (type) {
-                case api::DynamicType::ARRAY:
-                    ar(array);
-                    break;
-                case api::DynamicType::OBJECT:
-                    ar(object);
-                    break;
-                case api::DynamicType::BOOLEAN:
-                    ar(boolean);
-                    break;
-                case api::DynamicType::DATA:
-                    ar(bytes);
-                    break;
-                case api::DynamicType::DOUBLE:
-                    ar(doubleFloat);
-                    break;
-                case api::DynamicType::INT32:
-                    ar(int32);
-                    break;
-                case api::DynamicType::INT64:
-                    ar(int64);
-                    break;
-                case api::DynamicType::STRING:
-                    ar(string);
-                    break;
-                case api::DynamicType::UNDEFINED:
-                    break;
-            }
+        DynamicValue::DynamicValue(const char* x) {
+            data = std::string(x);
         }
 
-        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>( cereal::BinaryOutputArchive & ar) {
-            ar(type);
-            switch (type) {
-                case api::DynamicType::ARRAY:
-                    ar(array);
-                    break;
-                case api::DynamicType::OBJECT:
-                    ar(object);
-                    break;
-                case api::DynamicType::BOOLEAN:
-                    ar(boolean);
-                    break;
-                case api::DynamicType::DATA:
-                    ar(bytes);
-                    break;
-                case api::DynamicType::DOUBLE:
-                    ar(doubleFloat);
-                    break;
-                case api::DynamicType::INT32:
-                    ar(int32);
-                    break;
-                case api::DynamicType::INT64:
-                    ar(int64);
-                    break;
-                case api::DynamicType::STRING:
-                    ar(string);
-                    break;
-                case api::DynamicType::UNDEFINED:
-                    break;
-            }
+        DynamicValue::DynamicValue(const std::string& x) {
+            data = x;
         }
 
-        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>( cereal::BinaryInputArchive &ar) {
-            ar(type);
-            switch (type) {
-                case api::DynamicType::ARRAY:
-                    ar(array);
-                    break;
-                case api::DynamicType::OBJECT:
-                    ar(object);
-                    break;
-                case api::DynamicType::BOOLEAN:
-                    ar(boolean);
-                    break;
-                case api::DynamicType::DATA:
-                    ar(bytes);
-                    break;
-                case api::DynamicType::DOUBLE:
-                    ar(doubleFloat);
-                    break;
-                case api::DynamicType::INT32:
-                    ar(int32);
-                    break;
-                case api::DynamicType::INT64:
-                    ar(int64);
-                    break;
-                case api::DynamicType::STRING:
-                    ar(string);
-                    break;
-                case api::DynamicType::UNDEFINED:
-                    break;
-            }
+        DynamicValue::DynamicValue(const std::vector<uint8_t>& x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(bool x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(int32_t x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(int64_t x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(double x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(const std::shared_ptr<DynamicArray>& x) {
+            data = x;
+        }
+
+        DynamicValue::DynamicValue(const std::shared_ptr<DynamicObject>& x) {
+            data = x;
+        }
+
+        template<> void DynamicValue::serialize<cereal::PortableBinaryOutputArchive>(cereal::PortableBinaryOutputArchive& ar) {
+            out_serialize(ar);
+        }
+
+        template<> void DynamicValue::serialize<cereal::PortableBinaryInputArchive>(cereal::PortableBinaryInputArchive& ar) {
+            in_serialize(ar);
+        }
+
+        template<> void DynamicValue::serialize<cereal::BinaryOutputArchive>(cereal::BinaryOutputArchive& ar) {
+            out_serialize(ar);
+        }
+
+        template<> void DynamicValue::serialize<cereal::BinaryInputArchive>(cereal::BinaryInputArchive& ar) {
+            in_serialize(ar);
         }
 
         std::string DynamicValue::dump() const {
+            auto type = getType();
+
             switch (type) {
-                case api::DynamicType::ARRAY:
-                    return fmt::format("({})\n", api::to_string(type), array->dump());
-                case api::DynamicType::OBJECT:
-                    return fmt::format("({})\n", api::to_string(type), object->dump());
-                case api::DynamicType::BOOLEAN:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), boolean);
-                case api::DynamicType::DATA:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), hex::toString(bytes));
-                case api::DynamicType::DOUBLE:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), doubleFloat);
-                case api::DynamicType::INT32:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), int32);
-                case api::DynamicType::INT64:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), int64);
                 case api::DynamicType::STRING:
-                    return fmt::format("<[{}] {}>\n", api::to_string(type), string);
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<std::string>(data));
+
+                case api::DynamicType::DATA:
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), hex::toString(boost::get<std::vector<uint8_t>>(data)));
+
+                case api::DynamicType::BOOLEAN:
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<bool>(data));
+
+                case api::DynamicType::INT32:
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<int32_t>(data));
+
+                case api::DynamicType::INT64:
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<int64_t>(data));
+
+                case api::DynamicType::DOUBLE:
+                    return fmt::format("<[{}] {}>\n", api::to_string(type), boost::get<double>(data));
+
+                case api::DynamicType::ARRAY:
+                    return fmt::format("({})\n", api::to_string(type), boost::get<std::shared_ptr<DynamicArray>>(data)->dump());
+
+                case api::DynamicType::OBJECT:
+                    return fmt::format("({})\n", api::to_string(type), boost::get<std::shared_ptr<DynamicObject>>(data)->dump());
+
                 case api::DynamicType::UNDEFINED:
                     return fmt::format("<[{}]>\n", api::to_string(type));
             }
         }
 
-        std::ostream &DynamicValue::dump(std::ostream &ss, int depth) const {
+        std::ostream& DynamicValue::dump(std::ostream &ss, int depth) const {
+            auto type = getType();
+
             switch (type) {
+                case api::DynamicType::STRING:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<std::string>(data));
+
+                case api::DynamicType::DATA:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), hex::toString(boost::get<std::vector<uint8_t>>(data)));
+
+                case api::DynamicType::BOOLEAN:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<bool>(data));
+
+                case api::DynamicType::INT32:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<int32_t>(data));
+
+                case api::DynamicType::INT64:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<int64_t>(data));
+
+                case api::DynamicType::DOUBLE:
+                    return ss << fmt::format("[{}] {}", api::to_string(type), boost::get<double>(data));
+
                 case api::DynamicType::ARRAY:
                     ss << fmt::format("[{}] (\n", api::to_string(type));
-                    array->dump(ss, depth + 1);
+                    boost::get<std::shared_ptr<DynamicArray>>(data)->dump(ss, depth + 1);
                     ss << (" "_S * depth).str() << ")";
                     return ss;
+
                 case api::DynamicType::OBJECT:
                     ss << fmt::format("[{}] (", api::to_string(type)) << std::endl;
-                    object->dump(ss, depth + 1);
+                    boost::get<std::shared_ptr<DynamicObject>>(data)->dump(ss, depth + 1);
                     ss << (" "_S * depth).str() << ")";
                     return ss;
-                case api::DynamicType::BOOLEAN:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), boolean);
-                case api::DynamicType::DATA:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), hex::toString(bytes));
-                case api::DynamicType::DOUBLE:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), doubleFloat);
-                case api::DynamicType::INT32:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), int32);
-                case api::DynamicType::INT64:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), int64);
-                case api::DynamicType::STRING:
-                    return ss << fmt::format("[{}] {}", api::to_string(type), string);
+
                 case api::DynamicType::UNDEFINED:
                     return ss << fmt::format("[{}]", api::to_string(type));
             }
+        }
+
+        api::DynamicType DynamicValue::getType() const {
+            struct ReifyType: boost::static_visitor<api::DynamicType> {
+                api::DynamicType operator()(int32_t) const {
+                    return api::DynamicType::INT32;
+                }
+
+                api::DynamicType operator()(int64_t) const {
+                    return api::DynamicType::INT64;
+                }
+
+                api::DynamicType operator()(double) const {
+                    return api::DynamicType::DOUBLE;
+                }
+
+                api::DynamicType operator()(bool) const {
+                    return api::DynamicType::BOOLEAN;
+                }
+
+                api::DynamicType operator()(const std::string&) const {
+                    return api::DynamicType::STRING;
+                }
+
+                api::DynamicType operator()(const std::vector<uint8_t>&) const {
+                    return api::DynamicType::DATA;
+                }
+
+                api::DynamicType operator()(const std::shared_ptr<DynamicArray>&) const {
+                    return api::DynamicType::ARRAY;
+                }
+
+                api::DynamicType operator()(const std::shared_ptr<DynamicObject>&) const {
+                    return api::DynamicType::OBJECT;
+                }
+            };
+
+            static const ReifyType visitor;
+            return boost::apply_visitor(visitor, data);
+        }
+
+        DynamicValue& DynamicValue::operator=(const std::string& rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(std::string&& rhs) {
+            data = std::move(rhs);
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(const std::vector<uint8_t>& rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(std::vector<uint8_t>&& rhs) {
+            data = std::move(rhs);
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(bool rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(int32_t rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(int64_t rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(double rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(const std::shared_ptr<DynamicArray>& rhs) {
+            data = rhs;
+            return *this;
+        }
+
+        DynamicValue& DynamicValue::operator=(const std::shared_ptr<DynamicObject>& rhs) {
+            data = rhs;
+            return *this;
         }
     }
 }

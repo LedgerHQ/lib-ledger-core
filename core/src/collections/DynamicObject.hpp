@@ -45,31 +45,58 @@ namespace ledger {
     namespace core {
         class DynamicObject : public api::DynamicObject, public std::enable_shared_from_this<DynamicObject> {
         public:
-            DynamicObject() : _readOnly(false) {};
-            std::shared_ptr<api::DynamicObject> putString(const std::string &key, const std::string &value) override;
-            std::shared_ptr<api::DynamicObject> putInt(const std::string &key, int32_t value) override;
-            std::shared_ptr<api::DynamicObject> putLong(const std::string &key, int64_t value) override;
-            std::shared_ptr<api::DynamicObject> putDouble(const std::string &key, double value) override;
-            std::shared_ptr<api::DynamicObject>
-            putData(const std::string &key, const std::vector<uint8_t> &value) override;
-            std::shared_ptr<api::DynamicObject> putBoolean(const std::string &key, bool value) override;
+            DynamicObject() : _readOnly(false) {}
+
+            /// A generic indexed and type-safe getter.
+            template <typename T>
+            optional<T> get(const std::string& key) {
+                const auto v = optional<DynamicValue>(_values.lift(key));
+
+                if (v) {
+                    return v->get<T>();
+                } else {
+                    return optional<T>();
+                }
+            }
+
+            /// A generic and type-safe put.
+            template <typename T>
+            std::shared_ptr<DynamicObject> put(const std::string& key, T value) {
+                if (!_readOnly) {
+                    _values[key] = DynamicValue(value);
+                }
+
+                return shared_from_this();
+            }
+
             optional<std::string> getString(const std::string &key) override;
             optional<int32_t> getInt(const std::string &key) override;
             optional<int64_t> getLong(const std::string &key) override;
             optional<double> getDouble(const std::string &key) override;
-            optional<std::vector<uint8_t>> getData(const std::string &key) override;
             optional<bool> getBoolean(const std::string &key) override;
-            std::shared_ptr<api::DynamicObject>
-            putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) override;
-            std::shared_ptr<api::DynamicObject>
-            putArray(const std::string &key, const std::shared_ptr<api::DynamicArray> &value) override;
+            optional<std::vector<uint8_t>> getData(const std::string &key) override;
             std::shared_ptr<api::DynamicObject> getObject(const std::string &key) override;
             std::shared_ptr<api::DynamicArray> getArray(const std::string &key) override;
+
+            std::shared_ptr<api::DynamicObject> putString(const std::string &key, const std::string &value) override;
+            std::shared_ptr<api::DynamicObject> putInt(const std::string &key, int32_t value) override;
+            std::shared_ptr<api::DynamicObject> putLong(const std::string &key, int64_t value) override;
+            std::shared_ptr<api::DynamicObject> putDouble(const std::string &key, double value) override;
+            std::shared_ptr<api::DynamicObject> putBoolean(const std::string &key, bool value) override;
+            std::shared_ptr<api::DynamicObject> putData(const std::string &key, const std::vector<uint8_t> &value) override;
+            std::shared_ptr<api::DynamicObject> putObject(const std::string &key, const std::shared_ptr<api::DynamicObject> &value) override;
+            std::shared_ptr<api::DynamicObject> putArray(const std::string &key, const std::shared_ptr<api::DynamicArray> &value) override;
+
             bool contains(const std::string &key) override;
+
             bool remove(const std::string &key) override;
+
             std::vector<std::string> getKeys() override;
+
             optional<api::DynamicType> getType(const std::string &key) override;
+
             std::string dump() override;
+
             std::vector<uint8_t> serialize() override;
 
             bool isReadOnly() override;
@@ -83,30 +110,6 @@ namespace ledger {
             void serialize(Archive& ar) {
                 ar(_values.getContainer());
             }
-
-        private:
-            template<typename T>
-            optional<T> getNumber(const std::string& key) const {
-                auto v = _values.lift(key);
-                if (_values.empty() || !v.hasValue())
-                    return optional<T>();
-                switch (v.getValue().type) {
-                    case api::DynamicType::INT32:
-                        return optional<T>((T) v.getValue().int32);
-                    case api::DynamicType::INT64:
-                        return optional<T>((T) v.getValue().int64);
-                    case api::DynamicType::DOUBLE:
-                        return optional<T>((T) v.getValue().doubleFloat);
-                    case api::DynamicType::BOOLEAN:
-                        return optional<T>((T) v.getValue().boolean);
-                    case api::DynamicType::OBJECT:
-                    case api::DynamicType::DATA:
-                    case api::DynamicType::ARRAY:
-                    case api::DynamicType::STRING:
-                    case api::DynamicType::UNDEFINED:
-                        return optional<T>();
-                }
-            };
 
         private:
             Map<std::string, DynamicValue> _values;
