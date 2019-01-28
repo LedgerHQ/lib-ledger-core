@@ -77,7 +77,7 @@ protected:
         auto engine = std::make_shared<MemoryDatabaseProxy>();
         _backend = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
-        _backend->init(nullptr, "test_db", sql);
+        _backend->init(nullptr, "test_db", "", sql);
     }
 
     void TearDown() override {

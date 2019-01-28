@@ -96,7 +96,6 @@ if (NOT DEFINED SKIP_BUILD_SQLCIPHER)
                 LOG_INSTALL 1
                 LOG_BUILD 1
                 CONFIGURE_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/configure_sqlcipher_android.sh ${CMAKE_CURRENT_SOURCE_DIR} ${_toolchain_} $ENV{ANDROID_NDK_r16b} ${OPENSSL_DIR} ${CMAKE_BINARY_DIR}/core/lib/openssl/crypto
-                BUILD_IN_SOURCE 1
                 BUILD_COMMAND ${_build_command_}
                 BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
                 ${_overwrite_install_command}
@@ -117,7 +116,6 @@ if (NOT DEFINED SKIP_BUILD_SQLCIPHER)
                 LOG_INSTALL 1
                 LOG_BUILD 1
                 CONFIGURE_COMMAND env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CPPFLAGS=-I${OPENSSL_DIR}/include <SOURCE_DIR>/configure ${_configure_options_} CFLAGS=${_c_flags_} LDFLAGS=${_ld_flags_} LIBS=${_libs_} --prefix=${prefix}
-                BUILD_IN_SOURCE 1
                 BUILD_COMMAND ${_build_command_}
                 BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
                 ${_overwrite_install_command}

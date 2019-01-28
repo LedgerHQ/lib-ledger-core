@@ -35,7 +35,11 @@
 #include <api/DatabaseStatement.hpp>
 #include <api/DatabaseBlob.hpp>
 #include <api/DatabaseResultSet.hpp>
-#include <sqlite3.h>
+#ifdef SQLCIPHER
+    #include <sqlcipher/sqlite3.h>
+#else
+    #include <sqlite3.h>
+#endif
 #include <database/proxy_backend/soci-proxy.h>
 #include <soci.h>
 #include <soci-backend.h>

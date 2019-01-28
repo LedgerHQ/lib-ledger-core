@@ -43,7 +43,9 @@ namespace ledger {
             return _engine->getPoolSize();
         }
 
-        void ProxyBackend::init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+        void ProxyBackend::init(const std::shared_ptr<api::PathResolver> &resolver,
+                                const std::string &dbName,
+                                const std::string &password,
                                 soci::session &session) {
             session.open(*_factory, dbName);
         }
