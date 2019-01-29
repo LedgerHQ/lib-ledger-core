@@ -101,6 +101,7 @@ void BaseFixture::SetUp() {
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     ws = std::make_shared<FakeWebSocketClient>();
+    rng = std::make_shared<OpenSSLRandomNumberGenerator>();
 }
 
 void BaseFixture::TearDown() {
@@ -112,13 +113,13 @@ void BaseFixture::TearDown() {
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
     return WalletPool::newInstance(
             poolName,
-            Option<std::string>::NONE,
+            Option<std::string>("test"),
             http,
             ws,
             resolver,
             printer,
             dispatcher,
-            nullptr,
+            rng,
             backend,
             api::DynamicObject::newInstance()
     );

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.12)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(ANDROID_CPP_FEATURES exceptions)
@@ -123,9 +122,8 @@ endif(MINGW OR MSVC)
 
 target_link_libraries(ledger-core-interface INTERFACE crypto)
 if (NOT SQLCIPHER)
-target_link_libraries(ledger-core-interface INTERFACE sqlite3)
+    target_link_libraries(ledger-core-interface INTERFACE sqlite3)
 endif()
-target_link_libraries(ledger-core-interface INTERFACE sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
@@ -140,15 +138,15 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 if (SQLCIPHER)
     #Sqlcipher
-    add_dependencies(ledger-core-interface SQLCipher)
+    add_dependencies(ledger-core-interface INTERFACE SQLCipher)
     target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
     link_directories("${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib")
     if (UNIX AND NOT APPLE AND NOT ANDROID)
-        target_link_libraries(ledger-core ${CMAKE_DL_LIBS})
+        target_link_libraries(ledger-core-interface INTERFACE ${CMAKE_DL_LIBS})
     endif()
 else()
     #Sqlite
-    target_link_libraries(ledger-core-interface $<TARGET_FILE:sqlite3>)
+    target_link_libraries(ledger-core-interface INTERFACE $<TARGET_FILE:sqlite3>)
     link_directories($<TARGET_FILE_DIR:sqlite3>)
 endif()
 

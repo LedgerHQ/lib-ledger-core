@@ -125,6 +125,7 @@ sqlite3_session_backend::sqlite3_session_backend(
 #ifdef SQLCIPHER
     if (!passKey.empty()) {
         res = sqlite3_key_v2(conn_, dbname.c_str(), passKey.c_str(), strlen(passKey.c_str()));
+        check_sqlite_err(conn_, res, "Failed to encrypt database. ");
     }
 #endif
 }
