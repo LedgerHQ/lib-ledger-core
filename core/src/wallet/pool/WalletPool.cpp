@@ -52,7 +52,16 @@ namespace ledger {
         : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
-            _password = password;
+
+            // if the password has the form Some(""), we set it to None as this is not an accepted
+            // situation (to fix this in a more type-safe way, we need to change the encoding and go
+            // to std::string only, no more optional)
+            if (password.hasValue() && password->empty()) {
+                _password = Option<std::string>::NONE;
+            } else {
+                _password = password;
+            }
+
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
             // File system management
@@ -77,16 +86,16 @@ namespace ledger {
             );
 
             // Encrypt the preferences, if needed
-            if (password.hasValue()) {
-                _externalPreferencesBackend->setEncryption(rng, *password);
-                _internalPreferencesBackend->setEncryption(rng, *password);
+            if (_password.hasValue()) {
+                _externalPreferencesBackend->setEncryption(rng, *_password);
+                _internalPreferencesBackend->setEncryption(rng, *_password);
             }
 
             // Logger management
             _logPrinter = logPrinter;
             _logger = logger::create(
                     name + "-l",
-                    password.toOptional(),
+                    _password.toOptional(),
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
                     logPrinter
