@@ -7,6 +7,7 @@
 #include <events/ProgressNotifier.h>
 #include <wallet/common/InMemoryPartialBlocksDB.hpp>
 #include <wallet/common/InMemoryBlockchainDatabase.hpp>
+#include <wallet/StateManager.hpp>
 #include <vector>
 #include <spdlog/spdlog.h>
 
@@ -27,17 +28,17 @@ public:
         : receivedFake(0, 0) // receive addresses are 0,1,2... change are 1000, 1001...
         , changeFake(0, 1000)
         , context(new SimpleExecutionContext())
-        , fakeStableDB(context)
-        , fakeUnstableDB(context){
+        , fakeStableDB(context) {
         explorerMock = std::make_shared<NiceMock<ExplorerMock>>();
         keychainReceiveMock = std::make_shared<NiceMock<KeychainMock>>();
         keychainChangeMock = std::make_shared<NiceMock<KeychainMock>>();
         stableBlocksDBMock = std::make_shared<NiceMock<BlocksDBMock>>();
-        unstableBlocksDBMock = std::make_shared<NiceMock<BlocksDBMock>>();
-        pendingTransactionDBMock = std::make_shared<NiceMock<BlocksDBMock>>();
+        auto unstableBlocksDBMock = std::make_shared<NiceMock<BlocksDBMock>>();
         std::shared_ptr<api::ExecutionContext> xx = context;
         loggerSinkMock = std::make_shared<NiceMock<LoggerSinkMock>>();
         logger = std::make_shared<spdlog::logger>("unittestlogger", loggerSinkMock);
+        BlockchainState<BitcoinLikeNetwork::FilledBlock> state(stableBlocksDBMock, unstableBlocksDBMock, std::vector<BitcoinLikeNetwork::Transaction>());
+        stateManager = std::make_shared<StateManager<BitcoinLikeNetwork::FilledBlock>>(state);
     }
 
     void SetUp(uint32_t maxPossibleUnstableBlocks, const std::string& genesisBlockHash ) {
@@ -49,11 +50,10 @@ public:
             genesisBlockHash);
                    
         synchronizer = std::make_shared<common::AccountSynchronizer<BitcoinLikeNetwork>>(
+            stateManager,
             context,
             explorerMock,
             stableBlocksDBMock,
-            unstableBlocksDBMock,
-            pendingTransactionDBMock,
             keychainReceiveMock,
             keychainChangeMock,
             logger,
@@ -70,7 +70,6 @@ public:
     };
 
     void setupFakeDatabases() {
-        linkMockDbToFake(unstableBlocksDBMock, fakeUnstableDB);
         linkMockDbToFake(stableBlocksDBMock, fakeStableDB);
     }
 
@@ -79,19 +78,32 @@ public:
         ON_CALL(*explorerMock, getTransactions(_, _, _)).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getTransactions));
         ON_CALL(*explorerMock, getCurrentBlock()).WillByDefault(Invoke(&fakeExplorer, &FakeExplorer::getCurrentBlock));
     }
-private:
+    
+    std::tuple <
+        std::vector<BitcoinLikeNetwork::FilledBlock>,
+        std::vector<BitcoinLikeNetwork::FilledBlock>,
+        std::vector<BitcoinLikeNetwork::Transaction> > getBlocksFromState(const BlockchainState<BitcoinLikeNetwork::FilledBlock>& state) {
+        auto stabelBlocksFuture = state.stableBlocks->getBlocks(0, 1000000);
+        auto unstabelBlocksFuture = state.unstableBlocks->getBlocks(0, 1000000);
+        context->wait();
+        EXPECT_TRUE(stabelBlocksFuture.isCompleted());
+        EXPECT_TRUE(stabelBlocksFuture.getValue().getValue().isSuccess());
+        EXPECT_TRUE(unstabelBlocksFuture.isCompleted());
+        EXPECT_TRUE(unstabelBlocksFuture.getValue().getValue().isSuccess());
+        auto stableBlocks = getFutureResult(stabelBlocksFuture);
+        auto unstableBlocks = getFutureResult(unstabelBlocksFuture);
+        return std::make_tuple(stableBlocks, unstableBlocks, state.pendingTransactions);
+    }
     
 public:
+    std::shared_ptr<StateManager<BitcoinLikeNetwork::FilledBlock>> stateManager;
     std::shared_ptr<SimpleExecutionContext> context;
     BlocksDatabase fakeStableDB;
-    BlocksDatabase fakeUnstableDB;
     std::shared_ptr<core::AccountSynchronizer<BitcoinLikeNetwork>> synchronizer;
     std::shared_ptr<NiceMock<ExplorerMock>> explorerMock;
     std::shared_ptr<NiceMock<KeychainMock>> keychainReceiveMock;
     std::shared_ptr<NiceMock<KeychainMock>> keychainChangeMock;
     std::shared_ptr<NiceMock<BlocksDBMock>> stableBlocksDBMock;
-    std::shared_ptr<NiceMock<BlocksDBMock>> unstableBlocksDBMock;
-    std::shared_ptr<NiceMock<BlocksDBMock>> pendingTransactionDBMock;
     std::shared_ptr<spdlog::logger> logger;
     std::shared_ptr<NiceMock<LoggerSinkMock>> loggerSinkMock;
     FakeKeyChain receivedFake;
@@ -114,12 +126,17 @@ TEST_F(AccountSyncTest, NoStableBlocksInBlockchain) {
     };
     setBlockchain(bch);
     EXPECT_CALL(*stableBlocksDBMock, addBlock(_, _)).Times(0); // no stable blocks
-    EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-    EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1); // add new block to unstable db
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();
     ASSERT_TRUE(f.isCompleted());
     EXPECT_TRUE(f.getValue().getValue().isSuccess());
+    std::vector<BitcoinLikeNetwork::FilledBlock> stableBlocks;
+    std::vector<BitcoinLikeNetwork::FilledBlock> unstableBlocks;
+    std::vector<BitcoinLikeNetwork::Transaction> transactions;
+    std::tie(stableBlocks, unstableBlocks, transactions) = getBlocksFromState(stateManager->getState());
+    EXPECT_TRUE(stableBlocks.empty());
+    ASSERT_EQ(unstableBlocks.size(), 1);
+    EXPECT_THAT(unstableBlocks[0], Truly(Same(bch[0])));
 }
 
 TEST_F(AccountSyncTest, HappyPath) {
@@ -138,20 +155,29 @@ TEST_F(AccountSyncTest, HappyPath) {
         EXPECT_CALL(*stableBlocksDBMock, addBlock(bch[0].height, Truly(Same(bch[0])))).Times(1);
         EXPECT_CALL(*stableBlocksDBMock, addBlock(bch[1].height, Truly(Same(bch[1])))).Times(1);
         // and three goes to unstable
-        EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[2].height, Truly(Same(bch[2])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[3].height, Truly(Same(bch[3])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[4].height, Truly(Same(bch[4])))).Times(1);
     }
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();
     ASSERT_TRUE(f.isCompleted());
     EXPECT_TRUE(f.getValue().getValue().isSuccess());
+
+    std::vector<BitcoinLikeNetwork::FilledBlock> stableBlocks;
+    std::vector<BitcoinLikeNetwork::FilledBlock> unstableBlocks;
+    std::vector<BitcoinLikeNetwork::Transaction> transactions;
+    std::tie(stableBlocks, unstableBlocks, transactions) = getBlocksFromState(stateManager->getState());
+    EXPECT_EQ(stableBlocks.size(), 2);
+    EXPECT_THAT(stableBlocks[0], Truly(Same(bch[0])));
+    EXPECT_THAT(stableBlocks[1], Truly(Same(bch[1])));
+    ASSERT_EQ(unstableBlocks.size(), 3);
+
+    EXPECT_THAT(unstableBlocks[0], Truly(Same(bch[2])));
+    EXPECT_THAT(unstableBlocks[1], Truly(Same(bch[3])));
+    EXPECT_THAT(unstableBlocks[2], Truly(Same(bch[4])));
 }
 
 TEST_F(AccountSyncTest, NoUpdatesNeeded) {
     // In this test we check that no new blocks where added to the stable db
-    // and few blocks where added (readded actually) to unstable
+    // and unstable db was created with few blocks
     SetUp(3, "block 1");
     setupFakeKeychains();
     setupFakeDatabases();
@@ -161,16 +187,19 @@ TEST_F(AccountSyncTest, NoUpdatesNeeded) {
         bch.push_back(BL{ i, "block " + boost::lexical_cast<std::string>(i),{ TR{ { { "X", 0 } }, { { "0", 10000 } } } } });
     EXPECT_CALL(*stableBlocksDBMock, addBlock(_, _)).Times(1);
     setBlockchain(bch);
-    {
-        testing::Sequence s;
-        // and three goes to unstable
-        EXPECT_CALL(*unstableBlocksDBMock, CleanAll()).Times(1); // clean unstable db
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[2].height, Truly(Same(bch[2])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[3].height, Truly(Same(bch[3])))).Times(1);
-        EXPECT_CALL(*unstableBlocksDBMock, addBlock(bch[4].height, Truly(Same(bch[4])))).Times(1);
-    }
     auto f = synchronizer->synchronize()->getFuture();
     context->wait();
     ASSERT_TRUE(f.isCompleted());
     EXPECT_TRUE(f.getValue().getValue().isSuccess());
+
+    std::vector<BitcoinLikeNetwork::FilledBlock> stableBlocks;
+    std::vector<BitcoinLikeNetwork::FilledBlock> unstableBlocks;
+    std::vector<BitcoinLikeNetwork::Transaction> transactions;
+    std::tie(stableBlocks, unstableBlocks, transactions) = getBlocksFromState(stateManager->getState());
+    EXPECT_EQ(stableBlocks.size(), 1);
+    ASSERT_EQ(unstableBlocks.size(), 3);
+    
+    EXPECT_THAT(unstableBlocks[0], Truly(Same(bch[2])));
+    EXPECT_THAT(unstableBlocks[1], Truly(Same(bch[3])));
+    EXPECT_THAT(unstableBlocks[2], Truly(Same(bch[4])));
 }

@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,8 +23,8 @@ enum class WalletType : int {
     RIPPLE,
     MONERO,
 };
-std::string to_string(const WalletType& walletType);
-std::ostream &operator<<(std::ostream &os, const WalletType &o);
+LIBCORE_EXPORT  std::string to_string(const WalletType& walletType);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const WalletType &o);
 
 } } }  // namespace ledger::core::api
 

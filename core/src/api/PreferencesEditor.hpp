@@ -8,11 +8,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 /** Interface for editting Preferences. All changes to the editor are persisted to the disk only when comitted. */
-class PreferencesEditor {
+class LIBCORE_EXPORT PreferencesEditor {
 public:
     virtual ~PreferencesEditor() {}
 

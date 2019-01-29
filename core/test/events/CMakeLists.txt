@@ -14,12 +14,12 @@ include_directories(../lib/libledger-test/)
 add_executable(ledger-core-events-tests main.cpp events_test.cpp)
 
 target_link_libraries(ledger-core-events-tests gtest gtest_main)
-target_link_libraries(ledger-core-events-tests ledger-core)
+target_link_libraries(ledger-core-events-tests ledger-core-static)
 target_link_libraries(ledger-core-events-tests ledger-test)
 target_link_libraries(ledger-core-events-tests ledger-qt-host)
 target_include_directories(ledger-core-events-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-events-tests crypto ledger-core)
+copy_install_imported_targets(ledger-core-events-tests crypto)
 
 add_test (NAME ledger-core-events-tests COMMAND ledger-core-events-tests)

@@ -94,7 +94,7 @@ namespace ledger {
                         address,
                         script,
                         time);
-                    value = BigInt(val);
+                    value = BigInt(static_cast<unsigned long long>(val));
                 }
 
                 template <class Archive>

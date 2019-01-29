@@ -41,9 +41,9 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::GetEthreumLikeWalletCallback, ::djinni_generated::GetEthreumLikeWalletCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/GetEthreumLikeWalletCallback") };
-    const jmethodID method_onSuccess { ::djinni::jniGetMethodID(clazz.get(), "onSuccess", "(Lco/ledger/core/EthereumLikeWallet;Z)V") };
-    const jmethodID method_onError { ::djinni::jniGetMethodID(clazz.get(), "onError", "(Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("GetEthreumLikeWalletCallback") };
+    const jmethodID method_onSuccess { ::djinni::jniGetMethodID(clazz.get(), "onSuccess", "(LEthereumLikeWallet;Z)V") };
+    const jmethodID method_onError { ::djinni::jniGetMethodID(clazz.get(), "onError", "(LError;)V") };
 };
 
 }  // namespace djinni_generated

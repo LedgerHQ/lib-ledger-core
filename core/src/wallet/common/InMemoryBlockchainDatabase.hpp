@@ -42,6 +42,16 @@ namespace ledger {
                     return Future<Option<std::pair<uint32_t, Block>>>::successful(Option<std::pair<uint32_t, Block>>(*lastIt));
                 }
 
+                Future<Option<std::pair<uint32_t, Block>>> getLastBlockBefore(uint32_t height) override {
+                    std::lock_guard<std::mutex> lock(_lock);
+                    if (_blocks.empty()) {
+                        return Future<Option<std::pair<uint32_t, Block>>>::successful(Option<std::pair<uint32_t, Block>>());
+                    }
+                    auto lastIt = _blocks.upper_bound(height);
+                    lastIt--;
+                    return Future<Option<std::pair<uint32_t, Block>>>::successful(Option<std::pair<uint32_t, Block>>(*lastIt));
+                }
+
                 Future<Option<uint32_t>> getLastBlockHeight() override {
                     std::lock_guard<std::mutex> lock(_lock);
 

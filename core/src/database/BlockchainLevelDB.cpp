@@ -87,6 +87,23 @@ namespace ledger {
                 return res;
             }
 
+            Future<Option<std::pair<uint32_t, BlockchainDB::RawBlock>>> BlockchainLevelDB::GetLastBlockBefore(uint32_t height) {
+                auto it = std::shared_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
+                auto res = Future<Option<std::pair<uint32_t, RawBlock>>>::successful(Option<std::pair<uint32_t, RawBlock>>());
+                it->Seek(serializeKey(height));
+                if (!it->Valid()) {
+                    it->SeekToLast();
+                }
+                else {
+                    uint32_t foundKey = deserializeKey(it->key());
+                    if (foundKey > height)
+                        it->Prev();
+                }
+                if (it->Valid())
+                    res = Future<Option<std::pair<uint32_t, RawBlock>>>::successful(std::make_pair(deserializeKey(it->key()), sliceToBlock(it->value())));
+                return res;
+            }
+
             BlockchainDB::RawBlock BlockchainLevelDB::sliceToBlock(const leveldb::Slice& value) {
                 return RawBlock(value.data(), value.data() + value.size());
             }

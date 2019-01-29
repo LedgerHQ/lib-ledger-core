@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -91,8 +98,8 @@ enum class ErrorCode : int {
     /** Query build */
     LINK_NON_TAIL_FILTER,
 };
-std::string to_string(const ErrorCode& errorCode);
-std::ostream &operator<<(std::ostream &os, const ErrorCode &o);
+LIBCORE_EXPORT  std::string to_string(const ErrorCode& errorCode);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const ErrorCode &o);
 
 } } }  // namespace ledger::core::api
 

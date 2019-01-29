@@ -25,14 +25,14 @@ private:
     Currency();
     friend ::djinni::JniClass<Currency>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Currency") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/WalletType;Ljava/lang/String;ILjava/lang/String;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeNetworkParameters;)V") };
-    const jfieldID field_walletType { ::djinni::jniGetFieldID(clazz.get(), "walletType", "Lco/ledger/core/WalletType;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("Currency") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LWalletType;Ljava/lang/String;ILjava/lang/String;Ljava/util/ArrayList;LBitcoinLikeNetworkParameters;)V") };
+    const jfieldID field_walletType { ::djinni::jniGetFieldID(clazz.get(), "walletType", "LWalletType;") };
     const jfieldID field_name { ::djinni::jniGetFieldID(clazz.get(), "name", "Ljava/lang/String;") };
     const jfieldID field_bip44CoinType { ::djinni::jniGetFieldID(clazz.get(), "bip44CoinType", "I") };
     const jfieldID field_paymentUriScheme { ::djinni::jniGetFieldID(clazz.get(), "paymentUriScheme", "Ljava/lang/String;") };
     const jfieldID field_units { ::djinni::jniGetFieldID(clazz.get(), "units", "Ljava/util/ArrayList;") };
-    const jfieldID field_bitcoinLikeNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "bitcoinLikeNetworkParameters", "Lco/ledger/core/BitcoinLikeNetworkParameters;") };
+    const jfieldID field_bitcoinLikeNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "bitcoinLikeNetworkParameters", "LBitcoinLikeNetworkParameters;") };
 };
 
 }  // namespace djinni_generated

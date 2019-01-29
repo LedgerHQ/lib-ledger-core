@@ -10,6 +10,13 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -18,7 +25,7 @@ enum class HttpMethod;
 struct Error;
 
 /**Class representing an Http request */
-class HttpRequest {
+class LIBCORE_EXPORT HttpRequest {
 public:
     virtual ~HttpRequest() {}
 

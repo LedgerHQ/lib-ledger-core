@@ -20,10 +20,10 @@ blocksync_test.cpp
 
 
 target_compile_definitions(syncbanch PUBLIC ASIO_STANDALONE)
-target_link_libraries(syncbanch ledger-core)
+target_link_libraries(syncbanch ledger-core-static)
 target_link_libraries(syncbanch network-uri)
 target_link_libraries(syncbanch ledger-asio-host)
 target_include_directories(syncbanch PUBLIC ../../../core/src)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(syncbanch crypto ledger-core)
+copy_install_imported_targets(syncbanch crypto)

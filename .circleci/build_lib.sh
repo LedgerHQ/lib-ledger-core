@@ -7,6 +7,9 @@
 BUILD_CONFIG="Debug"
 cmake_params="" # All params passed to cmake to generate build files
 export ARCH=$2
+export CMAKE=cmake
+export PATH=$PATH:~/cmake_folder/bin
+
 
 ###
 # Commands of the script. Put them in command line parameters to trigger

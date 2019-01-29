@@ -135,12 +135,11 @@ int main() {
             explorer,
             recieveChain,
             changeChain,
-            blockDB,
             20,
             20,
             200
             );
-    auto syncFuture = block_sync->synchronize(firstBlock.hash, firstBlock.height, lastBlock.height);
+    auto syncFuture = block_sync->synchronize(blockDB, firstBlock.hash, firstBlock.height, lastBlock.height);
     syncFuture
         .onComplete(mainContext, [mainContext, blockDB](const Try<Unit>& t) {
         if (t.isSuccess()) {

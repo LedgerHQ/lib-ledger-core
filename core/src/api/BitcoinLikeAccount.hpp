@@ -7,6 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -17,7 +24,7 @@ class I32Callback;
 class StringCallback;
 
 /**Class representing a Bitcoin account */
-class BitcoinLikeAccount {
+class LIBCORE_EXPORT BitcoinLikeAccount {
 public:
     virtual ~BitcoinLikeAccount() {}
 

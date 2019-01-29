@@ -27,9 +27,9 @@ add_executable(ledger-core-wallet-tests
 
 target_link_libraries(ledger-core-wallet-tests gtest gtest_main)
 target_link_libraries(ledger-core-wallet-tests gmock)
-target_link_libraries(ledger-core-wallet-tests ledger-core)
+target_link_libraries(ledger-core-wallet-tests ledger-core-static)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-wallet-tests crypto ledger-core)
+copy_install_imported_targets(ledger-core-wallet-tests crypto)
 
 add_test (NAME ledger-core-wallet-tests COMMAND ledger-core-wallet-tests)

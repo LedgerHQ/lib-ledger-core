@@ -80,6 +80,17 @@ namespace ledger {
                     });
                 }
 
+                Future<Option<std::pair<uint32_t, Block>>> getLastBlockBefore(uint32_t height) override {
+                    return _persistentDB->GetLastBlockBefore(height)
+                        .map<Option<std::pair<uint32_t, Block>>>(_context, [](const Option<std::pair<uint32_t, RawBlock>>& rawBlock) {
+                        return rawBlock.map<std::pair<uint32_t, Block>>([](const std::pair<uint32_t, RawBlock>& rawBlock) {
+                            Block block;
+                            deserialize<Block>(rawBlock.second, block);
+                            return std::make_pair(rawBlock.first, block);
+                        });
+                    });
+                }
+
                 Future<Option<uint32_t>> getLastBlockHeight() override {
                     return _persistentDB->GetLastBlock()
                         .map<Option<uint32_t>>(_context, [](const Option<std::pair<uint32_t, RawBlock>>& rawBlock) {

@@ -7,7 +7,7 @@ using namespace ledger::core;
 
 TEST(InMemoryPartialBlocksDB, Insert) {
     const uint32_t blockHeight = 11;
-    common::InMemoryPartialBlocksDB<BitcoinLikeNetwork> db;
+    common::InMemoryPartialBlocksDB<BitcoinLikeNetwork::Transaction> db;
     BitcoinLikeNetwork::Transaction tr;
     BitcoinLikeNetwork::Block block;
     block.hash = "0x0001";
@@ -27,7 +27,7 @@ TEST(InMemoryPartialBlocksDB, Insert) {
 
 TEST(InMemoryPartialBlocksDB, Delete) {
     const uint32_t blockHeight = 11;
-    common::InMemoryPartialBlocksDB<BitcoinLikeNetwork> db;
+    common::InMemoryPartialBlocksDB<BitcoinLikeNetwork::Transaction> db;
     BitcoinLikeNetwork::Transaction tr;
     BitcoinLikeNetwork::Block block;
     block.hash = "0x0001";

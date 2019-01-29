@@ -7,6 +7,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,8 +23,8 @@ enum class RoundingMode : int {
     ROUND_HALF_EVEN,
     ROUND_HALF_UP,
 };
-std::string to_string(const RoundingMode& roundingMode);
-std::ostream &operator<<(std::ostream &os, const RoundingMode &o);
+LIBCORE_EXPORT  std::string to_string(const RoundingMode& roundingMode);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const RoundingMode &o);
 
 } } }  // namespace ledger::core::api
 

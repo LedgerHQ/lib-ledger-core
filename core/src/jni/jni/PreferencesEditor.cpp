@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-PreferencesEditor::PreferencesEditor() : ::djinni::JniInterface<::ledger::core::api::PreferencesEditor, PreferencesEditor>("co/ledger/core/PreferencesEditor$CppProxy") {}
+PreferencesEditor::PreferencesEditor() : ::djinni::JniInterface<::ledger::core::api::PreferencesEditor, PreferencesEditor>("PreferencesEditor$CppProxy") {}
 
 PreferencesEditor::~PreferencesEditor() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_PreferencesEditor_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -41,7 +41,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -52,7 +52,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -63,7 +63,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putStringArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putStringArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1putData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_value)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1putData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -85,7 +85,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1remove(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_PreferencesEditor_00024CppProxy_native_1remove(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -95,7 +95,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesEditor_00024CppProxy_native_1commit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_PreferencesEditor_00024CppProxy_native_1commit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

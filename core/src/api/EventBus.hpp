@@ -5,6 +5,13 @@
 #define DJINNI_GENERATED_EVENTBUS_HPP
 
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -12,7 +19,7 @@ class EventReceiver;
 class ExecutionContext;
 
 /**Class representing an event bus through which a receiver gets notified */
-class EventBus {
+class LIBCORE_EXPORT EventBus {
 public:
     virtual ~EventBus() {}
 
