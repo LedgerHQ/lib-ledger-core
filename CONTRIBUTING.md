@@ -3,7 +3,7 @@
 You’ve decided to help us build an awesome piece of software, thank you for this. This document
 gathers important information you should read prior to starting working or even opening pull
 requests on the repository. Please open issues if you think some important material is missing from
-this very document.
+this same document.
 
 ## Workflow
 
