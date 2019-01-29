@@ -2,9 +2,9 @@
 
 > 2019/??/??
 
-- Change the internal representation of `DynamicObject`. The new representation is optimized to
-  take less memory and to be safer in terms of typing. The internal interfaces were also
-  redesigned to allow for a smoother transition to C++17’s `std::variant` when we see fit.
+- Change the internal representation of `DynamicObject`. The new representation is optimized not
+  only memory-wise but also type-safety-wise. The internal interfaces were also redesigned to allow
+  for a smoother transition to C++17’s `std::variant` when we see fit.
 
 ## 2.5.0
 
@@ -26,15 +26,15 @@
 
 > 2019/01/21
 
-- Change the way the library is compiled and linked by using explicti interface libraries. This
+- Change the way the library is compiled and linked by using explicit interface libraries. This
   also fixes a Windows issues related to non-explicitly exported symbols.
 
 ## 2.2.0
 
 > 2019/01/15
 
-- Add a new mechanism to `DatabaseEngine`. This allows for custom database driver, which should
-  allow database switching in easier ways.
+- Add a new mechanism to `DatabaseEngine`. This allows custom database driver, which allow switching
+  between database backends easier.'
 
 ## 2.1.0
 
@@ -48,9 +48,11 @@
 
 > 2019/01/04
 
-- Integration of Ethereum as an officially supported currency and currency family into libcore.
-  This version has breaking changes a bit everywhere that must be addressed by applications due
-  to the refactoring that was necessary for this change to happen.
+- Support of new coin family: Ethereum-like currencies, with an integration of Ethereum as first
+  currency of this family.
+- Support of ERC20 tokens.
+- We do not support other smart contracts which are not ERC20 yet; to be more specific, internal
+  transactions are not caught during synchronization of Ethereum accounts.
 
 # 0.9.0
 
