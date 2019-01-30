@@ -17,6 +17,9 @@
 
 Core library which will be used by Ledger applications.
 
+> If you’re a developer and want to contribute, please refer to our [contribution guidelines]
+> specific documentation.
+
 ## Clone project
 
 ```
@@ -171,6 +174,7 @@ Change the `pick` to `r` or `reword` at the beginning of each lines **without ch
 the commits** — this has no effect. Save the file and quit. You will be prompted to change the
 commits’ messages one by one, allowing you to remove the `[skip ci]` tag from all commits.
 
+[contribution guidelines]: ./CONTRIBUTING.md
 [lib-ledger-core-node-bindings]: https://github.com/LedgerHQ/lib-ledger-core-node-bindings
 [CircleCI]: https://circleci.com
 [Appveyor]: https://www.appveyor.com
