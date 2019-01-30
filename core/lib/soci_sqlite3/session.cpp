@@ -57,7 +57,7 @@ sqlite3_session_backend::sqlite3_session_backend(
 {
     int timeout = 0;
     int connection_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    std::string synchronous, passKey;
+    std::string synchronous, passKey, newPassKey;
     std::string const & connectString = parameters.get_connect_string();
     std::string dbname(connectString);
     std::stringstream ssconn(connectString);
@@ -107,6 +107,10 @@ sqlite3_session_backend::sqlite3_session_backend(
         {
             passKey = val;
         }
+        else if ("new_key" == key)
+        {
+            newPassKey = val;
+        }
     }
 
     int res = sqlite3_open_v2(dbname.c_str(), &conn_, connection_flags, NULL);
@@ -123,9 +127,16 @@ sqlite3_session_backend::sqlite3_session_backend(
     check_sqlite_err(conn_, res, "Failed to set busy timeout for connection. ");
 
 #ifdef SQLCIPHER
+    //Set password
     if (!passKey.empty()) {
         res = sqlite3_key_v2(conn_, dbname.c_str(), passKey.c_str(), strlen(passKey.c_str()));
         check_sqlite_err(conn_, res, "Failed to encrypt database. ");
+
+        if (!newPassKey.empty()) {
+            //Set new password
+            res = sqlite3_rekey_v2(conn_, dbname.c_str(), newPassKey.c_str(), strlen(newPassKey.c_str()));
+            check_sqlite_err(conn_, res, "Failed to change database's password. ");
+        }
     }
 #endif
 }

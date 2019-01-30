@@ -34,19 +34,33 @@
 
 using namespace soci;
 
-void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
-                                        const std::string &dbName,
-                                        const std::string &password,
-                                        soci::session &session) {
-    auto parameters = fmt::format("dbname=\"{}\" ", resolver->resolveDatabasePath(dbName)) + fmt::format("key=\"{}\" ", password);
-    session.open(*soci::factory_sqlite3(), parameters);
-    session << "PRAGMA foreign_keys = ON";
-}
+namespace ledger {
+    namespace core {
+        SQLite3Backend::SQLite3Backend() : DatabaseBackend() {
+        }
 
-int32_t ledger::core::SQLite3Backend::getConnectionPoolSize() {
-    return 1;
-}
+        int32_t SQLite3Backend::getConnectionPoolSize() {
+            return 1;
+        }
 
+        void SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
+                                  const std::string &dbName,
+                                  const std::string &password,
+                                  soci::session &session) {
+            _dbResolvedPath = resolver->resolveDatabasePath(dbName);
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", password);
+            session.open(*soci::factory_sqlite3(), parameters);
+            session << "PRAGMA foreign_keys = ON";
+        }
 
-ledger::core::SQLite3Backend::SQLite3Backend() : DatabaseBackend() {
+        void SQLite3Backend::changePassword(const std::string & oldPassword,
+                                            const std::string & newPassword,
+                                            soci::session &session) {
+            if (!_dbResolvedPath.empty()) {
+                auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+                session.open(*soci::factory_sqlite3(), parameters);
+            }
+
+        }
+    }
 }

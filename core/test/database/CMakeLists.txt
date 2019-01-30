@@ -13,7 +13,7 @@ include_directories(../lib/libledger-test/)
 
 add_executable(ledger-core-database-tests main.cpp pool_tests.cpp query_filters_tests.cpp query_builder_tests.cpp
             BaseFixture.cpp BaseFixture.h IntegrationEnvironment.cpp IntegrationEnvironment.h
-        database_soci_proxy_tests.cpp MemoryDatabaseProxy.cpp MemoryDatabaseProxy.h)
+        database_soci_proxy_tests.cpp MemoryDatabaseProxy.cpp MemoryDatabaseProxy.h sqlcipher_tests.cpp)
 
 target_link_libraries(ledger-core-database-tests gtest gtest_main)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

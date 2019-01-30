@@ -40,17 +40,17 @@ namespace ledger {
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
             const std::string &password
-        ) : _pool((size_t) backend->getConnectionPoolSize()), _buffer("SQL", logger) {
+        ) : _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
                 _logger = nullptr;
             }
 
-            auto poolSize = backend->getConnectionPoolSize();
+            auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
-                backend->init(resolver, dbName, password, session);
+                _backend->init(resolver, dbName, password, session);
                 if (_logger != nullptr)
                     session.set_log_stream(_logger);
             }
@@ -99,6 +99,15 @@ namespace ledger {
             soci::transaction tr(sql);
             rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
             tr.commit();
+        }
+
+        void DatabaseSessionPool::performChangePassword(const std::string &oldPassword,
+                                                        const std::string &newPassword) {
+            auto poolSize = _backend->getConnectionPoolSize();
+            for (size_t i = 0; i < poolSize; i++) {
+                auto& session = getPool().at(i);
+                _backend->changePassword(oldPassword, newPassword, session);
+            }
         }
     }
 }

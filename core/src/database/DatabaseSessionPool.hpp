@@ -63,8 +63,11 @@ namespace ledger {
 
             void performDatabaseMigration();
             void performDatabaseRollback();
+            void performChangePassword(const std::string &oldPassword,
+                                       const std::string &newPassword);
 
         private:
+            std::shared_ptr<DatabaseBackend> _backend;
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;

@@ -50,6 +50,12 @@ namespace ledger {
             session.open(*_factory, dbName);
         }
 
+        void ProxyBackend::changePassword(const std::string & oldPassword,
+                                          const std::string & newPassword,
+                                          soci::session &session) {
+            _engine->changePassword(oldPassword, newPassword);
+        }
+
         ProxyBackend::~ProxyBackend() {
             delete _factory;
         }

@@ -34,11 +34,17 @@
 
 #include <database/ProxyBackend.hpp>
 
+class ConnectionPool;
 class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
 public:
     std::shared_ptr<ledger::core::api::DatabaseConnectionPool> connect(const std::string &connectUrl) override;
 
     int32_t getPoolSize() override;
+
+    void changePassword(const std::string & oldPassword, const std::string & newPassword) override;
+
+private:
+    std::shared_ptr<ConnectionPool> _pool;
 };
 
 

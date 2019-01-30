@@ -221,6 +221,9 @@ DatabaseEngine = interface +j +n +o {
     # Get the maximum number of concurrent connection on a single database.
     # @return the maximum number of concurrent connection that the engine is able to open on a single database.
     getPoolSize(): i32;
+    # Change Database password.
+    # Allow to change password
+    changePassword(oldPassword: string, newPassword: string);
 }
 
 #Class representing a database backend.

@@ -36,6 +36,12 @@ public:
      * @return the maximum number of concurrent connection that the engine is able to open on a single database.
      */
     virtual int32_t getPoolSize() = 0;
+
+    /**
+     * Change Database password.
+     * Allow to change password
+     */
+    virtual void changePassword(const std::string & oldPassword, const std::string & newPassword) = 0;
 };
 
 } } }  // namespace ledger::core::api

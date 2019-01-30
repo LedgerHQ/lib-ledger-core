@@ -111,6 +111,15 @@ WalletPool = interface +c {
     #
     # The return value is always true and doesn’t convey any useful information for now.
     freshResetAll(callback: Callback<ErrorCode>);
+
+    # Change Database password.
+    #
+    # Allow to change password of database holding all informations about
+    # accounts, wallets, transactions ...
+    #
+    # WARNING: be carefull to have no other instances of WalletPool using
+    # same database
+    changeDatabasePassword(oldPassword: string, newPassword: string, callback: Callback<ErrorCode>);
 }
 
 # Class representing a wallet pool builder (to instanciate a wallet pool).

@@ -47,6 +47,9 @@ namespace ledger {
                   const std::string &password,
                   soci::session &session) override;
 
+        void changePassword(const std::string & oldPassword,
+                            const std::string & newPassword,
+                            soci::session &session) override;
         ~ProxyBackend();
 
     private:

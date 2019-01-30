@@ -159,6 +159,17 @@ public:
      * The return value is always true and doesn’t convey any useful information for now.
      */
     virtual void freshResetAll(const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
+    /**
+     * Change Database password.
+     *
+     * Allow to change password of database holding all informations about
+     * accounts, wallets, transactions ...
+     *
+     * WARNING: be carefull to have no other instances of WalletPool using
+     * same database
+     */
+    virtual void changeDatabasePassword(const std::string & oldPassword, const std::string & newPassword, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api
