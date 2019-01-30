@@ -24,7 +24,17 @@ add_executable(ledger-core-integration-tests
         )
 
 target_link_libraries(ledger-core-integration-tests gtest gtest_main)
-target_link_libraries(ledger-core-integration-tests ledger-core-static)
+target_link_libraries(ledger-core-integration-tests crypto)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # We need this otherwise link fails (for Linux),
+    # this is needed since we build static library for tests,
+    # not needed if we link against dynamic
+    # TODO: needs more investigation
+    target_link_libraries(ledger-core-integration-tests ledger-core)
+else()
+    target_link_libraries(ledger-core-integration-tests ledger-core-static)
+endif()
+
 
 target_link_libraries(ledger-core-integration-tests ledger-test)
 target_link_libraries(ledger-core-integration-tests ledger-qt-host)

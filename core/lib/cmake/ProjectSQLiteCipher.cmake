@@ -54,7 +54,7 @@ elseif(ANDROID)
         set(_toolchain_ i686-linux-android)
     endif()
     set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(_libs_ "-lcrypto -ldl -lm -lpthread")
     set(_build_command_ bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sqlcipher.sh)
     set(_overwrite_install_command INSTALL_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_sqlcipher.sh)
@@ -96,6 +96,7 @@ if (NOT DEFINED SKIP_BUILD_SQLCIPHER)
                 LOG_INSTALL 1
                 LOG_BUILD 1
                 CONFIGURE_COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/configure_sqlcipher_android.sh ${CMAKE_CURRENT_SOURCE_DIR} ${_toolchain_} $ENV{ANDROID_NDK_r16b} ${OPENSSL_DIR} ${CMAKE_BINARY_DIR}/core/lib/openssl/crypto
+                BINARY_DIR ${prefix}/src/SQLCipher
                 BUILD_COMMAND ${_build_command_}
                 BUILD_BYPRODUCTS "${SQLCIPHER_LIB}"
                 ${_overwrite_install_command}
