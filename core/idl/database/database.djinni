@@ -241,6 +241,6 @@ DatabaseBackend = interface +c {
     # @return DatabaseBackend object
     static getSqlite3Backend(): DatabaseBackend;
 
-    # Create an instance of PostgreSQL database.
+    # Create a database backend instance from the given DatabaseEngine implementation.
     static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;
 }
