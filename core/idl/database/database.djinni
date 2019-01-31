@@ -1,6 +1,6 @@
 # An enum representing a SQL type.
 DatabaseValueType = enum {
-      string; date; double; integer; long_long; unsigned_long_long; blob;
+    string; date; double; integer; long_long; unsigned_long_long; blob;
 }
 
 # Wrapper class around errors.
@@ -34,9 +34,9 @@ DatabaseBlob = interface +j +n +o {
     size(): i64;
 }
 
-# An object holding metadata information about a single SQL column (type, name...)
+# An object holding metadata information about a single SQL column (type, name...).
 DatabaseColumn = interface +j +n +o {
-  # Get the type of the underlying SQL value
+  # Get the type of the underlying SQL value.
   # @return The type of th
   getType(): DatabaseValueType;
   getName(): string;
@@ -116,9 +116,7 @@ DatabaseResultSet = interface +j +n +o {
 
 # A wrapper object around prepared SQL statements. lib-ledger-core will use placeholders when it needs to pass
 # parameters to a query. It will then  bind each parameter at a given position to a given value.
-#
 DatabaseStatement = interface +j +n +o {
-
     # Bind the designated parameter to the given 16bit integer value.
     # @param pos The position of the parameter in the query
     # @param value The value to bind
@@ -159,7 +157,6 @@ DatabaseStatement = interface +j +n +o {
     # @param value The value to bind
     bindNull(pos: i32);
 
-
     # Describe the metadata attached to the designated column (e.g. data type, column name...)
     # @return Column metadata descriptor
     describeColumn(colNum: i32): DatabaseColumn;
@@ -182,28 +179,28 @@ DatabaseStatement = interface +j +n +o {
 
 # An active connection to a database. This API is fully synchronous and all objects created by this interface need to
 # return synchronously. A connection is used to prepare statements, managing transactions and creating abstractions of
-# database objects. Interfaces don't need to be
+# database objects.
 DatabaseConnection = interface +j +n +o {
     # Prepare a statement object using the given SQL query. The statement object will then be responsible of executing
     # the query and handle results. Statement objects may be reused over time if their `repeatable` flag is set to true.
     # @param query A SQL query to execute (e.g. "SELECT * FROM users WHERE name = 'Joe'")
-    # @param repeatable A flag to indicate whether or not the
+    # @param repeatable A flag to indicate whether or not the statement is repeatable
     prepareStatement(query: string, repeatable: bool): DatabaseStatement;
 
-    # Begin a SQL transaction on this connection
+    # Begin a SQL transaction on this connection.
     begin();
 
-    # End the current transaction and rollback all changes that occurred between the call of `begin` and `rollback`
+    # End the current transaction and rollback all changes that occurred between the call of `begin` and `rollback`.
     rollback();
 
-    # End the current transaction and persist all changes that occurred between the call of `begin` and `commit`
+    # End the current transaction and persist all changes that occurred between the call of `begin` and `commit`.
     commit();
 
     # Close the current connection. After this call the connection should never be called again.
     close();
 
     # Create a new empty blob.
-    # @return An empty blob.
+    # @return An empty blob
     newBlob(): DatabaseBlob;
 }
 
@@ -217,7 +214,7 @@ DatabaseConnectionPool = interface +j +n +o {
 
 # An interface to implement a custom SQL backend on host side instead of using a native backend.
 DatabaseEngine = interface +j +n +o {
-    # Open a connection to a database using the given database name
+    # Open a connection to a database using the given database name.
     # @params databaseName The name of the database to open
     # @return A connection pool to the given database
     connect(databaseName: string): DatabaseConnectionPool;
@@ -240,10 +237,10 @@ DatabaseBackend = interface +c {
     # @return trye if query logging is enabled, false otherwise.
     isLoggingEnabled(): bool;
 
-    # Create an instance of SQLite3 database
+    # Create an instance of SQLite3 database.
     # @return DatabaseBackend object
     static getSqlite3Backend(): DatabaseBackend;
 
-    # Create an instance of PostgreSQL database
+    # Create a database backend instance from the given DatabaseEngine implementation.
     static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;
 }

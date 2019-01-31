@@ -8,7 +8,7 @@
 @import "../../bitcoin/addresses.djinni"
 @import "currency.djinni"
 
-#Class of synchronization status constants
+# Class of synchronization status constants.
 SynchronizationStatus = interface +c {
     const STATUS_DONE: i32 = 1;
     const STATUS_ERROR: i32 = 2;
@@ -25,10 +25,10 @@ DerivationPath = interface +c {
     getUnhardenedChildNum(index: i32): i32;
     # Return true if the given index in the path is an hardened child num.
     isHardened(index: i32): bool;
-    # Serialize the given path to a human readable string like "44'/0'/0'/0/0"
+    # Serialize the given path to a human readable string like "44'/0'/0'/0/0".
     toString(): string;
     # Return a derivation path without the last element, e.g. the parent of "44'/0'/0'/0/0" is
-    # "44'/0'/0'/0"
+    # "44'/0'/0'/0".
     getParent(): DerivationPath;
     # Return an array where which item is a child num of the path.
     toArray(): list<i32>;
@@ -36,12 +36,13 @@ DerivationPath = interface +c {
     static parse(path: string): DerivationPath;
 }
 
-#Enum of operation types
+# Enum of operation types.
 OperationType = enum {
-    send; receive;
+    send;
+    receive;
 }
 
-#Enum of transaction level of trust
+# Enum of transaction level of trust.
 TrustLevel = enum {
     trusted;
     pending;
@@ -57,76 +58,74 @@ TrustIndicator = interface +c {
     getOrigin(): string;
 }
 
-#Structure of a block in the blockchain
+# Structure of a block in the blockchain.
 Block = record {
-    #String, block's hash
+    # String, block's hash.
     blockHash: string;
-    #String, id of block (usually height of block)
+    # String, id of block (usually height of block).
     uid: string;
-    #Date on which block was mined
+    # Date on which block was mined.
     time: date;
-    #String, currency's name of blockchain the block belongs to
+    # String, currency's name of blockchain the block belongs to.
     currencyName: string;
-    #64 bits integer, height of block in the blockchain
+    # 64 bits integer, height of block in the blockchain.
     height: i64;
 }
 
-#Class representing an operation
+# Class representing an operation.
 Operation = interface +c {
-    #Get id's operation
-    #@return string
+    # Get id's operation.
+    # @return string
     getUid(): string;
-    #Get account's index in user's wallet
-    #@return 32 bits integer
+    # Get account's index in user's wallet.
+    # @return 32 bits integer
     getAccountIndex(): i32;
-    #Get type of operation
-    #@return OperationType object (for more details refer to OperationType)
+    # Get type of operation.
+    # @return OperationType object (for more details refer to OperationType)
     getOperationType(): OperationType;
-    #Return date on which operation was issued
-    #@return date object
+    # Return date on which operation was issued.
+    # @return date object
     getDate(): date;
-    #Get senders of operation
-    #@return List of string, list of all senders
+    # Get senders of operation.
+    # @return List of string, list of all senders
     getSenders(): list<string>;
-    #Get recipients of operation
-    #@return List of string, list of all recipients
+    # Get recipients of operation.
+    # @return List of string, list of all recipients
     getRecipients(): list<string>;
-    #Get amount of operation
-    #@return Amount object
+    # Get amount of operation.
+    # @return Amount object
     getAmount(): Amount;
-    #Get fees of operation
-    #@return Optional Amount object
+    # Get fees of operation.
+    # @return Optional Amount object
     getFees(): optional<Amount>;
-    #Get preferences of operation
-    #@return Prefences object
+    # Get preferences of operation.
+    # @return Prefences object
     getPreferences(): Preferences;
-    #Get trust indicator of operation
-    #@return TrustIndicator object
+    # Get trust indicator of operation.
+    # @return TrustIndicator object
     getTrust(): TrustIndicator;
-    #Get block height on which operation was included
-    #@return Optional 64 bits integer, height of block in which operation was validated
+    # Get block height on which operation was included.
+    # @return Optional 64 bits integer, height of block in which operation was validated
     getBlockHeight(): optional<i64>;
-    #Convert operation as Bitcoin operation
-    #@return BitcoinLikeOperation object
+    # Convert operation as Bitcoin operation.
+    # @return BitcoinLikeOperation object
     asBitcoinLikeOperation(): BitcoinLikeOperation;
-    #Convert operation as Ethereum operation
-    #@return EthereumLikeOperation object
+    # Convert operation as Ethereum operation.
+    # @return EthereumLikeOperation object
     asEthereumLikeOperation(): EthereumLikeOperation;
+    # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
-    #Same as asBitcoinLikeOperation for ethereum
-    ## asEthereumLikeOperation(): Callback<EthereumLikeOperation>;
-    #Same as isInstanceOfBitcoinLikeOperation for ethereum
+    # Same as isInstanceOfBitcoinLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
-    #Same as asBitcoinLikeOperation for ripple
-    ## asRippleLikeOperation(): Callback<RippleLikeOperation>;
-    #Same as isInstanceOfBitcoinLikeOperation for ripple
+    # Same as isInstanceOfBitcoinLikeOperation for ripple.
     isInstanceOfRippleLikeOperation(): bool;
-    #Tells if the operation is complete
-    #@return boolean
+    # Tells if the operation is complete.
+    # @return boolean
     isComplete(): bool;
-    #Get type of wallet from which operation was issued
-    #@return WalletType object
+    # Get type of wallet from which operation was issued.
+    # @return WalletType object
     getWalletType(): WalletType;
+    # Get the currency this operation is about.
     getCurrency(): Currency;
 }
 
@@ -179,41 +178,41 @@ QueryFilter = interface +c {
     op_or_not(filter: QueryFilter): QueryFilter;
 }
 
-#Class respresenting a query for a set of operations
+# Class respresenting a query for a set of operations.
 OperationQuery = interface +c {
-    #Apply given order to query's operation
-    #@param key, OperationOrderKey object which defines order
-    #@param descending, bool
-    #@return OperationQuery object, new ordered operation
+    # Apply given order to query's operation.
+    # @param key, OperationOrderKey object which defines order
+    # @param descending, bool
+    # @return OperationQuery object, new ordered operation
     addOrder(key: OperationOrderKey, descending: bool): OperationQuery;
-    #Get applied filter on operation query
-    #@return QueryFilter object
+    # Get applied filter on operation query.
+    # @return QueryFilter object
     filter(): QueryFilter;
-    #Add offset to the operation query
-    #@param from, 64 bits integer
+    # Add offset to the operation query.
+    # @param from, 64 bits integer
     offset(from: i64): OperationQuery;
-    #Add limit to the operation query results
-    #@param count, 64 bits integer
+    # Add limit to the operation query results.
+    # @param count, 64 bits integer
     limit(count: i64): OperationQuery;
     #TODO
-    #Complete the operation query
+    # Complete the operation query.
     complete(): OperationQuery;
     #TODO
     partial(): OperationQuery;
-    #Execute query to retrieve operations
-    #@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
+    # Execute query to retrieve operations.
+    # @param callback, if execute method succeed, ListCallback object returning a List of Operation objects
     execute(callback: ListCallback<Operation>);
 }
 
-#Structure of informations needed for account creation
+# Structure of informations needed for account creation.
 AccountCreationInfo = record {
-    #32 bits integer, index of account in user's wallet
+    # 32-bit integer, index of account in user's wallet.
     index: i32;
-    #List of string, account's owners
+    # List of string, account's owners.
     owners: list<string>;
-    #List of string, list of account's derivations
+    # List of string, list of account's derivations.
     derivations: list<string>;
-    #List of 32 bytes, list of public keys owning the account
+    # List of 32 bytes, list of public keys owning the account.
     publicKeys: list<binary>;
     #TODO
     chainCodes: list<binary>;
@@ -228,11 +227,11 @@ ExtendedKeyAccountCreationInfo = record {
 }
 
 Address = interface +c {
-    # Gets an optional derivation path (if the address is owned by an account)
+    # Gets an optional derivation path (if the address is owned by an account).
     # @return The derivation path of the address
     getDerivationPath(): optional<string>;
     # Serialize the address to a string. The serialization method depends of the underlying currency and
-    # format (Base58, Bech32, Ethereum...)
+    # format (Base58, Bech32, Ethereum...).
     toString(): string;
     asBitcoinLikeAddress(): optional<BitcoinLikeAddress>;
     isInstanceOfBitcoinLikeAddress(): bool;
@@ -240,7 +239,7 @@ Address = interface +c {
     getCurrency(): Currency;
 
     # Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
-    # (depending on you host this may be a null, nil, None...)
+    # (depending on you host this may be a null, nil, None...).
     # @param address The string to parse
     # @param currency The currency used to parse the address
     # @return If successful returns the address object otherwise null.
@@ -258,15 +257,16 @@ TimePeriod = enum {
     week;
     month;
 }
-#Class representing an account
+
+# Class representing an account.
 Account = interface +c {
-    #Key of the synchronization duration time in the synchronize event payload.
-    #The value is stored in a int 64 time expressed in miliseconds.
+    # Key of the synchronization duration time in the synchronize event payload.
+    # The value is stored in a int 64 time expressed in miliseconds.
     const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
-    #Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
+    # Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
     const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
-    #Key of the synchronization error message. The message is stored as a string.
+    # Key of the synchronization error message. The message is stored as a string.
     const EV_SYNC_ERROR_MESSAGE: string = "EV_SYNC_ERROR_MESSAGE";
     #TODO
     const EV_NEW_BLOCK_CURRENCY_NAME: string = "EV_NEW_BLOCK_CURRENCY_NAME";
@@ -276,158 +276,150 @@ Account = interface +c {
     const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
     const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
     const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
-    #Get index of account in user's wallet
-    #32 bits integer
+    # Get index of account in user's wallet
+    # 32-bit integer
     getIndex(): i32;
     #TODO
     queryOperations(): OperationQuery;
-    #Get balance of account
-    #@param callback, if getBalacne, Callback returning an Amount object which represents account's balance
+    # Get balance of account.
+    # @param callback, if getBalacne, Callback returning an Amount object which represents account's balance
     getBalance(callback: Callback<Amount>);
-    #Get balance of account at a precise interval with a certain granularity
-    #@param start, lower bound of search range
-    #@param end, upper bound of search range
-    #@param precision, granularity at which we want results
-    #@param callback, ListCallback returning a list of Amount object which represents account's balance
+    # Get balance of account at a precise interval with a certain granularity.
+    # @param start, lower bound of search range
+    # @param end, upper bound of search range
+    # @param precision, granularity at which we want results
+    # @param callback, ListCallback returning a list of Amount object which represents account's balance
     getBalanceHistory(start: string, end: string, period: TimePeriod, callback: ListCallback<Amount>);
-    #Get synchronization status of account
-    #@return bool
+    # Get synchronization status of account.
+    # @return bool
     isSynchronizing(): bool;
-    #Start synchronization of account
-    #@return EventBus, handler will be notified of synchronization outcome
+    # Start synchronization of account.
+    # @return EventBus, handler will be notified of synchronization outcome
     synchronize(): EventBus;
-    #Return account's preferences
-    #@return Preferences object
+    # Return account's preferences.
+    # @return Preferences object
     getPreferences(): Preferences;
-    #Return account's logger which provides all needed (e.g. database) logs
-    #@return Logger Object
+    # Return account's logger which provides all needed (e.g. database) logs.
+    # @return Logger Object
     getLogger(): Logger;
-    #Return preferences of specific operation
-    #@param uid, string of operation id
-    #@return Preferences
-    #Return operation for a specific operation
-    #@param uid, string of operation id
+    # Return operation for a specific operation.
+    # @param uid, string of operation id
     getOperationPreferences(uid: string): Preferences;
     asBitcoinLikeAccount() : BitcoinLikeAccount;
     asEthereumLikeAccount() : EthereumLikeAccount;
-    # asEthereumLikeAccount(): Callback<EthereumLikeAccount>;
-    # asRippleLikeAccount(): Callback<RippleLikeAccount>;
-    #Check if account is a Bitcoin one
-    #@return bool
+    # Check if account is a Bitcoin one.
+    # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;
-    #Check if account is an Ethereum one
-    #@return bool
+    # Check if account is an Ethereum one.
+    # @return bool
     isInstanceOfEthereumLikeAccount(): bool;
-    #Check if account is a Ripple one
-    #@return bool
+    # Check if account is a Ripple one.
+    # @return bool
     isInstanceOfRippleLikeAccount(): bool;
     #TODO
     getFreshPublicAddresses(callback: ListCallback<Address>);
-    #Get type of wallet to which account belongs
-    #@return WalletType object
+    # Get type of wallet to which account belongs.
+    # @return WalletType object
     getWalletType(): WalletType;
-    #Get event bus through which account is notified on synchronization status
-    #@return EventBus object
+    # Get event bus through which account is notified on synchronization status.
+    # @return EventBus object
     getEventBus(): EventBus;
-    #Start observing blockchain on which account synchronizes and send/receive transactions
+    # Start observing blockchain on which account synchronizes and send/receive transactions.
     startBlockchainObservation();
-    #Stop observing blockchain
+    # Stop observing blockchain.
     stopBlockchainObservation();
-    #Get account's observation status
-    #@return boolean
+    # Get account's observation status.
+    # @return boolean
     isObservingBlockchain(): bool;
-    #Get Last block of blockchain on which account operates
-    #@param callback, Callback returning, if getLastBlock succeeds, a Block object
+    # Get Last block of blockchain on which account operates.
+    # @param callback, Callback returning, if getLastBlock succeeds, a Block object
     getLastBlock(callback: Callback<Block>);
 
-    # Get the key used to generate the account
+    # Get the key used to generate the account.
     getRestoreKey(): string;
-    #Erase data (in user's DB) relative to wallet since given date
-    #@param date, start date of data deletion
+    # Erase data (in user's DB) relative to wallet since given date.
+    # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
 }
 
-#Class representing a wallet
+# Class representing a wallet.
 Wallet = interface +c {
-    #Get name of wallet
-    #@return string
+    # Get name of wallet.
+    # @return string
     getName(): string;
-    #Get account with specific index
-    #@param index, 32 bits integer, index of account in wallet
-    #@param callback, Callback returning, if getAccount succeed, an Account object with given index
+    # Get account with specific index.
+    # @param index, 32 bits integer, index of account in wallet
+    # @param callback, Callback returning, if getAccount succeed, an Account object with given index
     getAccount(index: i32, callback: Callback<Account>);
-    #Get number of accounts instanciated under wallet
-    #@param callback, Callback returning, if getAccountCount succeed, a 32 bits integer representing number of accounts
+    # Get number of accounts instanciated under wallet.
+    # @param callback, Callback returning, if getAccountCount succeed, a 32 bits integer representing number of accounts
     getAccountCount(callback: Callback<i32>);
-    #Get list of accounts instanciated under wallet in a given range
-    #@param offset, 32 bits integer from which we retrieve accounts
-    #@param count, 32 bits integer, number of accounts to retrieve
-    #@param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
+    # Get list of accounts instanciated under wallet in a given range.
+    # @param offset, 32 bits integer from which we retrieve accounts
+    # @param count, 32 bits integer, number of accounts to retrieve
+    # @param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
     getAccounts(offset: i32, count: i32, callback: ListCallback<Account>);
-    #Get index of next account to create
-    #@return callback, Callback returning a 32 bits integer
+    # Get index of next account to create.
+    # @return callback, Callback returning a 32-bit integer
     getNextAccountIndex(callback: Callback<i32>);
-    #Return event bus through which wallet synchronizes it's accounts and interact with blockchain
-    #@return EventBus object
+    # Return event bus through which wallet synchronizes it's accounts and interact with blockchain.
+    # @return EventBus object
     getEventBus(): EventBus;
-    #Return synchronization status wallet, true if at least one of accounts is synchronizing
-    #@return bool
+    # Return synchronization status wallet, true if at least one of accounts is synchronizing.
+    # @return bool
     isSynchronizing(): bool;
-    #Start synchronization of all accounts under wallet
-    #@return EventBus object through which wallet get notified of account's synchronization status
+    # Start synchronization of all accounts under wallet.
+    # @return EventBus object through which wallet get notified of account's synchronization status
     synchronize(): EventBus;
-    #Get wallet preferences
-    #@return Preferences object
+    # Get wallet preferences.
+    # @return Preferences object
     getPreferences(): Preferences;
-    #Return account's logger which provides all needed (e.g. database) logs
-    #@return Logger Object
+    # Return account's logger which provides all needed (e.g. database) logs.
+    # @return Logger Object
     getLogger(): Logger;
-    #Get preferences of specific account
-    #@param index, 32 bits integer, account's index
-    #@return Preferences object
+    # Get preferences of specific account.
+    # @param index, 32-bit integer, account's index
+    # @return Preferences object
     getAccountPreferences(index: i32): Preferences;
-    # asBitcoinLikeWallet(): Callback<BitcoinLikeWallet>;
-    # asEthereumLikeWallet(): Callback<EthereumLikeWallet>;
-    # asRippleLikeWallet(): Callback<RippleLikeWallet>;
-    #Convert wallet to a Bitcoin one
-    #@return BitcoinWallet object
+    # Convert wallet to a Bitcoin one.
+    # @return BitcoinWallet object
     asBitcoinLikeWallet(): BitcoinLikeWallet;
-    #Get currency of wallet
-    #@return Currency object
+    # Get currency of wallet.
+    # @return Currency object
     getCurrency(): Currency;
-    #Know if wallet is a Bitcoin one
-    #@return bool
+    # Tell whether wallet is a Bitcoin one.
+    # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
-    #Know if wallet is a Ethereum one
-    #@return bool
+    # Tell whether wallet is a Ethereum one.
+    # @return bool
     isInstanceOfEthereumLikeWallet(): bool;
-    #Know if wallet is a Ripple one
-    #@return bool
+    # Tell whether wallet is a Ripple one.
+    # @return bool
     isInstanceOfRippleLikeWallet(): bool;
-    #Get wallet type
-    #@return WalletType object
+    # Get wallet type.
+    # @return WalletType object
     getWalletType(): WalletType;
-    #Get last block of blockchain the wallet operates on
-    #@param callback, Callback returning a Block object
+    # Get last block of blockchain the wallet operates on.
+    # @param callback, Callback returning a Block object
     getLastBlock(callback: Callback<Block>);
-    #Return infos about the creation of specific account
-    #@param accountIndex, 32 bits account, index of account in wallet
-    #@param callback, Callback returning an AccountCreationInfo
+    # Return infos about the creation of specific account.
+    # @param accountIndex, 32-bit account, index of account in wallet
+    # @param callback, Callback returning an AccountCreationInfo
     getAccountCreationInfo(accountIndex: i32, callback: Callback<AccountCreationInfo>);
     #TODO
     getExtendedKeyAccountCreationInfo(accountIndex: i32, callback: Callback<ExtendedKeyAccountCreationInfo>);
-    #Return infos about the next created account
-    #@param callback, Callback returning an AccountCreationInfo
+    # Return infos about the next created account.
+    # @param callback, Callback returning an AccountCreationInfo
     getNextAccountCreationInfo(callback: Callback<AccountCreationInfo>);
     #TODO
     getNextExtendedKeyAccountCreationInfo(callback: Callback<ExtendedKeyAccountCreationInfo>);
-    #Get account from given account creation infos
-    #@param accountCreationInfo, AccountCreationInfo object
-    #@param callback, Callback returning an Account object with given creation infos
+    # Get account from given account creation infos.
+    # @param accountCreationInfo, AccountCreationInfo object
+    # @param callback, Callback returning an Account object with given creation infos
     newAccountWithInfo(accountCreationInfo: AccountCreationInfo, callback: Callback<Account>);
     #TODO
     newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo, callback: Callback<Account>);
-    #Erase data (in user's DB) relative to wallet since given date
-    #@param date, start date of data deletion
+    # Erase data (in user's DB) relative to wallet since given date.
+    # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
 }

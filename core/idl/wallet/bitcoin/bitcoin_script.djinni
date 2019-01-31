@@ -1,11 +1,7 @@
-
-
 BitcoinLikeOperator = record {
     operatorName: string;
     value: i8;
 }
-
-
 
 BitcoinLikeScriptChunk = interface +c {
     isOperator(): bool;
