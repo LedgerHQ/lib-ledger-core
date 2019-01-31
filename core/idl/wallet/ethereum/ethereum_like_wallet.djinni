@@ -3,70 +3,74 @@
 @import "../../ethereum/addresses.djinni"
 @import "erc20.djinni"
 
+# A callback called when an Ethereum-like wallet is available after issuing a get command.
 GetEthreumLikeWalletCallback = interface +j +o +s +n {
     onSuccess(wallet: EthereumLikeWallet, isCreated: bool);
     onError(error: Error);
 }
-                                                                                                                             
+
+# An Ethereum-like wallet.
 EthereumLikeWallet = interface +c {
 
 }
 
-#Class representing a Ethereum transaction
+# Class representing a Ethereum transaction.
 EthereumLikeTransaction = interface +c {
     # Get the hash of the transaction.
     getHash(): string;
-    # Get the nonce of the transaction : sequence number issued by originating EOA
+    # Get the nonce of the transaction : sequence number issued by originating EOA.
     getNonce(): i32;
-    # Get Gas price (in wei)
+    # Get Gas price (in wei).
     getGasPrice(): Amount;
-    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
     getGasLimit(): Amount;
-    # Effective used gas
+    # Effective used gas.
     getGasUsed(): Amount;
-    # Get destination ETH address
+    # Get destination ETH address.
     getReceiver(): EthereumLikeAddress;
-    # Get ETH sender address
+    # Get ETH sender address.
     getSender(): EthereumLikeAddress;
-    # Get amount of ether to send
+    # Get amount of ether to send.
     getValue(): Amount;
-    # Get binary data payload
+    # Get binary data payload.
     getData(): optional<binary>;
     # Serialize the transaction to its raw format.
     serialize(): binary;
-    # Set signature of transaction, when a signature is set serialize method gives back serialized Tx
+    # Set signature of transaction, when a signature is set serialize method gives back serialized Tx.
     setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
     setDERSignature(signature: binary);
     setVSignature(vSignature: binary);
-    # Get the time when the transaction was issued or the time of the block including
-    # this transaction
+    # Get the time when the transaction was issued or the time of the block including this
+    # transaction.
     getDate(): date;
-    # Get block to which transaction belongs (was mined in)
+    # Get block to which transaction belongs (was mined in).
     getBlock(): optional<EthereumLikeBlock>;
 }
 
-#Class representing a Ethereum Operation
+# Class representing a Ethereum Operation.
 EthereumLikeOperation = interface +c {
-    #Get operation's transaction
-    #@return EthereumLikeTransaction object
+    # Get operation's transaction.
+    # @return EthereumLikeTransaction object
     getTransaction(): EthereumLikeTransaction;
 }
 
-#Class representing Bitcoin block
+# Class representing Bitcoin block.
 EthereumLikeBlock = interface +c {
-    #Hash of block
-    #@return string representing hash of this block
+    # Hash of block.
+    # @return string representing hash of this block
     getHash(): string;
-    #Height of block in blockchain
-    #@return 64 bits integer, height of block
+    # Height of block in blockchain.
+    # @return 64 bits integer, height of block
     getHeight(): i64;
-    #Timestamp when block was mined
-    #@return Date object, date when block was appended to blockchain
+    # Timestamp when block was mined.
+    # @return Date object, date when block was appended to blockchain
     getTime(): date;
 }
 
+# Builder for transactions on the Ethereum blockchain.
+#
+# Use this interface when you want to build a transaction step by step.
 EthereumLikeTransactionBuilder = interface +c {
-
     # Send funds to the given address. This method can be called multiple times to send to multiple addresses.
     # @param amount The value to send
     # @param address Address of the recipient
@@ -78,37 +82,41 @@ EthereumLikeTransactionBuilder = interface +c {
     # @return A reference on the same builder in order to chain calls.
     wipeToAddress(address: string): EthereumLikeTransactionBuilder;
 
-    # Set gas price (in wei) the originator is willing to pay
+    # Set gas price (in wei) the originator is willing to pay.
     # @return A reference on the same builder in order to chain calls.
     setGasPrice(gasPrice: Amount): EthereumLikeTransactionBuilder;
 
-    # Set gas limit (in wei) the originator is not willing to exceed
+    # Set gas limit (in wei) the originator is not willing to exceed.
     # @return A reference on the same builder in order to chain calls.
     setGasLimit(gasLimit: Amount): EthereumLikeTransactionBuilder;
 
-    # Set input data the originator wants to embed in transaction
+    # Set input data the originator wants to embed in transaction.
     setInputData(data: binary): EthereumLikeTransactionBuilder;
 
     # Build a transaction from the given builder parameters.
     build(callback: Callback<EthereumLikeTransaction>);
 
-    # Creates a clone of this builder.
+    # Create a clone of this builder.
     # @return A copy of the current builder instance.
     clone(): EthereumLikeTransactionBuilder;
 
     # Reset the current instance to its initial state
     reset();
 
+    # Create an unsigned transaction for the Ethereum blockchain out of a raw binary.
     static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
+    # Create a signed transaction for the Ethereum blockchain out of a raw binary.
     static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
 }
 
-#Class representing a Ethereum account
+# Class representing a Ethereum account.
 EthereumLikeAccount = interface +c {
+    # Send a raw (binary) transaction on the Ethereum blockchain.
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
+    # Send a transaction on the Ethereum blockchain.
     broadcastTransaction(transaction: EthereumLikeTransaction, callback: Callback<string>);
+    # Get a builder object to construct transactions.
     buildTransaction(): EthereumLikeTransactionBuilder;
+    # Get the list of ERC20 accounts associated with this Ethereum account.
     getERC20Accounts(): list<ERC20LikeAccount>;
 }
-
-
