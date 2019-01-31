@@ -41,7 +41,10 @@ namespace ledger {
     namespace core {
         namespace {
             // number of iteration to perform for PBKDF2
-            const auto PBKDF2_ITERS = 10000; // see https://pages.nist.gov/800-63-3/sp800-63b.html#sec5
+            const uint32_t PBKDF2_ITERS = 10000; // see https://pages.nist.gov/800-63-3/sp800-63b.html#sec5
+
+            // key at which the encryption salt is found
+            const std::string ENCRYPTION_SALT_KEY = "preferences.backend.salt";
         }
 
         PreferencesChange::PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v)
@@ -83,21 +86,6 @@ namespace ledger {
             LEVELDB_INSTANCE_POOL[path] = weakInstance;
 
             return instance;
-        }
-
-        void PreferencesBackend::dropInstance(const std::string &path) {
-            std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
-
-            auto it = LEVELDB_INSTANCE_POOL.find(path);
-            if (it != LEVELDB_INSTANCE_POOL.end()) {
-                // drop the cached DB first
-                LEVELDB_INSTANCE_POOL.erase(it);
-            }
-
-            _db.reset(); // this should completely drop
-
-            leveldb::Options options;
-            leveldb::DestroyDB(path, options);
         }
 
         void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
@@ -207,12 +195,12 @@ namespace ledger {
 
             auto emptySalt = std::string("");
             auto pref = getPreferences("__core");
-            auto salt = pref->getString("preferences.backend.salt", emptySalt);
+            auto salt = pref->getString(ENCRYPTION_SALT_KEY, emptySalt);
 
             if (salt == emptySalt) {
                 // we don’t have a proper salt; create one and persist it for future use
                 salt = createNewSalt(rng);
-                pref->editor()->putString("preferences.backend.salt", salt)->commit();
+                pref->editor()->putString(ENCRYPTION_SALT_KEY, salt)->commit();
             }
 
             // create the AES cipher
@@ -234,81 +222,48 @@ namespace ledger {
             // from now on, reading data will use the old password, but we want to persist with a
             // brand new cipher; create it here
             auto newSalt = createNewSalt(rng);
+            auto newSaltBytes = std::vector<uint8_t>(newSalt.cbegin(), newSalt.cend());
             auto newCipher = Option<AESCipher>(AESCipher(rng, newPassword, newSalt, PBKDF2_ITERS));
 
-            // we will also need a brand new leveldb to implement a somewhat atomic database swap;
-            // the idea is to read from the old leveldb and write to this new one; when we’re done,
-            // we just “swap” the database and remove the old one; this swap is needed so that we
-            // don’t corrupt the old database if we crash or get interrupted while in the middle of
-            // the process of resetting
-            auto tempDBName = _dbName + "__temp_copy__";
-            auto tempDB = obtainInstance(tempDBName);
-
             // now we can iterate over all data, decrypt with the “old” cipher, encrypt with the
-            // “new” cipher and persist to the temporary leveldb
-            {
-                auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
-                leveldb::WriteBatch batch;
-                leveldb::WriteOptions writeOpts;
-                writeOpts.sync = true;
+            // “new” cipher and generate two changes per entry: one that deletes it (to prevent to
+            // duplicating it) and one that puts the new encoded one; once the iteration is done,
+            // we submit the batch to leveldb and it applies it atomically
+            auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
+            leveldb::WriteBatch batch;
 
-                // persist the salt so that we can repair later if needed
-                {
-                    std::string keyStr = "preferences.backend.salt";
-                    auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
-                    auto value = std::vector<uint8_t>(newSalt.cbegin(), newSalt.cend());
-                    auto saltChange = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, value);
-                    putPreferencesChange(batch, newCipher, saltChange);
-                    tempDB->Write(writeOpts, &batch);
-                }
+            for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                // decrypt with the old cipher
+                auto value = it->value().ToString();
+                auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
 
-                for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                    // decrypt with the old cipher
-                    auto value = it->value().ToString();
-                    auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
-                    auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
+                // the key is not encrypted
+                auto keyStr = it->key().ToString();
+                auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
 
-                    // the key is not encrypted
-                    auto keyStr = it->key().ToString();
-                    auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
+                // remove the key and its associated value to prevent duplication
+                putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, key, {}));
 
-                    // encrypt with the new cipher; in order to do that, we need a PreferencesChange to
-                    // add with the new cipher and then put to the new database
-                    auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plaindata);
-                    putPreferencesChange(batch, newCipher, change);
-                    tempDB->Write(writeOpts, &batch);
-                }
+                // encrypt with the new cipher; in order to do that, we need a PreferencesChange
+                // to add with the new cipher
+                auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plaindata);
+                putPreferencesChange(batch, newCipher, change);
             }
 
-            // we re-encrypted the whole database by copy; now we need to perform the atomic swap;
-            // first, we delete the old database; then we recreate it (so that it’s empty); finally,
-            // we perform a raw copy from the temporary to the fresh and we remove the temporary
-            // (that was such a trip, yep)
-            dropInstance(_dbName);
-            _db = obtainInstance(_dbName);
+            // we also need to update the salt
+            auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
+            auto saltChange = PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes);
+            auto noCipher = Option<AESCipher>::NONE;
+            putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, saltKey, {}));
+            putPreferencesChange(batch, noCipher, PreferencesChange(
+                PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes
+            ));
 
-            // DANGER ZONE here: if we crash, we will have to repair because we’ve dropped the
-            // database; see the constructor to see how repairing occurs
-
-            // raw copy
-            {
-                auto it = std::unique_ptr<leveldb::Iterator>(tempDB->NewIterator(leveldb::ReadOptions()));
-                leveldb::WriteBatch batch;
-                leveldb::WriteOptions writeOpts;
-                writeOpts.sync = true;
-
-                for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                    auto key_ = it->key().ToString();
-                    auto key = std::vector<uint8_t>(key_.cbegin(), key_.cend());
-                    auto value_ = it->value().ToString();
-                    auto value = std::vector<uint8_t>(key_.cbegin(), key_.cend());
-                    auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, value);
-                    _db->Write(writeOpts, &batch);
-                }
-            }
-
-            tempDB.reset(); // we don’t need that anymore
-            dropInstance(tempDBName);
+            // atomic update
+            leveldb::WriteOptions writeOpts;
+            writeOpts.sync = true;
+            _db->Write(writeOpts, &batch);
         }
 
         void PreferencesBackend::clear() {
