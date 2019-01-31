@@ -41,8 +41,6 @@ public:
 
     int32_t getPoolSize() override;
 
-    void changePassword(const std::string & oldPassword, const std::string & newPassword) override;
-
 private:
     std::shared_ptr<ConnectionPool> _pool;
 };

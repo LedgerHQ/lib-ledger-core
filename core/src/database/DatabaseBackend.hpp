@@ -50,6 +50,9 @@ namespace ledger {
                     soci::session &session
             ) = 0;
 
+            virtual void setPassword(const std::string &password,
+                                     soci::session &session) = 0;
+
             virtual void changePassword(
                     const std::string &oldPassword,
                     const std::string &newPassword,

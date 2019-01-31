@@ -48,19 +48,29 @@ namespace ledger {
                                   const std::string &password,
                                   soci::session &session) {
             _dbResolvedPath = resolver->resolveDatabasePath(dbName);
-            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", password);
-            session.open(*soci::factory_sqlite3(), parameters);
+            setPassword(password, session);
             session << "PRAGMA foreign_keys = ON";
+        }
+
+        void SQLite3Backend::setPassword(const std::string &password,
+                                         soci::session &session) {
+            if (_dbResolvedPath.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before setting password.");
+            }
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", password);
+            session.close();
+            session.open(*soci::factory_sqlite3(), parameters);
         }
 
         void SQLite3Backend::changePassword(const std::string & oldPassword,
                                             const std::string & newPassword,
                                             soci::session &session) {
-            if (!_dbResolvedPath.empty()) {
-                auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
-                session.open(*soci::factory_sqlite3(), parameters);
+            if (_dbResolvedPath.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
             }
-
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+            session.close();
+            session.open(*soci::factory_sqlite3(), parameters);
         }
     }
 }

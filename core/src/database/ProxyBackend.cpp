@@ -47,13 +47,32 @@ namespace ledger {
                                 const std::string &dbName,
                                 const std::string &password,
                                 soci::session &session) {
+            _dbName = dbName;
             session.open(*_factory, dbName);
+            if (!password.empty()) {
+                setPassword(password, session);
+            }
+        }
+
+        void ProxyBackend::setPassword(const std::string &password,
+                                       soci::session &session) {
+            if (_dbName.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before setting password.");
+            }
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbName) + fmt::format("key=\"{}\" ", password);
+            session.close();
+            session.open(*_factory, parameters);
         }
 
         void ProxyBackend::changePassword(const std::string & oldPassword,
                                           const std::string & newPassword,
                                           soci::session &session) {
-            _engine->changePassword(oldPassword, newPassword);
+            if (_dbName.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
+            }
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbName) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+            session.close();
+            session.open(*_factory, parameters);
         }
 
         ProxyBackend::~ProxyBackend() {

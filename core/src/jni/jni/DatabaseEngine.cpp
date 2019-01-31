@@ -32,14 +32,5 @@ int32_t DatabaseEngine::JavaProxy::getPoolSize() {
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::I32::toCpp(jniEnv, jret);
 }
-void DatabaseEngine::JavaProxy::changePassword(const std::string & c_oldPassword, const std::string & c_newPassword) {
-    auto jniEnv = ::djinni::jniGetThreadEnv();
-    ::djinni::JniLocalScope jscope(jniEnv, 10);
-    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseEngine>::get();
-    jniEnv->CallVoidMethod(Handle::get().get(), data.method_changePassword,
-                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c_oldPassword)),
-                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c_newPassword)));
-    ::djinni::jniExceptionCheck(jniEnv);
-}
 
 }  // namespace djinni_generated

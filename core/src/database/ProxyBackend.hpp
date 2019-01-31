@@ -47,14 +47,18 @@ namespace ledger {
                   const std::string &password,
                   soci::session &session) override;
 
+        void setPassword(const std::string &password,
+                         soci::session &session) override;
+
         void changePassword(const std::string & oldPassword,
                             const std::string & newPassword,
                             soci::session &session) override;
         ~ProxyBackend();
 
     private:
-            std::shared_ptr<api::DatabaseEngine> _engine;
-            const soci::backend_factory* _factory;
+        std::shared_ptr<api::DatabaseEngine> _engine;
+        const soci::backend_factory* _factory;
+        std::string _dbName;
         };
     }
 }

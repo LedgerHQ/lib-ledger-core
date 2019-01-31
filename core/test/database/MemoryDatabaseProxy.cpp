@@ -362,40 +362,105 @@ public:
         return std::make_shared<Blob>();
     }
 
-    void changePassword(const std::string & oldPassword, const std::string & newPassword) {
-        if (!oldPassword.empty()) {
-            auto chech_sqlite_err = [] (sqlite3 *db, int result, const std::string &errorMessage) {
-                if (SQLITE_OK != result)
-                {
-                    const char *errMsg = sqlite3_errmsg(db);
-                    std::ostringstream ss;
-                    ss << errorMessage << errMsg;
-                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, ss.str());
-                }
-            };
-            auto res = sqlite3_key_v2(_db, _dbName.c_str(), oldPassword.c_str(), strlen(oldPassword.c_str()));
-            chech_sqlite_err(_db, res, "Failed to encrypt database. ");
-
-            if (!newPassword.empty()) {
-                res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
-                chech_sqlite_err(_db, res, "Failed to change database's password. ");
-            }
+    void chech_sqlite_err(sqlite3 *db, int result, const std::string &errorMessage) {
+        if (SQLITE_OK != result)
+        {
+            const char *errMsg = sqlite3_errmsg(db);
+            std::ostringstream ss;
+            ss << errorMessage << errMsg;
+            throw make_exception(api::ErrorCode::RUNTIME_ERROR, ss.str());
         }
     };
+
+    void changePassword(const std::string & oldPassword, const std::string & newPassword) {
+        setPassword(oldPassword);
+        if (!newPassword.empty()) {
+#ifdef SQLCIPHER
+            auto res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
+            chech_sqlite_err(_db, res, "Failed to change database's password. ");
+#endif
+        }
+    };
+
+    void setPassword(const std::string &password) {
+        if (!password.empty()) {
+#ifdef SQLCIPHER
+            auto res = sqlite3_key_v2(_db, _dbName.c_str(), password.c_str(), strlen(password.c_str()));
+            chech_sqlite_err(_db, res, "Failed to encrypt database. ");
+#endif
+        }
+    };
+
 private:
     sqlite3* _db;
     std::string _dbName;
 };
 
+// Parse parameters got from opening a session
+// Same as in soci_sqlite
+static std::tuple<std::string, std::string, std::string> parseParameters(const std::string &parameters) {
+
+    std::string passKey, newPassKey;
+    std::string dbname(parameters);
+    std::stringstream ssconn(parameters);
+    while (!ssconn.eof() && ssconn.str().find('=') != std::string::npos)
+    {
+        std::string key, val;
+        std::getline(ssconn, key, '=');
+        std::getline(ssconn, val, ' ');
+
+        if (val.size()>0 && val[0]=='\"')
+        {
+            std::string quotedVal = val.erase(0, 1);
+
+            if (quotedVal[quotedVal.size()-1] ==  '\"')
+            {
+                quotedVal.erase(val.size()-1);
+            }
+            else // space inside value string
+            {
+                std::getline(ssconn, val, '\"');
+                quotedVal = quotedVal + " " + val;
+                std::string keepspace;
+                std::getline(ssconn, keepspace, ' ');
+            }
+
+            val = quotedVal;
+        }
+
+        if ("dbname" == key || "db" == key)
+        {
+            dbname = val;
+        }
+        else if ("key" == key)
+        {
+            passKey = val;
+        }
+        else if ("new_key" == key)
+        {
+            newPassKey = val;
+        }
+    }
+
+    return std::make_tuple(dbname, passKey, newPassKey);
+};
+
 class ConnectionPool : public api::DatabaseConnectionPool {
 public:
-    ConnectionPool() {
+    ConnectionPool(const std::string &connectUrl) {
         sqlite3* db;
-        std::string dbName = ":memory:";
-        if (sqlite3_open(dbName.c_str(), &db) != SQLITE_OK) {
+        auto params = parseParameters(connectUrl);
+        int connection_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+        if (sqlite3_open_v2(std::get<0>(params).c_str(), &db, connection_flags, NULL) != SQLITE_OK) {
             throw std::runtime_error("Unable to open database");
         }
-        _conn = std::make_shared<Connection>(db, dbName);
+        _conn = std::make_shared<Connection>(db, std::get<0>(params));
+        if (!std::get<1>(params).empty()) {
+            _conn->setPassword(std::get<1>(params));
+            if (!std::get<2>(params).empty()) {
+                _conn->changePassword(std::get<1>(params), std::get<2>(params));
+            }
+        }
     }
     std::shared_ptr<api::DatabaseConnection> getConnection() override { return _conn; }
 
@@ -404,15 +469,10 @@ private:
 };
 
 std::shared_ptr<ledger::core::api::DatabaseConnectionPool> MemoryDatabaseProxy::connect(const std::string &connectUrl) {
-    _pool = std::make_shared<ConnectionPool>();
+    _pool = std::make_shared<ConnectionPool>(connectUrl);
     return _pool;
 }
 
 int32_t MemoryDatabaseProxy::getPoolSize() {
     return 1;
-}
-
-void MemoryDatabaseProxy::changePassword(const std::string & oldPassword, const std::string & newPassword) {
-    auto connection = std::static_pointer_cast<Connection>(_pool->getConnection());
-    connection->changePassword(oldPassword, newPassword);
 }
