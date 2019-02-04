@@ -163,7 +163,6 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 
 target_include_directories(ledger-core-interface INTERFACE ..)
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
-target_include_directories(ledger-core-interface INTERFACE ../lib/fmt-3.0.0)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
