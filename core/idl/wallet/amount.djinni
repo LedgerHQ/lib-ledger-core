@@ -2,49 +2,58 @@
 @import "common/currency.djinni"
 @import "../r10n/locale.djinni"
 
-#TODO
+# Rounding strategy when cutting dealing with decimals.
 RoundingMode = enum {
+    # The extra decimals are just dropped.
     truncated;
+    # The extra decimals are dropped and the new last decimal is rounded half down (x.0).
     round_half_down;
+    # The extra decimals are dropped and the new last decimal is rounded half down or middle
+    # according to the fractional part (x.0 or (x+1).0).
     round_half_even;
+    # The extra decimals are dropped and the new last decimal is rounded half up ((x+1).0).
     round_half_up;
 }
 
-#TODO
+# Formatting rules to format amounts to strings.
 FormatRules = record {
+    # How should we round decimal values?
     roundingMode: RoundingMode;
+    # The maximum number of decimals formatted decimals will have.
     maxNumberOfDecimals: i32;
 }
 
-#Class representing amount of transaction, output, inputs ...
+# Class representing amount of transaction, output, inputs…
 Amount = interface +c {
-    #Get amount as a BitInt
-    #@return BitInt
+    # Get amount as a BigInt.
+    # @return BigInt
     toBigInt(): BigInt;
-    #Get currency in which amount was computed
-    #@return Currency object
+    # Get currency in which amount was computed.
+    # @return Currency object
     getCurrency(): Currency;
-    #Get currency unit in which amount was computed
-    #@return CurrencyUnit object
+    # Get currency unit in which amount was computed.
+    # @return CurrencyUnit object
     getUnit(): CurrencyUnit;
-    #Convert amount in another currency unit
-    #@param CurrencyUnit object, target currency unit
-    #@return Amount object, amount in target currency unit
+    # Convert amount in another currency unit.
+    # @param CurrencyUnit object, target currency unit
+    # @return Amount object, amount in target currency unit
     toUnit(unit: CurrencyUnit): Amount;
-    #TODO
+    # Get an amount that is equal to the given magnitude in the units system.
     toMagnitude(magnitude: i32): Amount;
-    #Get amount as string
-    #@return string
+    # Get amount as string
+    # @return string
     toString(): string;
-    #Get amount as long
-    #@return 64 bits integer
+    # Get amount as long
+    # @return 64 bits integer
     toLong(): i64;
-    #Get amount as double
-    #@return double
+    # Get amount as double
+    # @return double
     toDouble(): f64;
-    #TODO
+    # Format an amount with a locale and some formatting rules.
     format(locale: Locale, rules: optional<FormatRules>): string;
 
+    # Transform an hexadecimal string into an amount (expressed in the given currency).
     static fromHex(currency: Currency, hex: string): Amount;
+    # Transform a 64-bit number into an amount (expressed in the given currency).
     static fromLong(currency: Currency, value: i64): Amount;
 }

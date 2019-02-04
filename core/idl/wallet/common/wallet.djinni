@@ -36,13 +36,24 @@ DerivationPath = interface +c {
     static parse(path: string): DerivationPath;
 }
 
-# Enum of operation types.
+# Type of operation.
+#
+# It’s possible to either send funds or receive ones.
 OperationType = enum {
     send;
     receive;
 }
 
-# Enum of transaction level of trust.
+# Level of trust for transactions.
+#
+# A transaction is pending when it’s not mined yet.
+#
+# A transaction is unstrusted when it belongs to a block that is not 5-block old yet (0—4).
+#
+# A transaction is trusted when it belongs to a block that is at least 5-block old.
+#
+# A transaction is dropped when it has been removed from the block it was originally in. That might
+# happen if the block was dropped by peers while a reorganization was happening, for instance.
 TrustLevel = enum {
     trusted;
     pending;
@@ -50,7 +61,7 @@ TrustLevel = enum {
     dropped;
 }
 
-#TODO
+# The trust indicator of an operation.
 TrustIndicator = interface +c {
     getTrustWeight(): i32;
     getTrustLevel(): TrustLevel;
@@ -68,7 +79,7 @@ Block = record {
     time: date;
     # String, currency's name of blockchain the block belongs to.
     currencyName: string;
-    # 64 bits integer, height of block in the blockchain.
+    # 64-bit integer, height of block in the blockchain.
     height: i64;
 }
 
@@ -78,7 +89,7 @@ Operation = interface +c {
     # @return string
     getUid(): string;
     # Get account's index in user's wallet.
-    # @return 32 bits integer
+    # @return 32-bit integer
     getAccountIndex(): i32;
     # Get type of operation.
     # @return OperationType object (for more details refer to OperationType)
@@ -105,7 +116,7 @@ Operation = interface +c {
     # @return TrustIndicator object
     getTrust(): TrustIndicator;
     # Get block height on which operation was included.
-    # @return Optional 64 bits integer, height of block in which operation was validated
+    # @return Optional 64-bit integer, height of block in which operation was validated
     getBlockHeight(): optional<i64>;
     # Convert operation as Bitcoin operation.
     # @return BitcoinLikeOperation object
@@ -189,10 +200,10 @@ OperationQuery = interface +c {
     # @return QueryFilter object
     filter(): QueryFilter;
     # Add offset to the operation query.
-    # @param from, 64 bits integer
+    # @param from, 64-bit integer
     offset(from: i64): OperationQuery;
     # Add limit to the operation query results.
-    # @param count, 64 bits integer
+    # @param count, 64-bit integer
     limit(count: i64): OperationQuery;
     #TODO
     # Complete the operation query.
@@ -279,7 +290,7 @@ Account = interface +c {
     # Get index of account in user's wallet
     # 32-bit integer
     getIndex(): i32;
-    #TODO
+    # Get the list of all operations.
     queryOperations(): OperationQuery;
     # Get balance of account.
     # @param callback, if getBalacne, Callback returning an Amount object which represents account's balance
@@ -305,7 +316,11 @@ Account = interface +c {
     # Return operation for a specific operation.
     # @param uid, string of operation id
     getOperationPreferences(uid: string): Preferences;
+    # Turn the account into an Bitcoin one, allowing operations to be performerd on the Bitcoin
+    # network.
     asBitcoinLikeAccount() : BitcoinLikeAccount;
+    # Turn the account into an Ethereum one, allowing operations to be performerd on the Ethereum
+    # network.
     asEthereumLikeAccount() : EthereumLikeAccount;
     # Check if account is a Bitcoin one.
     # @return bool
@@ -348,15 +363,15 @@ Wallet = interface +c {
     # @return string
     getName(): string;
     # Get account with specific index.
-    # @param index, 32 bits integer, index of account in wallet
+    # @param index, 32-bit integer, index of account in wallet
     # @param callback, Callback returning, if getAccount succeed, an Account object with given index
     getAccount(index: i32, callback: Callback<Account>);
     # Get number of accounts instanciated under wallet.
-    # @param callback, Callback returning, if getAccountCount succeed, a 32 bits integer representing number of accounts
+    # @param callback, Callback returning, if getAccountCount succeed, a 32-bit integer representing number of accounts
     getAccountCount(callback: Callback<i32>);
     # Get list of accounts instanciated under wallet in a given range.
-    # @param offset, 32 bits integer from which we retrieve accounts
-    # @param count, 32 bits integer, number of accounts to retrieve
+    # @param offset, 32-bit integer from which we retrieve accounts
+    # @param count, 32-bit integer, number of accounts to retrieve
     # @param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
     getAccounts(offset: i32, count: i32, callback: ListCallback<Account>);
     # Get index of next account to create.

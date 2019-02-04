@@ -1,4 +1,6 @@
-
+# Estimation size (minimum and maximum).
+#
+# This is typically used to estimate size (in bytes) of raw transactions.
 EstimatedSize = record {
     Min: i32;
     Max: i32;
