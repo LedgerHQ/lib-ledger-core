@@ -2,7 +2,7 @@ project(ledger_core_tests)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_subdirectory(lib/gtest-1.8.0)
+add_subdirectory(lib/googletest)
 add_subdirectory(lib/libledger-test)
 add_subdirectory(bytes)
 add_subdirectory(math)
