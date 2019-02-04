@@ -34,7 +34,7 @@
 
 #include <soci.h>
 #include <iostream>
-#include <src/utils/Exception.hpp>
+#include "utils/Exception.hpp"
 
 namespace ledger {
     namespace core {

@@ -29,8 +29,8 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <src/utils/DerivationScheme.hpp>
+#include "gtest/gtest.h"
+#include "utils/DerivationScheme.hpp"
 
 using namespace ledger::core;
 

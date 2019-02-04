@@ -29,7 +29,6 @@
  *
  */
 #include "BigIntImpl.hpp"
-#include <fmt/string.h>
 
 namespace ledger { namespace core { namespace api {
 
@@ -90,27 +89,26 @@ namespace ledger { namespace core { namespace api {
 
             std::shared_ptr<BigInt> BigInt::fromDecimalString(const std::string &s, int32_t precision,
                                                               const std::string &decimalSeparator) {
-                fmt::StringWriter writer;
-                fmt::StringWriter decimaleWriter;
+                std::string writer;
+                std::string decimaleWriter;
                 auto hasReachedDecimalPart = false;
                 auto d = 0;
                 for (auto i = 0; i < s.length(); i++) {
                     auto c = s[i];
                     if (c >= '0' && c <= '9' && !hasReachedDecimalPart) {
-                        writer << c;
+                        writer.push_back(c);
                     } else if (c == decimalSeparator[0] && !hasReachedDecimalPart) {
                         hasReachedDecimalPart = true;
                     } else if (c >= '0' && c <= '9' && hasReachedDecimalPart) {
-                        decimaleWriter << c;
+                        decimaleWriter.push_back(c);
                     } else {
                         d += 1;
                     }
                 }
                 while (decimaleWriter.size() < precision) {
-                    decimaleWriter << '0';
+                    decimaleWriter.push_back('0');
                 }
-                writer << decimaleWriter.c_str();
-                return fromIntegerString(writer.c_str(), 10);
+                return fromIntegerString(writer + decimaleWriter, 10);
             }
 
             std::shared_ptr<BigInt> BigInt::fromIntegerString(const std::string &s, int32_t radix) {

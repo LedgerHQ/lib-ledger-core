@@ -28,9 +28,9 @@
  * SOFTWARE.
  *
  */
-#include <lib/fmt-3.0.0/fmt/format.h>
+#include "fmt/format.h"
 #include "RotatingEncryptableSink.hpp"
-#include "../utils/LambdaRunnable.hpp"
+#include "utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -58,46 +58,40 @@ namespace ledger {
             set_level(spdlog::level::trace);
         }
 
-        void RotatingEncryptableSink::log(const spdlog::details::log_msg &msg) {
+        void RotatingEncryptableSink::sink_it_(const spdlog::details::log_msg &msg) {
             auto context = _context;
-            std::string message = msg.formatted.str();
+            std::shared_ptr<fmt::memory_buffer> buffer = std::make_shared<fmt::memory_buffer>();
+            formatter_->format(msg, *buffer);
             auto self = shared_from_this();
-            context->execute(make_runnable([self, message] () {
-                self->_sink_it(message);
+            context->execute(make_runnable([self, buffer] () {
+                self->_sink_it(buffer);
             }));
         }
 
-        void RotatingEncryptableSink::flush() {
+        void RotatingEncryptableSink::flush_() {
             auto context = _context;
             context->execute(make_runnable([this] () {
                _file_helper.flush();
             }));
         }
 
-        void RotatingEncryptableSink::_sink_it(std::string msg) {
+        void RotatingEncryptableSink::_sink_it(std::shared_ptr<fmt::memory_buffer> msg) {
             // TODO: implement encryption
-            _current_size += msg.size();
+            _current_size += msg->size();
             if (_current_size > _max_size)
             {
                 _rotate();
-                _current_size = msg.size();
+                _current_size = msg->size();
             }
-
-            spdlog::details::log_msg spdlog_msg;
-            spdlog_msg.formatted << msg;
-            _file_helper.write(spdlog_msg);
+            _file_helper.write(*msg);
         }
 
         spdlog::filename_t RotatingEncryptableSink::calc_filename(std::shared_ptr<api::PathResolver> resolver,
                                                                   const spdlog::filename_t &filename, std::size_t index,
                                                                   const spdlog::filename_t &extension) {
-            std::conditional<std::is_same<spdlog::filename_t::value_type, char>::value, fmt::MemoryWriter, fmt::WMemoryWriter>::type w;
+            auto mangledFilename = fmt::format(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
             if (index)
-                w.write(SPDLOG_FILENAME_T("{}.{}.{}"), filename, index, extension);
-            else
-                w.write(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
-            auto mangledFilename = w.str();
-
+                mangledFilename = fmt::format(SPDLOG_FILENAME_T("{}.{}.{}"), filename, index, extension);
 
 #if defined(_WIN32) || defined(_WIN64)
             std::string narrowFilename;

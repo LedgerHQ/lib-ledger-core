@@ -31,10 +31,10 @@
 #include "DerivationPath.hpp"
 #include <string>
 #include <cstdlib>
-#include "../collections/vector.hpp"
+#include "collections/vector.hpp"
 #include <sstream>
-#include <fmt/format.h>
-#include <src/collections/strings.hpp>
+#include "fmt/format.h"
+#include "collections/strings.hpp"
 #include <algorithm>
 
 namespace ledger {
