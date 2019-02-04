@@ -141,14 +141,14 @@ node ledger-core-samples/nodejs/tests/wallet-pool-test.js
 ```
 ## Support
 
-###Libcore:
+### Libcore:
 Libcore can be built for following OSes:
  - MacOS: minimum supported version is `macOS 9.0`, with `x86_64` architecture,
  - Linux: Debian (stretch), Ubuntu and Arch are supported, with `x86_64` architecture,
  - Windows: 64-bit architecture is built with `MSVC` (starting from Visual Studio 15), 32-bit is built with `MinGW`,
  - iOS: `x86_64`, `armv7` and `arm64` architectures are supported, minimum supported version is `iOS 10.0`,
  - Android: `x86`, `armeabi-v7a` and `arm64-v8a` architectures are supported, minimum supported version is `Android 7 (API 24)` (Java 8 is needed).
-###Bindings:
+### Bindings:
  - NodeJS bindings:
    - Please use `node` with version `>=8.4.0` and `<9.0.0` (other versions are not tested (yet)),
    - Node-gyp is used to build native module and requires `python` with version `2.7.x`.

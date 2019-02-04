@@ -39,11 +39,11 @@ this same document.
     candidates*.
 
 ## Release process
-  - Development : fixes, features are done on specific branches on developers' fork,
-  - Pull requests: submitted to LedgerHQ/develop with updated of CHANGELOG.md,
+  - Development: fixes, features are done on specific branches on developers' fork,
+  - Pull requests: submitted to LedgerHQ/develop with updated CHANGELOG.md,
   - Merge into `LedgerHQ/develop`: triggers CI builds and deploys under `x.y.z-rc-commitHash`,
-  - Merge into `LedgerHQ/master`: once a version is confirmed to be stable by at least by one of our clients
-    (Vault or Live), we bump project’s version, for this we jhave a special pull request. Once merged in
+  - Merge into `LedgerHQ/master`: once a version is confirmed to be stable at least by one of our clients
+    (Vault or Live), we bump project’s version, for this we have a special pull request. Once merged in
     `LedgerHQ/master` and tagged as a stable release `x.y.z`, a build and a deployment are triggered.
     To sum up, tags point to stable releases that are in production. **These versions should be used by any application
     client of libcore**
