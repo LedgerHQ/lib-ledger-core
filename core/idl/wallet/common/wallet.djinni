@@ -46,7 +46,7 @@ OperationType = enum {
 
 # Level of trust for transactions.
 #
-# A transaction is pending when it belongs to the last added block.
+# A transaction is pending when it’s not mined yet.
 #
 # A transaction is unstrusted when it belongs to a block that is not 5-block old yet (0—4).
 #
