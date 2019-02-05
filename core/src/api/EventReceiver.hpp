@@ -17,14 +17,14 @@ namespace ledger { namespace core { namespace api {
 
 class Event;
 
-/**Class respresenting an event receiver */
+/** Class respresenting an event receiver. */
 class EventReceiver {
 public:
     virtual ~EventReceiver() {}
 
     /**
-     *Method triggered when an event occurs
-     *@param event, Event object that triggers this method
+     * Method triggered when an event occurs.
+     * @param event, Event object that triggers this method
      */
     virtual void onEvent(const std::shared_ptr<Event> & event) = 0;
 };

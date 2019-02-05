@@ -10,6 +10,11 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**
+ * Estimation size (minimum and maximum).
+ *
+ * This is typically used to estimate size (in bytes) of raw transactions.
+ */
 struct EstimatedSize final {
     int32_t Min;
     int32_t Max;

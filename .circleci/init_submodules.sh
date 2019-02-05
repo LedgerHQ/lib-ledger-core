@@ -28,7 +28,7 @@ cd $HOME/lib-ledger-core
 unamestr=`uname`
 #This is a workaround because building directly
 #SQLCipher for arm64 and armv7 is failing
-#fro more details please refer to comments
+#for more details please refer to comments
 #in core/lib/cmake/configure_sqlcipher_ios.sh
 if [ "$unamestr" == "Darwin" ]; then
 	echo "========> Generating SQLCipher for iOS"

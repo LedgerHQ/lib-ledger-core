@@ -24,62 +24,64 @@ struct CurrencyUnit;
 struct FormatRules;
 struct Locale;
 
-/**Class representing amount of transaction, output, inputs ... */
+/** Class representing amount of transaction, output, inputs… */
 class LIBCORE_EXPORT Amount {
 public:
     virtual ~Amount() {}
 
     /**
-     *Get amount as a BitInt
-     *@return BitInt
+     * Get amount as a BigInt.
+     * @return BigInt
      */
     virtual std::shared_ptr<BigInt> toBigInt() = 0;
 
     /**
-     *Get currency in which amount was computed
-     *@return Currency object
+     * Get currency in which amount was computed.
+     * @return Currency object
      */
     virtual Currency getCurrency() = 0;
 
     /**
-     *Get currency unit in which amount was computed
-     *@return CurrencyUnit object
+     * Get currency unit in which amount was computed.
+     * @return CurrencyUnit object
      */
     virtual CurrencyUnit getUnit() = 0;
 
     /**
-     *Convert amount in another currency unit
-     *@param CurrencyUnit object, target currency unit
-     *@return Amount object, amount in target currency unit
+     * Convert amount in another currency unit.
+     * @param CurrencyUnit object, target currency unit
+     * @return Amount object, amount in target currency unit
      */
     virtual std::shared_ptr<Amount> toUnit(const CurrencyUnit & unit) = 0;
 
-    /**TODO */
+    /** Get an amount that is equal to the given magnitude in the units system. */
     virtual std::shared_ptr<Amount> toMagnitude(int32_t magnitude) = 0;
 
     /**
-     *Get amount as string
-     *@return string
+     * Get amount as string
+     * @return string
      */
     virtual std::string toString() = 0;
 
     /**
-     *Get amount as long
-     *@return 64 bits integer
+     * Get amount as long
+     * @return 64 bits integer
      */
     virtual int64_t toLong() = 0;
 
     /**
-     *Get amount as double
-     *@return double
+     * Get amount as double
+     * @return double
      */
     virtual double toDouble() = 0;
 
-    /**TODO */
+    /** Format an amount with a locale and some formatting rules. */
     virtual std::string format(const Locale & locale, const std::experimental::optional<FormatRules> & rules) = 0;
 
+    /** Transform an hexadecimal string into an amount (expressed in the given currency). */
     static std::shared_ptr<Amount> fromHex(const Currency & currency, const std::string & hex);
 
+    /** Transform a 64-bit number into an amount (expressed in the given currency). */
     static std::shared_ptr<Amount> fromLong(const Currency & currency, int64_t value);
 };
 

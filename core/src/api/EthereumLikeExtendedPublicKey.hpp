@@ -20,18 +20,24 @@ namespace ledger { namespace core { namespace api {
 
 class EthereumLikeAddress;
 
+/** The xPUB definition for Ethereum. */
 class LIBCORE_EXPORT EthereumLikeExtendedPublicKey {
 public:
     virtual ~EthereumLikeExtendedPublicKey() {}
 
+    /** Derive an address from an xPUB and a path. */
     virtual std::shared_ptr<EthereumLikeAddress> derive(const std::string & path) = 0;
 
+    /** Derive a public key from an xPUB and a path. */
     virtual std::vector<uint8_t> derivePublicKey(const std::string & path) = 0;
 
+    /** Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path. */
     virtual std::vector<uint8_t> deriveHash160(const std::string & path) = 0;
 
+    /** Get the xPUB in base 58. */
     virtual std::string toBase58() = 0;
 
+    /** Get the root path of the xPUB. */
     virtual std::string getRootPath() = 0;
 };
 

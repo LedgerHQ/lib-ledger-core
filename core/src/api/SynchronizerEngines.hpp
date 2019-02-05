@@ -15,15 +15,15 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Class of constants representing the engines to rely on for synchronization */
+/** Class of constants representing the engines to rely on for synchronization. */
 class LIBCORE_EXPORT SynchronizerEngines {
 public:
     virtual ~SynchronizerEngines() {}
 
     /**
-     *String, rely on blockchain explorers to synchronize,
-     *For example to condsider a transaction valid, it should, first, be included in a block,
-     *then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
+     * String, rely on blockchain explorers to synchronize,
+     * For example to consider a transaction valid, it should, first, be included in a block,
+     * then spent UTXOs by this transaction, should be 'valid' through the whole blockchain.
      */
     static std::string const BLOCKCHAIN_EXPLORER;
 

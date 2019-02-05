@@ -186,14 +186,14 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1fre
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1changeDatabasePassword(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_oldPassword, jstring j_newPassword, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_WalletPool_00024CppProxy_native_1changePassword(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_oldPassword, jstring j_newPassword, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPool>(nativeRef);
-        ref->changeDatabasePassword(::djinni::String::toCpp(jniEnv, j_oldPassword),
-                                    ::djinni::String::toCpp(jniEnv, j_newPassword),
-                                    ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
+        ref->changePassword(::djinni::String::toCpp(jniEnv, j_oldPassword),
+                            ::djinni::String::toCpp(jniEnv, j_newPassword),
+                            ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

@@ -172,9 +172,9 @@ namespace ledger {
             _pool->freshResetAll().callback(_mainContext, callback);
         }
 
-        void WalletPoolApi::changeDatabasePassword(const std::string & oldPassword,
-                                                   const std::string & newPassword,
-                                                   const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+        void WalletPoolApi::changePassword(const std::string &oldPassword,
+                                           const std::string &newPassword,
+                                           const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             auto pool = _pool;
             auto result = Future<api::ErrorCode>::async(_mainContext, [pool, oldPassword, newPassword] () {
                 pool->getDatabaseSessionPool()->performChangePassword(oldPassword, newPassword);

@@ -24,7 +24,6 @@ class DatabaseResultSet;
 /**
  * A wrapper object around prepared SQL statements. lib-ledger-core will use placeholders when it needs to pass
  * parameters to a query. It will then  bind each parameter at a given position to a given value.
- *
  */
 class DatabaseStatement {
 public:

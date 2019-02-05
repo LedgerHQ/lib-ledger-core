@@ -18,6 +18,7 @@ namespace ledger { namespace core { namespace api {
 class EthereumLikeWallet;
 struct Error;
 
+/** A callback called when an Ethereum-like wallet is available after issuing a get command. */
 class GetEthreumLikeWalletCallback {
 public:
     virtual ~GetEthreumLikeWalletCallback() {}

@@ -20,14 +20,21 @@ namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeScriptChunk;
 
+/** A general purpose script. */
 class LIBCORE_EXPORT BitcoinLikeScript {
 public:
     virtual ~BitcoinLikeScript() {}
 
+    /**
+     * Get the head of the script. Scripts are organized by chunks, so you get an iterator-like
+     * interface.
+     */
     virtual std::shared_ptr<BitcoinLikeScriptChunk> head() = 0;
 
+    /** Turn the script into a string representation. */
     virtual std::string toString() = 0;
 
+    /** Parse data into a script. */
     static std::shared_ptr<BitcoinLikeScript> parse(const std::vector<uint8_t> & data);
 };
 

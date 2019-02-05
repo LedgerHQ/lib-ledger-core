@@ -17,14 +17,14 @@ namespace ledger { namespace core { namespace api {
 
 class EthereumLikeTransaction;
 
-/**Class representing a Ethereum Operation */
+/** Class representing a Ethereum Operation. */
 class LIBCORE_EXPORT EthereumLikeOperation {
 public:
     virtual ~EthereumLikeOperation() {}
 
     /**
-     *Get operation's transaction
-     *@return EthereumLikeTransaction object
+     * Get operation's transaction.
+     * @return EthereumLikeTransaction object
      */
     virtual std::shared_ptr<EthereumLikeTransaction> getTransaction() = 0;
 };

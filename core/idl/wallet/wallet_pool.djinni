@@ -119,7 +119,7 @@ WalletPool = interface +c {
     #
     # WARNING: be carefull to have no other instances of WalletPool using
     # same database
-    changeDatabasePassword(oldPassword: string, newPassword: string, callback: Callback<ErrorCode>);
+    changePassword(oldPassword: string, newPassword: string, callback: Callback<ErrorCode>);
 }
 
 # Class representing a wallet pool builder (to instanciate a wallet pool).

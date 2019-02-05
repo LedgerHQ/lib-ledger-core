@@ -18,16 +18,31 @@ namespace ledger { namespace core { namespace api {
 
 enum class ErrorCode;
 
+/** A connection to a Web Socket. */
 class LIBCORE_EXPORT WebSocketConnection {
 public:
     virtual ~WebSocketConnection() {}
 
+    /**
+     * Callback to call upon successful connection.
+     * @param connectionId, the ID of the Web Socket connection
+     */
     virtual void onConnect(int32_t connectionId) = 0;
 
+    /** Callback to call upon successful disconnection. */
     virtual void onClose() = 0;
 
+    /**
+     * Callback to call upon each incoming message.
+     * @param data, the attached data to the input message
+     */
     virtual void onMessage(const std::string & data) = 0;
 
+    /**
+     * Callback to call when a Web Socket error occurs.
+     * @param code, the error code
+     * @param message, a description of the reason of the error
+     */
     virtual void onError(ErrorCode code, const std::string & message) = 0;
 
     virtual int32_t getConnectionId() = 0;

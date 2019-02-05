@@ -18,14 +18,23 @@
 namespace ledger { namespace core { namespace api {
 
 enum class DynamicType : int {
+    /** A dynamic object, composed of DynamicType indexed by strings. */
     OBJECT,
+    /** A 32-bit integer. */
     INT32,
+    /** A 64-bit integer. */
     INT64,
+    /** A double-precision floating point number. */
     DOUBLE,
+    /** A boolean. */
     BOOLEAN,
+    /** A contiguous, unsized bytes array. */
     DATA,
+    /** An array of DynamicType values. */
     ARRAY,
+    /** A string. */
     STRING,
+    /** Just an undefined value. */
     UNDEFINED,
 };
 LIBCORE_EXPORT  std::string to_string(const DynamicType& dynamicType);

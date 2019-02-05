@@ -15,17 +15,17 @@ namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeOutput;
 
-/**Structure representing a prepared bitcoin transaction (ready to be used with device) */
+/** Structure representing a prepared bitcoin transaction (ready to be used with device). */
 struct BitcoinLikePreparedTransaction final {
-    /**32 bits integer representing version */
+    /** 32-bit integer representing version. */
     int32_t version;
-    /**List of BitcoinLikeInput objects, inputs aggregateed by transaction */
+    /** List of BitcoinLikeInput objects, inputs aggregateed by transaction. */
     std::vector<std::shared_ptr<BitcoinLikeOutput>> inputs;
-    /**List of stringsm paths to account creating transaction */
+    /** List of stringsm paths to account creating transaction. */
     std::vector<std::string> paths;
-    /**List of BitcoinLikeOutput objects, outputs aggregateed by transaction */
+    /** List of BitcoinLikeOutput objects, outputs aggregateed by transaction. */
     std::vector<std::shared_ptr<BitcoinLikeOutput>> outputs;
-    /**32 bits integer, block height after which transaction can be accepted */
+    /** 32-bit integer, block height after which transaction can be accepted. */
     int32_t lockTime;
 
     BitcoinLikePreparedTransaction(int32_t version_,

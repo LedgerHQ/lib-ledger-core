@@ -11,11 +11,15 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Representation of ERC20Tokens */
+/** Representation of ERC20Tokens. */
 struct ERC20Token final {
+    /** Name of the currency. */
     std::string name;
+    /** Symbol representation of the currency. */
     std::string symbol;
+    /** Address of the smart contract for this ERC20. */
     std::string contractAddress;
+    /** Maximum number of decimals (used to show the human representation of the currency). */
     int32_t numberOfDecimal;
 
     ERC20Token(std::string name_,

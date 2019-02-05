@@ -23,6 +23,11 @@ class EthereumLikeTransaction;
 class EthereumLikeTransactionCallback;
 struct Currency;
 
+/**
+ * Builder for transactions on the Ethereum blockchain.
+ *
+ * Use this interface when you want to build a transaction step by step.
+ */
 class LIBCORE_EXPORT EthereumLikeTransactionBuilder {
 public:
     virtual ~EthereumLikeTransactionBuilder() {}
@@ -43,25 +48,25 @@ public:
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> wipeToAddress(const std::string & address) = 0;
 
     /**
-     * Set gas price (in wei) the originator is willing to pay
+     * Set gas price (in wei) the originator is willing to pay.
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> setGasPrice(const std::shared_ptr<Amount> & gasPrice) = 0;
 
     /**
-     * Set gas limit (in wei) the originator is not willing to exceed
+     * Set gas limit (in wei) the originator is not willing to exceed.
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> setGasLimit(const std::shared_ptr<Amount> & gasLimit) = 0;
 
-    /** Set input data the originator wants to embed in transaction */
+    /** Set input data the originator wants to embed in transaction. */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> & data) = 0;
 
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<EthereumLikeTransactionCallback> & callback) = 0;
 
     /**
-     * Creates a clone of this builder.
+     * Create a clone of this builder.
      * @return A copy of the current builder instance.
      */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> clone() = 0;
@@ -69,8 +74,10 @@ public:
     /** Reset the current instance to its initial state */
     virtual void reset() = 0;
 
+    /** Create an unsigned transaction for the Ethereum blockchain out of a raw binary. */
     static std::shared_ptr<EthereumLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
 
+    /** Create a signed transaction for the Ethereum blockchain out of a raw binary. */
     static std::shared_ptr<EthereumLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
 };
 

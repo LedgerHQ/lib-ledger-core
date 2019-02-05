@@ -73,7 +73,9 @@ namespace ledger {
 
             void freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) override;
 
-            void changeDatabasePassword(const std::string & oldPassword, const std::string & newPassword, const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
+            void changePassword(const std::string &oldPassword,
+                                const std::string &newPassword,
+                                const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
 
             ~WalletPoolApi();
 

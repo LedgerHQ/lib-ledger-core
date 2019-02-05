@@ -15,7 +15,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
+/** Available API to use with explorers. */
 class LIBCORE_EXPORT BlockchainExplorerEngines {
 public:
     virtual ~BlockchainExplorerEngines() {}

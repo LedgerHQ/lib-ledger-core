@@ -362,7 +362,7 @@ public:
         return std::make_shared<Blob>();
     }
 
-    void chech_sqlite_err(sqlite3 *db, int result, const std::string &errorMessage) {
+    void check_sqlite_err(sqlite3 *db, int result, const std::string &errorMessage) {
         if (SQLITE_OK != result)
         {
             const char *errMsg = sqlite3_errmsg(db);
@@ -377,7 +377,7 @@ public:
         if (!newPassword.empty()) {
 #ifdef SQLCIPHER
             auto res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
-            chech_sqlite_err(_db, res, "Failed to change database's password. ");
+            check_sqlite_err(_db, res, "Failed to change database's password. ");
 #endif
         }
     };
@@ -386,7 +386,7 @@ public:
         if (!password.empty()) {
 #ifdef SQLCIPHER
             auto res = sqlite3_key_v2(_db, _dbName.c_str(), password.c_str(), strlen(password.c_str()));
-            chech_sqlite_err(_db, res, "Failed to encrypt database. ");
+            check_sqlite_err(_db, res, "Failed to encrypt database. ");
 #endif
         }
     };
@@ -399,26 +399,21 @@ private:
 // Parse parameters got from opening a session
 // Same as in soci_sqlite
 static std::tuple<std::string, std::string, std::string> parseParameters(const std::string &parameters) {
-
     std::string passKey, newPassKey;
     std::string dbname(parameters);
     std::stringstream ssconn(parameters);
-    while (!ssconn.eof() && ssconn.str().find('=') != std::string::npos)
-    {
+    while (!ssconn.eof() && ssconn.str().find('=') != std::string::npos) {
         std::string key, val;
         std::getline(ssconn, key, '=');
         std::getline(ssconn, val, ' ');
 
-        if (val.size()>0 && val[0]=='\"')
-        {
+        if (val.size()>0 && val[0]=='\"') {
             std::string quotedVal = val.erase(0, 1);
 
-            if (quotedVal[quotedVal.size()-1] ==  '\"')
-            {
+            if (quotedVal[quotedVal.size()-1] ==  '\"') {
                 quotedVal.erase(val.size()-1);
             }
-            else // space inside value string
-            {
+            else {// space inside value string
                 std::getline(ssconn, val, '\"');
                 quotedVal = quotedVal + " " + val;
                 std::string keepspace;
@@ -428,16 +423,13 @@ static std::tuple<std::string, std::string, std::string> parseParameters(const s
             val = quotedVal;
         }
 
-        if ("dbname" == key || "db" == key)
-        {
+        if ("dbname" == key || "db" == key) {
             dbname = val;
         }
-        else if ("key" == key)
-        {
+        else if ("key" == key) {
             passKey = val;
         }
-        else if ("new_key" == key)
-        {
+        else if ("new_key" == key) {
             newPassKey = val;
         }
     }
@@ -469,8 +461,7 @@ private:
 };
 
 std::shared_ptr<ledger::core::api::DatabaseConnectionPool> MemoryDatabaseProxy::connect(const std::string &connectUrl) {
-    _pool = std::make_shared<ConnectionPool>(connectUrl);
-    return _pool;
+    return _pool = std::make_shared<ConnectionPool>(connectUrl);
 }
 
 int32_t MemoryDatabaseProxy::getPoolSize() {

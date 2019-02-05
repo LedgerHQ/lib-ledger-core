@@ -13,6 +13,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** An Ethereum-like wallet. */
 class LIBCORE_EXPORT EthereumLikeWallet {
 public:
     virtual ~EthereumLikeWallet() {}
