@@ -55,13 +55,6 @@ namespace ledger {
             _currency(params), _key(key), _path(path)
         {}
 
-        static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
-            if (index >= childNums.size()) {
-                return key;
-            }
-            return _derive(index + 1, childNums, key.derive(childNums[index]));
-        }
-
         std::shared_ptr<api::EthereumLikeAddress>
         EthereumLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
@@ -77,16 +70,12 @@ namespace ledger {
 
         std::vector<uint8_t>
         EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
-            DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
-            return key.getPublicKey();
+            return EthereumExtendedPublicKey::derivePublicKey(path);
         }
 
         std::vector<uint8_t>
         EthereumLikeExtendedPublicKey::deriveHash160(const std::string & path) {
-            DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
-            return key.getPublicKeyHash160();
+            return EthereumExtendedPublicKey::deriveHash160(path);
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
