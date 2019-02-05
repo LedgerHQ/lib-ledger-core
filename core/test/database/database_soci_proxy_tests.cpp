@@ -372,3 +372,29 @@ TEST_F(SociProxyBaseTest, ChangePassword) {
     EXPECT_EQ(name, people.front().name);
     EXPECT_EQ(blob_to_vector(picture), people.front().picture);
 }
+
+TEST_F(SociProxyTest, SelectCountWhenEmpty) {
+    createTables(sql);
+    int count;
+    sql << "SELECT COUNT(*) FROM people WHERE name = 'paul'", soci::into(count);
+    EXPECT_EQ(count, 0);
+}
+
+TEST_F(SociProxyTest, SelectCount) {
+    createTables(sql);
+    auto people = generateData(10, false);
+    insertPeople(sql, people);
+    int count;
+    sql << "SELECT COUNT(*) FROM people", soci::into(count);
+    EXPECT_EQ(count, people.size());
+}
+
+TEST_F(SociProxyTest, SelectRowsWhenEmpty) {
+    createTables(sql);
+    soci::rowset<soci::row> rows (sql.prepare << "SELECT * FROM PEOPLE");
+    int count = 0;
+    for (auto& row : rows) {
+        count += 1;
+    }
+    EXPECT_EQ(count, 0);
+}

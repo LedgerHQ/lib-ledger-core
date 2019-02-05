@@ -111,18 +111,35 @@ typename LocalRef<T>::pointer release(LocalRef<T>&& x) noexcept { return x.relea
  */
 class jni_exception : public std::exception {
     GlobalRef<jthrowable> m_java_exception;
+    std::string m_backtrace;
+
 public:
     jni_exception(JNIEnv * env, jthrowable java_exception)
         : m_java_exception(env, java_exception) {
         assert(java_exception);
+        capture_backtrace();
     }
     jthrowable java_exception() const { return m_java_exception.get(); }
+
+    const std::string get_backtrace() const { return m_backtrace; }
 
     /*
      * Sets the pending JNI exception using this Java exception.
      */
     void set_as_pending(JNIEnv * env) const noexcept;
+
+private:
+    void capture_backtrace();
 };
+
+/*
+ * Helpers method to work with Java strings
+ */
+
+/*
+ * Convert the given string in C++ std::string and releases the jstring instance.
+ */
+void jniConvertAndReleaseJstring(JNIEnv * env, jstring& string, std::string & out);
 
 /*
  * Throw if any Java exception is pending in the JVM.

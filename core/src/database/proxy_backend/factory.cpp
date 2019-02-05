@@ -48,13 +48,7 @@ const std::shared_ptr<api::DatabaseEngine>& proxy_backend_factory::getEngine() c
 
 std::shared_ptr<ledger::core::api::DatabaseConnectionPool>
 proxy_backend_factory::get_pool(connection_parameters const &parameters) const {
-    auto it = _pools.find(parameters.get_connect_string());
-    if (it == _pools.end()) {
-        auto pool = _engine->connect(parameters.get_connect_string());
-        _pools.insert(std::make_pair(parameters.get_connect_string(), pool));
-        return pool;
-    }
-    return it->second;
+    return _engine->connect(parameters.get_connect_string());
 }
 
 SOCI_PROXY_DECL backend_factory const* soci::factory_proxy(const std::shared_ptr<api::DatabaseEngine>& engine) {
