@@ -105,7 +105,7 @@ DatabaseResultSet = interface +j +n +o {
     # @return The number of remaining rows before the result set needs to load more rows.
     available(): i32;
 
-    # Internally move the result set to the next available row. This method may fail if there is no further row to fetch.
+    # Internally move the result set to the next available row. This method may fail if there is now further row to fetch.
     # @return Return a result set pointing to the next row.
     next();
 

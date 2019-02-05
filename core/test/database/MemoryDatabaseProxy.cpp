@@ -189,7 +189,7 @@ private:
 class Results : public api::DatabaseResultSet, public std::enable_shared_from_this<Results> {
 public:
 
-    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)) {
+    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)), _currentIndex(-1) {
         // We read all results, this is not really efficient but this wrapper is only for tests
        read_all(db);
     }
@@ -245,6 +245,7 @@ private:
 
     std::list<std::shared_ptr<ResultRow>> _rows;
     std::list<std::shared_ptr<ResultRow>>::iterator _it;
+    int _currentIndex;
     const int _changes;
 };
 
