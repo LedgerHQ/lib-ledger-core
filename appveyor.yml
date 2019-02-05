@@ -48,7 +48,7 @@ install:
 - mkdir C:\projects\deps
 - cd C:\projects\deps
 - if not exist "%CMAKE_DIR%" (
-    set CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-rc6-win64-x64.zip"
+    set CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-win64-x64.zip"
     appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
     7z x cmake.zip -oC:\projects\deps > nul
     move C:\projects\deps\cmake-* C:\projects\deps\cmake
