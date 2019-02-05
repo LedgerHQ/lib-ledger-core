@@ -6,6 +6,8 @@
   only memory-wise but also type-safety-wise. The internal interfaces were also redesigned to allow
   for a smoother transition to C++17’s `std::variant` when we see fit.
 
+- Update used libraries, to be able to compile under VS2017
+
 ## 2.5.0
 
 > 2019/01/22
