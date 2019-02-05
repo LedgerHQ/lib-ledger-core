@@ -19,6 +19,7 @@ this same document.
         - `misc/`: for anything else (like adding docs, READMEs, etc.).
   - We open a *pull request* when we think the branch should be merged. **Becareful: when opening
     the pull request, select `develop` as base branch!**
+  - Do not forget to update the CHANGELOG.md **before** opening a pull request.
   - We review the *pull request*. We don’t set a fixed number of reviewers, but don’t forget the
     golden rule: the more people review, the better.
   - If your change impacts no path from the CI (for instance, you just added a new tool or fixed a
@@ -32,9 +33,28 @@ this same document.
         to your changes.
       - Do the same thing in [appveyor.yml] for the `LIB_VERSION` key.
       - [We appologize for not having automated that yet.](#117)
+  - Do not forget to bump the version, if needed, **before** opening a pull request
   - We *tag* stable releases on `master` with [SemVer].
   - We *tag* instable releases on `develop` with the special `-rc` suffix to support *release
     candidates*.
+
+## Release process
+  - Development: fixes, features are done on specific branches on developers' fork,
+  - Pull requests: submitted to LedgerHQ/develop with updated CHANGELOG.md,
+  - Merge into `LedgerHQ/develop`: triggers CI builds and deploys under `x.y.z-rc-commitHash`,
+  - Merge into `LedgerHQ/master`: once a version is confirmed to be stable at least by one of our clients
+    (Vault or Live), we bump project’s version, for this we have a special pull request. Once merged in
+    `LedgerHQ/master` and tagged as a stable release `x.y.z`, a build and a deployment are triggered.
+    To sum up, tags point to stable releases that are in production. **These versions should be used by any application
+    client of libcore**
+  - Patches: only applied on previously affected releases that has been in production, to apply a patch to a version `x.y.z`,
+    we create a branch from master at `x.y.z` tag, push all fixes to it, once stable (confirmed by client)
+    we tag a new patched stable release (e.g. `x.y.(z+1)`). Then this branch is merged to `LedgerHQ/develop`.
+    Each 3/4 weeks we clean upstream from unused branches.
+
+<p align="center">
+ <img src="/ressources/patch.png" width="550"/>
+</p>
 
 ## About coin integration
 
