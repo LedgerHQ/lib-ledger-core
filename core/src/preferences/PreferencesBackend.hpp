@@ -99,8 +99,8 @@ namespace ledger {
             // fly with the old password.
             void resetEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                const std::string& newPassword,
-                const std::string& oldPassword
+                const std::string& oldPassword,
+                const std::string& newPassword
             );
 
             /// Clear all preferences.

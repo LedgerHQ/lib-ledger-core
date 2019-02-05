@@ -308,7 +308,7 @@ TEST_F(PreferencesTest, ResetEncryption) {
     ASSERT_EQ(preferences->getInt("int", 0), 9246);
     ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
 
-    backend->resetEncryption(rng, "new password!", password);
+    backend->resetEncryption(rng, password, "new password!");
 
     ASSERT_EQ(preferences->getString("string", ""), "dawg");
     ASSERT_EQ(preferences->getInt("int", 0), 9246);

@@ -213,8 +213,8 @@ namespace ledger {
 
         void PreferencesBackend::resetEncryption(
             const std::shared_ptr<api::RandomNumberGenerator>& rng,
-            const std::string& newPassword,
-            const std::string& oldPassword
+            const std::string& oldPassword,
+            const std::string& newPassword
         ) {
             // turn on encryption with the old password first
             setEncryption(rng, oldPassword);
