@@ -19,3 +19,6 @@
 [submodule "core/test/lib/googletest"]
     path = core/test/lib/googletest
     url = https://github.com/google/googletest.git
+[submodule "core/lib/fmt"]
+	path = core/lib/fmt
+	url = https://github.com/fmtlib/fmt.git
