@@ -191,7 +191,7 @@ private:
 class Results : public api::DatabaseResultSet, public std::enable_shared_from_this<Results> {
 public:
 
-    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)) {
+    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)), _currentIndex(-1) {
         // We read all results, this is not really efficient but this wrapper is only for tests
        read_all(db);
     }
@@ -217,21 +217,16 @@ public:
         return _changes;
     }
 
-    int32_t getRowNumber() override {
-        return static_cast<int32_t>(_rows.size());
-    }
-
     int32_t available() override {
-        return static_cast<int32_t>(_rows.size());
+        return std::min(1, static_cast<int32_t>(_rows.size() - std::max(_currentIndex, 0)));
     }
 
     bool hasNext() override {
         return std::distance(_it, _rows.end()) > 1;
     }
 
-    std::shared_ptr<DatabaseResultSet> next() override {
+    void next() override {
         _it++;
-        return shared_from_this();
     }
 
     void close() override {
@@ -248,6 +243,7 @@ private:
 
     std::list<std::shared_ptr<ResultRow>> _rows;
     std::list<std::shared_ptr<ResultRow>>::iterator _it;
+    int _currentIndex;
     const int _changes;
 };
 

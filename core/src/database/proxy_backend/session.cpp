@@ -35,11 +35,13 @@ using namespace soci;
 using namespace ledger::core;
 
 proxy_session_backend::proxy_session_backend(const std::shared_ptr<ledger::core::api::DatabaseConnection> &connection) {
+    SP_PRINT("CREATE NEW DB SESSION " << this)
     _conn = connection;
 }
 
 proxy_session_backend::~proxy_session_backend() {
-
+    SP_PRINT("DELETE DB SESSION " << this)
+    _conn->close();
 }
 
 void proxy_session_backend::begin() {
@@ -55,6 +57,7 @@ void proxy_session_backend::rollback() {
 }
 
 void proxy_session_backend::clean_up() {
+    SP_PRINT("CLEANUP SESSION " << this)
     _conn->close();
 }
 
@@ -63,8 +66,7 @@ proxy_statement_backend *proxy_session_backend::make_statement_backend() {
 }
 
 proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
-    // TODO: Create ROWID interface
-    return nullptr;
+    throw make_exception(api::ErrorCode::DATABASE_EXCEPTION , "ROWID is not supported by database backend");
 }
 
 proxy_blob_backend *proxy_session_backend::make_blob_backend() {
