@@ -2,6 +2,8 @@ project(ledger_core_tests)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+cmake_policy(SET CMP0077 NEW) # disallow options to override normal variable (not cached)
+
 set(gtest_force_shared_crt ON BOOL "Build gtest with shared runtime")
 add_subdirectory(lib/googletest)
 
