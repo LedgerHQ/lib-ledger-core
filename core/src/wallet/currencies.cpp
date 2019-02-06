@@ -272,6 +272,17 @@ namespace ledger {
                             .unit("mwei", 6, "mwei")
                             .unit("gwei", 9, "gwei");
 
+            const api::Currency ENERGI =
+                    Currency("energi")
+                            .forkOfBitcoin(networks::getNetworkParameters("energi"))
+                            .bip44(9797)
+                            .paymentUri("energi")
+                            .unit("atom", 0, "atoms")
+                            .unit("energi", 8, "NRG")
+                            .unit("milli-energi", 5, "mNRG")
+                            .unit("micro-energi", 2, "μNRG");
+
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -298,7 +309,8 @@ namespace ledger {
                 STAKENET,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
-                ETHEREUM_CLASSIC
+                ETHEREUM_CLASSIC,
+                ENERGI,
             });
         }
     }

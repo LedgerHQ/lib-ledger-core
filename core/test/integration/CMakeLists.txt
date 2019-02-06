@@ -73,6 +73,7 @@ add_test (NAME ledger-core-integration-BitcoinKeychains.KomodoKeychainDerivation
 add_test (NAME ledger-core-integration-BitcoinKeychains.PosWalletKeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.PosWalletKeychainDerivation")
 add_test (NAME ledger-core-integration-BitcoinKeychains.PivxKeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.PivxKeychainDerivation")
 add_test (NAME ledger-core-integration-BitcoinKeychains.ClubcoinKeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.ClubcoinKeychainDerivation")
+add_test (NAME ledger-core-integration-BitcoinKeychains.EnergiKeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.EnergiKeychainDerivation")
 add_test (NAME ledger-core-integration-BitcoinKeychains.SimpleUsedReceiveAddresses COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.SimpleUsedReceiveAddresses")
 add_test (NAME ledger-core-integration-BitcoinKeychains.SimpleUsedChangeAddresses COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.SimpleUsedChangeAddresses")
 add_test (NAME ledger-core-integration-BitcoinKeychains.NonConsecutivesReceiveUsed COMMAND ledger-core-integration-tests --gtest_filter="BitcoinKeychains.NonConsecutivesReceiveUsed")

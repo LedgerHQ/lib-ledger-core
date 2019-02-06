@@ -172,3 +172,8 @@ KeychainTestData ETHEREUM_DATA(ledger::core::networks::getEthLikeNetworkParamete
                                ledger::core::currencies::ETHEREUM,
                                "xpub6DQva5oVJA2gMT4Z2hUfuXMgss4MdGVUoPohC2qp3cZYM7oKyLTaENeRbm42mxF5Y6r1VZK2vmsvxWtwzMBsyYztNQub8natARB2Dk1bdgJ",
                                "44'/60'/0'");
+
+KeychainTestData ENERGI_DATA(ledger::core::networks::getNetworkParameters("energi"),
+                           ledger::core::currencies::ENERGI,
+                           "nprvGnSDGVHJd8Z6Ljwagt6coc7AeUVTy6aocwxJTeAoKtQqWumV5XjA1k8xkYCNfVXVWMPenZvMYTkjRYgHaiAkh8LbAcVSnep4tttprK7GN4Up",
+                           "44'/9797'/0'");

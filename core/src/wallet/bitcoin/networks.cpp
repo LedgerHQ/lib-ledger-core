@@ -410,6 +410,21 @@ namespace ledger {
                             {}
                     );
                     return STAKENET;
+                } else if (networkName == "energi") {
+                    static const api::BitcoinLikeNetworkParameters ENERGI(
+                            "energi",
+                            {0x21},
+                            {0x35},
+                            {0x03, 0xB8, 0xC8, 0x56},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "DarkCoin Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return ENERGI;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -439,7 +454,8 @@ namespace ledger {
                 getNetworkParameters("pivx"),
                 getNetworkParameters("clubcoin"),
                 getNetworkParameters("decred"),
-                getNetworkParameters("stakenet")
+                getNetworkParameters("stakenet"),
+                getNetworkParameters("energi")
             });
         }
     }

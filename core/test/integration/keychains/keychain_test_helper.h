@@ -114,4 +114,5 @@ extern KeychainTestData PIVX_DATA;
 extern KeychainTestData CLUBCOIN_DATA;
 extern KeychainTestData DECRED_DATA;
 extern KeychainTestData ETHEREUM_DATA;
+extern KeychainTestData ENERGI_DATA;
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
