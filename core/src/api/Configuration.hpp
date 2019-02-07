@@ -39,7 +39,7 @@ public:
     static std::string const BLOCKCHAIN_EXPLORER_VERSION;
 
     /** Sets the API port (e.g. for XRP it is 51234) */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_PORT;
+    static std::string const BLOCKCHAIN_EXPLORER_PORT;
 
     /** Selects the blockchain observer engine (Ledger's API) */
     static std::string const BLOCKCHAIN_OBSERVER_ENGINE;

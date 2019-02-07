@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 
 static_assert(sizeof(jlong) >= sizeof(void*), "must be able to fit a void* into a jlong");
 
@@ -124,6 +125,63 @@ void jni_exception::set_as_pending(JNIEnv * env) const noexcept {
     env->Throw(java_exception());
 }
 
+void jniConvertAndReleaseJstring(JNIEnv * env, jstring& string, std::string & out) {
+    const char* chars = env->GetStringUTFChars(string, 0);
+    out += chars;
+    env->ReleaseStringUTFChars(string, chars);
+    env->DeleteLocalRef(string);
+}
+
+static void walk_through_backtrace( JNIEnv *                env,
+                                    jthrowable              exception,
+                                    jmethodID               throwable_get_cause,
+                                    jmethodID               throwable_getStackTrace,
+                                    jmethodID               throwable_toString,
+                                    jmethodID               ste_toString,
+                                    std::ostringstream &    out) {
+    // Output exception message
+    jstring jmessage = (jstring) env->CallObjectMethod(exception, throwable_toString);
+    std::string message;
+    jniConvertAndReleaseJstring(env, jmessage, message);
+    out << std::endl << message;
+
+    // Output StackTraceElements one by one
+    LocalRef<jobjectArray> elements { (jobjectArray) env->CallObjectMethod(exception, throwable_getStackTrace)};
+    if (elements != nullptr) {
+        jsize length = env->GetArrayLength(elements);
+        for (jsize index = 0; index < length; index++) {
+            LocalRef<jobject> element {env->GetObjectArrayElement(elements.get(), index)};
+            jstring element_str = (jstring) env->CallObjectMethod(element, ste_toString);
+            message.clear();
+            jniConvertAndReleaseJstring(env, element_str, message);
+            out << std::endl << "    " << message;
+        }
+    }
+
+    // Check if the exception has a cause, if it does walk_through_backtrace once again
+    LocalRef<jthrowable> cause {(jthrowable) env->CallObjectMethod(exception, throwable_get_cause)};
+    if (cause != nullptr) {
+        walk_through_backtrace(env, cause.get(), throwable_get_cause,
+                               throwable_getStackTrace,
+                               throwable_toString, ste_toString, out);
+    }
+}
+
+void jni_exception::capture_backtrace() {
+    JNIEnv* env = jniGetThreadEnv();
+    GlobalRef<jclass> throwable_class = jniFindClass("java/lang/Throwable");
+    jmethodID throwable_get_cause = jniGetMethodID(throwable_class.get(), "getCause", "()Ljava/lang/Throwable;");
+    jmethodID throwable_getStackTrace = jniGetMethodID(throwable_class.get(), "getStackTrace", "()[Ljava/lang/StackTraceElement;");
+    jmethodID throwable_toString = jniGetMethodID(throwable_class.get(), "toString", "()Ljava/lang/String;");
+    GlobalRef<jclass> ste_class = jniFindClass("java/lang/StackTraceElement");
+    jmethodID ste_toString = jniGetMethodID(ste_class.get(), "toString", "()Ljava/lang/String;");
+
+    std::ostringstream oss;
+
+    walk_through_backtrace(env, m_java_exception.get(), throwable_get_cause,
+            throwable_getStackTrace, throwable_toString, ste_toString, oss);
+    m_backtrace = oss.str();
+}
 
 void jniExceptionCheck(JNIEnv * env) {
     if (!env) {

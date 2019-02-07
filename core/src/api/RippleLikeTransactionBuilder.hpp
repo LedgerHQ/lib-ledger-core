@@ -8,6 +8,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,7 +23,7 @@ class RippleLikeTransaction;
 class RippleLikeTransactionCallback;
 struct Currency;
 
-class RippleLikeTransactionBuilder {
+class LIBCORE_EXPORT RippleLikeTransactionBuilder {
 public:
     virtual ~RippleLikeTransactionBuilder() {}
 

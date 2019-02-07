@@ -9,6 +9,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -21,7 +28,7 @@ class RippleLikeAddress;
  * since there is an analogy between block and ledger concepts it's ok for the moment ...
  *Class representing a Ripple transaction
  */
-class RippleLikeTransaction {
+class LIBCORE_EXPORT RippleLikeTransaction {
 public:
     virtual ~RippleLikeTransaction() {}
 

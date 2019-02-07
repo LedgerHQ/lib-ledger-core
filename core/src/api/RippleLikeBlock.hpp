@@ -7,11 +7,18 @@
 #include <chrono>
 #include <cstdint>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 /**Class representing Bitcoin block */
-class RippleLikeBlock {
+class LIBCORE_EXPORT RippleLikeBlock {
 public:
     virtual ~RippleLikeBlock() {}
 

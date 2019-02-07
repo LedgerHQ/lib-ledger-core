@@ -119,7 +119,6 @@ public:
      */
     virtual std::shared_ptr<RippleLikeOperation> asRippleLikeOperation() = 0;
 
-    /** Is this an instance of a Bitcoin-like operation? */
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
 
     /** Same as isInstanceOfBitcoinLikeOperation for ethereum. */

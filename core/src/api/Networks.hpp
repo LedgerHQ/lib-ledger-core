@@ -28,6 +28,7 @@ public:
     /** The Ethereum network parameters. */
     static EthereumLikeNetworkParameters ethereum();
 
+    /** The Ripple network parameters. */
     static RippleLikeNetworkParameters ripple();
 };
 

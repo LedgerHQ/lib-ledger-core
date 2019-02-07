@@ -5,13 +5,20 @@
 #define DJINNI_GENERATED_RIPPLELIKEOPERATION_HPP
 
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class RippleLikeTransaction;
 
 /**Class representing a Ripple Operation */
-class RippleLikeOperation {
+class LIBCORE_EXPORT RippleLikeOperation {
 public:
     virtual ~RippleLikeOperation() {}
 

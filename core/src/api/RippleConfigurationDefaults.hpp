@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,21 +15,21 @@
 
 namespace ledger { namespace core { namespace api {
 
-class RippleConfigurationDefaults {
+class LIBCORE_EXPORT RippleConfigurationDefaults {
 public:
     virtual ~RippleConfigurationDefaults() {}
 
-    static LIBCORE_EXPORT std::string const RIPPLE_DEFAULT_API_ENDPOINT;
+    static std::string const RIPPLE_DEFAULT_API_ENDPOINT;
 
-    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S2;
+    static std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S2;
 
-    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S3;
+    static std::string const RIPPLE_OBSERVER_NODE_ENDPOINT_S3;
 
-    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S2;
+    static std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S2;
 
-    static LIBCORE_EXPORT std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S3;
+    static std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S3;
 
-    static LIBCORE_EXPORT std::string const RIPPLE_DEFAULT_PORT;
+    static std::string const RIPPLE_DEFAULT_PORT;
 };
 
 } } }  // namespace ledger::core::api
