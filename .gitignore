@@ -5,6 +5,7 @@
 /core/lib/secp256k1/lib/
 /core/lib/secp256k1/src/
 /core/lib/secp256k1/tmp/
+/core/lib/sqlcipher/
 .idea/
 build/
 node_modules/
