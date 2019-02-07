@@ -5,6 +5,9 @@
 - Change the internal representation of `DynamicObject`. The new representation is optimized not
   only memory-wise but also type-safety-wise. The internal interfaces were also redesigned to allow
   for a smoother transition to C++17’s `std::variant` when we see fit.
+- Add support for changing password in `Preferences`. This is not exposed directly via the
+  interface: instead, you must use the password changing mechanisme of `WalletPool`. See below for
+  further details.
 
 ## 2.5.0
 
