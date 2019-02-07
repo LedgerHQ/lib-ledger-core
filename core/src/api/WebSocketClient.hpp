@@ -18,14 +18,29 @@ namespace ledger { namespace core { namespace api {
 
 class WebSocketConnection;
 
+/** A connected client via Web Socket. */
 class WebSocketClient {
 public:
     virtual ~WebSocketClient() {}
 
+    /**
+     * Connect to a given URL via a Web Socket connection.
+     * @param url, the URL to connect to
+     * @connection, the Web Socket connection to use
+     */
     virtual void connect(const std::string & url, const std::shared_ptr<WebSocketConnection> & connection) = 0;
 
+    /**
+     * Send a message to a given client.
+     * @connection, the Web Socket connection to use
+     * @data, the message to send
+     */
     virtual void send(const std::shared_ptr<WebSocketConnection> & connection, const std::string & data) = 0;
 
+    /**
+     * Disconnect a client.
+     * @connection, the Web Socket connection to use
+     */
     virtual void disconnect(const std::shared_ptr<WebSocketConnection> & connection) = 0;
 };
 

@@ -23,40 +23,40 @@ class Amount;
 class BitcoinLikeScript;
 class DerivationPath;
 
-/**Class representing Bitcoin outputs */
+/** Class representing Bitcoin outputs. */
 class LIBCORE_EXPORT BitcoinLikeOutput {
 public:
     virtual ~BitcoinLikeOutput() {}
 
     /**
-     *Get transaction hash in which output was 'created'
-     *@return String, transaction hash containing output
+     * Get transaction hash in which output was 'created'.
+     * @return String, transaction hash containing output
      */
     virtual std::string getTransactionHash() = 0;
 
     /**
-     *Get index of output in list of all outputs contained in same transaction
-     *@return 32 bits integer, index of output
+     * Get index of output in list of all outputs contained in same transaction.
+     * @return 32 bits integer, index of output
      */
     virtual int32_t getOutputIndex() = 0;
 
     /**
-     *Get amount of output
-     *@return Amount object, amount of output
+     * Get amount of output.
+     * @return Amount object, amount of output
      */
     virtual std::shared_ptr<Amount> getValue() = 0;
 
     /**
-     *Get script (witness script) cryptographic puzzle that determines the conditions to spend the output
-     *@return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
+     * Get script (witness script) cryptographic puzzle that determines the conditions to spend the output.
+     * @return in Bytes (variable size depending on type of script P2PKH, P2SH), locking script to spend UTXO
      */
     virtual std::vector<uint8_t> getScript() = 0;
 
     virtual std::shared_ptr<BitcoinLikeScript> parseScript() = 0;
 
     /**
-     *Get address that spent the output
-     *@return Optional String, address that spent
+     * Get address that spent the output.
+     * @return Optional String, address that spent
      */
     virtual std::experimental::optional<std::string> getAddress() = 0;
 

@@ -21,7 +21,8 @@ node tests/basic-test.js
 LIB_VERSION=$(node tests/lib-version.js)
 
 if [ -z "$CIRCLE_TAG" ]; then
-	LIB_VERSION="$LIB_VERSION-rc"
+	COMMIT_HASH= echo $CIRCLE_SHA1 | cut -c 1-6
+	LIB_VERSION="$LIB_VERSION-rc-$COMMIT_HASH"
 fi
 
 echo "export LIB_VERSION=$LIB_VERSION" >> $BASH_ENV

@@ -11,9 +11,11 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
+/** Formatting rules to format amounts to strings. */
 struct FormatRules final {
+    /** How should we round decimal values? */
     RoundingMode roundingMode;
+    /** The maximum number of decimals formatted decimals will have. */
     int32_t maxNumberOfDecimals;
 
     FormatRules(RoundingMode roundingMode_,

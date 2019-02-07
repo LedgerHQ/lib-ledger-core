@@ -67,10 +67,12 @@ function command_android {
   if [ "$ARCH" == "armeabi-v7a" ]; then
     export TOOLCHAIN_NAME='android-ndk-r16b-api-21-armeabi-v7a-clang-libcxx14'
   elif [ "$ARCH" == "arm64-v8a" ]; then
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-24-arm64-v8a-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-arm64-v8a-neon-clang-libcxx14'
   else
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-16-x86-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-x86-clang-libcxx'
   fi
+  #This is useful for SQLCipher/config.guess
+  export LIBC=gnu
   BUILD_CONFIG="Release"
   add_to_cmake_params -DCMAKE_BUILD_TYPE:STRING=Release -DBUILD_TESTS=OFF -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 }
@@ -104,6 +106,8 @@ export POLLY_ROOT=`pwd`/toolchains/polly
 ###
 # Clean
 ###
+echo "=====>Cleaning SQLCipher"
+rm -rf core/lib/sqlcipher || echo "Failed to clean sqlcipher"
 if [ "$1" == "ios" -o "$1" == "android" ]; then
     echo "=====>Cleaning to prepare clean build"
     echo "=====>Cleaning secp256k1"
@@ -152,5 +156,5 @@ if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j4
+    make -j6
 fi

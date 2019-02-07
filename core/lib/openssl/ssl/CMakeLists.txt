@@ -31,8 +31,8 @@ FILE(GLOB LIBSRC *.c *.h)
 list(REMOVE_ITEM LIBSRC
         ${CMAKE_CURRENT_SOURCE_DIR}/ssl_task.c
         ${CMAKE_CURRENT_SOURCE_DIR}/ssltest.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/heartbeat_test.c
         ${CMAKE_CURRENT_SOURCE_DIR}/clienthellotest.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/heartbeat_test.c
         )
 if(BUILD_OBJECT_LIBRARY_ONLY)
     set( LIBHDR ssl.h kssl.h ssl2.h ssl3.h tls1.h dtls1.h ssl23.h srtp.h)

@@ -26,7 +26,7 @@ class BitcoinLikeInput;
 class BitcoinLikeOutput;
 struct EstimatedSize;
 
-/**Class representing a Bitcoin transaction */
+/** Class representing a Bitcoin transaction. */
 class LIBCORE_EXPORT BitcoinLikeTransaction {
 public:
     virtual ~BitcoinLikeTransaction() {}
@@ -34,10 +34,10 @@ public:
     /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;
 
-    /** Get the input of the transaction */
+    /** Get the input of the transaction. */
     virtual std::vector<std::shared_ptr<BitcoinLikeInput>> getInputs() = 0;
 
-    /** Get the output of the transaction */
+    /** Get the output of the transaction. */
     virtual std::vector<std::shared_ptr<BitcoinLikeOutput>> getOutputs() = 0;
 
     /** Get the block in which the transaction is inserted if the transaction is confirmed. */
@@ -51,14 +51,14 @@ public:
 
     /**
      * Get the time when the transaction was issued or the time of the block including
-     * this transaction
+     * this transaction.
      */
     virtual std::chrono::system_clock::time_point getTime() = 0;
 
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
     virtual std::experimental::optional<int32_t> getTimestamp() = 0;
 
-    /** Get Transaction version */
+    /** Get Transaction version. */
     virtual int32_t getVersion() = 0;
 
     /** Serialize the transaction to its raw format. */

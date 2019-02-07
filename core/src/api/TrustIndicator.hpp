@@ -19,7 +19,7 @@ namespace ledger { namespace core { namespace api {
 
 enum class TrustLevel;
 
-/**TODO */
+/** The trust indicator of an operation. */
 class LIBCORE_EXPORT TrustIndicator {
 public:
     virtual ~TrustIndicator() {}

@@ -15,6 +15,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** Available keychains policies. */
 class LIBCORE_EXPORT KeychainEngines {
 public:
     virtual ~KeychainEngines() {}

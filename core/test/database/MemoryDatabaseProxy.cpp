@@ -35,7 +35,12 @@
 #include <api/DatabaseStatement.hpp>
 #include <api/DatabaseBlob.hpp>
 #include <api/DatabaseResultSet.hpp>
-#include <sqlite3.h>
+#ifdef SQLCIPHER
+    #include <sqlcipher/sqlite3.h>
+#else
+    #include <sqlite3.h>
+#endif
+//#include <soci-sqlite3.h>
 #include <database/proxy_backend/soci-proxy.h>
 #include <soci.h>
 #include <soci-backend.h>
@@ -331,7 +336,7 @@ private:
 
 class Connection : public api::DatabaseConnection {
 public:
-    Connection(sqlite3* db) : _db(db) {};
+    Connection(sqlite3* db, const std::string &dbName) : _db(db), _dbName(dbName) {};
     
     std::shared_ptr<api::DatabaseStatement> prepareStatement(const std::string &query, bool repeatable) override {
         return std::make_shared<Statement>(_db, query);
@@ -357,18 +362,97 @@ public:
         return std::make_shared<Blob>();
     }
 
+    void check_sqlite_err(sqlite3 *db, int result, const std::string &errorMessage) {
+        if (SQLITE_OK != result)
+        {
+            const char *errMsg = sqlite3_errmsg(db);
+            std::ostringstream ss;
+            ss << errorMessage << errMsg;
+            throw make_exception(api::ErrorCode::RUNTIME_ERROR, ss.str());
+        }
+    };
+
+    void changePassword(const std::string & oldPassword, const std::string & newPassword) {
+        setPassword(oldPassword);
+        if (!newPassword.empty()) {
+#ifdef SQLCIPHER
+            auto res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
+            check_sqlite_err(_db, res, "Failed to change database's password. ");
+#endif
+        }
+    };
+
+    void setPassword(const std::string &password) {
+        if (!password.empty()) {
+#ifdef SQLCIPHER
+            auto res = sqlite3_key_v2(_db, _dbName.c_str(), password.c_str(), strlen(password.c_str()));
+            check_sqlite_err(_db, res, "Failed to encrypt database. ");
+#endif
+        }
+    };
+
 private:
     sqlite3* _db;
+    std::string _dbName;
+};
+
+// Parse parameters got from opening a session
+// Same as in soci_sqlite
+static std::tuple<std::string, std::string, std::string> parseParameters(const std::string &parameters) {
+    std::string passKey, newPassKey;
+    std::string dbname(parameters);
+    std::stringstream ssconn(parameters);
+    while (!ssconn.eof() && ssconn.str().find('=') != std::string::npos) {
+        std::string key, val;
+        std::getline(ssconn, key, '=');
+        std::getline(ssconn, val, ' ');
+
+        if (val.size()>0 && val[0]=='\"') {
+            std::string quotedVal = val.erase(0, 1);
+
+            if (quotedVal[quotedVal.size()-1] ==  '\"') {
+                quotedVal.erase(val.size()-1);
+            }
+            else {// space inside value string
+                std::getline(ssconn, val, '\"');
+                quotedVal = quotedVal + " " + val;
+                std::string keepspace;
+                std::getline(ssconn, keepspace, ' ');
+            }
+
+            val = quotedVal;
+        }
+
+        if ("dbname" == key || "db" == key) {
+            dbname = val;
+        }
+        else if ("key" == key) {
+            passKey = val;
+        }
+        else if ("new_key" == key) {
+            newPassKey = val;
+        }
+    }
+
+    return std::make_tuple(dbname, passKey, newPassKey);
 };
 
 class ConnectionPool : public api::DatabaseConnectionPool {
 public:
-    ConnectionPool() {
+    ConnectionPool(const std::string &connectUrl) {
         sqlite3* db;
-        if (sqlite3_open(":memory:\0", &db) != SQLITE_OK) {
+        auto params = parseParameters(connectUrl);
+        int connection_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+        if (sqlite3_open_v2(std::get<0>(params).c_str(), &db, connection_flags, NULL) != SQLITE_OK) {
             throw std::runtime_error("Unable to open database");
         }
-        _conn = std::make_shared<Connection>(db);
+        _conn = std::make_shared<Connection>(db, std::get<0>(params));
+        if (!std::get<1>(params).empty()) {
+            _conn->setPassword(std::get<1>(params));
+            if (!std::get<2>(params).empty()) {
+                _conn->changePassword(std::get<1>(params), std::get<2>(params));
+            }
+        }
     }
     std::shared_ptr<api::DatabaseConnection> getConnection() override { return _conn; }
 
@@ -377,7 +461,7 @@ private:
 };
 
 std::shared_ptr<ledger::core::api::DatabaseConnectionPool> MemoryDatabaseProxy::connect(const std::string &connectUrl) {
-    return std::make_shared<ConnectionPool>();
+    return _pool = std::make_shared<ConnectionPool>(connectUrl);
 }
 
 int32_t MemoryDatabaseProxy::getPoolSize() {

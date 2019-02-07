@@ -18,9 +18,16 @@
 namespace ledger { namespace core { namespace api {
 
 enum class RoundingMode : int {
+    /** The extra decimals are just dropped. */
     TRUNCATED,
+    /** The extra decimals are dropped and the new last decimal is rounded half down (x.0). */
     ROUND_HALF_DOWN,
+    /**
+     * The extra decimals are dropped and the new last decimal is rounded half down or middle
+     * according to the fractional part (x.0 or (x+1).0).
+     */
     ROUND_HALF_EVEN,
+    /** The extra decimals are dropped and the new last decimal is rounded half up ((x+1).0). */
     ROUND_HALF_UP,
 };
 LIBCORE_EXPORT  std::string to_string(const RoundingMode& roundingMode);

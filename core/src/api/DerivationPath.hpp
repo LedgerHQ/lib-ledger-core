@@ -37,12 +37,12 @@ public:
     /** Return true if the given index in the path is an hardened child num. */
     virtual bool isHardened(int32_t index) = 0;
 
-    /** Serialize the given path to a human readable string like "44'/0'/0'/0/0" */
+    /** Serialize the given path to a human readable string like "44'/0'/0'/0/0". */
     virtual std::string toString() = 0;
 
     /**
      * Return a derivation path without the last element, e.g. the parent of "44'/0'/0'/0/0" is
-     * "44'/0'/0'/0"
+     * "44'/0'/0'/0".
      */
     virtual std::shared_ptr<DerivationPath> getParent() = 0;
 

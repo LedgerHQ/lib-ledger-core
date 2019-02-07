@@ -13,11 +13,17 @@
 namespace ledger { namespace core { namespace api {
 
 struct EthereumLikeNetworkParameters final {
+    /** Name of the network. */
     std::string Identifier;
+    /** Constant prefix to prepend all signature messages. */
     std::string MessagePrefix;
+    /** EIP-155 chain ID. */
     std::string ChainID;
+    /** Version of the Extended Public Key standard. */
     std::vector<uint8_t> XPUBVersion;
+    /** Addition EIPs enabled for this network. */
     std::vector<std::string> AdditionalEIPs;
+    /** Delay applied to all timestamps. Used to debounce transactions. */
     int64_t TimestampDelay;
 
     EthereumLikeNetworkParameters(std::string Identifier_,

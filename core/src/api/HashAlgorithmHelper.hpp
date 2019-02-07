@@ -16,29 +16,29 @@
 
 namespace ledger { namespace core { namespace api {
 
-/** Helper class for commonly used crypto algorithms */
+/** Helper class for commonly used crypto algorithms. */
 class HashAlgorithmHelper {
 public:
     virtual ~HashAlgorithmHelper() {}
 
     /**
-     *RACE Integrity Primitives Evaluation Message Digest (used in Bitcoin)
-     *@param data in bytes, message to hash
-     *@return 160 bits hashed message
+     * RACE Integrity Primitives Evaluation Message Digest (used in Bitcoin).
+     * @param data in bytes, message to hash
+     * @return 160 bits hashed message
      */
     virtual std::vector<uint8_t> ripemd160(const std::vector<uint8_t> & data) = 0;
 
     /**
-     *Secure Hash Algorithm (used in Bitcoin)
-     *@param data in bytes, message to hash
-     *@return 256 bits hashed message
+     * Secure Hash Algorithm (used in Bitcoin).
+     * @param data in bytes, message to hash
+     * @return 256 bits hashed message
      */
     virtual std::vector<uint8_t> sha256(const std::vector<uint8_t> & data) = 0;
 
     /**
-     *Hash algorithm used in ethereum
-     *@param data in bytes, message to hash
-     *@return 256 bits hashed message
+     * Hash algorithm used in ethereum.
+     * @param data in bytes, message to hash
+     * @return 256 bits hashed message
      */
     virtual std::vector<uint8_t> keccak256(const std::vector<uint8_t> & data) = 0;
 };

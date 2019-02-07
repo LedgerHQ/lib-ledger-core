@@ -15,11 +15,12 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
+/** Available synchronization mechanisms. */
 class LIBCORE_EXPORT SynchronizationEngines {
 public:
     virtual ~SynchronizationEngines() {}
 
+    /** Synchronize via blockchain explorers. */
     static std::string const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION;
 };
 

@@ -13,17 +13,29 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** Bitcoin network parameters. */
 struct BitcoinLikeNetworkParameters final {
+    /** Name of the network. */
     std::string Identifier;
+    /** Version of the Pay To Public Hash standard. */
     std::vector<uint8_t> P2PKHVersion;
+    /** Version of the Pay To Script Hash standard. */
     std::vector<uint8_t> P2SHVersion;
+    /** Version of the Extended Public Key standard. */
     std::vector<uint8_t> XPUBVersion;
+    /** Policy to use when expressing fee amount. */
     BitcoinLikeFeePolicy FeePolicy;
+    /** Minimal amount a UTXO should have before being considered BTC dust. */
     int64_t DustAmount;
+    /** Constant prefix to prepend all signature messages. */
     std::string MessagePrefix;
+    /** Are transactions encoded with timestamp? */
     bool UsesTimestampedTransaction;
+    /** Delay applied to all timestamps. Used to debounce transactions. */
     int64_t TimestampDelay;
+    /** Bitcoin signature flag indicating what part of a transaction a signature signs. */
     std::vector<uint8_t> SigHash;
+    /** Addition BIPs enabled for this network. */
     std::vector<std::string> AdditionalBIPs;
 
     BitcoinLikeNetworkParameters(std::string Identifier_,
