@@ -25,7 +25,7 @@ public:
     virtual ~DatabaseEngine() {}
 
     /**
-     * Open a connection to a database using the given database name
+     * Open a connection to a database using the given database name.
      * @params databaseName The name of the database to open
      * @return A connection pool to the given database
      */

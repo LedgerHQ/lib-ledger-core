@@ -40,7 +40,7 @@ public:
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> addInput(const std::string & transactionHash, int32_t index, int32_t sequence) = 0;
 
     /**
-     * Add the given output to the final transaction
+     * Add the given output to the final transaction.
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> addOutput(const std::shared_ptr<Amount> & amount, const std::shared_ptr<BitcoinLikeScript> & script) = 0;
@@ -60,7 +60,10 @@ public:
      */
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> excludeUtxo(const std::string & transactionHash, int32_t outputIndex) = 0;
 
-    /** @return A reference on the same builder in order to chain calls. */
+    /**
+     * Set the the number of change addresses in the transaction builder.
+     * @return A reference on the same builder in order to chain calls.
+     */
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> setNumberOfChangeAddresses(int32_t count) = 0;
 
     /**
@@ -114,11 +117,11 @@ public:
      */
     virtual std::shared_ptr<BitcoinLikeTransactionBuilder> clone() = 0;
 
-    /** Reset the current instance to its initial state */
+    /** Reset the current instance to its initial state. */
     virtual void reset() = 0;
 
     /**
-     * Parsing unsigned transaction
+     * Parsing unsigned transaction.
      * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
      */
     static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, std::experimental::optional<int32_t> currentBlockHeight);

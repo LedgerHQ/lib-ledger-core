@@ -110,7 +110,8 @@ namespace ledger {
                std::static_pointer_cast<DatabaseBackend>(backend),
                pathResolver,
                _logger,
-               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name)
+               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
+               password.getValueOr("")
             );
 
             // Threading management

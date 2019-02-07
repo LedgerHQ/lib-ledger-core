@@ -24,39 +24,39 @@ class HttpUrlConnection;
 enum class HttpMethod;
 struct Error;
 
-/**Class representing an Http request */
+/** Class representing an Http request. */
 class LIBCORE_EXPORT HttpRequest {
 public:
     virtual ~HttpRequest() {}
 
     /**
-     *Get method of request
-     *@return HttpMethod enum entry
+     * Get method of request.
+     * @return HttpMethod enum entry
      */
     virtual HttpMethod getMethod() = 0;
 
     /**
-     *Get headers set in the request
-     *@return Map with key and value of type string
+     * Get headers set in the request.
+     * @return Map with key and value of type string
      */
     virtual std::unordered_map<std::string, std::string> getHeaders() = 0;
 
     /**
-     *Get body of request
-     *@return binary
+     * Get body of request.
+     * @return binary
      */
     virtual std::vector<uint8_t> getBody() = 0;
 
     /**
-     *Get Url of request
-     *@return string
+     * Get Url of request.
+     * @return string
      */
     virtual std::string getUrl() = 0;
 
     /**
-     *Method called when reauest is completed
-     *@param response, Optional HttpUrlConnection object, response of request if succeed
-     *@param error, optional Error structure, error returned in case of request failure
+     * Method called when reauest is completed.
+     * @param response, Optional HttpUrlConnection object, response of request if succeed
+     * @param error, optional Error structure, error returned in case of request failure
      */
     virtual void complete(const std::shared_ptr<HttpUrlConnection> & response, const std::experimental::optional<Error> & error) = 0;
 };

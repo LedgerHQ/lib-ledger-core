@@ -16,17 +16,17 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class BitcoinLikeOutput;
 
-/**Structure representing a bitcoin transaction request */
+/** Structure representing a bitcoin transaction request. */
 struct BitcoinLikeTransactionRequest final {
-    /**List of BitcoinLikeOutput objects, UTXO (Unspent Transaction Outputs) consumed by transaction's inputs */
+    /** List of BitcoinLikeOutput objects, UTXO (Unspent Transaction Outputs) consumed by transaction's inputs. */
     std::vector<std::shared_ptr<BitcoinLikeOutput>> utxo;
-    /**List of BitcoinLikeOutput objects, transaction's output */
+    /** List of BitcoinLikeOutput objects, transaction's output. */
     std::vector<std::shared_ptr<BitcoinLikeOutput>> outputs;
-    /**Optional Amount object, amount of base fees */
+    /** Optional Amount object, amount of base fees. */
     std::shared_ptr<Amount> baseFees;
-    /**Optional Amount object, amount of total fees */
+    /** Optional Amount object, amount of total fees. */
     std::shared_ptr<Amount> totalFees;
-    /**Optional 32 bits integer, transaction's lock time (refer to BitcoinLikeTransaction class) */
+    /** Optional 32 bits integer, transaction's lock time (refer to BitcoinLikeTransaction class). */
     std::experimental::optional<int32_t> lockTime;
 
     BitcoinLikeTransactionRequest(std::vector<std::shared_ptr<BitcoinLikeOutput>> utxo_,

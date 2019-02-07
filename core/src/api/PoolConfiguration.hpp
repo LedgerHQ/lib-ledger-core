@@ -15,11 +15,12 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
+/** Configuration of wallet pools. */
 class LIBCORE_EXPORT PoolConfiguration {
 public:
     virtual ~PoolConfiguration() {}
 
+    /** Name to use for the database. */
     static std::string const DATABASE_NAME;
 
     /**

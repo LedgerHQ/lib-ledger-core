@@ -34,16 +34,43 @@
 
 using namespace soci;
 
-void ledger::core::SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
-                                        const std::string &dbName, soci::session &session) {
-    session.open(*soci::factory_sqlite3(), resolver->resolveDatabasePath(dbName));
-    session << "PRAGMA foreign_keys = ON";
-}
+namespace ledger {
+    namespace core {
+        SQLite3Backend::SQLite3Backend() : DatabaseBackend() {
+        }
 
-int32_t ledger::core::SQLite3Backend::getConnectionPoolSize() {
-    return 1;
-}
+        int32_t SQLite3Backend::getConnectionPoolSize() {
+            return 1;
+        }
 
+        void SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
+                                  const std::string &dbName,
+                                  const std::string &password,
+                                  soci::session &session) {
+            _dbResolvedPath = resolver->resolveDatabasePath(dbName);
+            setPassword(password, session);
+            session << "PRAGMA foreign_keys = ON";
+        }
 
-ledger::core::SQLite3Backend::SQLite3Backend() : DatabaseBackend() {
+        void SQLite3Backend::setPassword(const std::string &password,
+                                         soci::session &session) {
+            if (_dbResolvedPath.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before setting password.");
+            }
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", password);
+            session.close();
+            session.open(*soci::factory_sqlite3(), parameters);
+        }
+
+        void SQLite3Backend::changePassword(const std::string & oldPassword,
+                                            const std::string & newPassword,
+                                            soci::session &session) {
+            if (_dbResolvedPath.empty()) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
+            }
+            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+            session.close();
+            session.open(*soci::factory_sqlite3(), parameters);
+        }
+    }
 }

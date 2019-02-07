@@ -15,43 +15,43 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Class to print logs to console */
+/** Class to print logs to console. */
 class LIBCORE_EXPORT Logger {
 public:
     virtual ~Logger() {}
 
     /**
-     *Print debug message to console
-     *@param tag, string
-     *@param message, string
+     * Print debug message to console.
+     * @param tag, string
+     * @param message, string
      */
     virtual void d(const std::string & tag, const std::string & message) = 0;
 
     /**
-     *Print information message to console
-     *@param tag, string
-     *@param message, string
+     * Print information message to console.
+     * @param tag, string
+     * @param message, string
      */
     virtual void i(const std::string & tag, const std::string & message) = 0;
 
     /**
-     *Print error message to console
-     *@param tag, string
-     *@param message, string
+     * Print error message to console.
+     * @param tag, string
+     * @param message, string
      */
     virtual void e(const std::string & tag, const std::string & message) = 0;
 
     /**
-     *Print warning message to console
-     *@param tag, string
-     *@param message, string
+     * Print warning message to console.
+     * @param tag, string
+     * @param message, string
      */
     virtual void w(const std::string & tag, const std::string & message) = 0;
 
     /**
-     *Print critical error message to console
-     *@param tag, string
-     *@param message, string
+     * Print critical error message to console.
+     * @param tag, string
+     * @param message, string
      */
     virtual void c(const std::string & tag, const std::string & message) = 0;
 };

@@ -41,11 +41,21 @@ namespace ledger {
          SQLite3Backend();
          int32_t getConnectionPoolSize() override;
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+         void init(const std::shared_ptr<api::PathResolver> &resolver,
+                   const std::string &dbName,
+                   const std::string &password,
                    soci::session &session) override;
 
+         void setPassword(const std::string &password,
+                          soci::session &session) override;
+
+         void changePassword(const std::string & oldPassword,
+                             const std::string & newPassword,
+                             soci::session &session) override;
+
      private:
-        bool _logging;
+         // Resolved path to db
+         std::string _dbResolvedPath;
      };
  }
 }

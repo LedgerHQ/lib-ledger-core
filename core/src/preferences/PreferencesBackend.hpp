@@ -95,6 +95,14 @@ namespace ledger {
             /// Data already present in the preferences are not affected.
             void unsetEncryption();
 
+            // Reset the encryption with a new password by first decrypting on the
+            // fly with the old password.
+            void resetEncryption(
+                const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                const std::string& oldPassword,
+                const std::string& newPassword
+            );
+
             /// Clear all preferences.
             void clear();
 
@@ -104,11 +112,30 @@ namespace ledger {
             std::string _dbName;
             Option<AESCipher> _cipher;
 
+            // Drop a database instance.
+            void dropInstance(const std::string &path);
+
+            // Put a single PreferencesChange.
+            void putPreferencesChange(
+                leveldb::WriteBatch& batch,
+                Option<AESCipher>& cipher,
+                const PreferencesChange& change
+            );
+
+            // Create a new salt to use with an AESCipher.
+            std::string createNewSalt(const std::shared_ptr<api::RandomNumberGenerator>& rng);
+
             // helper method used to encrypt things we want to put in leveldb
-            std::vector<uint8_t> encrypt_preferences_change(const PreferencesChange& change);
+            std::vector<uint8_t> encrypt_preferences_change(
+                const PreferencesChange& change,
+                AESCipher& cipher
+            );
 
             // helper method used to decrypt things we want to retrieve from leveldb
-            std::vector<uint8_t> decrypt_preferences_change(const std::vector<uint8_t>& data);
+            std::vector<uint8_t> decrypt_preferences_change(
+                const std::vector<uint8_t>& data,
+                AESCipher& cipher
+            );
 
             static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;

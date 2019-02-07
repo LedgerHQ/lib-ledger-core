@@ -15,6 +15,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+/** Available API to use with observers. */
 class LIBCORE_EXPORT BlockchainObserverEngines {
 public:
     virtual ~BlockchainObserverEngines() {}

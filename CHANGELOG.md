@@ -5,6 +5,17 @@
 - Change the internal representation of `DynamicObject`. The new representation is optimized not
   only memory-wise but also type-safety-wise. The internal interfaces were also redesigned to allow
   for a smoother transition to C++17’s `std::variant` when we see fit.
+- Add support for changing password in `Preferences`. This is not exposed directly via the
+  interface: instead, you must use the password changing mechanisme of `WalletPool`. See below for
+  further details.
+
+- Implement sqlite3 database encryption through SQLCipher (https://github.com/sqlcipher/sqlcipher). If the
+  `WalletPool::newInstance` is used with native (sqlite3) backend and called with a password (non-empty string),
+  the database will be encrypted. To change password, a `changeDatabasePassword` is provided.
+  SQLCipher is not available for Windows builds mainly because of build issues (C compiler containing spaces).
+
+- Changed deployement process, now RCs are deployed with format `x.y.z-rc-{COMMIT_HASH}`, this will allow us
+  not to always bump the versions when merging PRs and also keeping the binaries deployed to our bucket.
 
 - Update used libraries, to be able to compile under VS2017
 

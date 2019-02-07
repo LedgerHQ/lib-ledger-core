@@ -42,14 +42,23 @@ namespace ledger {
         explicit ProxyBackend(const std::shared_ptr<api::DatabaseEngine>& engine);
         int32_t getConnectionPoolSize() override;
 
-        void init(const std::shared_ptr<api::PathResolver> &resolver, const std::string &dbName,
+        void init(const std::shared_ptr<api::PathResolver> &resolver,
+                  const std::string &dbName,
+                  const std::string &password,
                   soci::session &session) override;
 
+        void setPassword(const std::string &password,
+                         soci::session &session) override;
+
+        void changePassword(const std::string &oldPassword,
+                            const std::string &newPassword,
+                            soci::session &session) override;
         ~ProxyBackend();
 
     private:
-            std::shared_ptr<api::DatabaseEngine> _engine;
-            const soci::backend_factory* _factory;
+        std::shared_ptr<api::DatabaseEngine> _engine;
+        const soci::backend_factory* _factory;
+        std::string _dbName;
         };
     }
 }
