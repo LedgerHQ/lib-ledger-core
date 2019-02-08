@@ -21,7 +21,7 @@ node tests/basic-test.js
 LIB_VERSION=$(node tests/lib-version.js)
 
 if [ -z "$CIRCLE_TAG" ]; then
-	COMMIT_HASH= echo $CIRCLE_SHA1 | cut -c 1-6
+	COMMIT_HASH=`echo $CIRCLE_SHA1 | cut -c 1-6`
 	LIB_VERSION="$LIB_VERSION-rc-$COMMIT_HASH"
 fi
 
