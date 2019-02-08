@@ -39,7 +39,6 @@ namespace ledger {
     namespace core {
         std::shared_ptr<spdlog::logger> logger::create(
             const std::string &name,
-            std::experimental::optional<std::string> password,
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<api::LogPrinter> &printer,
@@ -48,7 +47,7 @@ namespace ledger {
         ) {
             if (enabled) {
                 auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
-                auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, password, maxSize, 3);
+                auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, maxSize, 3);
                 auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
                 spdlog::drop(name);
 
