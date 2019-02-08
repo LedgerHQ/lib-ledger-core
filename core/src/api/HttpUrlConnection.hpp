@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
