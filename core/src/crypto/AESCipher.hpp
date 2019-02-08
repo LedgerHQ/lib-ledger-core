@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_AESCIPHER_HPP
-#define LEDGER_CORE_AESCIPHER_HPP
+
+#pragma once
 
 #include "../api/RandomNumberGenerator.hpp"
 #include <memory>
@@ -57,6 +57,3 @@ namespace ledger {
      };
  }
 }
-
-
-#endif //LEDGER_CORE_AESCIPHER_HPP
