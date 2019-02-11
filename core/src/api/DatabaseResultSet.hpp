@@ -46,7 +46,7 @@ public:
     virtual int32_t available() = 0;
 
     /**
-     * Internally move the result set to the next available row. This method may fail if there is now further row to fetch.
+     * Internally move the result set to the next available row. This method may fail if there is no further row to fetch.
      * @return Return a result set pointing to the next row.
      */
     virtual void next() = 0;
