@@ -1,0 +1,6 @@
+
+StellarLikeNetworkParameters = record {
+    # Name of the network.
+    Identifier: string;
+
+}

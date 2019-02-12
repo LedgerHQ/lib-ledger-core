@@ -2,6 +2,7 @@
 @import "../../ethereum/addresses.djinni"
 @import "../../ripple/addresses.djinni"
 @import "../../tezos/addresses.djinni"
+@import "../stellar/network.djinni"
 
 # Enum listing supported cryptocurrencies' families.
 WalletType = enum {
@@ -15,6 +16,8 @@ WalletType = enum {
     monero;
     # A Tezos-like wallet.
     tezos;
+    # A Stellar-like wallet.
+    stellar;
 }
 
 # Structure of cryptocurrency unit.
@@ -50,4 +53,6 @@ Currency = record {
     rippleLikeNetworkParameters: optional<RippleLikeNetworkParameters>;
     #Optional TezosLikeNetworkParameters, for more details refer to TezosLikeNetworkParameters doc
     tezosLikeNetworkParameters: optional<TezosLikeNetworkParameters>;
+    # Optional StellarLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
+    stellarLikeNetworkParameters: optional<StellarLikeNetworkParameters>;
 }

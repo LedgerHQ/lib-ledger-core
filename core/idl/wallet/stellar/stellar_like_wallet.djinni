@@ -1,0 +1,24 @@
+
+StellarLikeBlock = interface +c {
+
+}
+
+StellarLikeTransaction = interface +c {
+
+}
+
+StellarLikeTransactionBuilder = interface +c {
+
+}
+
+StellarLikeOperation = interface +c {
+
+}
+
+StellarLikeAccount = interface +c {
+
+}
+
+StellarLikeWallet = interface +c {
+
+}
