@@ -3,7 +3,7 @@ include(ExternalProject)
 
 
 set(OPENSSL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/openssl")
-set(OPENSSL_LIB $<TARGET_FILE:crypto>)
+set(OPENSSL_LIB $<TARGET_FILE_DIR:crypto>)
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0)
     set(OPENSSL_LIB ${CMAKE_BINARY_DIR}/core/lib/openssl/crypto/${CMAKE_BUILD_TYPE}-${CMAKE_OSX_SYSROOT})
