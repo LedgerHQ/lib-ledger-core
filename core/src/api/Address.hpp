@@ -18,6 +18,7 @@
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeAddress;
+class StellarLikeAddress;
 struct Currency;
 
 class LIBCORE_EXPORT Address {
@@ -39,6 +40,11 @@ public:
     virtual std::shared_ptr<BitcoinLikeAddress> asBitcoinLikeAddress() = 0;
 
     virtual bool isInstanceOfBitcoinLikeAddress() = 0;
+
+    /** Cast the address to a stellar like one */
+    virtual std::shared_ptr<StellarLikeAddress> asStellarLikeAddress() = 0;
+
+    virtual bool isInstanceOfStellarLikeAddress() = 0;
 
     virtual Currency getCurrency() = 0;
 
