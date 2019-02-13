@@ -37,7 +37,6 @@ namespace ledger {
         RotatingEncryptableSink::RotatingEncryptableSink(const std::shared_ptr<api::ExecutionContext> &context,
                                                          const std::shared_ptr<api::PathResolver> &resolver,
                                                          const std::string &name,
-                                                         std::experimental::optional<std::string> password,
                                                          std::size_t maxSize,
                                                          std::size_t maxFiles) {
             _context = context;
@@ -50,7 +49,6 @@ namespace ledger {
             _base_filename = name;
             _extension = "log";
 #endif
-            _password = password;
             _max_size = maxSize;
             _max_files = maxFiles;
             _file_helper.open(calc_filename(resolver, _base_filename, 0, _extension));
