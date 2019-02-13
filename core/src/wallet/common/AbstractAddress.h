@@ -50,6 +50,10 @@ namespace ledger {
 
             bool isInstanceOfBitcoinLikeAddress() override;
 
+            std::shared_ptr<api::StellarLikeAddress> asStellarLikeAddress() override;
+
+            bool isInstanceOfStellarLikeAddress() override;
+
         private:
             api::Currency _currency;
             Option<std::string> _path;

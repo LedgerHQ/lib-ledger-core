@@ -43,6 +43,8 @@
 #include <database/soci-option.h>
 #include <async/DedicatedContext.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <wallet/stellar/StellarLikeAccount.hpp>
+#include <wallet/stellar/StellarLikeWallet.hpp>
 
 namespace ledger {
     namespace core {
@@ -354,6 +356,13 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
             return getConfig();
+
+        bool AbstractWallet::isInstanceOfStellarLikeWallet() {
+            return getWalletType() == api::WalletType::STELLAR;
+        }
+
+        std::shared_ptr<api::StellarLikeWallet> AbstractWallet::asStellarLikeWallet() {
+            return asInstanceOf<StellarLikeWallet>();
         }
 
 

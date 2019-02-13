@@ -40,6 +40,7 @@ namespace ledger {
         class StellarLikeAddress : public virtual api::StellarLikeAddress, public virtual AbstractAddress {
         public:
             std::string toString() override;
+            static std::shared_ptr<StellarLikeAddress> parse(const std::string& address, const api::Currency& currency);
         };
     }
 }

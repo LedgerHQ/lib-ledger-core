@@ -37,6 +37,7 @@
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/stellar/StellarLikeAccount.hpp>
 
 namespace ledger {
     namespace core {
@@ -228,5 +229,17 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
+<<<<<<< HEAD
+=======
+
+        std::shared_ptr<api::StellarLikeAccount> AbstractAccount::asStellarLikeAccount() {
+            return std::dynamic_pointer_cast<api::StellarLikeAccount>(shared_from_this());
+        }
+
+        bool AbstractAccount::isInstanceOfStellarLikeAccount() {
+            return _type == api::WalletType::STELLAR;
+        }
+
+>>>>>>> Implement stellar methods in Common Wallet, Account, Address types
     }
 }
