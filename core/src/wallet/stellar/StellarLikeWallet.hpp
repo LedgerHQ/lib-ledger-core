@@ -40,7 +40,7 @@ namespace ledger {
 
         class StellarLikeWallet : public virtual api::StellarLikeWallet, public virtual AbstractWallet {
         public:
-            static const api::WalletType type = api::WalletType::STELLAR;
+            static const api::WalletType type;
 
             bool isSynchronizing() override;
 

@@ -34,6 +34,8 @@
 namespace ledger {
     namespace core {
 
+        const api::WalletType StellarLikeWallet::type = api::WalletType::STELLAR;
+
         bool StellarLikeWallet::isSynchronizing() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
