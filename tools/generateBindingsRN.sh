@@ -2,9 +2,18 @@
 
 PACKAGE_NAME=ledgercore
 DEST=../lib-ledger-core-react-native-bindings
-# CORE_BUILD=../lib-ledger-core-build
+DEST_IOS=$DEST/ios/Sources/react-native-ios
+DEST_IOS_OBJC=$DEST/ios/Sources/objc
+DEST_IOS_OBJCPP=$DEST/ios/Sources/objcpp
+DEST_ANDROID=$DEST/android/src/main/java/com/ledger/reactnative
 
-CORE_CPP_API=core/src/api
+CORE_CPP_API=$DEST/ios/Sources/include
+
+# prune export directories
+rm -r $DEST_IOS
+rm -r $DEST_IOS_OBJC
+rm -r $DEST_IOS_OBJCPP
+rm -r $CORE_CPP_API
 
 ./djinni/src/run \
     --idl ./core/core.djinni \
@@ -13,13 +22,13 @@ CORE_CPP_API=core/src/api
     --cpp-optional-template std::experimental::optional \
     --cpp-optional-header "\"../utils/optional.hpp\"" \
     --objc-type-prefix LG \
-    --objc-out api/core/objc \
-    --objcpp-out api/core/objcpp \
-    --react-native-objc-out $DEST/ios/Sources/react-native-ios \
+    --objc-out $DEST_IOS_OBJC \
+    --objcpp-out $DEST_IOS_OBJCPP \
+    --react-native-objc-out $DEST_IOS \
     --react-native-type-prefix RCTCore \
-    --react-include-objc-impl  ../objc-impl \
+    --react-include-objc-impl ../objc-impl \
     --react-native-objc-impl-suffix Impl \
-    --react-native-java-out $DEST/android/src/main/java/com/ledger/reactnative \
+    --react-native-java-out $DEST_ANDROID \
     --react-native-java-package com.ledger.reactnative \
     --java-package co.ledger.core \
     --trace true
