@@ -37,5 +37,10 @@ namespace ledger {
         std::string StellarLikeAddress::toString() {
             return std::string();
         }
+
+        std::shared_ptr<StellarLikeAddress>
+        StellarLikeAddress::parse(const std::string &address, const api::Currency &currency) {
+            return nullptr;
+        }
     }
 }
