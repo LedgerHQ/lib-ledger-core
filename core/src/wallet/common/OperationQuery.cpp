@@ -188,6 +188,7 @@ namespace ledger {
                 case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
+                case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
             }
         }
 
@@ -225,6 +226,10 @@ namespace ledger {
 
         void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation)");
+        }
+
+        void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation) {
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation)");
         }
     }
 }
