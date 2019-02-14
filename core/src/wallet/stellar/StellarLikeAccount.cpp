@@ -38,7 +38,7 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
 
-        std::shared_ptr<EventBus> StellarLikeAccount::synchronize() {
+        std::shared_ptr<api::EventBus> StellarLikeAccount::synchronize() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
 
