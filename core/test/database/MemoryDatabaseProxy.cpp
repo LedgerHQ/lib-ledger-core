@@ -49,6 +49,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <algorithm>
+#include <iterator>
 
 #define BIND(Type) \
     auto pos = sqlite3_bind_parameter_index(_stmt, name.c_str()); \
@@ -191,7 +192,7 @@ private:
 class Results : public api::DatabaseResultSet, public std::enable_shared_from_this<Results> {
 public:
 
-    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)), _currentIndex(-1) {
+    Results(sqlite3* db, sqlite3_stmt* st) : _stmt(st), _changes(sqlite3_changes(db)) {
         // We read all results, this is not really efficient but this wrapper is only for tests
        read_all(db);
     }
@@ -219,7 +220,7 @@ public:
     }
 
     int32_t available() override {
-        return std::min(1, static_cast<int32_t>(_rows.size() - std::max(_currentIndex, 0)));
+        return std::min(1, (int) std::distance(_it, _rows.end()));
     }
 
     bool hasNext() override {
@@ -244,7 +245,6 @@ private:
 
     std::list<std::shared_ptr<ResultRow>> _rows;
     std::list<std::shared_ptr<ResultRow>>::iterator _it;
-    int _currentIndex;
     const int _changes;
 };
 
