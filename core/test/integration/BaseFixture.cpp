@@ -127,7 +127,6 @@ void BaseFixture::SetUp() {
 
 void BaseFixture::TearDown() {
     ::testing::Test::TearDown();
-    qDebug() << "TEAR DOWN";
     resolver->clean();
 }
 
