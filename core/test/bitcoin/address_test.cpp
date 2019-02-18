@@ -67,6 +67,9 @@ TEST(Address, AddressFromBase58String) {
         } else {
             EXPECT_TRUE(address->isP2PKH());
         }
+        if (item == fixtures.back()) {
+            EXPECT_EQ(address->toBech32(), "bc19mky5mlq0gu7yfnyc8dwagc4urvun7ayc940jpl");
+        }
     }
 }
 
@@ -80,4 +83,13 @@ TEST(Address, XpubFromBase58String) {
     EXPECT_EQ(xpub->derive("0/1")->toBase58(), "1Pn6i3cvdGhqbdgNjXHfbaYfiuviPiymXj");
     EXPECT_EQ(xpub->derive("1/0")->toBase58(), "17HHBbhmF324wBw8Fo6tJVVriedJ6mFum8");
     EXPECT_EQ(xpub->derive("1/1")->toBase58(), "1AkRBkUZQe5Zqj5syxn1cHCvKUV6DjL9Po");
+}
+
+TEST(Address, XpubFromBase58StringToBech32) {
+    const Currency currency = currencies::BITCOIN_CASH;
+    auto xpubStr = "xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8";
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"));
+    EXPECT_EQ(xpub->toBase58(), xpubStr);
+    EXPECT_EQ(xpub->derive("0/0")->toBase58(), "16AMaKewP778obhBUAWWV5sVU6Qg6rvuBt");
+    EXPECT_EQ(xpub->derive("0/0")->toBech32(), "bitcoincash:qqufmrqunkr3avkswhn378fjhwl3ueawag9e3htc49");
 }

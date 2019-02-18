@@ -48,7 +48,9 @@ namespace ledger {
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
             virtual std::string toBase58() override;
+            virtual std::string toBech32() override;
             std::string toBase58() const;
+            std::string toBech32() const;
             virtual bool isP2SH() override;
             virtual bool isP2PKH() override;
             virtual optional<std::string> getDerivationPath() override;
@@ -60,6 +62,10 @@ namespace ledger {
             static std::shared_ptr<BitcoinLikeAddress> fromBase58(const std::string& address,
                                                                const api::Currency& currency,
                                                                const Option<std::string>& derivationPath = Option<std::string>());
+
+            static std::shared_ptr<BitcoinLikeAddress> fromBech32(const std::string& address,
+                                                                  const api::Currency& currency,
+                                                                  const Option<std::string>& derivationPath = Option<std::string>());
 
         private:
             const std::vector<uint8_t> _version;

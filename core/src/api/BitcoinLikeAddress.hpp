@@ -49,6 +49,12 @@ public:
     virtual std::string toBase58() = 0;
 
     /**
+     * Get the Bech32 encoded address (with respect to BIP173)
+     * @return The Bech32 encoded address
+     */
+    virtual std::string toBech32() = 0;
+
+    /**
      * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
      * @return A payment uri to this address
      * toPaymentUri(): string;

@@ -65,6 +65,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::NOT_ENOUGH_FUNDS: return "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST: return "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER: return "LINK_NON_TAIL_FILTER";
+        case ErrorCode::INVALID_BECH32_FORMAT: return "INVALID_BECH32_FORMAT";
     };
 };
 template <>
@@ -125,7 +126,8 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "DATABASE_EXCEPTION") return ErrorCode::DATABASE_EXCEPTION;
     else if (errorCode == "NOT_ENOUGH_FUNDS") return ErrorCode::NOT_ENOUGH_FUNDS;
     else if (errorCode == "BAD_CAST") return ErrorCode::BAD_CAST;
-    else return ErrorCode::LINK_NON_TAIL_FILTER;
+    else if (errorCode == "LINK_NON_TAIL_FILTER") return ErrorCode::LINK_NON_TAIL_FILTER;
+    else return ErrorCode::INVALID_BECH32_FORMAT;
 };
 
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
@@ -188,6 +190,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::NOT_ENOUGH_FUNDS:  return os << "NOT_ENOUGH_FUNDS";
         case ErrorCode::BAD_CAST:  return os << "BAD_CAST";
         case ErrorCode::LINK_NON_TAIL_FILTER:  return os << "LINK_NON_TAIL_FILTER";
+        case ErrorCode::INVALID_BECH32_FORMAT:  return os << "INVALID_BECH32_FORMAT";
     }
 }
 

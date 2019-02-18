@@ -60,6 +60,16 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeAddress_00024CppProxy_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeAddress_00024CppProxy_native_1toBech32(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAddress>(nativeRef);
+        auto r = ref->toBech32();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jboolean JNICALL Java_co_ledger_core_BitcoinLikeAddress_00024CppProxy_native_1isP2SH(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

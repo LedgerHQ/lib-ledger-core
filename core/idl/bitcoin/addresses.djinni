@@ -46,6 +46,9 @@ BitcoinLikeAddress = interface +c {
     # Serializes the hash160 into a Base58 encoded address (with checksum)
     # @return The Base58 serialization
     toBase58(): string;
+    # Get the Bech32 encoded address (with respect to BIP173)
+    # @return The Bech32 encoded address
+    toBech32(): string;
     # Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
     # @return A payment uri to this address
     # toPaymentUri(): string;
