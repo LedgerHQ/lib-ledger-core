@@ -19,7 +19,10 @@ namespace ledger { namespace core { namespace api {
 class DatabaseError;
 class DatabaseResultRow;
 
-/** ResultSet is a cursor over a query result. It allows user to iterate through query rows. */
+/**
+ * ResultSet is a cursor over a query result. It allows user to iterate through query rows. When you start iterating through
+ * result the cursor is placed before the first element of the set.
+ */
 class DatabaseResultSet {
 public:
     virtual ~DatabaseResultSet() {}

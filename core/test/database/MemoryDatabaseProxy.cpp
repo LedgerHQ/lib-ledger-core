@@ -206,6 +206,7 @@ public:
             throw std::runtime_error(sqlite3_errmsg(db));
         }
         final:
+        _rows.emplace_front(*_rows.begin());
         _it = _rows.begin();
     }
 

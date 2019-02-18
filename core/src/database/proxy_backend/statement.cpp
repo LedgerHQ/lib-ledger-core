@@ -101,8 +101,10 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::fetch(int
     SP_PRINT("FETCH " << number)
     if (number > 1)
         return batch_fetch(number);
-    else
+    else if (number == 1)
         return single_row_fetch();
+    else
+        return _results->hasNext() ? ef_success : ef_no_data;
 }
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::batch_fetch(int number) {
@@ -111,16 +113,16 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::batch_fet
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::single_row_fetch() {
     SP_PRINT("FETCH SINGLE")
-    if (_results)
-        _lastRow = _results->getRow();
-    else
-        _lastRow = nullptr;
-    SP_PRINT("ROW IS " << _lastRow);
     if (_results && _results->hasNext())
         _results->next();
     else {
         _results = nullptr;
     }
+    if (_results)
+        _lastRow = _results->getRow();
+    else
+        _lastRow = nullptr;
+    SP_PRINT("ROW IS " << _lastRow);
     return _lastRow ? ef_success : ef_no_data;
 }
 
