@@ -59,6 +59,7 @@
 #   define SOCI_OVERRIDE override
 #endif
 
+#define SOCI_PROXY_DEBUG
 #ifdef SOCI_PROXY_DEBUG
 #define SP_PRINT(p) std::cout << p << std::endl;
 #else

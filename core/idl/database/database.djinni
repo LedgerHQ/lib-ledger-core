@@ -82,7 +82,8 @@ DatabaseResultRow = interface +j +n +o {
     getBlobByPos(pos: i32): DatabaseBlob;
 }
 
-# ResultSet is a cursor over a query result. It allows user to iterate through query rows.
+# ResultSet is a cursor over a query result. It allows user to iterate through query rows. When you start iterating through
+# result the cursor is placed before the first element of the set.
 DatabaseResultSet = interface +j +n +o {
     # Retrieve the current row pointed by the DatabaseResultSet. Return null if there is no row to retrieve.
     # @return The current row
