@@ -28,9 +28,9 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
-
 
 #include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
@@ -46,14 +46,12 @@ namespace ledger {
 
         using BlockchainAccountSynchronizer = AbstractBlockchainExplorerAccountSynchronizer<BitcoinLikeAccount, BitcoinLikeAddress, BitcoinLikeKeychain, BitcoinLikeBlockchainExplorer>;
         class BlockchainExplorerAccountSynchronizer : public BitcoinLikeAccountSynchronizer,
-                                                            public BlockchainAccountSynchronizer,
-                                                            public DedicatedContext,
-                                                            public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
+                                                      public BlockchainAccountSynchronizer,
+                                                      public DedicatedContext,
+                                                      public std::enable_shared_from_this<BlockchainExplorerAccountSynchronizer> {
         public:
-
             BlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
                                                   const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer);
-
 
             void updateCurrentBlock(std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
                                     const std::shared_ptr<api::ExecutionContext> &context) override;
@@ -71,6 +69,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_BLOCKCHAINEXPLORERACCOUNTSYNCHRONIZER_H
