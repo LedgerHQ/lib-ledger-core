@@ -31,3 +31,6 @@
 
 #include "StellarFixture.hpp"
 
+api::AccountCreationInfo StellarFixture::defaultAccount() const {
+    return api::AccountCreationInfo(0, {"main"}, {"44'/0'/0/0"}, {}, {});
+}

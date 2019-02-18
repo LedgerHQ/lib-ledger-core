@@ -38,7 +38,8 @@
 #include <wallet/stellar/StellarLikeOperation.hpp>
 
 class StellarFixture : public CoinIntegrationFixture<StellarLikeWallet, StellarLikeAccount> {
-
+public:
+    api::AccountCreationInfo defaultAccount() const;
 };
 
 
