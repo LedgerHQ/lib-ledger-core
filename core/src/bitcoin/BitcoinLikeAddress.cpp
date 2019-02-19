@@ -37,8 +37,6 @@
 #include <collections/DynamicObject.hpp>
 #include <bitcoin/bech32/Bech32.h>
 #include <bitcoin/bech32/Bech32Factory.h>
-#include <bitcoin/bech32/BTCBech32.h>
-#include <utils/hex.h>
 using namespace ledger::core;
 
 ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Currency &currency,
@@ -149,24 +147,8 @@ std::shared_ptr<BitcoinLikeAddress> ledger::core::BitcoinLikeAddress::fromBech32
     auto& params = currency.bitcoinLikeNetworkParameters.value();
     auto bech32 = Bech32Factory::newBech32Instance(params.Identifier);
     auto decoded = bech32->decode(address);
-    if (decoded.first != bech32->getBech32Params().hrp || decoded.second.size() < 1) {
-        throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
-    }
-
-    std::vector<uint8_t> converted;
-    int fromBits = 5, toBits = 8;
-    bool pad = false;
-    auto result = Bech32::convertBits(std::vector<uint8_t>(decoded.second.begin() + 1, decoded.second.end()),
-                                      fromBits,
-                                      toBits,
-                                      pad, converted);
-    if (!result || converted.size() < 2 ||
-        converted.size() > 40 || decoded.second[0] > 16 ||
-        (decoded.second[0] == 0 && converted.size() != 20 && converted.size() != 32)) {
-        throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
-    }
     return std::make_shared<ledger::core::BitcoinLikeAddress>(currency,
-                                                              Bech32::segwitScriptPubkey(decoded.second[0], converted),
-                                                              std::vector<uint8_t>(decoded.second[0]),
+                                                              decoded.second,
+                                                              decoded.first,
                                                               derivationPath);
 }

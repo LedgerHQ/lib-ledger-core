@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "BCHBech32.h"
+#include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
         uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values,
@@ -66,8 +66,30 @@ namespace ledger {
             bool pad = true;
             std::vector<uint8_t> converted;
             Bech32::convertBits(data, fromBits, toBits, pad, converted);
-            return Bech32::encode(converted);
+            return encodeBech32(converted);
         }
 
+        std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
+        BCHBech32::decode(const std::string& str) {
+            auto decoded = decodeBech32(str);
+            if (decoded.first != _bech32Params.hrp || decoded.second.size() < 1) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
+            }
+            std::vector<uint8_t> converted;
+            int fromBits = 5, toBits = 8;
+            bool pad = false;
+            auto result = Bech32::convertBits(decoded.second,
+                                              fromBits,
+                                              toBits,
+                                              pad,
+                                              converted);
+            if (!result || converted.size() < 2 ||
+                converted.size() > 42 || decoded.second[0] > 16 ||
+                (decoded.second[0] == 0 && converted.size() != 21 && converted.size() != 33)) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
+            }
+            std::vector<uint8_t> version{converted[0]};
+            return std::make_pair(version, std::vector<uint8_t>(converted.begin() + 1, converted.end()));
+        }
     }
 }

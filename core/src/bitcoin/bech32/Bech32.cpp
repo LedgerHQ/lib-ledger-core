@@ -31,7 +31,6 @@
 
 #include "Bech32.h"
 #include <collections/vector.hpp>
-
 namespace ledger {
     namespace core {
 
@@ -71,7 +70,7 @@ namespace ledger {
             return ret;
         }
         
-        std::string Bech32::encode(const std::vector<uint8_t>& values) {
+        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) {
             // Values here should be concatenation of version + hash
             std::vector<uint8_t> checksum = createChecksum(values, _bech32Params);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
@@ -84,7 +83,7 @@ namespace ledger {
         }
 
         std::pair<std::string, std::vector<uint8_t>>
-        Bech32::decode(const std::string& str) {
+        Bech32::decodeBech32(const std::string& str) {
             bool lower = false, upper = false;
             bool ok = true;
             for (size_t i = 0; ok && i < str.size(); ++i) {
@@ -95,7 +94,7 @@ namespace ledger {
             }
             if (lower && upper) ok = false;
             size_t pos = str.rfind(_bech32Params.separator);
-            if (ok && str.size() <= 90 && pos != str.npos && pos >= 1 && pos + 7 <= str.size()) {
+            if (ok && str.size() <= 90 && pos != str.npos && pos >= 1 && pos + _bech32Params.checksumSize + 1 <= str.size()) {
                 std::vector<uint8_t> values;
                 values.resize(str.size() - 1 - pos);
                 for (size_t i = 0; i < str.size() - 1 - pos; ++i) {
@@ -109,7 +108,7 @@ namespace ledger {
                         hrp += toLowerCase(str[i]);
                     }
                     if (verifyChecksum(values, _bech32Params)) {
-                        return std::make_pair(hrp, std::vector<uint8_t>(values.begin(), values.end() - 6));
+                        return std::make_pair(hrp, std::vector<uint8_t>(values.begin(), values.end() - _bech32Params.checksumSize));
                     }
                 }
             }

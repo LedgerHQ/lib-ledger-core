@@ -57,12 +57,14 @@ namespace ledger {
             std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values,
                                                 const Bech32Parameters::Bech32Struct& params);
 
-            std::string encode(const std::vector<uint8_t>& values);
+            std::string encodeBech32(const std::vector<uint8_t>& values);
             virtual std::string encode(const std::vector<uint8_t>& hash,
                                        const std::vector<uint8_t>& version) = 0;
 
             std::pair<std::string, std::vector<uint8_t>>
-            decode(const std::string& str);
+            decodeBech32(const std::string& str);
+            virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
+            decode(const std::string& str) = 0;
 
             static unsigned char toLowerCase(unsigned char c);
 
