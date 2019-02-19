@@ -38,15 +38,38 @@ namespace ledger {
     namespace core {
         class BitcoinLikeStrategyUtxoPicker : public BitcoinLikeUtxoPicker {
         public:
+
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                           const api::Currency &currency);
         protected:
+            using UDList = std::list<BitcoinLikeUtxoPicker::UTXODescriptor>;
+            using RichUTXO = std::tuple<uint64_t, std::shared_ptr<api::BitcoinLikeOutput>>;
+            using RichUTXOList = std::vector<RichUTXO>;
+
             Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-            Future<UTXODescriptorList> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
-                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
-                                     const BigInt& aggregatedAmount);
+
+            Future<UTXODescriptorList> filterWithDeepFirst(
+                const std::shared_ptr<Buddy> &buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+                const BigInt& aggregatedAmount
+            );
+            static Future<Unit> filterWithDeepFirstRec(
+                std::shared_ptr<api::ExecutionContext> ctx,
+                int index,
+                const std::shared_ptr<Buddy>& buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+                std::shared_ptr<RichUTXOList> richutxo
+            );
+
             bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount, bool computeOutputAmount = false);
+
             inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
+            static Future<BigInt> computeAggregatedAmountRec(
+                std::shared_ptr<api::ExecutionContext> ctx,
+                UDList::const_iterator it,
+                BigInt v,
+                const std::shared_ptr<Buddy>& buddy
+            );
 
             //Only usefull for filterWithLowestFees
             struct EffectiveUTXO {

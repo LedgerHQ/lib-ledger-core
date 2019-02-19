@@ -69,31 +69,29 @@ namespace ledger {
             });
         }
 
-        Future<BigInt> BitcoinLikeStrategyUtxoPicker::computeAggregatedAmount(
-                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
-            using UDList = std::list<BitcoinLikeUtxoPicker::UTXODescriptor>;
+        Future<BigInt> BitcoinLikeStrategyUtxoPicker::computeAggregatedAmount(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
+            return computeAggregatedAmountRec(getContext(), buddy->request.inputs.begin(), BigInt(), buddy);
+        }
 
-            // share the context to pass it in lambda
-            auto ctx = getContext();
+        Future<BigInt> BitcoinLikeStrategyUtxoPicker::computeAggregatedAmountRec(
+            std::shared_ptr<api::ExecutionContext> ctx,
+            UDList::const_iterator it,
+            BigInt v,
+            const std::shared_ptr<Buddy>& buddy
+        ) {
+            if (it == buddy->request.inputs.end()) {
+                return Future<BigInt>::successful(v);
+            }
 
-            std::function<Future<BigInt> (UDList::const_iterator, BigInt, const std::shared_ptr<Buddy>& buddy)> go;
-            go = [=] (const UDList::const_iterator it, BigInt v, const std::shared_ptr<Buddy>& buddy) mutable -> Future<BigInt> {
-                if (it == buddy->request.inputs.end()) {
-                    return Future<BigInt>::successful(v);
-                }
+            const auto& i = *it;
+            const auto outputIndex = std::get<1>(i);
+            buddy->logger->info("GET TX 1");
 
-                const auto& i = *it;
-                const auto outputIndex = std::get<1>(i);
-                buddy->logger->info("GET TX 1");
-
-                return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(ctx, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) -> Future<BigInt> {
-                    buddy->logger->info("GOT TX 1");
-                    auto newIt = it;
-                    return go(newIt++, v + tx->outputs[outputIndex].value, buddy);
-                });
-            };
-
-            return go(buddy->request.inputs.begin(), BigInt(), buddy);
+            return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(ctx, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) -> Future<BigInt> {
+                buddy->logger->info("GOT TX 1");
+                auto newIt = it;
+                return computeAggregatedAmountRec(ctx, newIt++, v + tx->outputs[outputIndex].value, buddy);
+            });
         }
 
         Future<BitcoinLikeUtxoPicker::UTXODescriptorList>
@@ -101,36 +99,9 @@ namespace ledger {
                                                            const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxo,
                                                            const BigInt &aggregatedAmount) {
             // First add block height and time information to the list of utxo
-            using RichUTXO = std::tuple<uint64_t, std::shared_ptr<api::BitcoinLikeOutput>>;
-            using RichUTXOList = std::vector<RichUTXO>;
             std::shared_ptr<RichUTXOList> richutxo = std::make_shared<RichUTXOList>();
 
-            auto ctx = getContext();
-
-            std::function<Future<Unit> (int, const std::shared_ptr<Buddy>&, const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>, std::shared_ptr<RichUTXOList>)> go;
-            go = [=] (int index, const std::shared_ptr<Buddy>& buddy, const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxo, std::shared_ptr<RichUTXOList> richutxo) -> Future<Unit> {
-                if (index >= utxo.size()) {
-                    return Future<Unit>::successful(unit);
-                }
-
-                auto hash = utxo[index]->getTransactionHash();
-                buddy->logger->info("GET TX 2");
-
-                return buddy->getTransaction(hash).flatMap<Unit>(ctx, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) mutable -> Future<Unit> {
-                    buddy->logger->info("GOT TX 2");
-                    uint64_t block_height = (tx->block.nonEmpty()) ? tx->block.getValue().height :
-                                            std::numeric_limits<uint64_t>::max();
-
-                    //Fix: use uniform initialization
-                    RichUTXO curr_richutxo{block_height, utxo[index]};
-                    richutxo->emplace_back(std::move(curr_richutxo));
-
-                    buddy->logger->info("Go {} on {}", index + 1, utxo.size());
-                    return go(index + 1, buddy, utxo, richutxo);
-                });
-            };
-
-            return go(0, buddy, utxo, richutxo).map<UTXODescriptorList>(ctx, [=] (const Unit& u) -> UTXODescriptorList {
+            return filterWithDeepFirstRec(getContext(), 0, buddy, utxo, richutxo).map<UTXODescriptorList>(getContext(), [=] (const Unit& u) -> UTXODescriptorList {
                 // Sort the list by deep
                 std::sort(richutxo->begin(), richutxo->end(), [] (const RichUTXO& a, const RichUTXO& b) -> bool {
                     return std::get<0>(a) < std::get<0>(b);
@@ -166,6 +137,34 @@ namespace ledger {
                 }
 
                 return out;
+            });
+        }
+
+        Future<Unit> BitcoinLikeStrategyUtxoPicker::filterWithDeepFirstRec(
+            std::shared_ptr<api::ExecutionContext> ctx,
+            int index,
+            const std::shared_ptr<Buddy>& buddy,
+            const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+            std::shared_ptr<RichUTXOList> richutxo
+        ) {
+            if (index >= utxo.size()) {
+                return Future<Unit>::successful(unit);
+            }
+
+            auto hash = utxo[index]->getTransactionHash();
+            buddy->logger->info("GET TX 2");
+
+            return buddy->getTransaction(hash).flatMap<Unit>(ctx, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) mutable -> Future<Unit> {
+                buddy->logger->info("GOT TX 2");
+                uint64_t block_height = (tx->block.nonEmpty()) ? tx->block.getValue().height :
+                std::numeric_limits<uint64_t>::max();
+
+                //Fix: use uniform initialization
+                RichUTXO curr_richutxo{block_height, utxo[index]};
+                richutxo->emplace_back(std::move(curr_richutxo));
+
+                buddy->logger->info("Go {} on {}", index + 1, utxo.size());
+                return filterWithDeepFirstRec(ctx, index + 1, buddy, utxo, richutxo);
             });
         }
 
