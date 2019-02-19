@@ -33,6 +33,8 @@
 #define LEDGER_CORE_BECH32FACTORY_H
 
 #include "Bech32.h"
+#include <string>
+#include <memory>
 namespace ledger {
     namespace core {
         class Bech32Factory {

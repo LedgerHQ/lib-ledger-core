@@ -41,7 +41,7 @@ namespace ledger {
                             "bc",
                             "1",
                             6,
-                            {0x3b6a57b2UL, 0x26508e6dUL, 0x1ea119faUL, 0x3d4233ddUL, 0x2a1462b3UL}
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL}
                     };
                     return BITCOIN;
                 } else if (networkIdentifier == "btc_testnet") {
@@ -49,7 +49,7 @@ namespace ledger {
                             "bt",
                             "1",
                             6,
-                            {0x3b6a57b2UL, 0x26508e6dUL, 0x1ea119faUL, 0x3d4233ddUL, 0x2a1462b3UL}
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL}
                     };
                     return BITCOIN_TESTNET;
                 } else if (networkIdentifier == "abc") {
@@ -57,7 +57,7 @@ namespace ledger {
                             "bitcoincash",
                             ":",
                             8,
-                            {0x98f2bc8e61UL, 0x79b76d99e2UL, 0xf33e5fb3c4UL, 0xae2eabe2a8UL, 0x1e4f43e470UL}
+                            {0x98f2bc8e61ULL, 0x79b76d99e2ULL, 0xf33e5fb3c4ULL, 0xae2eabe2a8ULL, 0x1e4f43e470ULL}
                     };
                     return BITCOIN_CASH;
                 }
