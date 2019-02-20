@@ -88,6 +88,14 @@ namespace ledger {
             const std::chrono::system_clock::time_point& endDate,
             api::TimePeriod period
         ) {
+            // guard against bad arguments
+            if (startDate >= endDate) {
+                throw make_exception(
+                    api::ErrorCode::INVALID_DATE_FORMAT,
+                    "Start date should be strictly greater than end date"
+                );
+            }
+
             std::vector<std::shared_ptr<api::BigInt>> balances;
             auto currentBalance = BigInt::ZERO;
             auto nextDate = DateUtils::incrementDate(startDate, period);
