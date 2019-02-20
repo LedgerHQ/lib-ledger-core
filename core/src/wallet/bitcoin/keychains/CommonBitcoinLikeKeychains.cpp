@@ -224,6 +224,45 @@ namespace ledger {
             }
             return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
         }
+
+        Option<std::string>
+        CommonBitcoinLikeKeychains::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
+            const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
+            BitcoinLikeAddress address(getCurrency(), hash160, _version);
+            return getAddressDerivationPath(address.toBase58());
+        }
+
+        BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::derive(KeyPurpose purpose, off_t index) {
+            auto currency = getCurrency();
+            auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
+            auto localPath = getDerivationScheme()
+                    .setAccountIndex(getAccountIndex())
+                    .setCoinType(currency.bip44CoinType)
+                    .setNode(iPurpose)
+                    .setAddressIndex((int) index).getPath().toString();
+
+            auto cacheKey = fmt::format("path:{}", localPath);
+            auto address = getPreferences()->getString(cacheKey, "");
+
+            if (address.empty()) {
+
+                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(currency.bip44CoinType)
+                        .setNode(iPurpose)
+                        .setAddressIndex((int) index).getPath().toString();
+                auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                address = getAddressFromPubKey(xpub, p);
+                // Feed path -> address cache
+                // Feed address -> path cache
+                getPreferences()
+                        ->edit()
+                        ->putString(cacheKey, address)
+                        ->putString(fmt::format("address:{}", address), localPath)
+                        ->commit();
+            }
+            return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
+        }
     }
 }
 

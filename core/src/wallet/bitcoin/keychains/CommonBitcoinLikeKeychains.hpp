@@ -86,13 +86,17 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
+            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
         protected:
 
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
             uint32_t _observableRange;
+            std::vector<uint8_t> _version;
         private:
-            virtual BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index) = 0;
+            virtual std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                                     const std::string& derivationPath) = 0;
+            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState();
             KeychainPersistentState _state;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;

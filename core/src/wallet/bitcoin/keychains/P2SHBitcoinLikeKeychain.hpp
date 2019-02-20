@@ -43,11 +43,10 @@ namespace ledger {
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
-
-            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
             int32_t getOutputSizeAsSignedTxInput() const override ;
         private:
-            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index) override;
+            std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                             const std::string& derivationPath) override;
         };
     }
 }

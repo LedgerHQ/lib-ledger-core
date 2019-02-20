@@ -29,9 +29,7 @@
  *
  */
 #include "P2SHBitcoinLikeKeychain.hpp"
-#include "../../../crypto/HASH160.hpp"
-#include <bitcoin/BitcoinLikeAddress.hpp>
-
+#include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
@@ -42,59 +40,16 @@ namespace ledger {
                                                            const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
+            _version = params.bitcoinLikeNetworkParameters.value().P2SHVersion;
             getAllObservableAddresses(0, _observableRange);
         }
 
-        BitcoinLikeKeychain::Address P2SHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
-            auto currency = getCurrency();
-            auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
-            auto localPath = getDerivationScheme()
-                    .setAccountIndex(getAccountIndex())
-                    .setCoinType(currency.bip44CoinType)
-                    .setNode(iPurpose)
-                    .setAddressIndex((int) index).getPath().toString();
-
-            auto cacheKey = fmt::format("path:{}", localPath);
-            auto address = getPreferences()->getString(cacheKey, "");
-
-            if (address.empty()) {
-
-                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
-                        .setAccountIndex(getAccountIndex())
-                        .setCoinType(currency.bip44CoinType)
-                        .setNode(iPurpose)
-                        .setAddressIndex((int) index).getPath().toString();
-                auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-
-                //Script
-                std::vector<uint8_t> script = {0x00, 0x14};
-                //Hash160 of public key
-                auto publicKeyHash160 = xpub->deriveHash160(p);
-                script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
-                //Hash script
-                const auto& params = currency.bitcoinLikeNetworkParameters.value();
-                HashAlgorithm hashAlgorithm(params.Identifier);
-                auto hash160 = HASH160::hash(script, hashAlgorithm);
-                BitcoinLikeAddress btcLikeAddress(currency, hash160, params.P2SHVersion);
-                address = btcLikeAddress.toBase58();
-
-                // Feed path -> address cache
-                // Feed address -> path cache
-                getPreferences()
-                        ->edit()
-                        ->putString(cacheKey, address)
-                        ->putString(fmt::format("address:{}", address), localPath)
-                        ->commit();
-            }
-            return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
-        }
-
-        Option<std::string>
-        P2SHBitcoinLikeKeychain::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
-            auto currency = getCurrency();
-            const auto& params = currency.bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(currency, hash160, params.P2SHVersion);
-            return getAddressDerivationPath(address.toBase58());
+        std::string P2SHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                                                   const std::string& derivationPath) {
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("keychainEngines", api::KeychainEngines::BIP49_P2SH);
+            config->putData("version", _version);
+            return BitcoinLikeAddress::fromPublicKey(pubKey, getCurrency(), derivationPath, config);
         }
 
         int32_t P2SHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {

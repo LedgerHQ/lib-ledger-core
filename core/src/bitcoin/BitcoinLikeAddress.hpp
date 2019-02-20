@@ -35,7 +35,8 @@
 #include "../api/BitcoinLikeNetworkParameters.hpp"
 #include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
-
+#include <api/BitcoinLikeExtendedPublicKey.hpp>
+#include <collections/DynamicObject.hpp>
 namespace ledger {
     namespace core {
         class BitcoinLikeAddress : public api::BitcoinLikeAddress, public AbstractAddress {
@@ -66,6 +67,12 @@ namespace ledger {
             static std::shared_ptr<BitcoinLikeAddress> fromBech32(const std::string& address,
                                                                   const api::Currency& currency,
                                                                   const Option<std::string>& derivationPath = Option<std::string>());
+
+            static std::string fromPublicKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                             const api::Currency &currency,
+                                             const std::string &derivationPath,
+                                             const std::shared_ptr<DynamicObject> &keychainConfig);
+
 
         private:
             const std::vector<uint8_t> _version;

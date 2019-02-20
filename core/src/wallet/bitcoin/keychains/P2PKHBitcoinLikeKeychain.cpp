@@ -29,8 +29,7 @@
  *
  */
 #include "P2PKHBitcoinLikeKeychain.hpp"
-#include <bitcoin/BitcoinLikeAddress.hpp>
-
+#include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
@@ -41,42 +40,16 @@ namespace ledger {
                                                            const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
+            _version = params.bitcoinLikeNetworkParameters.value().P2PKHVersion;
             getAllObservableAddresses(0, _observableRange);
         }
 
-        BitcoinLikeKeychain::Address P2PKHBitcoinLikeKeychain::derive(KeyPurpose purpose, off_t index) {
-            auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
-            auto localPath = getDerivationScheme()
-                                .setAccountIndex(getAccountIndex())
-                                .setCoinType(getCurrency().bip44CoinType)
-                                .setNode(iPurpose)
-                                .setAddressIndex((int) index).getPath().toString();
-            auto cacheKey = fmt::format("path:{}", localPath);
-            auto address = getPreferences()->getString(cacheKey, "");
-            if (address.empty()) {
-                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
-                        .setAccountIndex(getAccountIndex())
-                        .setCoinType(getCurrency().bip44CoinType)
-                        .setNode(iPurpose)
-                        .setAddressIndex((int) index).getPath().toString();
-                auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-                address = xpub->derive(p)->toBase58();
-                // Feed path -> address cache
-                // Feed address -> path cache
-                getPreferences()
-                        ->edit()
-                        ->putString(cacheKey, address)
-                        ->putString(fmt::format("address:{}", address), localPath)
-                        ->commit();
-            }
-            return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
-        }
-
-        Option<std::string>
-        P2PKHBitcoinLikeKeychain::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
-            const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(getCurrency(), hash160, params.P2PKHVersion);
-            return getAddressDerivationPath(address.toBase58());
+        std::string P2PKHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                                                   const std::string& derivationPath) {
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("keychainEngines", api::KeychainEngines::BIP32_P2PKH);
+            config->putData("version", _version);
+            return BitcoinLikeAddress::fromPublicKey(pubKey, getCurrency(), derivationPath, config);
         }
 
         int32_t P2PKHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
