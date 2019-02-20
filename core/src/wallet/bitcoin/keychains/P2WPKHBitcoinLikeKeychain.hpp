@@ -36,7 +36,15 @@
 namespace ledger {
     namespace core {
         class P2WPKHBitcoinLikeKeychain : public P2PKHBitcoinLikeKeychain {
-
+        public:
+            P2WPKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                    const api::Currency &params, int account,
+                                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                    const std::shared_ptr<Preferences> &preferences);
+            int32_t getOutputSizeAsSignedTxInput() const override ;
+        private:
+            std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                             const std::string& derivationPath) override;
         };
     }
 }

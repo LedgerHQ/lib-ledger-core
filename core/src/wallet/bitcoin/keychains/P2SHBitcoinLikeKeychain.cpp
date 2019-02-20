@@ -63,6 +63,5 @@ namespace ledger {
             result += 40;
             return result;
         }
-
     }
 }
