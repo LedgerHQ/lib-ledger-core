@@ -28,12 +28,12 @@
  *
  */
 
-
 #include "ERC20LikeAccount.h"
 #include <math/BigInt.h>
 #include <api_impl/BigIntImpl.hpp>
 #include <api/Amount.hpp>
 #include <api/OperationType.hpp>
+#include <api/TimePeriod.hpp>
 #include <bytes/RLP/RLPStringEncoder.h>
 #include <utils/hex.h>
 #include <math/BigInt.h>
@@ -45,6 +45,7 @@
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
+
 using namespace soci;
 
 namespace ledger {
@@ -74,15 +75,64 @@ namespace ledger {
         std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
             auto result = BigInt::ZERO;
             auto operations = getOperations();
+
             for (auto &op : operations) {
-                if (op->getOperationType() == api::OperationType::RECEIVE) {
-                    result = result + BigInt(op->getValue()->toString(10));
-                } else if (op->getOperationType() == api::OperationType::SEND){
-                    result = result - BigInt(op->getValue()->toString(10));
+                result = accumulateBalanceWithOperation(result, *op);
+            }
+
+            return std::make_shared<api::BigIntImpl>(result);
+        }
+
+        api::ERC20LikeBalanceHistory ERC20LikeAccount::getBalanceHistoryFor(
+            const std::chrono::system_clock::time_point& startDate,
+            const std::chrono::system_clock::time_point& endDate,
+            api::TimePeriod period
+        ) {
+            std::vector<std::shared_ptr<api::BigInt>> balances;
+            auto currentBalance = BigInt::ZERO;
+            auto nextDate = DateUtils::incrementDate(startDate, period);
+            auto operations = getSortedOperationsRange(startDate, endDate);
+
+            // iterate over all operations and segment them according to the granularity we’ve
+            // chosen; in our case, we use the default granularity, which is PerDay
+            for (auto& op : operations) {
+                auto opDate = op->getTime();
+
+                if (opDate >= nextDate) {
+                    balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
+                    nextDate = DateUtils::incrementDate(nextDate, period);
                 }
 
+                currentBalance = accumulateBalanceWithOperation(currentBalance, *op);
             }
-            return std::make_shared<api::BigIntImpl>(result);
+
+            // we still have something in the currentBalance that needs to be added to the history
+            // (last day)
+            balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
+
+            return api::ERC20LikeBalanceHistory(
+                api::TimePeriod::DAY,
+                startDate,
+                endDate,
+                balances
+            );
+        }
+
+        BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
+            BigInt balance,
+            api::ERC20LikeOperation& op
+        ) {
+            auto ty = op.getOperationType();
+            auto value = BigInt(op.getValue()->toString(10));
+
+            switch (ty) {
+                case api::OperationType::RECEIVE:
+                    return balance + value;
+
+                case api::OperationType::SEND:
+                default:
+                    return balance - value;
+            }
         }
 
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
@@ -98,6 +148,48 @@ namespace ledger {
                     " op.gas_price, op.gas_limit, op.gas_used, op.status"
                     " FROM erc20_operations AS op"
                     " WHERE op.account_uid = :account_uid", soci::use(_accountUid));
+            std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
+            for (auto& row : rows) {
+                auto op = std::make_shared<ERC20LikeOperation>();
+                op->setOperationUid(row.get<std::string>(0));
+                op->setETHOperationUid(row.get<std::string>(1));
+                op->setOperationType(api::from_string<api::OperationType>(row.get<std::string>(3)));
+                op->setHash(row.get<std::string>(4));
+                op->setNonce(BigInt::fromHex(row.get<std::string>(5)));
+                op->setValue(BigInt::fromHex(row.get<std::string>(6)));
+                op->setTime(DateUtils::fromJSON(row.get<std::string>(7)));
+                op->setSender(row.get<std::string>(8));
+                op->setReceiver(row.get<std::string>(9));
+                if (row.get_indicator(10) != soci::i_null) {
+                    auto data = row.get<std::string>(10);
+                    auto dataArray = hex::toByteArray(data);
+                    op->setData(dataArray);
+                }
+
+                op->setGasPrice(BigInt::fromHex(row.get<std::string>(11)));
+                op->setGasLimit(BigInt::fromHex(row.get<std::string>(12)));
+                op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
+                auto status = row.get<int32_t>(14);
+                op->setStatus(status);
+                result.emplace_back(op);
+            }
+            return result;
+        }
+
+        std::vector<std::shared_ptr<api::ERC20LikeOperation>>
+        ERC20LikeAccount::getSortedOperationsRange(
+            const std::chrono::system_clock::time_point& startDate,
+            const std::chrono::system_clock::time_point& endDate
+        ) {
+            auto localAccount = _account.lock();
+            soci::session sql (localAccount->getWallet()->getDatabase()->getPool());
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                    " op.type, op.hash, op.nonce, op.value,"
+                    " op.date, op.sender, op.receiver, op.input_data,"
+                    " op.gas_price, op.gas_limit, op.gas_used, op.status"
+                    " FROM erc20_operations AS op"
+                    " WHERE op.account_uid = :account_uid AND (op.date BETWEEN ':start_date_uid' AND ':end_date_uid')"
+                    " ORDER BY op.date ASC", soci::use(_accountUid));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
             for (auto& row : rows) {
                 auto op = std::make_shared<ERC20LikeOperation>();

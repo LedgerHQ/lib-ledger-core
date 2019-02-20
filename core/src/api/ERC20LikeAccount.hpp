@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 #define DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -21,6 +22,8 @@ namespace ledger { namespace core { namespace api {
 class BigInt;
 class ERC20LikeOperation;
 class OperationQuery;
+enum class TimePeriod;
+struct ERC20LikeBalanceHistory;
 struct ERC20Token;
 
 /** ERC20-like accounts class. */
@@ -36,6 +39,9 @@ public:
 
     /** Get the current balance of this ERC20 account. */
     virtual std::shared_ptr<BigInt> getBalance() = 0;
+
+    /** Get the balance history of this ERC20 account from a starting date to an ending date. */
+    virtual ERC20LikeBalanceHistory getBalanceHistoryFor(const std::chrono::system_clock::time_point & start, const std::chrono::system_clock::time_point & end, TimePeriod period) = 0;
 
     /** Get the list of operations performed on this ERC20 account. */
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;

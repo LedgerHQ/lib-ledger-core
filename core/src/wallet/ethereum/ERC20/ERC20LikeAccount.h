@@ -32,6 +32,8 @@
 #ifndef LEDGER_CORE_ERC20LIKEACCOUNT_H
 #define LEDGER_CORE_ERC20LIKEACCOUNT_H
 
+#include <chrono>
+#include <api/ERC20LikeBalanceHistory.hpp>
 #include <api/ERC20LikeAccount.hpp>
 #include <api/ERC20Token.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
@@ -41,6 +43,7 @@
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <database/soci-number.h>
+
 namespace ledger {
     namespace core {
         class ERC20OperationQuery : public OperationQuery {
@@ -73,7 +76,28 @@ namespace ledger {
             api::ERC20Token getToken() override ;
             std::string getAddress() override ;
             std::shared_ptr<api::BigInt> getBalance() override ;
+
+            api::ERC20LikeBalanceHistory getBalanceHistoryFor(
+                const std::chrono::system_clock::time_point& startDate,
+                const std::chrono::system_clock::time_point& endDate,
+                api::TimePeriod period
+            ) override;
+
+            // A helper function to take an operation into an account whin computing balances.
+            static BigInt accumulateBalanceWithOperation(
+                BigInt balance,
+                api::ERC20LikeOperation& op
+            );
+
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> getOperations() override ;
+
+            // A version of getOperations that is sorted by date and returns only operations that
+            // lie in an inclusive datetime range provided as argument.
+            std::vector<std::shared_ptr<api::ERC20LikeOperation>> getSortedOperationsRange(
+                const std::chrono::system_clock::time_point& startDate,
+                const std::chrono::system_clock::time_point& endDate
+            );
+
             std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                           const std::string & address) override ;
             std::shared_ptr<api::OperationQuery> queryOperations() override ;

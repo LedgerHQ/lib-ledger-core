@@ -3,10 +3,12 @@
 
 #include "ERC20LikeAccount.hpp"  // my header
 #include "BigInt.hpp"
+#include "ERC20LikeBalanceHistory.hpp"
 #include "ERC20LikeOperation.hpp"
 #include "ERC20Token.hpp"
 #include "Marshal.hpp"
 #include "OperationQuery.hpp"
+#include "TimePeriod.hpp"
 
 namespace djinni_generated {
 
@@ -50,6 +52,18 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::ERC20LikeAccount>(nativeRef);
         auto r = ref->getBalance();
         return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getBalanceHistoryFor(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_start, jobject j_end, jobject j_period)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::ERC20LikeAccount>(nativeRef);
+        auto r = ref->getBalanceHistoryFor(::djinni::Date::toCpp(jniEnv, j_start),
+                                           ::djinni::Date::toCpp(jniEnv, j_end),
+                                           ::djinni_generated::TimePeriod::toCpp(jniEnv, j_period));
+        return ::djinni::release(::djinni_generated::ERC20LikeBalanceHistory::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
