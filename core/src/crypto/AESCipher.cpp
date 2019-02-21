@@ -34,7 +34,6 @@
 
 namespace ledger {
     namespace core {
-
         AESCipher::AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password,
                              const std::string &salt, uint32_t iter) {
             _rng = rng;

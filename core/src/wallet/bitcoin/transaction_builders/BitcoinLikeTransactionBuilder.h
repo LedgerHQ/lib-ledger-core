@@ -120,5 +120,4 @@ namespace ledger {
     }
 }
 
-
 #endif //LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H

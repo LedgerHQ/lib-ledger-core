@@ -36,6 +36,7 @@ if (TARGET_JNI)
         find_package(JNI REQUIRED)
     endif()
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
+    add_definitions(-DTARGET_JNI=1)
 endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)

@@ -51,7 +51,6 @@ namespace ledger {
                     const std::shared_ptr<api::ExecutionContext> &context,
                     const std::shared_ptr<api::PathResolver> &resolver,
                     const std::string &name,
-                    std::experimental::optional<std::string> password,
                     std::size_t maxSize,
                     std::size_t maxFiles
             );
@@ -65,16 +64,17 @@ namespace ledger {
             static spdlog::filename_t calc_filename(
                     std::shared_ptr<api::PathResolver> resolver,
                     const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
+
             void _rotate();
+
 #if defined(_WIN32) || defined(_WIN64)
             static void ToWide(const std::string &input, std::wstring &output);
             static void ToNarrow(const std::wstring &input, std::string &output);
 #endif
-        private:
+
             std::shared_ptr<api::ExecutionContext> _context;
             std::weak_ptr<api::PathResolver> _resolver;
             std::string _name;
-            std::experimental::optional<std::string> _password;
             spdlog::filename_t _base_filename;
             spdlog::filename_t _extension;
             std::size_t _max_size;

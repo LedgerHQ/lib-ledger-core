@@ -49,7 +49,6 @@ TEST(LoggerTest, LogAndOverflow) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto logLineExample = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs",
-                                               std::experimental::optional<std::string>(),
                                                dispatcher->getSerialExecutionContext("logger"),
                                                resolver,
                                                logPrinter,
@@ -81,7 +80,6 @@ TEST(LoggerTest, LogNoOverflow) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto logLineExample = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs_1",
-                                                                          std::experimental::optional<std::string>(),
                                                                           dispatcher->getSerialExecutionContext("logger"),
                                                                           resolver,
                                                                           logPrinter,

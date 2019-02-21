@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
+
 #include "BytesWriter.h"
 #include <algorithm>
 #include "../utils/endian.h"
 
 namespace ledger {
     namespace core {
-
         BytesWriter::BytesWriter(size_t size) {
             _bytes = std::vector<uint8_t>(size);
         }
@@ -90,7 +90,5 @@ namespace ledger {
         BytesWriter &BytesWriter::writeVarString(const std::string &str) {
             return writeVarInt(str.length()).writeString(str);
         }
-
-
     }
 }

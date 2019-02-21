@@ -36,10 +36,9 @@ private:
 
         std::shared_ptr<::ledger::core::api::DatabaseResultRow> getRow() override;
         int32_t getUpdateCount() override;
-        int32_t getRowNumber() override;
-        int32_t available() override;
         bool hasNext() override;
-        std::shared_ptr<::ledger::core::api::DatabaseResultSet> next() override;
+        int32_t available() override;
+        void next() override;
         void close() override;
         std::shared_ptr<::ledger::core::api::DatabaseError> getError() override;
 
@@ -50,10 +49,9 @@ private:
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseResultSet") };
     const jmethodID method_getRow { ::djinni::jniGetMethodID(clazz.get(), "getRow", "()Lco/ledger/core/DatabaseResultRow;") };
     const jmethodID method_getUpdateCount { ::djinni::jniGetMethodID(clazz.get(), "getUpdateCount", "()I") };
-    const jmethodID method_getRowNumber { ::djinni::jniGetMethodID(clazz.get(), "getRowNumber", "()I") };
-    const jmethodID method_available { ::djinni::jniGetMethodID(clazz.get(), "available", "()I") };
     const jmethodID method_hasNext { ::djinni::jniGetMethodID(clazz.get(), "hasNext", "()Z") };
-    const jmethodID method_next { ::djinni::jniGetMethodID(clazz.get(), "next", "()Lco/ledger/core/DatabaseResultSet;") };
+    const jmethodID method_available { ::djinni::jniGetMethodID(clazz.get(), "available", "()I") };
+    const jmethodID method_next { ::djinni::jniGetMethodID(clazz.get(), "next", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
     const jmethodID method_getError { ::djinni::jniGetMethodID(clazz.get(), "getError", "()Lco/ledger/core/DatabaseError;") };
 };

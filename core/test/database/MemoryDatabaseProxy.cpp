@@ -49,6 +49,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <algorithm>
+#include <iterator>
 
 #define BIND(Type) \
     auto pos = sqlite3_bind_parameter_index(_stmt, name.c_str()); \
@@ -206,6 +207,7 @@ public:
             throw std::runtime_error(sqlite3_errmsg(db));
         }
         final:
+        _rows.emplace_front(*_rows.begin());
         _it = _rows.begin();
     }
 
@@ -217,21 +219,16 @@ public:
         return _changes;
     }
 
-    int32_t getRowNumber() override {
-        return static_cast<int32_t>(_rows.size());
-    }
-
     int32_t available() override {
-        return static_cast<int32_t>(_rows.size());
+        return std::min(1, (int) std::distance(_it, _rows.end()));
     }
 
     bool hasNext() override {
         return std::distance(_it, _rows.end()) > 1;
     }
 
-    std::shared_ptr<DatabaseResultSet> next() override {
+    void next() override {
         _it++;
-        return shared_from_this();
     }
 
     void close() override {

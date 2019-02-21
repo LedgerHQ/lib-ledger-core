@@ -97,7 +97,6 @@ namespace ledger {
             auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger = logger::create(
                     name + "-l",
-                    _password.toOptional(),
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
                     logPrinter,
