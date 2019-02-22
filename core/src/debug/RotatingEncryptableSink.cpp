@@ -88,8 +88,9 @@ namespace ledger {
                                                                   const spdlog::filename_t &filename, std::size_t index,
                                                                   const spdlog::filename_t &extension) {
             auto mangledFilename = fmt::format(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
-            if (index)
+            if (index) {
                 mangledFilename = fmt::format(SPDLOG_FILENAME_T("{}.{}.{}"), filename, index, extension);
+            }
 
 #if defined(_WIN32) || defined(_WIN64)
             std::string narrowFilename;
