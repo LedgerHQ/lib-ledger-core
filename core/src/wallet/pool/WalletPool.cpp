@@ -235,7 +235,10 @@ namespace ledger {
                 client->setLogger(logger());
                 return client;
             }
-            return _httpClients[baseUrl].lock();
+			auto client = _httpClients[baseUrl].lock();
+			if (!client)
+				throw make_exception(api::ErrorCode::NULL_POINTER, "HttpClient was released.");
+			return client;
         }
 
         const std::vector<api::Currency> &WalletPool::getCurrencies() const {

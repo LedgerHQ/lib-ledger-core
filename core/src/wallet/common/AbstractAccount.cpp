@@ -32,6 +32,8 @@
 #include "AbstractAccount.hpp"
 #include <wallet/common/OperationQuery.h>
 #include <api/AmountCallback.hpp>
+#include <utils/Exception.hpp>
+#include <api/ErrorCode.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 
@@ -109,12 +111,20 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() const {
-            return _wallet.lock();
+			auto wallet = _wallet.lock();
+			if (!wallet) {
+				throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+			}
+            return wallet;
         }
 
-        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
-            return _wallet.lock();
-        }
+		std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
+			auto wallet = _wallet.lock();
+			if (!wallet) {
+				throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+			}
+			return wallet;
+		}
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;

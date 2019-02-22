@@ -38,6 +38,8 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
     async<Unit>([=] () {
 
         auto local_self = weak_self.lock();
+		if (!local_self)
+			throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
         auto local_context = context;
         auto local_receiver = receiver;
 
@@ -54,6 +56,8 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
         for (auto& event : local_self->_stickies) {
             auto lambda = [=] () {
                 auto local_r = local_weak_receiver.lock();
+				if (!local_r)
+					throw make_exception(api::ErrorCode::NULL_POINTER, "Receiver was released.");
                 local_r->onEvent(event.second);
                 return unit;
             };
@@ -69,6 +73,8 @@ void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api
     std::weak_ptr<EventBus> weak_self(shared_from_this());
     async<Unit>([=] () {
         auto local_self = weak_self.lock();
+		if (!local_self)
+			throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
         for (auto it = local_self->_subscribers.begin(); it != local_self->_subscribers.end(); it++) {
             auto& r = std::get<1>(*it);
             if (r == receiver) {
@@ -84,6 +90,8 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& ev
     std::weak_ptr<EventBus> weak_self(shared_from_this());
     run([=] () {
         auto local_self = weak_self.lock();
+		if (!local_self)
+			throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
         if (event->isSticky()) {
             local_self->_stickies[event->getStickyTag()] = event;
         }
@@ -95,6 +103,8 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& ev
 
             Future<Unit>::async(c, [=] () {
                 auto local_receiver = weak_receiver.lock();
+				if (!local_receiver)
+					throw make_exception(api::ErrorCode::NULL_POINTER, "Receiver was released.");
                 local_receiver->onEvent(event);
                 return unit;
             });

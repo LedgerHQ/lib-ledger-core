@@ -31,6 +31,8 @@
 #include <lib/fmt-3.0.0/fmt/format.h>
 #include "RotatingEncryptableSink.hpp"
 #include "../utils/LambdaRunnable.hpp"
+#include "../api/ErrorCode.hpp"
+#include "../utils/Exception.hpp"
 
 namespace ledger {
     namespace core {
@@ -125,6 +127,9 @@ namespace ledger {
 
         void RotatingEncryptableSink::_rotate() {
             auto resolver = _resolver.lock();
+			if (!resolver) {
+				throw make_exception(api::ErrorCode::NULL_POINTER, "Resolver was released.");
+			}
             using spdlog::details::os::filename_to_str;
             _file_helper.close();
             for (auto i = _max_files; i > 0; --i)
