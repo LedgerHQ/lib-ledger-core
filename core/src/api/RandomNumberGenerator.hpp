@@ -6,10 +6,17 @@
 
 #include <cstdint>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
-/** Class to generate random numbers */
+/** Class to generate random numbers. */
 class RandomNumberGenerator {
 public:
     virtual ~RandomNumberGenerator() {}

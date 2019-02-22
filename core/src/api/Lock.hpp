@@ -3,6 +3,13 @@
 
 #ifndef DJINNI_GENERATED_LOCK_HPP
 #define DJINNI_GENERATED_LOCK_HPP
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 

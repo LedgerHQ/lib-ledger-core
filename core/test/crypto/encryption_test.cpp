@@ -155,3 +155,36 @@ TEST(Encryption, EncryptDecryptWithCipherHugeText) {
     auto inputBytes = input.readUntilEnd();
     EXPECT_EQ(destination.toByteArray(), inputBytes);
 }
+
+TEST(Encryption, EncryptDecryptWithCipherEmptiness) {
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+
+    std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
+    BytesReader input(vec);
+
+    auto testCipher = [&](AESCipher& cipher) {
+        BytesWriter encrypted;
+
+        input.reset();
+        cipher.encrypt(input, encrypted);
+
+        EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
+
+        input.reset();
+
+        BytesWriter destination;
+        BytesReader encryptedReader(encrypted.toByteArray());
+        cipher.decrypt(encryptedReader, destination);
+
+        EXPECT_EQ(destination.toByteArray(), input.readUntilEnd());
+    };
+
+    AESCipher cipher(rng, "", "Awesome salt", 10000);
+    testCipher(cipher);
+
+    cipher = AESCipher(rng, "A password somewhat okay", "", 10000);
+    testCipher(cipher);
+
+    cipher = AESCipher(rng, "", "", 10000);
+    testCipher(cipher);
+}

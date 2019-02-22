@@ -6,46 +6,53 @@
 
 #include <cstdint>
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class DynamicObject;
 enum class EventCode;
 
-/**Class representing an event */
-class Event {
+/** Class representing an event. */
+class LIBCORE_EXPORT Event {
 public:
     virtual ~Event() {}
 
     /**
-     *Get event code (for more details, please refer to EventCode enum)
-     *@return EventCode enum entry
+     * Get event code (for more details, please refer to EventCode enum).
+     * @return EventCode enum entry
      */
     virtual EventCode getCode() = 0;
 
     /**
-     *Get payload of event
-     *@return DynamicObject object
+     * Get payload of event.
+     * @return DynamicObject object
      */
     virtual std::shared_ptr<DynamicObject> getPayload() = 0;
 
     /**
-     *Know if event is sticky one
-     *@return bool
+     * Tell whether the event is a sticky one.
+     * @return bool
      */
     virtual bool isSticky() = 0;
 
     /**
-     *If event is sticky, return sticky tag
-     *@return 32 bits integer
+     * If event is sticky, return sticky tag.
+     * @return 32 bits integer
      */
     virtual int32_t getStickyTag() = 0;
 
     /**
-     *Create a new instance of Event class
-     *@param code, EventCode enum entry
-     *@param payload, DynamicObject object
-     *@return Event instance
+     * Create a new instance of Event class.
+     * @param code, EventCode enum entry
+     * @param payload, DynamicObject object
+     * @return Event instance
      */
     static std::shared_ptr<Event> newInstance(EventCode code, const std::shared_ptr<DynamicObject> & payload);
 };

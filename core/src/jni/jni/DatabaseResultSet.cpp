@@ -32,13 +32,13 @@ int32_t DatabaseResultSet::JavaProxy::getUpdateCount() {
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::I32::toCpp(jniEnv, jret);
 }
-int32_t DatabaseResultSet::JavaProxy::getRowNumber() {
+bool DatabaseResultSet::JavaProxy::hasNext() {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseResultSet>::get();
-    auto jret = jniEnv->CallIntMethod(Handle::get().get(), data.method_getRowNumber);
+    auto jret = jniEnv->CallBooleanMethod(Handle::get().get(), data.method_hasNext);
     ::djinni::jniExceptionCheck(jniEnv);
-    return ::djinni::I32::toCpp(jniEnv, jret);
+    return ::djinni::Bool::toCpp(jniEnv, jret);
 }
 int32_t DatabaseResultSet::JavaProxy::available() {
     auto jniEnv = ::djinni::jniGetThreadEnv();
@@ -48,21 +48,12 @@ int32_t DatabaseResultSet::JavaProxy::available() {
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::I32::toCpp(jniEnv, jret);
 }
-bool DatabaseResultSet::JavaProxy::hasNext() {
+void DatabaseResultSet::JavaProxy::next() {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseResultSet>::get();
-    auto jret = jniEnv->CallBooleanMethod(Handle::get().get(), data.method_hasNext);
+    jniEnv->CallVoidMethod(Handle::get().get(), data.method_next);
     ::djinni::jniExceptionCheck(jniEnv);
-    return ::djinni::Bool::toCpp(jniEnv, jret);
-}
-std::shared_ptr<::ledger::core::api::DatabaseResultSet> DatabaseResultSet::JavaProxy::next() {
-    auto jniEnv = ::djinni::jniGetThreadEnv();
-    ::djinni::JniLocalScope jscope(jniEnv, 10);
-    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseResultSet>::get();
-    auto jret = jniEnv->CallObjectMethod(Handle::get().get(), data.method_next);
-    ::djinni::jniExceptionCheck(jniEnv);
-    return ::djinni_generated::DatabaseResultSet::toCpp(jniEnv, jret);
 }
 void DatabaseResultSet::JavaProxy::close() {
     auto jniEnv = ::djinni::jniGetThreadEnv();

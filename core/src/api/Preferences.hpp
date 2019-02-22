@@ -8,6 +8,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -19,7 +26,7 @@ class PreferencesEditor;
  * attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
  * is highly inspired by Android SharedPreferences.
  */
-class Preferences {
+class LIBCORE_EXPORT Preferences {
 public:
     virtual ~Preferences() {}
 

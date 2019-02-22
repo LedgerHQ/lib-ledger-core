@@ -8,6 +8,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,19 +23,24 @@ class ERC20LikeOperation;
 class OperationQuery;
 struct ERC20Token;
 
-/**ERC20-like accounts class */
-class ERC20LikeAccount {
+/** ERC20-like accounts class. */
+class LIBCORE_EXPORT ERC20LikeAccount {
 public:
     virtual ~ERC20LikeAccount() {}
 
+    /** Get an ERC20 token. */
     virtual ERC20Token getToken() = 0;
 
+    /** Get the address of this ERC20 account. */
     virtual std::string getAddress() = 0;
 
+    /** Get the current balance of this ERC20 account. */
     virtual std::shared_ptr<BigInt> getBalance() = 0;
 
+    /** Get the list of operations performed on this ERC20 account. */
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;
 
+    /** Retrieve raw data concerning a transaction of a given amount to a given address. */
     virtual std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<BigInt> & amount, const std::string & address) = 0;
 
     virtual std::shared_ptr<OperationQuery> queryOperations() = 0;

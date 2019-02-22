@@ -46,7 +46,6 @@
 
 namespace ledger {
     namespace core {
-
         struct BitcoinLikeBlockchainExplorerInput {
             uint64_t index;
             Option<BigInt> value;
@@ -56,6 +55,7 @@ namespace ledger {
             Option<std::string> signatureScript;
             Option<std::string> coinbase;
             uint32_t sequence;
+
             BitcoinLikeBlockchainExplorerInput() {
                 sequence = 0xFFFFFFFF;
             };
@@ -67,9 +67,11 @@ namespace ledger {
             BigInt value;
             Option<std::string> address;
             std::string script;
-            BitcoinLikeBlockchainExplorerOutput() = default;
             std::string time;
+
+            BitcoinLikeBlockchainExplorerOutput() = default;
         };
+
         struct BitcoinLikeBlockchainExplorerTransaction {
             uint32_t  version;
             std::string hash;
@@ -80,6 +82,7 @@ namespace ledger {
             std::vector<BitcoinLikeBlockchainExplorerOutput> outputs;
             Option<BigInt> fees;
             uint64_t confirmations;
+
             BitcoinLikeBlockchainExplorerTransaction() {
                 version = 1;
                 confirmations = -1;
@@ -96,7 +99,6 @@ namespace ledger {
                 this->hash = cpy.hash;
                 this->block = cpy.block;
             }
-
         };
 
         class BitcoinLikeBlockchainExplorer : public ConfigurationMatchable,
@@ -109,6 +111,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP

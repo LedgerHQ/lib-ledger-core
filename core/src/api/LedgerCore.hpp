@@ -6,10 +6,17 @@
 
 #include <cstdint>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
-class LedgerCore {
+class LIBCORE_EXPORT LedgerCore {
 public:
     virtual ~LedgerCore() {}
 

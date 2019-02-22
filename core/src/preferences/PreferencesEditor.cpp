@@ -106,6 +106,11 @@ namespace ledger {
             _changes.clear();
         }
 
+        void PreferencesEditor::clear() {
+            _preferences._backend.clear();
+            _changes.clear();
+        }
+
         PreferencesEditor::PreferencesEditor(Preferences &preferences) : _preferences(preferences) {
 
         }

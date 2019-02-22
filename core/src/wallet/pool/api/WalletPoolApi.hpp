@@ -71,6 +71,12 @@ namespace ledger {
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
 
+            void freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) override;
+
+            void changePassword(const std::string &oldPassword,
+                                const std::string &newPassword,
+                                const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
+
             ~WalletPoolApi();
 
         private:

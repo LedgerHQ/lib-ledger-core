@@ -6,6 +6,13 @@
 
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -15,7 +22,7 @@ class DatabaseStatement;
 /**
  * An active connection to a database. This API is fully synchronous and all objects created by this interface need to
  * return synchronously. A connection is used to prepare statements, managing transactions and creating abstractions of
- * database objects. Interfaces don't need to be
+ * database objects.
  */
 class DatabaseConnection {
 public:
@@ -25,17 +32,17 @@ public:
      * Prepare a statement object using the given SQL query. The statement object will then be responsible of executing
      * the query and handle results. Statement objects may be reused over time if their `repeatable` flag is set to true.
      * @param query A SQL query to execute (e.g. "SELECT * FROM users WHERE name = 'Joe'")
-     * @param repeatable A flag to indicate whether or not the
+     * @param repeatable A flag to indicate whether or not the statement is repeatable
      */
     virtual std::shared_ptr<DatabaseStatement> prepareStatement(const std::string & query, bool repeatable) = 0;
 
-    /** Begin a SQL transaction on this connection */
+    /** Begin a SQL transaction on this connection. */
     virtual void begin() = 0;
 
-    /** End the current transaction and rollback all changes that occurred between the call of `begin` and `rollback` */
+    /** End the current transaction and rollback all changes that occurred between the call of `begin` and `rollback`. */
     virtual void rollback() = 0;
 
-    /** End the current transaction and persist all changes that occurred between the call of `begin` and `commit` */
+    /** End the current transaction and persist all changes that occurred between the call of `begin` and `commit`. */
     virtual void commit() = 0;
 
     /** Close the current connection. After this call the connection should never be called again. */
@@ -43,7 +50,7 @@ public:
 
     /**
      * Create a new empty blob.
-     * @return An empty blob.
+     * @return An empty blob
      */
     virtual std::shared_ptr<DatabaseBlob> newBlob() = 0;
 };

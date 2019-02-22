@@ -211,9 +211,9 @@ jobs:
       - image: circleci/buildpack-deps:stretch
     steps:
       - run:
-          command: git clone --depth 1 -b $CIRCLE_BRANCH --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
+          command: git clone --depth 1 -b "$CIRCLE_TAG" --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
           environment:
-            - GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+            GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
       - run:
           name: Install dependencies
           command: |

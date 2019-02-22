@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,12 +15,20 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
-class PoolConfiguration {
+/** Configuration of wallet pools. */
+class LIBCORE_EXPORT PoolConfiguration {
 public:
     virtual ~PoolConfiguration() {}
 
-    static LIBCORE_EXPORT std::string const DATABASE_NAME;
+    /** Name to use for the database. */
+    static std::string const DATABASE_NAME;
+
+    /**
+     * Enable internal logging.
+     *
+     * Set to true by default.
+     */
+    static std::string const ENABLE_INTERNAL_LOGGING;
 };
 
 } } }  // namespace ledger::core::api

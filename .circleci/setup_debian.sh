@@ -8,7 +8,7 @@ echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
 echo "========> Install basic config"
 apt-get update
 apt-get install -y apt-transport-https wget python build-essential libx11-xcb-dev
-apt-get install -y libssl-dev curl
+apt-get install -y libssl-dev curl tcl
 
 echo "========> Install Java"
 apt-get install openjdk-8-jdk -y

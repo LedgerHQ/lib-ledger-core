@@ -7,6 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -15,17 +22,21 @@ class EthereumLikeTransaction;
 class EthereumLikeTransactionBuilder;
 class StringCallback;
 
-/**Class representing a Ethereum account */
-class EthereumLikeAccount {
+/** Class representing a Ethereum account. */
+class LIBCORE_EXPORT EthereumLikeAccount {
 public:
     virtual ~EthereumLikeAccount() {}
 
+    /** Send a raw (binary) transaction on the Ethereum blockchain. */
     virtual void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
+    /** Send a transaction on the Ethereum blockchain. */
     virtual void broadcastTransaction(const std::shared_ptr<EthereumLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
+    /** Get a builder object to construct transactions. */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> buildTransaction() = 0;
 
+    /** Get the list of ERC20 accounts associated with this Ethereum account. */
     virtual std::vector<std::shared_ptr<ERC20LikeAccount>> getERC20Accounts() = 0;
 };
 

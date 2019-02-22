@@ -7,30 +7,37 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 struct HttpReadBodyResult;
 
-/**Class representing an Http connection */
+/** Class representing an Http connection. */
 class HttpUrlConnection {
 public:
     virtual ~HttpUrlConnection() {}
 
     /**
-     * Gets the HTTP response status code
+     * Gets the HTTP response status code.
      * @return The HTTP response status code
      */
     virtual int32_t getStatusCode() = 0;
 
     /**
-     * Gets the HTTP response status text
+     * Gets the HTTP response status text.
      * @return The HTTP response status text
      */
     virtual std::string getStatusText() = 0;
 
     /**
-     * Gets the HTTP response headers
+     * Gets the HTTP response headers.
      * @return The HTTP response headers
      */
     virtual std::unordered_map<std::string, std::string> getHeaders() = 0;

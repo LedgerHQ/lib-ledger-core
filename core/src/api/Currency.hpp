@@ -17,27 +17,27 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Structure of cryptocurrency */
+/** Structure of cryptocurrency. */
 struct Currency final {
-    /**WalletType object defining the type of wallet the currency belongs to */
+    /** WalletType object defining the type of wallet the currency belongs to. */
     WalletType walletType;
-    /**String which represents currency name */
+    /** String which represents currency name. */
     std::string name;
     /**
-     *Integer cointype, part of BIP32 path
-     *One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+     * Integer cointype, part of BIP32 path.
+     * One can refer to https://github.com/satoshilabs/slips/blob/master/slip-0044.md.
      */
     int32_t bip44CoinType;
-    /**String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin) */
+    /** String representing schemes allowing to send money to a cryptocurrency address (e.g. bitcoin). */
     std::string paymentUriScheme;
-    /**List of CurrencyUnit objects (e.g. BTC, mBTC ...) */
+    /** List of CurrencyUnit objects (e.g. BTC, mBTC ...). */
     std::vector<CurrencyUnit> units;
     /**
      *TODO: find a better solution to have only a networkParameters
-     *Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
+     * Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
      */
     std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
-    /**Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
+    /** Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
     std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters;
 
     Currency(WalletType walletType_,

@@ -39,20 +39,30 @@
 
 namespace ledger {
     namespace core {
-
-        WalletPool::WalletPool(const std::string &name, const Option<std::string> &password,
-                               const std::shared_ptr<api::HttpClient> &httpClient,
-                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                               const std::shared_ptr<api::PathResolver> &pathResolver,
-                               const std::shared_ptr<api::LogPrinter> &logPrinter,
-                               const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                               const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                               const std::shared_ptr<api::DatabaseBackend> &backend,
-                               const std::shared_ptr<api::DynamicObject> &configuration)
-        : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        WalletPool::WalletPool(
+            const std::string &name,
+            const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
-            _password = password;
+
+            // if the password has the form Some(""), we set it to None as this is not an accepted
+            // situation (to fix this in a more type-safe way, we need to change the encoding and go
+            // to std::string only, no more optional)
+            if (password.hasValue() && password->empty()) {
+                _password = Option<std::string>::NONE;
+            } else {
+                _password = password;
+            }
+
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
             // File system management
@@ -77,19 +87,21 @@ namespace ledger {
             );
 
             // Encrypt the preferences, if needed
-            if (password.hasValue()) {
-                _externalPreferencesBackend->setEncryption(rng, *password);
-                _internalPreferencesBackend->setEncryption(rng, *password);
+            if (_password.hasValue()) {
+                _externalPreferencesBackend->setEncryption(rng, *_password);
+                _internalPreferencesBackend->setEncryption(rng, *_password);
             }
 
             // Logger management
             _logPrinter = logPrinter;
+            auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger = logger::create(
                     name + "-l",
-                    password.toOptional(),
                     dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
                     pathResolver,
-                    logPrinter
+                    logPrinter,
+                    logger::DEFAULT_MAX_SIZE,
+                    enableLogger
             );
 
             // Database management
@@ -97,7 +109,8 @@ namespace ledger {
                std::static_pointer_cast<DatabaseBackend>(backend),
                pathResolver,
                _logger,
-               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name)
+               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
+               password.getValueOr("")
             );
 
             // Threading management
@@ -107,23 +120,28 @@ namespace ledger {
         }
 
         std::shared_ptr<WalletPool>
-        WalletPool::newInstance(const std::string &name, const Option<std::string> &password,
-                                const std::shared_ptr<api::HttpClient> &httpClient,
-                                const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                const std::shared_ptr<api::PathResolver> &pathResolver,
-                                const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                                const std::shared_ptr<api::DatabaseBackend> &backend,
-                                const std::shared_ptr<api::DynamicObject> &configuration) {
+        WalletPool::newInstance(
+            const std::string &name, const Option<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
                 name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
             ));
+
             // Initialization
             //  Load currencies
             pool->initializeCurrencies();
+
             //  Create factories
             pool->initializeFactories();
+
             return pool;
         }
 
@@ -461,8 +479,20 @@ namespace ledger {
 
         }
 
-        WalletPool::~WalletPool() {
-        }
+        Future<api::ErrorCode> WalletPool::freshResetAll() {
+            auto self = shared_from_this();
 
+            return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+                // drop the main database first
+                self->getDatabaseSessionPool()->performDatabaseRollback();
+
+                // then reset preferences
+                _externalPreferencesBackend->clear();
+                _internalPreferencesBackend->clear();
+
+                // and we’re done
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+        }
     }
 }

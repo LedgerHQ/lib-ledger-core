@@ -5,6 +5,13 @@
 #define DJINNI_GENERATED_DATABASEERROR_HPP
 
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 

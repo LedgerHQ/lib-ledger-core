@@ -6,13 +6,20 @@
 
 #include <cstdint>
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class DatabaseEngine;
 
 /**Class representing a database backend. */
-class DatabaseBackend {
+class LIBCORE_EXPORT DatabaseBackend {
 public:
     virtual ~DatabaseBackend() {}
 
@@ -35,12 +42,12 @@ public:
     virtual bool isLoggingEnabled() = 0;
 
     /**
-     * Create an instance of SQLite3 database
+     * Create an instance of SQLite3 database.
      * @return DatabaseBackend object
      */
     static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
 
-    /** Create an instance of PostgreSQL database */
+    /** Create a database backend instance from the given DatabaseEngine implementation. */
     static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);
 };
 

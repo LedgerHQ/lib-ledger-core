@@ -19,7 +19,9 @@ CORE_CPP_JNI_DIRECTORY=core/src/jni
 # This option will be the name of the imported header and the correponding variable (defined
 # by EXPORT_MACRO_NAME option) should be exactly same name in upper case
 
-rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
+# prune export directories
+rm -rf $DEST $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
+
 ./djinni/src/run    --idl ./core/core.djinni \
                     --cpp-out $CORE_CPP_API_DIRECTORY \
                     --cpp-namespace ledger::core::api \
@@ -33,7 +35,7 @@ rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --node-type-prefix NJS \
                     --node-include-cpp ../../../core/src/api \
                     --node-package $PACKAGE_NAME \
-		    		--export-header-name libcore_export \
+                    --export-header-name libcore_export \
                     --trace $trace
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni

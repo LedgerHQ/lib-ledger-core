@@ -7,6 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -17,7 +24,6 @@ class DatabaseResultSet;
 /**
  * A wrapper object around prepared SQL statements. lib-ledger-core will use placeholders when it needs to pass
  * parameters to a query. It will then  bind each parameter at a given position to a given value.
- *
  */
 class DatabaseStatement {
 public:

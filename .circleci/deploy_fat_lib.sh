@@ -10,7 +10,7 @@ if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" ==
 	lipo -create armv7/ledger-core.framework/ledger-core arm64/ledger-core.framework/ledger-core -o ledger-core
 	mkdir ledger-core.framework
 	mv ledger-core ledger-core.framework/
-	cp arm64/ledger-core.framework/Info.plist ledger-core.framework/
+	cp armv7/ledger-core.framework/Info.plist ledger-core.framework/
 	install_name_tool -add_rpath "@executable_path/Frameworks/universal" ledger-core.framework/ledger-core
 	lipo -info ledger-core.framework/ledger-core
 

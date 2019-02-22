@@ -8,6 +8,13 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -17,22 +24,22 @@ class BitcoinLikeTransactionBuilder;
 class I32Callback;
 class StringCallback;
 
-/**Class representing a Bitcoin account */
-class BitcoinLikeAccount {
+/** Class representing a Bitcoin account. */
+class LIBCORE_EXPORT BitcoinLikeAccount {
 public:
     virtual ~BitcoinLikeAccount() {}
 
     /**
-     *Get UTXOs of account in a given range
-     *@param from, integer, lower bound for account's UTXO's index
-     *@param to, integer, upper bound for account's UTXO's index
-     *@param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
+     * Get UTXOs of account in a given range.
+     * @param from, integer, lower bound for account's UTXO's index
+     * @param to, integer, upper bound for account's UTXO's index
+     * @param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
      */
     virtual void getUTXO(int32_t from, int32_t to, const std::shared_ptr<BitcoinLikeOutputListCallback> & callback) = 0;
 
     /**
-     *Get UTXOs count of account
-     *@param callback, Callback object which returns number of UTXO owned by this account
+     * Get UTXOs count of account.
+     * @param callback, Callback object which returns number of UTXO owned by this account
      */
     virtual void getUTXOCount(const std::shared_ptr<I32Callback> & callback) = 0;
 

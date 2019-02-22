@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,12 +15,13 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
-class SynchronizationEngines {
+/** Available synchronization mechanisms. */
+class LIBCORE_EXPORT SynchronizationEngines {
 public:
     virtual ~SynchronizationEngines() {}
 
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION;
+    /** Synchronize via blockchain explorers. */
+    static std::string const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION;
 };
 
 } } }  // namespace ledger::core::api

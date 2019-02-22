@@ -5,27 +5,34 @@
 #define DJINNI_GENERATED_EVENTBUS_HPP
 
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class EventReceiver;
 class ExecutionContext;
 
-/**Class representing an event bus through which a receiver gets notified */
-class EventBus {
+/** Class representing an event bus through which a receiver gets notified. */
+class LIBCORE_EXPORT EventBus {
 public:
     virtual ~EventBus() {}
 
     /**
-     *Subscribe an event receiver to the event bus
-     *@param context, ExecutionContext object, execution context in which receiver will be notified
-     *@param reveiver, EventReceiver object, receiver that event bu will notify
+     * Subscribe an event receiver to the event bus.
+     * @param context, ExecutionContext object, execution context in which receiver will be notified
+     * @param reveiver, EventReceiver object, receiver that event bu will notify
      */
     virtual void subscribe(const std::shared_ptr<ExecutionContext> & context, const std::shared_ptr<EventReceiver> & receiver) = 0;
 
     /**
-     *Unsubscribe an event receiver from the event bus
-     *@param receiver, EventReceiver object, receiver to unsubscribe
+     * Unsubscribe an event receiver from the event bus.
+     * @param receiver, EventReceiver object, receiver to unsubscribe
      */
     virtual void unsubscribe(const std::shared_ptr<EventReceiver> & receiver) = 0;
 };

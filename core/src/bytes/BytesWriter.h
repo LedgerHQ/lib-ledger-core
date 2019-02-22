@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BYTESWRITER_H
-#define LEDGER_CORE_BYTESWRITER_H
+
+#pragma once
 
 #include <cstdio>
 #include <vector>
@@ -155,6 +155,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_BYTESWRITER_H

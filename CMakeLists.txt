@@ -10,7 +10,7 @@ include(UseBackportedModules)
 
 # The project version number.
 set(VERSION_MAJOR   2   CACHE STRING "Project major version number.")
-set(VERSION_MINOR   2   CACHE STRING "Project minor version number.")
+set(VERSION_MINOR   6   CACHE STRING "Project minor version number.")
 set(VERSION_PATCH   0   CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
@@ -22,6 +22,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 set(CMAKE_MACOSX_RPATH 1)
+
+# SQLCIPHER is used by default
+# TODO: activate SQLCipher for Windows
+# WIP: when activating, windows build fails during configuration
+# step of SQLCipher project (because C compiler's path contains spaces)
+if (NOT MSVC AND NOT MINGW)
+    set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support" FORCE)
+endif()
+
+if (SQLCIPHER)
+    add_definitions("-DSQLCIPHER")
+    add_definitions("-DSQLITE_HAS_CODEC")
+endif()
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)

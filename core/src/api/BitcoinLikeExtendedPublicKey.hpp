@@ -8,23 +8,36 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeAddress;
 
-class BitcoinLikeExtendedPublicKey {
+/** The xPUB definition for Bitcoin. */
+class LIBCORE_EXPORT BitcoinLikeExtendedPublicKey {
 public:
     virtual ~BitcoinLikeExtendedPublicKey() {}
 
+    /** Derive an address from an xPUB and a path. */
     virtual std::shared_ptr<BitcoinLikeAddress> derive(const std::string & path) = 0;
 
+    /** Derive a public key from an xPUB and a path. */
     virtual std::vector<uint8_t> derivePublicKey(const std::string & path) = 0;
 
+    /** Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path. */
     virtual std::vector<uint8_t> deriveHash160(const std::string & path) = 0;
 
+    /** Get the xPUB in base 58. */
     virtual std::string toBase58() = 0;
 
+    /** Get the root path of the xPUB. */
     virtual std::string getRootPath() = 0;
 };
 

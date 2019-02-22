@@ -7,13 +7,20 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 enum class TrustLevel;
 
-/**TODO */
-class TrustIndicator {
+/** The trust indicator of an operation. */
+class LIBCORE_EXPORT TrustIndicator {
 public:
     virtual ~TrustIndicator() {}
 

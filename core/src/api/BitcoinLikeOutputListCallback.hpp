@@ -7,22 +7,26 @@
 #include "../utils/optional.hpp"
 #include <memory>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeOutput;
 struct Error;
 
-/**
- *Callback triggered by main completed task,
- *returns optional result as list of template type T
- */
+/** Callback triggered by main completed task, returning optional result as list of template type T. */
 class BitcoinLikeOutputListCallback {
 public:
     virtual ~BitcoinLikeOutputListCallback() {}
 
     /**
-     * Method triggered when main task complete
+     * Method triggered when main task complete.
      * @params result optional of type list<T>, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */

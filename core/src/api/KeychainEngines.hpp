@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,13 +15,14 @@
 
 namespace ledger { namespace core { namespace api {
 
-class KeychainEngines {
+/** Available keychains policies. */
+class LIBCORE_EXPORT KeychainEngines {
 public:
     virtual ~KeychainEngines() {}
 
-    static LIBCORE_EXPORT std::string const BIP32_P2PKH;
+    static std::string const BIP32_P2PKH;
 
-    static LIBCORE_EXPORT std::string const BIP49_P2SH;
+    static std::string const BIP49_P2SH;
 };
 
 } } }  // namespace ledger::core::api

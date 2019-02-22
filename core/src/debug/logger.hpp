@@ -46,11 +46,11 @@ namespace ledger {
             static const std::size_t DEFAULT_MAX_SIZE = 5 * 1048576;
             static std::shared_ptr<spdlog::logger> create(
                     const std::string& name,
-                    std::experimental::optional<std::string> password,
                     const std::shared_ptr<api::ExecutionContext>& context,
                     const std::shared_ptr<api::PathResolver>& resolver,
                     const std::shared_ptr<api::LogPrinter>& printer,
-                    std::size_t maxSize = DEFAULT_MAX_SIZE
+                    std::size_t maxSize = DEFAULT_MAX_SIZE,
+                    bool enabled = true
             );
         private:
             logger() = delete;

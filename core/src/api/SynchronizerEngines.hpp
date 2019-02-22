@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,23 +15,23 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Class of constants representing the engines to rely on for synchronization */
-class SynchronizerEngines {
+/** Class of constants representing the engines to rely on for synchronization. */
+class LIBCORE_EXPORT SynchronizerEngines {
 public:
     virtual ~SynchronizerEngines() {}
 
     /**
-     *String, rely on blockchain explorers to synchronize,
-     *For example to condsider a transaction valid, it should, first, be included in a block,
-     *then spent UTXOs by this transaction, should be 'valid' through the whole blockchain
+     * String, rely on blockchain explorers to synchronize,
+     * For example to consider a transaction valid, it should, first, be included in a block,
+     * then spent UTXOs by this transaction, should be 'valid' through the whole blockchain.
      */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER;
+    static std::string const BLOCKCHAIN_EXPLORER;
 
     /**
      *String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
      *To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
      */
-    static LIBCORE_EXPORT std::string const SPV;
+    static std::string const SPV;
 };
 
 } } }  // namespace ledger::core::api

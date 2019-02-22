@@ -3,7 +3,6 @@
 # attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
 # is highly inspired by Android SharedPreferences.
 Preferences = interface +c {
-
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
     getString(key: string, fallbackValue: string): string;
@@ -71,4 +70,7 @@ PreferencesEditor = interface +c {
 
     # Persists the changes to the Preferences.
     commit();
+
+    # Clear all preferences.
+    clear();
 }

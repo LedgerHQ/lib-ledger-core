@@ -46,6 +46,10 @@ protected:
     std::shared_ptr<ledger::core::api::Lock> preferencesLock;
     std::shared_ptr<ledger::core::PreferencesBackend> backend;
 
+    void TearDown() override {
+        backend->clear();
+    }
+
 public:
     PreferencesTest()
         : resolver(std::make_shared<NativePathResolver>())
@@ -284,4 +288,39 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
     auto cipherText2 = preferences->getString("same", "");
 
     ASSERT_NE(cipherText1, cipherText2);
+}
+
+TEST_F(PreferencesTest, ResetEncryption) {
+    auto preferences = backend->getPreferences("my_test_preferences_reencrypted");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    backend->setEncryption(rng, password);
+
+    preferences
+        ->editor()
+        ->putString("string", "dawg")
+        ->putInt("int", 9246)
+        ->putLong("long", 89356493564)
+        ->commit();
+
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+
+    backend->resetEncryption(rng, password, "new password!");
+
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+}
+
+TEST_F(PreferencesTest, Clear) {
+    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+
+    preferences->editor()->putString("string", "dawg")->commit();
+    EXPECT_EQ(preferences->getString("string", ""), "dawg");
+
+    preferences->editor()->clear();
+    EXPECT_EQ(preferences->getString("string", "none"), "none");
 }

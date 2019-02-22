@@ -9,187 +9,191 @@
 #include <memory>
 #include <string>
 #include <vector>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class DynamicObject;
 enum class DynamicType;
 
-/**
- *Class representing an object that holds references to different types of objects,
- *those references are appended dynamically in an array like structure and can be retrieved by their index
- */
-class DynamicArray {
+/** A collection of dynamic values in an array. Values can be retrieved via their indexes. */
+class LIBCORE_EXPORT DynamicArray {
 public:
     virtual ~DynamicArray() {}
 
     /**
-     *Get count of stored references
-     *@return 64 bits integer
+     * Get count of values.
+     * @return 64-bit integer
      */
     virtual int64_t size() = 0;
 
     /**
-     *Push a 32 bits integer
-     *@param value, 32 bits integer
-     *@return DynamicArray with value stored in it
+     * Push a 32-bit integer.
+     * @param value, 32-bit integer
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushInt(int32_t value) = 0;
 
     /**
-     *Push a 64 bits integer
-     *@param value, 64 bits integer
-     *@return DynamicArray with value stored in it
+     * Push a 64-bit integer.
+     * @param value, 64-bit integer
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushLong(int64_t value) = 0;
 
     /**
-     *Push a string
-     *@param value, string
-     *@return DynamicArray with value stored in it
+     * Push a string.
+     * @param value, string
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushString(const std::string & value) = 0;
 
     /**
-     *Push a double
-     *@param value, double
-     *@return DynamicArray with value stored in it
+     * Push a double.
+     * @param value, double
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushDouble(double value) = 0;
 
     /**
-     *Push a binary
-     *@param value, binary
-     *@return DynamicArray with value stored in it
+     * Push a binary.
+     * @param value, binary
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushData(const std::vector<uint8_t> & value) = 0;
 
     /**
-     *Push a bool
-     *@param value, bool
-     *@return DynamicArray with value stored in it
+     * Push a bool.
+     * @param value, bool
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushBoolean(bool value) = 0;
 
     /**
-     *Push a DynamicObject object
-     *@param value, DynamicObject
-     *@return DynamicArray with value stored in it
+     * Push a dynamic object.
+     * @param value, DynamicObject
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushObject(const std::shared_ptr<DynamicObject> & value) = 0;
 
     /**
-     *Push a DynamicArray object
-     *@param value, DynamicArray
-     *@return DynamicArray with value stored in it
+     * Push a dynamic array.
+     * @param value, DynamicArray
+     * @return DynamicArray with value stored in it
      */
     virtual std::shared_ptr<DynamicArray> pushArray(const std::shared_ptr<DynamicArray> & value) = 0;
 
     /**
-     *Get string at a given index
-     *@param index, 64 bits integer
-     *@return Optional string
+     * Get a string at a given index.
+     * @param index, 64-bit integer
+     * @return Optional string
      */
     virtual std::experimental::optional<std::string> getString(int64_t index) = 0;
 
     /**
-     *Get 32 bits integer at a given index
-     *@param index, 64 bits integer
-     *@return Optional 32 bits integer
+     * Get 32-bit integer at a given index.
+     * @param index, 64-bit integer
+     * @return Optional 32-bit integer
      */
     virtual std::experimental::optional<int32_t> getInt(int64_t index) = 0;
 
     /**
-     *Get 64 bits integer at a given index
-     *@param index, 64 bits integer
-     *@return Optional 64 bits integer
+     * Get 64-bit integer at a given index.
+     * @param index, 64-bit integer
+     * @return Optional 64-bit integer
      */
     virtual std::experimental::optional<int64_t> getLong(int64_t index) = 0;
 
     /**
-     *Get double at a given index
-     *@param index, 64 bits integer
-     *@return Optional double
+     * Get double at a given index.
+     * @param index, 64-bit integer
+     * @return Optional double
      */
     virtual std::experimental::optional<double> getDouble(int64_t index) = 0;
 
     /**
-     *Get binary at a given index
-     *@param index, 64 bits integer
-     *@return Optional binary
+     * Get binary at a given index.
+     * @param index, 64-bit integer
+     * @return Optional binary
      */
     virtual std::experimental::optional<std::vector<uint8_t>> getData(int64_t index) = 0;
 
     /**
-     *Get bool at a given index
-     *@param index, 64 bits integer
-     *@return Optional bool
+     * Get bool at a given index.
+     * @param index, 64-bit integer
+     * @return Optional bool
      */
     virtual std::experimental::optional<bool> getBoolean(int64_t index) = 0;
 
     /**
-     *Get DynamicObject object at a given index
-     *@param index, 64 bits integer
-     *@return Optional DynamicObject
+     * Get DynamicObject object at a given index.
+     * @param index, 64-bit integer
+     * @return Optional DynamicObject
      */
     virtual std::shared_ptr<DynamicObject> getObject(int64_t index) = 0;
 
     /**
-     *Get DynamicArray object at a given index
-     *@param index, 64 bits integer
-     *@return Optional DynamicArray
+     * Get DynamicArray object at a given index.
+     * @param index, 64-bit integer
+     * @return Optional DynamicArray
      */
     virtual std::shared_ptr<DynamicArray> getArray(int64_t index) = 0;
 
     /**
-     *Concatenate current DynamicArray with another one
-     *@param array, DynamicArray object to concatenate with
-     *@return DynamicArray object, concatenated DynamicArray
+     * Concatenate current DynamicArray with another one.
+     * @param array, DynamicArray object to concatenate with
+     * @return DynamicArray object, concatenated DynamicArray
      */
     virtual std::shared_ptr<DynamicArray> concat(const std::shared_ptr<DynamicArray> & array) = 0;
 
     /**
-     *Get type of value stored at a given index
-     *@param index, 64 bits integer
-     *@return Optional DynamicType enum entry
+     * Get type of value stored at a given index.
+     * @param index, 64 bits integer
+     * @return Optional DynamicType enum entry
      */
     virtual std::experimental::optional<DynamicType> getType(int64_t index) = 0;
 
     /**
-     *Delete value stored at given index
-     *@param index, 64 bits integer
-     *@return bool, true if deletion succeeded
+     * Delete value stored at given index.
+     * @param index, 64 bits integer
+     * @return bool, true if deletion succeeded
      */
     virtual bool remove(int64_t index) = 0;
 
     /**
-     *Dump whole object's content as string
-     *@return string
+     * Dump whole object's content as string.
+     * @return string, the string representation of the array
      */
     virtual std::string dump() = 0;
 
     /**
-     *Serialize whole object to a binary
-     *@return binary
+     * Serialize whole object to a binary.
+     * @return binary, the serialized array
      */
     virtual std::vector<uint8_t> serialize() = 0;
 
     /**
-     *Get readonly status of object
-     *@param bool
+     * Get readonly status of object.
+     * @return bool, whether the array is in read-only mode
      */
     virtual bool isReadOnly() = 0;
 
     /**
-     *Create a new instance of DynamicArray class
-     *@return DynamicArray instance
+     * Create a new instance of DynamicArray class.
+     * @return DynamicArray, a brand new instance of a dynamic array
      */
     static std::shared_ptr<DynamicArray> newInstance();
 
     /**
-     *Parse a binary to a DynamicArray
-     *@param serialized, binary to parse
-     *@return Optional DynamicArray
+     * Parse a binary to a DynamicArray.
+     * @param serialized, binary to parse
+     * @return Optional, the unserialized dynamic array
      */
     static std::shared_ptr<DynamicArray> load(const std::vector<uint8_t> & serialized);
 };

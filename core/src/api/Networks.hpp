@@ -3,18 +3,28 @@
 
 #ifndef DJINNI_GENERATED_NETWORKS_HPP
 #define DJINNI_GENERATED_NETWORKS_HPP
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 struct BitcoinLikeNetworkParameters;
 struct EthereumLikeNetworkParameters;
 
-class Networks {
+/** All available blockchain networks parameters. */
+class LIBCORE_EXPORT Networks {
 public:
     virtual ~Networks() {}
 
+    /** The Bitcoin network parameters. */
     static BitcoinLikeNetworkParameters bitcoin();
 
+    /** The Ethereum network parameters. */
     static EthereumLikeNetworkParameters ethereum();
 };
 

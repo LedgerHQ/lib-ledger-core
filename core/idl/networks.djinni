@@ -1,8 +1,10 @@
 @import "bitcoin/addresses.djinni"
 @import "ethereum/addresses.djinni"
 
-
+# All available blockchain networks parameters.
 Networks = interface +c {
+    # The Bitcoin network parameters.
     static bitcoin(): BitcoinLikeNetworkParameters;
+    # The Ethereum network parameters.
     static ethereum(): EthereumLikeNetworkParameters;
 }

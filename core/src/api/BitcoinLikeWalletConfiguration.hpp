@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,34 +15,34 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Class of constants to set Bitcoin like wallet configurations */
-class BitcoinLikeWalletConfiguration {
+/** Class of constants to set Bitcoin like wallet configurations. */
+class LIBCORE_EXPORT BitcoinLikeWalletConfiguration {
 public:
     virtual ~BitcoinLikeWalletConfiguration() {}
 
-    /**String keychain's name */
-    static LIBCORE_EXPORT std::string const KEYCHAIN;
+    /** String keychain's name. */
+    static std::string const KEYCHAIN;
 
-    /**String observer's name */
-    static LIBCORE_EXPORT std::string const OBSERVER;
+    /** String observer's name. */
+    static std::string const OBSERVER;
 
-    /**String explorer's name */
-    static LIBCORE_EXPORT std::string const EXPLORER;
+    /** String explorer's name. */
+    static std::string const EXPLORER;
 
-    /**String synchronizer's name */
-    static LIBCORE_EXPORT std::string const SYNCHRONIZER;
+    /** String synchronizer's name. */
+    static std::string const SYNCHRONIZER;
 
-    /**String with Payment Script type and BIP on which hierarchical wallet is based */
-    static LIBCORE_EXPORT std::string const KEYCHAIN_P2PKH_BIP44;
+    /** String with Payment Script type and BIP on which hierarchical wallet is based. */
+    static std::string const KEYCHAIN_P2PKH_BIP44;
 
-    /**String websocket on which observer receives notifications from explorer */
-    static LIBCORE_EXPORT std::string const OBSERVER_LEDGER_WEBSOCKET;
+    /** String websocket on which observer receives notifications from explorer. */
+    static std::string const OBSERVER_LEDGER_WEBSOCKET;
 
-    /**String explorer api */
-    static LIBCORE_EXPORT std::string const EXPLORER_LEDGER_API;
+    /** String explorer api. */
+    static std::string const EXPLORER_LEDGER_API;
 
-    /**TODO */
-    static LIBCORE_EXPORT std::string const SYNCHRONIZER_DEFAULT;
+    /** String synchronizer by default. */
+    static std::string const SYNCHRONIZER_DEFAULT;
 };
 
 } } }  // namespace ledger::core::api

@@ -7,25 +7,32 @@
 #include "../utils/optional.hpp"
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeAddress;
 struct Currency;
 
-class Address {
+class LIBCORE_EXPORT Address {
 public:
     virtual ~Address() {}
 
     /**
-     * Gets an optional derivation path (if the address is owned by an account)
+     * Gets an optional derivation path (if the address is owned by an account).
      * @return The derivation path of the address
      */
     virtual std::experimental::optional<std::string> getDerivationPath() = 0;
 
     /**
      * Serialize the address to a string. The serialization method depends of the underlying currency and
-     * format (Base58, Bech32, Ethereum...)
+     * format (Base58, Bech32, Ethereum...).
      */
     virtual std::string toString() = 0;
 
@@ -37,7 +44,7 @@ public:
 
     /**
      * Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
-     * (depending on you host this may be a null, nil, None...)
+     * (depending on you host this may be a null, nil, None...).
      * @param address The string to parse
      * @param currency The currency used to parse the address
      * @return If successful returns the address object otherwise null.

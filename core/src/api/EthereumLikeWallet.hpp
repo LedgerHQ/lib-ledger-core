@@ -3,10 +3,18 @@
 
 #ifndef DJINNI_GENERATED_ETHEREUMLIKEWALLET_HPP
 #define DJINNI_GENERATED_ETHEREUMLIKEWALLET_HPP
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
-class EthereumLikeWallet {
+/** An Ethereum-like wallet. */
+class LIBCORE_EXPORT EthereumLikeWallet {
 public:
     virtual ~EthereumLikeWallet() {}
 };

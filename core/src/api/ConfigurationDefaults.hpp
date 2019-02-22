@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -16,20 +16,25 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**TODO */
-class ConfigurationDefaults {
+/** Default values you might want to use if you don’t know what values you should use. */
+class LIBCORE_EXPORT ConfigurationDefaults {
 public:
     virtual ~ConfigurationDefaults() {}
 
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_DEFAULT_API_ENDPOINT;
+    /** The default Ledger API endpoint for the explorers. */
+    static std::string const BLOCKCHAIN_DEFAULT_API_ENDPOINT;
 
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
+    /** The default Ledger API endpoint for the observers. */
+    static std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
 
-    static LIBCORE_EXPORT std::string const BIP44_DERIVATION_SCHEME;
+    /** The default derivation scheme for BIP44 derivation. */
+    static std::string const BIP44_DERIVATION_SCHEME;
 
-    static LIBCORE_EXPORT std::string const DEFAULT_KEYCHAIN;
+    /** Default keychain policy. */
+    static std::string const DEFAULT_KEYCHAIN;
 
-    static LIBCORE_EXPORT int32_t const DEFAULT_TRUST_LIMIT;
+    /** Default trust limit (block height). */
+    static int32_t const DEFAULT_TRUST_LIMIT;
 };
 
 } } }  // namespace ledger::core::api

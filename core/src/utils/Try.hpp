@@ -31,6 +31,10 @@
 #ifndef LEDGER_CORE_TRY_HPP
 #define LEDGER_CORE_TRY_HPP
 
+#ifdef TARGET_JNI
+#include <jni/jni/djinni_support.hpp>
+#endif
+
 #include <functional>
 #include "optional.hpp"
 #include "Option.hpp"
@@ -139,6 +143,10 @@ namespace ledger {
                     result.success(lambda());
                 } catch (const Exception& ex) {
                     result.fail(ex);
+#ifdef TARGET_JNI
+                } catch (const djinni::jni_exception& ex) {
+                    result.fail(api::ErrorCode::RUNTIME_ERROR, ex.get_backtrace());
+#endif
                 } catch (...) {
                     result.fail(api::ErrorCode::RUNTIME_ERROR, boost::current_exception_diagnostic_information(true));
                 }

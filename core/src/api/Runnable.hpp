@@ -3,6 +3,13 @@
 
 #ifndef DJINNI_GENERATED_RUNNABLE_HPP
 #define DJINNI_GENERATED_RUNNABLE_HPP
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -10,7 +17,7 @@ namespace ledger { namespace core { namespace api {
  *Class representing a runnable object
  *A runnable, needs a specific execution context (refer to ExecutionContext) to run
  */
-class Runnable {
+class LIBCORE_EXPORT Runnable {
 public:
     virtual ~Runnable() {}
 

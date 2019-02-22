@@ -8,6 +8,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -16,7 +23,7 @@ enum class OperationType;
 enum class TrustLevel;
 
 /**TODO */
-class QueryFilter {
+class LIBCORE_EXPORT QueryFilter {
 public:
     virtual ~QueryFilter() {}
 

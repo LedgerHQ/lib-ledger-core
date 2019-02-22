@@ -6,6 +6,13 @@
 
 #include <cstdint>
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -13,40 +20,40 @@ class OperationListCallback;
 class QueryFilter;
 enum class OperationOrderKey;
 
-/**Class respresenting a query for a set of operations */
-class OperationQuery {
+/** Class respresenting a query for a set of operations. */
+class LIBCORE_EXPORT OperationQuery {
 public:
     virtual ~OperationQuery() {}
 
     /**
-     *Apply given order to query's operation
-     *@param key, OperationOrderKey object which defines order
-     *@param descending, bool
-     *@return OperationQuery object, new ordered operation
+     * Apply given order to query's operation.
+     * @param key, OperationOrderKey object which defines order
+     * @param descending, bool
+     * @return OperationQuery object, new ordered operation
      */
     virtual std::shared_ptr<OperationQuery> addOrder(OperationOrderKey key, bool descending) = 0;
 
     /**
-     *Get applied filter on operation query
-     *@return QueryFilter object
+     * Get applied filter on operation query.
+     * @return QueryFilter object
      */
     virtual std::shared_ptr<QueryFilter> filter() = 0;
 
     /**
-     *Add offset to the operation query
-     *@param from, 64 bits integer
+     * Add offset to the operation query.
+     * @param from, 64-bit integer
      */
     virtual std::shared_ptr<OperationQuery> offset(int64_t from) = 0;
 
     /**
-     *Add limit to the operation query results
-     *@param count, 64 bits integer
+     * Add limit to the operation query results.
+     * @param count, 64-bit integer
      */
     virtual std::shared_ptr<OperationQuery> limit(int64_t count) = 0;
 
     /**
      *TODO
-     *Complete the operation query
+     * Complete the operation query.
      */
     virtual std::shared_ptr<OperationQuery> complete() = 0;
 
@@ -54,8 +61,8 @@ public:
     virtual std::shared_ptr<OperationQuery> partial() = 0;
 
     /**
-     *Execute query to retrieve operations
-     *@param callback, if execute method succeed, ListCallback object returning a List of Operation objects
+     * Execute query to retrieve operations.
+     * @param callback, if execute method succeed, ListCallback object returning a List of Operation objects
      */
     virtual void execute(const std::shared_ptr<OperationListCallback> & callback) = 0;
 };

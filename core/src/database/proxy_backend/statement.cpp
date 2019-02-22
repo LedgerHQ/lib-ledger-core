@@ -41,18 +41,24 @@ using namespace ledger::core;
 
 void proxy_statement_backend::alloc() {
  // Do nothing
-    SP_PRINT("ALLOC")
+    SP_PRINT("ALLOC STATEMENT " << this)
 }
 
 void proxy_statement_backend::clean_up() {
-    SP_PRINT("CLEAN UP")
+    try {
+    SP_PRINT("CLEAN UP STATEMENT " << this)
     if (_stmt) {
         _stmt->close();
         _stmt = nullptr;
     }
+    SP_PRINT("CLEAN UP STATEMENT done " << this)
     if (_results) {
         _results->close();
         _results = nullptr;
+    }
+    SP_PRINT("CLEAN UP STATEMENT result done" << this)
+    } catch (...) {
+        // Ignore
     }
 }
 
@@ -79,12 +85,13 @@ void proxy_statement_backend::prepare(std::string const &query, details::stateme
 }
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::execute(int number) {
-    SP_PRINT("EXECUTE")
+    SP_PRINT("EXECUTE ASK FOR " << number << " ROWS")
     return make_try<details::statement_backend::exec_fetch_result>([&, this] {
         reset_if_necessary();
         _results = _stmt->execute();
-        if (number == 0)
-            return _results->getRowNumber() == 0 ? ef_no_data : ef_success;
+        if (number == 0) {
+            return _results->hasNext() ? ef_success : ef_no_data;
+        }
         else
             return fetch(number);
     }).getOrThrowException<soci_error>();
@@ -94,8 +101,10 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::fetch(int
     SP_PRINT("FETCH " << number)
     if (number > 1)
         return batch_fetch(number);
-    else
+    else if (number == 1)
         return single_row_fetch();
+    else
+        return _results->hasNext() ? ef_success : ef_no_data;
 }
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::batch_fetch(int number) {
@@ -104,15 +113,16 @@ details::statement_backend::exec_fetch_result proxy_statement_backend::batch_fet
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::single_row_fetch() {
     SP_PRINT("FETCH SINGLE")
+    if (_results && _results->hasNext())
+        _results->next();
+    else {
+        _results = nullptr;
+    }
     if (_results)
         _lastRow = _results->getRow();
     else
         _lastRow = nullptr;
-    if (_results && _results->hasNext())
-        _results = _results->next();
-    else {
-        _results = nullptr;
-    }
+    SP_PRINT("ROW IS " << _lastRow);
     return _lastRow ? ef_success : ef_no_data;
 }
 
@@ -122,8 +132,8 @@ long long proxy_statement_backend::get_affected_rows() {
 }
 
 int proxy_statement_backend::get_number_of_rows() {
-    SP_PRINT("GET NUMBER OF ROWS returns " << (_results ? _results->getRowNumber() : 0))
-    return _results ? _results->getRowNumber() : 0;
+    SP_PRINT("GET NUMBER OF ROWS returns " << (_results ? _results->available() : 0))
+    return _results ? _results->available() : 0;
 }
 
 std::string proxy_statement_backend::get_parameter_name(int index) const {

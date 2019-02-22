@@ -7,6 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
@@ -18,7 +25,7 @@ public:
     virtual ~DatabaseEngine() {}
 
     /**
-     * Open a connection to a database using the given database name
+     * Open a connection to a database using the given database name.
      * @params databaseName The name of the database to open
      * @return A connection pool to the given database
      */

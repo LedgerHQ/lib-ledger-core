@@ -5,19 +5,26 @@
 #define DJINNI_GENERATED_BITCOINLIKEOPERATION_HPP
 
 #include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 class BitcoinLikeTransaction;
 
-/**Class representing a Bitcoin Operation */
-class BitcoinLikeOperation {
+/** Class representing a Bitcoin Operation. */
+class LIBCORE_EXPORT BitcoinLikeOperation {
 public:
     virtual ~BitcoinLikeOperation() {}
 
     /**
-     *Get operation's transaction
-     *@return BitcoinLikeTransaction object
+     * Get operation's transaction.
+     * @return BitcoinLikeTransaction object
      */
     virtual std::shared_ptr<BitcoinLikeTransaction> getTransaction() = 0;
 };

@@ -1,4 +1,4 @@
-
+# List of errors that might occur when using the API.
 ErrorCode = enum {
     # Pool errors
     #unknown_network_parameters;

@@ -5,18 +5,25 @@
 #define DJINNI_GENERATED_DATABASECOLUMN_HPP
 
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 enum class DatabaseValueType;
 
-/** An object holding metadata information about a single SQL column (type, name...) */
+/** An object holding metadata information about a single SQL column (type, name...). */
 class DatabaseColumn {
 public:
     virtual ~DatabaseColumn() {}
 
     /**
-     * Get the type of the underlying SQL value
+     * Get the type of the underlying SQL value.
      * @return The type of th
      */
     virtual DatabaseValueType getType() = 0;

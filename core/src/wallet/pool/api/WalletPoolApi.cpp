@@ -41,17 +41,18 @@
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::WalletPool>
-        api::WalletPool::newInstance(const std::string &name, const optional<std::string> &password,
-                                     const std::shared_ptr<api::HttpClient> &httpClient,
-                                     const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                                     const std::shared_ptr<api::PathResolver> &pathResolver,
-                                     const std::shared_ptr<api::LogPrinter> &logPrinter,
-                                     const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                                     const std::shared_ptr<api::RandomNumberGenerator> &rng,
-                                     const std::shared_ptr<api::DatabaseBackend> &backend,
-                                     const std::shared_ptr<api::DynamicObject> &configuration) {
+        api::WalletPool::newInstance(
+            const std::string &name, const optional<std::string> &password,
+            const std::shared_ptr<api::HttpClient> &httpClient,
+            const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+            const std::shared_ptr<api::PathResolver> &pathResolver,
+            const std::shared_ptr<api::LogPrinter> &logPrinter,
+            const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+            const std::shared_ptr<api::RandomNumberGenerator> &rng,
+            const std::shared_ptr<api::DatabaseBackend> &backend,
+            const std::shared_ptr<api::DynamicObject> &configuration
+        ) {
             auto pool = ledger::core::WalletPool::newInstance(name, Option<std::string>(password), httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration);
             return std::make_shared<WalletPoolApi>(pool);
         }
@@ -167,5 +168,19 @@ namespace ledger {
             _pool->eraseDataSince(date).callback(_mainContext, callback);
         }
 
+        void WalletPoolApi::freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) {
+            _pool->freshResetAll().callback(_mainContext, callback);
+        }
+
+        void WalletPoolApi::changePassword(const std::string &oldPassword,
+                                           const std::string &newPassword,
+                                           const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            auto pool = _pool;
+            auto result = Future<api::ErrorCode>::async(_mainContext, [pool, oldPassword, newPassword] () {
+                pool->getDatabaseSessionPool()->performChangePassword(oldPassword, newPassword);
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+            result.callback(_mainContext, callback);
+        }
     }
 }

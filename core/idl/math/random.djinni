@@ -1,4 +1,4 @@
-# Class to generate random numbers
+# Class to generate random numbers.
 RandomNumberGenerator = interface +j +o +n {
     # Generates random bytes.
     # @params size number of bytes to generate

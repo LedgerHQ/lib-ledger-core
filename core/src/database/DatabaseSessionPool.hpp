@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_CORE_DATABASESESSIONPOOL_HPP
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
@@ -41,31 +42,37 @@ namespace ledger {
     namespace core {
         class DatabaseSessionPool {
         public:
-            DatabaseSessionPool(const std::shared_ptr<DatabaseBackend>& backend,
-                                const std::shared_ptr<api::PathResolver>& resolver,
-                                const std::shared_ptr<spdlog::logger>& logger,
-                                const std::string& dbName);
+            DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
+                                const std::shared_ptr<api::PathResolver> &resolver,
+                                const std::shared_ptr<spdlog::logger> &logger,
+                                const std::string &dbName,
+                                const std::string &password);
             soci::connection_pool& getPool();
             ~DatabaseSessionPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
-                const std::shared_ptr<api::ExecutionContext>& context,
-                const std::shared_ptr<DatabaseBackend>& backend,
-                const std::shared_ptr<api::PathResolver>& resolver,
-                const std::shared_ptr<spdlog::logger>& logger,
-                const std::string& dbName
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<DatabaseBackend> &backend,
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::shared_ptr<spdlog::logger> &logger,
+                const std::string &dbName,
+                const std::string &password = ""
             );
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 5;
-        private:
+
             void performDatabaseMigration();
+            void performDatabaseRollback();
+            void performChangePassword(const std::string &oldPassword,
+                                       const std::string &newPassword);
+
         private:
+            std::shared_ptr<DatabaseBackend> _backend;
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
         };
     }
 }
-
 
 #endif //LEDGER_CORE_DATABASESESSIONPOOL_HPP

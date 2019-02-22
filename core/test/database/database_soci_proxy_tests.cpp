@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <cmath>
 #include <array>
-
+#include <utils/DateUtils.hpp>
 using namespace ledger::core;
 
 struct Item {
@@ -70,14 +70,18 @@ static T random(T seed) {
 }
 #define RAND(var_name) (var_name = random(var_name))
 
-class SociProxyTest : public ::testing::Test {
+static const std::string DB_KEY = "test_key";
+static const std::string DB_NEW_KEY = "test_new_key";
+class SociProxyBaseTest : public ::testing::Test {
 protected:
     void SetUp() override {
         Test::SetUp();
         auto engine = std::make_shared<MemoryDatabaseProxy>();
         _backend = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
-        _backend->init(nullptr, "test_db", sql);
+        auto date = DateUtils::toJSON(std::chrono::system_clock::now());
+        dbName = "test_db_" + date;
+        _backend->init(nullptr, dbName, DB_KEY, sql);
     }
 
     void TearDown() override {
@@ -169,10 +173,27 @@ protected:
         return people;
     }
 
+    void changePassword(const std::string &oldPassword, const std::string &newPassword) {
+        _backend->changePassword(oldPassword, newPassword, sql);
+    }
+
 public:
     soci::session sql;
-private:
+    std::string dbName;
+protected:
     std::shared_ptr<ProxyBackend> _backend;
+};
+
+class SociProxyTest : public SociProxyBaseTest {
+protected:
+    void SetUp() override {
+        Test::SetUp();
+        auto engine = std::make_shared<MemoryDatabaseProxy>();
+        _backend = std::make_shared<ProxyBackend>(engine);
+        _backend->enableQueryLogging(true);
+        dbName = ":memory:";
+        _backend->init(nullptr, dbName, DB_KEY, sql);
+    }
 };
 
 TEST_F(SociProxyTest, ShouldDisplayProxy) {
@@ -330,4 +351,50 @@ TEST_F(SociProxyTest, SelectAllFields) {
     EXPECT_EQ(witness.grade, retrieved.grade);
     EXPECT_EQ(witness.id, retrieved.id);
     EXPECT_TRUE(hasPicture);
+}
+
+TEST_F(SociProxyBaseTest, ChangePassword) {
+    createTables(sql);
+    auto people = generateData(1, true);
+    people[0].items.clear();
+    insertPeople(sql, people[0]);
+
+    std::string name;
+    soci::blob picture(sql);
+
+    sql << "SELECT name, picture FROM people", soci::into(name), soci::into(picture);
+    EXPECT_EQ(name, people.front().name);
+    EXPECT_EQ(blob_to_vector(picture), people.front().picture);
+
+    changePassword(DB_KEY, DB_NEW_KEY);
+
+    sql << "SELECT name, picture FROM people", soci::into(name), soci::into(picture);
+    EXPECT_EQ(name, people.front().name);
+    EXPECT_EQ(blob_to_vector(picture), people.front().picture);
+}
+
+TEST_F(SociProxyTest, SelectCountWhenEmpty) {
+    createTables(sql);
+    int count;
+    sql << "SELECT COUNT(*) FROM people WHERE name = 'paul'", soci::into(count);
+    EXPECT_EQ(count, 0);
+}
+
+TEST_F(SociProxyTest, SelectCount) {
+    createTables(sql);
+    auto people = generateData(10, false);
+    insertPeople(sql, people);
+    int count;
+    sql << "SELECT COUNT(*) FROM people", soci::into(count);
+    EXPECT_EQ(count, people.size());
+}
+
+TEST_F(SociProxyTest, SelectRowsWhenEmpty) {
+    createTables(sql);
+    soci::rowset<soci::row> rows (sql.prepare << "SELECT * FROM PEOPLE");
+    int count = 0;
+    for (auto& row : rows) {
+        count += 1;
+    }
+    EXPECT_EQ(count, 0);
 }

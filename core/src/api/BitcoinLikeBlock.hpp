@@ -7,29 +7,36 @@
 #include <chrono>
 #include <cstdint>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
-/**Class representing Bitcoin block */
-class BitcoinLikeBlock {
+/** Class representing Bitcoin block */
+class LIBCORE_EXPORT BitcoinLikeBlock {
 public:
     virtual ~BitcoinLikeBlock() {}
 
     /**
-     *Hash of block
-     *@return string representing hash of this block
+     * Hash of block.
+     * @return string representing hash of this block
      */
     virtual std::string getHash() = 0;
 
     /**
-     *Height of block in blockchain
-     *@return 64 bits integer, height of block
+     * Height of block in blockchain.
+     * @return 64 bits integer, height of block
      */
     virtual int64_t getHeight() = 0;
 
     /**
-     *Timestamp when block was mined
-     *@return Date object, date when block was appended to blockchain
+     * Timestamp when block was mined.
+     * @return Date object, date when block was appended to blockchain
      */
     virtual std::chrono::system_clock::time_point getTime() = 0;
 };

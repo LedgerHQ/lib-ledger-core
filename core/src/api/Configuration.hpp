@@ -6,7 +6,7 @@
 
 #include <string>
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
        #include <libcore_export.h>
     #else
        #define LIBCORE_EXPORT
@@ -15,41 +15,43 @@
 
 namespace ledger { namespace core { namespace api {
 
-class Configuration {
+/** Overall configuration. */
+class LIBCORE_EXPORT Configuration {
 public:
     virtual ~Configuration() {}
 
-    /** Selects the keychain engine (P2PKH, P2SH...) */
-    static LIBCORE_EXPORT std::string const KEYCHAIN_ENGINE;
+    /** Selects the keychain engine (P2PKH, P2SH...). */
+    static std::string const KEYCHAIN_ENGINE;
 
-    /** Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<address>) */
-    static LIBCORE_EXPORT std::string const KEYCHAIN_DERIVATION_SCHEME;
+    /** Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<address>). */
+    static std::string const KEYCHAIN_DERIVATION_SCHEME;
 
-    /** Sets the observable range for HD keychains (BIP32 based) */
-    static LIBCORE_EXPORT std::string const KEYCHAIN_OBSERVABLE_RANGE;
+    /** Sets the observable range for HD keychains (BIP32 based). */
+    static std::string const KEYCHAIN_OBSERVABLE_RANGE;
 
-    /** Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC) */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_ENGINE;
+    /** Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC): */
+    static std::string const BLOCKCHAIN_EXPLORER_ENGINE;
 
-    /** Sets the API endpoint for API based engine (Ledger's API) */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_API_ENDPOINT;
+    /** Sets the API endpoint for API based engine (Ledger's API). */
+    static std::string const BLOCKCHAIN_EXPLORER_API_ENDPOINT;
 
-    /** Sets the API version */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_EXPLORER_VERSION;
+    /** Sets the API version. */
+    static std::string const BLOCKCHAIN_EXPLORER_VERSION;
 
-    /** Selects the blockchain observer engine (Ledger's API) */
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_OBSERVER_ENGINE;
+    /** Selects the blockchain observer engine (Ledger's API). */
+    static std::string const BLOCKCHAIN_OBSERVER_ENGINE;
 
-    static LIBCORE_EXPORT std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
+    /** Selects the blockchain observer engine (Ledger's API; Websocket version). */
+    static std::string const BLOCKCHAIN_OBSERVER_WS_ENDPOINT;
 
-    /** Selects the synchronization engine */
-    static LIBCORE_EXPORT std::string const SYNCHRONIZATION_ENGINE;
+    /** Selects the synchronization engine. */
+    static std::string const SYNCHRONIZATION_ENGINE;
 
-    /** Sets the half batch size (default: 20) */
-    static LIBCORE_EXPORT std::string const SYNCHRONIZATION_HALF_BATCH_SIZE;
+    /** Sets the half batch size (default: 20). */
+    static std::string const SYNCHRONIZATION_HALF_BATCH_SIZE;
 
-    /** Operation trust */
-    static LIBCORE_EXPORT std::string const TRUST_LIMIT;
+    /** Operation trust. */
+    static std::string const TRUST_LIMIT;
 };
 
 } } }  // namespace ledger::core::api

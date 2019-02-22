@@ -7,22 +7,38 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+       #include <libcore_export.h>
+    #else
+       #define LIBCORE_EXPORT
+    #endif
+#endif
 
 namespace ledger { namespace core { namespace api {
 
 enum class DynamicType : int {
+    /** A dynamic object, composed of DynamicType indexed by strings. */
     OBJECT,
+    /** A 32-bit integer. */
     INT32,
+    /** A 64-bit integer. */
     INT64,
+    /** A double-precision floating point number. */
     DOUBLE,
+    /** A boolean. */
     BOOLEAN,
+    /** A contiguous, unsized bytes array. */
     DATA,
+    /** An array of DynamicType values. */
     ARRAY,
+    /** A string. */
     STRING,
+    /** Just an undefined value. */
     UNDEFINED,
 };
-std::string to_string(const DynamicType& dynamicType);
-std::ostream &operator<<(std::ostream &os, const DynamicType &o);
+LIBCORE_EXPORT  std::string to_string(const DynamicType& dynamicType);
+LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const DynamicType &o);
 
 } } }  // namespace ledger::core::api
 
