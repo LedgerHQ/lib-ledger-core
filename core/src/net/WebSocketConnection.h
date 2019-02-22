@@ -47,7 +47,6 @@ namespace ledger {
             void close();
 
         private:
-            std::shared_ptr<api::WebSocketConnection> _connection;
             std::shared_ptr<api::WebSocketClient> _client;
             WebSocketEventHandler _handler;
             std::shared_ptr<api::WebSocketConnection> _api;

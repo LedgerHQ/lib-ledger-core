@@ -53,6 +53,7 @@ namespace ledger {
             std::shared_ptr<api::TrustIndicator> getTrust() override;
             std::shared_ptr<api::BitcoinLikeOperation> asBitcoinLikeOperation() override;
             std::shared_ptr<api::EthereumLikeOperation> asEthereumLikeOperation() override;
+            std::shared_ptr<api::RippleLikeOperation> asRippleLikeOperation() override;
             optional<int64_t> getBlockHeight() override;
             bool isInstanceOfBitcoinLikeOperation() override;
             bool isInstanceOfEthereumLikeOperation() override;

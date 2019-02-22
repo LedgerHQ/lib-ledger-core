@@ -42,7 +42,8 @@ using namespace ledger::core;
 static const std::string XPUB_1 = "xpub6EedcbfDs3pkzgqvoRxTW6P8NcCSaVbMQsb6xwCdEBzqZBronwY3Nte1Vjunza8f6eSMrYvbM5CMihGo6SbzpHxn4R5pvcr2ZbZ6wkDmgpy";
 
 static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
-    auto raw = Base58::decode(xpub);
+    auto networkIdentifier = "btc";
+    auto raw = Base58::decode(xpub, networkIdentifier);
     BytesReader reader(raw);
 
     reader.readNextBeUint(); // READ MAGIC
@@ -51,7 +52,7 @@ static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
     auto childNum = reader.readNextBeUint();
     auto chainCode = reader.read(32);
     auto publicKey = reader.read(33);
-    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, "btc");
+    return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, networkIdentifier);
 }
 
 TEST(Derivation, DeriveChildren_1) {

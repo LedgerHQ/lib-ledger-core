@@ -31,6 +31,7 @@
 #include "currencies.hpp"
 #include "bitcoin/networks.hpp"
 #include "ethereum/ethereumNetworks.hpp"
+#include "ripple/rippleNetworks.h"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
@@ -272,6 +273,14 @@ namespace ledger {
                             .unit("mwei", 6, "mwei")
                             .unit("gwei", 9, "gwei");
 
+            const api::Currency RIPPLE =
+                    Currency("ripple")
+                            .bip44(144)
+                            .forkOfRipple(networks::getRippleLikeNetworkParameters("ripple"))
+                            .paymentUri("ripple")
+                            .unit("drop", 0, "drop")
+                            .unit("XRP", 6, "XRP");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -298,7 +307,8 @@ namespace ledger {
                 STAKENET,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
-                ETHEREUM_CLASSIC
+                ETHEREUM_CLASSIC,
+                RIPPLE
             });
         }
     }

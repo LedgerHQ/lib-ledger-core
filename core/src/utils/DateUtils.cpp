@@ -33,7 +33,22 @@
 #include "Exception.hpp"
 #include <boost/lexical_cast.hpp>
 #include <ctime>
+#include <unordered_map>
 
+const std::unordered_map<std::string, std::string> MONTHS = {
+        std::pair<std::string, std::string>("Jan", "01"),
+        std::pair<std::string, std::string>("Feb", "02"),
+        std::pair<std::string, std::string>("Mar", "03"),
+        std::pair<std::string, std::string>("Apr", "04"),
+        std::pair<std::string, std::string>("May", "05"),
+        std::pair<std::string, std::string>("Jun", "06"),
+        std::pair<std::string, std::string>("Jul", "07"),
+        std::pair<std::string, std::string>("Aug", "08"),
+        std::pair<std::string, std::string>("Sep", "09"),
+        std::pair<std::string, std::string>("Oct", "10"),
+        std::pair<std::string, std::string>("Nov", "11"),
+        std::pair<std::string, std::string>("Dec", "12"),
+};
 
 #if defined(_WIN32) || defined(_WIN64)
     #if defined(_MSC_VER)
@@ -69,7 +84,31 @@ std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const st
         time.tm_sec = seconds;
         return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(timegm(&time)));
     } else {
-        throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot convert {} to date", str);
+        try {
+            auto formattedDate = formatDateFromJSON(str);
+            return fromJSON(formattedDate);
+        } catch (...) {
+            throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot convert {} to date", str);
+        }
+    }
+}
+std::string ledger::core::DateUtils::formatDateFromJSON(const std::string &str) {
+    std::regex ex("([0-9]+)-([a-zA-Z]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
+    std::cmatch what;
+    if (regex_match(str.c_str(), what, ex)) {
+        auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
+        auto month = boost::lexical_cast<std::string>(std::string(what[2].first, what[2].second));
+        auto day = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
+        auto hours = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
+        auto minutes = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
+        auto seconds = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
+        auto numMonth = MONTHS.at(month);
+        if (numMonth.empty()) {
+            throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Failed to get month {} from date {}", month, str);
+        }
+        return fmt::format("{}-{}-{}T{}:{}:{}Z", year, numMonth, day, hours, minutes, seconds);
+    } else {
+        throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT, "Cannot format {} to date YYYY-MM-DDTHH:MM:SSZ", str);
     }
 }
 

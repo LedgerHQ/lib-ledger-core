@@ -96,7 +96,6 @@ namespace ledger {
                                                                               bool isSigned);
         private:
             api::Currency _currency;
-            //std::shared_ptr<api::EthereumLikeScript> createSendScript(const std::string &address);
             std::shared_ptr<EthereumLikeBlockchainExplorer> _explorer;
             EthereumLikeTransactionBuildFunction _build;
             EthereumLikeTransactionBuildRequest _request;

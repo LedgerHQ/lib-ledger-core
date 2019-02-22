@@ -55,13 +55,6 @@ namespace ledger {
             _currency(params), _key(key), _path(path)
         {}
 
-        static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
-            if (index >= childNums.size()) {
-                return key;
-            }
-            return _derive(index + 1, childNums, key.derive(childNums[index]));
-        }
-
         std::shared_ptr<api::EthereumLikeAddress>
         EthereumLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
@@ -77,21 +70,16 @@ namespace ledger {
 
         std::vector<uint8_t>
         EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
-            DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
-            return key.getPublicKey();
+            return EthereumExtendedPublicKey::derivePublicKey(path);
         }
 
         std::vector<uint8_t>
         EthereumLikeExtendedPublicKey::deriveHash160(const std::string & path) {
-            DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
-            return key.getPublicKeyHash160();
+            return EthereumExtendedPublicKey::deriveHash160(path);
         }
 
         std::string EthereumLikeExtendedPublicKey::toBase58() {
-            return Base58::encodeWithChecksum(_key.toByteArray(_currency.ethereumLikeNetworkParameters.value().XPUBVersion),
-                                              _currency.ethereumLikeNetworkParameters.value().Identifier);
+            return EthereumExtendedPublicKey::toBase58();
         }
 
         std::string EthereumLikeExtendedPublicKey::getRootPath() {
@@ -104,54 +92,17 @@ namespace ledger {
                 const std::vector<uint8_t>& publicKey,
                 const std::vector<uint8_t> &chainCode,
                 const std::string& path) {
-            uint32_t parentFingerprint = 0;
             auto& params = currency.ethereumLikeNetworkParameters.value();
-            SECP256k1Point pk(publicKey);
-            if (parentPublicKey) {
-                SECP256k1Point ppp(parentPublicKey.value());
-                HashAlgorithm hashAlgorithm(params.Identifier);
-                auto hash = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
-                hash = RIPEMD160::hash(hash);
-                parentFingerprint = ((hash[0] & 0xFFU) << 24) |
-                                    ((hash[1] & 0xFFU) << 16) |
-                                    ((hash[2] & 0xFFU) << 8) |
-                                    (hash[3] & 0xFFU);
-            }
-            DerivationPath p(path);
-            DeterministicPublicKey k(pk.toByteArray(true), chainCode, p.getLastChildNum(), p.getDepth(), parentFingerprint, params.Identifier);
-            return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, p);
+            DeterministicPublicKey k = EthereumExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
+            return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path));
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
         EthereumLikeExtendedPublicKey::fromBase58(const api::Currency& currency,
                                                   const std::string& xpubBase58,
                                                   const Option<std::string>& path) {
-            //xpubBase58 should be composed of version(4) || depth(1) || fingerprint(4) || index(4) || chain(32) || key(33)
             auto& params = currency.ethereumLikeNetworkParameters.value();
-            auto decodeResult = Base58::checkAndDecode(xpubBase58);
-            if (decodeResult.isFailure())
-                    throw decodeResult.getFailure();
-            BytesReader reader(decodeResult.getValue());
-
-            //4 bytes of version
-            auto version = reader.read(params.XPUBVersion.size());
-
-            if (version != params.XPUBVersion) {
-                    throw  Exception(api::ErrorCode::INVALID_NETWORK_ADDRESS_VERSION, "Provided network parameters and address version do not match.");
-            }
-            //1 byte of depth
-            auto depth = reader.readNextByte();
-            //4 bytes of fingerprint
-            auto fingerprint = reader.readNextBeUint();
-            //4 bytes of child's index
-            auto childNum = reader.readNextBeUint();
-            //32 bytes of chaincode
-            auto chainCode = reader.read(32);
-            auto chainCodeStr = hex::toString(chainCode);
-            //33 bytes of publicKey
-            auto publicKey = reader.readUntilEnd();
-            auto publicKeyStr = hex::toString(publicKey);
-            DeterministicPublicKey k(publicKey, chainCode, childNum, depth, fingerprint, currency.ethereumLikeNetworkParameters.value().Identifier);
+            DeterministicPublicKey k = EthereumExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
 
         }

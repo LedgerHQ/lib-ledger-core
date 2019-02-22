@@ -4,6 +4,7 @@
 #include "Networks.hpp"  // my header
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "EthereumLikeNetworkParameters.hpp"
+#include "RippleLikeNetworkParameters.hpp"
 
 namespace djinni_generated {
 
@@ -35,6 +36,15 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ethereum(JNIEnv* jniEnv,
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::Networks::ethereum();
         return ::djinni::release(::djinni_generated::EthereumLikeNetworkParameters::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ripple(JNIEnv* jniEnv, jobject /*this*/)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Networks::ripple();
+        return ::djinni::release(::djinni_generated::RippleLikeNetworkParameters::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

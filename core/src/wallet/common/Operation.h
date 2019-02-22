@@ -42,6 +42,7 @@
 #include <memory>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
 #include "Block.h"
@@ -64,6 +65,7 @@ namespace ledger {
             std::shared_ptr<TrustIndicator> trust;
             Option<BitcoinLikeBlockchainExplorerTransaction> bitcoinTransaction;
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
+            Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Operation() {};
             void refreshUid();
         private:
