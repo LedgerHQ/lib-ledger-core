@@ -105,8 +105,9 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
 
-            if (transaction.block.nonEmpty())
+            if (transaction.block.nonEmpty()) {
                 putBlock(sql, transaction.block.getValue());
+            }
 
             int result = FLAG_TRANSACTION_UPDATED;
 

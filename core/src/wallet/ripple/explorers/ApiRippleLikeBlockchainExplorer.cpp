@@ -55,7 +55,7 @@ namespace ledger {
         ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
 
             if (addresses.size() != 1) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can called only with one address");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can only be called with one address");
             }
 
             std::string addressesStr = addresses[0]->toBase58();

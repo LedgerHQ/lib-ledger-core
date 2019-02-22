@@ -49,7 +49,6 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
-            //TODO: multiple accounts balances ?
             auto size = addresses.size();
             if (size != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -169,8 +168,7 @@ namespace ledger {
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
-                    .
-                            template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
+                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
                             const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
                         if (result.isLeft()) {
                             if (fromBlockHash.isEmpty()) {
@@ -192,8 +190,7 @@ namespace ledger {
             auto requestBody = bodyRequest.getString();
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
                     .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
-                    .
-                            template mapPtr<Block>(getExplorerContext(),
+                    .template mapPtr<Block>(getExplorerContext(),
                                                    [](const Either<Exception, std::shared_ptr<Block>> &result) {
                                                        if (result.isLeft()) {
                                                            throw result.getLeft();

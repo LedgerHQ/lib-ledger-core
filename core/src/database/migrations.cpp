@@ -419,13 +419,13 @@ namespace ledger {
         }
         
         template <> void rollback<6>(soci::session& sql) {
-            sql << "DROP TABLE ripple_currencies";
-
-            sql << "DROP TABLE ripple_accounts";
+            sql << "DROP TABLE ripple_operations";
 
             sql << "DROP TABLE ripple_transactions";
 
-            sql << "DROP TABLE ripple_operations";
+            sql << "DROP TABLE ripple_accounts";
+
+            sql << "DROP TABLE ripple_currencies";
         }
     }
 }

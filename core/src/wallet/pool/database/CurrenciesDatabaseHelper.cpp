@@ -179,7 +179,6 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::ETHEREUM: {
-
                 rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.chain_id, ethereum_currencies.xpub_version,"
                         " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"
                         " ethereum_currencies.additional_EIPs "
@@ -198,7 +197,6 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             };
             case api::WalletType::RIPPLE: {
-
                 rowset<row> ripple_rows = (sql.prepare << "SELECT ripple_currencies.xpub_version,"
                         " ripple_currencies.message_prefix, ripple_currencies.identifier,"
                         " ripple_currencies.additional_RIPs "

@@ -57,12 +57,9 @@ namespace ledger {
                 //Document should be defined as object
                 _document.SetObject();
                 _params = rapidjson::Value(rapidjson::kObjectType);
-                //_params.
             };
 
             NodeRippleLikeBodyRequest &setMethod(const std::string &method) {
-                //When setting method always clear everything
-                //_document.Clear();
                 //In case need to allocate more memory
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
                 //Field with method
@@ -96,7 +93,6 @@ namespace ledger {
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
                 rapidjson::Value container(rapidjson::kArrayType);
                 container.PushBack(_params, allocator);
-                //container.AddMember();
                 _document.AddMember("params", container, allocator);
                 //Stream to string buffer
                 rapidjson::StringBuffer buffer;

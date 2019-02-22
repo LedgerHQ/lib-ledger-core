@@ -272,7 +272,7 @@ namespace ledger {
                                             std::shared_ptr<SynchronizationBuddy> buddy) {
 
                 buddy->logger->info("SYNC BATCHES");
-                //For ethereum and ripple like wallets, one account corresponds to one ETH address,
+                //For ETH and XRP like wallets, one account corresponds to one ETH address,
                 //so ne need to discover other batches
                 auto hasMultipleAddresses = buddy->wallet->getWalletType() == api::WalletType::BITCOIN;
                 auto done = (currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1);
