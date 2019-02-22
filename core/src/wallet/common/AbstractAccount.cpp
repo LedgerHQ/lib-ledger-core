@@ -111,19 +111,19 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() const {
-			auto wallet = _wallet.lock();
-			if (!wallet) {
-				throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
-			}
+            auto wallet = _wallet.lock();
+            if (!wallet) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+            }
             return wallet;
         }
 
 		std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
-			auto wallet = _wallet.lock();
-			if (!wallet) {
-				throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
-			}
-			return wallet;
+            auto wallet = _wallet.lock();
+            if (!wallet) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+            }
+            return wallet;
 		}
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {

@@ -127,9 +127,9 @@ namespace ledger {
 
         void RotatingEncryptableSink::_rotate() {
             auto resolver = _resolver.lock();
-			if (!resolver) {
-				throw make_exception(api::ErrorCode::NULL_POINTER, "Resolver was released.");
-			}
+            if (!resolver) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Resolver was released.");
+            }
             using spdlog::details::os::filename_to_str;
             _file_helper.close();
             for (auto i = _max_files; i > 0; --i)

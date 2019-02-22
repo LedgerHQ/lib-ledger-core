@@ -88,8 +88,9 @@ namespace ledger {
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getOperations() {
             auto localAccount = _account.lock();
-			if (!localAccount)
-				throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
             soci::session sql (localAccount->getWallet()->getDatabase()->getPool());
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
                     " op.type, op.hash, op.nonce, op.value,"
@@ -182,8 +183,9 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
             auto localAccount = _account.lock();
-			if (!localAccount)
-				throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
             auto accountUid = localAccount->getAccountUid();
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("uid", "IS NOT NULL", "", "e");
             filter->op_and(std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid, "o"));

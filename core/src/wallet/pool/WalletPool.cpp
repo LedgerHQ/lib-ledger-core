@@ -236,8 +236,9 @@ namespace ledger {
                 return client;
             }
 			auto client = _httpClients[baseUrl].lock();
-			if (!client)
-				throw make_exception(api::ErrorCode::NULL_POINTER, "HttpClient was released.");
+            if (!client) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "HttpClient was released.");
+            }
 			return client;
         }
 
