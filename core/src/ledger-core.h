@@ -58,7 +58,7 @@
  * 
  * **cmake** is building out of source, you should create a build directory (e.g. `lib-ledger-core-build`):
  * 
- * 	.                           # Directory where clone command was launched
+ *  .                           # Directory where clone command was launched
  *     ├── lib-ledger-core         # Source files directory
  *     ├── lib-ledger-core-build   # Build directory
  * 
@@ -93,7 +93,7 @@
  */
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
         #include <libcore_export.h>
     #else
         #define LIBCORE_EXPORT

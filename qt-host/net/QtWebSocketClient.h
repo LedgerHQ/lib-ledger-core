@@ -32,8 +32,8 @@
 #ifndef LEDGER_CORE_QTWEBSOCKETCLIENT_H
 #define LEDGER_CORE_QTWEBSOCKETCLIENT_H
 
-#include <src/api/WebSocketClient.hpp>
-#include <src/api/WebSocketConnection.hpp>
+#include <api/WebSocketClient.hpp>
+#include <api/WebSocketConnection.hpp>
 #include <QtWebSockets/QtWebSockets>
 #include <QHash>
 #include <QAtomicInt>

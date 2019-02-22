@@ -29,8 +29,8 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <src/utils/DateUtils.hpp>
+#include "gtest/gtest.h"
+#include "utils/DateUtils.hpp"
 
 using namespace ledger::core;
 

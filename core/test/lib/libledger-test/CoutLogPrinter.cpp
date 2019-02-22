@@ -29,6 +29,7 @@
  *
  */
 #include "CoutLogPrinter.hpp"
+#include "api/ExecutionContext.hpp"
 #include <iostream>
 /* FOREGROUND */
 static const std::string RST = "\x1B[0m";
