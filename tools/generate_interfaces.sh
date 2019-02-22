@@ -40,5 +40,3 @@ rm -rf $DEST $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
 
 cp ./djinni/support-lib/jni/* $CORE_CPP_JNI_DIRECTORY/jni
 cp ./djinni/support-lib/*.hpp $CORE_CPP_JNI_DIRECTORY
-
-
