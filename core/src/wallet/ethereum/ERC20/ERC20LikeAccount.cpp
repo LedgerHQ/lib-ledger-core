@@ -197,7 +197,7 @@ namespace ledger {
                     " op.gas_price, op.gas_limit, op.gas_used, op.status"
                     " FROM erc20_operations AS op"
                     " WHERE op.account_uid = :account_uid AND (op.date BETWEEN ':start_date_uid' AND ':end_date_uid')"
-                    " ORDER BY op.date ASC", soci::use(_accountUid));
+                    " ORDER BY op.date ASC", soci::use(_accountUid), soci::use(startDate), soci::use(endDate));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
             for (auto& row : rows) {
                 auto op = std::make_shared<ERC20LikeOperation>();
