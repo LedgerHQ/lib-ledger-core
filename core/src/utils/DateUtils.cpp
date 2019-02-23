@@ -36,18 +36,18 @@
 #include <unordered_map>
 
 const std::unordered_map<std::string, std::string> MONTHS = {
-        std::pair<std::string, std::string>("Jan", "01"),
-        std::pair<std::string, std::string>("Feb", "02"),
-        std::pair<std::string, std::string>("Mar", "03"),
-        std::pair<std::string, std::string>("Apr", "04"),
-        std::pair<std::string, std::string>("May", "05"),
-        std::pair<std::string, std::string>("Jun", "06"),
-        std::pair<std::string, std::string>("Jul", "07"),
-        std::pair<std::string, std::string>("Aug", "08"),
-        std::pair<std::string, std::string>("Sep", "09"),
-        std::pair<std::string, std::string>("Oct", "10"),
-        std::pair<std::string, std::string>("Nov", "11"),
-        std::pair<std::string, std::string>("Dec", "12"),
+        {"Jan", "01"},
+        {"Feb", "02"},
+        {"Mar", "03"},
+        {"Apr", "04"},
+        {"May", "05"},
+        {"Jun", "06"},
+        {"Jul", "07"},
+        {"Aug", "08"},
+        {"Sep", "09"},
+        {"Oct", "10"},
+        {"Nov", "11"},
+        {"Dec", "12"},
 };
 
 #if defined(_WIN32) || defined(_WIN64)

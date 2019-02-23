@@ -387,7 +387,7 @@ namespace ledger {
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
-                    "xpub_version VARACHAR(255) NOT NULL,"
+                    "xpub_version VARCHAR(255) NOT NULL,"
                     "message_prefix VARCHAR(255) NOT NULL,"
                     "additional_RIPs TEXT"
                     ")";
