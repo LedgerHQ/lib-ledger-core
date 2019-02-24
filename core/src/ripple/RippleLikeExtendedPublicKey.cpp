@@ -35,6 +35,7 @@
 #include <bytes/BytesWriter.h>
 #include <collections/vector.hpp>
 #include <crypto/SHA256.hpp>
+#include <wallet/ripple/rippleNetworks.h>
 
 namespace ledger {
     namespace core {
@@ -88,7 +89,7 @@ namespace ledger {
                                                   const std::string& xpubBase58,
                                                   const Option<std::string>& path) {
             auto& params = currency.rippleLikeNetworkParameters.value();
-            DeterministicPublicKey k = RippleExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
+            DeterministicPublicKey k = RippleExtendedPublicKey::fromBase58(currency, params, xpubBase58, path, networks::RIPPLE_DIGITS);
             return std::make_shared<ledger::core::RippleLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
 
         }

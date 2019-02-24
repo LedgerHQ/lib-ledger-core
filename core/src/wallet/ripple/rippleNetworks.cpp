@@ -33,6 +33,7 @@
 namespace ledger {
     namespace core {
         namespace networks {
+            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
             const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "ripple") {
                     static const api::RippleLikeNetworkParameters RIPPLE(

@@ -35,7 +35,8 @@
 #include <collections/vector.hpp>
 #include <utils/hex.h>
 #include <crypto/Keccak.h>
-
+#include <wallet/ripple/rippleNetworks.h>
+#include <collections/DynamicObject.hpp>
 namespace ledger {
     namespace core {
 
@@ -64,7 +65,11 @@ namespace ledger {
         }
 
         std::string RippleLikeAddress::toBase58() {
-            return Base58::encodeWithChecksum(vector::concat(_version, _hash160), _params.Identifier);
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", _params.Identifier);
+            config->putString("base58Dictionary", networks::RIPPLE_DIGITS);
+            config->putBoolean("useNetworkDictionary", true);
+            return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
         }
 
         std::experimental::optional<std::string> RippleLikeAddress::getDerivationPath() {
@@ -88,8 +93,11 @@ namespace ledger {
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
             auto& params = currency.rippleLikeNetworkParameters.value();
-            bool useNetworkDictionary = true;
-            auto decoded = Base58::checkAndDecode(address, params.Identifier, useNetworkDictionary);
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params.Identifier);
+            config->putString("base58Dictionary", networks::RIPPLE_DIGITS);
+            config->putBoolean("useNetworkDictionary", true);
+            auto decoded = Base58::checkAndDecode(address, config);
             if (decoded.isFailure()) {
                 throw decoded.getFailure();
             }

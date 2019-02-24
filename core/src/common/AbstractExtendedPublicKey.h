@@ -47,7 +47,7 @@
 #include <bytes/BytesReader.h>
 
 #include <api/Currency.hpp>
-
+#include <collections/DynamicObject.hpp>
 namespace ledger {
     namespace core {
         template <class NetworkParameters>
@@ -62,7 +62,9 @@ namespace ledger {
             }
 
             std::string toBase58() {
-                return Base58::encodeWithChecksum(getKey().toByteArray(params().XPUBVersion));
+                auto config = std::make_shared<DynamicObject>();
+                config->putString("networkIdentifier", params().Identifier);
+                return Base58::encodeWithChecksum(getKey().toByteArray(params().XPUBVersion), config);
             }
 
             static DeterministicPublicKey
@@ -91,9 +93,16 @@ namespace ledger {
             static DeterministicPublicKey
             fromBase58(const api::Currency &currency,
                        const NetworkParameters &params,
-                       const std::string &xpubBase58, const Option<std::string> &path) {
+                       const std::string &xpubBase58,
+                       const Option<std::string> &path,
+                       const std::string &networkBase58Dictionary = "") {
                 //xpubBase58 should be composed of version(4) || depth(1) || fingerprint(4) || index(4) || chain(32) || key(33)
-                auto decodeResult = Base58::checkAndDecode(xpubBase58,params.Identifier);
+                auto config = std::make_shared<DynamicObject>();
+                config->putString("networkIdentifier", params.Identifier);
+                if (!networkBase58Dictionary.empty()) {
+                    config->putString("base58Dictionary", networkBase58Dictionary);
+                }
+                auto decodeResult = Base58::checkAndDecode(xpubBase58, config);
                 if (decodeResult.isFailure())
                     throw decodeResult.getFailure();
                 BytesReader reader(decodeResult.getValue());

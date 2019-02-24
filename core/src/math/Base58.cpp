@@ -37,42 +37,50 @@
 #include <functional>
 #include <crypto/Keccak.h>
 
+using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-static const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
 static const ledger::core::BigInt V_58(58);
 
-static std::string getBase58Dictionary(const std::string &networkIdentifier) {
-    if (networkIdentifier == "xrp") {
-        return RIPPLE_DIGITS;
-    }
-    return DIGITS;
-}
 static void _encode(const ledger::core::BigInt &v,
                     std::stringstream &ss,
-                    const std::string &networkIdentifier) {
+                    const std::string &networkIdentifier,
+                    const std::string &networkBase58Dictionary) {
     if (v == ledger::core::BigInt::ZERO) {
         return ;
     }
     auto r = (v % V_58).toUnsignedInt();
-    _encode(v / V_58, ss, networkIdentifier);
-    ss << getBase58Dictionary(networkIdentifier)[r];
+    _encode(v / V_58, ss, networkIdentifier, networkBase58Dictionary);
+    ss << networkBase58Dictionary[r];
+}
+
+static std::string getNetworkIdentifier(const std::shared_ptr<api::DynamicObject> &config) {
+    return config->getString("networkIdentifier").value_or("");
+}
+
+static std::string getNetworkBase58Dictionary(const std::shared_ptr<api::DynamicObject> &config) {
+    return config->getString("base58Dictionary").value_or(DIGITS);
+}
+
+static bool shouldUseNetworkBase58Dictionary(const std::shared_ptr<api::DynamicObject> &config) {
+    return config->getBoolean("useNetworkDictionary").value_or(false);
 }
 
 std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
-                                         const std::string &networkIdentifier) {
+                                         const std::shared_ptr<api::DynamicObject> &config) {
     BigInt intData(bytes.data(), bytes.size(), false);
     std::stringstream ss;
-
+    auto base58Dictionary = getNetworkBase58Dictionary(config);
     for (auto i = 0; i < bytes.size() && bytes[i] == 0; i++) {
-        ss << getBase58Dictionary(networkIdentifier)[0];
+        ss << base58Dictionary[0];
     }
-    _encode(intData, ss, networkIdentifier);
+    _encode(intData, ss, getNetworkIdentifier(config), base58Dictionary);
     return ss.str();
 }
 
 std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes,
-                                                     const std::string &networkIdentifier) {
-    return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes, networkIdentifier)), networkIdentifier);
+                                                     const std::shared_ptr<api::DynamicObject> &config) {
+
+    return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes, getNetworkIdentifier(config))), config);
 }
 
 std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &bytes) {
@@ -109,15 +117,16 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
 }
 
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
-                                                  const std::string &networkIdentifier) throw(ledger::core::Exception) {
+                                                  const std::shared_ptr<api::DynamicObject> &config) throw(ledger::core::Exception) {
     BigInt intData(0);
     std::vector<uint8_t> prefix;
-
+    auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
+    auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
     for (auto& c : str) {
         if (c == '1' && intData == BigInt::ZERO) {
             prefix.push_back(0);
         } else {
-            auto digitIndex = getBase58Dictionary(networkIdentifier).find(c);
+            auto digitIndex = base58Dictionary.find(c);
             if (digitIndex != std::string::npos) {
                 intData = (intData * V_58) + BigInt((unsigned int)digitIndex);
             } else {
@@ -127,7 +136,7 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
     }
 
     //For XRP, hash160 is preceeded by a null byte prefix
-    if (prefix.empty() && networkIdentifier == "xrp") {
+    if (useBase58Dict && prefix.empty() && getNetworkIdentifier(config) == "xrp") {
         prefix.push_back(0);
     }
 
@@ -143,17 +152,16 @@ std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uin
 }
 
 ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(const std::string &str,
-                                                                             const std::string &networkIdentifier,
-                                                                             bool useNetworkDictionary) {
+                                                                             const std::shared_ptr<api::DynamicObject> &config) {
     return Try<std::vector<uint8_t>>::from([&] () {
-        auto decoded = useNetworkDictionary ? decode(str, networkIdentifier) : decode(str);
+        auto decoded = decode(str, config);
         //Check decoded address size
         if (decoded.size() <= 4) {
             throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
         }
         std::vector<uint8_t> data(decoded.begin(), decoded.end() - 4);
         std::vector<uint8_t> checksum(decoded.end() - 4, decoded.end());
-        auto chks = computeChecksum(data, networkIdentifier);
+        auto chks = computeChecksum(data, getNetworkIdentifier(config));
         if (checksum != chks) {
             throw Exception(api::ErrorCode::INVALID_CHECKSUM, "Base 58 invalid checksum");
         }

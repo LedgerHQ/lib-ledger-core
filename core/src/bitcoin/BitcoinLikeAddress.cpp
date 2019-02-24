@@ -34,7 +34,7 @@
 #include "../math/Base58.hpp"
 #include "../collections/vector.hpp"
 #include "../utils/Exception.hpp"
-
+#include <collections/DynamicObject.hpp>
 using namespace ledger::core;
 
 ledger::core::BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Currency &currency,
@@ -63,7 +63,9 @@ ledger::core::api::BitcoinLikeNetworkParameters ledger::core::BitcoinLikeAddress
 }
 
 std::string ledger::core::BitcoinLikeAddress::toBase58() {
-    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), _params.Identifier);
+    auto config = std::make_shared<DynamicObject>();
+    config->putString("networkIdentifier", _params.Identifier);
+    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
 }
 
 bool ledger::core::BitcoinLikeAddress::isP2SH() {
@@ -79,7 +81,9 @@ std::experimental::optional<std::string> ledger::core::BitcoinLikeAddress::getDe
 }
 
 std::string ledger::core::BitcoinLikeAddress::toBase58() const {
-    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), _params.Identifier);
+    auto config = std::make_shared<DynamicObject>();
+    config->putString("networkIdentifier", _params.Identifier);
+    return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
 }
 
 std::shared_ptr<ledger::core::AbstractAddress>
@@ -99,7 +103,9 @@ std::shared_ptr<BitcoinLikeAddress> ledger::core::BitcoinLikeAddress::fromBase58
                                                                               const api::Currency &currency,
                                                                               const Option<std::string>& derivationPath) {
     auto& params = currency.bitcoinLikeNetworkParameters.value();
-    auto decoded = Base58::checkAndDecode(address, params.Identifier);
+    auto config = std::make_shared<DynamicObject>();
+    config->putString("networkIdentifier", params.Identifier);
+    auto decoded = Base58::checkAndDecode(address, config);
     if (decoded.isFailure()) {
         throw decoded.getFailure();
     }

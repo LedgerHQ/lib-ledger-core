@@ -43,6 +43,7 @@
 namespace ledger {
     namespace core {
         namespace networks {
+            extern LIBCORE_EXPORT const std::string RIPPLE_DIGITS;
             extern LIBCORE_EXPORT const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE;
 

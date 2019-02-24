@@ -1,2 +1,2 @@
-core/src/api linguist-generated=true
-core/src/jni linguist-generated=true
+/core/src/api/* linguist-generated=true
+/core/src/jni/* linguist-generated=true

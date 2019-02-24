@@ -80,7 +80,8 @@ namespace ledger {
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey>
         BitcoinLikeExtendedPublicKey::fromBase58(const api::Currency &currency,
-                                                 const std::string &xpubBase58, const Option<std::string> &path) {
+                                                 const std::string &xpubBase58,
+                                                 const Option<std::string> &path) {
             auto& params = currency.bitcoinLikeNetworkParameters.value();
             DeterministicPublicKey k = BitcoinExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
