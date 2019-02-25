@@ -476,7 +476,20 @@ namespace ledger {
                 self->logger()->debug("Finish erasing data of WalletPool : {}",name);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
+        }
 
+        Future<api::ErrorCode> WalletPool::changePassword(
+            const std::string& oldPassword,
+            const std::string& newPassword
+        ) {
+            auto self = shared_from_this();
+
+            return async<api::ErrorCode>([=]() {
+                self->getDatabaseSessionPool()->performChangePassword(oldPassword, newPassword);
+                self->_externalPreferencesBackend->resetEncryption(_rng, oldPassword, newPassword);
+                self->_internalPreferencesBackend->resetEncryption(_rng, oldPassword, newPassword);
+                return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
+            });
         }
 
         Future<api::ErrorCode> WalletPool::freshResetAll() {

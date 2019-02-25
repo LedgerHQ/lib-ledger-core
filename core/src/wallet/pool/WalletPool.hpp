@@ -96,6 +96,12 @@ namespace ledger {
             Future<api::Block> getLastBlock(const std::string& currencyName);
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
 
+            // Password management
+            Future<api::ErrorCode> changePassword(
+                const std::string& oldPassword,
+                const std::string& newPassword
+            );
+
             // Currencies management
             Option<api::Currency> getCurrency(const std::string& name) const;
             const std::vector<api::Currency>& getCurrencies() const;
