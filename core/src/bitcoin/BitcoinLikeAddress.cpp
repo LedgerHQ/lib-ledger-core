@@ -111,7 +111,9 @@ namespace ledger {
         BitcoinLikeAddress::parse(const std::string &address, const ledger::core::api::Currency &currency,
                                   const Option<std::string>& derivationPath) {
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
-                return fromBase58(address, currency, derivationPath);
+                auto bech32Hrp = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier)->getBech32Params().hrp;
+                auto isBech32 = bech32Hrp == address.substr(0, bech32Hrp.size());
+                return isBech32 ? fromBech32(address, currency) : fromBase58(address, currency, derivationPath);
             });
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
@@ -162,15 +164,15 @@ namespace ledger {
                                                       const std::string &derivationPath,
                                                       const std::shared_ptr<DynamicObject> &keychainConfig) {
             //Get keychainEngine and its version
-            auto keychainEngine = keychainConfig->getString("keychainEngines").value_or("");
+            auto keychainEngine = keychainConfig->getString("keychainEngines").value_or(api::KeychainEngines::BIP32_P2PKH);
             auto version = keychainConfig->getData("version").value_or(std::vector<uint8_t>());
-            if (keychainEngine.empty() || version.empty()) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Fail to retrieve address from public key: empty Keychain Engine or empty Script Version");
+            if (version.empty()) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Fail to retrieve address from public key: empty Script Version");
             }
 
-            if (keychainEngine.compare(api::KeychainEngines::BIP32_P2PKH) == 0) {
+            if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {
                 return pubKey->derive(derivationPath)->toBase58();
-            } else if (keychainEngine.compare(api::KeychainEngines::BIP49_P2SH) == 0) {
+            } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {
                 //Script
                 std::vector<uint8_t> script = {0x00, 0x14};
                 //Hash160 of public key
@@ -182,6 +184,8 @@ namespace ledger {
                 auto hash160 = HASH160::hash(script, hashAlgorithm);
                 BitcoinLikeAddress btcLikeAddress(currency, hash160, version);
                 return btcLikeAddress.toBase58();
+            } else if (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) {
+                return pubKey->derive(derivationPath)->toBech32();
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }

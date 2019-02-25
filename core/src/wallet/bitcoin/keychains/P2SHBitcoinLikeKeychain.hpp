@@ -32,8 +32,6 @@
 #define LEDGER_CORE_P2SHBITCOINLIKEKEYCHAIN_H
 
 #include "CommonBitcoinLikeKeychains.hpp"
-#include "../../../collections/DynamicObject.hpp"
-
 namespace ledger {
     namespace core {
 

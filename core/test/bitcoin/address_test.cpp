@@ -99,3 +99,10 @@ TEST(Address, XpubFromBase58StringToBech32) {
     auto addr = ledger::core::BitcoinLikeAddress::fromBech32(bech32Address, currency);
     EXPECT_EQ(addr->toBase58(), base58Address);
 }
+
+TEST(Address, FromBech32Address) {
+    const Currency currency = currencies::BITCOIN_TESTNET;
+    auto bech32Address = "";
+    auto address = ledger::core::BitcoinLikeAddress::fromBech32(bech32Address, currency);
+    EXPECT_EQ(address->toBech32(), bech32Address);
+}

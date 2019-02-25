@@ -27,10 +27,8 @@
  * SOFTWARE.
  *
  */
-
-
 #include "P2WPKHBitcoinLikeKeychain.hpp"
-
+#include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
         P2WPKHBitcoinLikeKeychain::P2WPKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
@@ -40,19 +38,20 @@ namespace ledger {
                                                              const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
-            _version = params.bitcoinLikeNetworkParameters.value().P2SHVersion;
+            //For the moment we always have : P2PKHVersion = P2WPKHVersion so ...
+            _version = params.bitcoinLikeNetworkParameters.value().P2PKHVersion;
             getAllObservableAddresses(0, _observableRange);
         }
 
-        std::string P2SHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
-                                                                  const std::string& derivationPath) {
+        std::string P2WPKHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                                                    const std::string& derivationPath) {
             auto config = std::make_shared<DynamicObject>();
-            config->putString("keychainEngines", api::KeychainEngines::BIP49_P2SH);
+            config->putString("keychainEngines", api::KeychainEngines::BIP173_P2WPKH);
             config->putData("version", _version);
             return BitcoinLikeAddress::fromPublicKey(pubKey, getCurrency(), derivationPath, config);
         }
 
-        int32_t P2SHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
+        int32_t P2WPKHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
             int32_t result = 0;
             //witness
             //1 byte for number of stack elements

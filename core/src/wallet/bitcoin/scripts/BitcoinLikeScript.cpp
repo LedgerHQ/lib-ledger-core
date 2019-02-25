@@ -36,6 +36,8 @@
 #include <wallet/bitcoin/networks.hpp>
 #include <api/KeychainEngines.hpp>
 #include <crypto/HASH160.hpp>
+#include <bitcoin/bech32/Bech32Factory.h>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
@@ -120,8 +122,11 @@ namespace ledger {
 
         BitcoinLikeScript
         BitcoinLikeScript::fromAddress(const std::string &address, const api::Currency &currency) {
-            auto a = BitcoinLikeAddress::fromBase58(address, currency);
+            auto bech32Hrp = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier)->getBech32Params().hrp;
+            auto isBech32 = bech32Hrp == address.substr(0, bech32Hrp.size());
+            auto a = isBech32 ? BitcoinLikeAddress::fromBech32(address, currency) : BitcoinLikeAddress::fromBase58(address, currency);
             BitcoinLikeScript script;
+            //This is also valid for Native Segwit versions
             if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
                        << btccore::OP_CHECKSIG;

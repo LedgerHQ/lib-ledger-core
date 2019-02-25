@@ -41,15 +41,19 @@ namespace ledger {
                             "bc",
                             "1",
                             6,
-                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL}
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+                            {0x00},
+                            {0x00}
                     };
                     return BITCOIN;
                 } else if (networkIdentifier == "btc_testnet") {
                     static const Bech32Struct BITCOIN_TESTNET = {
-                            "bt",
+                            "tb",
                             "1",
                             6,
-                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL}
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+                            {0x00},
+                            {0x00}
                     };
                     return BITCOIN_TESTNET;
                 } else if (networkIdentifier == "abc") {
@@ -57,7 +61,9 @@ namespace ledger {
                             "bitcoincash",
                             ":",
                             8,
-                            {0x98f2bc8e61ULL, 0x79b76d99e2ULL, 0xf33e5fb3c4ULL, 0xae2eabe2a8ULL, 0x1e4f43e470ULL}
+                            {0x98f2bc8e61ULL, 0x79b76d99e2ULL, 0xf33e5fb3c4ULL, 0xae2eabe2a8ULL, 0x1e4f43e470ULL},
+                            {0x00},
+                            {0x0C}
                     };
                     return BITCOIN_CASH;
                 }

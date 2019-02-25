@@ -39,8 +39,8 @@ namespace ledger {
     namespace core {
         class BTCBech32 : public Bech32 {
         public:
-            BTCBech32() {
-                _bech32Params = Bech32Parameters::getBech32Params("btc");
+            BTCBech32(const std::string &networkIdentifier) {
+                _bech32Params = Bech32Parameters::getBech32Params(networkIdentifier);
             };
 
             uint64_t polymod(const std::vector<uint8_t>& values,

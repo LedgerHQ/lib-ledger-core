@@ -32,15 +32,15 @@
 #ifndef LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H
 #define LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H
 
-#include "P2PKHBitcoinLikeKeychain.hpp"
+#include "CommonBitcoinLikeKeychains.hpp"
 namespace ledger {
     namespace core {
-        class P2WPKHBitcoinLikeKeychain : public P2PKHBitcoinLikeKeychain {
+        class P2WPKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
         public:
             P2WPKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                    const api::Currency &params, int account,
-                                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                    const std::shared_ptr<Preferences> &preferences);
+                                      const api::Currency &params, int account,
+                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                      const std::shared_ptr<Preferences> &preferences);
             int32_t getOutputSizeAsSignedTxInput() const override ;
         private:
             std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
