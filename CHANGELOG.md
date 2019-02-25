@@ -1,6 +1,6 @@
-### [Next Release Here]
+## 2.6.0
 
-> 2019/??/??
+> 2019/02/22
 
 - Change the internal representation of `DynamicObject`. The new representation is optimized not
   only memory-wise but also type-safety-wise. The internal interfaces were also redesigned to allow
@@ -14,7 +14,6 @@
   SQLCipher is not available for Windows builds mainly because of build issues (C compiler containing spaces).
 - Changed deployement process, now RCs are deployed with format `x.y.z-rc-{COMMIT_HASH}`, this will allow us
   not to always bump the versions when merging PRs and also keeping the binaries deployed to our bucket.
-
 - Update used libraries, to be able to compile under VS2017
 
 ## 2.5.0
@@ -39,6 +38,15 @@
 
 - Change the way the library is compiled and linked by using explicit interface libraries. This
   also fixes a Windows issues related to non-explicitly exported symbols.
+
+### 2.2.1
+
+> 2019/02/07
+
+- Backport a patch to fix encryption password in `WalletPool`. A bug was introduced in previous
+  version (not affecting production) that caused a non-empty string to be accepted by a
+  `WalletPool`, yield encryption. As that should allow for explicit encryption with empty passwords,
+  we forbid that and empty password will result in no encryption.
 
 ## 2.2.0
 
