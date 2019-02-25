@@ -497,7 +497,7 @@ namespace ledger {
                                                             currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
                             address = localAddress.toBase58();
                             output.script = hex::toString(scriptSig);
-                        } else if (isSigned && isSegwit) {
+                        } else if (isSigned && isSegwit && !scriptSig.empty()) {
                             //Get address from redeem script
                             auto redeemScriptSize = localReader.readNextVarInt();
                             auto redeemScript = localReader.read(redeemScriptSize);
