@@ -40,6 +40,7 @@
 #include <string>
 #include "Bech32Parameters.h"
 
+// HRP refers to Human Readable Part
 namespace ledger {
     namespace core {
         class Bech32 {
@@ -61,8 +62,11 @@ namespace ledger {
             virtual std::string encode(const std::vector<uint8_t>& hash,
                                        const std::vector<uint8_t>& version) = 0;
 
+            // Decode from bech32 address
+            // @return pair<hrp, hash>
             std::pair<std::string, std::vector<uint8_t>>
             decodeBech32(const std::string& str);
+            // @return tuple<witnessVersion, hash>
             virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
             decode(const std::string& str) = 0;
 

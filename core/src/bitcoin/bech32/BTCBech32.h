@@ -34,7 +34,7 @@
 
 #include "Bech32.h"
 #include "Bech32Parameters.h"
-
+// Reference: https://github.com/sipa/bech32
 namespace ledger {
     namespace core {
         class BTCBech32 : public Bech32 {

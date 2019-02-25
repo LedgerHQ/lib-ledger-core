@@ -63,7 +63,7 @@ namespace ledger {
                             8,
                             {0x98f2bc8e61ULL, 0x79b76d99e2ULL, 0xf33e5fb3c4ULL, 0xae2eabe2a8ULL, 0x1e4f43e470ULL},
                             {0x00},
-                            {0x0C}
+                            {0x08}
                     };
                     return BITCOIN_CASH;
                 }

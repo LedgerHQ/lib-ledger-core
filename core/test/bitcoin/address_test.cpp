@@ -48,7 +48,7 @@ std::vector<std::vector<std::string>> fixtures = {
         {"89C907892A9D4F37B78D5F83F2FD6E008C4F795D", "1DZYQ3xEy8mkc7wToQZvKqeLrSLUMVVK41", "bc1q38ys0zf2n48n0dudt7pl9ltwqzxy772af9ng0d", "00"},
         {"0000000000000000000000000000000000000000", "1111111111111111111114oLvT2", "bc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9e75rs", "00"},
         {"0000000000000000000000000000000000000001", "11111111111111111111BZbvjr", "bc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpc02p7z", "00"},
-        {"dd894dfc0f473c44cc983b5dd462bc1b393f7498", "3MtPk2kf61VepUfwgRjqjC5WeGgxE4rRPS", "bc19mky5mlq0gu7yfnyc8dwagc4urvun7ayc940jpl", "05"}
+        {"dd894dfc0f473c44cc983b5dd462bc1b393f7498", "3MtPk2kf61VepUfwgRjqjC5WeGgxE4rRPS", "bc1qmky5mlq0gu7yfnyc8dwagc4urvun7ayctgku33", "05"}
 };
 
 using namespace ledger::core::api;
@@ -69,7 +69,6 @@ TEST(Address, AddressFromBase58String) {
             EXPECT_TRUE(address->isP2PKH());
         }
         EXPECT_EQ(address->toBech32(), item[2]);
-        EXPECT_EQ(ledger::core::BitcoinLikeAddress::fromBech32(item[2], currency)->toBase58(), address->toBase58());
     }
 }
 
@@ -101,8 +100,23 @@ TEST(Address, XpubFromBase58StringToBech32) {
 }
 
 TEST(Address, FromBech32Address) {
-    const Currency currency = currencies::BITCOIN_TESTNET;
-    auto bech32Address = "";
-    auto address = ledger::core::BitcoinLikeAddress::fromBech32(bech32Address, currency);
-    EXPECT_EQ(address->toBech32(), bech32Address);
+    //https://github.com/bitcoincashjs/cashaddrjs/blob/master/test/cashaddr.js
+    std::vector<std::pair<std::string, ledger::core::api::Currency>> tests = {
+            {"tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84", currencies::BITCOIN_TESTNET},//BTC P2WPKH
+            {"bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", currencies::BITCOIN},//BTC P2WSH
+            {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH},//BCH P2WPKH
+            {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH}//BCH P2WSH
+    };
+    auto index = 0;
+    for (auto &test : tests) {
+        auto address = ledger::core::BitcoinLikeAddress::fromBech32(test.first, test.second);
+        EXPECT_EQ(address->toBech32(), test.first);
+        if (index == 2) {
+            EXPECT_EQ(address->toBase58(), "1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu");
+        }
+        if (index == 3) {
+            EXPECT_EQ(address->toBase58(), "3CWFddi6m4ndiGyKqzYvsFYagqDLPVMTzC");
+        }
+        index ++;
+    }
 }

@@ -35,38 +35,26 @@
 
 using namespace std;
 
-class BitcoinP2WPKHKeychains : public BaseFixture {
-public:
-    void testP2WPKHKeychain(const KeychainTestData &data, std::function<void (P2WPKHBitcoinLikeKeychain&)> f) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
-        );
-        auto xPubBtc = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
-                                                                              data.xpub,
-                                                                              optional<std::string>(data.derivationPath));
-
-        auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
-            P2WPKHBitcoinLikeKeychain keychain(
-                    configuration,
-                    data.currency,
-                    0,
-                    xPubBtc,
-                    backend->getPreferences("keychain")
-            );
-            f(keychain);
-            dispatcher->stop();
-        }));
-        dispatcher->waitUntilStopped();
-    };
+class BitcoinP2WPKHKeychains : public KeychainFixture<P2WPKHBitcoinLikeKeychain> {
 };
 
-TEST_F(BitcoinP2WPKHKeychains, KeychainDerivation) {
-    testP2WPKHKeychain(BTC_TESTNET_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
-        auto freshAddress = keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE);
-        EXPECT_EQ(freshAddress->toBech32(), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
-        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
+TEST_F(BitcoinP2WPKHKeychains, tBTCKeychainDerivation) {
+    testKeychain(BTC_TESTNET_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "tb1qm2grk5v7jy42vtnjccx8dwthngslq650n5hm23");
+    });
+}
+
+TEST_F(BitcoinP2WPKHKeychains, BTCKeychainDerivation) {
+    testKeychain(BTC_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "bc1q9sz3mlk5t9cm5vz88hjtfetj0z7e7qq7cq472f");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "bc1qrkt83qrp40p6hjumpxj803mqg8p708jt8ynx0y");
+    });
+}
+
+TEST_F(BitcoinP2WPKHKeychains, BCHKeychainDerivation) {
+    testKeychain(BCH_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "bitcoincash:qpenyye7dhp9wgugtsh9t3ukdvrnpwyvqyafwfxe0w");
+        EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "bitcoincash:qzf6rezvt9agmmwnca4ykj74kppr4dx2hvm6f8kzqr");
     });
 }

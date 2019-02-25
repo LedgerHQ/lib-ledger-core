@@ -58,10 +58,15 @@ namespace ledger {
                 Bech32Struct(const std::string &_hrp,
                              const std::string &_separator,
                              size_t _checksumSize,
-                             const std::vector<unsigned long long> &_generator) : hrp(_hrp),
-                                                                                  separator(_separator),
-                                                                                  checksumSize(_checksumSize),
-                                                                                  generator(_generator)
+                             const std::vector<unsigned long long> &_generator,
+                             const std::vector<uint8_t> &_P2WPKHVersion,
+                             const std::vector<uint8_t> &_P2WSHVersion) : hrp(_hrp),
+                                                                          separator(_separator),
+                                                                          checksumSize(_checksumSize),
+                                                                          generator(_generator),
+                                                                          P2WPKHVersion(_P2WPKHVersion),
+                                                                          P2WSHVersion(_P2WSHVersion)
+
                 {};
 
             };

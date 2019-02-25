@@ -77,7 +77,8 @@ namespace ledger {
                                    const std::vector<uint8_t> &hash160,
                                    const api::BitcoinLikeNetworkParameters &params) {
             auto bech32 = Bech32Factory::newBech32Instance(params.Identifier);
-            return bech32->encode(hash160, version);
+            auto witnessVersion = (version == params.P2PKHVersion) ? bech32->getBech32Params().P2WPKHVersion : bech32->getBech32Params().P2WSHVersion;
+            return bech32->encode(hash160, witnessVersion);
         }
 
         std::string BitcoinLikeAddress::toBech32() {
@@ -108,7 +109,8 @@ namespace ledger {
         }
 
         std::shared_ptr<ledger::core::AbstractAddress>
-        BitcoinLikeAddress::parse(const std::string &address, const ledger::core::api::Currency &currency,
+        BitcoinLikeAddress::parse(const std::string &address,
+                                  const ledger::core::api::Currency &currency,
                                   const Option<std::string>& derivationPath) {
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
                 auto bech32Hrp = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier)->getBech32Params().hrp;
@@ -153,9 +155,10 @@ namespace ledger {
             auto& params = currency.bitcoinLikeNetworkParameters.value();
             auto bech32 = Bech32Factory::newBech32Instance(params.Identifier);
             auto decoded = bech32->decode(address);
+            auto version = (decoded.second.size() == 32 || decoded.first == bech32->getBech32Params().P2WSHVersion) ? params.P2SHVersion : params.P2PKHVersion;
             return std::make_shared<ledger::core::BitcoinLikeAddress>(currency,
                                                                       decoded.second,
-                                                                      decoded.first,
+                                                                      version,
                                                                       derivationPath);
         }
 
@@ -165,7 +168,7 @@ namespace ledger {
                                                       const std::shared_ptr<DynamicObject> &keychainConfig) {
             //Get keychainEngine and its version
             auto keychainEngine = keychainConfig->getString("keychainEngines").value_or(api::KeychainEngines::BIP32_P2PKH);
-            auto version = keychainConfig->getData("version").value_or(std::vector<uint8_t>());
+            auto version = keychainConfig->getData("version").value_or(currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
             if (version.empty()) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Fail to retrieve address from public key: empty Script Version");
             }

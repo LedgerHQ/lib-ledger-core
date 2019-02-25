@@ -34,6 +34,7 @@
 
 #include "Bech32.h"
 #include "Bech32Parameters.h"
+// Refecrence: https://github.com/bitcoincashjs/cashaddrjs
 namespace ledger {
     namespace core {
         class BCHBech32 : public Bech32 {
