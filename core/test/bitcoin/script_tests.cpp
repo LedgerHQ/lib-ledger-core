@@ -47,3 +47,15 @@ TEST(Script, ParseP2PKHScript) {
     EXPECT_TRUE(script.isSuccess());
     EXPECT_EQ(script.getValue().toString(), "OP_DUP OP_HASH160 PUSHDATA(20)[8829b0621743cde58974064e1e872d67eb4ea0c5] OP_EQUALVERIFY OP_CHECKSIG");
 }
+
+TEST(Script, ParseP2WPKHScript) {
+    auto script = BitcoinLikeScript::parse(hex::toByteArray("00141d0f172a0ecb48aee1be1f2687d2963ae33f71a1"));
+    EXPECT_TRUE(script.isSuccess());
+    EXPECT_EQ(script.getValue().toString(), "OP_0 PUSHDATA(20)[1d0f172a0ecb48aee1be1f2687d2963ae33f71a1]");
+}
+
+TEST(Script, ParseP2WSHScript) {
+    auto script = BitcoinLikeScript::parse(hex::toByteArray("00205d1b56b63d714eebe542309525f484b7e9d6f686b3781b6f61ef925d66d6f6a0"));
+    EXPECT_TRUE(script.isSuccess());
+    EXPECT_EQ(script.getValue().toString(), "OP_0 PUSHDATA(32)[5d1b56b63d714eebe542309525f484b7e9d6f686b3781b6f61ef925d66d6f6a0]");
+}

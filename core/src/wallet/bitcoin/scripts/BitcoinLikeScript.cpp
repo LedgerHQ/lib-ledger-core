@@ -126,8 +126,9 @@ namespace ledger {
             auto isBech32 = bech32Hrp == address.substr(0, bech32Hrp.size());
             auto a = isBech32 ? BitcoinLikeAddress::fromBech32(address, currency) : BitcoinLikeAddress::fromBase58(address, currency);
             BitcoinLikeScript script;
-            //This is also valid for Native Segwit versions
-            if (a->isP2PKH()) {
+            if (isBech32) {
+                script << btccore::OP_0 << a->getHash160();
+            } else if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
                        << btccore::OP_CHECKSIG;
             } else if (a->isP2SH()) {
@@ -164,6 +165,20 @@ namespace ledger {
                     && (*this)[22].isEqualTo(btccore::OP_EQUAL));
         }
 
+        bool BitcoinLikeScript::isP2WPKH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
+            }
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(20));
+        }
+
+        bool BitcoinLikeScript::isP2WSH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+            }
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(32));
+        }
+
         std::size_t BitcoinLikeScript::size() const {
             return _chunks.size();
         }
@@ -194,11 +209,19 @@ namespace ledger {
                 return Option<BitcoinLikeAddress>(
                         BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
             } else if (isP2PKH()) {
-                //Signed : <ScriptSig> <PubKey>
+                // Signed : <ScriptSig> <PubKey>
                 auto index = _configuration.isSigned ? 1 : 2;
-                //Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+                // Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
                 return Option<BitcoinLikeAddress>(
                         BitcoinLikeAddress(currency, (*this)[index].getBytes(), params.P2PKHVersion));
+            } else if (isP2WPKH()) {
+                // <OP_0> <PubKeyHash>
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2PKHVersion));
+            } else if (isP2WPKH()) {
+                // <OP_0> <WitnessScript>
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
             }
             return Option<BitcoinLikeAddress>();
         }
