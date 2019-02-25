@@ -1,8 +1,8 @@
 /*
  *
- * P2WPKHBitcoinLikeKeychain
+ * P2WSHBitcoinLikeKeychain
  *
- * Created by El Khalil Bellakrid on 19/02/2019.
+ * Created by El Khalil Bellakrid on 25/02/2019.
  *
  * The MIT License (MIT)
  *
@@ -27,30 +27,33 @@
  * SOFTWARE.
  *
  */
-#include "P2WPKHBitcoinLikeKeychain.hpp"
+
+
+#include "P2WSHBitcoinLikeKeychain.hpp"
+#include "P2WSHBitcoinLikeKeychain.hpp"
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
-        P2WPKHBitcoinLikeKeychain::P2WPKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                             const api::Currency &params,
-                                                             int account,
-                                                             const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                             const std::shared_ptr<Preferences> &preferences)
+        P2WSHBitcoinLikeKeychain::P2WSHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                                           const api::Currency &params,
+                                                           int account,
+                                                           const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                           const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
-            _version = params.bitcoinLikeNetworkParameters.value().P2PKHVersion;
+            _version = params.bitcoinLikeNetworkParameters.value().P2SHVersion;
             getAllObservableAddresses(0, _observableRange);
         }
 
-        std::string P2WPKHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
-                                                                    const std::string& derivationPath) {
+        std::string P2WSHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
+                                                                   const std::string& derivationPath) {
             auto config = std::make_shared<DynamicObject>();
-            config->putString("keychainEngines", api::KeychainEngines::BIP173_P2WPKH);
+            config->putString("keychainEngines", api::KeychainEngines::BIP173_P2WSH);
             config->putData("version", _version);
             return BitcoinLikeAddress::fromPublicKey(pubKey, getCurrency(), derivationPath, config);
         }
 
-        int32_t P2WPKHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
+        int32_t P2WSHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
             int32_t result = 0;
             //witness
             //1 byte for number of stack elements

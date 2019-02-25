@@ -40,6 +40,8 @@
 #include <api/KeychainEngines.hpp>
 #include <crypto/HashAlgorithm.h>
 #include <crypto/HASH160.hpp>
+#include <wallet/bitcoin/scripts/operators.h>
+
 namespace ledger {
     namespace core {
         BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Currency &currency,
@@ -189,6 +191,20 @@ namespace ledger {
                 return btcLikeAddress.toBase58();
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) {
                 return pubKey->derive(derivationPath)->toBech32();
+            } else if (keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
+                // Reference https://bitcoincore.org/en/segwit_wallet_dev
+                // Here scriptHash = SHA256(witnessScript) = SHA256(pubKeyHash160 + OP_CHECKSIG)
+                const auto& params = currency.bitcoinLikeNetworkParameters.value();
+                auto publicKey = pubKey->derivePublicKey(derivationPath);
+                std::vector<uint8_t> witnessScript;
+                //Hash160 of public key
+                witnessScript.insert(witnessScript.end(), publicKey.begin(), publicKey.end());
+                witnessScript.push_back(btccore::OP_CHECKSIG);
+                auto scriptHash = SHA256::bytesToBytesHash(witnessScript);
+                // Use P2SHVersion to be able to compute Base58 format
+                BitcoinLikeAddress btcLikeAddress(currency, scriptHash, params.P2SHVersion);
+                return btcLikeAddress.toBech32();
+
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }

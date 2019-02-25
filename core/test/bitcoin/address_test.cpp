@@ -107,16 +107,8 @@ TEST(Address, FromBech32Address) {
             {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH},//BCH P2WPKH
             {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH}//BCH P2WSH
     };
-    auto index = 0;
     for (auto &test : tests) {
         auto address = ledger::core::BitcoinLikeAddress::fromBech32(test.first, test.second);
         EXPECT_EQ(address->toBech32(), test.first);
-        if (index == 2) {
-            EXPECT_EQ(address->toBase58(), "1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu");
-        }
-        if (index == 3) {
-            EXPECT_EQ(address->toBase58(), "3CWFddi6m4ndiGyKqzYvsFYagqDLPVMTzC");
-        }
-        index ++;
     }
 }

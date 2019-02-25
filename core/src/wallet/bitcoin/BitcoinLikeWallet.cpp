@@ -178,7 +178,8 @@ namespace ledger {
                 auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
                 if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
                     keychainEngine == api::KeychainEngines::BIP49_P2SH ||
-                    keychainEngine == api::KeychainEngines::BIP173_P2WPKH) {
+                    keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
+                    keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
                     auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
                     info.derivations.push_back(xpubPath.toString());
                     info.owners.push_back(std::string("main"));

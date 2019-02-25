@@ -48,10 +48,10 @@ namespace ledger {
     namespace core {
 
         CommonBitcoinLikeKeychains::CommonBitcoinLikeKeychains(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                           const api::Currency &params,
-                                                           int account,
-                                                           const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                           const std::shared_ptr<Preferences> &preferences)
+                                                               const api::Currency &params,
+                                                               int account,
+                                                               const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                               const std::shared_ptr<Preferences> &preferences)
                 : BitcoinLikeKeychain(configuration, params, account, preferences) {
             _xpub = xpub;
 
