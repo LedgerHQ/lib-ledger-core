@@ -12,8 +12,14 @@
     * [Using the node module](#using-the-node-module)
     * [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
 * [Test NodeJs](#test-nodejs)
+* [Support](#support)
+    * [Libcore:](#libcore)
+    * [Bindings:](#bindings)
 * [Developement guidelines](#developement-guidelines)
     * [CI](#ci)
+* [Q/A and troubleshooting](#qa-and-troubleshooting)
+    * [I have updated an include file and test code doesn’t see the changes!](#i-have-updated-an-include-file-and-test-code-doesnt-see-the-changes)
+    * [I have upgraded my macOSX system and now I can’t compile anymore.](#i-have-upgraded-my-macosx-system-and-now-i-cant-compile-anymore)
 
 Core library which will be used by Ledger applications.
 
@@ -67,6 +73,12 @@ cmake -DCMAKE_INSTALL_PREFIX=/path/to/qt5 ../lib-ledger-core && make
 ```
 /usr/local/Cellar/qt/<qt_version>/bin
 ```
+
+Several CMake arguments might interest you there:
+
+  - `-DCMAKE_BUILD_TYPE=Debug`: you should always set that when testing as you will get DWARF debug
+    symbols and debugging instruments support.
+  - `-DCMAKE_EXPORT_COMPILE_COMMANDS=YES`: useful when you’re using a C++ linter, such as [cquery].
 
 ### Building for JNI
 
@@ -152,7 +164,7 @@ Libcore can be built for following OSes:
  - NodeJS bindings:
    - Please use `node` with version `>=8.4.0` and `<9.0.0` (other versions are not tested (yet)),
    - Node-gyp is used to build native module and requires `python` with version `2.7.x`.
-   
+
 ## Developement guidelines
 
 ### CI
@@ -187,7 +199,33 @@ Change the `pick` to `r` or `reword` at the beginning of each lines **without ch
 the commits** — this has no effect. Save the file and quit. You will be prompted to change the
 commits’ messages one by one, allowing you to remove the `[skip ci]` tag from all commits.
 
+## Q/A and troubleshooting
+
+### I have updated an include file and test code doesn’t see the changes!
+
+Currently, interface files (headers, .hpp) **are not linked by copied directly into the test
+directory**. That means that every time you make a change in the interface that is tested by any
+code in core/test/, you need to update the copy.
+
+Just run this command:
+
+```
+cd $your_build_folder
+rm -rf CMakeFiles CMakeCache.txt
+```
+
+### I have upgraded my macOSX system and now I can’t compile anymore.
+
+Especially if you’ve upgraded to Mojave for which there are some breaking changes, you will need to
+perform some manual tasks — here, for macOSX Mojave:
+
+```
+xcode-select --install
+open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+```
+
 [contribution guidelines]: ./CONTRIBUTING.md
 [lib-ledger-core-node-bindings]: https://github.com/LedgerHQ/lib-ledger-core-node-bindings
 [CircleCI]: https://circleci.com
 [Appveyor]: https://www.appveyor.com
+[cquery]: https://github.com/cquery-project/cquery
