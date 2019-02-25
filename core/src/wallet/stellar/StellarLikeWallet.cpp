@@ -36,6 +36,17 @@ namespace ledger {
 
         const api::WalletType StellarLikeWallet::type = api::WalletType::STELLAR;
 
+        StellarLikeWallet::StellarLikeWallet(const std::string &walletName, const api::Currency &currency,
+                                             const std::shared_ptr<WalletPool> &pool,
+                                             const std::shared_ptr<DynamicObject> &configuration,
+                                             const DerivationScheme &derivationScheme,
+                                             const StellarLikeWalletParams &params) :
+                                             AbstractWallet(walletName, currency, pool, configuration, derivationScheme),
+                                             _params(params) {
+
+        }
+
+
         bool StellarLikeWallet::isSynchronizing() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
@@ -75,5 +86,6 @@ namespace ledger {
         StellarLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
+
     }
 }

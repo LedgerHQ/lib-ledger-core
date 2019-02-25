@@ -38,9 +38,20 @@
 namespace ledger {
     namespace core {
 
+        struct StellarLikeWalletParams {
+
+        };
+
         class StellarLikeWallet : public virtual api::StellarLikeWallet, public virtual AbstractWallet {
         public:
             static const api::WalletType type;
+
+            StellarLikeWallet(  const std::string& walletName,
+                                const api::Currency& currency,
+                                const std::shared_ptr<WalletPool>& pool,
+                                const std::shared_ptr<DynamicObject>& configuration,
+                                const DerivationScheme& derivationScheme,
+                                const StellarLikeWalletParams& params);
 
             bool isSynchronizing() override;
 
@@ -65,7 +76,7 @@ namespace ledger {
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
         private:
-            api::StellarLikeNetworkParameters _params;
+            const StellarLikeWalletParams _params;
         };
 
     }
