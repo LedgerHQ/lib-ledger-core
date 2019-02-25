@@ -83,7 +83,7 @@ namespace ledger {
                 api::TimePeriod period
             ) override;
 
-            // A helper function to take an operation into an account whin computing balances.
+            // A helper function to take an operation into an account while computing balances.
             static BigInt accumulateBalanceWithOperation(
                 BigInt balance,
                 api::ERC20LikeOperation& op
@@ -94,7 +94,6 @@ namespace ledger {
             // A version of getOperations that is sorted by date and returns only operations that
             // lie in an inclusive datetime range provided as argument.
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> getSortedOperationsRange(
-                const std::chrono::system_clock::time_point& startDate,
                 const std::chrono::system_clock::time_point& endDate
             );
 

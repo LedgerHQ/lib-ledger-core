@@ -89,7 +89,7 @@ namespace ledger {
             api::TimePeriod period
         ) {
             // guard against bad arguments
-            if (startDate >= endDate) {
+            if (startDate > endDate) {
                 throw make_exception(
                     api::ErrorCode::INVALID_DATE_FORMAT,
                     "Start date should be strictly greater than end date"
@@ -99,19 +99,25 @@ namespace ledger {
             std::vector<std::shared_ptr<api::BigInt>> balances;
             auto currentBalance = BigInt::ZERO;
             auto nextDate = DateUtils::incrementDate(startDate, period);
-            auto operations = getSortedOperationsRange(startDate, endDate);
+            auto operations = getSortedOperationsRange(endDate);
+            auto opIt = std::cbegin(operations);
+
+            // accumulate the balance until we hit the starting date
+            for (; (*opIt)->getTime() < startDate; ++opIt) {
+                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
+            }
 
             // iterate over all operations and segment them according to the granularity we’ve
             // chosen; in our case, we use the default granularity, which is PerDay
-            for (auto& op : operations) {
-                auto opDate = op->getTime();
+            for (; *opIt; ++opIt) {
+                auto opDate = (*opIt)->getTime();
 
                 if (opDate >= nextDate) {
                     balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
                     nextDate = DateUtils::incrementDate(nextDate, period);
                 }
 
-                currentBalance = accumulateBalanceWithOperation(currentBalance, *op);
+                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
             }
 
             // we still have something in the currentBalance that needs to be added to the history
@@ -186,7 +192,6 @@ namespace ledger {
 
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getSortedOperationsRange(
-            const std::chrono::system_clock::time_point& startDate,
             const std::chrono::system_clock::time_point& endDate
         ) {
             auto localAccount = _account.lock();
@@ -196,8 +201,8 @@ namespace ledger {
                     " op.date, op.sender, op.receiver, op.input_data,"
                     " op.gas_price, op.gas_limit, op.gas_used, op.status"
                     " FROM erc20_operations AS op"
-                    " WHERE op.account_uid = :account_uid AND (op.date BETWEEN ':start_date_uid' AND ':end_date_uid')"
-                    " ORDER BY op.date ASC", soci::use(_accountUid), soci::use(startDate), soci::use(endDate));
+                    " WHERE op.account_uid = :account_uid AND op.date <= ':end_date_uid'"
+                    " ORDER BY op.date ASC", soci::use(_accountUid), soci::use(endDate));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
             for (auto& row : rows) {
                 auto op = std::make_shared<ERC20LikeOperation>();
