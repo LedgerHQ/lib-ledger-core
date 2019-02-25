@@ -17,6 +17,8 @@
 - Changed deployement process, now RCs are deployed with format `x.y.z-rc-{COMMIT_HASH}`, this will allow us
   not to always bump the versions when merging PRs and also keeping the binaries deployed to our bucket.
 
+- Update used libraries, to be able to compile under VS2017
+
 ## 2.5.0
 
 > 2019/01/22

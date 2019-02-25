@@ -31,8 +31,8 @@
 #ifndef LEDGER_CORE_BIGINTIMPL_HPP
 #define LEDGER_CORE_BIGINTIMPL_HPP
 
-#include "../api/BigInt.hpp"
-#include "../math/BigInt.h"
+#include "api/BigInt.hpp"
+#include "math/BigInt.h"
 
 namespace ledger { namespace core { namespace api {
 

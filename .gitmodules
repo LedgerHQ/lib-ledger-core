@@ -1,18 +1,24 @@
 [submodule "djinni"]
-	path = djinni
-	url = https://github.com/LedgerHQ/djinni.git
+    path = djinni
+    url = https://github.com/LedgerHQ/djinni.git
 [submodule "toolchains/polly"]
-	path = toolchains/polly
-	url = https://github.com/ruslo/polly.git
+    path = toolchains/polly
+    url = https://github.com/ruslo/polly.git
 [submodule "tools/gyp"]
-	path = tools/gyp
-	url = https://github.com/bnoordhuis/gyp.git
+    path = tools/gyp
+    url = https://github.com/bnoordhuis/gyp.git
 [submodule "core/lib/spdlog"]
-	path = core/lib/spdlog
-	url = https://github.com/LedgerHQ/spdlog.git
+    path = core/lib/spdlog
+    url = https://github.com/gabime/spdlog.git
 [submodule "core/lib/leveldb"]
-	path = core/lib/leveldb
-	url = https://github.com/LedgerHQ/leveldb.git
+    path = core/lib/leveldb
+    url = https://github.com/teams2ua/leveldb.git
 [submodule "core/lib/ethash"]
-	path = core/lib/ethash
-	url = https://github.com/LedgerHQ/ethash.git
+    path = core/lib/ethash
+    url = https://github.com/LedgerHQ/ethash.git
+[submodule "core/test/lib/googletest"]
+    path = core/test/lib/googletest
+    url = https://github.com/google/googletest.git
+[submodule "core/lib/fmt"]
+	path = core/lib/fmt
+	url = https://github.com/fmtlib/fmt.git

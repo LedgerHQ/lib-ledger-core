@@ -7,7 +7,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
 
 include(ProjectSecp256k1)
 add_subdirectory(bigd)
-add_subdirectory(fmt-3.0.0)
+add_subdirectory(fmt)
 add_subdirectory(openssl)
 add_subdirectory(ethash)
 add_subdirectory(snappy)

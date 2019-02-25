@@ -26,14 +26,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(_MSC_VER) && _MSC_VER <= 1900
-  #  if defined(_WIN64)
-       typedef __int64 LONG_PTR;
-  #  else
-       typedef long LONG_PTR;
-  #  endif
-    typedef LONG_PTR SSIZE_T;
-    typedef SSIZE_T ssize_t;
+#ifdef _MSC_VER
+    #ifdef _WIN64
+        #define ssize_t int64_t
+    #else
+        #define ssize_t int32_t
+    #endif
 #endif
 
 #include "snappy.h"

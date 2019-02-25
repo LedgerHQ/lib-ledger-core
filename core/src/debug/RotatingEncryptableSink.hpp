@@ -31,20 +31,21 @@
 #ifndef LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 #define LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/sink.h>
-#include <spdlog/sinks/file_sinks.h>
-#include "../api/ExecutionContext.hpp"
-#include "../api/PathResolver.hpp"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/sink.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "api/ExecutionContext.hpp"
+#include "api/PathResolver.hpp"
 #include <memory>
-#include "../utils/optional.hpp"
+#include "utils/optional.hpp"
+#include <mutex>
 
 namespace ledger {
     namespace core {
         /**
          * Based on spdlog::sinks::rotating_file_sink
          */
-        class RotatingEncryptableSink : public spdlog::sinks::sink, public std::enable_shared_from_this<RotatingEncryptableSink> {
+        class RotatingEncryptableSink : public spdlog::sinks::base_sink<std::mutex>, public std::enable_shared_from_this<RotatingEncryptableSink> {
         public:
             RotatingEncryptableSink(
                     const std::shared_ptr<api::ExecutionContext> &context,
@@ -53,12 +54,11 @@ namespace ledger {
                     std::size_t maxSize,
                     std::size_t maxFiles
             );
-
-            virtual void log(const spdlog::details::log_msg &msg) override;
-            virtual void flush() override;
+            virtual void sink_it_(const spdlog::details::log_msg &msg) override;
+            virtual void flush_() override;
 
         protected:
-            void _sink_it(std::string msg);
+            void _sink_it(std::shared_ptr<fmt::memory_buffer> msg);
 
         private:
             static spdlog::filename_t calc_filename(

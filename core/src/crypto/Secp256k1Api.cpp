@@ -3,9 +3,9 @@
 //
 
 #include "Secp256k1Api.h"
-#include <utils/Exception.hpp>
-#include <utils/hex.h>
-#include <lib/secp256k1/include/secp256k1.h>
+#include "utils/Exception.hpp"
+#include "utils/hex.h"
+#include "include/secp256k1.h"
 
 namespace ledger {
     namespace core {

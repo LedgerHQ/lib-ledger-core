@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(ANDROID_CPP_FEATURES exceptions)
 
 # Automaticall ADD djinni api files to the library
@@ -128,7 +127,10 @@ endif()
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
+
+target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
+
 
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
@@ -160,10 +162,10 @@ file(GLOB LEDGER_CORE_API_HEADERS
         "api/*.hpp"
         )
 
-include_directories(ledger-core-interface INTERFACE ../lib/bigd)
+target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 
 if (TARGET_JNI)
-    include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
+    target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
@@ -173,9 +175,8 @@ file(GLOB ledger-core-header
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.h")
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
-target_include_directories(ledger-core-interface INTERFACE ..)
+target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
-target_include_directories(ledger-core-interface INTERFACE ../lib/fmt-3.0.0)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
@@ -184,7 +185,6 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/sqlcipher/incl
 else()
 target_include_directories(ledger-core-interface INTERFACE ../lib/sqlite3)
 endif()
-target_include_directories(ledger-core-interface INTERFACE ../lib/spdlog/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)

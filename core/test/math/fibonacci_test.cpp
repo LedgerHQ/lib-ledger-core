@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/math/Fibonacci.h>
+#include <math/Fibonacci.h>
 
 TEST(Fibonacci, Suite) {
     EXPECT_EQ(ledger::core::Fibonacci::compute(0), 0);

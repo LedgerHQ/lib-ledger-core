@@ -31,14 +31,14 @@
 #ifndef LEDGER_CORE_EVENTPUBLISHER_HPP
 #define LEDGER_CORE_EVENTPUBLISHER_HPP
 
-#include <src/api/EventBus.hpp>
-#include <src/api/EventPublisher.hpp>
-#include <src/api/Event.hpp>
-#include <src/api/EventCode.hpp>
-#include <src/api/EventReceiver.hpp>
+#include <api/EventBus.hpp>
+#include <api/EventPublisher.hpp>
+#include <api/Event.hpp>
+#include <api/EventCode.hpp>
+#include <api/EventReceiver.hpp>
 #include <unordered_set>
 #include <memory>
-#include <src/async/DedicatedContext.hpp>
+#include <async/DedicatedContext.hpp>
 
 namespace ledger {
     namespace core {

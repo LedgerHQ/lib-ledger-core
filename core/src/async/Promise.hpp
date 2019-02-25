@@ -31,9 +31,9 @@
 #ifndef LEDGER_CORE_PROMISE_HPP
 #define LEDGER_CORE_PROMISE_HPP
 
-#include "../utils/Try.hpp"
-#include "../utils/Option.hpp"
-#include "../utils/Exception.hpp"
+#include "utils/Try.hpp"
+#include "utils/Option.hpp"
+#include "utils/Exception.hpp"
 #include "Future.hpp"
 
 namespace ledger {

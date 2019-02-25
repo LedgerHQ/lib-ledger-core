@@ -33,20 +33,24 @@
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/sink.h>
-#include "../api/LogPrinter.hpp"
+#include <spdlog/sinks/base_sink.h>
 #include <memory>
+#include <mutex>
 
 namespace spd = spdlog;
 
 namespace ledger {
     namespace core {
-        class LogPrinterSink : public spd::sinks::sink {
+        namespace api {
+            class LogPrinter;
+        };
+        class LogPrinterSink : public spd::sinks::base_sink<std::mutex> {
         public:
             LogPrinterSink(const std::shared_ptr<api::LogPrinter>& printer);
 
-            virtual void log(const spdlog::details::log_msg &msg) override;
+            virtual void sink_it_(const spdlog::details::log_msg &msg) override;
 
-            virtual void flush() override;
+            virtual void flush_() override;
 
         private:
             std::weak_ptr<api::LogPrinter> _printer;
