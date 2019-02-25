@@ -170,6 +170,11 @@ namespace ledger {
         // Add XRP transaction status
         template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Stellar support
+        template <> void migrate<19>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 

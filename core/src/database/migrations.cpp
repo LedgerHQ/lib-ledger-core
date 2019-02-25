@@ -390,7 +390,6 @@ namespace ledger {
         }
 
         template <> void migrate<6>(soci::session& sql, api::DatabaseBackendType type) {
-
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -733,6 +732,46 @@ namespace ledger {
         }
 
         template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type) {
+
+        }
+
+        template <> void migrate<19>(soci::session& sql,  api::DatabaseBackendType type) {
+            // Stellar currencies
+            sql << "CREATE TABLE stellar_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL"
+                   ")";
+
+            // Stellar accounts
+            sql << "CREATE TABLE stellar_account("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "idx INTEGER NOT NULL"
+                   ")";
+
+            // Stellar transactions
+            sql << "CREATE TABLE stellar_transactions("
+                   "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL"
+                   ")";
+
+            // Stellar operations
+            sql << "CREATE TABLE stellar_operations("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(transaction_uid),"
+                   "transaction_hash VARCHAR(255) NOT NULL"
+                   ")";
+
+        }
+
+        template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
+            // Stellar operations
+            sql << "DROP TABLE stellar_operations";
+            // Stellar transactions
+            sql << "DROP TABLE stellar_transactions";
+            // Stellar accounts
+            sql << "DROP TABLE stellar_accounts";
+            // Stellar operations
+            sql << "DROP TABLE stellar_operations";
         }
     }
 }
