@@ -104,7 +104,6 @@ namespace ledger {
             config->putString("networkIdentifier", _params.Identifier);
             return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
         }
-        }
 
         std::string BitcoinLikeAddress::toBech32() const {
             return toBech32Helper(_version, _hash160, _params);

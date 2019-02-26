@@ -383,7 +383,6 @@ namespace ledger {
         }
 
         template <> void migrate<6>(soci::session& sql) {
-<<<<<<< HEAD
 
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"

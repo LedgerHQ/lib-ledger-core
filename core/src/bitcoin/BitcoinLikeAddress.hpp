@@ -61,8 +61,8 @@ namespace ledger {
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
                                                           const Option<std::string>& derivationPath = Option<std::string>());
             static std::shared_ptr<BitcoinLikeAddress> fromBase58(const std::string& address,
-                                                               const api::Currency& currency,
-                                                               const Option<std::string>& derivationPath = Option<std::string>());
+                                                                  const api::Currency& currency,
+                                                                  const Option<std::string>& derivationPath = Option<std::string>());
 
             static std::shared_ptr<BitcoinLikeAddress> fromBech32(const std::string& address,
                                                                   const api::Currency& currency,
