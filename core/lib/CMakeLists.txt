@@ -15,15 +15,8 @@ add_subdirectory(leveldb)
 
 add_subdirectory(spdlog)
 add_subdirectory(sqlcipher)
-add_subdirectory(sqlite3)
 
-if (SQLCIPHER)
-    set(SQLITE_LIB sqlcipher)
-else()
-    # use vanilla sqlite3
-    set(SQLITE_LIB sqlite3)
-endif()
-
+set(SQLITE_LIB sqlcipher)
 
 # SOCI configuration
 set(SOCI_STATIC ON)
