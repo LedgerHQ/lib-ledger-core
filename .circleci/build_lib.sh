@@ -106,8 +106,6 @@ export POLLY_ROOT=`pwd`/toolchains/polly
 ###
 # Clean
 ###
-echo "=====>Cleaning SQLCipher"
-rm -rf core/lib/sqlcipher || echo "Failed to clean sqlcipher"
 if [ "$1" == "ios" -o "$1" == "android" ]; then
     echo "=====>Cleaning to prepare clean build"
     echo "=====>Cleaning secp256k1"
