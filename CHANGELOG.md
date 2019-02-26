@@ -1,3 +1,12 @@
+## 2.7.0
+- Native Segwit support:
+	- Implement P2WPKH and P2WSH keychains, references: 
+		- BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#P2WSH ,
+		- BIP143: https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki 
+	- Support of Bech32 addresses, references:
+	 	- BIP173: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki#Segwit_address_format) ,
+	 	- BTC Bech32: https://github.com/sipa/bech32/tree/master/ref , 
+	 	- BCH Bech32: https://github.com/bitcoincashjs/cashaddrjs
 ## 2.6.0
 
 > 2019/02/22
