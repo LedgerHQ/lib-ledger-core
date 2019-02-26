@@ -28,7 +28,7 @@ set(CMAKE_MACOSX_RPATH 1)
 # WIP: when activating, windows build fails during configuration
 # step of SQLCipher project (because C compiler's path contains spaces)
 if (NOT MSVC AND NOT MINGW)
-    set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support" FORCE)
+    set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support")
 endif()
 
 if (SQLCIPHER)
