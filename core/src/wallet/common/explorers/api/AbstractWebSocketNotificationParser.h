@@ -168,10 +168,9 @@ namespace ledger {
             virtual TransactionParser &getTransactionParser() = 0;
             virtual BlockParser &getBlockParser() = 0;
             virtual std::string &getLastKey() = 0;
-        private:
+            std::string _currentObject = "";
             Result* _result;
             int32_t  _depth = 0;
-            std::string _currentObject = "";
         };
     }
 }

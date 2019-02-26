@@ -21,6 +21,8 @@ public:
     virtual ~BlockchainObserverEngines() {}
 
     static std::string const LEDGER_API;
+
+    static std::string const RIPPLE_NODE;
 };
 
 } } }  // namespace ledger::core::api

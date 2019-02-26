@@ -33,7 +33,7 @@
 #include <utils/Exception.hpp>
 #include <bitcoin/BitcoinLikeAddress.hpp>
 #include <ethereum/EthereumLikeAddress.h>
-
+#include <ripple/RippleLikeAddress.h>
 namespace ledger {
     namespace core {
 
@@ -65,7 +65,7 @@ namespace ledger {
                 case WalletType::ETHEREUM:
                     return ledger::core::EthereumLikeAddress::parse(address, currency);
                 case WalletType::RIPPLE:
-                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "RIPPLE address parser is not implemented yet");
+                    return ledger::core::RippleLikeAddress::parse(address, currency);
                 case WalletType::MONERO:
                     throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "MONERO address parser is not implemented yet");
             }

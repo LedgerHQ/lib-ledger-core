@@ -7,4 +7,6 @@ namespace ledger { namespace core { namespace api {
 
 std::string const BlockchainObserverEngines::LEDGER_API = {"LEDGER_API"};
 
+std::string const BlockchainObserverEngines::RIPPLE_NODE = {"RIPPLE_NODE"};
+
 } } }  // namespace ledger::core::api

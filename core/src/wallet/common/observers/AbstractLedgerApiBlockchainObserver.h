@@ -37,8 +37,6 @@
 #include <net/WebSocketConnection.h>
 namespace ledger {
     namespace core {
-        //template<typename Account, typename BlockchainExplorerTransaction, typename BlockchainExplorerBlock>
-        //class AbstractLedgerApiBlockchainObserver : public AbstractBlockchainObserver<Account, BlockchainExplorerTransaction, BlockchainExplorerBlock> {
         class AbstractLedgerApiBlockchainObserver {
 
         private:

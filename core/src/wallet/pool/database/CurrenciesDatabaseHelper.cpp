@@ -97,7 +97,22 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                         use(EIPs);
                 break;
             }
-            case api::WalletType::RIPPLE:break; // TODO INSERT ETHEREUM NETWORK PARAMS
+            case api::WalletType::RIPPLE: {
+                auto &params = currency.rippleLikeNetworkParameters.value();
+
+                std::stringstream additionalRIPs;
+                std::string separator(";");
+                strings::join(params.AdditionalRIPs, additionalRIPs, separator);
+                auto RIPs = additionalRIPs.str();
+
+                sql << "INSERT INTO ripple_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalRIPs)",
+                        use(currency.name),
+                        use(params.Identifier),
+                        use(hex::toString(params.XPUBVersion)),
+                        use(params.MessagePrefix),
+                        use(RIPs);
+                break;
+            }
             case api::WalletType::MONERO:break; // TODO INSERT MONERO NETWORK PARAMS
         }
         inserted = true;
@@ -164,7 +179,6 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::ETHEREUM: {
-
                 rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.chain_id, ethereum_currencies.xpub_version,"
                         " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"
                         " ethereum_currencies.additional_EIPs "
@@ -182,7 +196,23 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
 
                 break;
             };
-            case api::WalletType::RIPPLE:break;
+            case api::WalletType::RIPPLE: {
+                rowset<row> ripple_rows = (sql.prepare << "SELECT ripple_currencies.xpub_version,"
+                        " ripple_currencies.message_prefix, ripple_currencies.identifier,"
+                        " ripple_currencies.additional_RIPs "
+                        " FROM ripple_currencies "
+                        " WHERE ripple_currencies.name = :currency_name", use(currency.name));
+                for (auto& ripple_row : ripple_rows) {
+                    api::RippleLikeNetworkParameters params;
+                    params.XPUBVersion = hex::toByteArray(ripple_row.get<std::string>(0));
+                    params.MessagePrefix = ripple_row.get<std::string>(1);
+                    params.Identifier = ripple_row.get<std::string>(2);
+                    params.AdditionalRIPs = strings::split(ripple_row.get<std::string>(3), ",");
+                    currency.rippleLikeNetworkParameters = params;
+                }
+
+                break;
+            };
             case api::WalletType::MONERO:break;
         }
         getAllUnits(sql, currency);

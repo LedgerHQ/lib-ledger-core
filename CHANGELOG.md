@@ -16,6 +16,14 @@
   not to always bump the versions when merging PRs and also keeping the binaries deployed to our bucket.
 - Update used libraries, to be able to compile under VS2017
 
+- XRP integration:
+	- XRP Keychian, address derivation and account creation,
+	- XRP API explorer and parser,
+	- XRP Node explorer and parser,
+	- Accounts synchronization,
+	- XRP transaction serialization and parsing,
+	- Tests of above features.
+	
 ## 2.5.0
 
 > 2019/01/22

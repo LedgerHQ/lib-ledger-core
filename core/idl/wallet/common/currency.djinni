@@ -1,5 +1,6 @@
 @import "../../bitcoin/addresses.djinni"
 @import "../../ethereum/addresses.djinni"
+@import "../../ripple/addresses.djinni"
 
 # Enum listing supported cryptocurrencies' families.
 WalletType = enum {
@@ -42,4 +43,6 @@ Currency = record {
     bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
     # Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
     ethereumLikeNetworkParameters: optional<EthereumLikeNetworkParameters>;
+    #Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
+    rippleLikeNetworkParameters: optional<RippleLikeNetworkParameters>;
 }
