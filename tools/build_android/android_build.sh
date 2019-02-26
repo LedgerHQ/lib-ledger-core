@@ -4,6 +4,11 @@ arch=$1
 libcore_path=$2
 android_ndk_16b=$3
 
+if [ "$#" != 3 ]; then
+    echo "usage: android_build.sh <arch> <libcore_path> <android_ndk_dir_path>"
+    exit 1
+fi
+
 #Root to polly toolchains
 export POLLY_ROOT=$libcore_path/toolchains/polly
 export ANDROID_NDK_r16b=$android_ndk_16b
