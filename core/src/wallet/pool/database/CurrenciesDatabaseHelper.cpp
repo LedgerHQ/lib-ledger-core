@@ -138,6 +138,24 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break; // TODO INSERT MONERO NETWORK PARAMS
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::STELLAR: {
+                auto &params = currency.stellarLikeNetworkParameters.value();
+
+                std::stringstream seps;
+                std::string separator(";");
+                strings::join(params.AdditionalSEPs, seps, separator);
+                auto SEPs = seps.str();
+
+                sql << "INSERT INTO stellar_currencies VALUES(:name, :identifier, :version, :reserve, :fee, :seps)",
+                    use(currency.name),
+                    use(params.Identifier),
+                    use(hex::toString(params.Version)),
+                    use(params.BaseReserve),
+                    use(params.BaseFee),
+                    use(SEPs)
+                ;
+                break;
+            }
         }
         inserted = true;
     }
@@ -257,6 +275,15 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::STELLAR: {
+                rowset<row> stellar_rows = (sql.prepare << "SELECT identifier,  FROM stellar_currencies "
+                                                           "WHERE name = :name"
+                        , use(currency.name));
+                for (auto& stellar_row : stellar_rows) {
+
+                }
+                break;
+            }
         }
         getAllUnits(sql, currency);
         currencies.push_back(currency);

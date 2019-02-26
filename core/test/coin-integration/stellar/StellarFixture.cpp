@@ -31,6 +31,27 @@
 
 #include "StellarFixture.hpp"
 
+static std::vector<api::CurrencyUnit> UNITS {};
+
+static api::StellarLikeNetworkParameters STELLAR_PARAMS {
+    "xlm", {6 << 3}, 5000000, 100, {}
+};
+
+static api::Currency STELLAR =
+        Currency("stellar")
+        .forkOfStellar(STELLAR_PARAMS)
+        .bip44(148)
+        .paymentUri("web+stellar")
+        .unit("stroops", 0, "stroops")
+        .unit("lumen", 7, "XLM");
+
 api::AccountCreationInfo StellarFixture::defaultAccount() const {
     return api::AccountCreationInfo(0, {"main"}, {"44'/0'/0/0"}, {}, {});
 }
+
+std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
+    auto pool = CoinIntegrationFixture::newPool(poolName);
+    injectCurrency(pool, STELLAR);
+    return pool;
+}
+

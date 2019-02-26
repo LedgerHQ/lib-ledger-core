@@ -33,28 +33,29 @@
 #define LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP
 
 
+
 namespace ledger {
     namespace core {
         class StellarLikeKeychainFactory {
-            std::shared_ptr<EthereumLikeKeychain> build(int32_t index,
-                                                        const DerivationPath &path,
-                                                        const std::shared_ptr<DynamicObject>& configuration,
-                                                        const api::ExtendedKeyAccountCreationInfo& info,
-                                                        const std::shared_ptr<Preferences>& accountPreferences,
-                                                        const api::Currency& currency);
-
+//            std::shared_ptr<EthereumLikeKeychain> build(int32_t index,
+//                                                        const DerivationPath &path,
+//                                                        const std::shared_ptr<DynamicObject>& configuration,
+//                                                        const api::ExtendedKeyAccountCreationInfo& info,
+//                                                        const std::shared_ptr<Preferences>& accountPreferences,
+//                                                        const api::Currency& currency);
+//
+////            std::shared_ptr<EthereumLikeKeychain> restore(int32_t index,
+////                                                         const DerivationPath &path,
+////                                                         const std::shared_ptr<DynamicObject>& configuration,
+////                                                         const std::string& address,
+////                                                         const std::shared_ptr<Preferences>& accountPreferences,
+////                                                         const api::Currency& currency);
 //            std::shared_ptr<EthereumLikeKeychain> restore(int32_t index,
-//                                                         const DerivationPath &path,
-//                                                         const std::shared_ptr<DynamicObject>& configuration,
-//                                                         const std::string& address,
-//                                                         const std::shared_ptr<Preferences>& accountPreferences,
-//                                                         const api::Currency& currency);
-            std::shared_ptr<EthereumLikeKeychain> restore(int32_t index,
-                                                          const DerivationPath &path,
-                                                          const std::shared_ptr<DynamicObject>& configuration,
-                                                          const std::string &databaseXpubEntry,
-                                                          const std::shared_ptr<Preferences>& accountPreferences,
-                                                          const api::Currency& currency);
+//                                                          const DerivationPath &path,
+//                                                          const std::shared_ptr<DynamicObject>& configuration,
+//                                                          const std::string &databaseXpubEntry,
+//                                                          const std::shared_ptr<Preferences>& accountPreferences,
+//                                                          const api::Currency& currency);
         };
     }
 }

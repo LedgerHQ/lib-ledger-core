@@ -26,8 +26,12 @@ private:
     friend ::djinni::JniClass<StellarLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[BJJLjava/util/ArrayList;)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
+    const jfieldID field_Version { ::djinni::jniGetFieldID(clazz.get(), "Version", "[B") };
+    const jfieldID field_BaseReserve { ::djinni::jniGetFieldID(clazz.get(), "BaseReserve", "J") };
+    const jfieldID field_BaseFee { ::djinni::jniGetFieldID(clazz.get(), "BaseFee", "J") };
+    const jfieldID field_AdditionalSEPs { ::djinni::jniGetFieldID(clazz.get(), "AdditionalSEPs", "Ljava/util/ArrayList;") };
 };
 
 }  // namespace djinni_generated

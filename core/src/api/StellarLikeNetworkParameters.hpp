@@ -4,22 +4,44 @@
 #ifndef DJINNI_GENERATED_STELLARLIKENETWORKPARAMETERS_HPP
 #define DJINNI_GENERATED_STELLARLIKENETWORKPARAMETERS_HPP
 
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace ledger { namespace core { namespace api {
 
 struct StellarLikeNetworkParameters final {
     /** Name of the network. */
     std::string Identifier;
+    /** Address version bytes */
+    std::vector<uint8_t> Version;
+    /** The minimum account to enable an account */
+    int64_t BaseReserve;
+    /** The price of one operation in a transaction */
+    int64_t BaseFee;
+    /** Additional SEP to which the currency apply to */
+    std::vector<std::string> AdditionalSEPs;
 
-    StellarLikeNetworkParameters(std::string Identifier_)
+    StellarLikeNetworkParameters(std::string Identifier_,
+                                 std::vector<uint8_t> Version_,
+                                 int64_t BaseReserve_,
+                                 int64_t BaseFee_,
+                                 std::vector<std::string> AdditionalSEPs_)
     : Identifier(std::move(Identifier_))
+    , Version(std::move(Version_))
+    , BaseReserve(std::move(BaseReserve_))
+    , BaseFee(std::move(BaseFee_))
+    , AdditionalSEPs(std::move(AdditionalSEPs_))
     {}
 
     StellarLikeNetworkParameters(const StellarLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
+       this->Version = cpy.Version;
+       this->BaseReserve = cpy.BaseReserve;
+       this->BaseFee = cpy.BaseFee;
+       this->AdditionalSEPs = cpy.AdditionalSEPs;
     }
 
     StellarLikeNetworkParameters() = default;
@@ -27,17 +49,21 @@ struct StellarLikeNetworkParameters final {
 
     StellarLikeNetworkParameters& operator=(const StellarLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
+       this->Version = cpy.Version;
+       this->BaseReserve = cpy.BaseReserve;
+       this->BaseFee = cpy.BaseFee;
+       this->AdditionalSEPs = cpy.AdditionalSEPs;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier);
+        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier);
+        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs);
     }
 };
 

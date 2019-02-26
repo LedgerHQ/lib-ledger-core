@@ -39,6 +39,8 @@
 
 class StellarFixture : public CoinIntegrationFixture<StellarLikeWallet, StellarLikeAccount> {
 public:
+    std::shared_ptr<WalletPool> newPool(std::string poolName = "default_pool") override;
+
     api::AccountCreationInfo defaultAccount() const;
 };
 

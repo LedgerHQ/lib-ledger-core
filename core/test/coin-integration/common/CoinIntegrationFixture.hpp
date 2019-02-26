@@ -90,7 +90,7 @@ public:
         resolver->clean();
     }
 
-    std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
+    virtual std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
         return WalletPool::newInstance(
                 poolName,
                 Option<std::string>("test"),
@@ -103,6 +103,10 @@ public:
                 backend,
                 api::DynamicObject::newInstance()
         );
+    }
+
+    void injectCurrency(const std::shared_ptr<WalletPool>& pool, const api::Currency& currency) {
+        ::wait(pool->addCurrency(currency));
     }
 
     std::shared_ptr<Wallet> newWallet(  const std::shared_ptr<WalletPool>& pool,

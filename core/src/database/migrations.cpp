@@ -739,14 +739,19 @@ namespace ledger {
             // Stellar currencies
             sql << "CREATE TABLE stellar_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                    "identifier VARCHAR(255) NOT NULL"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "address_version VARCHAR(255) NOT NULL,"
+                    "base_reserve BIGINT NOT NULL,"
+                    "base_fee BIGINT NOT NULL,"
+                    "additional_SEPs TEXT NOT NULL"
                    ")";
 
             // Stellar accounts
             sql << "CREATE TABLE stellar_account("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                   "idx INTEGER NOT NULL"
+                   "idx INTEGER NOT NULL,"
+                   "address TEXT NOT NULL"
                    ")";
 
             // Stellar transactions
