@@ -64,5 +64,11 @@ namespace ledger {
             return std::make_shared<StellarLikeWallet>(entry.name, currency, getPool(), entry.configuration, scheme, params);
         }
 
+        template <>
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::STELLAR>(const api::Currency& currency,
+                const std::shared_ptr<WalletPool>& pool) {
+            return std::make_shared<StellarLikeWalletFactory>(currency, pool);
+        }
+
     }
 }
