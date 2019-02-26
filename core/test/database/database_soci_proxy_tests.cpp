@@ -80,6 +80,7 @@ protected:
         _backend = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
         auto date = DateUtils::toJSON(std::chrono::system_clock::now());
+        std::remove(date.begin(), date.end(), ':');
         dbName = "test_db_" + date;
         _backend->init(nullptr, dbName, DB_KEY, sql);
     }

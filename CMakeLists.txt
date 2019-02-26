@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.10)
 project(ledger-core)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -20,19 +20,12 @@ list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
 set(CMAKE_MACOSX_RPATH 1)
 
 # SQLCIPHER is used by default
-# TODO: activate SQLCipher for Windows
-# WIP: when activating, windows build fails during configuration
-# step of SQLCipher project (because C compiler's path contains spaces)
-if (NOT MSVC AND NOT MINGW)
-    set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support")
-endif()
+set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support")
 
 if (SQLCIPHER)
-    add_definitions("-DSQLCIPHER")
     add_definitions("-DSQLITE_HAS_CODEC")
 endif()
 

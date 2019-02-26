@@ -14,11 +14,17 @@ add_subdirectory(snappy)
 add_subdirectory(leveldb)
 
 add_subdirectory(spdlog)
+add_subdirectory(sqlcipher)
+add_subdirectory(sqlite3)
+
 if (SQLCIPHER)
-    include(ProjectSQLiteCipher)
+    set(SQLITE_LIB sqlcipher)
 else()
-    add_subdirectory(sqlite3)
+    # use vanilla sqlite3
+    set(SQLITE_LIB sqlite3)
 endif()
+
+
 # SOCI configuration
 set(SOCI_STATIC ON)
 #set(SOCI_SHARED OFF)

@@ -35,11 +35,8 @@
 #include <api/DatabaseStatement.hpp>
 #include <api/DatabaseBlob.hpp>
 #include <api/DatabaseResultSet.hpp>
-#ifdef SQLCIPHER
-    #include <sqlcipher/sqlite3.h>
-#else
-    #include <sqlite3.h>
-#endif
+
+#include <sqlite3.h>
 //#include <soci-sqlite3.h>
 #include <database/proxy_backend/soci-proxy.h>
 #include <soci.h>
@@ -198,16 +195,19 @@ public:
     }
 
     void read_all(sqlite3* db) {
-        iterate:
+    iterate:
         int last_result = sqlite3_step(_stmt);
         if (last_result == SQLITE_ROW) {
             _rows.push_back(std::make_shared<ResultRow>(_stmt));
             goto iterate;
-        } else if (last_result != SQLITE_DONE) {
+        }
+        else if (last_result != SQLITE_DONE) {
             throw std::runtime_error(sqlite3_errmsg(db));
         }
         final:
-        _rows.emplace_front(*_rows.begin());
+        if (_rows.size() > 0) {
+            _rows.emplace_front(*_rows.begin());
+        }
         _it = _rows.begin();
     }
 
