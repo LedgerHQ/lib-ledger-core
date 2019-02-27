@@ -372,19 +372,15 @@ public:
     void changePassword(const std::string & oldPassword, const std::string & newPassword) {
         setPassword(oldPassword);
         if (!newPassword.empty()) {
-#ifdef SQLCIPHER
             auto res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
             check_sqlite_err(_db, res, "Failed to change database's password. ");
-#endif
         }
     };
 
     void setPassword(const std::string &password) {
         if (!password.empty()) {
-#ifdef SQLCIPHER
             auto res = sqlite3_key_v2(_db, _dbName.c_str(), password.c_str(), strlen(password.c_str()));
             check_sqlite_err(_db, res, "Failed to encrypt database. ");
-#endif
         }
     };
 

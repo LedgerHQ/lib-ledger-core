@@ -105,7 +105,7 @@ TEST(SQLCipherTest, SanityCheck) {
 TEST(SQLCipherTest, ThrowIfWrongPassword) {
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
     std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+    auto dbName = "test_db2_" + date;
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
