@@ -13,18 +13,6 @@ ERC20Token = record {
     numberOfDecimal: i32;
 }
 
-# ERC20-like balance history.
-ERC20LikeBalanceHistory = record {
-    # Period used when representing the history.
-    period: TimePeriod;
-    # Start date of the history.
-    startDate: date;
-    # End date of the history.
-    endDate: date;
-    # Chronologically-sorted balance history accross time.
-    balances: list<BigInt>;
-}
-
 # ERC20-like accounts class.
 ERC20LikeAccount = interface +c {
     # Get an ERC20 token.
@@ -34,7 +22,7 @@ ERC20LikeAccount = interface +c {
     # Get the current balance of this ERC20 account.
     getBalance(): BigInt;
     # Get the balance history of this ERC20 account from a starting date to an ending date.
-    getBalanceHistoryFor(start: date, end: date, period: TimePeriod): ERC20LikeBalanceHistory;
+    getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
     # Retrieve raw data concerning a transaction of a given amount to a given address.

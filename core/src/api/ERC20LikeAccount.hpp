@@ -23,7 +23,6 @@ class BigInt;
 class ERC20LikeOperation;
 class OperationQuery;
 enum class TimePeriod;
-struct ERC20LikeBalanceHistory;
 struct ERC20Token;
 
 /** ERC20-like accounts class. */
@@ -41,7 +40,7 @@ public:
     virtual std::shared_ptr<BigInt> getBalance() = 0;
 
     /** Get the balance history of this ERC20 account from a starting date to an ending date. */
-    virtual ERC20LikeBalanceHistory getBalanceHistoryFor(const std::chrono::system_clock::time_point & start, const std::chrono::system_clock::time_point & end, TimePeriod period) = 0;
+    virtual std::vector<std::shared_ptr<BigInt>> getBalanceHistoryFor(const std::chrono::system_clock::time_point & start, const std::chrono::system_clock::time_point & end, TimePeriod period) = 0;
 
     /** Get the list of operations performed on this ERC20 account. */
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;

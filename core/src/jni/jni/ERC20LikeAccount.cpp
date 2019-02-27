@@ -3,7 +3,6 @@
 
 #include "ERC20LikeAccount.hpp"  // my header
 #include "BigInt.hpp"
-#include "ERC20LikeBalanceHistory.hpp"
 #include "ERC20LikeOperation.hpp"
 #include "ERC20Token.hpp"
 #include "Marshal.hpp"
@@ -63,7 +62,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
         auto r = ref->getBalanceHistoryFor(::djinni::Date::toCpp(jniEnv, j_start),
                                            ::djinni::Date::toCpp(jniEnv, j_end),
                                            ::djinni_generated::TimePeriod::toCpp(jniEnv, j_period));
-        return ::djinni::release(::djinni_generated::ERC20LikeBalanceHistory::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::List<::djinni_generated::BigInt>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

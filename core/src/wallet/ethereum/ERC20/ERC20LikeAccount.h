@@ -33,7 +33,6 @@
 #define LEDGER_CORE_ERC20LIKEACCOUNT_H
 
 #include <chrono>
-#include <api/ERC20LikeBalanceHistory.hpp>
 #include <api/ERC20LikeAccount.hpp>
 #include <api/ERC20Token.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
@@ -77,7 +76,7 @@ namespace ledger {
             std::string getAddress() override ;
             std::shared_ptr<api::BigInt> getBalance() override ;
 
-            api::ERC20LikeBalanceHistory getBalanceHistoryFor(
+            std::vector<std::shared_ptr<api::BigInt>> getBalanceHistoryFor(
                 const std::chrono::system_clock::time_point& startDate,
                 const std::chrono::system_clock::time_point& endDate,
                 api::TimePeriod period
@@ -85,7 +84,7 @@ namespace ledger {
 
             // A helper function to take an operation into an account while computing balances.
             static BigInt accumulateBalanceWithOperation(
-                BigInt balance,
+                const BigInt& balance,
                 api::ERC20LikeOperation& op
             );
 

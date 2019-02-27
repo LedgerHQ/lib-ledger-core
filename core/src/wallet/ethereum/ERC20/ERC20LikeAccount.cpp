@@ -83,7 +83,7 @@ namespace ledger {
             return std::make_shared<api::BigIntImpl>(result);
         }
 
-        api::ERC20LikeBalanceHistory ERC20LikeAccount::getBalanceHistoryFor(
+        std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
             const std::chrono::system_clock::time_point& startDate,
             const std::chrono::system_clock::time_point& endDate,
             api::TimePeriod period
@@ -141,16 +141,11 @@ namespace ledger {
             // (last day)
             balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
 
-            return api::ERC20LikeBalanceHistory(
-                api::TimePeriod::DAY,
-                startDate,
-                endDate,
-                balances
-            );
+            return balances;
         }
 
         BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
-            BigInt balance,
+            const BigInt& balance,
             api::ERC20LikeOperation& op
         ) {
             auto ty = op.getOperationType();
