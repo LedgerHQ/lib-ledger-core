@@ -6,8 +6,14 @@ android_ndk_16b=$3
 
 if [ "$#" != 3 ]; then
     echo "usage: android_build.sh <arch> <libcore_path> <android_ndk_dir_path>"
+    echo ""
+    echo "This script must be run from within the build directory."
     exit 1
 fi
+
+#Clean secp256k1
+echo " >>> Cleaning secp256k1"
+rm -rf $libcore_path/core/lib/secp256k1/include $libcore_path/core/lib/secp256k1/src $libcore_path/core/lib/secp256k1/tmp $libcore_path/core/lib/secp256k1/lib
 
 #Root to polly toolchains
 export POLLY_ROOT=$libcore_path/toolchains/polly
@@ -25,6 +31,5 @@ if [ "$ARCH" == "armeabi-v7a" ]; then
     export TOOLCHAIN_NAME='android-ndk-r16b-api-21-x86-clang-libcxx'
 fi
 
-cmake . -DCMAKE_BUILD_TYPE:STRING=Release -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
+cmake $libcore_path -DCMAKE_BUILD_TYPE:STRING=Release -DTARGET_JNI=ON -DCMAKE_TOOLCHAIN_FILE=${POLLY_ROOT}/${TOOLCHAIN_NAME}.cmake
 cmake --build . --config Release -- -j8
-

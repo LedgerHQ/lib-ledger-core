@@ -17,9 +17,6 @@ file(GLOB ledger-core-jni-sources
 
 if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
-    if (APPLE)
-        list(APPEND JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include/darwin)
-    endif()
 
     if(NOT ANDROID)
         find_package(JNI REQUIRED)
