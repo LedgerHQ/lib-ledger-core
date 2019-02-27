@@ -49,6 +49,9 @@ ExternalProject_Add(
         BUILD_COMMAND ""
         ${_overwrite_install_command}
         BUILD_BYPRODUCTS "${SECP256K1_LIBRARY}"
+        BINARY_DIR ${CMAKE_BINARY_DIR}/core/lib/secp256k1
+        STAMP_DIR ${CMAKE_BINARY_DIR}/core/lib/secp256k1
+        TMP_DIR ${CMAKE_BINARY_DIR}/core/lib/secp256k1
 )
 
 # Create imported library
