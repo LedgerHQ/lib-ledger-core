@@ -39,7 +39,10 @@ public:
     /** Get the current balance of this ERC20 account. */
     virtual std::shared_ptr<BigInt> getBalance() = 0;
 
-    /** Get the balance history of this ERC20 account from a starting date to an ending date. */
+    /**
+     * Get the balance history of this ERC20 account from a starting date (included) to an ending
+     * date (included).
+     */
     virtual std::vector<std::shared_ptr<BigInt>> getBalanceHistoryFor(const std::chrono::system_clock::time_point & start, const std::chrono::system_clock::time_point & end, TimePeriod period) = 0;
 
     /** Get the list of operations performed on this ERC20 account. */
