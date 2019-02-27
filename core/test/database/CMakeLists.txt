@@ -16,7 +16,6 @@ add_executable(ledger-core-database-tests main.cpp pool_tests.cpp query_filters_
         database_soci_proxy_tests.cpp MemoryDatabaseProxy.cpp MemoryDatabaseProxy.h sqlcipher_tests.cpp)
 
 target_link_libraries(ledger-core-database-tests gtest gtest_main)
-
 target_link_libraries(ledger-core-database-tests ledger-core-static)
 target_link_libraries(ledger-core-database-tests ledger-test)
 target_link_libraries(ledger-core-database-tests ledger-qt-host)
