@@ -99,10 +99,22 @@ namespace ledger {
             std::vector<std::shared_ptr<api::BigInt>> balances;
             auto currentBalance = BigInt::ZERO;
             auto nextDate = DateUtils::incrementDate(startDate, period);
-            auto operations = getSortedOperationsRange(endDate);
-            auto opIt = std::cbegin(operations);
+
+            auto operations = getOperations();
+            // manually sort by date
+            std::sort(
+                operations.begin(),
+                operations.end(),
+                [](
+                    const std::shared_ptr<api::ERC20LikeOperation>& a,
+                    const std::shared_ptr<api::ERC20LikeOperation>& b
+                ) {
+                    return a->getTime() < b->getTime();
+                }
+            );
 
             // accumulate the balance until we hit the starting date
+            auto opIt = std::cbegin(operations);
             for (; (*opIt)->getTime() < startDate; ++opIt) {
                 currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
             }
@@ -111,6 +123,11 @@ namespace ledger {
             // chosen; in our case, we use the default granularity, which is PerDay
             for (; *opIt; ++opIt) {
                 auto opDate = (*opIt)->getTime();
+
+                // leave the loop if we have hit the upper date bound
+                if (opDate > endDate) {
+                    break;
+                }
 
                 if (opDate >= nextDate) {
                     balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
@@ -162,47 +179,6 @@ namespace ledger {
                     " op.gas_price, op.gas_limit, op.gas_used, op.status"
                     " FROM erc20_operations AS op"
                     " WHERE op.account_uid = :account_uid", soci::use(_accountUid));
-            std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
-            for (auto& row : rows) {
-                auto op = std::make_shared<ERC20LikeOperation>();
-                op->setOperationUid(row.get<std::string>(0));
-                op->setETHOperationUid(row.get<std::string>(1));
-                op->setOperationType(api::from_string<api::OperationType>(row.get<std::string>(3)));
-                op->setHash(row.get<std::string>(4));
-                op->setNonce(BigInt::fromHex(row.get<std::string>(5)));
-                op->setValue(BigInt::fromHex(row.get<std::string>(6)));
-                op->setTime(DateUtils::fromJSON(row.get<std::string>(7)));
-                op->setSender(row.get<std::string>(8));
-                op->setReceiver(row.get<std::string>(9));
-                if (row.get_indicator(10) != soci::i_null) {
-                    auto data = row.get<std::string>(10);
-                    auto dataArray = hex::toByteArray(data);
-                    op->setData(dataArray);
-                }
-
-                op->setGasPrice(BigInt::fromHex(row.get<std::string>(11)));
-                op->setGasLimit(BigInt::fromHex(row.get<std::string>(12)));
-                op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
-                auto status = row.get<int32_t>(14);
-                op->setStatus(status);
-                result.emplace_back(op);
-            }
-            return result;
-        }
-
-        std::vector<std::shared_ptr<api::ERC20LikeOperation>>
-        ERC20LikeAccount::getSortedOperationsRange(
-            const std::chrono::system_clock::time_point& endDate
-        ) {
-            auto localAccount = _account.lock();
-            soci::session sql (localAccount->getWallet()->getDatabase()->getPool());
-            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
-                    " op.type, op.hash, op.nonce, op.value,"
-                    " op.date, op.sender, op.receiver, op.input_data,"
-                    " op.gas_price, op.gas_limit, op.gas_used, op.status"
-                    " FROM erc20_operations AS op"
-                    " WHERE op.account_uid = :account_uid AND op.date <= ':end_date_uid'"
-                    " ORDER BY op.date ASC", soci::use(_accountUid), soci::use(endDate));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
             for (auto& row : rows) {
                 auto op = std::make_shared<ERC20LikeOperation>();

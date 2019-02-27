@@ -91,12 +91,6 @@ namespace ledger {
 
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> getOperations() override ;
 
-            // A version of getOperations that is sorted by date and returns only operations that
-            // lie in an inclusive datetime range provided as argument.
-            std::vector<std::shared_ptr<api::ERC20LikeOperation>> getSortedOperationsRange(
-                const std::chrono::system_clock::time_point& endDate
-            );
-
             std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                           const std::string & address) override ;
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
