@@ -81,7 +81,7 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> StellarLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto scheme = getDerivationScheme();
-            auto path = scheme.setAccountIndex(accountIndex).getPath();
+            auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
             api::AccountCreationInfo info {accountIndex, {"main"}, {path.toString()}, {}, {}};
             return Future<api::AccountCreationInfo>::successful(info);
         }
