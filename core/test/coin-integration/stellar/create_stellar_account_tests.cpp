@@ -34,7 +34,10 @@
 TEST_F(StellarFixture, CreateAccountWithPubKey) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
-//    auto account = newAccount(wallet, 0, defaultAccount());
-//    auto address = ::wait(account->getFreshPublicAddresses()).front()->toString();
-//    EXPECT_EQ(address, "address");
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto account = newAccount(wallet, 0, defaultAccount());
+    auto address = ::wait(account->getFreshPublicAddresses()).front()->toString();
+    EXPECT_EQ(address, "address");
+    EXPECT_EQ(info.derivations.size(), 1);
+    EXPECT_EQ(info.derivations[0], "44'/148'/0'");
 }
