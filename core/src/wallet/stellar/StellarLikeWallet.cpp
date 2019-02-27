@@ -70,16 +70,20 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         StellarLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "StellarLike doesn't support account creation through extended key info.");
         }
 
         Future<api::ExtendedKeyAccountCreationInfo>
         StellarLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION,
+                                 "StellarLike doesn't support account creation through extended key info.");
         }
 
         Future<api::AccountCreationInfo> StellarLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto scheme = getDerivationScheme();
+            auto path = scheme.setAccountIndex(accountIndex).getPath();
+            api::AccountCreationInfo info {accountIndex, {"main"}, {path.toString()}, {}, {}};
+            return Future<api::AccountCreationInfo>::successful(info);
         }
 
         std::shared_ptr<AbstractAccount>
