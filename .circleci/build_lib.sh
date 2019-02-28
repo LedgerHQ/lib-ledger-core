@@ -108,8 +108,6 @@ export POLLY_ROOT=`pwd`/toolchains/polly
 ###
 if [ "$1" == "ios" -o "$1" == "android" ]; then
     echo "=====>Cleaning to prepare clean build"
-    echo "=====>Cleaning secp256k1"
-    rm -rf core/lib/secp256k1/include core/lib/secp256k1/src core/lib/secp256k1/tmp core/lib/secp256k1/lib || echo "Failed to clean secp256k1"
     echo "=====>Remove build directory"
     rm -rf ../lib-ledger-core-build
 fi

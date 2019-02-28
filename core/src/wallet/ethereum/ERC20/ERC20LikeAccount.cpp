@@ -28,12 +28,12 @@
  *
  */
 
-
 #include "ERC20LikeAccount.h"
 #include <math/BigInt.h>
 #include <api_impl/BigIntImpl.hpp>
 #include <api/Amount.hpp>
 #include <api/OperationType.hpp>
+#include <api/TimePeriod.hpp>
 #include <bytes/RLP/RLPStringEncoder.h>
 #include <utils/hex.h>
 #include <math/BigInt.h>
@@ -45,6 +45,7 @@
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
+
 using namespace soci;
 
 namespace ledger {
@@ -74,15 +75,90 @@ namespace ledger {
         std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
             auto result = BigInt::ZERO;
             auto operations = getOperations();
+
             for (auto &op : operations) {
-                if (op->getOperationType() == api::OperationType::RECEIVE) {
-                    result = result + BigInt(op->getValue()->toString(10));
-                } else if (op->getOperationType() == api::OperationType::SEND){
-                    result = result - BigInt(op->getValue()->toString(10));
+                result = accumulateBalanceWithOperation(result, *op);
+            }
+
+            return std::make_shared<api::BigIntImpl>(result);
+        }
+
+        std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
+            const std::chrono::system_clock::time_point& startDate,
+            const std::chrono::system_clock::time_point& endDate,
+            api::TimePeriod period
+        ) {
+            // guard against bad arguments
+            if (startDate > endDate) {
+                throw make_exception(
+                    api::ErrorCode::INVALID_DATE_FORMAT,
+                    "Start date should be strictly greater than end date"
+                );
+            }
+
+            std::vector<std::shared_ptr<api::BigInt>> balances;
+            auto currentBalance = BigInt::ZERO;
+            auto nextDate = DateUtils::incrementDate(startDate, period);
+
+            auto operations = getOperations();
+            // manually sort by date
+            std::sort(
+                operations.begin(),
+                operations.end(),
+                [](
+                    const std::shared_ptr<api::ERC20LikeOperation>& a,
+                    const std::shared_ptr<api::ERC20LikeOperation>& b
+                ) {
+                    return a->getTime() < b->getTime();
+                }
+            );
+
+            // accumulate the balance until we hit the starting date
+            auto opIt = std::cbegin(operations);
+            for (; (*opIt)->getTime() < startDate; ++opIt) {
+                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
+            }
+
+            // iterate over all operations and segment them according to the granularity we’ve
+            // chosen; in our case, we use the default granularity, which is PerDay
+            for (; *opIt; ++opIt) {
+                auto opDate = (*opIt)->getTime();
+
+                // leave the loop if we have hit the upper date bound
+                if (opDate > endDate) {
+                    break;
                 }
 
+                if (opDate >= nextDate) {
+                    balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
+                    nextDate = DateUtils::incrementDate(nextDate, period);
+                }
+
+                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
             }
-            return std::make_shared<api::BigIntImpl>(result);
+
+            // we still have something in the currentBalance that needs to be added to the history
+            // (last day)
+            balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
+
+            return balances;
+        }
+
+        BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
+            const BigInt& balance,
+            api::ERC20LikeOperation& op
+        ) {
+            auto ty = op.getOperationType();
+            auto value = BigInt(op.getValue()->toString(10));
+
+            switch (ty) {
+                case api::OperationType::RECEIVE:
+                    return balance + value;
+
+                case api::OperationType::SEND:
+                default:
+                    return balance - value;
+            }
         }
 
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
