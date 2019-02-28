@@ -30,6 +30,7 @@
  */
 
 #include "StellarLikeWallet.hpp"
+#include <async/Promise.hpp>
 
 namespace ledger {
     namespace core {
@@ -65,7 +66,11 @@ namespace ledger {
 
         FuturePtr<api::Account>
         StellarLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto self = getSelf();
+            return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
+
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            });
         }
 
         FuturePtr<ledger::core::api::Account>
@@ -89,6 +94,10 @@ namespace ledger {
         std::shared_ptr<AbstractAccount>
         StellarLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+        }
+
+        std::shared_ptr<StellarLikeWallet> StellarLikeWallet::getSelf() {
+            return std::dynamic_pointer_cast<StellarLikeWallet>(shared_from_this());
         }
 
     }

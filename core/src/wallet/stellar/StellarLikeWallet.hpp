@@ -75,6 +75,8 @@ namespace ledger {
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
+            std::shared_ptr<StellarLikeWallet> getSelf();
+
         private:
             const StellarLikeWalletParams _params;
         };
