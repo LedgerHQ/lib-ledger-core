@@ -11,10 +11,6 @@ if [ "$#" != 3 ]; then
     exit 1
 fi
 
-#Clean secp256k1
-echo " >>> Cleaning secp256k1"
-rm -rf $libcore_path/core/lib/secp256k1/include $libcore_path/core/lib/secp256k1/src $libcore_path/core/lib/secp256k1/tmp $libcore_path/core/lib/secp256k1/lib
-
 #Root to polly toolchains
 export POLLY_ROOT=$libcore_path/toolchains/polly
 export ANDROID_NDK_r16b=$android_ndk_16b
