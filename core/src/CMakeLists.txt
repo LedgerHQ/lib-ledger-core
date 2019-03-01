@@ -107,9 +107,6 @@ else()
 endif(MINGW OR MSVC)
 
 target_link_libraries(ledger-core-interface INTERFACE crypto)
-if (NOT SQLCIPHER)
-    target_link_libraries(ledger-core-interface INTERFACE sqlite3)
-endif()
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
@@ -125,19 +122,7 @@ add_dependencies(ledger-core-interface INTERFACE secp256k1)
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
-if (SQLCIPHER)
-    #Sqlcipher
-    add_dependencies(ledger-core-interface INTERFACE SQLCipher)
-    target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
-    link_directories("${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib")
-    if (UNIX AND NOT APPLE AND NOT ANDROID)
-        target_link_libraries(ledger-core-interface INTERFACE ${CMAKE_DL_LIBS})
-    endif()
-else()
-    #Sqlite
-    target_link_libraries(ledger-core-interface INTERFACE $<TARGET_FILE:sqlite3>)
-    link_directories($<TARGET_FILE_DIR:sqlite3>)
-endif()
+target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
@@ -166,11 +151,6 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
-if (SQLCIPHER)
-target_include_directories(ledger-core-interface INTERFACE ../lib/sqlcipher/include)
-else()
-target_include_directories(ledger-core-interface INTERFACE ../lib/sqlite3)
-endif()
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)

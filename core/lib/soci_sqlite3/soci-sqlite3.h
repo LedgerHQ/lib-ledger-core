@@ -42,11 +42,9 @@ namespace sqlite_api
 typedef void (*sqlite3_destructor_type)(void*);
 #endif
 
-#ifdef SQLCIPHER
-    #include <sqlcipher/sqlite3.h>
-#else
-    #include <sqlite3.h>
-#endif
+
+#include <sqlite3.h>
+
 } // namespace sqlite_api
 
 #undef SQLITE_STATIC
