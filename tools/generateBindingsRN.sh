@@ -2,7 +2,6 @@
 
 PACKAGE_NAME=ledgercore
 
-JAVA_IFACE=api/core/java
 DEST=../lib-ledger-core-react-native-bindings
 DEST_IOS=$DEST/ios/Sources/react-native-ios
 DEST_IOS_OBJC=$DEST/ios/Sources/objc
@@ -33,9 +32,6 @@ rm -r $CORE_CPP_API
     --react-native-objc-impl-suffix Impl \
     --react-native-java-out $DEST_ANDROID \
     --react-native-java-package com.ledger.reactnative \
+    --java-out $DEST_ANDROID_JAVA_IFACE \
     --java-package co.ledger.core \
     --trace true
-
-# copy the Java API into the RN binding, because that is good for you, and you really want it™
-echo "Copying Java API…"
-cp $JAVA_IFACE/* $DEST_ANDROID_JAVA_IFACE/
