@@ -41,16 +41,8 @@ namespace ledger {
                                                            const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
-            _version = params.bitcoinLikeNetworkParameters.value().P2SHVersion;
+            _keychainEngine = api::KeychainEngines::BIP173_P2WSH;
             getAllObservableAddresses(0, _observableRange);
-        }
-
-        std::string P2WSHBitcoinLikeKeychain::getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
-                                                                   const std::string& derivationPath) {
-            auto config = std::make_shared<DynamicObject>();
-            config->putString("keychainEngines", api::KeychainEngines::BIP173_P2WSH);
-            config->putData("version", _version);
-            return BitcoinLikeAddress::fromPublicKey(pubKey, getCurrency(), derivationPath, config);
         }
 
         int32_t P2WSHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {

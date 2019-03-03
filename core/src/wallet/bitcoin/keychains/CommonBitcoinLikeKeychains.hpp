@@ -92,10 +92,8 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
             uint32_t _observableRange;
-            std::vector<uint8_t> _version;
+            std::string _keychainEngine;
         private:
-            virtual std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
-                                                     const std::string& derivationPath) = 0;
             BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState();
             KeychainPersistentState _state;

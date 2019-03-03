@@ -55,7 +55,7 @@ TEST_F(BitcoinP2WSHKeychains, UnitTest) {
     witnessScript.insert(witnessScript.end(), pubKey.begin(), pubKey.end());
     witnessScript.push_back(btccore::OP_CHECKSIG);
     auto scriptHash = SHA256::bytesToBytesHash(witnessScript);
-    BitcoinLikeAddress btcLikeAddress(currency, scriptHash, params.P2SHVersion);
+    BitcoinLikeAddress btcLikeAddress(currency, scriptHash, api::KeychainEngines::BIP173_P2WSH);
     EXPECT_EQ(btcLikeAddress.toBech32(), "bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3");
 }
 

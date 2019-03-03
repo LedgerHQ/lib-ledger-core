@@ -41,9 +41,6 @@ namespace ledger {
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
             int32_t getOutputSizeAsSignedTxInput() const override ;
-        private:
-            std::string getAddressFromPubKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
-                                             const std::string& derivationPath) override;
         };
     }
 }

@@ -42,6 +42,8 @@
 #include "bitcoin/BitcoinLikeAddress.hpp"
 
 #include <iostream>
+#include <api/KeychainEngines.hpp>
+
 using namespace std;
 
 namespace ledger {
@@ -228,7 +230,7 @@ namespace ledger {
         Option<std::string>
         CommonBitcoinLikeKeychains::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
             const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(getCurrency(), hash160, _version);
+            BitcoinLikeAddress address(getCurrency(), hash160, _keychainEngine);
             return getAddressDerivationPath(address.toBase58());
         }
 
@@ -252,7 +254,7 @@ namespace ledger {
                         .setNode(iPurpose)
                         .setAddressIndex((int) index).getPath().toString();
                 auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-                address = getAddressFromPubKey(xpub, p);
+                address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                 // Feed path -> address cache
                 // Feed address -> path cache
                 getPreferences()

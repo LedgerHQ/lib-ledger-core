@@ -121,6 +121,9 @@ namespace ledger {
 
         template <> void migrate<6>(soci::session& sql);
         template <> void rollback<6>(soci::session& sql);
+
+        template <> void migrate<7>(soci::session& sql);
+        template <> void rollback<7>(soci::session& sql);
     }
 }
 

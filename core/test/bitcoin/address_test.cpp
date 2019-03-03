@@ -37,9 +37,12 @@
 #include <ledger/core/api/BitcoinLikeExtendedPublicKey.hpp>
 #include <ledger/core/utils/optional.hpp>
 #include <ledger/core/api/Networks.hpp>
+#include <ledger/core/collections/DynamicObject.hpp>
 #include <wallet/currencies.hpp>
 #include <api/Address.hpp>
 #include <bitcoin/BitcoinLikeExtendedPublicKey.hpp>
+#include <api/Configuration.hpp>
+#include <api/KeychainEngines.hpp>
 
 
 std::vector<std::vector<std::string>> fixtures = {
@@ -76,7 +79,9 @@ TEST(Address, AddressFromBase58String) {
 TEST(Address, XpubFromBase58String) {
     const Currency currency = currencies::BITCOIN;
     auto addr = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
-    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"));
+    auto config = std::make_shared<ledger::core::DynamicObject>();
+    config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), addr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), "14NjenDKkGGq1McUgoSkeUHJpW3rrKLbPW");
     EXPECT_EQ(xpub->derive("0/1")->toBase58(), "1Pn6i3cvdGhqbdgNjXHfbaYfiuviPiymXj");
@@ -89,8 +94,9 @@ TEST(Address, XpubFromBase58StringToBech32) {
     auto xpubStr = "xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8";
     auto base58Address = "16AMaKewP778obhBUAWWV5sVU6Qg6rvuBt";
     auto bech32Address = "bitcoincash:qqufmrqunkr3avkswhn378fjhwl3ueawag9e3htc49";
-
-    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"));
+    auto config = std::make_shared<ledger::core::DynamicObject>();
+    config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), xpubStr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), base58Address);
     EXPECT_EQ(xpub->derive("0/0")->toBech32(), bech32Address);

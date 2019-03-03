@@ -47,7 +47,8 @@ namespace ledger {
                         return BitcoinLikeExtendedPublicKey::fromBase58(
                                 currency,
                                 info.extendedKeys[0],
-                                Option<std::string>(path.toString())
+                                Option<std::string>(path.toString()),
+                                configuration
                         );
                     });
                     if (xpub.isFailure()) {
@@ -68,13 +69,14 @@ namespace ledger {
                     const DerivationPath &path,
                     const std::shared_ptr<DynamicObject> &configuration, const std::string &databaseXpubEntry,
                     const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) override {
-                auto keychain = std::make_shared<Keychain>(
-                        configuration, currency, index, BitcoinLikeExtendedPublicKey::fromBase58(
-                                currency,
-                                databaseXpubEntry, Option<std::string>(path.toString())
-                        ),
-                        accountPreferences
-                );
+                auto keychain = std::make_shared<Keychain>(configuration,
+                                                           currency,
+                                                           index,
+                                                           BitcoinLikeExtendedPublicKey::fromBase58(currency,
+                                                                                                    databaseXpubEntry,
+                                                                                                    Option<std::string>(path.toString()),
+                                                                                                    configuration),
+                                                           accountPreferences);
                 return keychain;
             };
         };

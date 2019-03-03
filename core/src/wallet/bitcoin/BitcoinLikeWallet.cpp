@@ -111,13 +111,12 @@ namespace ledger {
                     }
                     if (secondOccurencePath.getParent() != firstOccurencePath)
                         throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (wrong paths)");
-                    auto xpub = BitcoinLikeExtendedPublicKey::fromRaw(
-                            self->getCurrency(),
-                            Option<std::vector<uint8_t>>(info.publicKeys[firstOccurence]).toOptional(),
-                            info.publicKeys[secondOccurence],
-                            info.chainCodes[secondOccurence],
-                            info.derivations[secondOccurence]
-                    );
+                    auto xpub = BitcoinLikeExtendedPublicKey::fromRaw(self->getCurrency(),
+                                                                      Option<std::vector<uint8_t>>(info.publicKeys[firstOccurence]).toOptional(),
+                                                                      info.publicKeys[secondOccurence],
+                                                                      info.chainCodes[secondOccurence],
+                                                                      info.derivations[secondOccurence],
+                                                                      self->getConfiguration());
                     result.owners.push_back(*ownersIterator);
                     result.derivations.push_back(info.derivations[secondOccurence]);
                     result.extendedKeys.push_back(xpub->toBase58());

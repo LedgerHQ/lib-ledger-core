@@ -203,25 +203,27 @@ namespace ledger {
                     auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
-                            BitcoinLikeAddress(currency, HASH160::hash(script, hashAlgorithm), params.P2SHVersion));
+                            BitcoinLikeAddress(currency,
+                                               HASH160::hash(script, hashAlgorithm),
+                                               api::KeychainEngines::BIP49_P2SH));
                 }
                 //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP49_P2SH));
             } else if (isP2PKH()) {
                 // Signed : <ScriptSig> <PubKey>
                 auto index = _configuration.isSigned ? 1 : 2;
                 // Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), params.P2PKHVersion));
+                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), api::KeychainEngines::BIP32_P2PKH));
             } else if (isP2WPKH()) {
                 // <OP_0> <PubKeyHash>
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2PKHVersion));
-            } else if (isP2WPKH()) {
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WPKH));
+            } else if (isP2WSH()) {
                 // <OP_0> <WitnessScript>
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WSH));
             }
             return Option<BitcoinLikeAddress>();
         }

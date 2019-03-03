@@ -42,11 +42,13 @@
 
 #include <string>
 #include <vector>
+#include <soci.h>
 namespace ledger {
     namespace core {
         namespace Bech32Parameters {
 
             struct Bech32Struct {
+                std::string name;
                 std::string hrp;
                 std::string separator;
                 size_t checksumSize;
@@ -55,12 +57,14 @@ namespace ledger {
                 std::vector<uint8_t> P2WSHVersion;
 
                 Bech32Struct() = default;
-                Bech32Struct(const std::string &_hrp,
+                Bech32Struct(const std::string &_name,
+                             const std::string &_hrp,
                              const std::string &_separator,
                              size_t _checksumSize,
                              const std::vector<unsigned long long> &_generator,
                              const std::vector<uint8_t> &_P2WPKHVersion,
-                             const std::vector<uint8_t> &_P2WSHVersion) : hrp(_hrp),
+                             const std::vector<uint8_t> &_P2WSHVersion) : name(_name),
+                                                                          hrp(_hrp),
                                                                           separator(_separator),
                                                                           checksumSize(_checksumSize),
                                                                           generator(_generator),
@@ -71,6 +75,8 @@ namespace ledger {
 
             };
             extern LIBCORE_EXPORT const Bech32Struct getBech32Params(const std::string &networkIdentifier);
+            extern LIBCORE_EXPORT const std::vector<Bech32Struct> ALL;
+            static bool insertParameters(soci::session& sql, const Bech32Struct &params);
         }
     }
 }

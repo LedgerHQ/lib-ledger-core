@@ -132,7 +132,10 @@ public:
                     configuration,
                     data.currency,
                     0,
-                    ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency, data.xpub, optional<std::string>(data.derivationPath)),
+                    ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
+                                                                           data.xpub,
+                                                                           optional<std::string>(data.derivationPath),
+                                                                           configuration),
                     backend->getPreferences("keychain")
             );
             f(keychain);
