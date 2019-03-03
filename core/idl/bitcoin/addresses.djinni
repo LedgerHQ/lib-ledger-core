@@ -53,11 +53,17 @@ BitcoinLikeAddress = interface +c {
     # @return A payment uri to this address
     # toPaymentUri(): string;
     # Checks if the given address is a P2SH address
-    # @return True if the version byte matches the P2SH byte version of the address network parameters
+    # @return True if the keychain engine is P2SH
     isP2SH(): bool;
     # Checks if the given address is a P2PKH address
-    # @return True if the version byte matches the P2PKH byte version of the address network parameters
+    # @return if the keychain engine is P2PKH
     isP2PKH(): bool;
+    # Checks if the given address is a P2WSH address
+    # @return True if the keychain engine is P2WSH
+    isP2WSH(): bool;
+    # Checks if the given address is a P2WPKH address
+    # @return True if the keychain engine is P2WPKH
+    isP2WPKH(): bool;
 }
 
 # The xPUB definition for Bitcoin.

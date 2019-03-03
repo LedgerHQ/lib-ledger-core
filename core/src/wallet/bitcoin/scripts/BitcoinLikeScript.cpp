@@ -122,11 +122,9 @@ namespace ledger {
 
         BitcoinLikeScript
         BitcoinLikeScript::fromAddress(const std::string &address, const api::Currency &currency) {
-            auto bech32Hrp = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier)->getBech32Params().hrp;
-            auto isBech32 = bech32Hrp == address.substr(0, bech32Hrp.size());
-            auto a = isBech32 ? BitcoinLikeAddress::fromBech32(address, currency) : BitcoinLikeAddress::fromBase58(address, currency);
+            auto a = BitcoinLikeAddress::parse(address, currency)->asBitcoinLikeAddress();
             BitcoinLikeScript script;
-            if (isBech32) {
+            if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
             } else if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY

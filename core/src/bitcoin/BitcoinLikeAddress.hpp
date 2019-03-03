@@ -56,6 +56,8 @@ namespace ledger {
             std::string toBech32() const;
             virtual bool isP2SH() override;
             virtual bool isP2PKH() override;
+            virtual bool isP2WSH() override;
+            virtual bool isP2WPKH() override;
             virtual optional<std::string> getDerivationPath() override;
 
             std::string toString() override;

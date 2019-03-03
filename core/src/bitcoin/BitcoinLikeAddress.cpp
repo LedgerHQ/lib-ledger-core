@@ -104,14 +104,20 @@ namespace ledger {
             return toBech32Helper(_keychainEngine, _hash160, _params);
         }
 
-        //For the moment we consider P2SH & P2WSH as P2SH
         bool BitcoinLikeAddress::isP2SH() {
-            return _keychainEngine == api::KeychainEngines::BIP49_P2SH || _keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+            return _keychainEngine == api::KeychainEngines::BIP49_P2SH;
         }
 
-        //For the moment we consider P2PKH & P2WPKH as P2PKH
         bool BitcoinLikeAddress::isP2PKH() {
-            return _keychainEngine == api::KeychainEngines::BIP32_P2PKH || _keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
+            return _keychainEngine == api::KeychainEngines::BIP32_P2PKH;
+        }
+
+        bool BitcoinLikeAddress::isP2WSH() {
+            return _keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+        }
+
+        bool BitcoinLikeAddress::isP2WPKH() {
+            return _keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
         }
 
         std::experimental::optional<std::string> BitcoinLikeAddress::getDerivationPath() {
@@ -119,6 +125,9 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::toBase58() const {
+            if (_keychainEngine != api::KeychainEngines::BIP32_P2PKH && _keychainEngine != api::KeychainEngines::BIP49_P2SH) {
+                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Base58 format only available for api::KeychainEngines::BIP32_P2PKH and api::KeychainEngines::BIP49_P2SH");
+            }
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", _params.Identifier);
             return Base58::encodeWithChecksum(vector::concat(getVersionFromKeychainEngine(_keychainEngine, _params), _hash160), config);
