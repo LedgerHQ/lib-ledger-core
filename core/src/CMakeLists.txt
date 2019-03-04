@@ -185,6 +185,7 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
+target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
