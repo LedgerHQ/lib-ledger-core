@@ -115,13 +115,15 @@ namespace ledger {
 
             // accumulate the balance until we hit the starting date
             auto opIt = std::cbegin(operations);
-            for (; (*opIt)->getTime() < startDate; ++opIt) {
+            auto opEnd = std::cend(operations);
+
+            for (; opIt != opEnd && (*opIt)->getTime() < startDate; ++opIt) {
                 currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
             }
 
             // iterate over all operations and segment them according to the granularity we’ve
-            // chosen; in our case, we use the default granularity, which is PerDay
-            for (; *opIt; ++opIt) {
+            // chosen
+            for (; opIt != opEnd; ++opIt) {
                 auto opDate = (*opIt)->getTime();
 
                 // leave the loop if we have hit the upper date bound
