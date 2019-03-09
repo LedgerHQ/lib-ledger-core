@@ -45,6 +45,7 @@ namespace ledger {
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const api::Currency& currency) {
             _currency = currency;
+            _status = 0;
         }
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const std::shared_ptr<OperationApi>& operation) {
@@ -68,6 +69,7 @@ namespace ledger {
 
             _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
             _data = tx.inputData;
+            _status = tx.status;
             _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
             _sender = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
 
@@ -108,6 +110,10 @@ namespace ledger {
         
         std::experimental::optional<std::vector<uint8_t>> EthereumLikeTransactionApi::getData() {
             return _data;
+        }
+
+        int32_t EthereumLikeTransactionApi::getStatus() {
+           return _status;
         }
 
         std::chrono::system_clock::time_point EthereumLikeTransactionApi::getDate() {
@@ -232,6 +238,11 @@ namespace ledger {
 
         EthereumLikeTransactionApi & EthereumLikeTransactionApi::setData(const std::vector<uint8_t> &data) {
             _data = data;
+            return *this;
+        }
+
+        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setStatus(int32_t status) {
+            _status = status;
             return *this;
         }
 

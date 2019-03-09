@@ -56,6 +56,9 @@ public:
     /** Get binary data payload. */
     virtual std::experimental::optional<std::vector<uint8_t>> getData() = 0;
 
+    /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
+    virtual int32_t getStatus() = 0;
+
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 
