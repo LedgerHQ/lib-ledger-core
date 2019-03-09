@@ -50,33 +50,36 @@ namespace ledger {
         };
 
         // Verify a checksum.
-        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values,
-                                    const Bech32Parameters::Bech32Struct& params) {
-            return polymod(vector::concat(expandHrp(params.hrp), values), params) == 1;
+        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) {
+            return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
         }
 
         // Create a checksum.
-        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values,
-                                                    const Bech32Parameters::Bech32Struct& params) {
-            std::vector<uint8_t> enc = vector::concat(expandHrp(params.hrp), values);
-            enc.resize(enc.size() + params.checksumSize);
-            uint64_t mod = polymod(enc, params) ^ 1;
+        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values) {
+            std::vector<uint8_t> enc = vector::concat(expandHrp(_bech32Params.hrp), values);
+            enc.resize(enc.size() + _bech32Params.checksumSize);
+            uint64_t mod = polymod(enc) ^ 1;
             std::vector<uint8_t> ret;
-            ret.resize(params.checksumSize);
-            for (size_t i = 0; i < params.checksumSize; ++i) {
-                ret[params.checksumSize - 1 - i] = mod & 31;
-                mod = mod >> 5;
+            ret.resize(_bech32Params.checksumSize);
+            // Can't use ssize_t because it's posix specific (problem with MSVC build) so let's
+            // just use int ...
+            for (int i = _bech32Params.checksumSize - 1; i >= 0; --i) {
+                ret[i] = mod & 31;
+                mod >>= 5;
             }
             return ret;
         }
         
         std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) {
             // Values here should be concatenation of version + hash
-            std::vector<uint8_t> checksum = createChecksum(values, _bech32Params);
+            std::vector<uint8_t> checksum = createChecksum(values);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
             std::string ret = _bech32Params.hrp + _bech32Params.separator;
             ret.reserve(ret.size() + combined.size());
             for (size_t i = 0; i < combined.size(); ++i) {
+                // There is not check on size here because this method is called
+                // after calling Bech32::convertBits which basically guarantees
+                // combined[i] being in range
                 ret += charset[combined[i]];
             }
             return ret;
@@ -107,7 +110,7 @@ namespace ledger {
                     for (size_t i = 0; i < pos; ++i) {
                         hrp += toLowerCase(str[i]);
                     }
-                    if (verifyChecksum(values, _bech32Params)) {
+                    if (verifyChecksum(values)) {
                         return std::make_pair(hrp, std::vector<uint8_t>(values.begin(), values.end() - _bech32Params.checksumSize));
                     }
                 }
@@ -145,16 +148,6 @@ namespace ledger {
                 return false;
             }
             return true;
-        }
-
-        std::vector<uint8_t>
-        Bech32::segwitScriptPubkey(int witnessVersion,
-                                   const std::vector<uint8_t>& witnessProg) {
-            std::vector<uint8_t> ret;
-            ret.push_back(witnessVersion ? (0x80 | witnessVersion) : 0);
-            ret.push_back(witnessProg.size());
-            ret.insert(ret.end(), witnessProg.begin(), witnessProg.end());
-            return ret;
         }
 
     }

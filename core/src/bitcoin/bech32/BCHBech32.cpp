@@ -32,14 +32,13 @@
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
-        uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values,
-                                    const Bech32Parameters::Bech32Struct& params) {
+        uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values) {
             uint64_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint64_t top = chk >> 35;
                 chk = (chk & 0x07ffffffff) << 5 ^ values[i];
                 size_t index = 0;
-                for (auto& gen : params.generator) {
+                for (auto& gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
                     index++;
                 }

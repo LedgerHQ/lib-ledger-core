@@ -64,6 +64,7 @@ namespace ledger {
 
         std::vector<uint8_t> BitcoinLikeAddress::getVersionFromKeychainEngine(const std::string &keychainEngine, 
                                                                               const api::BitcoinLikeNetworkParameters &params) const {
+
             if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {
                 return params.P2PKHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {

@@ -43,8 +43,7 @@ namespace ledger {
                 _bech32Params = Bech32Parameters::getBech32Params(networkIdentifier);
             };
 
-            uint64_t polymod(const std::vector<uint8_t>& values,
-                             const Bech32Parameters::Bech32Struct& params) override;
+            uint64_t polymod(const std::vector<uint8_t>& values) override;
 
             std::vector<uint8_t> expandHrp(const std::string& hrp) override;
 

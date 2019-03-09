@@ -45,20 +45,16 @@ namespace ledger {
     namespace core {
         class Bech32 {
         public:
-            // Find the polynomial with value coefficients mod the generator as 30-bit.
-            virtual uint64_t polymod(const std::vector<uint8_t>& values,
-                                     const Bech32Parameters::Bech32Struct& params) = 0;
+            // Find the polynomial with value coefficients mod the generator as 64-bit.
+            virtual uint64_t polymod(const std::vector<uint8_t>& values) = 0;
 
             // Expand a HRP for use in checksum computation.
             virtual std::vector<uint8_t> expandHrp(const std::string& hrp) = 0;
 
-            bool verifyChecksum(const std::vector<uint8_t>& values,
-                                const Bech32Parameters::Bech32Struct& params);
+            bool verifyChecksum(const std::vector<uint8_t>& values);
 
-            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values,
-                                                const Bech32Parameters::Bech32Struct& params);
+            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values);
 
-            std::string encodeBech32(const std::vector<uint8_t>& values);
             virtual std::string encode(const std::vector<uint8_t>& hash,
                                        const std::vector<uint8_t>& version) = 0;
 
@@ -78,14 +74,12 @@ namespace ledger {
                                     bool pad,
                                     std::vector<uint8_t>& out);
 
-            static std::vector<uint8_t>
-            segwitScriptPubkey(int witnessVersion,
-                               const std::vector<uint8_t>& witnessProg);
-
             Bech32Parameters::Bech32Struct getBech32Params() {
                 return _bech32Params;
             }
+
         protected:
+            std::string encodeBech32(const std::vector<uint8_t>& values);
             Bech32Parameters::Bech32Struct _bech32Params;
         };
     }

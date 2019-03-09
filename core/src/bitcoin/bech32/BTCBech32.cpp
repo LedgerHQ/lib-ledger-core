@@ -34,14 +34,13 @@
 
 namespace ledger {
     namespace core {
-        uint64_t BTCBech32::polymod(const std::vector<uint8_t>& values,
-                                    const Bech32Parameters::Bech32Struct& params) {
+        uint64_t BTCBech32::polymod(const std::vector<uint8_t>& values) {
             uint32_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint8_t top = chk >> 25;
                 chk = (chk & 0x1ffffff) << 5 ^ values[i];
                 auto index = 0;
-                for (auto& gen : params.generator) {
+                for (auto& gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
                     index++;
                 }
