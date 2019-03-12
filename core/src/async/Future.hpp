@@ -71,15 +71,13 @@ namespace ledger {
             Future<R> map(const Context& context, std::function<R (const T&)> map) {
                 auto defer = Future<R>::make_deffered();
                 _defer->addCallback([defer, map] (const Try<T>& result) {
-                    Try<R> r;
                     if (result.isSuccess()) {
-                        r = Try<R>::from([map, result] () -> R {
+                        defer->setResult(Try<R>::from([map, result]() -> R {
                             return map(result.getValue());
-                        });
+                            }));
                     } else {
-                        r.fail(result.getFailure());
+                        defer->setResult(result.getFailure());
                     }
-                    defer->setResult(r);
                 }, context);
                 return Future<R>(defer);
             }
@@ -94,8 +92,7 @@ namespace ledger {
                 auto deffer = Future<R>::make_deffered();
                 _defer->addCallback([deffer, map, context] (const Try<T>& result) {
                     if (result.isSuccess()) {
-                        Try<Future<R>> r;
-                        r = Try<Future<R>>::from([deffer, map, result] () -> Future<R> {
+                        auto r = Try<Future<R>>::from([deffer, map, result] () -> Future<R> {
                             return map(result.getValue());
                         });
                         if (r.isSuccess()) {
@@ -104,14 +101,10 @@ namespace ledger {
                                 deffer->setResult(finalResult);
                             });
                         } else {
-                            Try<R> re;
-                            re.fail(r.getFailure());
-                            deffer->setResult(re);
+                            deffer->setResult(Try<R>(r.getFailure()));
                         }
                     } else {
-                        Try<R> r;
-                        r.fail(result.getFailure());
-                        deffer->setResult(r);
+                        deffer->setResult(Try<R>(result.getFailure()));
                     }
                 }, context);
                 return Future<R>(deffer);
@@ -144,9 +137,7 @@ namespace ledger {
                             return f(result.getFailure());
                         });
                         if (future.isFailure()) {
-                            Try<T> r;
-                            r.fail(future.getFailure());
-                            deffer->setResult(r);
+                            deffer->setResult(future.getFailure());
                         } else {
                             Future<T> fut = future.getValue();
                             fut.onComplete(context, [deffer] (const Try<T>& finalResult) {
@@ -205,8 +196,7 @@ namespace ledger {
                     if (result.isFailure()) {
                         deffer->setResult(Try<Exception>(result.getFailure()));
                     } else {
-                        Try<Exception> r;
-                        r.fail(Exception(api::ErrorCode::FUTURE_WAS_SUCCESSFULL, "Future was successful but rejected cause of the failed projection."));
+                        Try<Exception> r(Exception(api::ErrorCode::FUTURE_WAS_SUCCESSFULL, "Future was successful but rejected cause of the failed projection."));
                         deffer->setResult(r);
                     }
                 }, ImmediateExecutionContext::INSTANCE);
