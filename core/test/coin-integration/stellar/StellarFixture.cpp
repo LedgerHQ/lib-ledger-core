@@ -55,3 +55,7 @@ std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
     return pool;
 }
 
+api::Currency StellarFixture::getCurrency() const {
+    return STELLAR;
+}
+

@@ -32,6 +32,7 @@
 #include "StellarLikeAddress.hpp"
 #include <bytes/BytesWriter.h>
 #include <crypto/CRC.hpp>
+#include <math/BaseConverter.hpp>
 
 namespace ledger {
     namespace core {
@@ -39,13 +40,11 @@ namespace ledger {
         StellarLikeAddress::StellarLikeAddress(const std::string &address, const api::Currency &currency,
                                                const Option<std::string> &path) :   AbstractAddress(currency, path),
                                                                                     _address(address) {
-
         }
 
         StellarLikeAddress::StellarLikeAddress(const std::vector<uint8_t> &pubKey, const api::Currency &currency,
                                                const Option<std::string> &path) : AbstractAddress(currency, path) {
-
-
+            _address = convertPubkeyToAddress(pubKey, *currency.stellarLikeNetworkParameters);
         }
 
         std::string StellarLikeAddress::toString() {
@@ -65,7 +64,7 @@ namespace ledger {
             auto payload = writer.toByteArray();
             auto checksum = CRC::calculate(payload, CRC::XMODEM);
             writer.writeLeValue(checksum);
-            return std::string();
+            return BaseConverter::encode(writer.toByteArray(), BaseConverter::BASE32_RFC4648_NO_PADDING);
         }
 
     }

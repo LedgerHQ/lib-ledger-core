@@ -1,9 +1,9 @@
 /*
  *
- * StellarFixture.hpp
+ * address_tests.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 18/02/2019.
+ * Created by Pierre Pollastri on 13/03/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,22 +29,23 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARFIXTURE_HPP
-#define LEDGER_CORE_STELLARFIXTURE_HPP
+#include "StellarFixture.hpp"
+#include <wallet/stellar/StellarLikeAddress.hpp>
 
-#include "../common/CoinIntegrationFixture.hpp"
-#include <wallet/stellar/StellarLikeWallet.hpp>
-#include <wallet/stellar/StellarLikeAccount.hpp>
-#include <wallet/stellar/StellarLikeOperation.hpp>
-
-class StellarFixture : public CoinIntegrationFixture<StellarLikeWallet, StellarLikeAccount> {
-public:
-    std::shared_ptr<WalletPool> newPool(std::string poolName = "default_pool") override;
-
-    api::AccountCreationInfo defaultAccount() const;
-
-    api::Currency getCurrency() const;
+static std::vector<std::string> pub_keys = {
+        "a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f",
+        "3a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a50"
 };
 
+static std::vector<std::string> addresses = {
+        "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
+        "GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR"
+};
 
-#endif //LEDGER_CORE_STELLARFIXTURE_HPP
+TEST_F(StellarFixture, AddressFromPubKey) {
+    for (auto i = 0; i < pub_keys.size(); i++) {
+        StellarLikeAddress address(hex::toByteArray(pub_keys[i]), getCurrency(), Option<std::string>::NONE);
+        std::cout << "Address: " << address.toString() << std::endl;
+        EXPECT_EQ(address.toString(), addresses[i]);
+    }
+}
