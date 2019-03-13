@@ -48,16 +48,28 @@ namespace ledger {
         template <typename T>
         class Try {
         public:
+            Try() {
+
+            };
+
             Try(const T&v) {
                 _value = optional<T>(v);
             }
 
             Try(api::ErrorCode code, const std::string& message) {
+                fail(code, message);
+            }
+
+            void fail(api::ErrorCode code, const std::string& message) {
                 _exception = Exception(code, message);
             }
 
-            Try(const Exception& ex) {
+            void fail(const Exception& ex) {
                 _exception = ex;
+            }
+
+            void success(const T& v) {
+                _value = v;
             }
 
             const T& getValue() const {
@@ -73,6 +85,9 @@ namespace ledger {
             }
             bool isSuccess() const {
                 return _value ? true : false;
+            }
+            bool isComplete() const {
+                return isSuccess() || isFailure();
             }
 
             Option<T> toOption() const {
@@ -106,23 +121,36 @@ namespace ledger {
                 return *this;
             }
 
+//            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
+//                if (d.isSuccess()) {
+//                    os << "Success(" << d.getFailure() << ")";
+//                } else {
+//                    os << "Failure(" << d.getFailure() << ")";
+//                }
+//            }
+
+            ~Try() {
+
+            };
         private:
             optional<Exception> _exception;
             optional<T> _value;
 
         public:
             static const Try<T> from(std::function<T ()> lambda) {
+                Try<T> result;
                 try {
-                    return Try<T>(lambda());
+                    result.success(lambda());
                 } catch (const Exception& ex) {
-                    return Try<T>(ex);
+                    result.fail(ex);
 #ifdef TARGET_JNI
                 } catch (const djinni::jni_exception& ex) {
-                    return Try<T>(api::ErrorCode::RUNTIME_ERROR, ex.get_backtrace());
+                    result.fail(api::ErrorCode::RUNTIME_ERROR, ex.get_backtrace());
 #endif
                 } catch (...) {
-                    return Try<T>(api::ErrorCode::RUNTIME_ERROR, boost::current_exception_diagnostic_information(true));
+                    result.fail(api::ErrorCode::RUNTIME_ERROR, boost::current_exception_diagnostic_information(true));
                 }
+                return result;
             }
         };
 

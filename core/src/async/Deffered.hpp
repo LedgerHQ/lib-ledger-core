@@ -84,7 +84,9 @@ namespace ledger {
             void setError(const Exception& exception) {
                 std::lock_guard<std::mutex> lock(_lock);
                 ensureNotCompleted();
-                _value = Try<T>(exception);
+                Try<T> ex;
+                ex.fail(exception);
+                _value = ex;
                 _trigger();
             }
 
