@@ -1,6 +1,6 @@
 /*
  *
- * CRC.hpp
+ * DefaultStellarLikeKeychain.cpp
  * ledger-core
  *
  * Created by Pierre Pollastri on 28/02/2019.
@@ -29,38 +29,23 @@
  *
  */
 
-#ifndef LEDGER_CORE_CRC_HPP
-#define LEDGER_CORE_CRC_HPP
-
-#include <cstdint>
-#include <utils/Exception.hpp>
+#include "DefaultStellarLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
 
-        class CRC {
-        public:
-            /**
-            * The CRC profile holds all constants and parameters used by the CRC calcultation algorithm for 16bits versions
-            */
-            struct CRC16Profile;
 
-            /**
-             * CRC XMODEM profile (Poly: 0x1021, Init: 0x0000, RefIn: false, RefOut: false, XorOut: false)
-             */
-            static CRC16Profile XMODEM;
 
-            /**
-             * Calculate the cyclic redundancy check for the given bytes using a 16bits CRC profile.
-             * @param bytes The data on which you want to compute the checksum.
-             * @param profile The profile used by the algorithm.
-             * @return The cyclic redundancy check of the given bytes.
-             */
-            static uint16_t calculate(const std::vector<uint8_t>& bytes, CRC16Profile& profile);
+        StellarLikeKeychain::Address DefaultStellarLikeKeychain::getAddress() const {
+            return ledger::core::StellarLikeKeychain::Address();
+        }
 
-        };
+        bool DefaultStellarLikeKeychain::contains(const std::string &address) const {
+            return address == getAddress()->toString();
+        }
+
+        std::string DefaultStellarLikeKeychain::getRestoreKey() const {
+            return hex::toString(_pubKey);
+        }
     }
 }
-
-
-#endif //LEDGER_CORE_CRC_HPP

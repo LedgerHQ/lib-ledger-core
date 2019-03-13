@@ -1,9 +1,9 @@
 /*
  *
- * StellarLikeAddress.hpp
+ * DefaultStellarLikeKeychain.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/02/2019.
+ * Created by Pierre Pollastri on 28/02/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,33 +29,32 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARLIKEADDRESS_HPP
-#define LEDGER_CORE_STELLARLIKEADDRESS_HPP
+#ifndef LEDGER_CORE_DEFAULTSTELLARLIKEKEYCHAIN_HPP
+#define LEDGER_CORE_DEFAULTSTELLARLIKEKEYCHAIN_HPP
 
-#include <wallet/common/AbstractAddress.h>
-#include <api/StellarLikeAddress.hpp>
+#include "StellarLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
-        class StellarLikeAddress : public virtual api::StellarLikeAddress, public virtual AbstractAddress {
+        class DefaultStellarLikeKeychain : public StellarLikeKeychain {
         public:
-            StellarLikeAddress( const std::vector<uint8_t>& pubKey,
-                                const api::Currency& currency,
-                                const Option<std::string>& path);
-            StellarLikeAddress( const std::string& address,
-                                const api::Currency& currency,
-                                const Option<std::string>& path);
-            std::string toString() override;
-            static std::shared_ptr<StellarLikeAddress> parse(const std::string& address, const api::Currency& currency);
+            DefaultStellarLikeKeychain( const std::vector<uint8_t>& publicKey,
+                                        const std::shared_ptr<api::DynamicObject>& configuration,
+                                        const api::Currency& currency,
+                                        const std::shared_ptr<Preferences>& preferences);
 
-            static std::string convertPubkeyToAddress(  const std::vector<uint8_t>& pubKey,
-                                                        const api::StellarLikeNetworkParameters& params);
+            Address getAddress() const override;
+
+            bool contains(const std::string &address) const override;
+
+            std::string getRestoreKey() const override;
 
         private:
-            std::string _address;
+            Address _address;
+            std::vector<uint8_t> _pubKey;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_STELLARLIKEADDRESS_HPP
+#endif //LEDGER_CORE_DEFAULTSTELLARLIKEKEYCHAIN_HPP

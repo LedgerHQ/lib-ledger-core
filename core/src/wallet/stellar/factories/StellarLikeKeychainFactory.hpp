@@ -33,17 +33,23 @@
 #define LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP
 
 
+#include <api/AccountCreationInfo.hpp>
+#include <collections/DynamicObject.hpp>
+#include <utils/DerivationPath.hpp>
+#include <preferences/Preferences.hpp>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
+        class StellarLikeKeychain;
         class StellarLikeKeychainFactory {
 //            std::shared_ptr<EthereumLikeKeychain> build(int32_t index,
 //                                                        const DerivationPath &path,
 //                                                        const std::shared_ptr<DynamicObject>& configuration,
-//                                                        const api::ExtendedKeyAccountCreationInfo& info,
+//                                                        const api::AccountCreationInfo& info,
 //                                                        const std::shared_ptr<Preferences>& accountPreferences,
 //                                                        const api::Currency& currency);
-//
+////
 ////            std::shared_ptr<EthereumLikeKeychain> restore(int32_t index,
 ////                                                         const DerivationPath &path,
 ////                                                         const std::shared_ptr<DynamicObject>& configuration,

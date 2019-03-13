@@ -198,6 +198,7 @@ namespace ledger {
             bool operator<(const BigInt&) const;
             bool operator<=(const BigInt&) const;
             bool operator==(const BigInt&) const;
+            bool operator!=(const BigInt&) const;
             bool operator>(const BigInt&) const;
             bool operator>=(const BigInt&) const;
 

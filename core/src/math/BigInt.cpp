@@ -324,6 +324,10 @@ namespace ledger {
             return this->_negative == rhs._negative && bdCompare(this->_bigd, rhs._bigd) == 0;
         }
 
+        bool BigInt::operator!=(const BigInt &rhs) const {
+            return !(*this == rhs);
+        }
+
         bool BigInt::operator>(const BigInt &rhs) const {
             return rhs < *this;
         }
