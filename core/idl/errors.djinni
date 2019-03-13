@@ -98,6 +98,9 @@ ErrorCode = enum {
 
     # Query build
     link_non_tail_filter;
+
+    # Invalid bech32 format
+    invalid_bech32_format;
 }
 
 Error = record {

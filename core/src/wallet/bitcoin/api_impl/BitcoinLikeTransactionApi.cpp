@@ -493,19 +493,21 @@ namespace ledger {
                             auto pubKeySize = localReader.readNextVarInt();
                             auto pubKey = localReader.read(pubKeySize);
                             pubKeys.push_back(pubKey);
-                            BitcoinLikeAddress localAddress(currency, HASH160::hash(pubKey, hashAlgorithm),
-                                                            currency.bitcoinLikeNetworkParameters.value().P2PKHVersion);
+                            BitcoinLikeAddress localAddress(currency,
+                                                            HASH160::hash(pubKey, hashAlgorithm),
+                                                            api::KeychainEngines::BIP32_P2PKH);
                             address = localAddress.toBase58();
                             output.script = hex::toString(scriptSig);
-                        } else if (isSigned && isSegwit) {
+                        } else if (isSigned && isSegwit && !scriptSig.empty()) {
                             //Get address from redeem script
                             auto redeemScriptSize = localReader.readNextVarInt();
                             auto redeemScript = localReader.read(redeemScriptSize);
                             //Get pubKeys from Redeem script : 0x00 0x14 <pubKey>
                             std::vector<uint8_t> pubKey(redeemScript.begin() + 2, redeemScript.end());
                             pubKeys.push_back(pubKey);
-                            BitcoinLikeAddress localAddress(currency, HASH160::hash(redeemScript, hashAlgorithm),
-                                                            currency.bitcoinLikeNetworkParameters.value().P2SHVersion);
+                            BitcoinLikeAddress localAddress(currency,
+                                                            HASH160::hash(redeemScript, hashAlgorithm),
+                                                            api::KeychainEngines::BIP49_P2SH);
                             address = localAddress.toBase58();
 
                         } else {

@@ -49,19 +49,37 @@ public:
     virtual std::string toBase58() = 0;
 
     /**
+     * Get the Bech32 encoded address (with respect to BIP173)
+     * @return The Bech32 encoded address
+     */
+    virtual std::string toBech32() = 0;
+
+    /**
      * Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
      * @return A payment uri to this address
      * toPaymentUri(): string;
      * Checks if the given address is a P2SH address
-     * @return True if the version byte matches the P2SH byte version of the address network parameters
+     * @return True if the keychain engine is P2SH
      */
     virtual bool isP2SH() = 0;
 
     /**
      * Checks if the given address is a P2PKH address
-     * @return True if the version byte matches the P2PKH byte version of the address network parameters
+     * @return if the keychain engine is P2PKH
      */
     virtual bool isP2PKH() = 0;
+
+    /**
+     * Checks if the given address is a P2WSH address
+     * @return True if the keychain engine is P2WSH
+     */
+    virtual bool isP2WSH() = 0;
+
+    /**
+     * Checks if the given address is a P2WPKH address
+     * @return True if the keychain engine is P2WPKH
+     */
+    virtual bool isP2WPKH() = 0;
 };
 
 } } }  // namespace ledger::core::api

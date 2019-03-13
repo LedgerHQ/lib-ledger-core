@@ -1,13 +1,12 @@
 /*
  *
- * P2PKHBitcoinLikeKeychain
- * ledger-core
+ * P2WSHBitcoinLikeKeychain
  *
- * Created by Pierre Pollastri on 25/01/2017.
+ * Created by El Khalil Bellakrid on 25/02/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,42 +27,33 @@
  * SOFTWARE.
  *
  */
-#include "P2PKHBitcoinLikeKeychain.hpp"
+
+
+#include "P2WSHBitcoinLikeKeychain.hpp"
+#include "P2WSHBitcoinLikeKeychain.hpp"
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
-
-        P2PKHBitcoinLikeKeychain::P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+        P2WSHBitcoinLikeKeychain::P2WSHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                                            const api::Currency &params,
                                                            int account,
                                                            const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                                            const std::shared_ptr<Preferences> &preferences)
                 : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
-            _keychainEngine = api::KeychainEngines::BIP32_P2PKH;
+            _keychainEngine = api::KeychainEngines::BIP173_P2WSH;
             getAllObservableAddresses(0, _observableRange);
         }
 
-        int32_t P2PKHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
+        int32_t P2WSHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
             int32_t result = 0;
-            //32 bytes of previous transaction hash
-            result += 32;
-            //4 bytes for output index (e.g. 0x000000)
-            result += 4;
-            //1 byte for scriptSig size (e.g. 0x8c)
+            //witness
+            //1 byte for number of stack elements
             result += 1;
-            //1 byte for length of (DER-encoded signature + hash code type) (e.g. 0x49)
-            result += 1;
-            //72 bytes of DER-signature
+            //72 byte for signature (length + signature)
             result += 72;
-            //1 byte for hash core type
-            result += 1;
-            //1 byte length of public key
-            result += 1;
-            //65 bytes for public key
-            result += 65;
-            //4 bytes for the sequence
-            result +=4;
+            //40 byte of hash script (length + script)
+            result += 40;
             return result;
         }
     }

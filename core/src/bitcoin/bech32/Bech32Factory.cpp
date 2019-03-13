@@ -1,13 +1,12 @@
 /*
  *
- * P2PKHBitcoinLikeKeychain
- * ledger-core
+ * Bech32Factory
  *
- * Created by Pierre Pollastri on 25/01/2017.
+ * Created by El Khalil Bellakrid on 18/02/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +27,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
-#define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
-#include "CommonBitcoinLikeKeychains.hpp"
-#include "../../../collections/DynamicObject.hpp"
-#include <api/Currency.hpp>
-
+#include "Bech32Factory.h"
+#include "BTCBech32.h"
+#include "BCHBech32.h"
+#include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
-        class P2PKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
-        public:
-            P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::Currency &params, int account,
-                                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                     const std::shared_ptr<Preferences> &preferences);
-            int32_t getOutputSizeAsSignedTxInput() const override ;
-        };
+        std::shared_ptr<Bech32> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
+            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
+                return std::make_shared<BTCBech32>(networkIdentifier);
+            } else if (networkIdentifier == "abc") {
+                return std::make_shared<BCHBech32>();
+            }
+            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Can not instanciate Bech32 for {}", networkIdentifier);
+        }
     }
 }
-
-
-#endif //LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP

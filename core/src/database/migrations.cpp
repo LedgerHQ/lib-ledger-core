@@ -427,5 +427,20 @@ namespace ledger {
 
             sql << "DROP TABLE ripple_currencies";
         }
+
+        template <> void migrate<7>(soci::session& sql) {
+            sql << "CREATE TABLE bech32_parameters("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "hrp VARCHAR(255) NOT NULL,"
+                    "separator VARCHAR(255) NOT NULL,"
+                    "generator VARCHAR(255) NOT NULL,"
+                    "p2wpkh_version VARCHAR(255) NOT NULL,"
+                    "p2wsh_version VARCHAR(255) NOT NULL"
+                    ")";
+        }
+
+        template <> void rollback<7>(soci::session& sql) {
+            sql << "DROP TABLE bech32_parameters";
+        }
     }
 }

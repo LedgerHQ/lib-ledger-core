@@ -36,6 +36,8 @@
 #include <wallet/bitcoin/networks.hpp>
 #include <api/KeychainEngines.hpp>
 #include <crypto/HASH160.hpp>
+#include <bitcoin/bech32/Bech32Factory.h>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
@@ -120,9 +122,11 @@ namespace ledger {
 
         BitcoinLikeScript
         BitcoinLikeScript::fromAddress(const std::string &address, const api::Currency &currency) {
-            auto a = BitcoinLikeAddress::fromBase58(address, currency);
+            auto a = BitcoinLikeAddress::parse(address, currency)->asBitcoinLikeAddress();
             BitcoinLikeScript script;
-            if (a->isP2PKH()) {
+            if (a->isP2WPKH() || a->isP2WSH()) {
+                script << btccore::OP_0 << a->getHash160();
+            } else if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
                        << btccore::OP_CHECKSIG;
             } else if (a->isP2SH()) {
@@ -159,6 +163,20 @@ namespace ledger {
                     && (*this)[22].isEqualTo(btccore::OP_EQUAL));
         }
 
+        bool BitcoinLikeScript::isP2WPKH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
+            }
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(20));
+        }
+
+        bool BitcoinLikeScript::isP2WSH() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+            }
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(32));
+        }
+
         std::size_t BitcoinLikeScript::size() const {
             return _chunks.size();
         }
@@ -183,17 +201,27 @@ namespace ledger {
                     auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
-                            BitcoinLikeAddress(currency, HASH160::hash(script, hashAlgorithm), params.P2SHVersion));
+                            BitcoinLikeAddress(currency,
+                                               HASH160::hash(script, hashAlgorithm),
+                                               api::KeychainEngines::BIP49_P2SH));
                 }
                 //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), params.P2SHVersion));
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP49_P2SH));
             } else if (isP2PKH()) {
-                //Signed : <ScriptSig> <PubKey>
+                // Signed : <ScriptSig> <PubKey>
                 auto index = _configuration.isSigned ? 1 : 2;
-                //Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+                // Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), params.P2PKHVersion));
+                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), api::KeychainEngines::BIP32_P2PKH));
+            } else if (isP2WPKH()) {
+                // <OP_0> <PubKeyHash>
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WPKH));
+            } else if (isP2WSH()) {
+                // <OP_0> <WitnessScript>
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WSH));
             }
             return Option<BitcoinLikeAddress>();
         }

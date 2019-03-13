@@ -111,13 +111,12 @@ namespace ledger {
                     }
                     if (secondOccurencePath.getParent() != firstOccurencePath)
                         throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (wrong paths)");
-                    auto xpub = BitcoinLikeExtendedPublicKey::fromRaw(
-                            self->getCurrency(),
-                            Option<std::vector<uint8_t>>(info.publicKeys[firstOccurence]).toOptional(),
-                            info.publicKeys[secondOccurence],
-                            info.chainCodes[secondOccurence],
-                            info.derivations[secondOccurence]
-                    );
+                    auto xpub = BitcoinLikeExtendedPublicKey::fromRaw(self->getCurrency(),
+                                                                      Option<std::vector<uint8_t>>(info.publicKeys[firstOccurence]).toOptional(),
+                                                                      info.publicKeys[secondOccurence],
+                                                                      info.chainCodes[secondOccurence],
+                                                                      info.derivations[secondOccurence],
+                                                                      self->getConfiguration());
                     result.owners.push_back(*ownersIterator);
                     result.derivations.push_back(info.derivations[secondOccurence]);
                     result.extendedKeys.push_back(xpub->toBase58());
@@ -177,7 +176,9 @@ namespace ledger {
                 scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);;
                 auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
                 if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
-                        keychainEngine == api::KeychainEngines::BIP49_P2SH) {
+                    keychainEngine == api::KeychainEngines::BIP49_P2SH ||
+                    keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
+                    keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
                     auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
                     info.derivations.push_back(xpubPath.toString());
                     info.owners.push_back(std::string("main"));

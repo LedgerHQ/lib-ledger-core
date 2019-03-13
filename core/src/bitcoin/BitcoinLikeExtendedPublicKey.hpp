@@ -46,7 +46,9 @@ namespace ledger {
         class BitcoinLikeExtendedPublicKey : public BitcoinExtendedPublicKey, public api::BitcoinLikeExtendedPublicKey {
         public:
             BitcoinLikeExtendedPublicKey(const api::Currency& params,
-                                         const DeterministicPublicKey& key, const DerivationPath& path = DerivationPath("m/"));
+                                         const DeterministicPublicKey& key,
+                                         const std::shared_ptr<DynamicObject> &configuration,
+                                         const DerivationPath& path = DerivationPath("m/"));
             std::shared_ptr<api::BitcoinLikeAddress> derive(const std::string &path) override;
             std::shared_ptr<BitcoinLikeExtendedPublicKey> derive(const DerivationPath& path);
 
@@ -64,13 +66,15 @@ namespace ledger {
                     const optional<std::vector<uint8_t>>& parentPublicKey,
                     const std::vector<uint8_t>& publicKey,
                     const std::vector<uint8_t> &chainCode,
-                    const std::string& path
+                    const std::string& path,
+                    const std::shared_ptr<DynamicObject> &configuration
             );
 
             static std::shared_ptr<BitcoinLikeExtendedPublicKey> fromBase58(
                 const api::Currency& currency,
                 const std::string& xpubBase58,
-                const Option<std::string>& path
+                const Option<std::string>& path,
+                const std::shared_ptr<DynamicObject> &configuration
             );
 
         protected:
@@ -91,6 +95,7 @@ namespace ledger {
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
+            const std::shared_ptr<DynamicObject> _configuration;
         };
     }
 }

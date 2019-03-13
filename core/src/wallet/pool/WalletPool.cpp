@@ -36,6 +36,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
+#include <bitcoin/bech32/Bech32Parameters.h>
 
 namespace ledger {
     namespace core {
@@ -155,6 +156,10 @@ namespace ledger {
             //Init erc20 tokens
             for (auto& erc20Token : erc20Tokens::ALL_ERC20) {
                 CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token.second);
+            }
+            //Init bech32 params
+            for (auto& bech32Params : Bech32Parameters::ALL) {
+
             }
             sql.commit();
             CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);

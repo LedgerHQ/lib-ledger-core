@@ -29,12 +29,14 @@
  *
  */
 
+#ifndef LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
+#define LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
+
 #include <src/wallet/currencies.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/Currency.hpp>
+#include "../BaseFixture.h"
 
-#ifndef LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
-#define LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
 
 struct KeychainTestData {
 
@@ -114,4 +116,33 @@ extern KeychainTestData PIVX_DATA;
 extern KeychainTestData CLUBCOIN_DATA;
 extern KeychainTestData DECRED_DATA;
 extern KeychainTestData ETHEREUM_DATA;
+
+template <class Keychain>
+class KeychainFixture : public BaseFixture {
+public:
+    void testKeychain(const KeychainTestData &data, std::function<void (Keychain&)> f) {
+        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
+                "/preferences/tests.db",
+                dispatcher->getMainExecutionContext(),
+                resolver
+        );
+        auto configuration = std::make_shared<DynamicObject>();
+        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
+            Keychain keychain(
+                    configuration,
+                    data.currency,
+                    0,
+                    ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
+                                                                           data.xpub,
+                                                                           optional<std::string>(data.derivationPath),
+                                                                           configuration),
+                    backend->getPreferences("keychain")
+            );
+            f(keychain);
+            dispatcher->stop();
+        }));
+        dispatcher->waitUntilStopped();
+    };
+};
+
 #endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

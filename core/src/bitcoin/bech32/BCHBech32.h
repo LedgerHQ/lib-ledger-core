@@ -1,13 +1,12 @@
 /*
  *
- * P2PKHBitcoinLikeKeychain
- * ledger-core
+ * BCHBech32
  *
- * Created by Pierre Pollastri on 25/01/2017.
+ * Created by El Khalil Bellakrid on 18/02/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +27,34 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
-#define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
-#include "CommonBitcoinLikeKeychains.hpp"
-#include "../../../collections/DynamicObject.hpp"
-#include <api/Currency.hpp>
 
+#ifndef LEDGER_CORE_BCHBECH32_H
+#define LEDGER_CORE_BCHBECH32_H
+
+#include "Bech32.h"
+#include "Bech32Parameters.h"
+// Refecrence: https://github.com/bitcoincashjs/cashaddrjs
 namespace ledger {
     namespace core {
-        class P2PKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
+        class BCHBech32 : public Bech32 {
         public:
-            P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::Currency &params, int account,
-                                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                     const std::shared_ptr<Preferences> &preferences);
-            int32_t getOutputSizeAsSignedTxInput() const override ;
+            BCHBech32() {
+                _bech32Params = Bech32Parameters::getBech32Params("abc");
+            };
+
+            uint64_t polymod(const std::vector<uint8_t>& values) override;
+
+            std::vector<uint8_t> expandHrp(const std::string& hrp) override;
+
+            std::string encode(const std::vector<uint8_t>& hash,
+                               const std::vector<uint8_t>& version) override;
+
+            std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
+            decode(const std::string& str) override;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
+#endif //LEDGER_CORE_BCHBECH32_H

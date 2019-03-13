@@ -1,13 +1,12 @@
 /*
  *
- * P2PKHBitcoinLikeKeychain
- * ledger-core
+ * P2WSHBitcoinLikeKeychain
  *
- * Created by Pierre Pollastri on 25/01/2017.
+ * Created by El Khalil Bellakrid on 25/02/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +27,16 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
-#define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
+
+#ifndef LEDGER_CORE_P2WSHBITCOINLIKEKEYCHAIN_H
+#define LEDGER_CORE_P2WSHBITCOINLIKEKEYCHAIN_H
 #include "CommonBitcoinLikeKeychains.hpp"
-#include "../../../collections/DynamicObject.hpp"
-#include <api/Currency.hpp>
-
 namespace ledger {
     namespace core {
-        class P2PKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
+        class P2WSHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
         public:
-            P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+            P2WSHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
@@ -47,6 +44,4 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
+#endif //LEDGER_CORE_P2WSHBITCOINLIKEKEYCHAIN_H

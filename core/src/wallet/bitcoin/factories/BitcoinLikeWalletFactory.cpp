@@ -40,8 +40,11 @@
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <api/SynchronizationEngines.hpp>
-#include <wallet/bitcoin/factories/keystores/BitcoinLikeP2PKHKeychainFactory.h>
-#include <wallet/bitcoin/factories/keystores/BitcoinLikeP2SHKeychainFactory.h>
+#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+#include <wallet/bitcoin/keychains/P2SHBitcoinLikeKeychain.hpp>
+#include <wallet/bitcoin/keychains/P2WPKHBitcoinLikeKeychain.hpp>
+#include <wallet/bitcoin/keychains/P2WSHBitcoinLikeKeychain.hpp>
+#include <wallet/bitcoin/factories/keystores/BitcoinLikeCommonKeychainFactory.h>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
@@ -55,8 +58,10 @@ namespace ledger {
             const std::shared_ptr<WalletPool> &pool
         ): AbstractWalletFactory(currency, pool) {
             _keychainFactories = {
-                {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeP2PKHKeychainFactory>()},
-                {api::KeychainEngines::BIP49_P2SH, std::make_shared<BitcoinLikeP2SHKeychainFactory>()}
+                {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2PKHBitcoinLikeKeychain>>()},
+                {api::KeychainEngines::BIP49_P2SH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2SHBitcoinLikeKeychain>>()},
+                {api::KeychainEngines::BIP173_P2WPKH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WPKHBitcoinLikeKeychain>>()},
+                {api::KeychainEngines::BIP173_P2WSH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WSHBitcoinLikeKeychain>>()}
             };
         }
 
