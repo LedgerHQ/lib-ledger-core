@@ -55,6 +55,7 @@ struct rational_adaptor
    typename enable_if_c<(boost::multiprecision::detail::is_explicitly_convertible<U, IntBackend>::value && !is_arithmetic<U>::value), rational_adaptor&>::type operator = (const U& u) 
    {
       m_value = IntBackend(u);
+      return *this;
    }
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
@@ -264,11 +265,13 @@ inline typename enable_if_c<number_category<R>::value == number_kind_integer>::t
 template <class IntBackend>
 inline bool eval_is_zero(const rational_adaptor<IntBackend>& val)
 {
+   using default_ops::eval_is_zero;
    return eval_is_zero(val.data().numerator().backend());
 }
 template <class IntBackend>
 inline int eval_get_sign(const rational_adaptor<IntBackend>& val)
 {
+   using default_ops::eval_get_sign;
    return eval_get_sign(val.data().numerator().backend());
 }
 
@@ -297,10 +300,10 @@ struct number_category<backends::rational_adaptor<IntBackend> > : public mpl::in
 
 using boost::multiprecision::backends::rational_adaptor;
 
-template <class T>
-struct component_type<rational_adaptor<T> >
+template <class Backend, expression_template_option ExpressionTemplates>
+struct component_type<number<backends::rational_adaptor<Backend>, ExpressionTemplates> >
 {
-   typedef number<T> type;
+   typedef number<Backend, ExpressionTemplates> type;
 };
 
 template <class IntBackend, expression_template_option ET>

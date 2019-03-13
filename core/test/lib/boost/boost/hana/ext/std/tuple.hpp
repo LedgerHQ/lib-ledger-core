@@ -2,7 +2,7 @@
 @file
 Adapts `std::tuple` for use with Hana.
 
-@copyright Louis Dionne 2013-2016
+@copyright Louis Dionne 2013-2017
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -29,13 +29,6 @@ Distributed under the Boost Software License, Version 1.0.
 #include <tuple>
 #include <type_traits>
 #include <utility>
-
-
-#ifdef BOOST_HANA_CONFIG_HAS_NO_STD_TUPLE_ADAPTER
-#   error The adapter for std::tuple is not supported with versions of      \
-          libc++ prior to the one shipped with Clang 3.7 because of a bug   \
-          in the tuple implementation.
-#endif
 
 
 #ifdef BOOST_HANA_DOXYGEN_INVOKED
