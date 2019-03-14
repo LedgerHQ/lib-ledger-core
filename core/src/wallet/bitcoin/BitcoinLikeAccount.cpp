@@ -553,60 +553,69 @@ namespace ledger {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
+                auto optimisticUpdate = Try<int>::from([&] () -> int {
+                    //Get last block from DB
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
 
-                //Get last block from DB
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+                    auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
-                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
+                    //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
+                    BitcoinLikeBlockchainExplorerTransaction txExplorer;
+                    txExplorer.hash = txHash;
+                    txExplorer.lockTime = tx->getLockTime();
+                    txExplorer.receivedAt = std::chrono::system_clock::now();
+                    txExplorer.version = tx->getVersion();
+                    txExplorer.confirmations = 0;
 
-                //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
-                BitcoinLikeBlockchainExplorerTransaction txExplorer;
-                txExplorer.hash = txHash;
-                txExplorer.lockTime = tx->getLockTime();
-                txExplorer.receivedAt = std::chrono::system_clock::now();
-                txExplorer.version = tx->getVersion();
-                txExplorer.confirmations = 0;
-
-                //Inputs
-                auto inputCount = tx->getInputs().size();
-                for (auto index = 0; index < inputCount; index++) {
-                    auto input = tx->getInputs()[index];
-                    BitcoinLikeBlockchainExplorerInput in;
-                    in.index = index;
-                    auto prevTxHash = input->getPreviousTxHash().value_or("");
-                    auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
-                    BitcoinLikeBlockchainExplorerTransaction prevTx;
-                    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, self->getAccountUid(), prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
-                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
+                    //Inputs
+                    auto inputCount = tx->getInputs().size();
+                    for (auto index = 0; index < inputCount; index++) {
+                        auto input = tx->getInputs()[index];
+                        BitcoinLikeBlockchainExplorerInput in;
+                        in.index = index;
+                        auto prevTxHash = input->getPreviousTxHash().value_or("");
+                        auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
+                        BitcoinLikeBlockchainExplorerTransaction prevTx;
+                        if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, self->getAccountUid(), prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
+                            throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
+                        }
+                        in.value = prevTx.outputs[prevTxOutputIndex].value;
+                        in.signatureScript = hex::toString(input->getScriptSig());
+                        in.previousTxHash = prevTxHash;
+                        in.previousTxOutputIndex = prevTxOutputIndex;
+                        in.sequence = input->getSequence();
+                        in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
+                        txExplorer.inputs.push_back(in);
                     }
-                    in.value = prevTx.outputs[prevTxOutputIndex].value;
-                    in.signatureScript = hex::toString(input->getScriptSig());
-                    in.previousTxHash = prevTxHash;
-                    in.previousTxOutputIndex = prevTxOutputIndex;
-                    in.sequence = input->getSequence();
-                    in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
-                    txExplorer.inputs.push_back(in);
-                }
 
-                //Outputs
-                auto keychain = self->getKeychain();
-                auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
-                auto outputCount = tx->getOutputs().size();
-                for (auto index = 0; index < outputCount; index++) {
-                    auto output = tx->getOutputs()[index];
-                    BitcoinLikeBlockchainExplorerOutput out;
-                    out.value = BigInt(output->getValue()->toString());
-                    out.time = DateUtils::toJSON(std::chrono::system_clock::now());
-                    out.transactionHash = output->getTransactionHash();
-                    out.index = output->getOutputIndex();
-                    out.script = hex::toString(output->getScript());
-                    out.address = output->getAddress().value_or("");
-                    txExplorer.outputs.push_back(out);
-                }
+                    //Outputs
+                    auto keychain = self->getKeychain();
+                    auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+                    auto outputCount = tx->getOutputs().size();
+                    for (auto index = 0; index < outputCount; index++) {
+                        auto output = tx->getOutputs()[index];
+                        BitcoinLikeBlockchainExplorerOutput out;
+                        out.value = BigInt(output->getValue()->toString());
+                        out.time = DateUtils::toJSON(std::chrono::system_clock::now());
+                        out.transactionHash = output->getTransactionHash();
+                        out.index = output->getOutputIndex();
+                        out.script = hex::toString(output->getScript());
+                        out.address = output->getAddress().value_or("");
+                        txExplorer.outputs.push_back(out);
+                    }
 
-                //Store in DB
-                self->putTransaction(sql, txExplorer);
+                    //Store in DB
+                    self->putTransaction(sql, txExplorer);
+                });
+
+                // Failing optimistic update should not throw an exception
+                // because the tx was successfully broadcasted to the network,
+                // and the update will occur at next synchro ...
+                // But still let's log that !
+                if (optimisticUpdate.isFailure()) {
+                    self->logger()->warn(" Optimistic update failed for broadcasted transaction : {}", txHash);
+                }
 
                 return txHash;
             }).callback(getContext(), callback);
