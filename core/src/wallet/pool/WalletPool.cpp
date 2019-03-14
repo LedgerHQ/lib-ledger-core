@@ -159,7 +159,7 @@ namespace ledger {
             }
             //Init bech32 params
             for (auto& bech32Params : Bech32Parameters::ALL) {
-
+                Bech32Parameters::insertParameters(sql, bech32Params);
             }
             sql.commit();
             CurrenciesDatabaseHelper::getAllCurrencies(sql, _currencies);
@@ -284,14 +284,41 @@ namespace ledger {
             });
         }
 
+        Option<WalletDatabaseEntry> WalletPool::getWalletEntryFromDatabase(const std::shared_ptr<WalletPool> &walletPool,
+                                                                           const std::string &name) {
+            WalletDatabaseEntry entry;
+            soci::session sql(walletPool->getDatabaseSessionPool()->getPool());
+            if (!PoolDatabaseHelper::getWallet(sql, *walletPool, name, entry)) {
+                return Option<WalletDatabaseEntry>();
+            }
+            return Option<WalletDatabaseEntry>(entry);
+        }
+
         FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
             auto self = shared_from_this();
             return async<std::shared_ptr<AbstractWallet>>([=] () {
-                WalletDatabaseEntry entry;
-                soci::session sql(self->getDatabaseSessionPool()->getPool());
-                if (!PoolDatabaseHelper::getWallet(sql, *self, name, entry))
+                auto entry = getWalletEntryFromDatabase(self, name);
+                if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
-                return self->buildWallet(entry);
+                }
+                return self->buildWallet(entry.getValue());
+            });
+        }
+
+        Future<api::ErrorCode> WalletPool::updateWalletConfig(const std::string &name,
+                                                              const std::shared_ptr<api::DynamicObject> &configuration) {
+            auto self = shared_from_this();
+            return async<api::ErrorCode>([=] () {
+                auto entry = getWalletEntryFromDatabase(self, name);
+                if (!entry.hasValue()) {
+                    return api::ErrorCode::INVALID_ARGUMENT;
+                }
+                // Wallet exists, let's update its configuration
+                auto walletEntry = entry.getValue();
+                walletEntry.configuration->updateWithConfiguration(std::static_pointer_cast<ledger::core::DynamicObject>(configuration));
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                PoolDatabaseHelper::putWallet(sql, walletEntry);
+                return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
         }
 

@@ -76,7 +76,7 @@ namespace ledger {
             };
             extern LIBCORE_EXPORT const Bech32Struct getBech32Params(const std::string &networkIdentifier);
             extern LIBCORE_EXPORT const std::vector<Bech32Struct> ALL;
-            static bool insertParameters(soci::session& sql, const Bech32Struct &params);
+            bool insertParameters(soci::session& sql, const Bech32Struct &params);
         }
     }
 }
