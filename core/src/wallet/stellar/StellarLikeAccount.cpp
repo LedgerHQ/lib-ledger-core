@@ -30,9 +30,16 @@
  */
 
 #include "StellarLikeAccount.hpp"
+#include <wallet/stellar/StellarLikeWallet.hpp>
 
 namespace ledger {
     namespace core {
+
+        StellarLikeAccount::StellarLikeAccount(const std::shared_ptr<StellarLikeWallet> &wallet,
+                                               const StellarLikeAccountParams &params)
+                                               : AbstractAccount(wallet, params.index), _params(params) {
+
+        }
 
         bool StellarLikeAccount::isSynchronizing() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
@@ -55,7 +62,7 @@ namespace ledger {
         }
 
         std::string StellarLikeAccount::getRestoreKey() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            return _params.keychain->getRestoreKey();
         }
 
         FuturePtr<ledger::core::Amount> StellarLikeAccount::getBalance() {
@@ -63,7 +70,10 @@ namespace ledger {
         }
 
         Future<AbstractAccount::AddressList> StellarLikeAccount::getFreshPublicAddresses() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto self = getSelf();
+            return async<AbstractAccount::AddressList>([=] () {
+                return AbstractAccount::AddressList({self->_params.keychain->getAddress()});
+            });
         }
 
         Future<std::vector<std::shared_ptr<api::Amount>>>
@@ -74,6 +84,10 @@ namespace ledger {
 
         Future<api::ErrorCode> StellarLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+        }
+
+        std::shared_ptr<StellarLikeAccount> StellarLikeAccount::getSelf() {
+            return std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
         }
     }
 }

@@ -34,10 +34,17 @@
 namespace ledger {
     namespace core {
 
+        DefaultStellarLikeKeychain::DefaultStellarLikeKeychain(const StellarLikeKeychain::Address& address,
+                                                               const std::shared_ptr<api::DynamicObject> &configuration,
+                                                               const api::Currency &currency,
+                                                               const std::shared_ptr<Preferences>& prefs)
+                                                               : _address(address),
+                                                                 StellarLikeKeychain(configuration, currency, prefs)  {
 
+        }
 
         StellarLikeKeychain::Address DefaultStellarLikeKeychain::getAddress() const {
-            return ledger::core::StellarLikeKeychain::Address();
+            return _address;
         }
 
         bool DefaultStellarLikeKeychain::contains(const std::string &address) const {
@@ -45,7 +52,7 @@ namespace ledger {
         }
 
         std::string DefaultStellarLikeKeychain::getRestoreKey() const {
-            return hex::toString(_pubKey);
+            return _address->toString();
         }
     }
 }

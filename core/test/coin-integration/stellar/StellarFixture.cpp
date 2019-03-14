@@ -46,8 +46,10 @@ static api::Currency STELLAR =
         .unit("lumen", 7, "XLM");
 
 api::AccountCreationInfo StellarFixture::defaultAccount() const {
-    return api::AccountCreationInfo(0, {"main"}, {"44'/0'/0/0"}, {}, {});
+    return accountInfo("a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f");
 }
+
+
 
 std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
     auto pool = CoinIntegrationFixture::newPool(poolName);
@@ -57,5 +59,9 @@ std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
 
 api::Currency StellarFixture::getCurrency() const {
     return STELLAR;
+}
+
+api::AccountCreationInfo StellarFixture::accountInfo(const std::string &pubKey) const {
+    return api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, {hex::toByteArray(pubKey)}, {});
 }
 

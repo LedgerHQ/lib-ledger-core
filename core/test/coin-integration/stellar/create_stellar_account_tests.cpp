@@ -37,7 +37,7 @@ TEST_F(StellarFixture, CreateAccountWithPubKey) {
     auto info = ::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
     auto address = ::wait(account->getFreshPublicAddresses()).front()->toString();
-    EXPECT_EQ(address, "address");
+    EXPECT_EQ(address, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(info.derivations.size(), 1);
     EXPECT_EQ(info.derivations[0], "44'/148'/0'");
 }

@@ -31,6 +31,7 @@
 
 #include "StellarLikeWallet.hpp"
 #include <async/Promise.hpp>
+#include "StellarLikeAccount.hpp"
 
 namespace ledger {
     namespace core {
@@ -68,8 +69,16 @@ namespace ledger {
         StellarLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             auto self = getSelf();
             return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
-
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+                StellarLikeAccountParams params;
+                DerivationPath path(info.derivations[0]);
+                if (info.publicKeys.size() < 1) {
+                    throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
+                }
+                params.keychain = self->_params.keychainFactory->build(
+                        info.index, path, self->getConfiguration(),
+                        info, self->getAccountInternalPreferences(info.index), self->getCurrency()
+                        );
+                return std::make_shared<StellarLikeAccount>(self, params);
             });
         }
 

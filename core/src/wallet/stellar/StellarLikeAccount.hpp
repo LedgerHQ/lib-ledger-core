@@ -34,11 +34,21 @@
 
 #include <wallet/common/AbstractAccount.hpp>
 #include <api/StellarLikeAccount.hpp>
+#include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
+
+        struct StellarLikeAccountParams {
+            int index;
+            std::shared_ptr<StellarLikeKeychain> keychain;
+        };
+
+        class StellarLikeWallet;
+
         class StellarLikeAccount : public virtual api::StellarLikeAccount, public virtual AbstractAccount {
         public:
+            StellarLikeAccount(const std::shared_ptr<StellarLikeWallet>& wallet, const StellarLikeAccountParams& params);
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
             void startBlockchainObservation() override;
@@ -50,6 +60,13 @@ namespace ledger {
             Future<std::vector<std::shared_ptr<api::Amount>>>
             getBalanceHistory(const std::string &start, const std::string &end, api::TimePeriod precision) override;
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
+
+        protected:
+            std::shared_ptr<StellarLikeAccount> getSelf();
+
+        private:
+            std::shared_ptr<StellarLikeWallet> _wallet;
+            StellarLikeAccountParams _params;
         };
     }
 }

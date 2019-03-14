@@ -31,6 +31,7 @@
 
 #include "StellarLikeWalletFactory.hpp"
 #include <wallet/stellar/StellarLikeWallet.hpp>
+#include "StellarLikeKeychainFactory.hpp"
 #include <wallet/pool/WalletPool.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
@@ -54,6 +55,7 @@ namespace ledger {
             DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'"));
 
             // Configure keychain factory
+            params.keychainFactory = std::make_shared<StellarLikeKeychainFactory>();
 
             // Configure explorer
 

@@ -30,9 +30,21 @@
  */
 
 #include "StellarLikeKeychainFactory.hpp"
+#include "../keychains/DefaultStellarLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
 
+        std::shared_ptr<StellarLikeKeychain>
+        StellarLikeKeychainFactory::build(int32_t index, const DerivationPath &path,
+                                          const std::shared_ptr<DynamicObject> &configuration,
+                                          const api::AccountCreationInfo &info,
+                                          const std::shared_ptr<Preferences> &accountPreferences,
+                                          const api::Currency &currency) {
+            return std::make_shared<DefaultStellarLikeKeychain>(
+                    std::make_shared<StellarLikeAddress>(info.publicKeys[0], currency, Option<std::string>(info.derivations[0])),
+                    configuration,
+                    currency, accountPreferences);
+        }
     }
 }

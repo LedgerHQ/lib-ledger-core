@@ -38,7 +38,7 @@ namespace ledger {
     namespace core {
         class DefaultStellarLikeKeychain : public StellarLikeKeychain {
         public:
-            DefaultStellarLikeKeychain( const std::vector<uint8_t>& publicKey,
+            DefaultStellarLikeKeychain( const Address& address,
                                         const std::shared_ptr<api::DynamicObject>& configuration,
                                         const api::Currency& currency,
                                         const std::shared_ptr<Preferences>& preferences);
