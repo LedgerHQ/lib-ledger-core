@@ -32,6 +32,7 @@
 #include <gtest/gtest.h>
 #include <ledger/core/api/DynamicArray.hpp>
 #include <ledger/core/api/DynamicObject.hpp>
+#include <ledger/core/collections/DynamicObject.hpp>
 #include <ledger/core/collections/DynamicValue.hpp>
 #include <ledger/core/utils/optional.hpp>
 
@@ -223,4 +224,29 @@ TEST(Dynamics, ObjectWithArray) {
         EXPECT_EQ(array->getData(5).value(), std::vector<uint8_t>({0x09, 0x03}));
         std::cout << object->dump() << std::endl;
     }
+}
+
+TEST(Dynamics, OverwriteDynamicObject) {
+    auto object = std::make_shared<ledger::core::DynamicObject>();
+    object->putBoolean("boolean", true)
+            ->putDouble("double", 12.6)
+            ->putString("string", "Hello World")
+            ->putInt("int", 12)
+            ->putLong("long", 16)
+            ->putData("data", {0x09, 0x03});
+
+    auto replacement = std::make_shared<ledger::core::DynamicObject>();
+    replacement->putString("string", "Hello")
+            ->putInt("int", 1)
+            ->putData("data", {0x19, 0x90});
+    
+    object->updateWithConfiguration(replacement);
+
+    EXPECT_EQ(object->size(), 6);
+    EXPECT_EQ(object->getBoolean("boolean").value(), true);
+    EXPECT_EQ(object->getDouble("double").value(), 12.6);
+    EXPECT_EQ(object->getString("string").value(), "Hello");
+    EXPECT_EQ(object->getInt("int").value(), 1);
+    EXPECT_EQ(object->getLong("long").value(), 16);
+    EXPECT_EQ(object->getData("data").value(), std::vector<uint8_t>({0x19, 0x90}));
 }

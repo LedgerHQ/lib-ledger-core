@@ -100,6 +100,16 @@ public:
     virtual void getWallet(const std::string & name, const std::shared_ptr<WalletCallback> & callback) = 0;
 
     /**
+     * Update wallet configuration
+     * @param name, string, name of wallet to update
+     * @param configuration, DynamicObject object, configuration object with fields to update
+     * @param callback, Callback object returns the error code, returns ErrorCode::FUTURE_WAS_SUCCESSFULL if everything is fine
+     * > Note: other fields that are not passed in 'configuration' parameter
+     * > that might have been created before remain intact
+     */
+    virtual void updateWalletConfig(const std::string & name, const std::shared_ptr<DynamicObject> & configuration, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
+    /**
      * Instanciate a new wallet under wallet pool.
      * @param name, string, name of newly created wallet
      * @param currency, Currency object, currency of the wallet

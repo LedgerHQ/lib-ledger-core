@@ -102,6 +102,7 @@ namespace ledger {
             bool isReadOnly() override;
             void setReadOnly(bool enable);
 
+            std::shared_ptr<api::DynamicObject> updateWithConfiguration(const std::shared_ptr<DynamicObject> &configuration);
             int64_t size() override;
 
             std::ostream& dump(std::ostream& ss, int depth) const;

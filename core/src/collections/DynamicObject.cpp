@@ -184,5 +184,48 @@ namespace ledger {
                 }
             }
         }
+
+        std::shared_ptr<api::DynamicObject> DynamicObject::updateWithConfiguration(const std::shared_ptr<DynamicObject> &configuration) {
+            for (auto &key : configuration->getKeys()) {
+                auto type = configuration->getType(key).value_or(api::DynamicType::UNDEFINED);
+                switch (type) {
+                    case api::DynamicType::STRING:
+                        put(key, configuration->get<std::string>(key).value());
+                        break;
+
+                    case api::DynamicType::DATA:
+                        put(key, configuration->get<std::vector<uint8_t>>(key).value());
+                        break;
+
+                    case api::DynamicType::BOOLEAN:
+                        put(key, configuration->get<bool>(key).value());
+                        break;
+
+                    case api::DynamicType::INT32:
+                        put(key, configuration->get<int32_t>(key).value());
+                        break;
+
+                    case api::DynamicType::INT64:
+                        put(key, configuration->get<int64_t>(key).value());
+                        break;
+
+                    case api::DynamicType::DOUBLE:
+                        put(key, configuration->get<double>(key).value());
+                        break;
+
+                    case api::DynamicType::ARRAY:
+                        put(key, configuration->get<std::shared_ptr<DynamicArray>>(key).value());
+                        break;
+
+                    case api::DynamicType::OBJECT:
+                        put(key, configuration->get<std::shared_ptr<DynamicObject>>(key).value());
+                        break;
+
+                    case api::DynamicType::UNDEFINED:
+                        break;
+                }
+            }
+            return shared_from_this();
+        }
     }
 }

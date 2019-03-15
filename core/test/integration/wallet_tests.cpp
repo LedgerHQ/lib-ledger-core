@@ -30,7 +30,7 @@
  */
 
 #include "BaseFixture.h"
-
+#include <ledger/core/api/ErrorCode.hpp>
 class WalletTests : public BaseFixture {
 
 };
@@ -153,4 +153,31 @@ TEST_F(WalletTests, CreateAccountBug) {
     };
     loop(0);
     dispatcher->waitUntilStopped();
+}
+
+TEST_F(WalletTests, ChangeWalletConfig) {
+    auto pool = newDefaultPool();
+    auto walletName = "my_wallet";
+    auto derivationScheme = "44'/<coin_type>'/<account>'/<node>/<address>";
+    {
+        auto oldEndpoint = "http://eth-ropsten.explorers.dev.aws.ledger.fr";
+        auto config = api::DynamicObject::newInstance();
+        config->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, oldEndpoint);
+        config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
+        auto wallet = wait(pool->createWallet(walletName, "ethereum", config));
+        auto walletConfig = wallet->getConfiguration();
+        EXPECT_EQ(walletConfig->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), oldEndpoint);
+        EXPECT_EQ(walletConfig->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);
+    }
+    {
+        auto newEndpoint = "http://eth-ropsten.explorers.prod.aws.ledger.fr";
+        auto config = api::DynamicObject::newInstance();
+        config->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, newEndpoint);
+        auto returnCode = wait(pool->updateWalletConfig(walletName, config));
+        EXPECT_EQ(returnCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+        auto wallet = wait(pool->getWallet(walletName));
+        auto walletConfig = wallet->getConfiguration();
+        EXPECT_EQ(walletConfig->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), newEndpoint);
+        EXPECT_EQ(walletConfig->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);
+    }
 }
