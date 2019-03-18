@@ -318,6 +318,9 @@ namespace ledger {
                 walletEntry.configuration->updateWithConfiguration(std::static_pointer_cast<ledger::core::DynamicObject>(configuration));
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 PoolDatabaseHelper::putWallet(sql, walletEntry);
+                // No need to check if currency supported (factory non null), because we are supposed to fetch
+                // walletEntry from database, which implies that it was already checked before at creation
+                self->_wallets[walletEntry.uid] = self->getFactory(walletEntry.currencyName)->build(walletEntry);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
         }

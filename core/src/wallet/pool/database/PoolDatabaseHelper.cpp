@@ -48,7 +48,7 @@ namespace ledger {
                         use(DateUtils::now());
             } else {
                 sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
-                into(configuration), use(wallet.uid);
+                use(configuration), use(wallet.uid);
             }
         }
 
