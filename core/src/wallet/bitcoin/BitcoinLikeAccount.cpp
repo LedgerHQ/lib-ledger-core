@@ -606,7 +606,7 @@ namespace ledger {
                     }
 
                     //Store in DB
-                    self->putTransaction(sql, txExplorer);
+                    return self->putTransaction(sql, txExplorer);
                 });
 
                 // Failing optimistic update should not throw an exception

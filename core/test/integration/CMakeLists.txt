@@ -154,6 +154,7 @@ add_test (NAME ledger-core-integration-WalletTests.GetAccountAfterPoolReopen COM
 add_test (NAME ledger-core-integration-WalletTests.CreateNonContiguousAccount COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateNonContiguousAccount")
 add_test (NAME ledger-core-integration-WalletTests.CreateNonContiguousAccountBis COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateNonContiguousAccountBis")
 add_test (NAME ledger-core-integration-WalletTests.CreateAccountBug COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateAccountBug")
+add_test (NAME ledger-core-integration-WalletTests.ChangeWalletConfig COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.ChangeWalletConfig")
 
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.MediumXpubSynchronization")
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.XpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.XpubSynchronization")
