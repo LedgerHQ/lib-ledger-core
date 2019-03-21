@@ -67,21 +67,22 @@ namespace ledger {
                     addressesStr += ",";
                 }
             }
+            bool parseNumbersAsString = true;
             return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/balance", _explorerVersion, _parameters.Identifier, addressesStr))
-                    .json().mapPtr<BigInt>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
                         auto& json = *std::get<1>(result);
-                        if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsUint64()) {
+                        if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
                         }
 
-                        auto balance = json[0]["balance"].GetUint64();
+                        BigInt balance(json[0]["balance"].GetString());
                         for (auto i = 1; i < size; i++) {
-                            if (json[i].HasMember("balance") || json[i]["balance"].IsUint64()) {
-                                balance += json[i]["balance"].GetUint64();
+                            if (json[i].HasMember("balance") || json[i]["balance"].IsString()) {
+                                balance = balance + BigInt(json[i]["balance"].GetString());
                             }
                         }
 
-                        return std::make_shared<BigInt>((int64_t)balance);
+                        return std::make_shared<BigInt>(balance);
                     });
         }
 
