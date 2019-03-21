@@ -81,8 +81,8 @@ namespace ledger {
             tx.gasLimit = BigInt::fromHex(row.get<std::string>(6));
             tx.gasUsed = BigInt::fromHex(row.get<std::string>(7));
 
-            tx.receiver = row.get<std::string>(8);
-            tx.sender = row.get<std::string>(9);
+            tx.sender = row.get<std::string>(8);
+            tx.receiver = row.get<std::string>(9);
 
             tx.confirmations = get_number<uint64_t>(row, 10);
             tx.status = get_number<uint64_t>(row, 11);
