@@ -119,7 +119,8 @@ namespace ledger {
         LedgerApiEthereumLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                         Option<std::string> fromBlockHash,
                                                         Option<void *> session) {
-            return getLedgerApiTransactions(addresses, fromBlockHash, session);
+            bool isSnakeCase = true;
+            return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase);
         }
 
         FuturePtr<Block> LedgerApiEthereumLikeBlockchainExplorer::getCurrentBlock() const {
