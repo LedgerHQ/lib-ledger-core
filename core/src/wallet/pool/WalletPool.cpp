@@ -42,7 +42,7 @@ namespace ledger {
     namespace core {
         WalletPool::WalletPool(
             const std::string &name,
-            const Option<std::string> &password,
+            const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
             const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -54,15 +54,6 @@ namespace ledger {
         ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
             // General
             _poolName = name;
-
-            // if the password has the form Some(""), we set it to None as this is not an accepted
-            // situation (to fix this in a more type-safe way, we need to change the encoding and go
-            // to std::string only, no more optional)
-            if (password.hasValue() && password->empty()) {
-                _password = Option<std::string>::NONE;
-            } else {
-                _password = password;
-            }
 
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
@@ -88,9 +79,9 @@ namespace ledger {
             );
 
             // Encrypt the preferences, if needed
-            if (_password.hasValue()) {
-                _externalPreferencesBackend->setEncryption(rng, *_password);
-                _internalPreferencesBackend->setEncryption(rng, *_password);
+            if (!_password.empty()) {
+                _externalPreferencesBackend->setEncryption(rng, _password);
+                _internalPreferencesBackend->setEncryption(rng, _password);
             }
 
             // Logger management
@@ -111,7 +102,7 @@ namespace ledger {
                pathResolver,
                _logger,
                Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
-               password.getValueOr("")
+               password
             );
 
             // Threading management
@@ -122,7 +113,8 @@ namespace ledger {
 
         std::shared_ptr<WalletPool>
         WalletPool::newInstance(
-            const std::string &name, const Option<std::string> &password,
+            const std::string &name,
+            const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
             const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -212,7 +204,7 @@ namespace ledger {
             return _poolName;
         }
 
-        const Option<std::string> WalletPool::getPassword() const {
+        const std::string WalletPool::getPassword() const {
             return _password;
         }
 

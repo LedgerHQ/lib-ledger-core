@@ -90,7 +90,7 @@ namespace ledger {
 
         public:
             static void open( const std::string &name,
-                              const std::experimental::optional<std::string> &password,
+                              const std::string &password,
                               const std::shared_ptr<api::HttpClient> &httpClient,
                               const std::shared_ptr<api::WebSocketClient> &webSocketClient,
                               const std::shared_ptr<api::PathResolver> &pathResolver,

@@ -82,7 +82,7 @@ namespace ledger {
             std::shared_ptr<api::LogPrinter> _logPrinter;
             std::shared_ptr<api::ThreadDispatcher> _dispatcher;
             std::string _name;
-            std::experimental::optional<std::string> _password;
+            std::string _password;
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::DatabaseBackend> _backend;
             std::shared_ptr<api::DynamicObject> _configuration;
