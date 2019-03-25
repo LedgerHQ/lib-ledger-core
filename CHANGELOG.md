@@ -1,12 +1,32 @@
-## 2.7.0
+## 2.7.0 (on-going)
+
+> ????/??/??
+
 - Native Segwit support:
-	- Implement P2WPKH and P2WSH keychains, references: 
-		- BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#P2WSH ,
-		- BIP143: https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki 
-	- Support of Bech32 addresses, references:
-	 	- BIP173: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki#Segwit_address_format) ,
-	 	- BTC Bech32: https://github.com/sipa/bech32/tree/master/ref , 
-	 	- BCH Bech32: https://github.com/bitcoincashjs/cashaddrjs
+    - Implement P2WPKH and P2WSH keychains, references:
+        - BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#P2WSH
+        - BIP143: https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
+    - Support of Bech32 addresses, references:
+         - BIP173: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki#Segwit_address_format)
+         - BTC Bech32: https://github.com/sipa/bech32/tree/master/ref
+         - BCH Bech32: https://github.com/bitcoincashjs/cashaddrjs
+- Add `ERC20LikeAccount::getBalanceHistoryFor`, a method used to retrieve the balance history of an
+  ERC20 account using inclusive date ranges.
+- Fix some bugs related to JNI when compiling for Java / Android.
+- The library now builds with a compiled version of
+  [SQLCipher](https://github.com/sqlcipher/sqlcipher) and the Windows code-path is now patched.
+- Improve the cross-compilation support of the library to allow to compile to several platforms in
+  parallel. This is not perfect and needs a few more love to be complete but we’re getting there.
+  This is especially useful when compiling for mobile (emulator x86, several variations of ARM
+  depending on your phone, etc.).
+- XRP is fully integrated.
+- Full support of password change with `WalletPool::changePassword`. It is now possible to change
+  one’s password by calling this function. The previous work from 2.6.0 that wasn’t exposed is now
+  exposed and calling that function will change both the encryption on the database and the
+  preferences.
+- Some Windows-related fix (compilers, mostly).
+- [fmt](https://github.com/fmtlib/fmt) is now a submodule of ours.
+
 ## 2.6.0
 
 > 2019/02/22
@@ -23,16 +43,15 @@
   SQLCipher is not available for Windows builds mainly because of build issues (C compiler containing spaces).
 - Changed deployement process, now RCs are deployed with format `x.y.z-rc-{COMMIT_HASH}`, this will allow us
   not to always bump the versions when merging PRs and also keeping the binaries deployed to our bucket.
-- Update used libraries, to be able to compile under VS2017
-
+- Update used libraries, to be able to compile under VS2017.
 - XRP integration:
-	- XRP Keychian, address derivation and account creation,
-	- XRP API explorer and parser,
-	- XRP Node explorer and parser,
-	- Accounts synchronization,
-	- XRP transaction serialization and parsing,
-	- Tests of above features.
-	
+    - XRP Keychian, address derivation and account creation.
+    - XRP API explorer and parser.
+    - XRP Node explorer and parser.
+    - Accounts synchronization.
+    - XRP transaction serialization and parsing.
+    - Tests of above features.
+
 ## 2.5.0
 
 > 2019/01/22
