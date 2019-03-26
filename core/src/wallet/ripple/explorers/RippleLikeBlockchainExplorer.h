@@ -46,6 +46,7 @@
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <wallet/ripple/RippleLikeMemo.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger {
@@ -60,6 +61,7 @@ namespace ledger {
             std::string sender;
             Option<Block> block;
             uint64_t confirmations;
+            std::vector<RippleLikeMemo> memos;
 
             RippleLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
@@ -74,6 +76,7 @@ namespace ledger {
                 this->receiver = cpy.receiver;
                 this->sender = cpy.sender;
                 this->value = cpy.value;
+                this->memos = cpy.memos;
             }
 
         };
