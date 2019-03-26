@@ -191,7 +191,6 @@ namespace ledger {
                 {
                     std::lock_guard<std::mutex> lock(self->_eventsLock);
                     std::swap(events, self->_events);
-                    events = self->_events;
                 }
                 for (auto& event : events) {
                     self->_publisher->post(event);
