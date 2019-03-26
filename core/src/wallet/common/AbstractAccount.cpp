@@ -187,16 +187,22 @@ namespace ledger {
         void AbstractAccount::emitEventsNow() {
             auto self = shared_from_this();
             run([self] () {
-                for (auto& event : self->_events) {
+                std::list<std::shared_ptr<api::Event>> events;
+                {
+                    std::lock_guard<std::mutex> lock(self->_eventsLock);
+                    std::swap(events, self->_events);
+                    events = self->_events;
+                }
+                for (auto& event : events) {
                     self->_publisher->post(event);
                 }
-                self->_events.clear();
             });
         }
 
         void AbstractAccount::pushEvent(const std::shared_ptr<api::Event> &event) {
             auto self = shared_from_this();
             run([event, self] () {
+                std::lock_guard<std::mutex> lock(self->_eventsLock);
                 self->_events.push_back(std::move(event));
             });
         }
