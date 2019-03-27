@@ -417,7 +417,7 @@ namespace ledger {
                     "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
         }
-        
+
         template <> void rollback<6>(soci::session& sql) {
             sql << "DROP TABLE ripple_operations";
 
@@ -441,6 +441,19 @@ namespace ledger {
 
         template <> void rollback<7>(soci::session& sql) {
             sql << "DROP TABLE bech32_parameters";
+        }
+
+        template <> void migrate<8>(soci::session& sql) {
+            sql << "CREATE TABLE ripple_memos("
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid),"
+                   "data VARCHAR(1024),"
+                   "fmt VARCHAR(1024),"
+                   "ty VARCHAR(1024)"
+                   ")";
+        }
+
+        template <> void rollback<8>(soci::session& sql) {
+            sql << "DROP TABLE ripple_memos;"
         }
     }
 }
