@@ -381,6 +381,7 @@ namespace ledger {
 
             auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
 
+            // TODO: rm this
             auto getTransaction = [self](
                     const std::string &hash) -> FuturePtr<RippleLikeBlockchainExplorerTransaction> {
                 return self->getTransaction(hash);

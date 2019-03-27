@@ -1,6 +1,7 @@
 @import "../../errors.djinni"
 @import "../amount.djinni"
 @import "../../ripple/addresses.djinni"
+@import "../../ripple/memo.djinni"
 
 # TODO: to be more accurate, all RippleLikeBlock classes should be renamed as RippleLikeLedger,
 # since there is an analogy between block and ledger concepts it's ok for the moment ...
@@ -33,6 +34,10 @@ RippleLikeTransaction = interface +c {
 	getLedgerSequence(): BigInt;
 	# Get Signing public Key
 	getSigningPubKey(): binary;
+    # Get all memos associated with the transaction.
+    getMemos(): list<RippleLikeMemo>;
+    # Add a memo to a transaction.
+    addMemo(memo: RippleLikeMemo);
 }
 
 #Class representing a Ripple Operation

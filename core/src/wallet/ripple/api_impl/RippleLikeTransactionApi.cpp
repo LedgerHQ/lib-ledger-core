@@ -285,5 +285,12 @@ namespace ledger {
             return *this;
         }
 
+        std::vector<api::RippleLikeMemo> RippleLikeTransactionApi::getMemos() {
+            return _memos;
+        }
+
+        void RippleLikeTransactionApi::addMemo(api::RippleLikeMemo const& memo) {
+            _memos.push_back(memo);
+        }
     }
 }

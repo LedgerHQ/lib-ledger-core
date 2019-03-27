@@ -38,6 +38,7 @@
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
+#include <api/RippleLikeMemo.hpp>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
@@ -46,7 +47,6 @@
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
-#include <wallet/ripple/RippleLikeMemo.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger {
@@ -61,7 +61,7 @@ namespace ledger {
             std::string sender;
             Option<Block> block;
             uint64_t confirmations;
-            std::vector<RippleLikeMemo> memos;
+            std::vector<api::RippleLikeMemo> memos;
 
             RippleLikeBlockchainExplorerTransaction() {
                 confirmations = 0;

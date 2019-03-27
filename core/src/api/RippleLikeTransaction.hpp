@@ -22,6 +22,7 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class BigInt;
 class RippleLikeAddress;
+struct RippleLikeMemo;
 
 /**
  * TODO: to be more accurate, all RippleLikeBlock classes should be renamed as RippleLikeLedger,
@@ -73,6 +74,12 @@ public:
 
     /** Get Signing public Key */
     virtual std::vector<uint8_t> getSigningPubKey() = 0;
+
+    /** Get all memos associated with the transaction. */
+    virtual std::vector<RippleLikeMemo> getMemos() = 0;
+
+    /** Add a memo to a transaction. */
+    virtual void addMemo(const RippleLikeMemo & memo) = 0;
 };
 
 } } }  // namespace ledger::core::api

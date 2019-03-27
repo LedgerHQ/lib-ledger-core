@@ -1,0 +1,5 @@
+RippleLikeMemo = record {
+    data: string;
+    fmt: string;
+    ty: string;
+}

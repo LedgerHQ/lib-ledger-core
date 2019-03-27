@@ -55,7 +55,7 @@ namespace ledger {
             if (_lastKey == "Memo") {
                 // add a new empty RippleLikeMemo to the transaction (it’ll be filled in later by
                 // the parser)
-                _transaction->memos.push_back(RippleLikeMemo());
+                _transaction->memos.push_back(api::RippleLikeMemo());
             }
 
             return true;
