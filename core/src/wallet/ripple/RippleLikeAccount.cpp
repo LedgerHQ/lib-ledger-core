@@ -400,6 +400,11 @@ namespace ledger {
                 BigInt ledgerSequence((int64_t)self->_currentLedgerSequence);
                 tx->setLedgerSequence(ledgerSequence);
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
+
+                for (auto& memo : request.memos) {
+                    tx->addMemo(memo);
+                }
+
                 return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
                     tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
                     return tx;

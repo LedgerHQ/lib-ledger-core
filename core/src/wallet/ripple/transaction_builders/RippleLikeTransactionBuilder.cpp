@@ -81,6 +81,12 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::RippleLikeTransactionBuilder>
+        RippleLikeTransactionBuilder::addMemo(const api::RippleLikeMemo& memo) {
+            _request.memos.push_back(memo);
+            return shared_from_this();
+        }
+
         void RippleLikeTransactionBuilder::build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) {
             build().callback(_context, callback);
         }

@@ -5,6 +5,7 @@
 #include "Amount.hpp"
 #include "Currency.hpp"
 #include "Marshal.hpp"
+#include "RippleLikeMemo.hpp"
 #include "RippleLikeTransaction.hpp"
 #include "RippleLikeTransactionCallback.hpp"
 
@@ -50,6 +51,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransactionBuilder>(nativeRef);
         auto r = ref->setFees(::djinni_generated::Amount::toCpp(jniEnv, j_fees));
+        return ::djinni::release(::djinni_generated::RippleLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1addMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_memo)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransactionBuilder>(nativeRef);
+        auto r = ref->addMemo(::djinni_generated::RippleLikeMemo::toCpp(jniEnv, j_memo));
         return ::djinni::release(::djinni_generated::RippleLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
