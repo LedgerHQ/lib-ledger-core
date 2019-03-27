@@ -453,7 +453,7 @@ namespace ledger {
         }
 
         template <> void rollback<8>(soci::session& sql) {
-            sql << "DROP TABLE ripple_memos;"
+            sql << "DROP TABLE ripple_memos";
         }
     }
 }
