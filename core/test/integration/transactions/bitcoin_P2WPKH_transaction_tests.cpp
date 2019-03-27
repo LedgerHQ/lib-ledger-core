@@ -49,7 +49,7 @@ struct BitcoinMakeP2WPKHTransaction : public BitcoinMakeBaseTransaction {
 TEST_F(BitcoinMakeP2WPKHTransaction, CreateStandardP2WPKHWithOneOutput) {
     auto builder = tx_builder();
     auto freshAddress = wait(account->getFreshPublicAddresses())[0];
-    auto hrp = Bech32Factory::newBech32Instance("btc")->getBech32Params().hrp;
+    auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
     EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
     auto balance = wait(account->getBalance());

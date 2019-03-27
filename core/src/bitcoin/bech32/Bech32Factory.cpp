@@ -34,13 +34,13 @@
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
-        std::shared_ptr<Bech32> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
+        Option<std::shared_ptr<Bech32>> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
             if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
-                return std::make_shared<BTCBech32>(networkIdentifier);
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
             } else if (networkIdentifier == "abc") {
-                return std::make_shared<BCHBech32>();
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());
             }
-            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Can not instanciate Bech32 for {}", networkIdentifier);
+            return Option<std::shared_ptr<Bech32>>();
         }
     }
 }

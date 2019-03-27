@@ -35,11 +35,12 @@
 #include "Bech32.h"
 #include <string>
 #include <memory>
+#include <utils/Option.hpp>
 namespace ledger {
     namespace core {
         class Bech32Factory {
         public:
-            static std::shared_ptr<Bech32> newBech32Instance(const std::string &networkIdentifier);
+            static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
         };
     }
 }
