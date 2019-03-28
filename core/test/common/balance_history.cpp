@@ -85,7 +85,7 @@ TEST(BalanceHistory, ZeroesOutOfRange) {
     EXPECT_TRUE(all_zero);
 }
 
-TEST(BalanceHistory, CorrectBalances) {
+TEST(BalanceHistory, CorrectBalancesPerDay) {
     // a basic collections of “operations” with nothing
     std::vector<DummyOperation> operations = {
         DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
@@ -115,4 +115,49 @@ TEST(BalanceHistory, CorrectBalances) {
 
     EXPECT_EQ(*balances[0], 22);
     EXPECT_EQ(*balances[1], 14);
+}
+
+TEST(BalanceHistory, CorrectBalancesPerDay2) {
+    // a basic collections of “operations” with nothing
+    std::vector<DummyOperation> operations = {
+        DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
+        DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-04T01:00:00Z")),
+        DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-19T04:00:00Z")),
+        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-22T05:30:00Z"))
+    };
+
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+
+    auto balances = agnostic::getBalanceHistoryFor<int32_t, int32_t, int32_t>(
+        start,
+        end,
+        api::TimePeriod::DAY,
+        operations.cbegin(),
+        operations.cend(),
+        [](DummyOperation& op) { return op.date; },
+        [](DummyOperation& op) { return op.ty; },
+        [](DummyOperation& op) { return op.amount; },
+        [](DummyOperation&)  { return Option<int32_t>(); },
+        0
+    );
+
+    auto size = balances.size();
+    EXPECT_EQ(size, 31);
+
+    for (auto i = 0; i < 3; ++i) {
+        EXPECT_EQ(*balances[i], 10);
+    }
+
+    for (auto i = 3; i < 18; ++i) {
+        EXPECT_EQ(*balances[4], 22);
+    }
+
+    for (auto i = 18; i < 21; ++i) {
+        EXPECT_EQ(*balances[i], 17);
+    }
+
+    for (auto i = 21; i < 30; ++i) {
+        EXPECT_EQ(*balances[i], 14);
+    }
 }
