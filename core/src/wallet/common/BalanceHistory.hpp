@@ -34,7 +34,6 @@
 #include <string>
 #include <vector>
 
-#include <api/Amount.hpp>
 #include <api/OperationType.hpp>
 #include <api/TimePeriod.hpp>
 #include <async/Future.hpp>
@@ -62,7 +61,8 @@ namespace ledger {
                 std::function<std::chrono::system_clock::time_point (typename OperationIt::value_type&)> opDate,
                 std::function<api::OperationType (typename OperationIt::value_type&)> opType,
                 std::function<Value (typename OperationIt::value_type&)> opValue,
-                std::function<Option<Value> (typename OperationIt::value_type&)> opFees
+                std::function<Option<Value> (typename OperationIt::value_type&)> opFees,
+                Value zero
             ) {
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
@@ -72,7 +72,7 @@ namespace ledger {
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
                 std::vector<std::shared_ptr<CastValue>> values;
-                Value sum;
+                Value sum = zero;
 
                 while (lowerDate <= endDate && operationIt != operationEnd) {
                     auto operation = *operationIt;
@@ -91,7 +91,7 @@ namespace ledger {
                                 break;
                             }
                             case api::OperationType::SEND: {
-                                sum = sum - (opValue(operation) + opFees(operation).getValueOr(Value()));
+                                sum = sum - (opValue(operation) + opFees(operation).getValueOr(zero));
                                 break;
                             }
                         }

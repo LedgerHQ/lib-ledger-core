@@ -111,7 +111,8 @@ namespace ledger {
                 [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getTime(); },
                 [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getOperationType(); },
                 [](std::shared_ptr<api::ERC20LikeOperation>& op) { return BigInt(op->getValue()->toString(10)); },
-                [](std::shared_ptr<api::ERC20LikeOperation>&) { return Option<BigInt>(); }
+                [](std::shared_ptr<api::ERC20LikeOperation>&) { return Option<BigInt>(); },
+                BigInt()
             );
         }
 
