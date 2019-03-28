@@ -42,6 +42,7 @@
 #include <utils/Exception.hpp>
 #include "erc20Tokens.h"
 #include <wallet/common/OperationQuery.h>
+#include <wallet/common/BalanceHistory.hpp>
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
@@ -86,20 +87,8 @@ namespace ledger {
         std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
             const std::chrono::system_clock::time_point& startDate,
             const std::chrono::system_clock::time_point& endDate,
-            api::TimePeriod period
+            api::TimePeriod precision
         ) {
-            // guard against bad arguments
-            if (startDate > endDate) {
-                throw make_exception(
-                    api::ErrorCode::INVALID_DATE_FORMAT,
-                    "Start date should be strictly greater than end date"
-                );
-            }
-
-            std::vector<std::shared_ptr<api::BigInt>> balances;
-            auto currentBalance = BigInt::ZERO;
-            auto nextDate = DateUtils::incrementDate(startDate, period);
-
             auto operations = getOperations();
             // manually sort by date
             std::sort(
@@ -113,37 +102,17 @@ namespace ledger {
                 }
             );
 
-            // accumulate the balance until we hit the starting date
-            auto opIt = std::cbegin(operations);
-            auto opEnd = std::cend(operations);
-
-            for (; opIt != opEnd && (*opIt)->getTime() < startDate; ++opIt) {
-                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
-            }
-
-            // iterate over all operations and segment them according to the granularity we’ve
-            // chosen
-            for (; opIt != opEnd; ++opIt) {
-                auto opDate = (*opIt)->getTime();
-
-                // leave the loop if we have hit the upper date bound
-                if (opDate > endDate) {
-                    break;
-                }
-
-                if (opDate >= nextDate) {
-                    balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
-                    nextDate = DateUtils::incrementDate(nextDate, period);
-                }
-
-                currentBalance = accumulateBalanceWithOperation(currentBalance, **opIt);
-            }
-
-            // we still have something in the currentBalance that needs to be added to the history
-            // (last day)
-            balances.push_back(std::make_shared<api::BigIntImpl>(currentBalance));
-
-            return balances;
+            return agnostic::getBalanceHistoryFor<BigInt, api::BigInt, api::BigIntImpl>(
+                startDate,
+                endDate,
+                precision,
+                operations.cbegin(),
+                operations.cend(),
+                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getTime(); },
+                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getOperationType(); },
+                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return BigInt(op->getValue()->toString(10)); },
+                [](std::shared_ptr<api::ERC20LikeOperation>&) { return Option<BigInt>(); }
+            );
         }
 
         BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
