@@ -84,3 +84,35 @@ TEST(BalanceHistory, ZeroesOutOfRange) {
     });
     EXPECT_TRUE(all_zero);
 }
+
+TEST(BalanceHistory, CorrectBalances) {
+    // a basic collections of “operations” with nothing
+    std::vector<DummyOperation> operations = {
+        DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
+        DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:01:00Z")),
+        DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:00:00Z")),
+        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:30:00Z"))
+    };
+
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+
+    auto balances = agnostic::getBalanceHistoryFor<int32_t, int32_t, int32_t>(
+        start,
+        end,
+        api::TimePeriod::DAY,
+        operations.cbegin(),
+        operations.cend(),
+        [](DummyOperation& op) { return op.date; },
+        [](DummyOperation& op) { return op.ty; },
+        [](DummyOperation& op) { return op.amount; },
+        [](DummyOperation&)  { return Option<int32_t>(); },
+        0
+    );
+
+    auto size = balances.size();
+    EXPECT_EQ(size, 31);
+
+    EXPECT_EQ(*balances[0], 22);
+    EXPECT_EQ(*balances[1], 14);
+}
