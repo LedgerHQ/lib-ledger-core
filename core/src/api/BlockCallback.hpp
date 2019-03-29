@@ -28,7 +28,7 @@ public:
      * @params result optional of type T, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    virtual void onCallback(const std::experimental::optional<Block> & result, const std::experimental::optional<Error> & error) = 0;
+    virtual void onCallback(const std::ledger_exp::optional<Block> & result, const std::ledger_exp::optional<Error> & error) = 0;
 };
 
 } } }  // namespace ledger::core::api

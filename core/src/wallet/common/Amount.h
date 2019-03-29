@@ -49,7 +49,7 @@ namespace ledger {
             std::string toString() override;
             int64_t toLong() override;
             double toDouble() override;
-            std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
+            std::string format(const api::Locale &locale, const std::ledger_exp::optional<api::FormatRules> &rules) override;
             std::shared_ptr<api::Amount> toMagnitude(int32_t magnitude) override;
             std::shared_ptr<ledger::core::BigInt> value() const;
 

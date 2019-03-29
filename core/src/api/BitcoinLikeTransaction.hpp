@@ -56,7 +56,7 @@ public:
     virtual std::chrono::system_clock::time_point getTime() = 0;
 
     /** Get the timestamps serialized in the raw transaction if the underlying currency handles it. */
-    virtual std::experimental::optional<int32_t> getTimestamp() = 0;
+    virtual std::ledger_exp::optional<int32_t> getTimestamp() = 0;
 
     /** Get Transaction version. */
     virtual int32_t getVersion() = 0;
@@ -68,7 +68,7 @@ public:
     virtual std::vector<uint8_t> serializeOutputs() = 0;
 
     /** Get the witness if the underlying transaction is a segwit transaction. */
-    virtual std::experimental::optional<std::vector<uint8_t>> getWitness() = 0;
+    virtual std::ledger_exp::optional<std::vector<uint8_t>> getWitness() = 0;
 
     /**
      * Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated

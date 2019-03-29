@@ -108,7 +108,7 @@ namespace ledger {
             return _value;
         }
         
-        std::experimental::optional<std::vector<uint8_t>> EthereumLikeTransactionApi::getData() {
+        std::ledger_exp::optional<std::vector<uint8_t>> EthereumLikeTransactionApi::getData() {
             return _data;
         }
 

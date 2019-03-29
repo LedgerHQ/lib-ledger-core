@@ -61,7 +61,7 @@ namespace ledger {
             std::string getRootPath() override ;
 
             static std::shared_ptr<EthereumLikeExtendedPublicKey> fromRaw(const api::Currency& params,
-                                                                          const optional<std::vector<uint8_t>>& parentPublicKey,
+                                                                          const std::ledger_exp::optional<std::vector<uint8_t>>& parentPublicKey,
                                                                           const std::vector<uint8_t>& publicKey,
                                                                           const std::vector<uint8_t> &chainCode,
                                                                           const std::string& path);

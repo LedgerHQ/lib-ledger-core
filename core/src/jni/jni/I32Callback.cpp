@@ -15,13 +15,13 @@ I32Callback::JavaProxy::JavaProxy(JniType j) : Handle(::djinni::jniGetThreadEnv(
 
 I32Callback::JavaProxy::~JavaProxy() = default;
 
-void I32Callback::JavaProxy::onCallback(std::experimental::optional<int32_t> c_result, const std::experimental::optional<::ledger::core::api::Error> & c_error) {
+void I32Callback::JavaProxy::onCallback(std::ledger_exp::optional<int32_t> c_result, const std::ledger_exp::optional<::ledger::core::api::Error> & c_error) {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::I32Callback>::get();
     jniEnv->CallVoidMethod(Handle::get().get(), data.method_onCallback,
-                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, c_result)),
-                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c_error)));
+                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni::I32>::fromCpp(jniEnv, c_result)),
+                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c_error)));
     ::djinni::jniExceptionCheck(jniEnv);
 }
 

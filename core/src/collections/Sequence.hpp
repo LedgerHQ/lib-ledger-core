@@ -50,20 +50,20 @@ namespace ledger {
             }
 
             /// Type-safe indexed getter.
-            optional<T&> get(size_t index) {
+            std::ledger_exp::optional<T&> get(size_t index) {
                 if (index < size()) {
                     return this->operator[](index);
                 } else {
-                    return optional<T&>();
+                    return std::ledger_exp::optional<T&>();
                 }
             }
 
             /// Type-safe indexed getter.
-            optional<const T&> get(size_t index) const {
+            std::ledger_exp::optional<const T&> get(size_t index) const {
                 if (index < size()) {
                     return this->operator[](index);
                 } else {
-                    return optional<const T&>();
+                    return std::ledger_exp::optional<const T&>();
                 }
             }
 

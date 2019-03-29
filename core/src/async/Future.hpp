@@ -226,7 +226,7 @@ namespace ledger {
             };
 
             template<typename Callback>
-            typename std::enable_if<has_on_callback_method<Callback, void (const std::experimental::optional<T>&, const std::experimental::optional<api::Error>&)>::value, void>::type
+            typename std::enable_if<has_on_callback_method<Callback, void (const std::ledger_exp::optional<T>&, const std::ledger_exp::optional<api::Error>&)>::value, void>::type
             callback(const Context& context, std::shared_ptr<Callback> cb) {
                 onComplete(context, [cb] (const Try<T>& result) {
                     if (result.isSuccess()) {
@@ -239,7 +239,7 @@ namespace ledger {
             };
 
             template<typename Callback>
-            typename std::enable_if<is_shared_ptr<T>::value && has_on_callback_method<Callback, void (const T&, const std::experimental::optional<api::Error>&)>::value, void>::type
+            typename std::enable_if<is_shared_ptr<T>::value && has_on_callback_method<Callback, void (const T&, const std::ledger_exp::optional<api::Error>&)>::value, void>::type
             callback(const Context& context, std::shared_ptr<Callback> cb) {
                 onComplete(context, [cb] (const Try<T>& result) {
                     if (result.isSuccess()) {

@@ -79,7 +79,7 @@ namespace ledger {
 
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
-            optional<std::string> get(const std::vector<uint8_t>& key);
+            std::ledger_exp::optional<std::string> get(const std::vector<uint8_t>& key);
             void commit(const std::vector<PreferencesChange>& changes);
 
             /// Turn encryption on for all future uses.

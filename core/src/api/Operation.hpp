@@ -99,7 +99,7 @@ public:
      * Get block height on which operation was included.
      * @return Optional 64-bit integer, height of block in which operation was validated
      */
-    virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
+    virtual std::ledger_exp::optional<int64_t> getBlockHeight() = 0;
 
     /**
      * Convert operation as Bitcoin operation.

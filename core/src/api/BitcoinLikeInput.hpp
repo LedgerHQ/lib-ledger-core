@@ -31,7 +31,7 @@ public:
     virtual ~BitcoinLikeInput() {}
 
     /** Returns the address of the input (if an address can be computed). */
-    virtual std::experimental::optional<std::string> getAddress() = 0;
+    virtual std::ledger_exp::optional<std::string> getAddress() = 0;
 
     /**
      * Returns the public associated with the address. This value can be NULL if you are building a transaction with an
@@ -52,7 +52,7 @@ public:
      * Get the transaction hash of the output spent by this input. The result can be NULL if the output is not owned by
      * the wallet.
      */
-    virtual std::experimental::optional<std::string> getPreviousTxHash() = 0;
+    virtual std::ledger_exp::optional<std::string> getPreviousTxHash() = 0;
 
     /**
      * Check whether input is for a coinbase.
@@ -64,13 +64,13 @@ public:
      * Stored data cointained in coinbase.
      * @return Optional String
      */
-    virtual std::experimental::optional<std::string> getCoinbase() = 0;
+    virtual std::ledger_exp::optional<std::string> getCoinbase() = 0;
 
     /**
      * Get output index, it identifies which UTXO from tht transaction to spend.
      * @return Optional 32 bits integer, index of previous transaction
      */
-    virtual std::experimental::optional<int32_t> getPreviousOutputIndex() = 0;
+    virtual std::ledger_exp::optional<int32_t> getPreviousOutputIndex() = 0;
 
     /**
      * Retrieve the output spent by this input. Depending on the implementation this method may

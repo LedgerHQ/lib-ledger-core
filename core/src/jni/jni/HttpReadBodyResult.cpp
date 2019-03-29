@@ -14,8 +14,8 @@ HttpReadBodyResult::~HttpReadBodyResult() = default;
 auto HttpReadBodyResult::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<HttpReadBodyResult>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c.error)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, c.data)))};
+                                                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c.error)),
+                                                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::fromCpp(jniEnv, c.data)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -24,8 +24,8 @@ auto HttpReadBodyResult::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 3);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<HttpReadBodyResult>::get();
-    return {::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_error)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_data))};
+    return {::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Error>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_error)),
+            ::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_data))};
 }
 
 }  // namespace djinni_generated

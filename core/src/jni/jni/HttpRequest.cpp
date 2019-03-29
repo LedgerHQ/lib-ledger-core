@@ -67,8 +67,8 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1co
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::HttpRequest>(nativeRef);
-        ref->complete(::djinni::Optional<std::experimental::optional, ::djinni_generated::HttpUrlConnection>::toCpp(jniEnv, j_response),
-                      ::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::toCpp(jniEnv, j_error));
+        ref->complete(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::HttpUrlConnection>::toCpp(jniEnv, j_response),
+                      ::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Error>::toCpp(jniEnv, j_error));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

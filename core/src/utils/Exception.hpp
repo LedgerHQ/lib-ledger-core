@@ -67,7 +67,7 @@ namespace ledger {
             }
 
         public:
-            static const optional<api::Error> NO_CORE_ERROR;
+            static const std::ledger_exp::optional<api::Error> NO_CORE_ERROR;
 
         private:
             api::ErrorCode _code;

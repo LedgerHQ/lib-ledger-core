@@ -53,7 +53,7 @@ public:
 
     virtual
     void
-    onCallback(const std::experimental::optional<T>& result, const std::experimental::optional<api::Error>& error) override {
+    onCallback(const std::ledger_exp::optional<T>& result, const std::ledger_exp::optional<api::Error>& error) override {
         if (error) {
             _promise.failure(ledger::core::Exception(error.value().code, error.value().message));
         } else {
@@ -75,7 +75,7 @@ public:
 
     virtual
     void
-    onCallback(const std::shared_ptr<T>& result, const std::experimental::optional<api::Error>& error) override {
+    onCallback(const std::shared_ptr<T>& result, const std::ledger_exp::optional<api::Error>& error) override {
         if (error) {
             _promise.failure(ledger::core::Exception(error.value().code, error.value().message));
         } else {
@@ -90,9 +90,9 @@ private:
 
 
 template <typename T, class Class>
-std::shared_ptr<FutureCallback<T, Class, has_on_callback_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>
+std::shared_ptr<FutureCallback<T, Class, has_on_callback_method<Class, void (const std::shared_ptr<T>&, const std::ledger_exp::optional<api::Error>&)>::value>>
 make_api_callback() {
-    return std::make_shared<FutureCallback<T, Class, has_on_callback_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>();
+    return std::make_shared<FutureCallback<T, Class, has_on_callback_method<Class, void (const std::shared_ptr<T>&, const std::ledger_exp::optional<api::Error>&)>::value>>();
 };
 
 #endif //LEDGER_CORE_CALLBACKS_HPP

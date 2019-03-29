@@ -32,6 +32,7 @@
 #include "BitcoinLikeWritableInputApi.h"
 #include <api/BinaryCallback.hpp>
 #include "BitcoinLikeScriptApi.h"
+#include "utils/optional.hpp"
 
 namespace ledger {
     namespace core {
@@ -61,7 +62,7 @@ namespace ledger {
             }
         }
 
-        optional<std::string> BitcoinLikeWritableInputApi::getAddress() {
+        std::ledger_exp::optional<std::string> BitcoinLikeWritableInputApi::getAddress() {
             return Option<std::string>(_address).toOptional();
         }
 
@@ -81,15 +82,15 @@ namespace ledger {
             return false;
         }
 
-        optional<std::string> BitcoinLikeWritableInputApi::getCoinbase() {
+        std::ledger_exp::optional<std::string> BitcoinLikeWritableInputApi::getCoinbase() {
             return Option<std::string>().toOptional();
         }
 
-        optional<std::string> BitcoinLikeWritableInputApi::getPreviousTxHash() {
+        std::ledger_exp::optional<std::string> BitcoinLikeWritableInputApi::getPreviousTxHash() {
             return Option<std::string>(_previousHash).toOptional();
         }
 
-        optional<int32_t> BitcoinLikeWritableInputApi::getPreviousOutputIndex() {
+        std::ledger_exp::optional<int32_t> BitcoinLikeWritableInputApi::getPreviousOutputIndex() {
             return Option<int32_t>(_index).toOptional();
         }
 

@@ -76,7 +76,7 @@ public:
     virtual double toDouble() = 0;
 
     /** Format an amount with a locale and some formatting rules. */
-    virtual std::string format(const Locale & locale, const std::experimental::optional<FormatRules> & rules) = 0;
+    virtual std::string format(const Locale & locale, const std::ledger_exp::optional<FormatRules> & rules) = 0;
 
     /** Transform an hexadecimal string into an amount (expressed in the given currency). */
     static std::shared_ptr<Amount> fromHex(const Currency & currency, const std::string & hex);

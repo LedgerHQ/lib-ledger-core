@@ -101,7 +101,7 @@
 
 namespace std{
 
-    namespace experimental{
+    namespace ledger_exp{
 
 // BEGIN workaround for missing is_trivially_destructible
 # if defined TR2_OPTIONAL_GCC_4_8_AND_HIGHER___
@@ -113,8 +113,8 @@ namespace std{
 # elif defined TR2_OPTIONAL_DISABLE_EMULATION_OF_TYPE_TRAITS
     // leave it: the user doesn't want it
 # else
-	template <typename T>
-	using is_trivially_destructible = std::has_trivial_destructor<T>;
+    template <typename T>
+    using is_trivially_destructible = std::has_trivial_destructor<T>;
 # endif
 // END workaround for missing is_trivially_destructible
 
@@ -534,7 +534,7 @@ struct is_nothrow_move_assignable
 
   OPTIONAL_MUTABLE_CONSTEXPR T&& value() && {
     if (!initialized()) throw bad_optional_access("bad optional access");
-	return std::move(contained_val());
+    return std::move(contained_val());
   }
 
 # else
@@ -1017,16 +1017,16 @@ struct is_nothrow_move_assignable
         }
 
 
-    } // namespace experimental
+    } // namespace ledger_exp
 } // namespace std
 
 namespace std
 {
     template <typename T>
-    struct hash<std::experimental::optional<T>>
+    struct hash<std::ledger_exp::optional<T>>
     {
         typedef typename hash<T>::result_type result_type;
-                                              typedef std::experimental::optional<T> argument_type;
+                                              typedef std::ledger_exp::optional<T> argument_type;
 
                                               constexpr result_type operator()(argument_type const& arg) const {
             return arg ? std::hash<T>{}(*arg) : result_type{};
@@ -1034,22 +1034,15 @@ namespace std
     };
 
     template <typename T>
-    struct hash<std::experimental::optional<T&>>
+    struct hash<std::ledger_exp::optional<T&>>
     {
         typedef typename hash<T>::result_type result_type;
-                typedef std::experimental::optional<T&> argument_type;
+                typedef std::ledger_exp::optional<T&> argument_type;
 
         constexpr result_type operator()(argument_type const& arg) const {
             return arg ? std::hash<T>{}(*arg) : result_type{};
         }
     };
-}
-
-namespace ledger {
-    namespace core {
-        template <typename T>
-        using optional = std::experimental::optional<T>;
-    }
 }
 
 # undef TR2_OPTIONAL_REQUIRES

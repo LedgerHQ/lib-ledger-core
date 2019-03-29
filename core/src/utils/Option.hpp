@@ -31,7 +31,7 @@
 #ifndef LEDGER_CORE_OPTION_HPP
 #define LEDGER_CORE_OPTION_HPP
 
-#include "optional.hpp"
+#include "utils/optional.hpp"
 #include "Unit.hpp"
 #include <cstddef>
 #include <new>
@@ -60,7 +60,7 @@ namespace ledger {
             Option(T&& value) : _optional(std::move(value)) {};
 
             Option(const Option<T>& option) : _optional(option._optional) {};
-            Option(const std::experimental::optional<T>& optional) : _optional(optional) {};
+            Option(const std::ledger_exp::optional<T>& optional) : _optional(optional) {};
             Option<T>& operator=(const Option<T>& option) {
                 if (this != &option) {
                     _optional = option._optional;
@@ -76,20 +76,20 @@ namespace ledger {
             };
 
             Option<T>& operator=(const T& v) {
-                _optional = optional<T>(v);
+                _optional = std::ledger_exp::optional<T>(v);
                 return *this;
             };
 
             Option<T>& operator=(T&& v) {
-                _optional = optional<T>(std::move(v));
+                _optional = std::ledger_exp::optional<T>(std::move(v));
                 return *this;
             };
 
             Option<T>&operator=(T* v) {
                 if (v == nullptr) {
-                    _optional = optional<T>(v);
+                    _optional = std::ledger_exp::optional<T>(v);
                 } else {
-                    _optional = optional<T>(*v);
+                    _optional = std::ledger_exp::optional<T>(*v);
                 }
                 return *this;
             };
@@ -161,7 +161,7 @@ namespace ledger {
                 return getValue();
             }
 
-            optional<T> toOptional() const {
+            std::ledger_exp::optional<T> toOptional() const {
                 return _optional;
             };
 
@@ -227,12 +227,12 @@ namespace ledger {
                 }
             }
 
-            operator optional<T>() {
+            operator std::ledger_exp::optional<T>() {
                 return _optional;
             }
 
         private:
-            optional<T> _optional;
+            std::ledger_exp::optional<T> _optional;
         };
 
         template <typename T>

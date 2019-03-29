@@ -30,7 +30,7 @@ public:
      * @params result optional of type list<T>, non null if main task failed
      * @params error optional of type Error, non null if main task succeeded
      */
-    virtual void onCallback(const std::experimental::optional<std::vector<std::shared_ptr<Address>>> & result, const std::experimental::optional<Error> & error) = 0;
+    virtual void onCallback(const std::ledger_exp::optional<std::vector<std::shared_ptr<Address>>> & result, const std::ledger_exp::optional<Error> & error) = 0;
 };
 
 } } }  // namespace ledger::core::api

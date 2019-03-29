@@ -39,27 +39,27 @@
 
 namespace ledger {
     namespace core {
-        optional<std::string> DynamicObject::getString(const std::string &key) {
+        std::ledger_exp::optional<std::string> DynamicObject::getString(const std::string &key) {
             return get<std::string>(key);
         }
 
-        optional<int32_t> DynamicObject::getInt(const std::string &key) {
+        std::ledger_exp::optional<int32_t> DynamicObject::getInt(const std::string &key) {
             return get<int32_t>(key);
         }
 
-        optional<int64_t> DynamicObject::getLong(const std::string &key) {
+        std::ledger_exp::optional<int64_t> DynamicObject::getLong(const std::string &key) {
             return get<int64_t>(key);
         }
 
-        optional<double> DynamicObject::getDouble(const std::string &key) {
+        std::ledger_exp::optional<double> DynamicObject::getDouble(const std::string &key) {
             return get<double>(key);
         }
 
-        optional<bool> DynamicObject::getBoolean(const std::string &key) {
+        std::ledger_exp::optional<bool> DynamicObject::getBoolean(const std::string &key) {
             return get<bool>(key);
         }
 
-        optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
+        std::ledger_exp::optional<std::vector<uint8_t>> DynamicObject::getData(const std::string &key) {
             return get<std::vector<uint8_t>>(key);
         }
 
@@ -116,11 +116,11 @@ namespace ledger {
             return _values.getKeys().getContainer();
         }
 
-        optional<api::DynamicType> DynamicObject::getType(const std::string &key) {
+        std::ledger_exp::optional<api::DynamicType> DynamicObject::getType(const std::string &key) {
             auto v = _values.lift(key);
             if (_values.empty() || !v.hasValue())
-                return optional<api::DynamicType>();
-            return optional<api::DynamicType>(v.getValue().getType());
+                return std::ledger_exp::optional<api::DynamicType>();
+            return std::ledger_exp::optional<api::DynamicType>(v.getValue().getType());
         }
 
         std::string DynamicObject::dump() {

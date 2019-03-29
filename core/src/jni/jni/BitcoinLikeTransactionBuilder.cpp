@@ -175,7 +175,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_par
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
                                                                                                  ::djinni::Binary::toCpp(jniEnv, j_rawTransaction),
-                                                                                                 ::djinni::Optional<std::experimental::optional, ::djinni::I32>::toCpp(jniEnv, j_currentBlockHeight));
+                                                                                                 ::djinni::Optional<std::ledger_exp::optional, ::djinni::I32>::toCpp(jniEnv, j_currentBlockHeight));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

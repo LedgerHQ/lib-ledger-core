@@ -53,7 +53,7 @@ namespace ledger {
             };
 
             Try(const T&v) {
-                _value = optional<T>(v);
+                _value = std::ledger_exp::optional<T>(v);
             }
 
             Try(api::ErrorCode code, const std::string& message) {
@@ -133,8 +133,8 @@ namespace ledger {
 
             };
         private:
-            optional<Exception> _exception;
-            optional<T> _value;
+            std::ledger_exp::optional<Exception> _exception;
+            std::ledger_exp::optional<T> _value;
 
         public:
             static const Try<T> from(std::function<T ()> lambda) {

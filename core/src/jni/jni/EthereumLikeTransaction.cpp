@@ -108,7 +108,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024C
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
         auto r = ref->getData();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -177,7 +177,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransaction_00024CppP
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeTransaction>(nativeRef);
         auto r = ref->getBlock();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeBlock>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::EthereumLikeBlock>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

@@ -94,42 +94,42 @@ public:
      * @param index, 64-bit integer
      * @return Optional string
      */
-    virtual std::experimental::optional<std::string> getString(int64_t index) = 0;
+    virtual std::ledger_exp::optional<std::string> getString(int64_t index) = 0;
 
     /**
      * Get 32-bit integer at a given index.
      * @param index, 64-bit integer
      * @return Optional 32-bit integer
      */
-    virtual std::experimental::optional<int32_t> getInt(int64_t index) = 0;
+    virtual std::ledger_exp::optional<int32_t> getInt(int64_t index) = 0;
 
     /**
      * Get 64-bit integer at a given index.
      * @param index, 64-bit integer
      * @return Optional 64-bit integer
      */
-    virtual std::experimental::optional<int64_t> getLong(int64_t index) = 0;
+    virtual std::ledger_exp::optional<int64_t> getLong(int64_t index) = 0;
 
     /**
      * Get double at a given index.
      * @param index, 64-bit integer
      * @return Optional double
      */
-    virtual std::experimental::optional<double> getDouble(int64_t index) = 0;
+    virtual std::ledger_exp::optional<double> getDouble(int64_t index) = 0;
 
     /**
      * Get binary at a given index.
      * @param index, 64-bit integer
      * @return Optional binary
      */
-    virtual std::experimental::optional<std::vector<uint8_t>> getData(int64_t index) = 0;
+    virtual std::ledger_exp::optional<std::vector<uint8_t>> getData(int64_t index) = 0;
 
     /**
      * Get bool at a given index.
      * @param index, 64-bit integer
      * @return Optional bool
      */
-    virtual std::experimental::optional<bool> getBoolean(int64_t index) = 0;
+    virtual std::ledger_exp::optional<bool> getBoolean(int64_t index) = 0;
 
     /**
      * Get DynamicObject object at a given index.
@@ -157,7 +157,7 @@ public:
      * @param index, 64 bits integer
      * @return Optional DynamicType enum entry
      */
-    virtual std::experimental::optional<DynamicType> getType(int64_t index) = 0;
+    virtual std::ledger_exp::optional<DynamicType> getType(int64_t index) = 0;
 
     /**
      * Delete value stored at given index.

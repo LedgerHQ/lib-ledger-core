@@ -62,8 +62,8 @@ namespace ledger {
                 std::vector<uint8_t> body((uint8_t *)_body.data(), (uint8_t *)(_body.data() + _body.size()));
                 _body.clear();
                 return core::api::HttpReadBodyResult(
-                   std::experimental::optional<core::api::Error>(),
-                   std::experimental::optional<std::vector<uint8_t>>(body)
+                   std::ledger_exp::optional<core::api::Error>(),
+                   std::ledger_exp::optional<std::vector<uint8_t>>(body)
                 );
             }
 
@@ -124,7 +124,7 @@ namespace ledger {
                         body
                         );
 
-                        request->complete(connection, std::experimental::optional<core::api::Error>());
+                        request->complete(connection, std::ledger_exp::optional<core::api::Error>());
                     } else {
                         core::api::ErrorCode code = core::api::ErrorCode::UNKNOWN;
                         switch (reply->error()) {
@@ -211,7 +211,7 @@ namespace ledger {
                                 code = core::api::ErrorCode::HTTP_ERROR;
                                 break;
                         }
-                        request->complete(nullptr, std::experimental::optional<core::api::Error>(core::api::Error(
+                        request->complete(nullptr, std::ledger_exp::optional<core::api::Error>(core::api::Error(
                         code, reply->errorString().toStdString()
                         )));
                     }

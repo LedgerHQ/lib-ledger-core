@@ -34,7 +34,7 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        void onCallback(const std::shared_ptr<::ledger::core::api::EthereumLikeTransaction> & result, const std::experimental::optional<::ledger::core::api::Error> & error) override;
+        void onCallback(const std::shared_ptr<::ledger::core::api::EthereumLikeTransaction> & result, const std::ledger_exp::optional<::ledger::core::api::Error> & error) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::EthereumLikeTransactionCallback, ::djinni_generated::EthereumLikeTransactionCallback>;

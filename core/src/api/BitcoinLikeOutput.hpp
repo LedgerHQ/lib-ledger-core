@@ -58,7 +58,7 @@ public:
      * Get address that spent the output.
      * @return Optional String, address that spent
      */
-    virtual std::experimental::optional<std::string> getAddress() = 0;
+    virtual std::ledger_exp::optional<std::string> getAddress() = 0;
 
     virtual std::shared_ptr<DerivationPath> getDerivationPath() = 0;
 };

@@ -48,9 +48,9 @@ namespace ledger {
 
             bool isPushedData() override;
 
-            optional<api::BitcoinLikeOperator> getOperator() override;
+            std::ledger_exp::optional<api::BitcoinLikeOperator> getOperator() override;
 
-            optional<std::vector<uint8_t>> getPushedData() override;
+            std::ledger_exp::optional<std::vector<uint8_t>> getPushedData() override;
 
             std::shared_ptr<api::BitcoinLikeScriptChunk> next() override;
 

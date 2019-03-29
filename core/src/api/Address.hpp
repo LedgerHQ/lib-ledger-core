@@ -28,7 +28,7 @@ public:
      * Gets an optional derivation path (if the address is owned by an account).
      * @return The derivation path of the address
      */
-    virtual std::experimental::optional<std::string> getDerivationPath() = 0;
+    virtual std::ledger_exp::optional<std::string> getDerivationPath() = 0;
 
     /**
      * Serialize the address to a string. The serialization method depends of the underlying currency and

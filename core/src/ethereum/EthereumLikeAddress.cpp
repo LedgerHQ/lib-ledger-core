@@ -66,7 +66,7 @@ namespace ledger {
             return Base58::encodeWithEIP55(_keccak256);
         }
 
-        std::experimental::optional<std::string> EthereumLikeAddress::getDerivationPath() {
+        std::ledger_exp::optional<std::string> EthereumLikeAddress::getDerivationPath() {
             return _derivationPath.toOptional();
         }
 

@@ -16,12 +16,12 @@ namespace ledger { namespace core { namespace api {
 /** Structure representing Http response body. */
 struct HttpReadBodyResult final {
     /** Optional Error structure, error in case of http request failure. */
-    std::experimental::optional<Error> error;
+    std::ledger_exp::optional<Error> error;
     /** Optional binary, data returned by http request in case of success. */
-    std::experimental::optional<std::vector<uint8_t>> data;
+    std::ledger_exp::optional<std::vector<uint8_t>> data;
 
-    HttpReadBodyResult(std::experimental::optional<Error> error_,
-                       std::experimental::optional<std::vector<uint8_t>> data_)
+    HttpReadBodyResult(std::ledger_exp::optional<Error> error_,
+                       std::ledger_exp::optional<std::vector<uint8_t>> data_)
     : error(std::move(error_))
     , data(std::move(data_))
     {}

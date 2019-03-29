@@ -110,7 +110,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1form
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Amount>(nativeRef);
         auto r = ref->format(::djinni_generated::Locale::toCpp(jniEnv, j_locale),
-                             ::djinni::Optional<std::experimental::optional, ::djinni_generated::FormatRules>::toCpp(jniEnv, j_rules));
+                             ::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::FormatRules>::toCpp(jniEnv, j_rules));
         return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

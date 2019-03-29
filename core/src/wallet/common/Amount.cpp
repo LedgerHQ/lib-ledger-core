@@ -98,7 +98,7 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "double Amount::toDouble()");
         }
 
-        std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules) {
+        std::string Amount::format(const api::Locale &locale, const std::ledger_exp::optional<api::FormatRules> &rules) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "std::string Amount::format(const api::Locale &locale, const optional<api::FormatRules> &rules)");
         }
 

@@ -58,7 +58,7 @@ public:
      * @param response, Optional HttpUrlConnection object, response of request if succeed
      * @param error, optional Error structure, error returned in case of request failure
      */
-    virtual void complete(const std::shared_ptr<HttpUrlConnection> & response, const std::experimental::optional<Error> & error) = 0;
+    virtual void complete(const std::shared_ptr<HttpUrlConnection> & response, const std::ledger_exp::optional<Error> & error) = 0;
 };
 
 } } }  // namespace ledger::core::api

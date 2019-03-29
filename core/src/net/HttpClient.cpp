@@ -44,21 +44,21 @@ namespace ledger {
         }
 
         HttpRequest HttpClient::GET(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::GET, path, std::ledger_exp::optional<std::vector<uint8_t>>(), headers);
         }
 
         HttpRequest HttpClient::PUT(const std::string &path, const std::vector<uint8_t> &body,
                                     const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::PUT, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::PUT, path, std::ledger_exp::optional<std::vector<uint8_t>>(), headers);
         }
 
         HttpRequest HttpClient::DEL(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::DEL, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+            return createRequest(api::HttpMethod::DEL, path, std::ledger_exp::optional<std::vector<uint8_t>>(), headers);
         }
 
         HttpRequest HttpClient::POST(const std::string &path, const std::vector<uint8_t> &body,
                                      const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::POST, path, std::experimental::optional<std::vector<uint8_t>>(body), headers);
+            return createRequest(api::HttpMethod::POST, path, std::ledger_exp::optional<std::vector<uint8_t>>(body), headers);
         }
 
         HttpClient& HttpClient::addHeader(const std::string &key, const std::string &value) {
@@ -72,7 +72,7 @@ namespace ledger {
         }
 
         HttpRequest HttpClient::createRequest(api::HttpMethod method, const std::string &path,
-                                              const std::experimental::optional<std::vector<uint8_t >> body,
+                                              const std::ledger_exp::optional<std::vector<uint8_t >> body,
                                               const std::unordered_map<std::string, std::string> &headers) {
             auto url = _baseUrl;
             if (path.front() == '/') {
@@ -101,7 +101,7 @@ namespace ledger {
 
         HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url,
                                  const std::unordered_map<std::string, std::string> &headers,
-                                 const std::experimental::optional<std::vector<uint8_t >> body,
+                                 const std::ledger_exp::optional<std::vector<uint8_t >> body,
                                  const std::shared_ptr<api::HttpClient> &client,
                                  const std::shared_ptr<api::ExecutionContext> &context,
                                  const Option<std::shared_ptr<spdlog::logger>>& logger) {
@@ -188,7 +188,7 @@ namespace ledger {
         }
 
         void HttpRequest::ApiRequest::complete(const std::shared_ptr<api::HttpUrlConnection> &response,
-                                               const optional<api::Error> &error) {
+                                               const std::ledger_exp::optional<api::Error> &error) {
             if (error) {
                 _promise.failure(Exception(error->code, error->message));
             } else {

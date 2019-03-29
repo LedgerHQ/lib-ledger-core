@@ -58,7 +58,7 @@ namespace ledger {
             return std::make_shared<BitcoinLikeAddress>(_currency,
                                                         key.getPublicKeyHash160(),
                                                         keychainEngine,
-                                                        optional<std::string>((_path + p).toString()));
+                                                        std::ledger_exp::optional<std::string>((_path + p).toString()));
         }
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey> BitcoinLikeExtendedPublicKey::derive(const DerivationPath &path) {
@@ -72,7 +72,7 @@ namespace ledger {
 
         std::shared_ptr<BitcoinLikeExtendedPublicKey>
         BitcoinLikeExtendedPublicKey::fromRaw(const api::Currency &currency,
-                                              const optional<std::vector<uint8_t>> &parentPublicKey,
+                                              const std::ledger_exp::optional<std::vector<uint8_t>> &parentPublicKey,
                                               const std::vector<uint8_t> &publicKey,
                                               const std::vector<uint8_t> &chainCode,
                                               const std::string &path,

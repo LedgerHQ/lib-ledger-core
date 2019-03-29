@@ -55,7 +55,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeAddress> getReceiver() override ;
             std::shared_ptr<api::EthereumLikeAddress> getSender() override;
             std::shared_ptr<api::Amount> getValue() override;
-            std::experimental::optional<std::vector<uint8_t>> getData() override;
+            std::ledger_exp::optional<std::vector<uint8_t>> getData() override;
             int32_t getStatus() override;
             std::vector<uint8_t> serialize() override;
             std::chrono::system_clock::time_point getDate() override;

@@ -44,7 +44,7 @@ namespace ledger {
             explicit AbstractAddress(const api::Currency& currency, const Option<std::string>& path);
             api::Currency getCurrency() override;
 
-            optional<std::string> getDerivationPath() override;
+            std::ledger_exp::optional<std::string> getDerivationPath() override;
 
             std::shared_ptr<api::BitcoinLikeAddress> asBitcoinLikeAddress() override;
 

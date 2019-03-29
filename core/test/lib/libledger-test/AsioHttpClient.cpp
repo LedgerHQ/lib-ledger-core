@@ -80,7 +80,7 @@ void AsioHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpReques
         api::HttpReadBodyResult readBody() override {
             auto b = body;
             body = std::vector<uint8_t>();
-            return api::HttpReadBodyResult(std::experimental::optional<api::Error>(), b);
+            return api::HttpReadBodyResult(std::ledger_exp::optional<api::Error>(), b);
         }
     };
 
@@ -203,7 +203,7 @@ void AsioHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpReques
                 b = std::string(b.data(), b.size() - 1);
             }
             conn->body = std::vector<uint8_t>((uint8_t*)b.data(),(uint8_t*)(b.data() + b.size()));
-            q->apiRequest->complete(conn, std::experimental::optional<api::Error>());
+            q->apiRequest->complete(conn, std::ledger_exp::optional<api::Error>());
         }
     }));
 }

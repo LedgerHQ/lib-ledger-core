@@ -23,9 +23,9 @@ auto Currency::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<J
                                                            ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.bip44CoinType)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.paymentUriScheme)),
                                                            ::djinni::get(::djinni::List<::djinni_generated::CurrencyUnit>::fromCpp(jniEnv, c.units)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::fromCpp(jniEnv, c.bitcoinLikeNetworkParameters)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::fromCpp(jniEnv, c.ethereumLikeNetworkParameters)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::fromCpp(jniEnv, c.rippleLikeNetworkParameters)))};
+                                                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::fromCpp(jniEnv, c.bitcoinLikeNetworkParameters)),
+                                                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::EthereumLikeNetworkParameters>::fromCpp(jniEnv, c.ethereumLikeNetworkParameters)),
+                                                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::RippleLikeNetworkParameters>::fromCpp(jniEnv, c.rippleLikeNetworkParameters)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -39,9 +39,9 @@ auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_bip44CoinType)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_paymentUriScheme)),
             ::djinni::List<::djinni_generated::CurrencyUnit>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_units)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_bitcoinLikeNetworkParameters)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_ethereumLikeNetworkParameters)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_rippleLikeNetworkParameters))};
+            ::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_bitcoinLikeNetworkParameters)),
+            ::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::EthereumLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_ethereumLikeNetworkParameters)),
+            ::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::RippleLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_rippleLikeNetworkParameters))};
 }
 
 }  // namespace djinni_generated

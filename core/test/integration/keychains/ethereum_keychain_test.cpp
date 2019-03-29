@@ -39,7 +39,7 @@
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
 #include <iostream>
-using namespace std;
+
 class EthereumKeychains : public BaseFixture {
 public:
     void testEthKeychain(const KeychainTestData &data, std::function<void (EthereumLikeKeychain&)> f) {
@@ -56,7 +56,7 @@ public:
                     0,
                     ledger::core::EthereumLikeExtendedPublicKey::fromBase58(data.currency,
                                                                             data.xpub,
-                                                                            optional<std::string>(data.derivationPath)),
+                                                                            std::ledger_exp::optional<std::string>(data.derivationPath)),
                     backend->getPreferences("keychain")
             );
             f(keychain);
@@ -90,7 +90,7 @@ TEST_F(EthereumKeychains, EthereumEmptyAddressValidation) {
 TEST_F(EthereumKeychains, EthereumAddressValidationFromXpub) {
     auto extKey = ledger::core::EthereumLikeExtendedPublicKey::fromBase58(ETHEREUM_DATA.currency,
                                                                           ETHEREUM_DATA.xpub,
-                                                                          optional<std::string>(ETHEREUM_DATA.derivationPath));
+                                                                          std::ledger_exp::optional<std::string>(ETHEREUM_DATA.derivationPath));
     EXPECT_EQ(extKey->toBase58(), ETHEREUM_DATA.xpub);
 
     auto derivedPubKey = "xpub6DrvMc6me5H6sV3Wrva6thZyhxMZ7WMyB8nMWLe3T5xr79bBsDJn2zgSQiVWEbU5XfoLMEz7oZT9G49AoCcxYNrz2dVBrySzUw4k9GTNyoW";
@@ -107,7 +107,7 @@ TEST_F(EthereumKeychains, EthereumChildAddressValidationFromPubKeyAndChainCode) 
     auto pubKey = "035dd2992d954b3d232037aba9cc7fc08c2155e4f3616aa1290edc9cc09f8d64f0";
     auto chainCode = "6a4e60e6fbd45355d840ff7a18bc7cb628318f1ba6fbcfb0c07626d8ea768aca";
     auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                        optional<std::vector<uint8_t >>(),
+                                                                        std::ledger_exp::optional<std::vector<uint8_t >>(),
                                                                         hex::toByteArray(pubKey),
                                                                         hex::toByteArray(chainCode),
                                                                         path);
@@ -198,7 +198,7 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         auto config = DynamicObject::newInstance();
         config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                            optional<std::vector<uint8_t >>(),
+                                                                            std::ledger_exp::optional<std::vector<uint8_t >>(),
                                                                             hex::toByteArray(publicKey),
                                                                             hex::toByteArray(chainCode),
                                                                             path);

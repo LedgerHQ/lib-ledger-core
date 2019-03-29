@@ -72,7 +72,7 @@ namespace ledger {
             return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
         }
 
-        std::experimental::optional<std::string> RippleLikeAddress::getDerivationPath() {
+        std::ledger_exp::optional<std::string> RippleLikeAddress::getDerivationPath() {
             return _derivationPath.toOptional();
         }
 

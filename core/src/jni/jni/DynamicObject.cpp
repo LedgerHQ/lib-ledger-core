@@ -115,7 +115,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getString(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -125,7 +125,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getInt(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::I32>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -135,7 +135,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getLong(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::I64>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -145,7 +145,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getDouble(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::F64>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -155,7 +155,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getData(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -165,7 +165,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getBoolean(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Bool>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::Bool>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -175,7 +175,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getObject(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -185,7 +185,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getArray(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicArray>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::DynamicArray>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -225,7 +225,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativ
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DynamicObject>(nativeRef);
         auto r = ref->getType(::djinni::String::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicType>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::DynamicType>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -283,7 +283,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_load(JNIEnv* jniEnv
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::DynamicObject::load(::djinni::Binary::toCpp(jniEnv, j_serialized));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::DynamicObject>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

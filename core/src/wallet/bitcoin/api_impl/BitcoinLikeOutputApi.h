@@ -52,7 +52,7 @@ namespace ledger {
             int32_t getOutputIndex() override;
             std::shared_ptr<api::Amount> getValue() override;
             std::vector<uint8_t> getScript() override;
-            optional<std::string> getAddress() override;
+            std::ledger_exp::optional<std::string> getAddress() override;
 
             std::shared_ptr<api::BitcoinLikeScript> parseScript() override;
 

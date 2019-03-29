@@ -98,42 +98,42 @@ public:
      * @param key, string, key of string to look for
      * @return Optional string
      */
-    virtual std::experimental::optional<std::string> getString(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<std::string> getString(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored 32 bits integer having a specific key.
      * @param key, string, key of 32 bits integer to look for
      * @return Optional 32 bits integer
      */
-    virtual std::experimental::optional<int32_t> getInt(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<int32_t> getInt(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored 64 bits integer having a specific key.
      * @param key, string, key of 64 bits integer to look for
      * @return Optional 64 bits integer
      */
-    virtual std::experimental::optional<int64_t> getLong(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<int64_t> getLong(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored double having a specific key.
      * @param key, string, key of double to look for
      * @return Optional double
      */
-    virtual std::experimental::optional<double> getDouble(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<double> getDouble(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored binary having a specific key.
      * @param key, string, key of binary to look for
      * @return Optional binary
      */
-    virtual std::experimental::optional<std::vector<uint8_t>> getData(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<std::vector<uint8_t>> getData(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored bool having a specific key.
      * @param key, string, key of bool to look for
      * @return Optional bool
      */
-    virtual std::experimental::optional<bool> getBoolean(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<bool> getBoolean(const std::string & key) = 0;
 
     /**
      * Get, if exists, stored DynamicObject having a specific key.
@@ -174,7 +174,7 @@ public:
      * @param key, string, key to look for
      * @return Optional DynamicType enum entry
      */
-    virtual std::experimental::optional<DynamicType> getType(const std::string & key) = 0;
+    virtual std::ledger_exp::optional<DynamicType> getType(const std::string & key) = 0;
 
     /**
      * Dump whole object's content as string.

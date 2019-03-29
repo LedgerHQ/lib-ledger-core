@@ -45,27 +45,27 @@ namespace ledger {
             return (int64_t)_values.size();
         }
 
-        optional<std::string> DynamicArray::getString(int64_t index) {
+        std::ledger_exp::optional<std::string> DynamicArray::getString(int64_t index) {
             return get<std::string>(index);
         }
 
-        optional<int32_t> DynamicArray::getInt(int64_t index) {
+        std::ledger_exp::optional<int32_t> DynamicArray::getInt(int64_t index) {
             return get<int32_t>(index);
         }
 
-        optional<int64_t> DynamicArray::getLong(int64_t index) {
+        std::ledger_exp::optional<int64_t> DynamicArray::getLong(int64_t index) {
             return get<int64_t>(index);
         }
 
-        optional<double> DynamicArray::getDouble(int64_t index) {
+        std::ledger_exp::optional<double> DynamicArray::getDouble(int64_t index) {
             return get<double>(index);
         }
 
-        optional<bool> DynamicArray::getBoolean(int64_t index) {
+        std::ledger_exp::optional<bool> DynamicArray::getBoolean(int64_t index) {
             return get<bool>(index);
         }
 
-        optional<std::vector<uint8_t>> DynamicArray::getData(int64_t index) {
+        std::ledger_exp::optional<std::vector<uint8_t>> DynamicArray::getData(int64_t index) {
             return get<std::vector<uint8_t>>(index);
         }
 
@@ -109,16 +109,16 @@ namespace ledger {
             return push(std::static_pointer_cast<DynamicObject>(value));
         }
 
-        optional<api::DynamicType> DynamicArray::getType(int64_t index) {
+        std::ledger_exp::optional<api::DynamicType> DynamicArray::getType(int64_t index) {
             if (index < size()) {
                 auto v = _values.get(index);
                 if (v) {
-                    return optional<api::DynamicType>(v->getType());
+                    return std::ledger_exp::optional<api::DynamicType>(v->getType());
                 } else {
-                    return optional<api::DynamicType>();
+                    return std::ledger_exp::optional<api::DynamicType>();
                 }
             } else {
-                return optional<api::DynamicType>();
+                return std::ledger_exp::optional<api::DynamicType>();
             }
         }
 

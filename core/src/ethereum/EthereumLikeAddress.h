@@ -48,7 +48,7 @@ namespace ledger {
             api::EthereumLikeNetworkParameters getNetworkParameters() override ;
             std::string toEIP55() override ;
 
-            virtual optional<std::string> getDerivationPath() override;
+            virtual std::ledger_exp::optional<std::string> getDerivationPath() override;
             std::string toString() override;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,

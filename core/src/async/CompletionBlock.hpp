@@ -46,7 +46,7 @@ namespace ledger {
         template <typename T, class Class>
         class CompletionBlock<T, Class, true> : public Class {
         public:
-            virtual void complete(const std::shared_ptr<T>& result, const std::experimental::optional<api::Error>& error) override {
+            virtual void complete(const std::shared_ptr<T>& result, const std::ledger_exp::optional<api::Error>& error) override {
                 if (error) {
                     _promise.failure(Exception(error.value().code, error.value().message));
                 } else {
@@ -65,7 +65,7 @@ namespace ledger {
         template <typename T, class Class>
         class CompletionBlock<T, Class, false> : public Class {
         public:
-            virtual void complete(const std::experimental::optional<T>& result, const std::experimental::optional<api::Error>& error) override {
+            virtual void complete(const std::ledger_exp::optional<T>& result, const std::ledger_exp::optional<api::Error>& error) override {
                 if (error) {
                     _promise.failure(Exception(error.value().code, error.value().message));
                 } else {
@@ -82,9 +82,9 @@ namespace ledger {
         };
 
         template <typename T, class Class>
-        std::shared_ptr<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>
+        std::shared_ptr<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::ledger_exp::optional<api::Error>&)>::value>>
         make_api_completion_block() {
-            return std::make_shared<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>();
+            return std::make_shared<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::ledger_exp::optional<api::Error>&)>::value>>();
         };
 
     }

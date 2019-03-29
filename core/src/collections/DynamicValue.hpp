@@ -99,7 +99,7 @@ namespace ledger {
 
             /// Try to get the value as if it were of a given type.
             template <typename T>
-            optional<T> get() const {
+            std::ledger_exp::optional<T> get() const {
                 static const OptionalVisitor<T> visitor;
                 return boost::apply_visitor(visitor, data);
             }
@@ -112,14 +112,14 @@ namespace ledger {
 
             // A visitor used to cast from DynamicValue to typed optional values.
             template <typename T>
-            struct OptionalVisitor: boost::static_visitor<optional<T>> {
-                optional<T> operator()(T x) const {
+            struct OptionalVisitor: boost::static_visitor<std::ledger_exp::optional<T>> {
+                std::ledger_exp::optional<T> operator()(T x) const {
                     return x;
                 }
 
                 template <typename Q>
-                optional<T> operator()(const Q&) const {
-                    return optional<T>();
+                std::ledger_exp::optional<T> operator()(const Q&) const {
+                    return std::ledger_exp::optional<T>();
                 }
             };
 

@@ -28,9 +28,9 @@ public:
 
     virtual bool isPushedData() = 0;
 
-    virtual std::experimental::optional<BitcoinLikeOperator> getOperator() = 0;
+    virtual std::ledger_exp::optional<BitcoinLikeOperator> getOperator() = 0;
 
-    virtual std::experimental::optional<std::vector<uint8_t>> getPushedData() = 0;
+    virtual std::ledger_exp::optional<std::vector<uint8_t>> getPushedData() = 0;
 
     virtual std::shared_ptr<BitcoinLikeScriptChunk> next() = 0;
 

@@ -124,7 +124,7 @@ namespace ledger {
             }
         }
 
-        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) {
+        std::ledger_exp::optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) {
             auto value = getRaw(key);
 
             if (value) {
@@ -133,12 +133,12 @@ namespace ledger {
                     auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
                     auto plaintext = std::string(plaindata.cbegin(), plaindata.cend());
 
-                    return optional<std::string>(plaintext);
+                    return std::ledger_exp::optional<std::string>(plaintext);
                 } else {
-                    return optional<std::string>(value);
+                    return std::ledger_exp::optional<std::string>(value);
                 }
             } else {
-                return optional<std::string>();
+                return std::ledger_exp::optional<std::string>();
             }
         }
 

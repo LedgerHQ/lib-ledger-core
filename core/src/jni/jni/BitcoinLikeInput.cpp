@@ -30,7 +30,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getAddress();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -60,7 +60,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getValue();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::Amount>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Amount>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -70,7 +70,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getPreviousTxHash();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -90,7 +90,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getCoinbase();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -100,7 +100,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeInput_00024CppProxy_na
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeInput>(nativeRef);
         auto r = ref->getPreviousOutputIndex();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I32>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::I32>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

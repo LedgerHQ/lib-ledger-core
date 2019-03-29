@@ -50,26 +50,26 @@ namespace ledger {
 
             /// A generic indexed and type-safe getter.
             template <typename T>
-            optional<T> get(int64_t index) {
+            std::ledger_exp::optional<T> get(int64_t index) {
                 if (index < size()) {
                     auto v = _values.get(index);
 
                     if (v) {
                         return v->get<T>();
                     } else {
-                        return optional<T>();
+                        return std::ledger_exp::optional<T>();
                     }
                 } else {
-                    return optional<T>();
+                    return std::ledger_exp::optional<T>();
                 }
             }
 
-            optional<std::string> getString(int64_t index) override;
-            optional<int32_t> getInt(int64_t index) override;
-            optional<int64_t> getLong(int64_t index) override;
-            optional<double> getDouble(int64_t index) override;
-            optional<std::vector<uint8_t>> getData(int64_t index) override;
-            optional<bool> getBoolean(int64_t index) override;
+            std::ledger_exp::optional<std::string> getString(int64_t index) override;
+            std::ledger_exp::optional<int32_t> getInt(int64_t index) override;
+            std::ledger_exp::optional<int64_t> getLong(int64_t index) override;
+            std::ledger_exp::optional<double> getDouble(int64_t index) override;
+            std::ledger_exp::optional<std::vector<uint8_t>> getData(int64_t index) override;
+            std::ledger_exp::optional<bool> getBoolean(int64_t index) override;
             std::shared_ptr<api::DynamicObject> getObject(int64_t index) override;
             std::shared_ptr<api::DynamicArray> getArray(int64_t index) override;
 
@@ -97,7 +97,7 @@ namespace ledger {
             bool isReadOnly() override;
             void setReadOnly(bool enable);
 
-            optional<api::DynamicType> getType(int64_t index) override;
+            std::ledger_exp::optional<api::DynamicType> getType(int64_t index) override;
             bool remove(int64_t index) override;
             std::string dump() override;
             std::vector<uint8_t> serialize() override;

@@ -51,7 +51,7 @@ namespace ledger {
             api::RippleLikeNetworkParameters getNetworkParameters() override ;
             std::string toBase58() override ;
 
-            optional<std::string> getDerivationPath() override ;
+            std::ledger_exp::optional<std::string> getDerivationPath() override ;
             std::string toString() override ;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,

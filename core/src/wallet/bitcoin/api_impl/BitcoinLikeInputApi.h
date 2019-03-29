@@ -35,17 +35,18 @@
 #include <wallet/common/api_impl/OperationApi.h>
 #include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
 
+
 namespace ledger {
     namespace core {
         class BitcoinLikeInputApi : public api::BitcoinLikeInput {
         public:
             BitcoinLikeInputApi(const std::shared_ptr<OperationApi>& operation, int32_t inputIndex);
-            optional<std::string> getAddress() override;
+            std::ledger_exp::optional<std::string> getAddress() override;
             std::shared_ptr<api::Amount> getValue() override;
             bool isCoinbase() override;
-            optional<std::string> getCoinbase() override;
-            optional<std::string> getPreviousTxHash() override;
-            optional<int32_t> getPreviousOutputIndex() override;
+            std::ledger_exp::optional<std::string> getCoinbase() override;
+            std::ledger_exp::optional<std::string> getPreviousTxHash() override;
+            std::ledger_exp::optional<int32_t> getPreviousOutputIndex() override;
 
             std::vector<std::vector<uint8_t>> getPublicKeys() override;
 

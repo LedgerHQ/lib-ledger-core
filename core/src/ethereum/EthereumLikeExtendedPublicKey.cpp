@@ -59,7 +59,7 @@ namespace ledger {
         EthereumLikeExtendedPublicKey::derive(const std::string & path) {
             DerivationPath p(path);
             auto key = _derive(0, p.toVector(), _key);
-            return std::make_shared<EthereumLikeAddress>(_currency, key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
+            return std::make_shared<EthereumLikeAddress>(_currency, key.getPublicKeyKeccak256(), std::ledger_exp::optional<std::string>((_path + p).toString()));
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
@@ -88,7 +88,7 @@ namespace ledger {
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
         EthereumLikeExtendedPublicKey::fromRaw(const api::Currency& currency,
-                const optional<std::vector<uint8_t>>& parentPublicKey,
+                const std::ledger_exp::optional<std::vector<uint8_t>>& parentPublicKey,
                 const std::vector<uint8_t>& publicKey,
                 const std::vector<uint8_t> &chainCode,
                 const std::string& path) {

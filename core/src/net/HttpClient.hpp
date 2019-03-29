@@ -64,7 +64,7 @@ namespace ledger {
             HttpRequest(api::HttpMethod method,
                         const std::string& url,
                         const std::unordered_map<std::string, std::string>& headers,
-                        const std::experimental::optional<std::vector<uint8_t >> body,
+                        const std::ledger_exp::optional<std::vector<uint8_t >> body,
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context,
                         const Option<std::shared_ptr<spdlog::logger>>& logger);
@@ -96,7 +96,7 @@ namespace ledger {
             api::HttpMethod _method;
             std::string _url;
             std::unordered_map<std::string, std::string> _headers;
-            std::experimental::optional<std::vector<uint8_t >> _body;
+            std::ledger_exp::optional<std::vector<uint8_t >> _body;
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _context;
             Option<std::shared_ptr<spdlog::logger>> _logger;
@@ -115,7 +115,7 @@ namespace ledger {
                 virtual ~ApiRequest();
 
                 virtual void complete(const std::shared_ptr<api::HttpUrlConnection> &response,
-                              const optional<api::Error> &error) override;
+                              const std::ledger_exp::optional<api::Error> &error) override;
 
                 Future<std::shared_ptr<api::HttpUrlConnection>> getFuture() const;
 
@@ -142,7 +142,7 @@ namespace ledger {
         private:
             HttpRequest createRequest(api::HttpMethod method,
                                       const std::string& path,
-                                      const std::experimental::optional<std::vector<uint8_t >> body,
+                                      const std::ledger_exp::optional<std::vector<uint8_t >> body,
                                       const std::unordered_map<std::string, std::string>& headers
             );
 

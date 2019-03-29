@@ -74,7 +74,7 @@ namespace ledger {
             _index = index;
         }
 
-        optional<api::BitcoinLikeOperator> BitcoinLikeScriptChunkApi::getOperator() {
+        std::ledger_exp::optional<api::BitcoinLikeOperator> BitcoinLikeScriptChunkApi::getOperator() {
             auto &chunk = getChunk();
             if (chunk.isBytes()) {
                 api::BitcoinLikeOperator op(btccore::GetOpName(chunk.getOpCode()), (uint8_t) chunk.getOpCode());
@@ -83,7 +83,7 @@ namespace ledger {
             return Option<api::BitcoinLikeOperator>().toOptional();
         }
 
-        optional<std::vector<uint8_t>> BitcoinLikeScriptChunkApi::getPushedData() {
+        std::ledger_exp::optional<std::vector<uint8_t>> BitcoinLikeScriptChunkApi::getPushedData() {
             auto &chunk = getChunk();
             if (chunk.isBytes()) return Option<std::vector<uint8_t> >(chunk.getBytes()).toOptional();
             return Option<std::vector<uint8_t> >().toOptional();

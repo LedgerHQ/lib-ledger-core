@@ -21,7 +21,7 @@ fi
   --idl ./core/core.djinni \
   --cpp-out $CORE_CPP_API \
   --cpp-namespace ledger::core::api \
-  --cpp-optional-template std::experimental::optional \
+  --cpp-optional-template std::ledger_exp::optional \
   --cpp-optional-header "\"../utils/optional.hpp\"" \
   --jni-include-cpp-prefix "../../api/" \
   --jni-out $CORE_CPP_JNI/jni \

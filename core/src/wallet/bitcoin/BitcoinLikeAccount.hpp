@@ -116,7 +116,7 @@ namespace ledger {
             void broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
-            std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(std::experimental::optional<bool> partial) override;
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(std::ledger_exp::optional<bool> partial) override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 

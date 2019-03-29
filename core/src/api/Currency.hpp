@@ -37,20 +37,20 @@ struct Currency final {
      *TODO: find a better solution to have only a networkParameters
      * Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
      */
-    std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
+    std::ledger_exp::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
     /** Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
-    std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters;
+    std::ledger_exp::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters;
     /**Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
-    std::experimental::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters;
+    std::ledger_exp::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters;
 
     Currency(WalletType walletType_,
              std::string name_,
              int32_t bip44CoinType_,
              std::string paymentUriScheme_,
              std::vector<CurrencyUnit> units_,
-             std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters_,
-             std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters_,
-             std::experimental::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters_)
+             std::ledger_exp::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters_,
+             std::ledger_exp::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters_,
+             std::ledger_exp::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters_)
     : walletType(std::move(walletType_))
     , name(std::move(name_))
     , bip44CoinType(std::move(bip44CoinType_))

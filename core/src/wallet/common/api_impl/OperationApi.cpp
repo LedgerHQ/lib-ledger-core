@@ -107,7 +107,7 @@ namespace ledger {
             return _account->getOperationExternalPreferences(_backend.accountUid);
         }
 
-        optional<int64_t> OperationApi::getBlockHeight() {
+        std::ledger_exp::optional<int64_t> OperationApi::getBlockHeight() {
             return _backend.block.map<int64_t>([] (const Block& block) {
                 return (int64_t) block.height;
             });

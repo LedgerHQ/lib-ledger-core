@@ -15,13 +15,13 @@ BinaryCallback::JavaProxy::JavaProxy(JniType j) : Handle(::djinni::jniGetThreadE
 
 BinaryCallback::JavaProxy::~JavaProxy() = default;
 
-void BinaryCallback::JavaProxy::onCallback(const std::experimental::optional<std::vector<uint8_t>> & c_result, const std::experimental::optional<::ledger::core::api::Error> & c_error) {
+void BinaryCallback::JavaProxy::onCallback(const std::ledger_exp::optional<std::vector<uint8_t>> & c_result, const std::ledger_exp::optional<::ledger::core::api::Error> & c_error) {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::BinaryCallback>::get();
     jniEnv->CallVoidMethod(Handle::get().get(), data.method_onCallback,
-                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, c_result)),
-                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c_error)));
+                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::fromCpp(jniEnv, c_result)),
+                           ::djinni::get(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::Error>::fromCpp(jniEnv, c_error)));
     ::djinni::jniExceptionCheck(jniEnv);
 }
 

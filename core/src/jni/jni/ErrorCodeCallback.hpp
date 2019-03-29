@@ -34,7 +34,7 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        void onCallback(std::experimental::optional<::ledger::core::api::ErrorCode> result, const std::experimental::optional<::ledger::core::api::Error> & error) override;
+        void onCallback(std::ledger_exp::optional<::ledger::core::api::ErrorCode> result, const std::ledger_exp::optional<::ledger::core::api::Error> & error) override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::ErrorCodeCallback, ::djinni_generated::ErrorCodeCallback>;

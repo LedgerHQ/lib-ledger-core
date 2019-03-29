@@ -56,16 +56,16 @@ namespace ledger {
                     const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput,
                     const std::string &keychainEngine = ""
             );
-            optional<std::string> getAddress() override;
+            std::ledger_exp::optional<std::string> getAddress() override;
             std::vector<std::vector<uint8_t>> getPublicKeys() override;
             std::shared_ptr<api::Amount> getValue() override;
 
             std::vector<std::shared_ptr<api::DerivationPath> > getDerivationPath() override;
 
             bool isCoinbase() override;
-            optional<std::string> getCoinbase() override;
-            optional<std::string> getPreviousTxHash() override;
-            optional<int32_t> getPreviousOutputIndex() override;
+            std::ledger_exp::optional<std::string> getCoinbase() override;
+            std::ledger_exp::optional<std::string> getPreviousTxHash() override;
+            std::ledger_exp::optional<int32_t> getPreviousOutputIndex() override;
             std::shared_ptr<api::BitcoinLikeOutput> getPreviousOuput() override;
             std::vector<uint8_t> getScriptSig() override;
             std::shared_ptr<api::BitcoinLikeScript> parseScriptSig() override;

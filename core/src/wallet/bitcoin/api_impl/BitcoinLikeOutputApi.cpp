@@ -69,7 +69,7 @@ namespace ledger {
             return hex::toByteArray(getOutput().script);
         }
 
-        optional<std::string> BitcoinLikeOutputApi::getAddress() {
+        std::ledger_exp::optional<std::string> BitcoinLikeOutputApi::getAddress() {
             return getOutput().address.toOptional();
         }
 

@@ -49,13 +49,13 @@ namespace ledger {
 
             /// A generic indexed and type-safe getter.
             template <typename T>
-            optional<T> get(const std::string& key) {
-                const auto v = optional<DynamicValue>(_values.lift(key));
+            std::ledger_exp::optional<T> get(const std::string& key) {
+                const auto v = std::ledger_exp::optional<DynamicValue>(_values.lift(key));
 
                 if (v) {
                     return v->get<T>();
                 } else {
-                    return optional<T>();
+                    return std::ledger_exp::optional<T>();
                 }
             }
 
@@ -69,12 +69,12 @@ namespace ledger {
                 return shared_from_this();
             }
 
-            optional<std::string> getString(const std::string &key) override;
-            optional<int32_t> getInt(const std::string &key) override;
-            optional<int64_t> getLong(const std::string &key) override;
-            optional<double> getDouble(const std::string &key) override;
-            optional<bool> getBoolean(const std::string &key) override;
-            optional<std::vector<uint8_t>> getData(const std::string &key) override;
+            std::ledger_exp::optional<std::string> getString(const std::string &key) override;
+            std::ledger_exp::optional<int32_t> getInt(const std::string &key) override;
+            std::ledger_exp::optional<int64_t> getLong(const std::string &key) override;
+            std::ledger_exp::optional<double> getDouble(const std::string &key) override;
+            std::ledger_exp::optional<bool> getBoolean(const std::string &key) override;
+            std::ledger_exp::optional<std::vector<uint8_t>> getData(const std::string &key) override;
             std::shared_ptr<api::DynamicObject> getObject(const std::string &key) override;
             std::shared_ptr<api::DynamicArray> getArray(const std::string &key) override;
 
@@ -93,7 +93,7 @@ namespace ledger {
 
             std::vector<std::string> getKeys() override;
 
-            optional<api::DynamicType> getType(const std::string &key) override;
+            std::ledger_exp::optional<api::DynamicType> getType(const std::string &key) override;
 
             std::string dump() override;
 

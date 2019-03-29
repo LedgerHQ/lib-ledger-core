@@ -40,7 +40,7 @@ namespace ledger {
             _inputIndex = inputIndex;
         }
 
-        optional<std::string> BitcoinLikeInputApi::getAddress() {
+        std::ledger_exp::optional<std::string> BitcoinLikeInputApi::getAddress() {
             return getInput().address.toOptional();
         }
 
@@ -54,7 +54,7 @@ namespace ledger {
             return getInput().coinbase.nonEmpty();
         }
 
-        optional<std::string> BitcoinLikeInputApi::getCoinbase() {
+        std::ledger_exp::optional<std::string> BitcoinLikeInputApi::getCoinbase() {
             return getInput().coinbase.toOptional();
         }
 
@@ -62,11 +62,11 @@ namespace ledger {
             return _operation->getBackend().bitcoinTransaction.getValue().inputs[_inputIndex];
         }
 
-        optional<std::string> BitcoinLikeInputApi::getPreviousTxHash() {
+        std::ledger_exp::optional<std::string> BitcoinLikeInputApi::getPreviousTxHash() {
             return getInput().previousTxHash.toOptional();
         }
 
-        optional<int32_t> BitcoinLikeInputApi::getPreviousOutputIndex() {
+        std::ledger_exp::optional<int32_t> BitcoinLikeInputApi::getPreviousOutputIndex() {
             return getInput().previousTxOutputIndex.map<int32_t>([] (const uint32_t& v) {
                 return (int32_t)v;
             }).toOptional();

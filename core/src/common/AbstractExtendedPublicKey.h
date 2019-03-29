@@ -70,7 +70,7 @@ namespace ledger {
             static DeterministicPublicKey
             fromRaw(const api::Currency &currency,
                     const NetworkParameters &params,
-                    const optional<std::vector<uint8_t>> &parentPublicKey,
+                    const std::ledger_exp::optional<std::vector<uint8_t>> &parentPublicKey,
                     const std::vector<uint8_t> &publicKey,
                     const std::vector<uint8_t> &chainCode,
                     const std::string &path) {

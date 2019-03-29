@@ -58,7 +58,7 @@ namespace ledger {
             virtual bool isP2PKH() override;
             virtual bool isP2WSH() override;
             virtual bool isP2WPKH() override;
-            virtual optional<std::string> getDerivationPath() override;
+            virtual std::ledger_exp::optional<std::string> getDerivationPath() override;
 
             std::string toString() override;
 

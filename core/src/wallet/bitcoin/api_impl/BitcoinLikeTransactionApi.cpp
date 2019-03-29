@@ -123,7 +123,7 @@ namespace ledger {
             return _hash;
         }
 
-        optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
+        std::ledger_exp::optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
             return _timestamp.map<int32_t>([](const uint32_t &v) {
                 return (int32_t) v;
             }).toOptional();
@@ -138,7 +138,7 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
+        std::ledger_exp::optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
             bool isDecred =  _params.Identifier == "dcr";
             BytesWriter witness;
 
@@ -405,21 +405,21 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransaction>
         api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
                                                                         const std::vector<uint8_t> &rawTransaction,
-                                                                        std::experimental::optional<int32_t> currentBlockHeight) {
+                                                                        std::ledger_exp::optional<int32_t> currentBlockHeight) {
             return BitcoinLikeTransactionApi::parseRawTransaction(currency, rawTransaction, currentBlockHeight, false);
         }
 
         std::shared_ptr<api::BitcoinLikeTransaction>
         BitcoinLikeTransactionApi::parseRawSignedTransaction(const api::Currency &currency,
                                                              const std::vector<uint8_t> &rawTransaction,
-                                                             std::experimental::optional<int32_t> currentBlockHeight) {
+                                                             std::ledger_exp::optional<int32_t> currentBlockHeight) {
             return BitcoinLikeTransactionApi::parseRawTransaction(currency, rawTransaction, currentBlockHeight, true);
         }
 
         std::shared_ptr<api::BitcoinLikeTransaction>
         BitcoinLikeTransactionApi::parseRawTransaction(const api::Currency &currency,
                                                        const std::vector<uint8_t> &rawTransaction,
-                                                       std::experimental::optional<int32_t> currentBlockHeight,
+                                                       std::ledger_exp::optional<int32_t> currentBlockHeight,
                                                        bool isSigned) {
             BytesReader reader(rawTransaction);
             // Parse version

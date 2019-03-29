@@ -134,7 +134,7 @@ public:
                     0,
                     ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
                                                                            data.xpub,
-                                                                           optional<std::string>(data.derivationPath),
+                                                                           std::ledger_exp::optional<std::string>(data.derivationPath),
                                                                            configuration),
                     backend->getPreferences("keychain")
             );

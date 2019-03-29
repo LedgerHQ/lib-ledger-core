@@ -122,7 +122,7 @@ namespace ledger {
             return _keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
         }
 
-        std::experimental::optional<std::string> BitcoinLikeAddress::getDerivationPath() {
+        std::ledger_exp::optional<std::string> BitcoinLikeAddress::getDerivationPath() {
             return _derivationPath.toOptional();
         }
 

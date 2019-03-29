@@ -21,7 +21,7 @@ rm -r $CORE_CPP_API
     --idl ./core/core.djinni \
     --cpp-out $CORE_CPP_API \
     --cpp-namespace ledger::core::api \
-    --cpp-optional-template std::experimental::optional \
+    --cpp-optional-template std::ledger_exp::optional \
     --cpp-optional-header "\"../utils/optional.hpp\"" \
     --objc-type-prefix LG \
     --objc-out $DEST_IOS_OBJC \

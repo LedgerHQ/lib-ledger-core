@@ -27,13 +27,13 @@ struct BitcoinLikeTransactionRequest final {
     /** Optional Amount object, amount of total fees. */
     std::shared_ptr<Amount> totalFees;
     /** Optional 32 bits integer, transaction's lock time (refer to BitcoinLikeTransaction class). */
-    std::experimental::optional<int32_t> lockTime;
+    std::ledger_exp::optional<int32_t> lockTime;
 
     BitcoinLikeTransactionRequest(std::vector<std::shared_ptr<BitcoinLikeOutput>> utxo_,
                                   std::vector<std::shared_ptr<BitcoinLikeOutput>> outputs_,
                                   std::shared_ptr<Amount> baseFees_,
                                   std::shared_ptr<Amount> totalFees_,
-                                  std::experimental::optional<int32_t> lockTime_)
+                                  std::ledger_exp::optional<int32_t> lockTime_)
     : utxo(std::move(utxo_))
     , outputs(std::move(outputs_))
     , baseFees(std::move(baseFees_))

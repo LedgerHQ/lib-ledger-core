@@ -65,8 +65,8 @@ public:
         auto body = _body;
         _body = std::vector<uint8_t>();
         return ledger::core::api::HttpReadBodyResult(
-                std::experimental::optional<ledger::core::api::Error>(),
-                std::experimental::optional<std::vector<uint8_t>>(body)
+                std::ledger_exp::optional<ledger::core::api::Error>(),
+                std::ledger_exp::optional<std::vector<uint8_t>>(body)
         );
     }
 private:
@@ -94,7 +94,7 @@ static void ev_handler(struct mg_connection *c, int ev, void *p) {
                 std::unordered_map<std::string, std::string>(),
                 std::vector<uint8_t>()
                 );
-                pair->first->complete(connection, std::experimental::optional<ledger::core::api::Error>());
+                pair->first->complete(connection, std::ledger_exp::optional<ledger::core::api::Error>());
                 pair->first = nullptr;
             }
             // delete pair # Yep that's a leak;
@@ -116,7 +116,7 @@ void MongooseHttpClient::ev_handler(struct mg_connection *c, int ev, struct http
             std::unordered_map<std::string, std::string>(),
             std::vector<uint8_t >((uint8_t *)hm->body.p, (uint8_t *)(hm->body.p + hm->body.len))
     );
-    request->complete(connection, std::experimental::optional<ledger::core::api::Error>());
+    request->complete(connection, std::ledger_exp::optional<ledger::core::api::Error>());
 }
 
 void MongooseHttpClient::execute(const std::shared_ptr<ledger::core::api::HttpRequest> &request) {

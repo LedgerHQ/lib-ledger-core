@@ -124,7 +124,7 @@ public:
      * Parsing unsigned transaction.
      * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
      */
-    static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, std::experimental::optional<int32_t> currentBlockHeight);
+    static std::shared_ptr<BitcoinLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, std::ledger_exp::optional<int32_t> currentBlockHeight);
 };
 
 } } }  // namespace ledger::core::api

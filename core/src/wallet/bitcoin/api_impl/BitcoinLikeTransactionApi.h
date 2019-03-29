@@ -97,11 +97,11 @@ namespace ledger {
 
             std::chrono::system_clock::time_point getTime() override;
 
-            optional<int32_t> getTimestamp() override;
+            std::ledger_exp::optional<int32_t> getTimestamp() override;
 
             std::vector<uint8_t> serialize() override;
 
-            optional<std::vector<uint8_t>> getWitness() override;
+            std::ledger_exp::optional<std::vector<uint8_t>> getWitness() override;
 
             api::EstimatedSize getEstimatedSize() override;
 
@@ -123,12 +123,12 @@ namespace ledger {
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,
-                                                                                    std::experimental::optional<int32_t> currentBlockHeight,
+                                                                                    std::ledger_exp::optional<int32_t> currentBlockHeight,
                                                                                     bool isSigned);
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawSignedTransaction(const api::Currency &currency,
                                                                                           const std::vector<uint8_t> &rawTransaction,
-                                                                                          std::experimental::optional<int32_t> currentBlockHeight);
+                                                                                          std::ledger_exp::optional<int32_t> currentBlockHeight);
 
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                                    std::size_t outputCount,

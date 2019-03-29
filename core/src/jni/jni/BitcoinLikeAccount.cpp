@@ -70,7 +70,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
-        auto r = ref->buildTransaction(::djinni::Optional<std::experimental::optional, ::djinni::Bool>::toCpp(jniEnv, j_partial));
+        auto r = ref->buildTransaction(::djinni::Optional<std::ledger_exp::optional, ::djinni::Bool>::toCpp(jniEnv, j_partial));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

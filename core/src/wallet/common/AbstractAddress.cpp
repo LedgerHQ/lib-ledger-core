@@ -46,7 +46,7 @@ namespace ledger {
             return _currency;
         }
 
-        optional<std::string> AbstractAddress::getDerivationPath() {
+        std::ledger_exp::optional<std::string> AbstractAddress::getDerivationPath() {
             return _path.toOptional();
         }
 

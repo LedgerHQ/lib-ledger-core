@@ -54,7 +54,7 @@ public:
     virtual std::shared_ptr<Amount> getValue() = 0;
 
     /** Get binary data payload. */
-    virtual std::experimental::optional<std::vector<uint8_t>> getData() = 0;
+    virtual std::ledger_exp::optional<std::vector<uint8_t>> getData() = 0;
 
     /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
     virtual int32_t getStatus() = 0;

@@ -46,7 +46,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeScriptChunk_00024CppPr
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeScriptChunk>(nativeRef);
         auto r = ref->getOperator();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeOperator>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni_generated::BitcoinLikeOperator>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
@@ -56,7 +56,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_BitcoinLikeScriptChunk_00024Cp
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeScriptChunk>(nativeRef);
         auto r = ref->getPushedData();
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::ledger_exp::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
