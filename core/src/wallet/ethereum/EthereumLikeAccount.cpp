@@ -151,7 +151,8 @@ namespace ledger {
                 sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(erc20Address), soci::into(count);
                 api::ERC20Token erc20Token;
                 if (count > 0) {
-                    soci::rowset<soci::row> rows = (sql.prepare << "SELECT name, symbol, number_of_decimal FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(transaction.erc20.getValue().contractAddress));
+                    auto contractAddress = transaction.erc20.getValue().contractAddress;
+                    soci::rowset<soci::row> rows = (sql.prepare << "SELECT name, symbol, number_of_decimal FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress));
                     for (auto& row : rows) {
                         auto name = row.get<std::string>(0);
                         auto symbol = row.get<std::string>(1);
@@ -336,8 +337,8 @@ namespace ledger {
                         }
                         getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
                 }
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(getAccountUid()), soci::use(date);
-                log->debug(" Finish erasing data of account : {}", getAccountUid());
+                auto accountUid = getAccountUid();
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
         }

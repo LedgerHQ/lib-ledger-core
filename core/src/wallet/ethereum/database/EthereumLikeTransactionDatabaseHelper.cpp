@@ -134,19 +134,23 @@ namespace ledger {
                 }
 
                 auto txInputData = hex::toString(tx.inputData);
+                auto hexTxValue = tx.value.toHexString();
+                auto hexGasPrice = tx.gasPrice.toHexString();
+                auto hexGasLimit = tx.gasLimit.toHexString();
+                auto hexGasUsed = tx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
                 sql << "INSERT INTO ethereum_transactions VALUES(:tx_uid, :hash, :nonce, :value, :block_uid, :time, :sender, :receiver, :input_data, :gasPrice, :gasLimit, :gasUsed, :confirmations, :status)",
                         use(ethTxUid),
                         use(tx.hash),
                         use(tx.nonce),
-                        use(tx.value.toHexString()),
+                        use(hexTxValue),
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.sender),
                         use(tx.receiver),
                         use(txInputData),
-                        use(tx.gasPrice.toHexString()),
-                        use(tx.gasLimit.toHexString()),
-                        use(tx.gasUsed.getValueOr(BigInt::ZERO).toHexString()),
+                        use(hexGasPrice),
+                        use(hexGasLimit),
+                        use(hexGasUsed),
                         use(tx.confirmations),
                         use(tx.status);
 

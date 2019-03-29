@@ -42,10 +42,11 @@ namespace ledger {
 
             auto serializeConfig = wallet.configuration->serialize();
             auto configuration = hex::toString(serializeConfig);
+            auto now = DateUtils::now();
             if (!walletExists(sql, wallet)) {
                 sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration, :now)",
                         use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration),
-                        use(DateUtils::now());
+                        use(now);
             } else {
                 sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
                 use(configuration), use(wallet.uid);
@@ -97,9 +98,10 @@ namespace ledger {
 
         bool PoolDatabaseHelper::insertPool(soci::session &sql, const WalletPool &pool) {
             auto count = 0;
+            auto now = DateUtils::toJSON(DateUtils::now());
             sql << "SELECT COUNT(*) FROM pools WHERE name = :name", use(pool.getName()), into(count);
             if (count == 0) {
-                sql << "INSERT INTO pools VALUES(:name, :created_at)", use(pool.getName()), use(DateUtils::toJSON(DateUtils::now()));
+                sql << "INSERT INTO pools VALUES(:name, :created_at)", use(pool.getName()), use(now);
                 return true;
             }
             return false;

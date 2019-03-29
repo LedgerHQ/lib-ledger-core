@@ -100,9 +100,10 @@ namespace ledger {
                                                                 const std::string& btcTxUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorerOutput &output) {
+            auto value = output.value.toUint64();
             sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL)",
                     use(output.index), use(btcTxUid),
-                    use(transactionHash), use(output.value.toUint64()),
+                    use(transactionHash), use(value),
                     use(output.script), use(output.address);
         }
 
